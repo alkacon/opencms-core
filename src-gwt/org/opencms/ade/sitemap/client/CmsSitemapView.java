@@ -287,11 +287,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         String nonlocalLabel = Messages.get().key(Messages.GUI_CATEGORIES_NONLOCAL_0);
 
         CmsListInfoBean localRootInfo = new CmsListInfoBean(localLabel, "", null);
-        localRootInfo.setResourceType("folder");
+        localRootInfo.setResourceType("category");
         final CmsTreeItem localRoot = new CmsTreeItem(true, new CmsListItemWidget(localRootInfo));
 
         CmsListInfoBean nonlocalRootInfo = new CmsListInfoBean(nonlocalLabel, "", null);
-        nonlocalRootInfo.setResourceType("folder");
+        nonlocalRootInfo.setResourceType("category");
         CmsTreeItem nonlocalRoot = new CmsTreeItem(true, new CmsListItemWidget(nonlocalRootInfo));
 
         m_categoryTree.add(localRoot);
@@ -442,6 +442,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             m_modelPageTreeItems.put(entry.getStructureId(), treeItem);
             root.addChild(treeItem);
         }
+        root.setOpen(true);
+
     }
 
     /**
@@ -983,6 +985,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     setGalleriesVisible(false);
                     setCategoriesVisible(false);
                     setModelPagesVisible(true);
+                    m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
                     getController().loadModelPages();
 
                     break;
@@ -991,6 +994,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     setGalleriesVisible(false);
                     setModelPagesVisible(false);
                     setCategoriesVisible(true);
+                    m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
                     getController().loadCategories();
                     break;
                 default:

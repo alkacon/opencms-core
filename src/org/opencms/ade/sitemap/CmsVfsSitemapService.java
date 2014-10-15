@@ -408,16 +408,16 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createNewModelPage(java.lang.String, java.lang.String, org.opencms.util.CmsUUID)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createNewModelPage(java.lang.String, java.lang.String, java.lang.String, org.opencms.util.CmsUUID)
      */
-    public CmsModelPageEntry createNewModelPage(String entryPointUri, String title, CmsUUID copyId)
+    public CmsModelPageEntry createNewModelPage(String entryPointUri, String title, String description, CmsUUID copyId)
     throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
             CmsResource rootResource = cms.readResource(entryPointUri);
             CmsModelPageHelper helper = new CmsModelPageHelper(getCmsObject(), rootResource);
-            CmsResource page = helper.createPageInModelFolder(title, copyId);
+            CmsResource page = helper.createPageInModelFolder(title, description, copyId);
             String configPath = CmsStringUtil.joinPaths(entryPointUri, ".content/.config");
             CmsResource configResource = cms.readResource(configPath);
             helper.addModelPageToSitemapConfiguration(configResource, page, false);

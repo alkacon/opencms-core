@@ -102,12 +102,14 @@ public interface I_CmsSitemapServiceAsync {
      * 
      * @param entryPointUri the uri of the entry point 
      * @param title the title for the model page 
+     * @param description the description for the model page 
      * @param copyId the structure id of the resource to copy to create a new model page; if null, the model page is created as an empty container page
      * @param resultCallback the callback for the result 
      */
     void createNewModelPage(
         String entryPointUri,
         String title,
+        String description,
         CmsUUID copyId,
         AsyncCallback<CmsModelPageEntry> resultCallback);
 

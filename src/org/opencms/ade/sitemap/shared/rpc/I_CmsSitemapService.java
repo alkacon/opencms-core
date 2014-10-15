@@ -104,12 +104,14 @@ public interface I_CmsSitemapService extends RemoteService {
      * 
      * @param entryPointUri the uri of the entry point 
      * @param title the title for the model page 
+     * @param description the description for the model page 
      * @param copyId the structure id of the resource to copy to create a new model page; if null, the model page is created as an empty container page
      *   
      * @return a bean representing the created model page 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsModelPageEntry createNewModelPage(String entryPointUri, String title, CmsUUID copyId) throws CmsRpcException;
+    CmsModelPageEntry createNewModelPage(String entryPointUri, String title, String description, CmsUUID copyId)
+    throws CmsRpcException;
 
     /**
      * Creates a sub-sitemap of the given sitemap starting from the given entry.<p>

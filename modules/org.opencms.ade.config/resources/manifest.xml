@@ -58,6 +58,11 @@
 				uri="/system/workplace/resources/filetypes/inheritancegroup_big.png" />
 			<resource uri="/system/workplace/resources/filetypes/subsitemap.png" />
 			<resource uri="/system/workplace/resources/filetypes/subsitemap_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/modelpage.png" />
+			<resource uri="/system/workplace/resources/filetypes/modelpage_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/category.png" />
+			<resource uri="/system/workplace/resources/filetypes/category_big.png" />
+			
 			<resource uri="/system/workplace/resources/filetypes/htmlredirect.png" />
 			<resource
 				uri="/system/workplace/resources/filetypes/htmlredirect_big.png" />
@@ -283,6 +288,20 @@
 					uri="newresource.jsp?newresourcetype=subsitemap" order="490"
 					autosetnavigation="false" autosettitle="false" info="desc.subsitemap" />
 			</explorertype>
+			<explorertype name="modelpage" key="fileicon.modelpage"
+				icon="modelpage.png" bigicon="modelpage_big.png" reference="folder">
+				<newresource page="none"
+					uri="" order="490"
+					autosetnavigation="false" autosettitle="false" info="" />
+			</explorertype>
+	
+			<explorertype name="category" key="fileicon.category"
+				icon="category.png" bigicon="category_big.png" reference="folder">
+				<newresource page="none"
+					uri="" order="490"
+					autosetnavigation="false" autosettitle="false" info="" />
+			</explorertype>
+			
 			<explorertype name="htmlredirect" key="fileicon.htmlredirect"
 				icon="htmlredirect.png" bigicon="htmlredirect_big.png" reference="xmlcontent">
 				<newresource
@@ -1093,6 +1112,119 @@
 			<relations />
 			<accesscontrol />
 		</file>
+		
+		
+		
+		<file>
+			<source>system/workplace/resources/filetypes/modelpage_big.png
+			</source>
+			<destination>system/workplace/resources/filetypes/modelpage_big.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>070319ec-c325-4e65-89e1-700aa387a8d7</uuidstructure>
+			<uuidresource>7cb655af-d7d4-43ec-ab82-b8867c371464</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/modelpage.png
+			</source>
+			<destination>system/workplace/resources/filetypes/modelpage.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>79b4873a-11df-4f02-b9a9-bb5ed9759a7d</uuidstructure>
+			<uuidresource>b12b5a77-476e-424c-aa5d-35959979221c</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/category_big.png
+			</source>
+			<destination>system/workplace/resources/filetypes/category_big.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>47268356-aa5c-4161-b375-1e423de7bd7c</uuidstructure>
+			<uuidresource>6f602324-0386-403b-8fba-d456c23f860b</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/category.png
+			</source>
+			<destination>system/workplace/resources/filetypes/category.png
+			</destination>
+			<type>image</type>
+			<uuidstructure>ef02fdfe-c532-4f97-8967-8455abb8d0f0</uuidstructure>
+			<uuidresource>2878c13e-c298-432a-b623-90ac86daa5f9</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		<file>
 			<source>system/workplace/resources/filetypes/function.png</source>
 			<destination>system/workplace/resources/filetypes/function.png

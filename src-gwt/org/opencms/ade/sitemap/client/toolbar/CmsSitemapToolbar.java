@@ -180,7 +180,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
             case modelpages:
             case categories:
                 m_newGalleryMenuButton.getElement().getStyle().setDisplay(Display.NONE);
-                m_newMenuButton.getElement().getStyle().setDisplay(Display.NONE);
+                m_newMenuButton.getElement().getStyle().clearDisplay();
                 break;
             default:
                 m_newMenuButton.getElement().getStyle().clearDisplay();

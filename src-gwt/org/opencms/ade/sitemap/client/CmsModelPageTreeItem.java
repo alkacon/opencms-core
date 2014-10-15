@@ -28,8 +28,8 @@
 package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
+import org.opencms.ade.sitemap.client.hoverbar.CmsEditModelPageMenuEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.property.CmsReloadMode;
@@ -45,6 +45,9 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
  * Tree item for the model page editor mode.<p>
@@ -80,38 +83,23 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
         super(true);
         CmsListInfoBean infoBean = new CmsListInfoBean(
             Messages.get().key(Messages.GUI_MODEL_PAGE_TREE_ROOT_TITLE_0),
-            "",
+            Messages.get().key(Messages.GUI_MODE_PAGE_TREE_ROOT_SUBTITLE_0),
             null);
         CmsListItemWidget content = new CmsListItemWidget(infoBean);
-        content.setIcon(CmsIconUtil.getResourceIconClasses("containerpage", false));
+        content.setIcon(CmsIconUtil.getResourceIconClasses("modelpage", false));
         initContent(content);
     }
 
     /**
      * Constructor.<p>
      * 
-     * @param galleryFolder the gallery folder
+     * @param modelpage the model page
      */
-    public CmsModelPageTreeItem(CmsModelPageEntry galleryFolder) {
+    public CmsModelPageTreeItem(CmsModelPageEntry modelpage) {
 
         super(true);
-        initContent(createListWidget(galleryFolder));
-        m_entryId = galleryFolder.getStructureId();
-    }
-
-    /**
-     * Creates the list item widget for the given type.<p>
-     * 
-     * @param galleryType the gallery type
-     * 
-     * @return the list item widget
-     */
-    public static CmsListItemWidget createListWidget(CmsGalleryType galleryType) {
-
-        CmsListInfoBean infoBean = new CmsListInfoBean(galleryType.getNiceName(), galleryType.getDescription(), null);
-        CmsListItemWidget result = new CmsListItemWidget(infoBean);
-        result.setIcon(CmsIconUtil.getResourceIconClasses(galleryType.getTypeName(), null, false));
-        return result;
+        initContent(createListWidget(modelpage));
+        m_entryId = modelpage.getStructureId();
     }
 
     /**
@@ -187,30 +175,35 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
     /**
      * Creates the list item widget for the given folder.<p>
      * 
-     * @param galleryFolder the gallery folder
+     * @param modelPage the model page bean 
      * 
      * @return the list item widget
      */
-    private CmsListItemWidget createListWidget(CmsModelPageEntry galleryFolder) {
+    private CmsListItemWidget createListWidget(final CmsModelPageEntry modelPage) {
 
         String title;
-        if (galleryFolder.getOwnProperties().containsKey(CmsClientProperty.PROPERTY_TITLE)) {
-            title = galleryFolder.getOwnProperties().get(CmsClientProperty.PROPERTY_TITLE).getStructureValue();
+        if (modelPage.getOwnProperties().containsKey(CmsClientProperty.PROPERTY_TITLE)) {
+            title = modelPage.getOwnProperties().get(CmsClientProperty.PROPERTY_TITLE).getStructureValue();
         } else {
-            title = CmsResource.getName(galleryFolder.getRootPath());
+            title = CmsResource.getName(modelPage.getRootPath());
             if (title.endsWith("/")) {
                 title = title.substring(0, title.length() - 1);
             }
         }
-        CmsListInfoBean infoBean = galleryFolder.getListInfoBean();
+        CmsListInfoBean infoBean = modelPage.getListInfoBean();
         infoBean.setTitle(title);
         CmsListItemWidget result = new CmsModelPageListItemWidget(infoBean);
-        result.setIcon(CmsIconUtil.getResourceIconClasses(
-            galleryFolder.getResourceType(),
-            galleryFolder.getRootPath(),
-            false));
+        result.setIcon(CmsIconUtil.getResourceIconClasses(modelPage.getResourceType(), modelPage.getRootPath(), false));
+        if (CmsEditModelPageMenuEntry.checkVisible(modelPage.getStructureId())) {
+            result.addIconClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    CmsEditModelPageMenuEntry.editModelPage(modelPage.getStructureId());
+                }
+            });
+        }
 
         return result;
     }
-
 }

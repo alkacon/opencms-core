@@ -427,9 +427,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
      * Creates a new model page.<p>
      * 
      * @param title the title of the model page 
+     * @param description the description of the model page 
      * @param copyId the structure id of the resource which should be used as a copy model for the new page
      */
-    public void createNewModelPage(final String title, final CmsUUID copyId) {
+    public void createNewModelPage(final String title, final String description, final CmsUUID copyId) {
 
         CmsRpcAction<CmsModelPageEntry> action = new CmsRpcAction<CmsModelPageEntry>() {
 
@@ -438,7 +439,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
                 start(200, true);
 
-                getService().createNewModelPage(getEntryPoint(), title, copyId, this);
+                getService().createNewModelPage(getEntryPoint(), title, description, copyId, this);
 
             }
 

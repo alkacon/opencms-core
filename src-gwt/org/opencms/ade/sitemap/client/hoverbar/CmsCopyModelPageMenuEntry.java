@@ -46,6 +46,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class CmsCopyModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
+    /** The instance of the dialog for copying a model page. */
+    private CmsCopyModelPageDialog m_dialog;
+
     /**
      * Creates a new model page menu entry.<p>
      * 
@@ -105,24 +108,26 @@ public class CmsCopyModelPageMenuEntry extends A_CmsSitemapMenuEntry {
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         final CmsUUID id = entry.getId();
         CmsListInfoBean listInfo = CmsSitemapView.getInstance().getModelPageEntry(id).getListInfoBean();
-
-        CmsCopyModelPageDialog dlg = new CmsCopyModelPageDialog(listInfo, new AsyncCallback<String>() {
+        m_dialog = new CmsCopyModelPageDialog(listInfo, new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {
 
-                // TODO Auto-generated method stub
+                // do nothing
 
             }
 
+            @SuppressWarnings("synthetic-access")
             public void onSuccess(String title) {
 
                 if (title != null) {
-                    CmsSitemapView.getInstance().getController().createNewModelPage(title, id);
+                    CmsSitemapView.getInstance().getController().createNewModelPage(
+                        title,
+                        m_dialog.getDescription(),
+                        id);
                 }
             }
         });
-        dlg.center();
-
+        m_dialog.center();
     }
 
     /**

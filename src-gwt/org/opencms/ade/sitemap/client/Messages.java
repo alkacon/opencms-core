@@ -385,6 +385,12 @@ public final class Messages {
     public static final String GUI_MERGE_SITEMAP_CONFIRM_TITLE_0 = "GUI_MERGE_SITEMAP_CONFIRM_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODE_PAGE_TREE_ROOT_SUBTITLE_0 = "GUI_MODE_PAGE_TREE_ROOT_SUBTITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_PAGE_DESCRIPTION_LABEL_0 = "GUI_MODEL_PAGE_DESCRIPTION_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MODEL_PAGE_TITLE_LABEL_0 = "GUI_MODEL_PAGE_TITLE_LABEL_0";
 
     /** Message constant for key in the resource bundle. */

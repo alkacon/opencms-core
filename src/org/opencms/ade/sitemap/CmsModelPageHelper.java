@@ -55,7 +55,7 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -70,17 +70,17 @@ import com.google.common.collect.Maps;
  */
 public class CmsModelPageHelper {
 
+    /** The logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsModelPageHelper.class);
+
+    /** The sitmeap config data. */
+    private CmsADEConfigData m_adeConfig;
+
     /** The CMS context used. */
     private CmsObject m_cms;
 
     /** The site map root. */
     private CmsResource m_rootResource;
-
-    /** The sitmeap config data. */
-    private CmsADEConfigData m_adeConfig;
-
-    /** The logger for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsModelPageHelper.class);
 
     /** The site root. */
     private String m_siteRoot;
@@ -155,12 +155,13 @@ public class CmsModelPageHelper {
      * Creates a new potential model page in the default folder for new model pages.<p>+
      * 
      * @param name the title for the model page 
+     * @param description the description for the model page 
      * @param copyId structure id of the resource to use as a model for the model page, if any (may be null)
      *  
      * @return the created resource 
      * @throws CmsException if something goes wrong 
      */
-    public CmsResource createPageInModelFolder(String name, CmsUUID copyId) throws CmsException {
+    public CmsResource createPageInModelFolder(String name, String description, CmsUUID copyId) throws CmsException {
 
         CmsResource modelFolder = ensureModelFolder(m_rootResource);
         String pattern = "templatemodel_%(number).html";
@@ -169,17 +170,20 @@ public class CmsModelPageHelper {
             CmsStringUtil.joinPaths(modelFolder.getRootPath(), pattern),
             4);
         CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, name, null);
+        CmsProperty descriptionProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, description, null);
         CmsResource newPage = null;
         if (copyId == null) {
             newPage = m_cms.createResource(
                 newFilePath,
                 getType(CmsResourceTypeXmlContainerPage.getStaticTypeName()),
                 null,
-                Collections.singletonList(titleProp));
+                Arrays.asList(titleProp, descriptionProp));
         } else {
             CmsResource copyResource = m_cms.readResource(copyId);
             m_cms.copyResource(copyResource.getRootPath(), newFilePath);
             m_cms.writePropertyObject(newFilePath, titleProp);
+            m_cms.writePropertyObject(newFilePath, descriptionProp);
+
             newPage = m_cms.readResource(newFilePath);
         }
         tryUnlock(newPage);

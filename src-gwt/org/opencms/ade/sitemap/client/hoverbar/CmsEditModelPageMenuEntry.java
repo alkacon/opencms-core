@@ -54,6 +54,30 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
         setActive(true);
     }
 
+    /** 
+     * Chesks if the model page menu entry should be visible.<p>
+     * 
+     * @param id the id of the model page 
+     * @return true if the entry should be visible 
+     */
+    public static boolean checkVisible(CmsUUID id) {
+
+        CmsNewResourceInfo info = CmsSitemapView.getInstance().getController().getData().getNewResourceInfoById(id);
+        boolean show = CmsSitemapView.getInstance().isModelPageMode() && (info != null) && info.isEditable();
+        return show;
+    }
+
+    /**
+     * Opens the editor for a model page menu entry.<p>
+     * 
+     * @param id the model page menu entry 
+     */
+    public static void editModelPage(CmsUUID id) {
+
+        CmsNewResourceInfo info = CmsSitemapView.getInstance().getController().getData().getNewResourceInfoById(id);
+        CmsEditModelPageMenuEntry.openEditConfirmDialog(info);
+    }
+
     /**
      * Opens the confirmation dialog for editing a model page.<p>
      * 
@@ -100,8 +124,7 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         CmsUUID id = entry.getId();
-        CmsNewResourceInfo info = CmsSitemapView.getInstance().getController().getData().getNewResourceInfoById(id);
-        CmsEditModelPageMenuEntry.openEditConfirmDialog(info);
+        editModelPage(id);
     }
 
     /**
@@ -110,10 +133,8 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow() {
 
-        CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        CmsUUID id = entry.getId();
-        CmsNewResourceInfo info = CmsSitemapView.getInstance().getController().getData().getNewResourceInfoById(id);
-        boolean show = CmsSitemapView.getInstance().isModelPageMode() && (info != null) && info.isEditable();
+        CmsUUID id = getHoverbar().getId();
+        boolean show = checkVisible(id);
         setVisible(show);
 
     }
