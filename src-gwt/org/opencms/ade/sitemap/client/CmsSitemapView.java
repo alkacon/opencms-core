@@ -422,6 +422,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     typeItem,
                     Collections.<Widget> singleton(createButton));
                 createButton.setHoverbar(hoverbar);
+                hoverbar.setAlwaysVisible();
             }
             m_galleryTypeItems.put(type.getTypeName(), typeItem);
             if (galleries.get(type).isEmpty()) {
@@ -465,6 +466,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             m_controller,
             m_modelPageRoot,
             Collections.<Widget> singleton(createButton));
+        hoverbar.setAlwaysVisible();
         createButton.setHoverbar(hoverbar);
         m_modelPageTree.add(root);
         for (CmsModelPageEntry entry : modelPageData) {
