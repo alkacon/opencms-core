@@ -377,7 +377,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                             }
                         });
                     }
-                    input.setOpen(true);
+                    if (finalRoot == localRoot) {
+                        input.setOpen(true);
+                    }
                     return null;
                 }
             });
