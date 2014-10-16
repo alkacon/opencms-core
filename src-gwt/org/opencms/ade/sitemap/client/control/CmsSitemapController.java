@@ -1772,6 +1772,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 entry.normalizeProperties();
                 break;
             case undelete:
+                updateEntry(change.getParentId());
+                break;
             case create:
                 CmsClientSitemapEntry newEntry = change.getUpdatedEntry();
                 getEntryById(change.getParentId()).insertSubEntry(newEntry, change.getPosition(), this);

@@ -2927,6 +2927,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsClientSitemapEntry entry = toClientEntry(navElement, navElement.isInNavigation());
         entry.setSubEntries(getChildren(parentPath, 2, null), null);
         change.setUpdatedEntry(entry);
+        change.setParentId(cms.readParentFolder(deleted.getStructureId()).getStructureId());
         return change;
     }
 

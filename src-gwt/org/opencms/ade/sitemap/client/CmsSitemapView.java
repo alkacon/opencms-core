@@ -786,11 +786,12 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         CmsSitemapChange change = changeEvent.getChange();
         switch (change.getChangeType()) {
+            case undelete:
+                return;
             case delete:
                 CmsSitemapTreeItem item = getTreeItem(change.getEntryId());
                 item.getParentItem().removeChild(item);
                 break;
-            case undelete:
             case create:
                 CmsClientSitemapEntry newEntry = m_controller.getEntryById(change.getEntryId());
                 CmsSitemapTreeItem newItem = createSitemapItem(newEntry);
