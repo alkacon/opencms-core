@@ -427,6 +427,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 typeItem.getElement().getStyle().setDisplay(Display.NONE);
             } else {
                 addGalleryEntries(typeItem, galleries.get(type));
+                typeItem.setOpen(true);
                 hasGalleries = true;
             }
             m_galleryTree.addItem(typeItem);
