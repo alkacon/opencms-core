@@ -36,6 +36,7 @@ import org.opencms.ade.sitemap.client.control.I_CmsSitemapLoadHandler;
 import org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry;
 import org.opencms.ade.sitemap.client.hoverbar.CmsChangeCategoryMenuEntry;
 import org.opencms.ade.sitemap.client.hoverbar.CmsCreateCategoryMenuEntry;
+import org.opencms.ade.sitemap.client.hoverbar.CmsCreateCategoryMenuEntry.CmsCategoryTitleAndName;
 import org.opencms.ade.sitemap.client.hoverbar.CmsDeleteCategoryMenuEntry;
 import org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarCreateGalleryButton;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
@@ -106,6 +107,7 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -323,33 +325,63 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     }
 
                     if (id != null) {
-
-                        CmsSitemapHoverbar.installOn(
+                        final CmsSitemapHoverbar hoverbar = CmsSitemapHoverbar.installOn(
                             m_controller,
                             input,
                             id,
                             false,
-                            true,
+                            !(id.isNullUUID()),
                             new I_CmsContextMenuItemProvider() {
 
-                                public List<A_CmsSitemapMenuEntry> createContextMenu(CmsSitemapHoverbar hoverbar) {
+                                public List<A_CmsSitemapMenuEntry> createContextMenu(CmsSitemapHoverbar hoverbar2) {
 
                                     List<A_CmsSitemapMenuEntry> result = Lists.newArrayList();
-                                    result.add(new CmsCreateCategoryMenuEntry(hoverbar));
-                                    result.add(new CmsChangeCategoryMenuEntry(hoverbar));
-                                    result.add(new CmsDeleteCategoryMenuEntry(hoverbar));
+
+                                    result.add(new CmsChangeCategoryMenuEntry(hoverbar2));
+                                    result.add(new CmsDeleteCategoryMenuEntry(hoverbar2));
                                     return result;
                                 }
                             });
+                        if (input == localRoot) {
+                            hoverbar.setAlwaysVisible();
+                        }
+                        CmsPushButton newButton = new CmsPushButton();
+                        newButton.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.style().addIcon());
+                        newButton.setTitle(Messages.get().key(Messages.GUI_SITEMAP_CONTEXT_MENU_CREATE_CATEGORY_0));
+                        newButton.setButtonStyle(ButtonStyle.IMAGE, null);
+                        hoverbar.add(newButton);
+                        newButton.addClickHandler(new ClickHandler() {
+
+                            /**
+                             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+                             */
+                            public void onClick(ClickEvent event) {
+
+                                hoverbar.hide();
+                                final CmsSitemapController controller = hoverbar.getController();
+                                final CmsUUID hoverbarId = hoverbar.getId();
+                                CmsCreateCategoryMenuEntry.askForNewCategoryInfo(
+                                    hoverbarId,
+                                    new AsyncCallback<CmsCategoryTitleAndName>() {
+
+                                        public void onFailure(Throwable caught) {
+
+                                            // do nothing
+                                        }
+
+                                        public void onSuccess(CmsCategoryTitleAndName result) {
+
+                                            controller.createCategory(hoverbarId, result.getTitle(), result.getName());
+                                        }
+                                    });
+                            }
+                        });
                     }
                     input.setOpen(true);
                     return null;
                 }
-
             });
-
         }
-
     }
 
     /**

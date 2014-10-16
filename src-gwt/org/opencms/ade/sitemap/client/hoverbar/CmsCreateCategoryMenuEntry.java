@@ -107,68 +107,12 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#execute()
-     */
-    public void execute() {
-
-        final CmsSitemapController controller = getHoverbar().getController();
-        final CmsUUID id = getHoverbar().getId();
-        askForNewCategoryInfo(id, new AsyncCallback<CmsCategoryTitleAndName>() {
-
-            public void onFailure(Throwable caught) {
-
-                // do nothing
-            }
-
-            public void onSuccess(CmsCategoryTitleAndName result) {
-
-                controller.createCategory(id, result.getTitle(), result.getName());
-            }
-        });
-
-    }
-
-    /**
-     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow()
-     */
-    @Override
-    public void onShow() {
-
-        setVisible(true);
-    }
-
-    /**
-     * Creates a property configuration for a simple named string field.<p>
-     * 
-     * @param name the name of the field 
-     * @param niceName the display name of the field 
-     * 
-     * @return the property configuration
-     */
-    CmsXmlContentProperty createBasicStringProperty(String name, String niceName) {
-
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(name, //name
-            "string", // type
-            "string", // widget
-            "", // widgetconfig
-            null, //regex
-            null, //ruletype
-            null, //default
-            niceName, //nicename
-            null, //description
-            null, //error
-            null //preferfolder
-        );
-        return prop;
-    }
-
-    /**
      * Asks the user for a new category's name and title.<p>
      * 
      * @param parentId the parent category  
      * @param callback the callback to call with the user-supplied information 
      */
-    private void askForNewCategoryInfo(CmsUUID parentId, final AsyncCallback<CmsCategoryTitleAndName> callback) {
+    public static void askForNewCategoryInfo(CmsUUID parentId, final AsyncCallback<CmsCategoryTitleAndName> callback) {
 
         CmsSitemapCategoryData categoryData = CmsSitemapView.getInstance().getController().getCategoryData();
 
@@ -202,5 +146,61 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
         dlg.getForm().render();
         dlg.center();
 
+    }
+
+    /**
+     * Creates a property configuration for a simple named string field.<p>
+     * 
+     * @param name the name of the field 
+     * @param niceName the display name of the field 
+     * 
+     * @return the property configuration
+     */
+    public static CmsXmlContentProperty createBasicStringProperty(String name, String niceName) {
+
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(name, //name
+            "string", // type
+            "string", // widget
+            "", // widgetconfig
+            null, //regex
+            null, //ruletype
+            null, //default
+            niceName, //nicename
+            null, //description
+            null, //error
+            null //preferfolder
+        );
+        return prop;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry#execute()
+     */
+    public void execute() {
+
+        final CmsSitemapController controller = getHoverbar().getController();
+        final CmsUUID id = getHoverbar().getId();
+        askForNewCategoryInfo(id, new AsyncCallback<CmsCategoryTitleAndName>() {
+
+            public void onFailure(Throwable caught) {
+
+                // do nothing
+            }
+
+            public void onSuccess(CmsCategoryTitleAndName result) {
+
+                controller.createCategory(id, result.getTitle(), result.getName());
+            }
+        });
+
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow()
+     */
+    @Override
+    public void onShow() {
+
+        setVisible(true);
     }
 }

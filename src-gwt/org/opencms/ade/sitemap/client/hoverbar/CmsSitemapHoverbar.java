@@ -75,6 +75,9 @@ public final class CmsSitemapHoverbar extends FlowPanel {
     /** The entry site path, only used for gallery tree items. */
     private String m_sitePath;
 
+    /** Flag which controls whether the hover bar should always be visible. */
+    private boolean m_alwaysVisible;
+
     /**
      * Constructor.<p>
      * 
@@ -163,8 +166,10 @@ public final class CmsSitemapHoverbar extends FlowPanel {
      * @param movable true if the item should be movable 
      * @param contextmenu true if the item should have a context menu 
      * @param menuItemProvider provides items for the context menu 
+     * 
+     * @return the installed hover bar
      */
-    public static void installOn(
+    public static CmsSitemapHoverbar installOn(
         CmsSitemapController controller,
         CmsTreeItem treeItem,
         CmsUUID entryId,
@@ -179,6 +184,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
             contextmenu,
             menuItemProvider);
         installHoverbar(hoverbar, treeItem.getListItemWidget());
+        return hoverbar;
     }
 
     /**
@@ -340,7 +346,9 @@ public final class CmsSitemapHoverbar extends FlowPanel {
     public void hide() {
 
         m_locked = false;
-        setVisible(false);
+        if (!m_alwaysVisible) {
+            setVisible(false);
+        }
         m_eventBus.fireEventFromSource(new CmsHoverbarHideEvent(), this);
         // CmsDebugLog.getInstance().printLine("detached");
     }
@@ -353,6 +361,15 @@ public final class CmsSitemapHoverbar extends FlowPanel {
     public boolean isHovered() {
 
         return m_hovered;
+    }
+
+    /** 
+     * Makes the hoverbar permanently visible.<p>
+     */
+    public void setAlwaysVisible() {
+
+        m_alwaysVisible = true;
+        setVisible(true);
     }
 
     /**
