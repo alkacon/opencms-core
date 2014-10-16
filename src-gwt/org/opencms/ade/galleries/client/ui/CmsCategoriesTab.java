@@ -30,7 +30,6 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.CmsCategoriesTabHandler;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsList;
@@ -99,9 +98,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
     }
 
     /** The category icon CSS classes. */
-    private static final String CATEGORY_ICON_CLASSES = CmsIconUtil.getResourceIconClasses(
-        I_CmsGalleryProviderConstants.RESOURCE_TYPE_FOLDER,
-        true);
+    private static final String CATEGORY_ICON_CLASSES = CmsIconUtil.getResourceIconClasses("category", true);
 
     /** Map of the categories by path. */
     private Map<String, CmsCategoryBean> m_categories;
