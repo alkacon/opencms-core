@@ -196,9 +196,9 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
         dlg.setFormHandler(fh);
         fh.setDialog(dlg);
         String nameLabel = Messages.get().key(Messages.GUI_CATEGORY_NAME_LABEL_0);
-        dlg.getForm().addField(CmsBasicFormField.createField(createBasicStringProperty("name", nameLabel)), "");
         String titleLabel = Messages.get().key(Messages.GUI_CATEGORY_TITLE_LABEL_0);
         dlg.getForm().addField(CmsBasicFormField.createField(createBasicStringProperty("title", titleLabel)), "");
+        dlg.getForm().addField(CmsBasicFormField.createField(createBasicStringProperty("name", nameLabel)), "");
         dlg.getForm().render();
         dlg.center();
 
