@@ -561,6 +561,12 @@ public final class Messages {
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.clientmessages";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LOCAL_SUBTITLE_0 = "GUI_CATEGORIES_LOCAL_SUBTITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_NONLOCAL_SUBTITLE_0 = "GUI_CATEGORIES_NONLOCAL_SUBTITLE_0";
+
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 

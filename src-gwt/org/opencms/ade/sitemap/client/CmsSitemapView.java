@@ -285,11 +285,14 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         String localLabel = Messages.get().key(Messages.GUI_CATEGORIES_LOCAL_0);
         String nonlocalLabel = Messages.get().key(Messages.GUI_CATEGORIES_NONLOCAL_0);
 
-        CmsListInfoBean localRootInfo = new CmsListInfoBean(localLabel, "", null);
+        String localSubtitle = Messages.get().key(Messages.GUI_CATEGORIES_LOCAL_SUBTITLE_0);
+        String nonlocalSubtitle = Messages.get().key(Messages.GUI_CATEGORIES_NONLOCAL_SUBTITLE_0);
+
+        CmsListInfoBean localRootInfo = new CmsListInfoBean(localLabel, localSubtitle, null);
         localRootInfo.setResourceType("category");
         final CmsTreeItem localRoot = new CmsTreeItem(true, new CmsListItemWidget(localRootInfo));
 
-        CmsListInfoBean nonlocalRootInfo = new CmsListInfoBean(nonlocalLabel, "", null);
+        CmsListInfoBean nonlocalRootInfo = new CmsListInfoBean(nonlocalLabel, nonlocalSubtitle, null);
         nonlocalRootInfo.setResourceType("category");
         CmsTreeItem nonlocalRoot = new CmsTreeItem(true, new CmsListItemWidget(nonlocalRootInfo));
 
