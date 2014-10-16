@@ -51,6 +51,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsSitemapToolbar extends CmsToolbar {
 
+    /** The sitemap clipboard button. */
+    private CmsToolbarClipboardButton m_clipboardButton;
+
     /** The context menu button. */
     private CmsToolbarContextButton m_contextMenuButton;
 
@@ -74,7 +77,8 @@ public class CmsSitemapToolbar extends CmsToolbar {
         addLeft(new CmsToolbarPublishButton(this, controller));
         m_newMenuButton = new CmsToolbarNewButton(this, controller);
         if (controller.isEditable() && (controller.getData().getDefaultNewElementInfo() != null)) {
-            addLeft(new CmsToolbarClipboardButton(this, controller));
+            m_clipboardButton = new CmsToolbarClipboardButton(this, controller);
+            addLeft(m_clipboardButton);
             addLeft(m_newMenuButton);
         }
 
@@ -152,6 +156,23 @@ public class CmsSitemapToolbar extends CmsToolbar {
                 continue;
             }
             ((I_CmsToolbarActivatable)w).onActivation(widget);
+        }
+    }
+
+    /**
+     * Enables/disables the new clipboard button.<p>
+     * 
+     * @param enabled <code>true</code> to enable the button
+     * @param disabledReason the reason, why the button is disabled
+     */
+    public void setClipboardEnabled(boolean enabled, String disabledReason) {
+
+        if (m_clipboardButton != null) {
+            if (enabled) {
+                m_clipboardButton.enable();
+            } else {
+                m_clipboardButton.disable(disabledReason);
+            }
         }
     }
 

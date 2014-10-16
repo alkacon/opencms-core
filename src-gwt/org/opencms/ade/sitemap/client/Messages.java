@@ -147,8 +147,14 @@ public final class Messages {
     /**  Message constant for key in the resource bundle. */
     public static final String GUI_CATEGORIES_LOCAL_0 = "GUI_CATEGORIES_LOCAL_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LOCAL_SUBTITLE_0 = "GUI_CATEGORIES_LOCAL_SUBTITLE_0";
+
     /**  Message constant for key in the resource bundle. */
     public static final String GUI_CATEGORIES_NONLOCAL_0 = "GUI_CATEGORIES_NONLOCAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_NONLOCAL_SUBTITLE_0 = "GUI_CATEGORIES_NONLOCAL_SUBTITLE_0";
 
     /**  Message constant for key in the resource bundle. */
     public static final String GUI_CATEGORY_NAME_LABEL_0 = "GUI_CATEGORY_NAME_LABEL_0";
@@ -532,6 +538,9 @@ public final class Messages {
     public static final String GUI_TITLE_PROPERTY_DESC_0 = "GUI_TITLE_PROPERTY_DESC_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_CLIPBOARD_DISABLE_0 = "GUI_TOOLBAR_CLIPBOARD_DISABLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_NEW_BUTTON_TITLE_0 = "GUI_TOOLBAR_NEW_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -560,12 +569,6 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.sitemap.clientmessages";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CATEGORIES_LOCAL_SUBTITLE_0 = "GUI_CATEGORIES_LOCAL_SUBTITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CATEGORIES_NONLOCAL_SUBTITLE_0 = "GUI_CATEGORIES_NONLOCAL_SUBTITLE_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

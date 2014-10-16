@@ -996,6 +996,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     setGalleriesVisible(true);
                     setCategoriesVisible(false);
                     setModelPagesVisible(false);
+                    m_toolbar.setClipboardEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_DISABLE_0));
                     getController().loadGalleries();
                     break;
                 case navigation:
@@ -1004,6 +1005,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     setModelPagesVisible(false);
                     setCategoriesVisible(false);
                     m_toolbar.setNewEnabled(true, null);
+
                     m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
                     break;
                 case vfs:
@@ -1011,6 +1013,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     setGalleriesVisible(false);
                     setCategoriesVisible(false);
                     m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
+                    m_toolbar.setClipboardEnabled(true, null);
                     m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().vfsMode());
                     setModelPagesVisible(false);
                     break;
@@ -1020,6 +1023,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     setCategoriesVisible(false);
                     setModelPagesVisible(true);
                     m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
+                    m_toolbar.setClipboardEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_DISABLE_0));
                     getController().loadModelPages();
 
                     break;
@@ -1029,6 +1033,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     setModelPagesVisible(false);
                     setCategoriesVisible(true);
                     m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
+                    m_toolbar.setClipboardEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_DISABLE_0));
                     getController().loadCategories();
                     break;
                 default:
