@@ -289,6 +289,9 @@ public final class Messages {
     public static final String GUI_GALLERIES_TYPES_TAB_0 = "GUI_GALLERIES_TYPES_TAB_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_ROOT_SUBTITLE_0 = "GUI_GALLERY_ROOT_SUBTITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_ADVANCED_0 = "GUI_HOVERBAR_ADVANCED_0";
 
     /** Message constant for key in the resource bundle. */

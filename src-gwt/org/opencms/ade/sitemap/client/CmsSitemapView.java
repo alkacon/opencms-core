@@ -296,7 +296,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         CmsListInfoBean nonlocalRootInfo = new CmsListInfoBean(nonlocalLabel, nonlocalSubtitle, null);
         nonlocalRootInfo.setResourceType("category");
-        CmsTreeItem nonlocalRoot = new CmsTreeItem(true, new CmsListItemWidget(nonlocalRootInfo));
+        final CmsTreeItem nonlocalRoot = new CmsTreeItem(true, new CmsListItemWidget(nonlocalRootInfo));
 
         m_categoryTree.add(localRoot);
         m_categoryTree.add(nonlocalRoot);
@@ -377,7 +377,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                             }
                         });
                     }
-                    if (finalRoot == localRoot) {
+                    if ((finalRoot == localRoot) || (input == nonlocalRoot)) {
                         input.setOpen(true);
                     }
                     return null;
