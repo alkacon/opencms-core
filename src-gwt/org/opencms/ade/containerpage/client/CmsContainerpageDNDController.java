@@ -51,6 +51,7 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -537,8 +538,16 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         String content = "";
                         for (String groupId : elementData.getSubItems()) {
                             CmsContainerElementData subData = m_controller.getCachedElement(groupId);
-                            if ((subData != null) && (subData.getContents().get(container.getContainerId()) != null)) {
-                                content += subData.getContents().get(container.getContainerId());
+                            if (subData != null) {
+                                if (subData.isShowInContext(CmsContainerpageController.get().getData().getTemplateContextInfo().getCurrentContext())) {
+                                    if ((subData.getContents().get(container.getContainerId()) != null)) {
+                                        content += subData.getContents().get(container.getContainerId());
+                                    }
+                                } else {
+                                    content += "<div class='"
+                                        + CmsTemplateContextInfo.DUMMY_ELEMENT_MARKER
+                                        + "' style='display: none !important;'></div>";
+                                }
                             }
                         }
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {

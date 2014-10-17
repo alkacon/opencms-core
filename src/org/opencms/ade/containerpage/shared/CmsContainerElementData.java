@@ -28,6 +28,7 @@
 package org.opencms.ade.containerpage.shared;
 
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -311,6 +312,23 @@ public class CmsContainerElementData extends CmsContainerElement {
 
         CmsFormatterConfig config = getFormatterConfig(containerId);
         return (config != null) && (!config.getSettingConfig().isEmpty() || hasAlternativeFormatters(containerId));
+    }
+
+    /**
+     * Returns true if the element should be shown in the current template context.<p>
+     * 
+     * @param currentContext the current template context
+     *  
+     * @return true if the element should be shown 
+     */
+    public boolean isShowInContext(String currentContext) {
+
+        if ((m_settings == null)
+            || !m_settings.containsKey(CmsTemplateContextInfo.SETTING)
+            || CmsStringUtil.isEmptyOrWhitespaceOnly(m_settings.get(CmsTemplateContextInfo.SETTING))) {
+            return true;
+        }
+        return CmsStringUtil.splitAsList(m_settings.get(CmsTemplateContextInfo.SETTING), "|").contains(currentContext);
     }
 
     /**
