@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
@@ -128,7 +129,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
     public CmsGallerySearchResult(CmsObject cms, CmsResource res) {
 
         try {
-            Map<String, String> props = CmsProperty.toMap(cms.readPropertyObjects(res, true));
+            Map<String, String> props = CmsProperty.toMap(cms.readPropertyObjects(
+                res,
+                CmsResourceTypeXmlContainerPage.isContainerPage(res)));
             m_title = props.get(CmsPropertyDefinition.PROPERTY_TITLE);
             m_description = props.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION);
         } catch (CmsException e) {
@@ -138,7 +141,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
             m_description = "";
         }
         if (m_title == null) {
-            m_title = "";
+            m_title = res.getName();
         }
         m_dateCreated = new Date(res.getDateCreated());
         m_dateExpired = new Date(res.getDateExpired());
@@ -605,13 +608,22 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         try {
             CmsResource res = cms.readResource(structureId);
             if (m_description == null) {
-                CmsProperty descProp = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_DESCRIPTION, true);
+                CmsProperty descProp = cms.readPropertyObject(
+                    res,
+                    CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+                    CmsResourceTypeXmlContainerPage.isContainerPage(res));
                 m_description = descProp.getValue();
             }
 
             if (m_title == null) {
-                CmsProperty titleProp = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, true);
+                CmsProperty titleProp = cms.readPropertyObject(
+                    res,
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    CmsResourceTypeXmlContainerPage.isContainerPage(res));
                 m_title = titleProp.getValue();
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_title)) {
+                    m_title = res.getName();
+                }
             }
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
