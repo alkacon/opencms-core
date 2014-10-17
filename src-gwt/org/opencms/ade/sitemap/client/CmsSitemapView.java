@@ -279,7 +279,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      * 
      * @param categoryData the category data 
      */
-    public void displayCategoryData(CmsSitemapCategoryData categoryData) {
+    public void displayCategoryData(CmsSitemapCategoryData categoryData, final boolean openLocalCategories) {
 
         m_categoryTree.clear();
 
@@ -377,7 +377,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                             }
                         });
                     }
-                    if ((finalRoot == localRoot) || (input == nonlocalRoot)) {
+                    if (((finalRoot == localRoot) && openLocalCategories)
+                        || (input == nonlocalRoot)
+                        || (input == localRoot)) {
                         input.setOpen(true);
                     }
                     return null;
@@ -1040,7 +1042,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     setCategoriesVisible(true);
                     m_toolbar.setNewEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_NEW_DISABLE_0));
                     m_toolbar.setClipboardEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_DISABLE_0));
-                    getController().loadCategories();
+                    getController().loadCategories(false);
                     break;
                 default:
 

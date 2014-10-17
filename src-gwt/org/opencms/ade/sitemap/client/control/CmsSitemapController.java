@@ -281,7 +281,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
             protected void onResponse(Void result) {
 
                 stop(false);
-                loadCategories();
+                loadCategories(true);
             }
 
         };
@@ -385,7 +385,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
             protected void onResponse(Void result) {
 
                 stop(false);
-                loadCategories();
+                loadCategories(true);
 
             }
         };
@@ -632,7 +632,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
             @Override
             protected void onAfterDeletion() {
 
-                CmsSitemapView.getInstance().getController().loadCategories();
+                CmsSitemapView.getInstance().getController().loadCategories(true);
             }
         };
         deleteWarningDialog.loadAndShow(null);
@@ -1248,7 +1248,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
     /**
      * Loads and displays the category data.<p>
      */
-    public void loadCategories() {
+    public void loadCategories(final boolean openLocalCategories) {
 
         CmsRpcAction<CmsSitemapCategoryData> action = new CmsRpcAction<CmsSitemapCategoryData>() {
 
@@ -1264,7 +1264,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
                 stop(false);
                 m_categoryData = result;
-                CmsSitemapView.getInstance().displayCategoryData(result);
+                CmsSitemapView.getInstance().displayCategoryData(result, openLocalCategories);
             }
         };
         action.execute();
