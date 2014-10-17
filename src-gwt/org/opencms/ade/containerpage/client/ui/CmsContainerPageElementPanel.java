@@ -741,9 +741,10 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
                     CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
                     add(editor, editable.getParentElement());
                     if (CmsDomUtil.hasDimension(editable.getParentElement())) {
+                        editor.setParentHasDimensions(true);
                         editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
                     } else {
-                        editor.getElement().getStyle().setDisplay(Display.NONE);
+                        editor.setParentHasDimensions(false);
                     }
                     m_editables.put(editable, editor);
                 }
@@ -754,14 +755,15 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
             Iterator<Entry<Element, CmsListCollectorEditor>> it = m_editables.entrySet().iterator();
             while (it.hasNext()) {
                 Entry<Element, CmsListCollectorEditor> entry = it.next();
-                if (!entry.getValue().isValid()) {
-                    entry.getValue().removeFromParent();
+                CmsListCollectorEditor editor = entry.getValue();
+                if (!editor.isValid()) {
+                    editor.removeFromParent();
                     it.remove();
-                } else if (CmsDomUtil.hasDimension(entry.getValue().getElement().getParentElement())) {
-                    entry.getValue().getElement().getStyle().clearDisplay();
-                    entry.getValue().setPosition(
-                        CmsDomUtil.getEditablePosition(entry.getValue().getMarkerTag()),
-                        getElement());
+                } else if (CmsDomUtil.hasDimension(editor.getElement().getParentElement())) {
+                    editor.setParentHasDimensions(true);
+                    editor.setPosition(CmsDomUtil.getEditablePosition(entry.getValue().getMarkerTag()), getElement());
+                } else {
+                    editor.setParentHasDimensions(false);
                 }
             }
             List<Element> editables = getEditableElements();
@@ -771,17 +773,21 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
                         CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
                         add(editor, editable.getParentElement());
                         if (CmsDomUtil.hasDimension(editable.getParentElement())) {
+                            editor.setParentHasDimensions(true);
                             editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
                         } else {
-                            editor.getElement().getStyle().setDisplay(Display.NONE);
+                            editor.setParentHasDimensions(false);
                         }
                         m_editables.put(editable, editor);
 
                     }
                 }
             }
-
         }
+        for (CmsListCollectorEditor editor : m_editables.values()) {
+            editor.updateVisibility();
+        }
+
         m_checkingEditables = false;
         resetNodeInsertedHandler();
     }
@@ -853,6 +859,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         List<Element> elems = CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement());
         List<Element> result = Lists.newArrayList();
         for (Element currentElem : elems) {
+            // don't return elements which are contained in nested containers 
             if (m_parent.getContainerId().equals(getParentContainerId(currentElem))) {
                 result.add(currentElem);
             }

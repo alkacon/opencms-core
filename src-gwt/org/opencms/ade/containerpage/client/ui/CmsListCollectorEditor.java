@@ -39,9 +39,11 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Map;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -54,6 +56,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @since 8.0.0
  */
 public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
+
+    /** True if the parent element has offset height or width. */
+    private boolean m_parentHasDimensions;
 
     /**
      * Creates a new instance.<p>
@@ -91,6 +96,26 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     }
 
     /**
+     * Returns true if the element view of the element is compatible with the currently set element view in the container page editor.<p>
+     * 
+     * @return true if the element should be visible in the current mode 
+     */
+    public boolean isVisibleInCurrentView() {
+
+        return Objects.equal(m_editableData.getElementView(), CmsContainerpageController.get().getElementView());
+    }
+
+    /** 
+     * Sets the 'parentHasDimensions' flag.<p>
+     * 
+     * @param parentHasDimensions the new value of the flag 
+     */
+    public void setParentHasDimensions(boolean parentHasDimensions) {
+
+        m_parentHasDimensions = parentHasDimensions;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#setPosition(org.opencms.gwt.client.util.CmsPositionBean, com.google.gwt.dom.client.Element)
      */
     @Override
@@ -118,6 +143,16 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
         }
         style.setTop(top, Unit.PX);
         updateExpiredOverlayPosition(parent);
+    }
+
+    /**
+     * Shows or hides the widget depending on the current view and whether the parent element has width or height.<p>
+     */
+    public void updateVisibility() {
+
+        boolean visible = m_parentHasDimensions && isVisibleInCurrentView();
+        setDisplayNone(!visible);
+
     }
 
     /**
@@ -224,6 +259,20 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
             }
         };
         dialog.loadAndShow(callback);
+    }
+
+    /**
+     * Sets the display CSS property to none, or clears it, depending on the given parameter.<p>
+     * 
+     * @param displayNone true if the widget should not be displayed 
+     */
+    void setDisplayNone(boolean displayNone) {
+
+        if (displayNone) {
+            getElement().getStyle().setDisplay(Display.NONE);
+        } else {
+            getElement().getStyle().clearDisplay();
+        }
     }
 
 }

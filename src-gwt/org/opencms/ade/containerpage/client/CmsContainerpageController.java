@@ -2048,6 +2048,7 @@ public final class CmsContainerpageController {
                     // otherwise remove any present option bar
                     elemWidget.setElementOptionBar(null);
                 }
+                elemWidget.showEditableListButtons();
             }
         }
     }
