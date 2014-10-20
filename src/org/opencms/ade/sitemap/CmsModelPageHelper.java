@@ -200,7 +200,7 @@ public class CmsModelPageHelper {
      */
     public CmsResource ensureModelFolder(CmsResource rootResource) throws CmsException {
 
-        String modelFolderPath = CmsStringUtil.joinPaths(m_adeConfig.getBasePath(), ".content/.new");
+        String modelFolderPath = CmsStringUtil.joinPaths(m_adeConfig.getBasePath(), ".content/.templates");
         try {
             CmsResource result = m_cms.readFolder(modelFolderPath);
             return result;

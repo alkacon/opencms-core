@@ -111,7 +111,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
     private static final String MODEL_PAGE_PAGE = "ModelPage/Page";
 
     /** Constant. */
-    private static final String NEW = ".new/";
+    private static final String NEW = ".templates/";
 
     /** Signals whether to create an OU or not. */
     private boolean m_createou;
