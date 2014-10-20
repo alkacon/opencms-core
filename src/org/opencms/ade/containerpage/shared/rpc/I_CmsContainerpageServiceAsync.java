@@ -31,6 +31,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
@@ -152,7 +153,7 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Requests container element data by client id.<p>
      * 
-     * @param pageStructureId the container page structure id 
+     * @param context the RPC context 
      * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters
      * @param clientIds the requested element id's
@@ -162,7 +163,7 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the call-back executed on response
      */
     void getElementsData(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
         CmsUUID detailContentId,
         String reqParams,
         Collection<String> clientIds,
@@ -174,7 +175,7 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Gets the element data for an id and a map of settings.<p>
      * 
-     * @param pageStructureId the container page structure id 
+     * @param context the RPC context  
      * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters 
      * @param clientId the requested element ids 
@@ -185,7 +186,8 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the callback for receiving the element data  
      */
     void getElementWithSettings(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
+
         CmsUUID detailContentId,
         String reqParams,
         String clientId,
@@ -232,7 +234,7 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Returns new container element data for the given resource type name.<p>
      * 
-     * @param  pageStructureId the container page structure id
+     * @param context the RPC context 
      * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters
      * @param resourceType the requested element resource type name
@@ -242,7 +244,7 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the call-back executed on response
      */
     void getNewElementData(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
         CmsUUID detailContentId,
         String reqParams,
         String resourceType,
@@ -332,7 +334,7 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Saves a group-container element.<p>
      * 
-     * @param pageStructureId the container page structure id
+     * @param context the RPC context 
      * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters
      * @param groupContainer the group-container to save
@@ -341,7 +343,7 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the call-back executed on response
      */
     void saveGroupContainer(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
         CmsUUID detailContentId,
         String reqParams,
         CmsGroupContainer groupContainer,

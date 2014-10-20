@@ -1160,7 +1160,14 @@ public class CmsJspTagContainer extends BodyTagSupport {
         if ((context == null) && alreadyFull) {
             return false;
         }
-        boolean showInContext = shouldShowInContext(element, context);
+        String contextKey = null;
+        if (context != null) {
+            contextKey = context.getKey();
+        } else {
+            String rpcContextOverride = (String)request.getAttribute(CmsTemplateContextManager.ATTR_RPC_CONTEXT_OVERRIDE);
+            contextKey = rpcContextOverride;
+        }
+        boolean showInContext = shouldShowInContext(element, context != null ? context.getKey() : null);
         boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
         if (isOnline && !showInContext) {
             return false;
@@ -1214,7 +1221,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
                 try {
                     subelement.initResource(cms);
-                    boolean shouldShowSubElementInContext = shouldShowInContext(subelement, context);
+                    boolean shouldShowSubElementInContext = shouldShowInContext(subelement, contextKey);
                     if (isOnline && (!shouldShowSubElementInContext || !subelement.isReleasedAndNotExpired())) {
                         continue;
                     }
@@ -1385,20 +1392,20 @@ public class CmsJspTagContainer extends BodyTagSupport {
      * Helper method to determine whether an element should be shown in a context.<p>
      * 
      * @param element the element for which the visibility should be determined 
-     * @param context the context for which to check 
+     * @param contextKey the key of the context for which to check 
      * 
      * @return true if the current context doesn't prohibit the element from being shown 
      */
-    private boolean shouldShowInContext(CmsContainerElementBean element, CmsTemplateContext context) {
+    private boolean shouldShowInContext(CmsContainerElementBean element, String contextKey) {
 
-        if (context == null) {
+        if (contextKey == null) {
             return true;
         }
 
         try {
             if ((element.getResource() != null)
                 && !OpenCms.getTemplateContextManager().shouldShowType(
-                    context,
+                    contextKey,
                     OpenCms.getResourceManager().getResourceType(element.getResource().getTypeId()).getTypeName())) {
                 return false;
             }
@@ -1419,7 +1426,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
         }
 
         List<String> contextsAllowedList = CmsStringUtil.splitAsList(contextsAllowed, "|");
-        if (!contextsAllowedList.contains(context.getKey())) {
+        if (!contextsAllowedList.contains(contextKey)) {
             return false;
         }
         return true;

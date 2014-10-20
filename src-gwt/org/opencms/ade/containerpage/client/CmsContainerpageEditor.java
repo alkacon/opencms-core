@@ -344,6 +344,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         CmsBroadcastTimer.start();
         JavaScriptObject window = CmsDomUtil.getWindow();
         CmsDomUtil.setAttribute(window, "__hideEditorCloseButton", "true");
+
         I_CmsLayoutBundle.INSTANCE.containerpageCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.dragdropCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.groupcontainerCss().ensureInjected();

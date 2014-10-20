@@ -138,6 +138,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
 
+    /** The RPC context. */
+    private CmsContainerPageRpcContext m_rpcContext;
+
     /**
      * Constructor.<p>
      * 
@@ -323,6 +326,16 @@ public final class CmsCntPageData implements IsSerializable {
     }
 
     /**
+     * Gets the RPC context.<p>
+     * 
+     * @return the RPC context 
+     */
+    public CmsContainerPageRpcContext getRpcContext() {
+
+        return m_rpcContext;
+    }
+
+    /**
      * Returns the sitemap URI.<p>
      * 
      * @return the sitemap URI
@@ -380,6 +393,16 @@ public final class CmsCntPageData implements IsSerializable {
     public boolean isUseClassicEditor() {
 
         return m_useClassicEditor;
+    }
+
+    /** 
+     * Sets the RPC context.<p>
+     * 
+     * @param context the RPC context 
+     */
+    public void setRpcContext(CmsContainerPageRpcContext context) {
+
+        m_rpcContext = context;
     }
 
 }

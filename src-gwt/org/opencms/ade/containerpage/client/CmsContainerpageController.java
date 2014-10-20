@@ -43,6 +43,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
@@ -436,7 +437,7 @@ public final class CmsContainerpageController {
                 m_callback.execute(result);
             } else {
                 getContainerpageService().getElementsData(
-                    CmsCoreProvider.get().getStructureId(),
+                    getData().getRpcContext(),
                     getData().getDetailId(),
                     getRequestParams(),
                     m_clientIds,
@@ -495,7 +496,7 @@ public final class CmsContainerpageController {
         public void execute() {
 
             getContainerpageService().getElementsData(
-                CmsCoreProvider.get().getStructureId(),
+                getData().getRpcContext(),
                 getData().getDetailId(),
                 getRequestParams(),
                 m_clientIds,
@@ -615,7 +616,7 @@ public final class CmsContainerpageController {
                 List<String> clientIds = new ArrayList<String>();
                 clientIds.add(m_clientId);
                 getContainerpageService().getElementsData(
-                    CmsCoreProvider.get().getStructureId(),
+                    getData().getRpcContext(),
                     getData().getDetailId(),
                     getRequestParams(),
                     clientIds,
@@ -762,6 +763,9 @@ public final class CmsContainerpageController {
         m_smallElementsHandler = new CmsSmallElementsHandler(getContainerpageService());
         if (m_data != null) {
             m_smallElementsHandler.setEditSmallElements(m_data.isEditSmallElementsInitially(), false);
+            m_data.setRpcContext(new CmsContainerPageRpcContext(
+                CmsCoreProvider.get().getStructureId(),
+                m_data.getTemplateContextInfo().getCurrentContext()));
         }
     }
 
@@ -1377,7 +1381,7 @@ public final class CmsContainerpageController {
 
                 start(200, false);
                 getContainerpageService().getElementWithSettings(
-                    CmsCoreProvider.get().getStructureId(),
+                    getData().getRpcContext(),
                     getData().getDetailId(),
                     getRequestParams(),
                     clientId,
@@ -1478,7 +1482,7 @@ public final class CmsContainerpageController {
                 public void execute() {
 
                     getContainerpageService().getNewElementData(
-                        CmsCoreProvider.get().getStructureId(),
+                        getData().getRpcContext(),
                         getData().getDetailId(),
                         getRequestParams(),
                         resourceType,
@@ -2549,7 +2553,7 @@ public final class CmsContainerpageController {
 
                     start(0, true);
                     getContainerpageService().saveGroupContainer(
-                        CmsCoreProvider.get().getStructureId(),
+                        getData().getRpcContext(),
                         getData().getDetailId(),
                         getRequestParams(),
                         groupContainer,

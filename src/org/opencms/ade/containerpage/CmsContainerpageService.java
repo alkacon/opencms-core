@@ -40,6 +40,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementReuseMode;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsElementViewInfo;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
@@ -488,10 +489,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-    * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementsData(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, java.util.Collection, java.util.Collection, boolean, java.lang.String)
-    */
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementsData(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, org.opencms.util.CmsUUID, java.lang.String, java.util.Collection, java.util.Collection, boolean, java.lang.String)
+     */
     public Map<String, CmsContainerElementData> getElementsData(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
+
         CmsUUID detailContentId,
         String reqParams,
         Collection<String> clientIds,
@@ -502,7 +504,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Map<String, CmsContainerElementData> result = null;
         try {
             ensureSession();
-            CmsResource pageResource = getCmsObject().readResource(pageStructureId);
+            CmsResource pageResource = getCmsObject().readResource(context.getPageStructureId());
+            initRequestFromRpcContext(context);
             String containerpageUri = getCmsObject().getSitePath(pageResource);
             result = getElements(
                 pageResource,
@@ -519,10 +522,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-    * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementWithSettings(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.util.Map, java.util.Collection, boolean, java.lang.String)
-    */
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementWithSettings(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.util.Map, java.util.Collection, boolean, java.lang.String)
+     */
     public CmsContainerElementData getElementWithSettings(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
+
         CmsUUID detailContentId,
         String uriParams,
         String clientId,
@@ -535,7 +539,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             ensureSession();
             CmsObject cms = getCmsObject();
-            CmsResource pageResource = cms.readResource(pageStructureId);
+            CmsResource pageResource = cms.readResource(context.getPageStructureId());
+            initRequestFromRpcContext(context);
             String containerpageUri = cms.getSitePath(pageResource);
             Locale contentLocale = CmsLocaleManager.getLocale(locale);
             CmsElementUtil elemUtil = new CmsElementUtil(cms, containerpageUri, generateContainerPageForContainers(
@@ -647,10 +652,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getNewElementData(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.util.Collection, boolean, java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getNewElementData(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.util.Collection, boolean, java.lang.String)
      */
     public CmsContainerElementData getNewElementData(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
+
         CmsUUID detailContentId,
         String reqParams,
         String resourceType,
@@ -661,7 +667,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsContainerElementData result = null;
         try {
             ensureSession();
-            CmsResource pageResource = getCmsObject().readResource(pageStructureId);
+            CmsResource pageResource = getCmsObject().readResource(context.getPageStructureId());
+            initRequestFromRpcContext(context);
             String containerpageUri = getCmsObject().getSitePath(pageResource);
             Locale locale = CmsLocaleManager.getLocale(localeName);
             result = getNewElement(resourceType, containerpageUri, detailContentId, containers, allowNested, locale);
@@ -930,10 +937,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveGroupContainer(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, org.opencms.ade.containerpage.shared.CmsGroupContainer, java.util.Collection, java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveGroupContainer(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, org.opencms.util.CmsUUID, java.lang.String, org.opencms.ade.containerpage.shared.CmsGroupContainer, java.util.Collection, java.lang.String)
      */
     public CmsGroupContainerSaveResult saveGroupContainer(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
+
         CmsUUID detailContentId,
         String reqParams,
         CmsGroupContainer groupContainer,
@@ -945,7 +953,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             CmsPair<CmsContainerElement, List<CmsRemovedElementStatus>> saveResult = internalSaveGroupContainer(
                 cms,
-                pageStructureId,
+                context.getPageStructureId(),
                 groupContainer);
             removedElements = saveResult.getSecond();
         } catch (Throwable e) {
@@ -956,7 +964,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         // update offline indices
         OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
         return new CmsGroupContainerSaveResult(getElementsData(
-            pageStructureId,
+            context,
             detailContentId,
             reqParams,
             ids,
@@ -1710,6 +1718,18 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             m_workplaceSettings = CmsWorkplace.getWorkplaceSettings(getCmsObject(), getRequest());
         }
         return m_workplaceSettings;
+    }
+
+    /**
+     * Initializes request attributes using data from the RPC context.<p>
+     * 
+     * @param context the RPC context 
+     */
+    private void initRequestFromRpcContext(CmsContainerPageRpcContext context) {
+
+        if (context.getTemplateContext() != null) {
+            getRequest().setAttribute(CmsTemplateContextManager.ATTR_RPC_CONTEXT_OVERRIDE, context.getTemplateContext());
+        }
     }
 
     /**
