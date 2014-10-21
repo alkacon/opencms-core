@@ -579,7 +579,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                         }
                     }
                 }
-                if ((numRenderedElements == 0) && (m_bodyContent != null)) {
+                if ((numRenderedElements == 0) && (m_bodyContent != null) && CmsJspTagEditable.isEditableRequest(req)) {
                     // the container is empty, print the evaluated body content
                     pageContext.getOut().print(m_bodyContent);
                 }
