@@ -31,6 +31,7 @@ import org.opencms.ade.publish.client.CmsPublishItemStatus.Signal;
 import org.opencms.ade.publish.client.CmsPublishSelectPanel.CheckBoxUpdate;
 import org.opencms.ade.publish.shared.CmsPublishGroup;
 import org.opencms.ade.publish.shared.CmsPublishResource;
+import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.ui.CmsList;
@@ -277,7 +278,7 @@ public class CmsPublishGroupPanel extends Composite {
 
         String title = resourceBean.getTitle();
         if ((title == null) || title.equals("")) {
-            title = Messages.get().key(Messages.GUI_NO_TITLE_0);
+            title = CmsResource.getName(resourceBean.getName());
         }
         return title;
     }
