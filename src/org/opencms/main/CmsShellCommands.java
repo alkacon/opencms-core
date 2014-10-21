@@ -33,6 +33,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -87,7 +88,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     /**
      * Generate a new instance of the command processor.<p>
      * 
-     * To initilize the command processor, you must call {@link #initShellCmsObject(CmsObject, CmsShell)}.
+     * To initialize the command processor, you must call {@link #initShellCmsObject(CmsObject, CmsShell)}.
      * 
      * @see #initShellCmsObject(CmsObject, CmsShell)
      */
@@ -115,8 +116,9 @@ class CmsShellCommands implements I_CmsShellCommands {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NOT_A_FOLDER_1, resolvedTarget));
         }
         m_cms.getRequestContext().setUri(resolvedTarget);
-        System.out.println('\n' + getMessages().key(Messages.GUI_SHELL_CURRENT_FOLDER_1, new Object[] {resolvedTarget}));
-        System.out.println();
+        m_shell.getOut().println(
+            '\n' + getMessages().key(Messages.GUI_SHELL_CURRENT_FOLDER_1, new Object[] {resolvedTarget}));
+        m_shell.getOut().println();
     }
 
     /**
@@ -158,7 +160,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         String[] copy = Messages.COPYRIGHT_BY_ALKACON;
         for (int i = 0; i < copy.length; i++) {
-            System.out.println(copy[i]);
+            m_shell.getOut().println(copy[i]);
         }
     }
 
@@ -383,9 +385,9 @@ class CmsShellCommands implements I_CmsShellCommands {
         boolean b = "on".equalsIgnoreCase(echo.trim());
         m_shell.setEcho(b);
         if (b) {
-            System.out.println(getMessages().key(Messages.GUI_SHELL_ECHO_ON_0));
+            m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_ECHO_ON_0));
         } else {
-            System.out.println(getMessages().key(Messages.GUI_SHELL_ECHO_OFF_0));
+            m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_ECHO_OFF_0));
         }
     }
 
@@ -571,7 +573,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         Iterator<CmsUUID> principals = acList.getPrincipals().iterator();
         while (principals.hasNext()) {
             I_CmsPrincipal p = m_cms.lookupPrincipal(principals.next());
-            System.out.println(p.getName() + ": " + acList.getPermissions(p.getId()).getPermissionString());
+            m_shell.getOut().println(p.getName() + ": " + acList.getPermissions(p.getId()).getPermissionString());
         }
     }
 
@@ -584,10 +586,10 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void getLocales() {
 
-        System.out.println(getMessages().key(Messages.GUI_SHELL_LOCALES_AVAILABLE_0));
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_LOCALES_AVAILABLE_0));
         Locale[] locales = Locale.getAvailableLocales();
         for (int i = locales.length - 1; i >= 0; i--) {
-            System.out.println("  \"" + locales[i].toString() + "\"");
+            m_shell.getOut().println("  \"" + locales[i].toString() + "\"");
         }
     }
 
@@ -596,12 +598,12 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void help() {
 
-        System.out.println();
-        System.out.println(getMessages().key(Messages.GUI_SHELL_HELP1_0));
-        System.out.println(getMessages().key(Messages.GUI_SHELL_HELP2_0));
-        System.out.println(getMessages().key(Messages.GUI_SHELL_HELP3_0));
-        System.out.println(getMessages().key(Messages.GUI_SHELL_HELP4_0));
-        System.out.println();
+        m_shell.getOut().println();
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_HELP1_0));
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_HELP2_0));
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_HELP3_0));
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_HELP4_0));
+        m_shell.getOut().println();
     }
 
     /**
@@ -762,13 +764,14 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void listModules() throws Exception {
 
         Set<String> modules = OpenCms.getModuleManager().getModuleNames();
-        System.out.println("\n" + getMessages().key(Messages.GUI_SHELL_LIST_MODULES_1, new Integer(modules.size())));
+        m_shell.getOut().println(
+            "\n" + getMessages().key(Messages.GUI_SHELL_LIST_MODULES_1, new Integer(modules.size())));
         Iterator<String> i = modules.iterator();
         while (i.hasNext()) {
             String moduleName = i.next();
-            System.out.println(moduleName);
+            m_shell.getOut().println(moduleName);
         }
-        System.out.println();
+        m_shell.getOut().println();
     }
 
     /**
@@ -784,14 +787,14 @@ class CmsShellCommands implements I_CmsShellCommands {
             m_cms.loginUser(username, password);
             // reset the settings, this will switch the startup site root etc.
             m_shell.initSettings();
-            System.out.println(getMessages().key(Messages.GUI_SHELL_LOGIN_1, whoami().getName()));
+            m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_LOGIN_1, whoami().getName()));
             // output the login message if required
             CmsLoginMessage message = OpenCms.getLoginManager().getLoginMessage();
             if ((message != null) && (message.isActive())) {
-                System.out.println(message.getMessage());
+                m_shell.getOut().println(message.getMessage());
             }
         } catch (Exception exc) {
-            System.out.println(getMessages().key(Messages.GUI_SHELL_LOGIN_FAILED_0));
+            m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_LOGIN_FAILED_0));
         }
     }
 
@@ -805,13 +808,14 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         String folder = CmsResource.getFolderPath(m_cms.getRequestContext().getUri());
         List<CmsResource> resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
-        System.out.println("\n" + getMessages().key(Messages.GUI_SHELL_LS_2, folder, new Integer(resources.size())));
+        m_shell.getOut().println(
+            "\n" + getMessages().key(Messages.GUI_SHELL_LS_2, folder, new Integer(resources.size())));
         Iterator<CmsResource> i = resources.iterator();
         while (i.hasNext()) {
             CmsResource r = i.next();
-            System.out.println(m_cms.getSitePath(r));
+            m_shell.getOut().println(m_cms.getSitePath(r));
         }
-        System.out.println();
+        m_shell.getOut().println();
     }
 
     /**
@@ -827,7 +831,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             CmsAccessControlEntry ace = acList.get(i);
             I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
             String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
-            System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
+            m_shell.getOut().println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
         }
     }
 
@@ -847,7 +851,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
             if (principal.equals(acePrincipal)) {
                 String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
-                System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
+                m_shell.getOut().println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
             }
         }
     }
@@ -867,12 +871,12 @@ class CmsShellCommands implements I_CmsShellCommands {
             // create a resource filter to get the resources with
             List<CmsResource> testResources = m_cms.readResources("/", CmsResourceFilter.ALL);
             int resourceCount = testResources.size();
-            System.out.println("#Resources:\t" + resourceCount);
+            m_shell.getOut().println("#Resources:\t" + resourceCount);
             long start, time;
             long totalTime = 0;
             long minTime = Long.MAX_VALUE;
             long maxTime = Long.MIN_VALUE;
-            System.out.print("readFileHeader:\t");
+            m_shell.getOut().print("readFileHeader:\t");
             for (int i = maxTests; i > 0; --i) {
                 int index = random.nextInt(resourceCount);
                 CmsResource resource = testResources.get(index);
@@ -887,16 +891,11 @@ class CmsShellCommands implements I_CmsShellCommands {
                     maxTime = time;
                 }
                 if ((i % 100) == 0) {
-                    System.out.print('.');
+                    m_shell.getOut().print('.');
                 }
             }
-            System.out.println("\nreadFileHeader:\t"
-                + minTime
-                + "\t"
-                + maxTime
-                + "\t"
-                + (((float)totalTime) / maxTests)
-                + " ms");
+            m_shell.getOut().println(
+                "\nreadFileHeader:\t" + minTime + "\t" + maxTime + "\t" + (((float)totalTime) / maxTests) + " ms");
 
         } finally {
             m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
@@ -1125,13 +1124,14 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void setLocale(String localeName) throws CmsException {
 
         Locale locale = CmsLocaleManager.getLocale(localeName);
-        System.out.println(getMessages().key(
-            Messages.GUI_SHELL_SETLOCALE_2,
-            locale,
-            m_cms.getRequestContext().getCurrentUser().getName()));
+        m_shell.getOut().println(
+            getMessages().key(
+                Messages.GUI_SHELL_SETLOCALE_2,
+                locale,
+                m_cms.getRequestContext().getCurrentUser().getName()));
 
         m_shell.setLocale(locale);
-        System.out.println(getMessages().key(Messages.GUI_SHELL_SETLOCALE_POST_1, locale));
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_SETLOCALE_POST_1, locale));
     }
 
     /**
@@ -1139,8 +1139,8 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void shellExit() {
 
-        System.out.println();
-        System.out.println(getMessages().key(Messages.GUI_SHELL_GOODBYE_0));
+        m_shell.getOut().println();
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_GOODBYE_0));
     }
 
     /**
@@ -1148,9 +1148,9 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void shellStart() {
 
-        System.out.println();
-        System.out.println(getMessages().key(Messages.GUI_SHELL_WELCOME_0));
-        System.out.println();
+        m_shell.getOut().println();
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_WELCOME_0));
+        m_shell.getOut().println();
 
         // print the version information
         version();
@@ -1190,12 +1190,23 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Returns the current users name.<p>
+     * 
+     * @return the current users name
+     */
+    public String userName() {
+
+        return m_cms.getRequestContext().getCurrentUser().getName();
+    }
+
+    /**
      * Returns the version information for this OpenCms instance.<p>
      */
     public void version() {
 
-        System.out.println();
-        System.out.println(getMessages().key(Messages.GUI_SHELL_VERSION_1, OpenCms.getSystemInfo().getVersionNumber()));
+        m_shell.getOut().println();
+        m_shell.getOut().println(
+            getMessages().key(Messages.GUI_SHELL_VERSION_1, OpenCms.getSystemInfo().getVersionNumber()));
     }
 
     /**
@@ -1206,6 +1217,21 @@ class CmsShellCommands implements I_CmsShellCommands {
     public CmsUser whoami() {
 
         return m_cms.getRequestContext().getCurrentUser();
+    }
+
+    /**
+     * Writes the given property to the resource as structure value.<p>
+     * 
+     * @param resourceName the resource to write the value to
+     * @param propertyName the property to write the value to
+     * @param value the value to write
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void writeProperty(String resourceName, String propertyName, String value) throws CmsException {
+
+        m_cms.lockResource(resourceName);
+        m_cms.writePropertyObject(resourceName, new CmsProperty(propertyName, value, null));
     }
 
     /**

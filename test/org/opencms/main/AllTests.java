@@ -62,6 +62,7 @@ public final class AllTests {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         // $JUnit-BEGIN$
         suite.addTest(new TestSuite(TestCmsShell.class));
+        suite.addTest(TestCmsShellInline.suite());
         suite.addTest(TestOpenCmsSingleton.suite());
         suite.addTest(TestCmsEvents.suite());
         suite.addTest(TestCmsSystemInfo.suite());

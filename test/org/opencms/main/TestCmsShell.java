@@ -94,7 +94,9 @@ public class TestCmsShell extends OpenCmsTestCase {
             null,
             null,
             "${user}@${project}>",
-            null);
+            null,
+            System.out,
+            System.err);
 
         // open the test script 
         File script;
@@ -104,11 +106,13 @@ public class TestCmsShell extends OpenCmsTestCase {
         script = new File(getTestDataPath("scripts/script_base.txt"));
         stream = new FileInputStream(script);
         shell.start(stream);
+        stream.close();
 
         // add the default folders by script
         script = new File(getTestDataPath("scripts/script_default_folders.txt"));
         stream = new FileInputStream(script);
         shell.start(stream);
+        stream.close();
 
         // log in the Admin user and switch to the setup project
         CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
@@ -122,6 +126,7 @@ public class TestCmsShell extends OpenCmsTestCase {
         script = new File(getTestDataPath("scripts/script_publish.txt"));
         stream = new FileInputStream(script);
         shell.start(stream);
+        stream.close();
 
         // get the name of the folder for the backup configuration files
         File configBackupDir = new File(getTestDataPath("WEB-INF/" + CmsSystemInfo.FOLDER_CONFIG_DEFAULT + "backup/"));

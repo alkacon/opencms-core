@@ -708,7 +708,14 @@ public class OpenCmsTestCase extends TestCase {
         }
 
         // create a shell instance
-        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
+        m_shell = new CmsShell(
+            getTestDataPath("WEB-INF" + File.separator),
+            null,
+            null,
+            "${user}@${project}>",
+            null,
+            System.out,
+            System.err);
 
         // open the test script 
         File script;
@@ -869,7 +876,14 @@ public class OpenCmsTestCase extends TestCase {
         }
 
         // create a shell instance
-        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
+        m_shell = new CmsShell(
+            getTestDataPath("WEB-INF" + File.separator),
+            null,
+            null,
+            "${user}@${project}>",
+            null,
+            System.out,
+            System.err);
 
         // turn on exceptions after error logging
         OpenCmsTestLogAppender.setBreakOnError(true);
@@ -1050,7 +1064,14 @@ public class OpenCmsTestCase extends TestCase {
         setupDatabase();
 
         // create a shell instance
-        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
+        m_shell = new CmsShell(
+            getTestDataPath("WEB-INF" + File.separator),
+            null,
+            null,
+            "${user}@${project}>",
+            null,
+            System.out,
+            System.err);
 
         // open the test script 
         File script;
@@ -3613,7 +3634,14 @@ public class OpenCmsTestCase extends TestCase {
 
         m_shell.exit();
 
-        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
+        m_shell = new CmsShell(
+            getTestDataPath("WEB-INF" + File.separator),
+            null,
+            null,
+            "${user}@${project}>",
+            null,
+            System.out,
+            System.err);
 
         OpenCmsTestLogAppender.setBreakOnError(true);
     }
