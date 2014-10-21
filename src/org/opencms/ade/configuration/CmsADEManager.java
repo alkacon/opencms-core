@@ -609,7 +609,7 @@ public class CmsADEManager {
             resource,
             CmsPermissionSet.ACCESS_VIEW,
             false,
-            CmsResourceFilter.IGNORE_EXPIRATION.addRequireVisible());
+            CmsResourceFilter.ALL.addRequireVisible());
         boolean hasWrite = false;
         if (hasView) {
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
