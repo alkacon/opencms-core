@@ -967,13 +967,17 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     @Override
     public I_CmsContextMenuEntry transformSingleEntry(CmsUUID structureId, CmsContextMenuEntryBean menuEntryBean) {
 
-        if (menuEntryBean.getName().equals(CmsGwtConstants.ACTION_TEMPLATECONTEXTS)) {
+        String name = menuEntryBean.getName();
+        if (name == null) {
+            return super.transformSingleEntry(structureId, menuEntryBean);
+        }
+        if (name.equals(CmsGwtConstants.ACTION_TEMPLATECONTEXTS)) {
             return createTemplateContextSelectionMenuEntry(structureId);
-        } else if (menuEntryBean.getName().equals(CmsGwtConstants.ACTION_EDITSMALLELEMENTS)) {
+        } else if (name.equals(CmsGwtConstants.ACTION_EDITSMALLELEMENTS)) {
             return createToggleEditSmallElementsMenuEntry();
-        } else if (menuEntryBean.getName().equals(CmsGwtConstants.ACTION_SELECTELEMENTVIEW)) {
+        } else if (name.equals(CmsGwtConstants.ACTION_SELECTELEMENTVIEW)) {
             return createElementViewSelectionMenuEntry();
-        } else if (menuEntryBean.getName().equals(CmsPreview.class.getName())) {
+        } else if (name.equals(CmsPreview.class.getName())) {
             return null;
         } else {
             return super.transformSingleEntry(structureId, menuEntryBean);
