@@ -68,6 +68,9 @@ public class CmsModule implements Comparable<CmsModule> {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModule.class);
 
+    /** The script to execute when the module is imported. */
+    private String m_importScript;
+
     /**
      * The module property key name to specifiy additional resources which are
      * part of a module outside of {system/modules}.
@@ -176,6 +179,7 @@ public class CmsModule implements Comparable<CmsModule> {
      * @param niceName the "nice" display name of this module
      * @param group the group of this module
      * @param actionClass the (optional) module class name
+     * @param importScript the script to execute when the module is imported 
      * @param description the description of this module
      * @param version the version of this module
      * @param authorName the name of the author of this module
@@ -193,6 +197,7 @@ public class CmsModule implements Comparable<CmsModule> {
         String niceName,
         String group,
         String actionClass,
+        String importScript,
         String description,
         CmsModuleVersion version,
         String authorName,
@@ -256,6 +261,8 @@ public class CmsModule implements Comparable<CmsModule> {
             m_parameters = new TreeMap<String, String>(parameters);
         }
 
+        m_importScript = importScript;
+
         initOldAdditionalResources();
 
         if (LOG.isDebugEnabled()) {
@@ -316,6 +323,7 @@ public class CmsModule implements Comparable<CmsModule> {
             m_niceName,
             m_group,
             m_actionClass,
+            m_importScript,
             m_description,
             m_version,
             m_authorName,
@@ -530,6 +538,16 @@ public class CmsModule implements Comparable<CmsModule> {
     public String getGroup() {
 
         return m_group;
+    }
+
+    /**
+     * Returns the importScript.<p>
+     *
+     * @return the importScript
+     */
+    public String getImportScript() {
+
+        return m_importScript;
     }
 
     /**
@@ -988,6 +1006,17 @@ public class CmsModule implements Comparable<CmsModule> {
 
         checkFrozen();
         m_group = value;
+    }
+
+    /**
+     * Sets the importScript.<p>
+     *
+     * @param importScript the importScript to set
+     */
+    public void setImportScript(String importScript) {
+
+        checkFrozen();
+        m_importScript = importScript;
     }
 
     /**

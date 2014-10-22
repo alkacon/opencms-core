@@ -76,6 +76,9 @@ public class CmsModuleXmlHandler {
 
     /** The node name for the class node. */
     public static final String N_CLASS = "class";
+    
+    /** Node for the import script. */ 
+    public static final String N_IMPORT_SCRIPT = "import-script";
 
     /** The node name for the datecreated node. */
     public static final String N_DATECREATED = "datecreated";
@@ -171,18 +174,19 @@ public class CmsModuleXmlHandler {
         digester.addSetNext("*/" + N_MODULE, "setModule");
 
         // add rules for base module information
-        digester.addCallMethod("*/" + N_MODULE, "createdModule", 11);
+        digester.addCallMethod("*/" + N_MODULE, "createdModule", 12);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NAME, 0);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NICENAME, 1);
         digester.addCallParam("*/" + N_MODULE + "/" + N_GROUP, 2);
         digester.addCallParam("*/" + N_MODULE + "/" + N_CLASS, 3);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DESCRIPTION, 4);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_VERSION, 5);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHORNAME, 6);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHOREMAIL, 7);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 8);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 9);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 10);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_IMPORT_SCRIPT, 4);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DESCRIPTION, 5);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_VERSION, 6);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHORNAME, 7);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHOREMAIL, 8);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 9);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 10);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 11);
 
         // add rules for module dependencies
         digester.addCallMethod("*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY, "addDependency", 2);
@@ -278,6 +282,14 @@ public class CmsModuleXmlHandler {
         } else {
             moduleElement.addElement(N_CLASS);
         }
+
+        String importScript = module.getImportScript();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(importScript)) {
+            moduleElement.addElement(N_IMPORT_SCRIPT).setText(importScript);
+        } else {
+            moduleElement.addElement(N_IMPORT_SCRIPT);
+        }
+
         if (CmsStringUtil.isNotEmpty(module.getDescription())) {
             moduleElement.addElement(N_DESCRIPTION).addCDATA(module.getDescription());
         } else {
@@ -536,6 +548,7 @@ public class CmsModuleXmlHandler {
      * @param niceName the "nice" display name of this module
      * @param group the group of the module
      * @param actionClass the (optional) module action class name
+     * @param importScript the import script
      * @param description the description of this module
      * @param version the version of this module
      * @param authorName the name of the author of this module
@@ -549,6 +562,7 @@ public class CmsModuleXmlHandler {
         String niceName,
         String group,
         String actionClass,
+        String importScript,
         String description,
         String version,
         String authorName,
@@ -603,6 +617,7 @@ public class CmsModuleXmlHandler {
             niceName,
             group,
             actionClass,
+            importScript,
             description,
             moduleVersion,
             authorName,

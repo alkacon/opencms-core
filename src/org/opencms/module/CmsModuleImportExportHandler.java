@@ -42,19 +42,23 @@ import org.opencms.importexport.CmsImportParameters;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsShell;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlErrorHandler;
 import org.opencms.xml.CmsXmlException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -361,9 +365,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                     modulePackageName));
             }
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-
             importModule(cms, report, parameters);
-
             report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
             // now unlock and publish the project
             cms.unlockProject(importProject.getUuid());
@@ -477,12 +479,14 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
      * @param report the report to print the progress information to
      * @param parameters the import parameters
      * 
+     * @return the imported module 
+     * 
      * @throws CmsSecurityException if no {@link CmsRole#DATABASE_MANAGER} permissions are available
      * @throws CmsConfigurationException if the module is already installed or the 
      *      dependencies are not fulfilled
      * @throws CmsException if errors occur reading the module data
      */
-    private synchronized void importModule(CmsObject cms, I_CmsReport report, CmsImportParameters parameters)
+    private synchronized CmsModule importModule(CmsObject cms, I_CmsReport report, CmsImportParameters parameters)
     throws CmsSecurityException, CmsConfigurationException, CmsException {
 
         // check if the user has the required permissions
@@ -567,5 +571,19 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         // import the module resources
         CmsImport cmsImport = new CmsImport(cms, report);
         cmsImport.importData(parameters);
+        String importScript = importedModule.getImportScript();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(importScript)) {
+            LOG.info("Executing import script for module " + importedModule.getName() + ":\n" + importScript);
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            PrintStream out = new PrintStream(buffer);
+            CmsShell shell = new CmsShell(cms, "${user}@${project}:${siteroot}|${uri}>", null, out, out);
+            shell.execute(importScript);
+            String outputString = buffer.toString();
+            LOG.info("Shell output was: \n" + outputString);
+            if (outputString.toLowerCase().contains("exception")) {
+                LOG.error("Shell output was: \n" + outputString);
+            }
+        }
+        return importedModule;
     }
 }
