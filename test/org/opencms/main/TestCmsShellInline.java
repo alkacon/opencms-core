@@ -48,6 +48,9 @@ import junit.framework.TestSuite;
  */
 public class TestCmsShellInline extends OpenCmsTestCase {
 
+    /** Default inline shell prompt for most test cases. */
+    private static final String PROMPT = "Inline shell: ${user}@${siteroot}${uri}> ";
+
     /**
      * Default JUnit constructor.
      * 
@@ -100,7 +103,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
     public void testShellCreateUsers() throws Exception {
 
         CmsObject cms = getCmsObject();
-        CmsShell shell = new CmsShell(cms, "${user}@${project}:${siteroot}|${uri}>", null, System.out, System.err);
+        CmsShell shell = new CmsShell(cms, PROMPT, null, System.out, System.err);
 
         shell.execute("echo on");
         shell.execute("createUser 'Editor' 'password' 'Sample editor user'");
@@ -130,7 +133,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
         PrintStream out = new PrintStream(bytes);
 
         CmsObject cms = getCmsObject();
-        CmsShell shell = new CmsShell(cms, "${user}@${project}:${siteroot}|${uri}>", null, out, out);
+        CmsShell shell = new CmsShell(cms, PROMPT, null, out, out);
         shell.execute("echo on\n pwd \n userName \n exit");
 
         // some variables in the String so that we don't have to change the test case every version / year
@@ -152,12 +155,12 @@ public class TestCmsShellInline extends OpenCmsTestCase {
             + "help {string}     Shows the signatures of all methods containing this string.\n"
             + "exit or quit      Leaves this OpenCms Shell.\n"
             + "\n"
-            + "Admin@Offline:/sites/default|/>Echo is now on.\n"
-            + "Admin@Offline:/sites/default|/>pwd\n"
+            + "Inline shell: Admin@/sites/default/> Echo is now on.\n"
+            + "Inline shell: Admin@/sites/default/> pwd\n"
             + "/\n"
-            + "Admin@Offline:/sites/default|/>userName\n"
+            + "Inline shell: Admin@/sites/default/> userName\n"
             + "Admin\n"
-            + "Admin@Offline:/sites/default|/>exit\n"
+            + "Inline shell: Admin@/sites/default/> exit\n"
             + "\n"
             + "Goodbye!\n";
 
@@ -173,7 +176,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
     public void testShellSetProperties() throws Exception {
 
         CmsObject cms = getCmsObject();
-        CmsShell shell = new CmsShell(cms, "${user}@${project}:${siteroot}|${uri}>", null, System.out, System.err);
+        CmsShell shell = new CmsShell(cms, PROMPT, null, System.out, System.err);
         String read, value;
 
         value = "This is a test";

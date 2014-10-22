@@ -635,15 +635,18 @@ public class CmsShell {
         try {
             LineNumberReader lnr = new LineNumberReader(reader);
             while (!m_exitCalled) {
-                printPrompt();
                 String line = lnr.readLine();
-                if (line == null) {
+                if (line != null) {
+                    // print the prompt in front of the commands to process
+                    printPrompt();
+                } else {
                     // if null the file has been read to the end
                     try {
                         Thread.sleep(500);
                     } catch (Throwable t) {
                         // noop
                     }
+                    // end the while loop
                     break;
                 }
                 if (line.trim().startsWith("#")) {
@@ -964,7 +967,9 @@ public class CmsShell {
             // echo the command to STDOUT
             m_out.print(command);
             for (int i = 0; i < parameters.size(); i++) {
-                m_out.print(" " + parameters.get(i));
+                m_out.print(" '");
+                m_out.print(parameters.get(i));
+                m_out.print("'");
             }
             m_out.println();
         }
