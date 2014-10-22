@@ -76,8 +76,8 @@ public class CmsModuleXmlHandler {
 
     /** The node name for the class node. */
     public static final String N_CLASS = "class";
-    
-    /** Node for the import script. */ 
+
+    /** Node for the import script. */
     public static final String N_IMPORT_SCRIPT = "import-script";
 
     /** The node name for the datecreated node. */
@@ -286,8 +286,6 @@ public class CmsModuleXmlHandler {
         String importScript = module.getImportScript();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(importScript)) {
             moduleElement.addElement(N_IMPORT_SCRIPT).setText(importScript);
-        } else {
-            moduleElement.addElement(N_IMPORT_SCRIPT);
         }
 
         if (CmsStringUtil.isNotEmpty(module.getDescription())) {
