@@ -39,12 +39,13 @@ import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -67,9 +68,9 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -215,6 +216,25 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         setReleasedAndNotExpired(releasedAndNotExpired);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
         m_elementView = elementView;
+    }
+
+    /**
+     * Checks if the element is an overlay for a container page element.<p>
+     * 
+     * @param element the element to check 
+     * @return true if the element is an overlay 
+     */
+    public static boolean isOverlay(Element element) {
+
+        for (String overlayClass : Arrays.asList(
+            I_CmsLayoutBundle.INSTANCE.containerpageCss().expiredOverlay(),
+            CmsElementOptionBar.CSS_CLASS)) {
+            if (element.hasClassName(overlayClass)) {
+                return true;
+            }
+        }
+        return false;
+
     }
 
     /**

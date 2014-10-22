@@ -95,7 +95,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
     /*default */static Timer timer;
 
     /** The CSS class to be assigned to each option-bar. */
-    private static String CSS_CLASS = org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar();
+    public static String CSS_CLASS = org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar();
 
     /** The calculated panel width. */
     private int m_calculatedWidth;

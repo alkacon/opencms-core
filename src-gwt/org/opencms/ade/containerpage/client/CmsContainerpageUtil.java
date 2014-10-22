@@ -249,7 +249,10 @@ public class CmsContainerpageUtil {
                     // this element is no container element and is the container only child, assume it is an empty container marker
                     ((CmsContainerPageContainer)container).setEmptyContainerElement(child);
                 } else {
-                    container.getElement().removeChild(child);
+                    // e.g. option bar 
+                    if (!CmsContainerPageElementPanel.isOverlay(child)) {
+                        container.getElement().removeChild(child);
+                    }
                 }
                 child = sibling;
                 continue;
