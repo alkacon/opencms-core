@@ -29,6 +29,7 @@ package org.opencms.site;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -36,12 +37,17 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Describes a configured site in OpenCms.<p>
  * 
  * @since 6.0.0 
  */
 public final class CmsSite implements Cloneable, Comparable<CmsSite> {
+
+    /** Log instance. */
+    private static final Log LOG = CmsLog.getLog(CmsSite.class);
 
     /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
     private List<CmsSiteMatcher> m_aliases = new ArrayList<CmsSiteMatcher>();
@@ -292,7 +298,12 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      */
     public String getSecureUrl() {
 
-        return m_secureServer.getUrl();
+        if (m_secureServer != null) {
+            return m_secureServer.getUrl();
+        } else {
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_SECURESERVER_MISSING_1, this.toString()));
+            return getUrl();
+        }
     }
 
     /**
