@@ -27,12 +27,15 @@
 
 package org.opencms.main;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.security.CmsRole;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.List;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -69,6 +72,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
 
         suite.addTest(new TestCmsShellInline("testShellInline"));
         suite.addTest(new TestCmsShellInline("testShellSetProperties"));
+        suite.addTest(new TestCmsShellInline("testShellCreateUsers"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -86,6 +90,33 @@ public class TestCmsShellInline extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Tests creation of users using the shell.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testShellCreateUsers() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsShell shell = new CmsShell(cms, "${user}@${project}:${siteroot}|${uri}>", null, System.out, System.err);
+
+        shell.execute("echo on");
+        shell.execute("createUser 'Editor' 'password' 'Sample editor user'");
+        shell.execute("addUserToGroup 'Editor' 'Users'");
+        shell.execute("addUserToRole 'Editor' 'EDITOR'");
+
+        assertTrue("Editor does not have EDTITOR role", OpenCms.getRoleManager().hasRole(cms, "Editor", CmsRole.EDITOR));
+        List<CmsGroup> groups = cms.getGroupsOfUser("Editor", true);
+        boolean found = false;
+        for (CmsGroup g : groups) {
+            if (g.getName().equals("Users")) {
+                found = true;
+                break;
+            }
+        }
+        assertTrue("Editor not a member of the Users group", found);
     }
 
     /**

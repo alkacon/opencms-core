@@ -98,6 +98,19 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Add the user to the given role.<p>
+     * 
+     * @param user name of the user
+     * @param role name of the role, for example 'EDITOR'
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void addUserToRole(String user, String role) throws CmsException {
+
+        OpenCms.getRoleManager().addUserToRole(m_cms, CmsRole.valueOfRoleName(role), user);
+    }
+
+    /**
      * Changes the current folder (i.e. the URI in the VFS).<p>
      * 
      * @param target the new URI

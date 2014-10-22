@@ -80,10 +80,10 @@ public final class CmsRole {
     /** The "ADMINISTRATOR" role, which is a parent to all organizational unit roles. */
     public static final CmsRole ADMINISTRATOR;
 
-    /** The "CATEGORY_MANAGER" role. */
+    /** The "CATEGORY_EDITOR" role. */
     public static final CmsRole CATEGORY_EDITOR;
 
-    /** The "CONTENT_CREATOR" role. */
+    /** The "ELEMENT_AUTHOR" role. */
     public static final CmsRole ELEMENT_AUTHOR;
 
     /** The "EXPORT_DATABASE" role. */
@@ -92,7 +92,7 @@ public final class CmsRole {
     /** The "DEVELOPER" role. */
     public static final CmsRole DEVELOPER;
 
-    /** The "GALLERY_MANAGER" role. */
+    /** The "GALLERY_EDITOR" role. */
     public static final CmsRole GALLERY_EDITOR;
 
     /** Identifier for role principals. */
@@ -104,7 +104,7 @@ public final class CmsRole {
     /** The "ROOT_ADMIN" role, which is a parent to all other roles. */
     public static final CmsRole ROOT_ADMIN;
 
-    /** The "SITEMAP_MANAGER" role. */
+    /** The "EDITOR" role. */
     public static final CmsRole EDITOR;
 
     /** The "VFS_MANAGER" role. */

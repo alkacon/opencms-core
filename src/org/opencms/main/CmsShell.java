@@ -36,7 +36,6 @@ import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -44,6 +43,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PrintStream;
+import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
@@ -604,36 +604,101 @@ public class CmsShell {
     }
 
     /**
-     * Reads the given stream and executes the commands in this shell.<p>
+     * Executes the commands from the given input stream in this shell.<p>
      * 
-     * @param inputStream an input stream from which commands are read
+     * <ul>
+     * <li>Commands in the must be separated with a line break '\n'.
+     * <li>Only one command per line is allowed.
+     * <li>String parameters must be quoted like this: <code>'string value'</code>.
+     * </ul> 
+     * 
+     * @param inputStream the input stream from which the commands are read
      */
     public void execute(InputStream inputStream) {
 
+        execute(new InputStreamReader(inputStream));
+    }
+
+    /**
+     * Executes the commands from the given reader in this shell.<p>
+     * 
+     * <ul>
+     * <li>Commands in the must be separated with a line break '\n'.
+     * <li>Only one command per line is allowed.
+     * <li>String parameters must be quoted like this: <code>'string value'</code>.
+     * </ul> 
+     * 
+     * @param reader the reader from which the commands are read
+     */
+    public void execute(Reader reader) {
+
         try {
-            // execute the commands from the input stream
-            executeCommands(inputStream);
+            LineNumberReader lnr = new LineNumberReader(reader);
+            while (!m_exitCalled) {
+                printPrompt();
+                String line = lnr.readLine();
+                if (line == null) {
+                    // if null the file has been read to the end
+                    try {
+                        Thread.sleep(500);
+                    } catch (Throwable t) {
+                        // noop
+                    }
+                    break;
+                }
+                if (line.trim().startsWith("#")) {
+                    m_out.println(line);
+                    continue;
+                }
+                StringReader lineReader = new StringReader(line);
+                StreamTokenizer st = new StreamTokenizer(lineReader);
+                st.eolIsSignificant(true);
+                st.wordChars('*', '*');
+                // put all tokens into a List
+                List<String> parameters = new ArrayList<String>();
+                while (st.nextToken() != StreamTokenizer.TT_EOF) {
+                    if (st.ttype == StreamTokenizer.TT_NUMBER) {
+                        parameters.add(Integer.toString(new Double(st.nval).intValue()));
+                    } else {
+                        parameters.add(st.sval);
+                    }
+                }
+                lineReader.close();
+
+                if (parameters.size() == 0) {
+                    // empty line, just need to check if echo is on
+                    if (m_echo) {
+                        m_out.println();
+                    }
+                    continue;
+                }
+
+                // extract command and arguments
+                String command = parameters.get(0);
+                List<String> arguments = parameters.subList(1, parameters.size());
+
+                // execute the command with the given arguments
+                executeCommand(command, arguments);
+            }
         } catch (Throwable t) {
             t.printStackTrace(m_err);
         }
     }
 
     /**
-     * Executes the given commands in this shell.<p>
+     * Executes the commands from the given string in this shell.<p>
      * 
      * <ul>
-     * <li>Commands in the string must be separated with a line break '\n'.
+     * <li>Commands in the must be separated with a line break '\n'.
      * <li>Only one command per line is allowed.
      * <li>String parameters must be quoted like this: <code>'string value'</code>.
      * </ul> 
      * 
-     * @param commands a string from which commands are read
+     * @param commands the string from which the commands are read
      */
     public void execute(String commands) {
 
-        // there should be no encoding issues since our command set is ASCII only
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(commands.getBytes());
-        execute(inputStream);
+        execute(new StringReader(commands));
     }
 
     /**
@@ -882,6 +947,12 @@ public class CmsShell {
     }
 
     /**
+     * Executes all commands read from the given reader.<p>
+     * 
+     * @param reader a Reader from which the commands are read
+     */
+
+    /**
      * Executes a shell command with a list of parameters.<p>
      *
      * @param command the command to execute
@@ -921,64 +992,6 @@ public class CmsShell {
             m_out.println(m_messages.key(Messages.GUI_SHELL_METHOD_NOT_FOUND_1, commandMsg.toString()));
             m_out.println(m_messages.key(Messages.GUI_SHELL_HR_0));
             ((CmsShellCommands)m_shellCommands).help();
-        }
-    }
-
-    /**
-     * Executes all commands read from the given input stream.<p>
-     * 
-     * @param inputStream a file input stream from which the commands are read
-     */
-    private void executeCommands(InputStream inputStream) {
-
-        try {
-            LineNumberReader lnr = new LineNumberReader(new InputStreamReader(inputStream));
-            while (!m_exitCalled) {
-                printPrompt();
-                String line = lnr.readLine();
-                if (line == null) {
-                    // if null the file has been read to the end
-                    try {
-                        Thread.sleep(500);
-                    } catch (Throwable t) {
-                        // noop
-                    }
-                    break;
-                }
-                if (line.trim().startsWith("#")) {
-                    m_out.println(line);
-                    continue;
-                }
-                StringReader reader = new StringReader(line);
-                StreamTokenizer st = new StreamTokenizer(reader);
-                st.eolIsSignificant(true);
-                st.wordChars('*', '*');
-                // put all tokens into a List
-                List<String> parameters = new ArrayList<String>();
-                while (st.nextToken() != StreamTokenizer.TT_EOF) {
-                    if (st.ttype == StreamTokenizer.TT_NUMBER) {
-                        parameters.add(Integer.toString(new Double(st.nval).intValue()));
-                    } else {
-                        parameters.add(st.sval);
-                    }
-                }
-                reader.close();
-
-                // extract command and arguments
-                if (parameters.size() == 0) {
-                    if (m_echo) {
-                        m_out.println();
-                    }
-                    continue;
-                }
-                String command = parameters.get(0);
-                parameters = parameters.subList(1, parameters.size());
-
-                // execute the command
-                executeCommand(command, parameters);
-            }
-        } catch (Throwable t) {
-            t.printStackTrace(m_err);
         }
     }
 }
