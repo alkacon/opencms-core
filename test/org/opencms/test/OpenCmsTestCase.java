@@ -727,7 +727,7 @@ public class OpenCmsTestCase extends TestCase {
             // start the shell with the base script
             script = new File(getTestDataPath("scripts/script_import.txt"));
             stream = new FileInputStream(script);
-            m_shell.start(stream);
+            m_shell.execute(stream);
             stream.close();
 
             // log in the Admin user and switch to the setup project
@@ -743,7 +743,7 @@ public class OpenCmsTestCase extends TestCase {
             // publish the current project by script
             script = new File(getTestDataPath("scripts/script_import_publish.txt"));
             stream = new FileInputStream(script);
-            m_shell.start(stream);
+            m_shell.execute(stream);
             stream.close();
             OpenCms.getPublishManager().waitWhileRunning();
 
@@ -1083,13 +1083,13 @@ public class OpenCmsTestCase extends TestCase {
             // start the shell with the base script
             script = new File(getTestDataPath("scripts/script_base.txt"));
             stream = new FileInputStream(script);
-            m_shell.start(stream);
+            m_shell.execute(stream);
             stream.close();
 
             // add the default folders by script
             script = new File(getTestDataPath("scripts/script_default_folders.txt"));
             stream = new FileInputStream(script);
-            m_shell.start(stream);
+            m_shell.execute(stream);
             stream.close();
 
             // log in the Admin user and switch to the setup project
@@ -1105,14 +1105,14 @@ public class OpenCmsTestCase extends TestCase {
             // create the default projects by script
             script = new File(getTestDataPath("scripts/script_default_projects.txt"));
             stream = new FileInputStream(script);
-            m_shell.start(stream);
+            m_shell.execute(stream);
             stream.close();
 
             if (publish) {
                 // publish the current project by script
                 script = new File(getTestDataPath("scripts/script_publish.txt"));
                 stream = new FileInputStream(script);
-                m_shell.start(stream);
+                m_shell.execute(stream);
                 stream.close();
                 OpenCms.getPublishManager().waitWhileRunning();
             } else {

@@ -59,7 +59,7 @@ import java.util.TreeMap;
 
 /**
  * A command line interface to access OpenCms functions which 
- * is used for the initial setup and also can be used to directly access the OpenCms
+ * is used for the initial setup and also can be used for scripting access to the OpenCms
  * repository without the Workplace.<p>
  * 
  * The CmsShell has direct access to all methods in the "command objects".
@@ -67,6 +67,9 @@ import java.util.TreeMap;
  * <code>{@link org.opencms.main.CmsShellCommands}</code>,
  * <code>{@link org.opencms.file.CmsRequestContext}</code> and
  * <code>{@link org.opencms.file.CmsObject}</code>.<p>
+ * 
+ * It is also possible to add a custom command object when calling the script API,
+ * like in {@link CmsShell#CmsShell(String, String, String, String, I_CmsShellCommands, PrintStream, PrintStream)}.<p>
  * 
  * Only public methods in the command objects that use supported data types 
  * as parameters can be called from the shell. Supported data types are:
@@ -591,13 +594,46 @@ public class CmsShell {
                 additionalCommands,
                 System.out,
                 System.err);
-            shell.start(stream);
+            shell.execute(stream);
             try {
                 stream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Reads the given stream and executes the commands in this shell.<p>
+     * 
+     * @param inputStream an input stream from which commands are read
+     */
+    public void execute(InputStream inputStream) {
+
+        try {
+            // execute the commands from the input stream
+            executeCommands(inputStream);
+        } catch (Throwable t) {
+            t.printStackTrace(m_err);
+        }
+    }
+
+    /**
+     * Executes the given commands in this shell.<p>
+     * 
+     * <ul>
+     * <li>Commands in the string must be separated with a line break '\n'.
+     * <li>Only one command per line is allowed.
+     * <li>String parameters must be quoted like this: <code>'string value'</code>.
+     * </ul> 
+     * 
+     * @param commands a string from which commands are read
+     */
+    public void execute(String commands) {
+
+        // there should be no encoding issues since our command set is ASCII only
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(commands.getBytes());
+        execute(inputStream);
     }
 
     /**
@@ -762,30 +798,15 @@ public class CmsShell {
     }
 
     /**
-     * Starts this CmsShell.<p>
+     * Reads the given stream and executes the commands in this shell.<p>
      * 
      * @param inputStream an input stream from which commands are read
+     * @deprecated use {@link #execute(InputStream)} instead
      */
-    public void start(InputStream inputStream) {
+    @Deprecated
+    public void start(FileInputStream inputStream) {
 
-        try {
-            // execute the commands from the input stream
-            executeCommands(inputStream);
-        } catch (Throwable t) {
-            t.printStackTrace(m_err);
-        }
-    }
-
-    /**
-     * Starts this CmsShell.<p>
-     * 
-     * @param commands a string from which commands are read
-     */
-    public void start(String commands) {
-
-        // there should be no encoding issues since our command set is ASCII only
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(commands.getBytes());
-        start(inputStream);
+        execute(inputStream);
     }
 
     /**

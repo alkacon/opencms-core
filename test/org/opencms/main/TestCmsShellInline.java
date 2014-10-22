@@ -100,7 +100,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
         CmsShell shell = new CmsShell(cms, "${user}@${project}:${siteroot}|${uri}>", null, out, out);
-        shell.start("echo on\n pwd \n userName \n exit");
+        shell.execute("echo on\n pwd \n userName \n exit");
 
         // some variables in the String so that we don't have to change the test case every version / year
         String expected = "\nWelcome to the OpenCms shell!\n" + "\n" + "\n" + "This is OpenCms "
@@ -146,12 +146,12 @@ public class TestCmsShellInline extends OpenCmsTestCase {
         String read, value;
 
         value = "This is a test";
-        shell.start("echo on\n help * \n writeProperty '/' 'Title' '" + value + "'");
+        shell.execute("echo on\n help * \n writeProperty '/' 'Title' '" + value + "'");
         read = cms.readPropertyObject("/", "Title", false).getValue();
         assertEquals("Title property not set as expected", value, read);
 
         value = "This is on the sites folder";
-        shell.start("setSiteRoot '/' \n writeProperty '/sites/' 'Title' '" + value + "'");
+        shell.execute("setSiteRoot '/' \n writeProperty '/sites/' 'Title' '" + value + "'");
         read = cms.readPropertyObject("/sites/", "Title", false).getValue();
         assertEquals("Title property not set as expected", value, read);
     }

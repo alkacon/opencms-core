@@ -184,7 +184,7 @@ public class CmsSetupWorkplaceImportThread extends Thread {
 
                     }
                     if (m_workplaceImportNeeded) {
-                        m_shell.start(new FileInputStream(new File(m_setupBean.getWebAppRfsPath()
+                        m_shell.execute(new FileInputStream(new File(m_setupBean.getWebAppRfsPath()
                             + CmsSetupDb.SETUP_DATA_FOLDER
                             + "cmssetup.txt")));
                     } else {

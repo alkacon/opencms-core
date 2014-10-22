@@ -105,13 +105,13 @@ public class TestCmsShell extends OpenCmsTestCase {
         // start the shell with the base script
         script = new File(getTestDataPath("scripts/script_base.txt"));
         stream = new FileInputStream(script);
-        shell.start(stream);
+        shell.execute(stream);
         stream.close();
 
         // add the default folders by script
         script = new File(getTestDataPath("scripts/script_default_folders.txt"));
         stream = new FileInputStream(script);
-        shell.start(stream);
+        shell.execute(stream);
         stream.close();
 
         // log in the Admin user and switch to the setup project
@@ -125,7 +125,7 @@ public class TestCmsShell extends OpenCmsTestCase {
         // publish the current project by script
         script = new File(getTestDataPath("scripts/script_publish.txt"));
         stream = new FileInputStream(script);
-        shell.start(stream);
+        shell.execute(stream);
         stream.close();
 
         // get the name of the folder for the backup configuration files
