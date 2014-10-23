@@ -56,6 +56,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style;
@@ -116,6 +117,7 @@ public class CmsContainerpageUtil {
         boolean containsElements = false;
         // the drag element widgets are created from the existing DOM elements,
         Element child = container.getElement().getFirstChildElement();
+        List<CmsContainerPageElementPanel> children = Lists.newArrayList();
         while (child != null) {
             boolean isContainerElement = CmsDomUtil.hasClass(
                 CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER,
@@ -212,6 +214,7 @@ public class CmsContainerpageUtil {
                             elementRoot,
                             container,
                             elementData);
+                        children.add(containerElement);
                         if (elementData.isNew()) {
                             containerElement.setNewType(elementData.getResourceType());
                         }
@@ -235,11 +238,14 @@ public class CmsContainerpageUtil {
                     if (groupContainer.getWidgetCount() == 0) {
                         groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
                     }
+                    children.add(groupContainer);
                     // important: adding the option-bar only after the group-containers have been consumed
                     if (container.isEditable()
                         && (!m_controller.isDetailPage() || container.isDetailView() || container.isDetailOnly())) {
                         //only allow editing if either element of detail only container or not in detail view
-                        addOptionBar(groupContainer);
+                        if (m_controller.requiresOptionBar(groupContainer, container)) {
+                            addOptionBar(groupContainer);
+                        }
                     }
                     child = child.getNextSiblingElement();
                 }
@@ -258,6 +264,7 @@ public class CmsContainerpageUtil {
                 continue;
             }
         }
+        container.onConsumeChildren(children);
     }
 
     /**

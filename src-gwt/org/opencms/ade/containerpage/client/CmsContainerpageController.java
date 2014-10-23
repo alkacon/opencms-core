@@ -677,9 +677,6 @@ public final class CmsContainerpageController {
     /** The new element data by resource type name. */
     protected Map<String, CmsContainerElementData> m_newElements;
 
-    /** The container data. */
-    private Map<String, CmsContainer> m_containers;
-
     /** The gallery data update timer. */
     Timer m_galleryUpdateTimer;
 
@@ -697,6 +694,9 @@ public final class CmsContainerpageController {
 
     /** The container-page util instance. */
     private CmsContainerpageUtil m_containerpageUtil;
+
+    /** The container data. */
+    private Map<String, CmsContainer> m_containers;
 
     /** The XML content editor handler. */
     private CmsContentEditorHandler m_contentEditorHandler;
@@ -2043,7 +2043,7 @@ public final class CmsContainerpageController {
         if (isGroupcontainerEditing()) {
             m_groupEditor.reinitializeButtons();
         } else {
-            List<CmsContainerPageElementPanel> elemWidgets = getAllContainerPageElements();
+            List<CmsContainerPageElementPanel> elemWidgets = getAllContainerPageElements(true);
 
             for (CmsContainerPageElementPanel elemWidget : elemWidgets) {
                 if (requiresOptionBar(elemWidget, elemWidget.getParentTarget())) {
@@ -2886,9 +2886,11 @@ public final class CmsContainerpageController {
     /**
      * Helper method to get all current container page elements.<p>
      * 
+     * @param includeGroupContents true if the contents of group containers should also be included
+     * 
      * @return the list of current container page elements 
      */
-    protected List<CmsContainerPageElementPanel> getAllContainerPageElements() {
+    protected List<CmsContainerPageElementPanel> getAllContainerPageElements(boolean includeGroupContents) {
 
         List<CmsContainerPageElementPanel> elemWidgets = new ArrayList<CmsContainerPageElementPanel>();
         for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : CmsContainerpageController.get().getContainerTargets().entrySet()) {
@@ -2897,6 +2899,9 @@ public final class CmsContainerpageController {
                 try {
                     org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)elIt.next();
                     elemWidgets.add(elementWidget);
+                    if (includeGroupContents && (elementWidget instanceof CmsGroupContainerElementPanel)) {
+                        elemWidgets.addAll(((CmsGroupContainerElementPanel)elementWidget).getGroupChildren());
+                    }
                 } catch (ClassCastException e) {
                     // no proper container element, skip it (this should never happen!)
                     CmsDebugLog.getInstance().printLine("WARNING: there is an inappropriate element within a container");

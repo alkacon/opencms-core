@@ -37,6 +37,7 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,6 +54,9 @@ import com.google.gwt.user.client.ui.Widget;
  * @since 8.0.0
  */
 public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel implements I_CmsDropContainer {
+
+    /** Processed children of the group. */
+    private List<CmsContainerPageElementPanel> m_children;
 
     /** The container type. */
     private String m_containerId;
@@ -214,6 +218,16 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
         return null;
     }
 
+    /** 
+     * Gets the consumed group elements.<p>
+     * 
+     * @return the list of children 
+     */
+    public List<CmsContainerPageElementPanel> getGroupChildren() {
+
+        return m_children;
+    }
+
     /**
      * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#getPlaceholderIndex()
      */
@@ -345,6 +359,17 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     public boolean isInheritContainer() {
 
         return CmsContainerElement.INHERIT_CONTAINER_TYPE_NAME.equals(m_resourceType);
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#onConsumeChildren(java.util.List)
+     */
+    public void onConsumeChildren(List<CmsContainerPageElementPanel> children) {
+
+        m_children = new ArrayList<CmsContainerPageElementPanel>(children);
+
+        // TODO Auto-generated method stub
+
     }
 
     /**

@@ -31,6 +31,8 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.dnd.I_CmsNestedDropTarget;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -153,6 +155,13 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
      * @return <code>true</code> if the container is editable by the current user
      */
     boolean isEditable();
+
+    /** 
+     * This is called when the elements of this container/group have been processed into CmsContainerPageElementPanels.<p>
+     * 
+     * @param children the processed children 
+     */
+    void onConsumeChildren(List<CmsContainerPageElementPanel> children);
 
     /**
      * Refreshes position and dimension of the highlighting border. Call when anything changed during the drag process.<p>

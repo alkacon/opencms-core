@@ -201,6 +201,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
     }
 
+    /** Name of a special property for the container id. */
+    public static final String PROP_CONTAINER_MARKER = "opencmsContainerId";
+
     /** Flag indicating if this container is a detail view only container. */
     boolean m_detailOnly;
 
@@ -254,9 +257,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
     /** Flag indicating the element positions need to be re-evaluated. */
     private boolean m_requiresPositionUpdate = true;
-
-    /** Name of a special property for the container id. */
-    public static final String PROP_CONTAINER_MARKER = "opencmsContainerId";
 
     /**
      * Constructor.<p>
@@ -585,6 +585,15 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public boolean isEditable() {
 
         return m_editable;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#onConsumeChildren(java.util.List)
+     */
+    public void onConsumeChildren(List<CmsContainerPageElementPanel> children) {
+
+        // TODO Auto-generated method stub
+
     }
 
     /**
