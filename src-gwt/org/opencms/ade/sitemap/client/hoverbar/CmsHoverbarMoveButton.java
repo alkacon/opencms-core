@@ -71,6 +71,11 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
              */
             public void onShow(CmsHoverbarShowEvent event) {
 
+                if (hoverbar.getEntry() == null) {
+                    // Can sometimes happen after deleting an element
+                    return;
+                }
+
                 m_sitePath = hoverbar.getEntry().getSitePath();
                 final CmsSitemapController controller = hoverbar.getController();
                 CmsClientSitemapEntry entry = hoverbar.getEntry();
