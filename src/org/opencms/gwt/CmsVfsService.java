@@ -1764,7 +1764,10 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         for (CmsRelation relation : relations) {
             // only add related resources that are not going to be deleted
             if (!deleteIds.contains(relation.getSourceId())) {
-                result.add(relation.getSource(cms, CmsResourceFilter.IGNORE_EXPIRATION));
+                CmsResource source = relation.getSource(cms, CmsResourceFilter.ALL);
+                if (!source.getState().isDeleted()) {
+                    result.add(source);
+                }
             }
         }
         return result;
