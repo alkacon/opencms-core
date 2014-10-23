@@ -278,6 +278,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      * Displays the category data.<p>
      * 
      * @param categoryData the category data 
+     * @param openLocalCategories true if the local category tree should be opened 
      */
     public void displayCategoryData(CmsSitemapCategoryData categoryData, final boolean openLocalCategories) {
 
@@ -1002,6 +1003,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 case galleries:
                     m_tree.getElement().getStyle().setDisplay(Display.NONE);
                     setGalleriesVisible(true);
+                    m_toolbar.setNewGalleryEnabled(
+                        getController().getData().isGalleryManager(),
+                        Messages.get().key(Messages.GUI_GALLERY_MANAGER_ROLE_REQUIRED_0));
                     setCategoriesVisible(false);
                     setModelPagesVisible(false);
                     m_toolbar.setClipboardEnabled(false, Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_DISABLE_0));

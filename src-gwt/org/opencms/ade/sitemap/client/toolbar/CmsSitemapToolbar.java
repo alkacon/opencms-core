@@ -224,4 +224,19 @@ public class CmsSitemapToolbar extends CmsToolbar {
             m_newMenuButton.disable(disabledReason);
         }
     }
+
+    /**
+     * Enables/disables the new menu button.<p>
+     * 
+     * @param enabled <code>true</code> to enable the button
+     * @param disabledReason the reason, why the button is disabled
+     */
+    public void setNewGalleryEnabled(boolean enabled, String disabledReason) {
+
+        if (enabled) {
+            m_newGalleryMenuButton.enable();
+        } else {
+            m_newGalleryMenuButton.disable(disabledReason);
+        }
+    }
 }
