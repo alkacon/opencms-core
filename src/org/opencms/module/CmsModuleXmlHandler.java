@@ -174,6 +174,10 @@ public class CmsModuleXmlHandler {
         digester.addSetNext("*/" + N_MODULE, "setModule");
 
         // add rules for base module information
+
+        // NOTE: If you change the order of parameters here or add new ones, you may
+        // also need to change the corresponding parameter indexes in the method addXmlDigesterRulesForVersion5Modules.
+
         digester.addCallMethod("*/" + N_MODULE, "createdModule", 12);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NAME, 0);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NICENAME, 1);
@@ -425,9 +429,9 @@ public class CmsModuleXmlHandler {
         digester.addCallMethod("*/" + N_MODULE + "/author", "setOldModule");
 
         // base module information
-        digester.addCallParam("*/" + N_MODULE + "/author", 6);
-        digester.addCallParam("*/" + N_MODULE + "/email", 7);
-        digester.addCallParam("*/" + N_MODULE + "/creationdate", 8);
+        digester.addCallParam("*/" + N_MODULE + "/author", 7);
+        digester.addCallParam("*/" + N_MODULE + "/email", 8);
+        digester.addCallParam("*/" + N_MODULE + "/creationdate", 9);
 
         // dependencies
         digester.addCallParam("*/" + N_MODULE + "/dependencies/dependency/name", 0);
