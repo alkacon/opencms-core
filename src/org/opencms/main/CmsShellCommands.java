@@ -1169,8 +1169,10 @@ class CmsShellCommands implements I_CmsShellCommands {
         version();
         // print the copyright message
         copyright();
-        // print the help information
-        help();
+        if (m_shell.isInteractive()) {
+            // print the help information for interactive terminals
+            help();
+        }
     }
 
     /**

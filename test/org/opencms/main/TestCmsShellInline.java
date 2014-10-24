@@ -75,7 +75,8 @@ public class TestCmsShellInline extends OpenCmsTestCase {
 
         suite.addTest(new TestCmsShellInline("testShellInline"));
         suite.addTest(new TestCmsShellInline("testShellSetProperties"));
-        suite.addTest(new TestCmsShellInline("testShellCreateUsers"));
+        suite.addTest(new TestCmsShellInline("testShellCreateUser"));
+        suite.addTest(new TestCmsShellInline("testShellEchoOff"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -100,7 +101,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
      * 
      * @throws Exception in case something goes wrong
      */
-    public void testShellCreateUsers() throws Exception {
+    public void testShellCreateUser() throws Exception {
 
         CmsObject cms = getCmsObject();
         CmsShell shell = new CmsShell(cms, PROMPT, null, System.out, System.err);
@@ -123,6 +124,48 @@ public class TestCmsShellInline extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the shell without 'echo on'.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testShellEchoOff() throws Exception {
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(bytes);
+
+        CmsObject cms = getCmsObject();
+        CmsShell shell = new CmsShell(cms, PROMPT, null, out, out);
+        shell.execute("pwd \n userName \n version");
+
+        // some variables in the String so that we don't have to change the test case every version / year
+        String expected = "\n"
+            + "Welcome to the OpenCms shell!\n"
+            + "\n"
+            + "\n"
+            + "This is OpenCms "
+            + OpenCms.getSystemInfo().getVersionNumber()
+            + ".\n"
+            + "\n"
+            + Messages.COPYRIGHT_BY_ALKACON[1]
+            + "\n"
+            + "OpenCms comes with ABSOLUTELY NO WARRANTY\n"
+            + "This is free software, and you are welcome to\n"
+            + "redistribute it under certain conditions.\n"
+            + "Please see the GNU Lesser General Public Licence for\n"
+            + "further details.\n"
+            + "\n"
+            + "/\n"
+            + "Admin\n"
+            + "\n"
+            + "This is OpenCms "
+            + OpenCms.getSystemInfo().getVersionNumber()
+            + ".\n";
+
+        String result = bytes.toString();
+        assertEquals("Shell did not produce expected output", expected, result);
+    }
+
+    /**
      * Tests basic inline shell invocation.<p>
      * 
      * @throws Exception in case something goes wrong
@@ -137,7 +180,10 @@ public class TestCmsShellInline extends OpenCmsTestCase {
         shell.execute("echo on\n pwd \n userName \n exit");
 
         // some variables in the String so that we don't have to change the test case every version / year
-        String expected = "\nWelcome to the OpenCms shell!\n" + "\n" + "\n" + "This is OpenCms "
+        String expected = "\nWelcome to the OpenCms shell!\n"
+            + "\n"
+            + "\n"
+            + "This is OpenCms "
             + OpenCms.getSystemInfo().getVersionNumber()
             + ".\n"
             + "\n"
@@ -149,13 +195,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
             + "Please see the GNU Lesser General Public Licence for\n"
             + "further details.\n"
             + "\n"
-            + "\n"
-            + "help              Shows this text.\n"
-            + "help *            Shows the signatures of all available methods.\n"
-            + "help {string}     Shows the signatures of all methods containing this string.\n"
-            + "exit or quit      Leaves this OpenCms Shell.\n"
-            + "\n"
-            + "Inline shell: Admin@/sites/default/> Echo is now on.\n"
+            + "Echo is now on.\n"
             + "Inline shell: Admin@/sites/default/> pwd\n"
             + "/\n"
             + "Inline shell: Admin@/sites/default/> userName\n"

@@ -69,7 +69,7 @@ import java.util.TreeMap;
  * <code>{@link org.opencms.file.CmsObject}</code>.<p>
  * 
  * It is also possible to add a custom command object when calling the script API,
- * like in {@link CmsShell#CmsShell(String, String, String, String, I_CmsShellCommands, PrintStream, PrintStream)}.<p>
+ * like in {@link CmsShell#CmsShell(String, String, String, String, I_CmsShellCommands, PrintStream, PrintStream, boolean)}.<p>
  * 
  * Only public methods in the command objects that use supported data types 
  * as parameters can be called from the shell. Supported data types are:
@@ -395,6 +395,9 @@ public class CmsShell {
     /** Stream to write the error messages output to. */
     protected PrintStream m_err;
 
+    /** Indicates if this is an interactive session with a user sitting on a console. */
+    private boolean m_interactive;
+
     /**
      * Creates a new CmsShell.<p>
      * 
@@ -442,7 +445,15 @@ public class CmsShell {
         String prompt,
         I_CmsShellCommands additionalShellCommands) {
 
-        this(webInfPath, servletMapping, defaultWebAppName, prompt, additionalShellCommands, System.out, System.err);
+        this(
+            webInfPath,
+            servletMapping,
+            defaultWebAppName,
+            prompt,
+            additionalShellCommands,
+            System.out,
+            System.err,
+            false);
     }
 
     /**
@@ -455,6 +466,7 @@ public class CmsShell {
      * @param additionalShellCommands optional object for additional shell commands, or null
      * @param out stream to write the regular output messages to
      * @param err stream to write the error messages output to
+     * @param interactive if <code>true</code> this is an interactive session with a user sitting on a console
      */
     public CmsShell(
         String webInfPath,
@@ -463,7 +475,8 @@ public class CmsShell {
         String prompt,
         I_CmsShellCommands additionalShellCommands,
         PrintStream out,
-        PrintStream err) {
+        PrintStream err,
+        boolean interactive) {
 
         setPrompt(prompt);
         if (CmsStringUtil.isEmpty(servletMapping)) {
@@ -574,6 +587,7 @@ public class CmsShell {
                     return;
                 }
             }
+            boolean interactive = true;
             FileInputStream stream = null;
             if (script != null) {
                 try {
@@ -585,6 +599,7 @@ public class CmsShell {
             if (stream == null) {
                 // no script-file, use standard input stream
                 stream = new FileInputStream(FileDescriptor.in);
+                interactive = true;
             }
             CmsShell shell = new CmsShell(
                 webInfPath,
@@ -593,7 +608,8 @@ public class CmsShell {
                 "${user}@${project}:${siteroot}|${uri}>",
                 additionalCommands,
                 System.out,
-                System.err);
+                System.err,
+                interactive);
             shell.execute(stream);
             try {
                 stream.close();
@@ -637,8 +653,10 @@ public class CmsShell {
             while (!m_exitCalled) {
                 String line = lnr.readLine();
                 if (line != null) {
-                    // print the prompt in front of the commands to process
-                    printPrompt();
+                    if (m_interactive || m_echo) {
+                        // print the prompt in front of the commands to process only when 'interactive'
+                        printPrompt();
+                    }
                 } else {
                     // if null the file has been read to the end
                     try {
@@ -829,6 +847,16 @@ public class CmsShell {
     }
 
     /**
+     * If <code>true</code> this is an interactive session with a user sitting on a console.<p>
+     * 
+     * @return <code>true</code> if this is an interactive session with a user sitting on a console
+     */
+    public boolean isInteractive() {
+
+        return m_interactive;
+    }
+
+    /**
      * Prints the shell prompt.<p>
      */
     public void printPrompt() {
@@ -846,6 +874,19 @@ public class CmsShell {
             // ignore
         }
         m_out.print(prompt);
+    }
+
+    /**
+     * Set <code>true</code> if this is an interactive session with a user sitting on a console.<p>
+     * 
+     * This controls the output of the prompt and some other info that is valuable 
+     * on the console, but not required in an automatic session.<p>
+     * 
+     * @param interactive if <code>true</code> this is an interactive session with a user sitting on a console
+     */
+    public void setInteractive(boolean interactive) {
+
+        m_interactive = interactive;
     }
 
     /**
@@ -874,6 +915,8 @@ public class CmsShell {
     @Deprecated
     public void start(FileInputStream inputStream) {
 
+        // in the old behavior 'interactive' was always true
+        setInteractive(true);
         execute(inputStream);
     }
 

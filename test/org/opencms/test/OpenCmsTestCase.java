@@ -715,7 +715,8 @@ public class OpenCmsTestCase extends TestCase {
             "${user}@${project}>",
             null,
             System.out,
-            System.err);
+            System.err,
+            false);
 
         // open the test script 
         File script;
@@ -883,7 +884,8 @@ public class OpenCmsTestCase extends TestCase {
             "${user}@${project}>",
             null,
             System.out,
-            System.err);
+            System.err,
+            false);
 
         // turn on exceptions after error logging
         OpenCmsTestLogAppender.setBreakOnError(true);
@@ -1071,7 +1073,8 @@ public class OpenCmsTestCase extends TestCase {
             "${user}@${project}>",
             null,
             System.out,
-            System.err);
+            System.err,
+            false);
 
         // open the test script 
         File script;
@@ -3641,7 +3644,8 @@ public class OpenCmsTestCase extends TestCase {
             "${user}@${project}>",
             null,
             System.out,
-            System.err);
+            System.err,
+            false);
 
         OpenCmsTestLogAppender.setBreakOnError(true);
     }

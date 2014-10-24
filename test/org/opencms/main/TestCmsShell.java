@@ -96,7 +96,8 @@ public class TestCmsShell extends OpenCmsTestCase {
             "${user}@${project}>",
             null,
             System.out,
-            System.err);
+            System.err,
+            false);
 
         // open the test script 
         File script;
