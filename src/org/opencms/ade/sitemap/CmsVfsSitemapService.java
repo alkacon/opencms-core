@@ -1445,7 +1445,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     needsChanges = true;
                     String typeName = OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName();
                     CmsResourceTypeConfig typeConfig = configData.getResourceType(typeName);
-                    CmsResource newResource = typeConfig.createNewElement(cloneCms, null);
+                    CmsResource newResource = typeConfig.createNewElement(cloneCms, element.getResource());
                     CmsContainerElementBean newBean = new CmsContainerElementBean(
                         newResource.getStructureId(),
                         element.getFormatterId(),
