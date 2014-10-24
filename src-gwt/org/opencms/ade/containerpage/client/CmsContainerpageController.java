@@ -584,17 +584,25 @@ public final class CmsContainerpageController {
 
             boolean cached = false;
             if (m_elements.containsKey(m_clientId)) {
-                CmsContainerElementData elementData = m_elements.get(m_clientId);
-                // check if the cached element data covers all possible containers in case new containers have been added to the page 
-                if (elementData.getContents().keySet().containsAll(m_targetContainers.keySet())) {
+                if (!hasNestedContainers()) {
 
-                    cached = true;
+                    // When you have an element A representing a nested container, which then contains an element B,
+                    // and the element settings of B have been changed, we would need to invalidate the cache for A. 
+                    // Currently there is no time to implement this correctly, so we don't use the cached element in case
+                    // we have nested containers. 
 
-                    if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
-                        for (String subItemId : elementData.getSubItems()) {
-                            if (!m_elements.containsKey(subItemId)) {
-                                cached = false;
-                                break;
+                    CmsContainerElementData elementData = m_elements.get(m_clientId);
+                    // check if the cached element data covers all possible containers in case new containers have been added to the page 
+                    if (elementData.getContents().keySet().containsAll(m_targetContainers.keySet())) {
+
+                        cached = true;
+
+                        if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
+                            for (String subItemId : elementData.getSubItems()) {
+                                if (!m_elements.containsKey(subItemId)) {
+                                    cached = false;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -2977,6 +2985,23 @@ public final class CmsContainerpageController {
     protected String getRequestParams() {
 
         return m_data.getRequestParams();
+    }
+
+    /** 
+     * Checks if any of the containers are nested containers.<p>
+     * 
+     * @return true if there are nested containers 
+     */
+    protected boolean hasNestedContainers() {
+
+        boolean hasNestedContainers = false;
+        for (CmsContainer container : m_containers.values()) {
+            if (container.getParentContainerName() != null) {
+                hasNestedContainers = true;
+                break;
+            }
+        }
+        return hasNestedContainers;
     }
 
     /**
