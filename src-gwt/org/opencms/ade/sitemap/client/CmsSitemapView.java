@@ -266,7 +266,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         result.clearChildren();
         for (CmsClientSitemapEntry child : entry.getSubEntries()) {
             CmsSitemapTreeItem childItem = createSitemapItem(child);
-            result.addChild(childItem);
+            if (!entry.isSubSitemapType()) {
+                result.addChild(childItem);
+            }
         }
         if (entry.getChildrenLoadedInitially()) {
             result.onFinishLoading();
@@ -845,6 +847,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         CmsSitemapTreeItem target = getTreeItem(event.getEntry().getId());
         if (target != null) {
+            if (event.getEntry().isSubSitemapType()) {
+                return;
+            }
             target.getTree().setAnimationEnabled(false);
             target.clearChildren();
             for (CmsClientSitemapEntry child : event.getEntry().getSubEntries()) {
