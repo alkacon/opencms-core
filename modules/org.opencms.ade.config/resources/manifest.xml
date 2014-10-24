@@ -411,8 +411,6 @@
 						<entry key="GUI_EXPLORER_CONTEXT_PAGE_INFO_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo"
 							rule="containerpage" />
-						<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
 						<entry key="TEMPLATECONTEXTS" name="templatecontexts" rule="containerpage" /><!-- 
 							Entry is processed on the client side, the message key doesn't exist -->
 						<entry key="SELECTELEMENTVIEW" name="selectelementview"
