@@ -54,7 +54,6 @@ import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -205,11 +204,12 @@ public class CmsModelPageHelper {
             CmsResource result = m_cms.readFolder(modelFolderPath);
             return result;
         } catch (CmsVfsResourceNotFoundException e) {
+            CmsProperty searchExclude = new CmsProperty(CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, "all", null);
             CmsResource result = m_cms.createResource(
                 modelFolderPath,
                 getType(CmsResourceTypeFolder.getStaticTypeName()),
                 null,
-                new ArrayList<CmsProperty>());
+                Arrays.asList(searchExclude));
             tryUnlock(result);
             return result;
         }
