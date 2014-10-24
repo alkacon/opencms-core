@@ -425,14 +425,27 @@ public class CmsJspTagContainer extends BodyTagSupport {
      * @param tagName the tag name
      * @param containerName the container name used as id attribute value
      * @param tagClass the tag class attribute value
+     * @param nested true if this is a nested container
+     * @param online true if we are in the online project 
      * @param containerData the container data
      * 
      * @return the opening tag
      */
-    protected static String getTagOpen(String tagName, String containerName, String tagClass, String containerData) {
+    protected static String getTagOpen(
+        String tagName,
+        String containerName,
+        String tagClass,
+        boolean nested,
+        boolean online,
+        String containerData) {
 
         StringBuffer buffer = new StringBuffer(32);
-        buffer.append("<").append(tagName).append(" id=\"").append(containerName).append("\" ");
+        buffer.append("<").append(tagName).append(" ");
+        if (online && nested) {
+            // omit generated ids when online 
+        } else {
+            buffer.append(" id=\"").append(containerName).append("\" ");
+        }
         if (containerData != null) {
             buffer.append(" rel=\"").append(containerData).append("\" ");
             // set the marker CSS class
@@ -531,11 +544,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
 
                 pageContext.getOut().print(
-                    getTagOpen(
-                        tagName,
-                        getName(),
-                        getTagClass(),
-                        isOnline ? null : getContainerData(cms, maxElements, isUsedAsDetailView, detailOnly)));
+                    getTagOpen(tagName, getName(), getTagClass(), isNested(), isOnline, isOnline
+                    ? null
+                    : getContainerData(cms, maxElements, isUsedAsDetailView, detailOnly)));
 
                 standardContext.setContainer(container);
                 // validate the type
@@ -663,7 +674,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
      */
     public String getName() {
 
-        if ((m_parentContainer != null) && (m_parentElement != null)) {
+        if (isNested()) {
             return m_parentElement.getInstanceId() + "-" + m_name;
         }
         return m_name;
@@ -911,6 +922,16 @@ public class CmsJspTagContainer extends BodyTagSupport {
             result = OpenCms.getRoleManager().hasRole(cms, CmsRole.ELEMENT_AUTHOR);
         }
         return result;
+    }
+
+    /** 
+     * Returns true if this is a nested container.<p>
+     * 
+     * @return true if this is a nested container 
+     */
+    protected boolean isNested() {
+
+        return (m_parentContainer != null) && (m_parentElement != null);
     }
 
     /**
