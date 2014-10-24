@@ -573,16 +573,16 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         cmsImport.importData(parameters);
         String importScript = importedModule.getImportScript();
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(importScript)) {
-            LOG.info("Executing import script for module " + importedModule.getName() + ":\n" + importScript);
+            LOG.info("Executing import script for module " + importedModule.getName());
+            report.println(Messages.get().container(Messages.RPT_IMPORT_SCRIPT_HEADER_0), I_CmsReport.FORMAT_HEADLINE);
+            importScript = "echo on\n" + importScript;
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             PrintStream out = new PrintStream(buffer);
             CmsShell shell = new CmsShell(cms, "${user}@${project}:${siteroot}|${uri}>", null, out, out);
             shell.execute(importScript);
             String outputString = buffer.toString();
-            LOG.info("Shell output was: \n" + outputString);
-            if (outputString.toLowerCase().contains("exception")) {
-                LOG.error("Shell output was: \n" + outputString);
-            }
+            LOG.info("Shell output for import script was: \n" + outputString);
+            report.println(Messages.get().container(Messages.RPT_IMPORT_SCRIPT_OUTPUT_1, outputString));
         }
         return importedModule;
     }

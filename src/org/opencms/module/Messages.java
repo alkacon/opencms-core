@@ -248,6 +248,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_IMPORT_MODULE_END_0 = "RPT_IMPORT_MODULE_END_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMPORT_SCRIPT_HEADER_0 = "RPT_IMPORT_SCRIPT_HEADER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMPORT_SCRIPT_OUTPUT_1 = "RPT_IMPORT_SCRIPT_OUTPUT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_PUBLISH_PROJECT_BEGIN_0 = "RPT_PUBLISH_PROJECT_BEGIN_0";
 
     /** Message constant for key in the resource bundle. */
