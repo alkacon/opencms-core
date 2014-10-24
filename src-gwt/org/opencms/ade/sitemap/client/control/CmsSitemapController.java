@@ -445,12 +445,23 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
             @Override
             @SuppressWarnings("synthetic-access")
-            protected void onResponse(CmsModelPageEntry result) {
+            protected void onResponse(final CmsModelPageEntry result) {
 
                 stop(false);
+                loadNewElementInfo(new AsyncCallback<Void>() {
 
-                CmsSitemapView.getInstance().displayNewModelPage(result);
-                loadNewElementInfo();
+                    public void onFailure(Throwable caught) {
+
+                        // TODO Auto-generated method stub
+
+                    }
+
+                    public void onSuccess(Void v) {
+
+                        CmsSitemapView.getInstance().displayNewModelPage(result);
+                    }
+                });
+
             }
 
         };
@@ -1247,6 +1258,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Loads and displays the category data.<p>
+     * 
+     * @param openLocalCategories true if the local category tree should be opened 
      */
     public void loadCategories(final boolean openLocalCategories) {
 
@@ -1584,8 +1597,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
             protected void onResponse(Void result) {
 
                 stop(false);
-                loadNewElementInfo();
-
+                loadNewElementInfo(null);
                 asyncCallback.onSuccess(null);
 
             }
@@ -2077,8 +2089,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /** 
      * Loads the new element info.<p>
+     * 
+     * @param callback the callback to call when done 
      */
-    private void loadNewElementInfo() {
+    private void loadNewElementInfo(final AsyncCallback<Void> callback) {
 
         CmsRpcAction<List<CmsNewResourceInfo>> newResourceInfoAction = new CmsRpcAction<List<CmsNewResourceInfo>>() {
 
@@ -2096,6 +2110,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 stop(false);
 
                 m_data.setNewElementInfos(result);
+                if (callback != null) {
+                    callback.onSuccess(null);
+                }
             }
 
         };
