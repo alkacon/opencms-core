@@ -142,8 +142,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
      */
     public static CmsListItemWidget createListWidget(CmsGalleryType galleryType) {
 
-        CmsListInfoBean infoBean = new CmsListInfoBean(galleryType.getNiceName(), Messages.get().key(
-            Messages.GUI_GALLERY_ROOT_SUBTITLE_0), null);
+        CmsListInfoBean infoBean = new CmsListInfoBean(galleryType.getNiceName(), galleryType.getDescription(), null);
         CmsListItemWidget result = new CmsListItemWidget(infoBean);
         result.setIcon(CmsIconUtil.getResourceIconClasses(galleryType.getTypeName(), null, false));
         return result;
