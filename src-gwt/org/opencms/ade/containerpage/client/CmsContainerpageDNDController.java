@@ -250,6 +250,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         boolean isListItem = draggable instanceof CmsListItem;
         CmsContainerPageElementPanel listContainerElement = null;
         final boolean[] triggerReload = {false};
+        boolean hasWritePermissions = true;
 
         if (target != m_initialDropTarget) {
             if (target instanceof I_CmsDropContainer) {
@@ -265,7 +266,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         containerElement.setNewType(CmsContainerpageController.getServerId(m_draggableId));
                     } else {
                         CmsContainerElementData elementData = m_controller.getCachedElement(m_draggableId);
-
+                        hasWritePermissions = elementData.hasWritePermission();
                         containerElement = m_controller.getContainerpageUtil().createElement(elementData, container);
                         if (isListItem) {
                             listContainerElement = containerElement;
@@ -387,6 +388,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 }
             };
             ElementReuseMode reuseMode = CmsContainerpageController.get().getData().getElementReuseMode();
+            if (!hasWritePermissions) {
+                // User is not allowed to create this element in current view, so reuse the element instead 
+                reuseMode = ElementReuseMode.reuse;
+            }
             switch (reuseMode) {
                 case ask:
                     // when dropping elements from the into the page, we ask the user if the dropped element should 
