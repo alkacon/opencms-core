@@ -127,6 +127,7 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
             } else if (xpath.indexOf(CmsWorkplaceConfiguration.N_DEFAULTACCESSCONTROL) > 0) {
                 changed = setAccessEntry(document, xpath, "DEFAULT", "+r+v+w+c") || changed;
                 changed = setAccessEntry(document, xpath, "GROUP.Guests", "-r-v-w-c") || changed;
+                changed = setAccessEntry(document, xpath, "ROLE.ELEMENT_AUTHOR", "+r+v+w+c") || changed;
             }
         }
         return changed;
