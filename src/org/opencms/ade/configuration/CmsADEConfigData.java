@@ -53,6 +53,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,11 +112,14 @@ public class CmsADEConfigData {
      * @param <C> the type of configuration object 
      * @param parentConfigs the parent configurations 
      * @param childConfigs the child configurations 
+     * @param preserveDisabled if true, try to merge parents with disabled children instead of discarding them 
+     * 
      * @return the merged configuration object list 
      */
     public static <C extends I_CmsConfigurationObject<C>> List<C> combineConfigurationElements(
         List<C> parentConfigs,
-        List<C> childConfigs) {
+        List<C> childConfigs,
+        boolean preserveDisabled) {
 
         List<C> result = new ArrayList<C>();
         Map<String, C> map = new LinkedHashMap<String, C>();
@@ -129,7 +133,7 @@ public class CmsADEConfigData {
         }
         for (C child : Lists.reverse(childConfigs)) {
             String childKey = child.getKey();
-            if (child.isDisabled()) {
+            if (child.isDisabled() && !preserveDisabled) {
                 map.remove(childKey);
             } else {
                 C parent = map.get(childKey);
@@ -424,7 +428,10 @@ public class CmsADEConfigData {
             parentModelPages = Collections.emptyList();
         }
 
-        List<CmsModelPageConfig> result = combineConfigurationElements(parentModelPages, m_data.getOwnModelPageConfig());
+        List<CmsModelPageConfig> result = combineConfigurationElements(
+            parentModelPages,
+            m_data.getOwnModelPageConfig(),
+            false);
         return result;
     }
 
@@ -454,7 +461,8 @@ public class CmsADEConfigData {
         }
         List<CmsPropertyConfig> result = combineConfigurationElements(
             parentProperties,
-            m_data.getOwnPropertyConfigurations());
+            m_data.getOwnPropertyConfigurations(),
+            false);
         return result;
     }
 
@@ -506,7 +514,7 @@ public class CmsADEConfigData {
      */
     public List<CmsResourceTypeConfig> getResourceTypes() {
 
-        List<CmsResourceTypeConfig> result = internalGetResourceTypes();
+        List<CmsResourceTypeConfig> result = internalGetResourceTypes(true);
         for (CmsResourceTypeConfig config : result) {
             config.initialize(getCms());
         }
@@ -855,28 +863,41 @@ public class CmsADEConfigData {
     /**
      * Helper method for getting the list of resource types.<p>
      * 
+     * @param filterDisabled true if disabled types should be filtered from the result
+     * 
      * @return the list of resource types 
      */
-    protected List<CmsResourceTypeConfig> internalGetResourceTypes() {
+    protected List<CmsResourceTypeConfig> internalGetResourceTypes(boolean filterDisabled) {
 
         CmsADEConfigData parentData = parent();
         List<CmsResourceTypeConfig> parentResourceTypes = null;
-        if ((parentData == null) || m_data.isDiscardInheritedTypes()) {
+        if (parentData == null) {
             parentResourceTypes = Lists.newArrayList();
         } else {
             parentResourceTypes = Lists.newArrayList();
-            for (CmsResourceTypeConfig typeConfig : parentData.internalGetResourceTypes()) {
-                parentResourceTypes.add(typeConfig.copy());
+            for (CmsResourceTypeConfig typeConfig : parentData.internalGetResourceTypes(false)) {
+                CmsResourceTypeConfig copiedType = typeConfig.copy(m_data.isDiscardInheritedTypes());
+                parentResourceTypes.add(copiedType);
             }
         }
         List<CmsResourceTypeConfig> result = combineConfigurationElements(
             parentResourceTypes,
-            m_data.getOwnResourceTypes());
+            m_data.getOwnResourceTypes(),
+            true);
         if (m_data.isCreateContentsLocally()) {
             for (CmsResourceTypeConfig typeConfig : result) {
                 typeConfig.updateBasePath(CmsStringUtil.joinPaths(
                     m_data.getBasePath(),
                     CmsADEManager.CONTENT_FOLDER_NAME));
+            }
+        }
+        if (filterDisabled) {
+            Iterator<CmsResourceTypeConfig> iter = result.iterator();
+            while (iter.hasNext()) {
+                CmsResourceTypeConfig typeConfig = iter.next();
+                if (typeConfig.isDisabled()) {
+                    iter.remove();
+                }
             }
         }
         return result;

@@ -331,12 +331,19 @@ public class CmsADEConfigDataInternal {
             parentFunctionRefs = Collections.emptyList();
         }
 
-        m_ownResourceTypes = CmsADEConfigData.combineConfigurationElements(parentTypes, m_ownResourceTypes);
+        m_ownResourceTypes = CmsADEConfigData.combineConfigurationElements(parentTypes, m_ownResourceTypes, false);
         m_ownPropertyConfigurations = CmsADEConfigData.combineConfigurationElements(
             parentProperties,
-            m_ownPropertyConfigurations);
-        m_ownModelPageConfig = CmsADEConfigData.combineConfigurationElements(parentModelPages, m_ownModelPageConfig);
-        m_functionReferences = CmsADEConfigData.combineConfigurationElements(parentFunctionRefs, m_functionReferences);
+            m_ownPropertyConfigurations,
+            false);
+        m_ownModelPageConfig = CmsADEConfigData.combineConfigurationElements(
+            parentModelPages,
+            m_ownModelPageConfig,
+            false);
+        m_functionReferences = CmsADEConfigData.combineConfigurationElements(
+            parentFunctionRefs,
+            m_functionReferences,
+            false);
     }
 
     /**

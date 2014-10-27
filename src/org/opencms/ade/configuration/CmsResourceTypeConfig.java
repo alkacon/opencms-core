@@ -473,9 +473,19 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         CmsFolderOrName folderOrName = childConfig.m_folderOrName != null ? childConfig.m_folderOrName : m_folderOrName;
         String namePattern = childConfig.m_namePattern != null ? childConfig.m_namePattern : m_namePattern;
         CmsUUID elementView = childConfig.m_elementView != null ? childConfig.m_elementView : m_elementView;
-        return new CmsResourceTypeConfig(m_typeName, false, folderOrName, namePattern, isDetailPagesDisabled()
-            || childConfig.isDetailPagesDisabled(), childConfig.isAddDisabled(), elementView, m_order);
-
+        CmsResourceTypeConfig result = new CmsResourceTypeConfig(
+            m_typeName,
+            false,
+            folderOrName,
+            namePattern,
+            isDetailPagesDisabled() || childConfig.isDetailPagesDisabled(),
+            childConfig.isAddDisabled(),
+            elementView,
+            m_order);
+        if (childConfig.isDisabled()) {
+            result.m_disabled = true;
+        }
+        return result;
     }
 
     /**
@@ -485,9 +495,21 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     protected CmsResourceTypeConfig copy() {
 
+        return copy(false);
+    }
+
+    /**
+     * Creates a shallow copy of this resource type configuration object.<p>
+     * 
+     * @param disabled true if the copy should be disabled regardless of whether the original is disabled 
+     * 
+     * @return a copy of the resource type configuration object 
+     */
+    protected CmsResourceTypeConfig copy(boolean disabled) {
+
         return new CmsResourceTypeConfig(
             m_typeName,
-            m_disabled,
+            m_disabled || disabled,
             getFolderOrName(),
             m_namePattern,
             m_detailPagesDisabled,
