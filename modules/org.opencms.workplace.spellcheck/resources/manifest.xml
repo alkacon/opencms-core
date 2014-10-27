@@ -15,7 +15,7 @@
 		<class>org.opencms.search.solr.spellchecking.CmsSpellcheckingModuleAction</class>
 		<description><![CDATA[<p>This module contains the OpenCms spellcheck dictionaries.</p>
 <p><i>&copy; 2013 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>9.4.0</version>
+		<version>9.5.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
