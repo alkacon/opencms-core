@@ -1081,7 +1081,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
         m_iconPanel.setVisible(false);
         m_title.setText(infoBean.getTitle());
-        m_subtitle.setText(infoBean.getSubTitle());
+        setSubtitleLabel(infoBean.getSubTitle());
 
         // set the resource type icon if present
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getResourceType())) {

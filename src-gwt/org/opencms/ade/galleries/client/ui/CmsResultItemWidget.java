@@ -31,6 +31,7 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsToolTipHandler;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
@@ -68,6 +69,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
     public CmsResultItemWidget(CmsResultItemBean infoBean) {
 
         super(infoBean);
+        setSubtitleTitle(infoBean.getPath());
         setIcon(CmsIconUtil.getResourceIconClasses(infoBean.getType(), infoBean.getPath(), false));
 
         // if resourceType=="image" prepare for tile view
@@ -110,6 +112,23 @@ public class CmsResultItemWidget extends CmsListItemWidget {
     public boolean hasTileView() {
 
         return m_hasTileView;
+    }
+
+    /**
+     * Initializes the title attribute of the subtitle line.<p>
+     * 
+     * @param subtitleTitle the value to set 
+     */
+    public void setSubtitleTitle(final String subtitleTitle) {
+
+        m_subtitle.setTitle(subtitleTitle);
+        m_subtitle.setTitleGenerator(new I_TitleGenerator() {
+
+            public String getTitle(String originalText) {
+
+                return subtitleTitle;
+            }
+        });
     }
 
     /**
