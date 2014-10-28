@@ -210,8 +210,8 @@ div.itemAdditionalValue{
 	height:16px;
 }
 
-@sprite li.expired div.itemContent{
-	gwt-image: "backgrounds.invalidStateBackground";
+li.expired div.itemContent{
+	background-image:  repeating-linear-gradient(45deg, transparent, transparent 15px, rgba(252,255,255,.5) 15px, rgba(255,255,255,.5) 30px);
 	background-position: 50% 50%;
 	height: auto;
 }
