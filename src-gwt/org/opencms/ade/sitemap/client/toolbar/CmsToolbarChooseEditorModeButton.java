@@ -162,13 +162,13 @@ public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
         m_entries.add(new EditorModeEntry(
             Messages.get().key(Messages.GUI_ONLY_GALLERIES_BUTTON_TITLE_0),
             EditorMode.galleries));
-        if (m_canEditModelPages) {
-            m_entries.add(new EditorModeEntry(Messages.get().key(Messages.GUI_MODEL_PAGES_0), EditorMode.modelpages));
-        }
         if (CmsCoreProvider.get().getUserInfo().isCategoryManager()) {
             m_entries.add(new EditorModeEntry(
                 Messages.get().key(Messages.GUI_CONTEXTMENU_CATEGORY_MODE_0),
                 EditorMode.categories));
+        }
+        if (m_canEditModelPages) {
+            m_entries.add(new EditorModeEntry(Messages.get().key(Messages.GUI_MODEL_PAGES_0), EditorMode.modelpages));
         }
 
         CmsContextMenu menu = new CmsContextMenu(m_entries, false, getPopup());
