@@ -78,8 +78,18 @@ public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow() {
 
-        setVisible(!CmsSitemapView.getInstance().isGalleryMode()
-            || getHoverbar().getController().getData().isGalleryManager());
+        setVisible(checkVisible());
+    }
+
+    /**
+     * Checks if the menu entry should be visible.<p>
+     *  
+     * @return true if the menu entry should be visible 
+     */
+    protected boolean checkVisible() {
+
+        return !CmsSitemapView.getInstance().isModelPageMode()
+            && (!CmsSitemapView.getInstance().isGalleryMode() || getHoverbar().getController().getData().isGalleryManager());
     }
 
 }
