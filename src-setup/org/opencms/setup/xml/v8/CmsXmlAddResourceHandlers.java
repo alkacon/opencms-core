@@ -32,6 +32,7 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.main.CmsAliasResourceHandler;
+import org.opencms.pdftools.CmsPdfResourceHandler;
 import org.opencms.setup.xml.A_CmsSetupXmlUpdate;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 
@@ -108,7 +109,8 @@ public class CmsXmlAddResourceHandlers extends A_CmsSetupXmlUpdate {
         if (m_xpaths == null) {
             String[] handlers = new String[] {
                 CmsDetailPageResourceHandler.class.getName(),
-                CmsAliasResourceHandler.class.getName()};
+                CmsAliasResourceHandler.class.getName(),
+                CmsPdfResourceHandler.class.getName()};
             m_xpaths = new ArrayList<String>();
             for (String handler : handlers) {
                 // "/opencms/system/resourceinit/resourceinithandler[@class='...']";
