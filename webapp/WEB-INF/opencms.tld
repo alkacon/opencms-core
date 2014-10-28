@@ -1651,7 +1651,17 @@
             <name>type</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                An optional container parameter.
+                This is useful for a dynamically generated nested container,
+                to pass information to the formatter used inside that container.
+            ]]></description>
+            <name>param</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>                  
         <attribute>
         	<description><![CDATA[
         		The maximal number of elements that can be placed in the container.</P>

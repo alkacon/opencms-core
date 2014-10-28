@@ -63,6 +63,9 @@ public class CmsContainerBean {
     /** The container name. */
     private final String m_name;
 
+    /** The optional container parameter. */
+    private String m_param;
+
     /** The parent element instance id. */
     private String m_parentInstanceId;
 
@@ -188,6 +191,21 @@ public class CmsContainerBean {
     }
 
     /**
+     * Returns the (optional) container parameter.<p>
+     * 
+     * This is useful for a dynamically generated nested container,
+     * to pass information to the formatter used inside that container. 
+     * 
+     * If no parameters have been set, this will return <code>null</code>
+     *  
+     * @return the (optional) container parameter
+     */
+    public String getParam() {
+
+        return m_param;
+    }
+
+    /**
      * Returns the the parent instance id.<p>
      * 
      * @return the parent instance id
@@ -255,6 +273,19 @@ public class CmsContainerBean {
     public void setMaxElements(int maxElements) {
 
         m_maxElements = maxElements;
+    }
+
+    /**
+     * Sets the container parameter.<p>
+     * 
+     * This is useful for a dynamically generated nested container,
+     * to pass information to the formatter used inside that container. 
+     *  
+     * @param param the parameter String to set
+     */
+    public void setParam(String param) {
+
+        m_param = param;
     }
 
     /**

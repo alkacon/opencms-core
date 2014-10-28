@@ -148,6 +148,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
     /** The container width as a string. */
     private String m_width;
 
+    /** The optional container parameter. */
+    private String m_param;
+
     /**
      * Ensures the appropriate formatter configuration ID is set in the element settings.<p>
      * 
@@ -607,6 +610,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
         // clear all members so the tag object may be reused
         m_type = null;
         m_name = null;
+        m_param = null;
         m_maxElements = null;
         m_tag = null;
         m_tagClass = null;
@@ -678,6 +682,21 @@ public class CmsJspTagContainer extends BodyTagSupport {
             return m_parentElement.getInstanceId() + "-" + m_name;
         }
         return m_name;
+    }
+
+    /**
+     * Returns the (optional) container parameter.<p>
+     * 
+     * This is useful for a dynamically generated nested container,
+     * to pass information to the formatter used inside that container. 
+     * 
+     * If no parameters have been set, this will return <code>null</code>
+     *  
+     * @return the (optional) container parameter
+     */
+    public String getParam() {
+
+        return m_param;
     }
 
     /**
@@ -770,6 +789,19 @@ public class CmsJspTagContainer extends BodyTagSupport {
     public void setName(String name) {
 
         m_name = name;
+    }
+
+    /**
+     * Sets the container parameter.<p>
+     * 
+     * This is useful for a dynamically generated nested container,
+     * to pass information to the formatter used inside that container. 
+     *  
+     * @param param the parameter String to set
+     */
+    public void setParam(String param) {
+
+        m_param = param;
     }
 
     /**
