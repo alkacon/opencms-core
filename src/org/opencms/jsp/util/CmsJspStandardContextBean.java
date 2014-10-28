@@ -50,6 +50,7 @@ import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
@@ -1065,6 +1066,16 @@ public final class CmsJspStandardContextBean {
 
         return m_cms.getRequestContext().removeSiteRoot(
             OpenCms.getADEManager().getSubSiteRoot(m_cms, m_cms.getRequestContext().getRootUri()));
+    }
+
+    /**
+     * Returns the system information.<p>
+     * 
+     * @return the system information
+     */
+    public CmsSystemInfo getSystemInfo() {
+
+        return OpenCms.getSystemInfo();
     }
 
     /**

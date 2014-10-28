@@ -211,26 +211,26 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
 
             assertEquals("Unexpected version ID '" + versionId + "'", "Manual build", versionId);
 
-            Map<String, String[]> info = OpenCms.getSystemInfo().getBuildInfo();
-            String[] value;
+            Map<String, CmsSystemInfo.BuildInfoItem> info = OpenCms.getSystemInfo().getBuildInfo();
+            CmsSystemInfo.BuildInfoItem value;
 
             value = info.get("build.number");
-            assertEquals("(not set)", value[0]);
-            assertEquals("Build Number", value[1]);
+            assertEquals("(not set)", value.getValue());
+            assertEquals("Build Number", value.getNiceName());
 
             value = info.get("build.date");
-            assertEquals("(not set)", value[0]);
-            assertEquals("Build Date", value[1]);
+            assertEquals("(not set)", value.getValue());
+            assertEquals("Build Date", value.getNiceName());
 
             value = info.get("build.info");
-            assertEquals("Static version file", value[0]);
-            assertEquals("build.info", value[1]);
+            assertEquals("Static version file", value.getValue());
+            assertEquals("build.info", value.getNiceName());
         } else if (versionId.startsWith("Release")
             || versionId.startsWith("Nightly")
             || versionId.startsWith("Milestone")) {
             // assume a build triggered by the Jenkins CI system
 
-            Map<String, String[]> info = OpenCms.getSystemInfo().getBuildInfo();
+            Map<String, CmsSystemInfo.BuildInfoItem> info = OpenCms.getSystemInfo().getBuildInfo();
             // make sure we have the required values set
             assertNotNull("build.number not set", info.get("build.number"));
             assertNotNull("build.date not set", info.get("build.date"));
@@ -239,10 +239,14 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
             assertNotNull("build.gitid not set", info.get("build.gitid"));
             assertNotNull("build.gitbranch not set", info.get("build.gitbranch"));
 
+            assertEquals("Expected keys do not match", "build.number", info.get("build.number").getKeyName());
+            assertEquals("Expected keys do not match", "build.date", info.get("build.date").getKeyName());
+            assertEquals("Expected keys do not match", "build.system", info.get("build.system").getKeyName());
+
             // the git commit ID should be 7 chars long
-            assertTrue(info.get("build.gitid")[0].length() == 7);
+            assertTrue(info.get("build.gitid").getValue().length() == 7);
             // the build system name is hard coded
-            assertEquals("Jenkins", info.get("build.system")[0]);
+            assertEquals("Jenkins", info.get("build.system").getValue());
         } else {
             fail("No valid version information for test cases found, version id is '"
                 + OpenCms.getSystemInfo().getVersionId()

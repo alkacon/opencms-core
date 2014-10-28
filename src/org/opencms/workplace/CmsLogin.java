@@ -1298,24 +1298,6 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("</td></tr></table>\n");
         html.append("</td></tr></table>\n");
 
-        //        html.append("<table style='margin-left:auto; margin-right: auto; margin-bottom: 10px'>");
-        //        Set<String> keys = OpenCms.getSystemInfo().getBuildInfoKeys();
-        //        for (String key : keys) {
-        //            BuildInfoItem item = OpenCms.getSystemInfo().getBuildInfoItem(key);
-        //            html.append("<tr>");
-        //
-        //            html.append("<td>");
-        //            html.append(CmsEncoder.escapeXml(item.getNiceName() + ":"));
-        //            html.append("</td>");
-        //
-        //            html.append("<td>");
-        //            html.append(CmsEncoder.escapeXml(item.getValue()));
-        //            html.append("</td>");
-        //
-        //            html.append("</tr>");
-        //        }
-        //        html.append("</table>");
-
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
         html.append("<a href=\"http://www.opencms.org\" target=\"_blank\">OpenCms</a> ");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0));

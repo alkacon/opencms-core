@@ -181,8 +181,8 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Creates a default project.<p>
      * 
      * This created project has the following properties:<ul>
-     * <li>The users groups is the default user group
-     * <li>The project managers group is the default project manager group
+     * <li>The users group is the default user group
+     * <li>The users group is also the default project manager group
      * <li>All resources are contained in the project
      * <li>The project will remain after publishing</ul>
      * 
@@ -199,7 +199,7 @@ class CmsShellCommands implements I_CmsShellCommands {
                 name,
                 description,
                 OpenCms.getDefaultUsers().getGroupUsers(),
-                OpenCms.getDefaultUsers().getGroupAdministrators(),
+                OpenCms.getDefaultUsers().getGroupUsers(),
                 CmsProject.PROJECT_TYPE_NORMAL);
             m_cms.getRequestContext().setCurrentProject(project);
             m_cms.copyResourceToProject("/");

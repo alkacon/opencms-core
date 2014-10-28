@@ -37,7 +37,6 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -62,37 +61,57 @@ public class CmsSystemInfo {
      */
     public class BuildInfoItem {
 
-        /** The build information. */
-        private String[] m_data;
+        /** The build information value. */
+        private String m_value;
+
+        /** The nice name for display. */
+        private String m_niceName;
+
+        /** The key name. */
+        private String m_keyName;
 
         /**
          * Creates a new instance wrapping a build info string array.<p>
          * 
-         * @param data the data to wrap 
+         * @param value the value
+         * @param niceName the nice name 
+         * @param keyName the key name
          */
-        public BuildInfoItem(String[] data) {
+        public BuildInfoItem(String value, String niceName, String keyName) {
 
-            m_data = data;
+            m_value = value;
+            m_niceName = niceName;
+            m_keyName = keyName;
         }
 
         /**
-         * Gets the nice name for the build info.<p>
+         * Gets the key name for this build info item.<p>
+         * 
+         * @return the value 
+         */
+        public String getKeyName() {
+
+            return m_keyName;
+        }
+
+        /**
+         * Gets the nice name for this build info item.<p>
          * 
          * @return the nice name 
          */
         public String getNiceName() {
 
-            return m_data[1];
+            return m_niceName;
         }
 
         /**
-         * Gets the value for the build info.<p>
+         * Gets the value for this build info item.<p>
          * 
          * @return the value 
          */
         public String getValue() {
 
-            return m_data[0];
+            return m_value;
         }
     }
 
@@ -134,7 +153,7 @@ public class CmsSystemInfo {
     private static final String DEFAULT_VERSION_NUMBER = "9.x.y";
 
     /** The list of additional version information that was contained in the version.properties file. */
-    private Map<String, String[]> m_buildInfo;
+    private Map<String, BuildInfoItem> m_buildInfo;
 
     /** The absolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
@@ -271,37 +290,9 @@ public class CmsSystemInfo {
      * 
      * @since 9.5.0
      */
-    public Map<String, String[]> getBuildInfo() {
+    public Map<String, BuildInfoItem> getBuildInfo() {
 
         return m_buildInfo;
-    }
-
-    /**
-     * Gets the build info item for the given key.<p>
-     * 
-     * Returns null if there is no build info item for the given key
-     * 
-     * @param key the key to look up 
-     * 
-     * @return the info item for the given key
-     */
-    public BuildInfoItem getBuildInfoItem(String key) {
-
-        String[] data = m_buildInfo.get(key);
-        if (data == null) {
-            return null;
-        }
-        return new BuildInfoItem(data);
-    }
-
-    /**
-     * Gets the keys of the available build infos.<p>
-     * 
-     * @return the set of keys of available build infos
-     */
-    public Set<String> getBuildInfoKeys() {
-
-        return m_buildInfo.keySet();
     }
 
     /**
@@ -811,14 +802,14 @@ public class CmsSystemInfo {
         m_versionNumber = props.getProperty("version.number", DEFAULT_VERSION_NUMBER);
         m_versionId = props.getProperty("version.id", DEFAULT_VERSION_ID);
         m_version = "OpenCms/" + m_versionNumber;
-        m_buildInfo = new TreeMap<String, String[]>();
+        m_buildInfo = new TreeMap<String, BuildInfoItem>();
 
         // iterate the properties and generate the build information from the entries
         for (String key : props.stringPropertyNames()) {
             if (!"version.number".equals(key) && !"version.id".equals(key) && !key.startsWith("nicename")) {
                 String value = props.getProperty(key);
                 String nicename = props.getProperty("nicename." + key, key);
-                m_buildInfo.put(key, new String[] {value, nicename});
+                m_buildInfo.put(key, new BuildInfoItem(value, nicename, key));
             }
         }
         // make the map unmodifiable

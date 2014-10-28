@@ -23,10 +23,10 @@
     <table>
     <tr><td>Version:</td><td><%= OpenCms.getSystemInfo().getVersionNumber() %></td></tr>
 <%
-    String mailBody = "OpenCms Version: " + OpenCms.getSystemInfo().getVersionNumber() + "\r\n\r\n";
-    for (String key : OpenCms.getSystemInfo().getBuildInfoKeys()) {
-        CmsSystemInfo.BuildInfoItem item = OpenCms.getSystemInfo().getBuildInfoItem(key);        
-        mailBody += item.getNiceName() + ": " + item.getValue() + "\r\n";
+        String mailBody = "OpenCms Version: " + OpenCms.getSystemInfo().getVersionNumber() + "\r\n\r\n";
+        for (String key : OpenCms.getSystemInfo().getBuildInfo().keySet()) {
+            CmsSystemInfo.BuildInfoItem item = OpenCms.getSystemInfo().getBuildInfo().get(key);        
+            mailBody += item.getNiceName() + ": " + item.getValue() + "\r\n";
 %>
     <tr><td><%= CmsEncoder.escapeXml(item.getNiceName())%>:</td><td><%= CmsEncoder.escapeXml(item.getValue()) %></td></tr>
 <%

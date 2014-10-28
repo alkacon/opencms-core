@@ -162,7 +162,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
                 if (group != null) {
                     if (group.getSimpleName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
-                        // in case the administrators group is selected, the administrator role must be selected alse
+                        // in case the administrators group is selected, the administrator role must be selected also
                         if (getRole().equals(NO_ROLE)) {
                             throw new CmsIllegalArgumentException(Messages.get().container(
                                 Messages.ERR_ADD_TO_ADMINISTRATORS_GROUP_0));
