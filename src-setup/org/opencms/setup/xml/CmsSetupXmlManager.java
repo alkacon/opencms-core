@@ -223,6 +223,7 @@ public class CmsSetupXmlManager {
             m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlSetCategoryFolder());
         }
 
+        m_plugins.add(new org.opencms.setup.xml.v9.CmsXmlUpdateDefaultPermissions());
         m_plugins.add(new org.opencms.setup.xml.v9.CmsXmlCleanUpSearchConfiguration());
 
         setup();
