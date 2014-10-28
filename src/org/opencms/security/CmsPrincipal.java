@@ -202,17 +202,12 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
      */
     public static I_CmsPrincipal readPrefixedPrincipal(CmsObject cms, String name) throws CmsException {
 
-        if (CmsStringUtil.isNotEmpty(name)) {
-            String upperCaseName = name.toUpperCase();
-            if (upperCaseName.startsWith(I_CmsPrincipal.PRINCIPAL_GROUP)) {
-                // this principal is a group
-                String groupName = name.substring(I_CmsPrincipal.PRINCIPAL_GROUP.length() + 1);
-                return cms.readGroup(groupName);
-            } else if (upperCaseName.startsWith(I_CmsPrincipal.PRINCIPAL_USER)) {
-                // this principal is a user
-                String userName = name.substring(I_CmsPrincipal.PRINCIPAL_USER.length() + 1);
-                return cms.readUser(userName);
-            }
+        if (CmsGroup.hasPrefix(name)) {
+            // this principal is a group
+            return cms.readGroup(CmsGroup.removePrefix(name));
+        } else if (CmsUser.hasPrefix(name)) {
+            // this principal is a user
+            return cms.readUser(CmsUser.removePrefix(name));
         }
         // invalid principal name was given
         throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, name));

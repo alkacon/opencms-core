@@ -31,6 +31,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Locale;
@@ -71,6 +72,52 @@ public class CmsGroup extends CmsPrincipal {
         m_description = description;
         m_flags = flags;
         m_parentId = parentId;
+    }
+
+    /**
+     * Checks if the given String starts with {@link I_CmsPrincipal#PRINCIPAL_GROUP} followed by a dot.<p>
+     * 
+     * <ul>
+     * <li>Works if the given String is <code>null</code>.
+     * <li>Removes white spaces around the String before the check.
+     * <li>Also works with prefixes not being in upper case.
+     * <li>Does not check if the group after the prefix actually exists.
+     * </ul>
+     * 
+     * @param principalName the group name to check
+     * 
+     * @return <code>true</code> in case the String starts with {@link I_CmsPrincipal#PRINCIPAL_GROUP}
+     */
+    public static boolean hasPrefix(String principalName) {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(principalName)
+            && (principalName.trim().toUpperCase().startsWith(I_CmsPrincipal.PRINCIPAL_GROUP + "."));
+    }
+
+    /**
+     * Removes the prefix if the given String starts with {@link I_CmsPrincipal#PRINCIPAL_GROUP} followed by a dot.<p>
+     * 
+     * <ul>
+     * <li>Works if the given String is <code>null</code>.
+     * <li>If the given String does not start with {@link I_CmsPrincipal#PRINCIPAL_GROUP} followed by a dot it is returned unchanged.
+     * <li>Removes white spaces around the group name.
+     * <li>Also works with prefixes not being in upper case. 
+     * <li>Does not check if the group after the prefix actually exists.
+     * </ul>
+     * 
+     * @param principalName the group name to remove the prefix from
+     * 
+     * @return the given String with the prefix {@link I_CmsPrincipal#PRINCIPAL_GROUP} with the following dot removed
+     */
+    public static String removePrefix(String principalName) {
+
+        String result = principalName;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(principalName)) {
+            if (hasPrefix(principalName)) {
+                result = principalName.trim().substring(I_CmsPrincipal.PRINCIPAL_GROUP.length() + 1);
+            }
+        }
+        return result;
     }
 
     /**

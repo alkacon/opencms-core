@@ -62,6 +62,7 @@ import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
 import org.opencms.search.solr.CmsSolrField;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPrincipal;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsDefaultSet;
@@ -1257,16 +1258,34 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         boolean result = false;
 
         try {
+            List<CmsRole> roles = OpenCms.getRoleManager().getRolesOfUser(cms, user.getName(), "", true, false, true);
             List<CmsGroup> groups = cms.getGroupsOfUser(user.getName(), false);
-            String[] allowedGroups = params.split("\\|");
+
+            String[] allowedPrincipals = params.split("\\|");
             List<String> groupNames = new ArrayList<String>();
+            List<String> roleNames = new ArrayList<String>();
+
             for (CmsGroup group : groups) {
                 groupNames.add(group.getName());
             }
-            for (int i = 0; i < allowedGroups.length; i++) {
-                if (groupNames.contains(allowedGroups[i])) {
-                    result = true;
-                    break;
+            for (CmsRole role : roles) {
+                roleNames.add(role.getRoleName());
+            }
+            for (String principal : allowedPrincipals) {
+                if (CmsRole.hasPrefix(principal)) {
+                    // prefixed as a role
+                    principal = CmsRole.removePrefix(principal);
+                    if (roleNames.contains(principal)) {
+                        result = true;
+                        break;
+                    }
+                } else {
+                    // otherwise we always assume this is a group, will work if prefixed or not
+                    principal = CmsGroup.removePrefix(principal);
+                    if (groupNames.contains(principal)) {
+                        result = true;
+                        break;
+                    }
                 }
             }
         } catch (CmsException e) {
@@ -3323,12 +3342,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         // should be written regardless of whether there is a sibling with the correct locale
                         mapToUrlName = true;
                     }
-                    {
-                        Locale locale = OpenCms.getLocaleManager().getDefaultLocale(rootCms, filename);
-                        if (!locale.equals(valueLocale)) {
-                            // only map property if the locale fits
-                            continue;
-                        }
+                    Locale locale = OpenCms.getLocaleManager().getDefaultLocale(rootCms, filename);
+                    if (!locale.equals(valueLocale)) {
+                        // only map property if the locale fits
+                        continue;
                     }
 
                     // make sure the file is locked

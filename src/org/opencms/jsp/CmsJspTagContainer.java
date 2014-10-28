@@ -36,6 +36,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
@@ -50,7 +51,6 @@ import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -872,7 +872,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 // get the principal name from the principal String
                 String principal = key.substring(key.indexOf('.') + 1, key.length());
 
-                if (key.startsWith(I_CmsPrincipal.PRINCIPAL_GROUP)) {
+                if (CmsGroup.hasPrefix(key)) {
                     // read the group
                     principal = OpenCms.getImportExportManager().translateGroup(principal);
                     try {
@@ -893,7 +893,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                             LOG.error(e.getLocalizedMessage(), e);
                         }
                     }
-                } else if (key.startsWith(I_CmsPrincipal.PRINCIPAL_USER)) {
+                } else if (CmsUser.hasPrefix(key)) {
                     // read the user
                     principal = OpenCms.getImportExportManager().translateUser(principal);
                     try {
@@ -903,7 +903,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                             LOG.error(e.getLocalizedMessage(), e);
                         }
                     }
-                } else {
+                } else if (CmsRole.hasPrefix(key)) {
                     // read the role with role name
                     CmsRole role = CmsRole.valueOfRoleName(principal);
                     if (role == null) {

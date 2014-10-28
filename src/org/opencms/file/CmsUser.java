@@ -204,6 +204,52 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     }
 
     /**
+     * Checks if the given String starts with {@link I_CmsPrincipal#PRINCIPAL_USER} followed by a dot.<p>
+     * 
+     * <ul>
+     * <li>Works if the given String is <code>null</code>.
+     * <li>Removes white spaces around the String before the check.
+     * <li>Also works with prefixes not being in upper case.
+     * <li>Does not check if the user after the prefix actually exists.
+     * </ul>
+     * 
+     * @param principalName the user name to check
+     * 
+     * @return <code>true</code> in case the String starts with {@link I_CmsPrincipal#PRINCIPAL_USER} followed by a dot 
+     */
+    public static boolean hasPrefix(String principalName) {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(principalName)
+            && (principalName.trim().toUpperCase().startsWith(I_CmsPrincipal.PRINCIPAL_USER + "."));
+    }
+
+    /**
+     * Removes the prefix if the given String starts with {@link I_CmsPrincipal#PRINCIPAL_USER} followed by a dot.<p>
+     * 
+     * <ul>
+     * <li>Works if the given String is <code>null</code>.
+     * <li>If the given String does not start with {@link I_CmsPrincipal#PRINCIPAL_USER} followed by a dot it is returned unchanged.
+     * <li>Removes white spaces around the user name.
+     * <li>Also works with prefixes not being in upper case.
+     * <li>Does not check if the user after the prefix actually exists.
+     * </ul>
+     * 
+     * @param principalName the user name to remove the prefix from
+     * 
+     * @return the given String with the prefix {@link I_CmsPrincipal#PRINCIPAL_USER} and the following dot removed
+     */
+    public static String removePrefix(String principalName) {
+
+        String result = principalName;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(principalName)) {
+            if (hasPrefix(principalName)) {
+                result = principalName.trim().substring(I_CmsPrincipal.PRINCIPAL_USER.length() + 1);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Checks if the provided user name is a valid user name and can be used as an argument value 
      * for {@link #setName(String)}.<p> 
      * 

@@ -284,6 +284,52 @@ public final class CmsRole {
     }
 
     /**
+     * Checks if the given String starts with {@link #PRINCIPAL_ROLE} followed by a dot.<p>
+     * 
+     * <ul>
+     * <li>Works if the given String is <code>null</code>.
+     * <li>Removes white spaces around the String before the check.
+     * <li>Also works with prefixes not being in upper case.
+     * <li>Does not check if the role after the prefix actually exists.
+     * </ul>
+     * 
+     * @param principalName the potential role name to check
+     * 
+     * @return <code>true</code> in case the String starts with {@link #PRINCIPAL_ROLE}
+     */
+    public static boolean hasPrefix(String principalName) {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(principalName)
+            && (principalName.trim().toUpperCase().startsWith(PRINCIPAL_ROLE + "."));
+    }
+
+    /**
+     * Removes the prefix if the given String starts with {@link #PRINCIPAL_ROLE} followed by a dot.<p>
+     * 
+     * <ul>
+     * <li>Works if the given String is <code>null</code>.
+     * <li>If the given String does not start with {@link #PRINCIPAL_ROLE} followed by a dot it is returned unchanged.
+     * <li>Removes white spaces around the role name.
+     * <li>Also works with prefixes not being in upper case.
+     * <li>Does not check if the role after the prefix actually exists.
+     * </ul>
+     * 
+     * @param principalName the role name to remove the prefix from
+     * 
+     * @return the given String with the prefix {@link #PRINCIPAL_ROLE} and the following dot removed
+     */
+    public static String removePrefix(String principalName) {
+
+        String result = principalName;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(principalName)) {
+            if (hasPrefix(principalName)) {
+                result = principalName.trim().substring(PRINCIPAL_ROLE.length() + 1);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the role for the given group.<p>
      * 
      * @param group a group to check for role representation
