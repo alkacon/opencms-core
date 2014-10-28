@@ -354,7 +354,7 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
                     if (elem == null) {
                         for (String classname : classNames) {
-                            CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule("sitemap", classname), "");
+                            CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule("sitemap-wpuser", classname), "");
                         }
                         return true;
                     }
@@ -382,7 +382,12 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
                         if (elem == null) {
                             for (String classname : classNames) {
-                                CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule("sitemap", classname), "");
+                                CmsSetupXmlHelper.setValue(
+                                    doc,
+                                    xpathForMenuItemRule(
+                                        "containerpage-no-different-site-and-has-editor-role",
+                                        classname),
+                                    "");
                             }
                             return true;
                         }
@@ -408,7 +413,7 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
                     if (elem == null) {
                         for (String classname : classNames) {
-                            CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule("sitemap", classname), "");
+                            CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule("containerpage-wpuser", classname), "");
                         }
                         return true;
                     }
