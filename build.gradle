@@ -796,6 +796,12 @@ task updater (dependsOn: setupJar, type: Zip){
         include 'conf/solrconfig.xml'
         include 'solr.xml'
     }
+    from ("${projectDir}/webapp/WEB-INF/solr") {
+        into '/WEB-INF/solr-complete/'
+        include '*'
+        include '**/*'
+    }
+    
     from ("${projectDir}/webapp/update/readme.txt"){
         filter(ReplaceTokens, tokens: [
             OPENCMS_VERSION_NUMBER: version,

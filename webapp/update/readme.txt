@@ -120,6 +120,9 @@ WEB-INF/solr folder. Else if you have customized the Solr configuration you migh
 want to merge the 'schema.xml' and the 'solrconfig.xml' first. When you are done 
 set the attribute enabled to 'true' again (and restart the servelt container).
 
+If you are updating from an earlier version than 8.5.0, copy the solr-complete/ 
+folder to the solr folder instead. 
+
 
 7. Shutdown and restart your OpenCms servlet container
 
