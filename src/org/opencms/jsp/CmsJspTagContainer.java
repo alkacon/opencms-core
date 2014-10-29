@@ -536,6 +536,8 @@ public class CmsJspTagContainer extends BodyTagSupport {
                     ? m_parentElement.getInstanceId()
                     : null, maxElements, Collections.<CmsContainerElementBean> emptyList());
                 }
+                // set the parameter
+                container.setParam(getParam());
                 // set the detail only flag
                 container.setDetailOnly(detailOnly);
                 boolean isUsedAsDetailView = false;
