@@ -1445,6 +1445,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     needsChanges = true;
                     String typeName = OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName();
                     CmsResourceTypeConfig typeConfig = configData.getResourceType(typeName);
+                    if (typeConfig == null) {
+                        throw new IllegalArgumentException("Can not copy template model element '"
+                            + element.getResource().getRootPath()
+                            + "' because the resource type '"
+                            + typeName
+                            + "' is not available in this sitemap.");
+                    }
+
                     CmsResource newResource = typeConfig.createNewElement(cloneCms, element.getResource());
                     CmsContainerElementBean newBean = new CmsContainerElementBean(
                         newResource.getStructureId(),
