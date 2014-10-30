@@ -1059,6 +1059,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     parentPath = CmsStringUtil.joinPaths(parentPath, elementName);
                     I_CmsXmlSchemaType type = definition.getSchemaType(parentPath);
                     Set<String> tempScopes = new HashSet<String>();
+                    if (type.getMaxOccurs() == Integer.MAX_VALUE) {
+                        throw new IllegalStateException(
+                            "Can not use fields with unbounded maxOccurs in scopes for editor change handler.");
+                    }
                     for (int j = 0; j < type.getMaxOccurs(); j++) {
                         if (evaluatedScopes.isEmpty()) {
                             tempScopes.add(elementName + "[" + (j + 1) + "]");
