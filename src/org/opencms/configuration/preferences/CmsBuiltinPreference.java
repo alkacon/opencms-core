@@ -42,6 +42,9 @@ public class CmsBuiltinPreference extends A_CmsPreference {
     /** True if this is a basic preference. */
     protected boolean m_basic;
 
+    /** True if this is a hidden preference. */
+    protected boolean m_hidden;
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsBuiltinPreference.class);
 
@@ -87,17 +90,17 @@ public class CmsBuiltinPreference extends A_CmsPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(m_propName,//name
-            "string",//type
-            null,//widget
-            null,//widgetconfig
-            null,//regex
-            null,//ruletype
-            null,//default
-            null,//nicename
-            null,//description
-            null,//error
-            null//preferfolder
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(m_propName, // name
+            "string", // type
+            null, //widget
+            null, //widgetconfig
+            null, //regex
+            null, //ruletype
+            null, //default
+            null, //nicename
+            null, //description
+            null, //error
+            null //preferfolder
         );
         return prop;
     }
@@ -107,7 +110,7 @@ public class CmsBuiltinPreference extends A_CmsPreference {
      */
     public String getTab() {
 
-        return m_basic ? "basic" : "extended";
+        return m_hidden ? "hidden" : (m_basic ? "basic" : "extended");
     }
 
     /**

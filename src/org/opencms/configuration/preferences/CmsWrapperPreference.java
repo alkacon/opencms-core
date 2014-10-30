@@ -92,16 +92,16 @@ public class CmsWrapperPreference implements I_CmsPreference {
         CmsXmlContentProperty configProp = m_prefData.getPropertyDefinition();
         CmsXmlContentProperty wrappedProp = m_wrappedPreference.getPropertyDefinition(cms);
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
-            "string",//type
-            firstNotNull(configProp.getWidget(), wrappedProp.getWidget()),//widget
-            firstNotNull(configProp.getWidgetConfiguration(), wrappedProp.getWidgetConfiguration()),//widgetconfig
-            firstNotNull(configProp.getRuleRegex(), wrappedProp.getRuleRegex()),//regex
-            firstNotNull(configProp.getRuleType(), wrappedProp.getRuleType()),//ruletype
-            null,//default
-            firstNotNull(configProp.getNiceName(), wrappedProp.getNiceName()),//nicename
-            firstNotNull(configProp.getDescription(), wrappedProp.getDescription()),//description
-            firstNotNull(configProp.getError(), wrappedProp.getError()),//error
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+            "string", //type
+            firstNotNull(configProp.getWidget(), wrappedProp.getWidget()), //widget
+            firstNotNull(configProp.getWidgetConfiguration(), wrappedProp.getWidgetConfiguration()), //widgetconfig
+            firstNotNull(configProp.getRuleRegex(), wrappedProp.getRuleRegex()), //regex
+            firstNotNull(configProp.getRuleType(), wrappedProp.getRuleType()), //ruletype
+            null, //default
+            firstNotNull(configProp.getNiceName(), wrappedProp.getNiceName()), //nicename
+            firstNotNull(configProp.getDescription(), wrappedProp.getDescription()), //description
+            firstNotNull(configProp.getError(), wrappedProp.getError()), //error
             null//preferfolder
         );
 
@@ -133,7 +133,7 @@ public class CmsWrapperPreference implements I_CmsPreference {
     }
 
     /**
-     * Returns the first non-null value 
+     * Returns the first non-null value.<p>
      * 
      * @param a a value 
      * @param b another value 

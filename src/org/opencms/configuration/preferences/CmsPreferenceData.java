@@ -93,7 +93,7 @@ public class CmsPreferenceData {
     }
 
     /** 
-     * Gets the tab on which the preference should be displayed 
+     * Gets the tab on which the preference should be displayed.<p>
      * 
      * @return the tab on which the preference should be displayed 
      */

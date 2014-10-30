@@ -43,7 +43,7 @@ public class CmsTimeWarpPreference extends CmsBuiltinPreference {
     public CmsTimeWarpPreference(String name) {
 
         super(name);
-        m_basic = true;
+        m_basic = false;
     }
 
     /**
@@ -52,16 +52,16 @@ public class CmsTimeWarpPreference extends CmsBuiltinPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
-            "string",//type
-            "datebox",//widget
-            null,//widgetconfig
-            null,//regex
-            null,//ruletype
-            null,//default
-            "%(key." + org.opencms.workplace.commons.Messages.GUI_LABEL_TIMEWARP_0 + ")",//nicename
-            null,//description
-            null,//error
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+            "string", //type
+            "datebox", //widget
+            null, //widgetconfig
+            null, //regex
+            null, //ruletype
+            null, //default
+            "%(key." + org.opencms.workplace.commons.Messages.GUI_LABEL_TIMEWARP_0 + ")", //nicename
+            null, //description
+            null, //error
             null//preferfolder
         );
         return prop;

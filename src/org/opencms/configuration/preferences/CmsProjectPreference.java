@@ -52,7 +52,7 @@ public class CmsProjectPreference extends CmsBuiltinPreference {
     public CmsProjectPreference(String name) {
 
         super(name);
-        m_basic = true;
+        m_basic = false;
     }
 
     /**
@@ -61,16 +61,16 @@ public class CmsProjectPreference extends CmsBuiltinPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
-            "string",//type
-            null,//widget
-            null,//widgetconfig
-            null,//regex
-            null,//ruletype
-            null,//default
-            NICE_NAME,//nicename
-            null,//description
-            null,//error
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+            "string", //type
+            null, //widget
+            null, //widgetconfig
+            null, //regex
+            null, //ruletype
+            null, //default
+            NICE_NAME, //nicename
+            null, //description
+            null, //error
             null//preferfolder
         );
         return prop;
@@ -83,16 +83,16 @@ public class CmsProjectPreference extends CmsBuiltinPreference {
     public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
-            "string",//type
-            "select_notnull",//widget
-            CmsPreferences.getProjectSelectOptionsStatic(cms, "", locale).toClientSelectWidgetConfiguration(),//widgetconfig
-            null,//regex
-            null,//ruletype
-            null,//default
-            NICE_NAME,//nicename
-            null,//description
-            null,//error
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+            "string", //type
+            "select_notnull", //widget
+            CmsPreferences.getProjectSelectOptionsStatic(cms, "", locale).toClientSelectWidgetConfiguration(), //widgetconfig
+            null, //regex
+            null, //ruletype
+            null, //default
+            NICE_NAME, //nicename
+            null, //description
+            null, //error
             null//preferfolder) 
         );
         return prop;

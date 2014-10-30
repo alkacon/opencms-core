@@ -56,7 +56,7 @@ public class CmsElementViewPreference extends CmsBuiltinPreference {
     public CmsElementViewPreference(String propName) {
 
         super(propName);
-        m_basic = true;
+        m_basic = false;
     }
 
     /**

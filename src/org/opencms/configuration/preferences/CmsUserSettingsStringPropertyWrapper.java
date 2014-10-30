@@ -58,6 +58,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the allow broken relations
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getAllowBrokenRelations() {
 
         return "" + m_settings.isAllowBrokenRelations();
@@ -68,6 +69,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the dialog copy file mode
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getDialogCopyFileMode() {
 
         return m_settings.getDialogCopyFileModeString();
@@ -78,6 +80,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the dialog copy folder mode
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getDialogCopyFolderMode() {
 
         return m_settings.getDialogCopyFolderModeString();
@@ -88,6 +91,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the dialog delete file mode
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getDialogDeleteFileMode() {
 
         return m_settings.getDialogDeleteFileModeString();
@@ -98,6 +102,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the dialog expand inherited permissions
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getDialogExpandInheritedPermissions() {
 
         return m_settings.getDialogExpandInheritedPermissionsString();
@@ -108,6 +113,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the dialog expand user permissions
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getDialogExpandUserPermissions() {
 
         return m_settings.getDialogExpandUserPermissionsString();
@@ -118,6 +124,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the dialog permissions inherit on folder
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getDialogPermissionsInheritOnFolder() {
 
         return m_settings.getDialogPermissionsInheritOnFolderString();
@@ -128,6 +135,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the dialog publish siblings
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getDialogPublishSiblings() {
 
         return m_settings.getDialogPublishSiblingsString();
@@ -138,6 +146,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the dialog show export settings
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getDialogShowExportSettings() {
 
         return m_settings.getDialogShowExportSettingsString();
@@ -148,6 +157,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the dialog show lock
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getDialogShowLock() {
 
         return m_settings.getDialogShowLockString();
@@ -158,6 +168,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the direct edit button style
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getDirectEditButtonStyle() {
 
         return m_settings.getDirectEditButtonStyleString();
@@ -168,6 +179,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the editor button style
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getEditorButtonStyle() {
 
         return m_settings.getEditorButtonStyleString();
@@ -189,6 +201,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the explorer button style
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getExplorerButtonStyle() {
 
         return m_settings.getExplorerButtonStyleString();
@@ -199,6 +212,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the explorer file entries
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getExplorerFileEntries() {
 
         return "" + m_settings.getExplorerFileEntries();
@@ -209,6 +223,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the explorer file entry options
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getExplorerFileEntryOptions() {
 
         if (m_settings.getExplorerFileEntryOptions() == null) {
@@ -223,6 +238,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the list all projects
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getListAllProjects() {
 
         return m_settings.getListAllProjectsString();
@@ -244,6 +260,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the new folder create index page
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getNewFolderCreateIndexPage() {
 
         return m_settings.getNewFolderCreateIndexPage().toString();
@@ -254,6 +271,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the new folder edit properties
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getNewFolderEditProperties() {
 
         return m_settings.getNewFolderEditProperties().toString();
@@ -264,6 +282,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the publish button appearance
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getPublishButtonAppearance() {
 
         return m_settings.getPublishButtonAppearance();
@@ -274,6 +293,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the publish related resources mode
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getPublishRelatedResourcesMode() {
 
         return "" + m_settings.getPublishRelatedResources();
@@ -284,6 +304,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the restrict explorer view
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getRestrictExplorerView() {
 
         return m_settings.getRestrictExplorerViewString();
@@ -294,6 +315,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show explorer file date created
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowExplorerFileDateCreated() {
 
         return m_settings.getShowExplorerFileDateCreated();
@@ -304,6 +326,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show explorer file date expired
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowExplorerFileDateExpired() {
 
         return m_settings.getShowExplorerFileDateExpired();
@@ -314,6 +337,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show explorer file date last modified
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowExplorerFileDateLastModified() {
 
         return m_settings.getShowExplorerFileDateLastModified();
@@ -324,6 +348,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show explorer file date released
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowExplorerFileDateReleased() {
 
         return m_settings.getShowExplorerFileDateReleased();
@@ -334,6 +359,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show explorer file locked by
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowExplorerFileLockedBy() {
 
         return m_settings.getShowExplorerFileLockedBy();
@@ -344,6 +370,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show explorer file nav text
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowExplorerFileNavText() {
 
         return m_settings.getShowExplorerFileNavText();
@@ -354,6 +381,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show explorer file permissions
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowExplorerFilePermissions() {
 
         return m_settings.getShowExplorerFilePermissions();
@@ -364,6 +392,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show explorer file size
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowExplorerFileSize() {
 
         return m_settings.getShowExplorerFileSize();
@@ -374,6 +403,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show explorer file state
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowExplorerFileState() {
 
         return m_settings.getShowExplorerFileState();
@@ -384,6 +414,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show explorer file title
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowExplorerFileTitle() {
 
         return m_settings.getShowExplorerFileTitle();
@@ -394,6 +425,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show explorer file type
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowExplorerFileType() {
 
         return m_settings.getShowExplorerFileType();
@@ -404,6 +436,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show explorer file user created
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowExplorerFileUserCreated() {
 
         return m_settings.getShowExplorerFileUserCreated();
@@ -414,6 +447,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show explorer file user last modified
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowExplorerFileUserLastModified() {
 
         return m_settings.getShowExplorerFileUserLastModified();
@@ -424,6 +458,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show file upload button
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowFileUploadButton() {
 
         return m_settings.getShowFileUploadButtonString();
@@ -434,6 +469,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show publish notification
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowPublishNotification() {
 
         return m_settings.getShowPublishNotificationString();
@@ -444,6 +480,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the show upload type dialog
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getShowUploadTypeDialog() {
 
         return "" + m_settings.getShowUploadTypeDialog();
@@ -520,6 +557,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the upload applet client folder
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getUploadAppletClientFolder() {
 
         return m_settings.getUploadAppletClientFolder();
@@ -530,6 +568,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the upload variant
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getUploadVariant() {
 
         return m_settings.getUploadVariant().toString();
@@ -540,6 +579,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the workplace button style
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getWorkplaceButtonStyle() {
 
         return m_settings.getWorkplaceButtonStyleString();
@@ -550,6 +590,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the workplace report type
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getWorkplaceReportType() {
 
         return m_settings.getWorkplaceReportType();
@@ -561,6 +602,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the workplace search index name
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getWorkplaceSearchIndexName() {
 
         return m_settings.getWorkplaceSearchIndexName();
@@ -571,6 +613,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the workplace search view style
      */
+    @PrefMetadata(type = CmsHiddenBuiltinPreference.class)
     public String getWorkplaceSearchViewStyle() {
 
         return m_settings.getWorkplaceSearchViewStyle().toString();

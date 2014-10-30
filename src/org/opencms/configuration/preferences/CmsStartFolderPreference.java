@@ -36,7 +36,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 public class CmsStartFolderPreference extends CmsBuiltinPreference {
 
     /**
-     * The nice name 
+     * The nice name.<p>
      */
     private static final String NICE_NAME = "%(key."
         + org.opencms.workplace.commons.Messages.GUI_PREF_STARTUP_FOLDER_0
@@ -59,16 +59,16 @@ public class CmsStartFolderPreference extends CmsBuiltinPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
-            null,//type
-            null,//widget
-            null,//widgetconfig
-            null,//regex
-            null,//ruletype
-            null,//default
-            NICE_NAME,//nicename
-            null,//description
-            null,//error
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+            null, //type
+            null, //widget
+            null, //widgetconfig
+            null, //regex
+            null, //ruletype
+            null, //default
+            NICE_NAME, //nicename
+            null, //description
+            null, //error
             null//preferfolder
         );
         return prop;
@@ -80,16 +80,16 @@ public class CmsStartFolderPreference extends CmsBuiltinPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
-            "string",//type
-            "gallery",//widget
-            "configuration:{\"tabconfig\":\"folders\", \"gallerymode\":\"widget\"}",//widgetconfig
-            null,//regex
-            null,//ruletype
-            null,//default
-            NICE_NAME,//nicename
-            null,//description
-            null,//error
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+            "string", //type
+            "gallery", //widget
+            "configuration:{\"tabconfig\":\"folders\", \"gallerymode\":\"widget\"}", //widgetconfig
+            null, //regex
+            null, //ruletype
+            null, //default
+            NICE_NAME, //nicename
+            null, //description
+            null, //error
             null//preferfolder
         );
         return prop;

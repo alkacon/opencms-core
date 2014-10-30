@@ -78,16 +78,16 @@ public class CmsEditorPreference extends A_CmsPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
-            "string",//type
-            null,//widget
-            null,//widgetconfig
-            null,//regex
-            null,//ruletype
-            null,//default
-            null,//nicename
-            null,//description
-            null,//error
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+            "string", //type
+            null, //widget
+            null, //widgetconfig
+            null, //regex
+            null, //ruletype
+            null, //default
+            null, //nicename
+            null, //description
+            null, //error
             null//preferfolder
         );
         return prop;
@@ -98,7 +98,7 @@ public class CmsEditorPreference extends A_CmsPreference {
      */
     public String getTab() {
 
-        return "extended";
+        return "hidden";
     }
 
     /**

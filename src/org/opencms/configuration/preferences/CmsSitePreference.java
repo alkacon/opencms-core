@@ -62,16 +62,16 @@ public class CmsSitePreference extends CmsBuiltinPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
-            "string",//type
-            null,//widget
-            null,//widgetconfig
-            null,//regex
-            null,//ruletype
-            null,//default
-            NICE_NAME,//nicename
-            null,//description
-            null,//error
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+            "string", //type
+            null, //widget
+            null, //widgetconfig
+            null, //regex
+            null, //ruletype
+            null, //default
+            NICE_NAME, //nicename
+            null, //description
+            null, //error
             null//preferfolder
         );
         return prop;
@@ -85,16 +85,16 @@ public class CmsSitePreference extends CmsBuiltinPreference {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         SelectOptions options = CmsPreferences.getSiteSelectOptionsStatic(cms, "DUMMY SITE VALUE", locale);
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
-            "string",//type
-            "select_notnull",//widget
-            options.toClientSelectWidgetConfiguration(),//widgetconfig
-            null,//regex
-            null,//ruletype
-            null,//default
-            NICE_NAME,//nicename
-            null,//description
-            null,//error
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+            "string", //type
+            "select_notnull", //widget
+            options.toClientSelectWidgetConfiguration(), //widgetconfig
+            null, //regex
+            null, //ruletype
+            null, //default
+            NICE_NAME, //nicename
+            null, //description
+            null, //error
             null//preferfolder
         );
         return prop;
