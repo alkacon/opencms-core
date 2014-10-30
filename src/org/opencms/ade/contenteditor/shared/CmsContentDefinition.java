@@ -275,7 +275,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
      * @param attributeConfigurations the attribute configurations
      * @param considerDefaults if default values should be added according to minimum occurrence settings
      */
-    public static void transfereValues(
+    public static void transferValues(
         CmsEntity original,
         CmsEntity target,
         List<String> transferAttributes,
@@ -340,7 +340,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
                                 && (originalAttribute.getComplexValues().size() > i)
                             ? originalAttribute.getComplexValues().get(i)
                             : null;
-                            transfereValues(
+                            transferValues(
                                 subOriginal,
                                 subTarget,
                                 transferAttributes,

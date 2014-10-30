@@ -919,7 +919,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param target the target entiy
      * @param visitor the type visitor holding the content type configuration
      */
-    protected void transfereInvisibleValues(CmsEntity original, CmsEntity target, CmsContentTypeVisitor visitor) {
+    protected void transferInvisibleValues(CmsEntity original, CmsEntity target, CmsContentTypeVisitor visitor) {
 
         List<String> invisibleAttributes = new ArrayList<String>();
         for (Entry<String, CmsAttributeConfiguration> configEntry : visitor.getAttributeConfigurations().entrySet()) {
@@ -927,7 +927,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 invisibleAttributes.add(configEntry.getKey());
             }
         }
-        CmsContentDefinition.transfereValues(
+        CmsContentDefinition.transferValues(
             original,
             target,
             invisibleAttributes,
@@ -1523,7 +1523,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         content.addLocale(cms, contentLocale);
         if ((visitor != null) && visitor.hasInvisibleFields()) {
-            transfereInvisibleValues(originalEntity, entity, visitor);
+            transferInvisibleValues(originalEntity, entity, visitor);
         }
         addEntityAttributes(cms, content, "", entity, contentLocale);
         content.synchronizeLocaleIndependentValues(cms, skipPaths, contentLocale);
