@@ -38,6 +38,7 @@ import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -225,6 +226,10 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      */
     public List<CmsContainerPageElementPanel> getGroupChildren() {
 
+        if (m_children == null) {
+            // can happen when saving element groups
+            return Collections.emptyList();
+        }
         return m_children;
     }
 

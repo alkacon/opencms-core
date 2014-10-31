@@ -2908,7 +2908,8 @@ public final class CmsContainerpageController {
                     org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)elIt.next();
                     elemWidgets.add(elementWidget);
                     if (includeGroupContents && (elementWidget instanceof CmsGroupContainerElementPanel)) {
-                        elemWidgets.addAll(((CmsGroupContainerElementPanel)elementWidget).getGroupChildren());
+                        List<CmsContainerPageElementPanel> groupChildren = ((CmsGroupContainerElementPanel)elementWidget).getGroupChildren();
+                        elemWidgets.addAll(groupChildren);
                     }
                 } catch (ClassCastException e) {
                     // no proper container element, skip it (this should never happen!)
