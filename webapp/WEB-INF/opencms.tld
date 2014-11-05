@@ -273,7 +273,7 @@
     	<attribute>
     		<description>
     			Link (VFS URI) to the content that should be rendered in the PDF. 
-    			The content given here can be accessed via the <code>&lt;cms:formatter&gt;</code> tag in the JSP provided by the <code>format</code> attribute.
+    			The content given here can be accessed via the &lt;cms:formatter&gt; tag in the JSP provided by the format attribute.
     		</description>
     		<name>content</name>
     		<required>true</required>
