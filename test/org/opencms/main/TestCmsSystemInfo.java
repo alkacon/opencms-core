@@ -192,7 +192,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
 
         String version = OpenCms.getSystemInfo().getVersionNumber();
         // make sure to bump this up with every major version number, or else the test would fail ;)
-        String expectedVersion = "9.4";
+        String expectedVersion = "9.5";
 
         assertTrue("OpenCms Version number not set correctly, expected prefix ["
             + expectedVersion

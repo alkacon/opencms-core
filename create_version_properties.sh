@@ -6,7 +6,7 @@
 # you need to change the version number only here and no where else.
 # It can be accessed in OpenCms by OpenCms.getSystemInfo().getVersionNumber().
 #
-OPENCMS_VERSION_NUMBER="${OpenCmsNumber:-9.4.x}"
+OPENCMS_VERSION_NUMBER="${OpenCmsNumber:-9.5.x}"
 
 #
 # The type of build generated.
