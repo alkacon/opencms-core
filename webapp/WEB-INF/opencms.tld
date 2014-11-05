@@ -257,22 +257,32 @@
 
     <tag>
     	<description>
-    		This tag is used to generate a link to a PDF generated from an XML content given the path of the XML content.
+    		This tag can be used for PDF generation. The primary use case is the PDF output of a specific content.
+    		It expands to a link for a PDF which is generated on the fly when the link is requested.
+    		The PDF is generated from an XHTML document via the Java library "Flying Saucer".
     	</description>
     	<name>pdf</name>
     	<tag-class>org.opencms.jsp.CmsJspTagPdf</tag-class>
     	<body-content>JSP</body-content>
     	<attribute>
+    		<description>Link (VFS URI) to the JSP that renders the XHTML used to render the PDF.</description>
     		<name>format</name>
     		<required>true</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     	<attribute>
+    		<description>
+    			Link (VFS URI) to the content that should be rendered in the PDF. 
+    			The content given here can be accessed via the <code>&lt;cms:formatter&gt;</code> tag in the JSP provided by the <code>format</code> attribute.
+    		</description>
     		<name>content</name>
     		<required>true</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     	<attribute>
+    		<description>
+    			The locale in which the content should be accessed. If not given, the current request locale is used as default.
+    		</description>
     		<name>locale</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>
