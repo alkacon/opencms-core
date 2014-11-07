@@ -123,7 +123,6 @@ public class CmsPointerLoader extends CmsDumpLoader {
      * 
      * @return the pointer with the parameters
      */
-    @SuppressWarnings("unchecked")
     private static String appendLinkParams(String pointerLink, HttpServletRequest req) {
 
         String result = pointerLink;

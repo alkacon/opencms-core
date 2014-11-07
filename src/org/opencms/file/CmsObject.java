@@ -479,10 +479,35 @@ public final class CmsObject {
      *
      * @throws CmsException if something goes wrong
      */
-    public void chtype(String resourcename, int type) throws CmsException {
+    public void chtype(String resourcename, I_CmsResourceType type) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource).chtype(this, m_securityManager, resource, type);
+    }
+
+    /**
+     * Changes the resource type of a resource.<p>
+     *
+     * OpenCms handles resources according to the resource type,
+     * not the file suffix. This is e.g. why a JSP in OpenCms can have the
+     * suffix ".html" instead of ".jsp" only. Changing the resource type
+     * makes sense e.g. if you want to make a plain text file a JSP resource,
+     * or a binary file an image, etc.<p>
+     *
+     * @param resourcename the name of the resource to change the type for (full current site relative path)
+     * @param type the new resource type for this resource
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @deprecated
+     * Use {@link #chtype(String, I_CmsResourceType)} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
+    public void chtype(String resourcename, int type) throws CmsException {
+
+        chtype(resourcename, getResourceType(type));
     }
 
     /**
@@ -727,7 +752,8 @@ public final class CmsObject {
      *
      * @see #createResource(String, int, byte[], List)
      */
-    public CmsResource createResource(String resourcename, int type) throws CmsException, CmsIllegalArgumentException {
+    public CmsResource createResource(String resourcename, I_CmsResourceType type)
+    throws CmsException, CmsIllegalArgumentException {
 
         return createResource(resourcename, type, new byte[0], new ArrayList<CmsProperty>(0));
     }
@@ -746,10 +772,64 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>resourcename</code> argument is null or of length 0
      */
+    public CmsResource createResource(
+        String resourcename,
+        I_CmsResourceType type,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException {
+
+        return type.createResource(this, m_securityManager, resourcename, content, properties);
+    }
+
+    /**
+     * Creates a new resource of the given resource type with
+     * empty content and no properties.<p>
+     *
+     * @param resourcename the name of the resource to create (full current site relative path)
+     * @param type the type of the resource to create
+     *
+     * @return the created resource
+     *
+     * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the given <code>resourcename</code> is null or of length 0
+     *
+     * @see #createResource(String, int, byte[], List)
+     *
+     * @deprecated
+     * Use {@link #createResource(String, I_CmsResourceType)} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
+    public CmsResource createResource(String resourcename, int type) throws CmsException, CmsIllegalArgumentException {
+
+        return createResource(resourcename, getResourceType(type), new byte[0], new ArrayList<CmsProperty>(0));
+    }
+
+    /**
+     * Creates a new resource of the given resource type
+     * with the provided content and properties.<p>
+     *
+     * @param resourcename the name of the resource to create (full current site relative path)
+     * @param type the type of the resource to create
+     * @param content the contents for the new resource
+     * @param properties the properties for the new resource
+     *
+     * @return the created resource
+     *
+     * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>resourcename</code> argument is null or of length 0
+     *
+     * @deprecated
+     * Use {@link #createResource(String, I_CmsResourceType, byte[], List)} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
     public CmsResource createResource(String resourcename, int type, byte[] content, List<CmsProperty> properties)
     throws CmsException, CmsIllegalArgumentException {
 
-        return getResourceType(type).createResource(this, m_securityManager, resourcename, content, properties);
+        return createResource(resourcename, getResourceType(type), content, properties);
     }
 
     /**
@@ -3376,11 +3456,36 @@ public final class CmsObject {
      *
      * @throws CmsException if something goes wrong
      */
-    public void replaceResource(String resourcename, int type, byte[] content, List<CmsProperty> properties)
-    throws CmsException {
+    public void replaceResource(
+        String resourcename,
+        I_CmsResourceType type,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource).replaceResource(this, m_securityManager, resource, type, content, properties);
+    }
+
+    /**
+     * Replaces the content, type and properties of a resource.<p>
+     *
+     * @param resourcename the name of the resource to replace (full current site relative path)
+     * @param type the new type of the resource
+     * @param content the new content of the resource
+     * @param properties the new properties of the resource
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @deprecated
+     * Use {@link #replaceResource(String, I_CmsResourceType, byte[], List)} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
+    public void replaceResource(String resourcename, int type, byte[] content, List<CmsProperty> properties)
+    throws CmsException {
+
+        replaceResource(resourcename, getResourceType(type), content, properties);
     }
 
     /**

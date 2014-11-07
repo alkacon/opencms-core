@@ -1088,7 +1088,7 @@ public class CmsResourceManager {
      */
     public boolean hasResourceType(I_CmsResourceType type) {
 
-        return hasResourceType(type.getTypeId());
+        return hasResourceType(type.getTypeName());
     }
 
     /**
@@ -1098,7 +1098,13 @@ public class CmsResourceManager {
      * @return <code>true</code> if such a resource type has been configured, <code>false</code> otherwise
      * 
      * @see #getResourceType(int)
+     * 
+     * @deprecated
+     * Use {@link #hasResourceType(I_CmsResourceType)} or {@link #hasResourceType(I_CmsResourceType)} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
      */
+    @Deprecated
     public boolean hasResourceType(int typeId) {
 
         return m_configuration.getResourceTypeById(typeId) != null;

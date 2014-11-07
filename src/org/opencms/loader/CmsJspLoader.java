@@ -639,7 +639,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         String target = updateJsp(resource, controller, new HashSet<String>(8));
         // important: Indicate that all output must be buffered
         controller.getCurrentResponse().setOnlyBuffering(true);
-         // initialize the standard contex bean to be available for all requests
+        // initialize the standard contex bean to be available for all requests
         CmsJspStandardContextBean.getInstance(controller.getCurrentRequest());
         // dispatch to external file
         controller.getCurrentRequest().getRequestDispatcherToExternal(cms.getSitePath(resource), target).include(
@@ -1545,6 +1545,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
         Writer out = res.getWriter();
         out.write(content);
+        out.close();
     }
 
     /**
