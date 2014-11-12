@@ -256,33 +256,35 @@
     </tag>   
 
     <tag>
-    	<description>
+    	<description><![CDATA[
     		This tag can be used for PDF generation. The primary use case is the PDF output of a specific content.
     		It expands to a link for a PDF which is generated on the fly when the link is requested.
     		The PDF is generated from an XHTML document via the Java library "Flying Saucer".
-    	</description>
+    	]]></description>
     	<name>pdf</name>
     	<tag-class>org.opencms.jsp.CmsJspTagPdf</tag-class>
     	<body-content>JSP</body-content>
     	<attribute>
-    		<description>Link (VFS URI) to the JSP that renders the XHTML used to render the PDF.</description>
+    		<description><![CDATA[
+    			Link (VFS URI) to the JSP that renders the XHTML used to render the PDF.
+    		]]></description>
     		<name>format</name>
     		<required>true</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     	<attribute>
-    		<description>
+    		<description><![CDATA[
     			Link (VFS URI) to the content that should be rendered in the PDF. 
-    			The content given here can be accessed via the &lt;cms:formatter&gt; tag in the JSP provided by the format attribute.
-    		</description>
+    			The content given here can be accessed via the <code>&lt;cms:formatter&gt;</code> tag in the JSP provided by the format attribute.
+    		]]></description>
     		<name>content</name>
     		<required>true</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     	<attribute>
-    		<description>
+    		<description><![CDATA[
     			The locale in which the content should be accessed. If not given, the current request locale is used as default.
-    		</description>
+    		]]></description>
     		<name>locale</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>
@@ -290,28 +292,41 @@
     </tag>
     
    <tag>
-    	<description>
-    		This tag is used to generate a link to a thumbnail for a PDF.
-    	</description>
+    	<description><![CDATA[
+    		This tag is used to generate a png or jpg thumbnail from a PDF and expands to a link to the thumbnail.
+    		The thumbnail is created when the link is requested for the first time.
+    	]]></description>
     	<name>pdfthumbnail</name>
     	<tag-class>org.opencms.jsp.CmsJspTagPdfThumbnail</tag-class>
     	<body-content>JSP</body-content>
     	<attribute>
+    		<description><![CDATA[
+    			VFS URI of the PDF file for which the thumbnail should be created.
+    		]]></description>
     		<name>file</name>
     		<required>true</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     	<attribute>
+    		<description><![CDATA[
+    			Width (given in Pixel) of the generated thumbnail.
+    		]]></description>
     		<name>width</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     	<attribute>
+    		<description><![CDATA[
+    			Height (given in Pixel) of the generated thumbnail.
+    		]]></description>
     		<name>height</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     	<attribute>
+    		<description><![CDATA[
+    			Format of the generated thumbnail. Either jpg or png.
+    		]]></description>
     		<name>format</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>
