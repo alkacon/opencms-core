@@ -418,7 +418,7 @@ public class CmsXmlSitemapGenerator {
         try {
             requestContext.setUri(pageSitePath);
             requestContext.setLocale(locale);
-            return OpenCms.getLinkManager().getOnlineLink(m_siteGuestCms, detailSitePath);
+            return OpenCms.getLinkManager().getOnlineLink(m_siteGuestCms, detailSitePath, true);
         } finally {
             requestContext.setUri(originalUri);
             requestContext.setLocale(originalLocale);

@@ -61,15 +61,15 @@ import org.apache.commons.logging.Log;
  */
 public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionHandler {
 
-    /** Key for a request context attribute to control whether the getRootPath method uses the current site root for workplace requests.
-     *  The getRootPath method clears this attribute when called.
-     */
-    public static final String DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS = "DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS";
-
     /**
      * Request context attribute name to make the link substitution handler treat the link like an image link.<p>
      */
     public static final String ATTR_IS_IMAGE_LINK = "IS_IMAGE_LINK";
+
+    /** Key for a request context attribute to control whether the getRootPath method uses the current site root for workplace requests.
+     *  The getRootPath method clears this attribute when called. 
+     */
+    public static final String DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS = "DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultLinkSubstitutionHandler.class);
@@ -283,8 +283,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             // check if either the current site or the target site does have a secure server configured
             if (targetSite.hasSecureServer() || currentSite.hasSecureServer()) {
 
-                if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
-                    && !OpenCms.getSiteManager().startsWithShared(vfsName)) {
+                if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
                     // don't make a secure connection to the "/system" folder (why ?)
                     int linkType = -1;
                     try {
