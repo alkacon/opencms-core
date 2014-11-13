@@ -443,7 +443,28 @@ public class CmsLinkManager {
      */
     public String getServerLink(CmsObject cms, String resourceName) {
 
-        String result = substituteLinkForUnknownTarget(cms, resourceName);
+        return getServerLink(cms, resourceName, false);
+    }
+
+    /**
+     * Returns the link for the given resource in the current project, with full server prefix.<p>
+     * 
+     * Like <code>http://site.enterprise.com:8080/index.html</code>.<p>
+     * 
+     * In case the resource name is a full root path, the site from the root path will be used. 
+     * Otherwise the resource is assumed to be in the current site set be the OpenCms user context.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param resourceName the resource to generate the online link for
+     * @param forceSecure forces the secure server prefix 
+     * 
+     * @return the link for the given resource in the current project, with full server prefix
+     * 
+     * @see #getOnlineLink(CmsObject, String)
+     */
+    public String getServerLink(CmsObject cms, String resourceName, boolean forceSecure) {
+
+        String result = substituteLinkForUnknownTarget(cms, resourceName, forceSecure);
         return appendServerPrefix(cms, result, resourceName);
     }
 

@@ -145,6 +145,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** HTTP header Accept-Language. */
     private String m_acceptLanguageHeader;
 
+    /** CMS context with admin permissions. */
+    private CmsObject m_adminCms;
+
     /** Cache for the export links. */
     private Map<String, Boolean> m_cacheExportLinks;
 
@@ -264,9 +267,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** Prefix to use for internal OpenCms files with unsubstituted context values. */
     private String m_vfsPrefixConfigured;
-
-    /** CMS context with admin permissions. */
-    private CmsObject m_adminCms;
 
     /**
      * Creates a new static export property object.<p>
@@ -1845,6 +1845,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         if (!cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             return false;
+        }
+
+        if (fromSecure && OpenCms.getSiteManager().startsWithShared(vfsName)) {
+            // shared folder is not its own site, if we are coming from a secure page then links to shared should also be secure
+            return true;
         }
         String cacheKey = OpenCms.getStaticExportManager().getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName);
         String secureResource = OpenCms.getStaticExportManager().getCacheSecureLinks().get(cacheKey);
