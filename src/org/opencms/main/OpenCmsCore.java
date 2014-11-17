@@ -1701,7 +1701,7 @@ public final class OpenCmsCore {
                     String siteRoot = cms.getRequestContext().getSiteRoot();
                     CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
                     if (site != null) {
-                        url = site.getUrl() + url;
+                        url = site.getServerPrefix(cms, uri) + url;
                     }
                     res.sendRedirect(url);
                     return;
