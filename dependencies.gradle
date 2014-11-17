@@ -21,7 +21,7 @@ dependencies {
     componentsCompile group: 'ant-contrib', name: 'ant-contrib', version: '1.0b3'
     componentsCompile group: 'commons-digester', name: 'commons-digester', version: '1.8'
     componentsCompile group: 'dom4j', name: 'dom4j', version: '1.6.1'
-    componentsCompile group: 'jaxen', name: 'jaxen', version: '1.1.1'
+    componentsCompile group: 'jaxen', name: 'jaxen', version: '1.1.6'
     componentsCompile group: 'org.safehaus.jug', name: 'jug', version: '2.0.0', classifier: 'lgpl'
 
     testCompile group: 'dumbster', name: 'dumbster', version: '1.6'
