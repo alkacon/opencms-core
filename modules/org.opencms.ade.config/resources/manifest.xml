@@ -1626,5 +1626,25 @@
 			<relations />
 			<accesscontrol />
 		</file>
+		<file>
+			<source>system/shared/templatecontexts.json</source>
+			<destination>system/shared/templatecontexts.json</destination>
+			<type>plain</type>
+			<uuidstructure>c9c10d58-25b4-11e3-9fd8-000c29d28104</uuidstructure>
+			<uuidresource>c9c10d59-25b4-11e3-9fd8-000c29d28104</uuidresource>
+			<datelastmodified>Thu, 30 Oct 2014 09:00:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 25 Sep 2013 07:33:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Template device contexts]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 	</files>
 </export>

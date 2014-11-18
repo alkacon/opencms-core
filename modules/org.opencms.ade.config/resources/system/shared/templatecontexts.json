@@ -1,0 +1,156 @@
+{
+	"desktop": {
+		"niceName": "Desktop",
+		"path": "%(template)",
+		"variants": {
+			"small": {
+				"niceName": "Small desktop (1024)" ,
+				"width": 1024,
+				"height": 768
+			},		
+			"big": {
+				"niceName": "Large desktop (1280)" ,
+				"width": 1280,
+				"height": 800
+			}				
+		}				
+	},	
+
+	"tablet": {
+		"niceName": "Tablet", 
+		"path": "%(template)",
+		"variants": {
+			"ipad": {
+				"niceName": "iPad (portrait)" ,
+				"width": 768,
+				"height": 1024
+			},
+			"ipad-ls": {
+				"niceName": "iPad (landscape)" ,
+				"width": 1024,
+				"height": 768
+			},
+			"nexus7": {
+				"niceName": "Nexus 7 (portrait)" ,
+				"width": 604,
+				"height": 966
+			},
+			"nexus7-ls": {
+				"niceName": "Nexus 7 (landscape)" ,
+				"width": 966,
+				"height": 604
+			},			
+			"kindlefire": {
+				"niceName": "Kindle Fire (portrait)" ,
+				"width": 600,
+				"height": 800
+			},
+			"kindlefire-ls": {
+				"niceName": "Kindle Fire (landscape)" ,
+				"width": 800,
+				"height": 600
+			},
+			"galaxytab": {
+				"niceName": "Galaxy Tab (portrait)" ,
+				"width": 600,
+				"height": 1024
+			},		
+			"galaxytab-ls": {
+				"niceName": "Galaxy Tab (landscape)" ,
+				"width": 1024,
+				"height": 600
+			} 
+		}
+	},
+	
+	"mobile": {
+		"niceName": { 
+			"en": "Mobile",
+			"de": "Mobil"
+		},
+		"path": "%(template)",
+		"variants": {
+			"iphone6plus": {
+				"niceName": "iPhone 6 Plus (portrait)",
+				"width": 414,
+				"height": 736
+			},	
+			"iphone6plus-ls": {
+				"niceName": "iPhone 6 Plus (landscape)",
+				"width": 736,
+				"height": 414
+			},				
+			"iphone6": {
+				"niceName": "iPhone 6 (portrait)",
+				"width": 375,
+				"height": 667
+			},
+			"iphone6-ls": {
+				"niceName": "iPhone 6 (landscape)",
+				"width": 667,
+				"height": 375
+			},			
+			"iphone5": {
+				"niceName": "iPhone 5 (portrait)",
+				"width": 320,
+				"height": 568
+			},
+			"iphone5-ls": {
+				"niceName": "iPhone 5 (landscape)",
+				"width": 568,
+				"height": 320
+			},		
+			"iphone4": {
+				"niceName": "iPhone 3-4 (portrait)",
+				"width": 320,
+				"height": 480
+			},
+			"iphone4-ls": {
+				"niceName": "iPhone 3-4 (landscape)",
+				"width": 480,
+				"height": 320
+			},	
+			"nexus5": {
+				"niceName": "Nexus 5 (portrait)",
+				"width": 360,
+				"height": 640
+			},	
+			"nexus5-ls": {
+				"niceName": "Nexus 5 (landscape)",
+				"width": 640,
+				"height": 360
+			},				
+			"galaxys5": {
+				"niceName": "Galaxy S5 (portrait)",
+				"width": 360,
+				"height": 640
+			},			
+			"galaxys5-ls": {
+				"niceName": "Galaxy S5 (landscape)",
+				"width": 640,
+				"height": 360
+			},				
+			"galaxys4": {
+				"niceName": "Galaxy S3/4 (portrait)",
+				"width": 380,
+				"height": 685
+			},			
+			"galaxys4-ls": {
+				"niceName": "Galaxy S3/4 (landscape)",
+				"width": 685,
+				"height": 380
+			},				
+			"andsml": {
+				"niceName": "Small Android (portrait)",
+				"width": 240,
+				"height": 320
+			},
+			"andsml-ls": {
+				"niceName": "Small Android (landscape)",
+				"width": 320,
+				"height": 240
+			} 					
+		}
+		
+	}	
+}
