@@ -9,7 +9,7 @@
 	<ui:style
 		type="org.opencms.gwt.client.ui.preferences.CmsUserSettingsFormFieldPanel.ExternalStyle">
 		
-		@eval accountInfoWidth org.opencms.gwt.client.ui.preferences.CmsUserSettingsDialog.getAccountInfoWidth();
+		
 		
 		.scrollable {
 			/*width: 550px;*/
@@ -23,7 +23,7 @@
 		
 		.accountInfo {
 			margin-left: 10px;
-			width: accountInfoWidth;
+			
 		}
 		
 		.accountInfo table {

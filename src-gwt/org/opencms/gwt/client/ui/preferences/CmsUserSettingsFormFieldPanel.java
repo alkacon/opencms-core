@@ -115,10 +115,10 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
     protected CmsPushButton m_passwordButton;
 
     /** 
-     * The style from the ui.xml  file.
+     * The style from the ui.xml  file. (Note: the field needs to 
      */
-    protected @UiField
-    ExternalStyle style;
+    @UiField
+    protected ExternalStyle style;
 
     /** The tab panel. */
     private CmsTabbedPanel<CmsScrollPanel> m_tabPanel = new CmsTabbedPanel<CmsScrollPanel>(
@@ -225,6 +225,7 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
      */
     public void truncate(String textMetricsKey, int clientWidth) {
 
+        storeTruncation(textMetricsKey, clientWidth);
         for (Panel container : new Panel[] {m_basicSettingsPanel, m_extendedSettingsPanel}) {
             for (Widget widget : container) {
                 if (widget instanceof I_CmsTruncable) {

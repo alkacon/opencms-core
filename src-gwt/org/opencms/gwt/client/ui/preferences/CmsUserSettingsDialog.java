@@ -66,11 +66,8 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
     /** The panel used to edit the preferences. */
     CmsUserSettingsFormFieldPanel m_panel;
 
-    /** The dialog width. */
-    public static final int WIDTH = 1000;
-
     /** The old tab index. */
-    private int m_oldTabIndex = 0;
+    private int m_oldTabIndex;
 
     /** 
      * Creates a new widget instance.<p>
@@ -80,7 +77,7 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
      */
     public CmsUserSettingsDialog(CmsUserSettingsBean userSettings, Runnable finishAction) {
 
-        super("User settings", new CmsForm(false), WIDTH);
+        super("User settings", new CmsForm(false), -1);
         m_finishAction = finishAction;
         m_panel = new CmsUserSettingsFormFieldPanel(userSettings);
 
@@ -114,22 +111,11 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
         handler.setSubmitHandler(this);
         getForm().setFormHandler(handler);
         getForm().render();
-        m_panel.truncate("formFieldPanel", WIDTH);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
         setMainContent(m_panel);
         setModal(true);
         setGlassEnabled(true);
         removePadding();
-    }
-
-    /** 
-     * Gets the width of the account information widget.<p>
-     * 
-     * @return the width 
-     */
-    public static String getAccountInfoWidth() {
-
-        return (WIDTH - 28) + "px";
     }
 
     /**
@@ -155,6 +141,7 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
                 stop(false);
                 CmsUserSettingsDialog dlg = new CmsUserSettingsDialog(result, finishAction);
                 dlg.centerHorizontally(50);
+                dlg.initWidth();
             }
         };
 
@@ -186,6 +173,15 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
             }
         };
         action.execute();
+    }
+
+    /** 
+     * Initializes the width of the dialog contents.<p> 
+     */
+    protected void initWidth() {
+
+        m_panel.truncate("user_settings", getWidth() - 12);
+
     }
 
     /**
