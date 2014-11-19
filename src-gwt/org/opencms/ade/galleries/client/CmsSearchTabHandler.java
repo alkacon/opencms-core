@@ -85,6 +85,15 @@ public class CmsSearchTabHandler extends A_CmsTabHandler {
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#removeParam(java.lang.String)
+     */
+    @Override
+    public void removeParam(String paramKey) {
+
+        m_controller.removeTextSearchParameter(paramKey);
+    }
+
+    /**
      * Delegates the value for the created until date to the controller.<p>
      * 
      * @param createdEnd the created until date as long
@@ -125,6 +134,17 @@ public class CmsSearchTabHandler extends A_CmsTabHandler {
     }
 
     /**
+     * Sets if the search should include expired or unreleased resources.<p>
+     * 
+     * @param includeExpired if the search should include expired or unreleased resources
+     * @param fireEvent true if a change event should be fired 
+     */
+    public void setIncludeExpired(boolean includeExpired, boolean fireEvent) {
+
+        m_controller.setIncludeExpired(includeExpired, fireEvent);
+    }
+
+    /**
      * Delegates the locale value to the controller.<p>
      * 
      * @param locale the locale
@@ -142,24 +162,5 @@ public class CmsSearchTabHandler extends A_CmsTabHandler {
     public void setScope(CmsGallerySearchScope scope) {
 
         m_controller.addScope(scope);
-    }
-
-    /**
-     * Sets if the search should include expired or unreleased resources.<p>
-     * 
-     * @param includeExpired if the search should include expired or unreleased resources
-     */
-    public void setIncludeExpired(boolean includeExpired) {
-
-        m_controller.setIncludeExpired(includeExpired);
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#removeParam(java.lang.String)
-     */
-    @Override
-    public void removeParam(String paramKey) {
-
-        m_controller.removeTextSearchParameter(paramKey);
     }
 }

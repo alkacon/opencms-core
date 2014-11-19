@@ -2338,13 +2338,41 @@ public final class CmsObject {
      */
     public CmsResource readDefaultFile(String resourceNameOrID) throws CmsException, CmsSecurityException {
 
+        return readDefaultFile(resourceNameOrID, CmsResourceFilter.DEFAULT);
+    }
+
+    /**
+     * Returns the default resource for the given folder.<p>
+     *
+     * If the given resource name or id identifies a file, then this file is returned.<p>
+     *
+     * Otherwise, in case of a folder:<br>
+     * <ol>
+     *   <li>the {@link CmsPropertyDefinition#PROPERTY_DEFAULT_FILE} is checked, and
+     *   <li>if still no file could be found, the configured default files in the
+     *       <code>opencms-vfs.xml</code> configuration are iterated until a match is
+     *       found, and
+     *   <li>if still no file could be found, <code>null</code> is returned
+     * </ol>
+     *
+     * @param resourceNameOrID the name or id of the folder to read the default file for#
+     * @param filter the resource filter to use for reading the resources 
+     *
+     * @return the default file for the given folder
+     *
+     * @throws CmsException if something goes wrong
+     * @throws CmsSecurityException if the user has no permissions to read the resulting file
+     */
+    public CmsResource readDefaultFile(String resourceNameOrID, CmsResourceFilter filter)
+    throws CmsException, CmsSecurityException {
+
         CmsResource resource;
         try {
-            resource = readResource(new CmsUUID(resourceNameOrID));
+            resource = readResource(new CmsUUID(resourceNameOrID), filter);
         } catch (NumberFormatException e) {
-            resource = readResource(resourceNameOrID);
+            resource = readResource(resourceNameOrID, filter);
         }
-        return m_securityManager.readDefaultFile(m_context, resource, CmsResourceFilter.DEFAULT);
+        return m_securityManager.readDefaultFile(m_context, resource, filter);
     }
 
     /**

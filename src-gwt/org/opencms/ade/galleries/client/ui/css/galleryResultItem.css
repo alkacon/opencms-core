@@ -44,6 +44,20 @@
 	height: value("galleryResultItemCss.bigImageHeight","px");
 }
 
+
+.expiredImageOverlay {
+	display: none; 
+}
+li.expired .expiredImageOverlay { 
+	background-image:  repeating-linear-gradient(45deg, #000000, #000000 15px, #FCFFFF 15px, #FFFFFF 30px);
+	background-position: 50% 50%;
+	width: 100%;
+	height: 100%; 
+	top: 0;
+	opacity: 0.2; 
+	position: absolute;  
+} 
+
 .tilingList.smallThumbnails div.imageTile img.bigImage, .tilingList div.imageTile img.smallImage{
 	display: none;
 }

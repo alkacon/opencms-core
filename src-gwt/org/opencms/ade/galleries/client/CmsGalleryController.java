@@ -658,6 +658,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         return m_searchTypes;
     }
 
+    /** 
+     * Returns the default value for the "show expired" check box.<p>
+     * 
+     * @return the default value for "show expired" 
+     */
+    public boolean getShowExpiredDefault() {
+
+        return m_dialogBean.getIncludeExpiredDefault();
+    }
+
     /**
      * Gets the sitemap site selector options.<p>
      * 
@@ -1219,12 +1229,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      * Sets if the search should include expired or unreleased resources.<p>
      * 
      * @param includeExpired if the search should include expired or unreleased resources
+     * @param fireEvent true if a change event should be fired after setting the value 
      */
-    public void setIncludeExpired(boolean includeExpired) {
+    public void setIncludeExpired(boolean includeExpired, boolean fireEvent) {
 
         m_searchObject.setIncludeExpired(includeExpired);
         m_searchObjectChanged = true;
-        ValueChangeEvent.fire(this, m_searchObject);
+        if (fireEvent) {
+            ValueChangeEvent.fire(this, m_searchObject);
+        }
+
     }
 
     /**

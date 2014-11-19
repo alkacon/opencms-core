@@ -1112,6 +1112,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PREF_REUSE_MODE_COPY_0 = "GUI_PREF_REUSE_MODE_COPY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0 = "GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_REUSE_MODE_REUSE_0 = "GUI_PREF_REUSE_MODE_REUSE_0";
 
     /** Message constant for key in the resource bundle. */

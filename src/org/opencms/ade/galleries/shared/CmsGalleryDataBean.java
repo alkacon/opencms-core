@@ -109,6 +109,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** List of site selector options. */
     private List<CmsSiteSelectorOption> m_vfsSiteSelectorOptions;
 
+    /** The default value for the 'include expired' option. */
+    private boolean m_includeExpiredDefault;
+
     /**
      * Default constructor.<p>
      */
@@ -166,6 +169,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public String getGalleryStoragePrefix() {
 
         return m_galleryStoragePrefix;
+    }
+
+    /**
+     * Gets the default value for the "include expired" option.<p>
+     * 
+     * @return the default value 
+     */
+    public boolean getIncludeExpiredDefault() {
+
+        return m_includeExpiredDefault;
     }
 
     /**
@@ -367,6 +380,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setGalleryStoragePrefix(String prefix) {
 
         m_galleryStoragePrefix = prefix;
+    }
+
+    /**
+     * Sets the default value for the 'include expired' option.<p>
+     * 
+     * @param includeExpiredDefault the default value to set 
+     */
+    public void setIncludeExpiredDefault(boolean includeExpiredDefault) {
+
+        m_includeExpiredDefault = includeExpiredDefault;
     }
 
     /**

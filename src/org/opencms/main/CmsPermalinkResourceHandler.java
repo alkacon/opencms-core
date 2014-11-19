@@ -29,6 +29,7 @@ package org.opencms.main;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsUUID;
@@ -103,7 +104,9 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
                     // we now must switch to the root site to read the resource
                     cms.getRequestContext().setSiteRoot("/");
                     // read the resource
-                    resource1 = cms.readDefaultFile(id);
+                    boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
+                    CmsResourceFilter filter = online ? CmsResourceFilter.DEFAULT : CmsResourceFilter.IGNORE_EXPIRATION;
+                    resource1 = cms.readDefaultFile(id, filter);
                 } catch (CmsPermissionViolationException e) {
                     throw e;
                 } catch (Throwable e) {

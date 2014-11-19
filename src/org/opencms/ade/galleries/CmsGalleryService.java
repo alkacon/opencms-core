@@ -562,6 +562,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsGalleryDataBean data = null;
         try {
             data = new CmsGalleryDataBean();
+            boolean galleryShowInvalidDefault = Boolean.parseBoolean(getWorkplaceSettings().getUserSettings().getAdditionalPreference(
+                "galleryShowInvalidDefault",
+                true));
+            data.setIncludeExpiredDefault(galleryShowInvalidDefault);
+
             data.setMode(GalleryMode.ade);
             data.setGalleryStoragePrefix("");
             data.setLocales(buildLocalesMap());
@@ -714,6 +719,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             scope = OpenCms.getWorkplaceManager().getGalleryDefaultScope();
                         }
                         result.setScope(scope);
+                        result.setIncludeExpired(data.getIncludeExpiredDefault());
                         result = search(result);
                     }
                     result.setSitemapPreloadData(sitemapPreloadData);
@@ -857,6 +863,24 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         } catch (Throwable e) {
             error(e);
         }
+    }
+
+    /**
+     * Gets an initialized CmsObject to be used for the actual search for a given search bean.<p>
+     * 
+     * @param searchObj the search object 
+     * @return the initialized CmsObject
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected CmsObject getSearchCms(CmsGallerySearchBean searchObj) throws CmsException {
+
+        CmsObject searchCms = getCmsObject();
+        if (searchObj.isIncludeExpired()) {
+            searchCms = OpenCms.initCmsObject(getCmsObject());
+            searchCms.getRequestContext().setRequestTime(CmsResource.DATE_RELEASED_EXPIRED_IGNORE);
+        }
+        return searchCms;
     }
 
     /**
@@ -1593,6 +1617,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsGallerySearchBean initialSearchObj = new CmsGallerySearchBean();
         initialSearchObj.setGalleryMode(data.getMode());
         initialSearchObj.setGalleryStoragePrefix(data.getGalleryStoragePrefix());
+        initialSearchObj.setIncludeExpired(data.getIncludeExpiredDefault());
         initialSearchObj.setIgnoreSearchExclude(true);
         initialSearchObj.setTypes(types);
         ArrayList<String> galleries = new ArrayList<String>();
@@ -1619,7 +1644,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         searchObj.setPage(currentPage);
         CmsGallerySearchParameters params = prepareSearchParams(searchObj);
         org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
-        searchBean.init(getCmsObject());
+        searchBean.init(getSearchCms(searchObj));
         searchBean.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
 
         CmsGallerySearchResultList searchResults = null;
@@ -1789,6 +1814,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         CmsGalleryDataBean data = new CmsGalleryDataBean();
         data.setMode(conf.getGalleryMode());
+
+        boolean galleryShowInvalidDefault = Boolean.parseBoolean(getWorkplaceSettings().getUserSettings().getAdditionalPreference(
+            "galleryShowInvalidDefault",
+            true));
+        data.setIncludeExpiredDefault(galleryShowInvalidDefault);
+
         data.setGalleryStoragePrefix(conf.getGalleryStoragePrefix());
         data.setLocales(buildLocalesMap());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(conf.getLocale())) {
@@ -2401,13 +2432,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         // search
         CmsGallerySearchParameters params = prepareSearchParams(searchObj);
         org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
-        if (searchObj.isIncludeExpired()) {
-            CmsObject searchCms = OpenCms.initCmsObject(getCmsObject());
-            searchCms.getRequestContext().setRequestTime(CmsResource.DATE_RELEASED_EXPIRED_IGNORE);
-            searchBean.init(searchCms);
-        } else {
-            searchBean.init(getCmsObject());
-        }
+        CmsObject searchCms = getSearchCms(searchObj);
+        searchBean.init(searchCms);
         searchBean.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
         CmsGallerySearchResultList searchResults = searchBean.getResult(params);
         // set only the result dependent search params for this search

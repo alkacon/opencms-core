@@ -96,7 +96,10 @@ public class CmsResultItemWidget extends CmsListItemWidget {
                 + timeParam
                 + "\" class=\""
                 + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().smallImage()
-                + "\" />");
+                + "\" />"
+                + "<div class='"
+                + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().expiredImageOverlay()
+                + "' />");
             imageTile.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().imageTile());
             m_tooltipHandler = new CmsToolTipHandler(imageTile, generateTooltipHtml(infoBean));
             m_contentPanel.insert(imageTile, 0);

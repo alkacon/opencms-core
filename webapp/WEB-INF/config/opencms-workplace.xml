@@ -1630,6 +1630,7 @@
                     widget-config="reuse:%(key.GUI_PREF_REUSE_MODE_REUSE_0)|copy:%(key.GUI_PREF_REUSE_MODE_COPY_0)|ask:%(key.GUI_PREF_REUSE_MODE_ASK_0)" />     
                 <preference name="elementView"
                     nice-name="%(key.GUI_PREF_ELEMENT_VIEW_0)" />
+                <preference name="galleryShowInvalidDefault" value="false" nice-name="%(key.GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0)" widget="checkbox" /> 
 			</preference-tab>
 			<preference-tab name="extended">
                 <preference name="startProject" value="Offline"

@@ -41,7 +41,6 @@ import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsNotification;
@@ -297,8 +296,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
                         m_controller.getStartLocale(),
                         m_controller.getAvailableLocales(),
                         m_controller.getSearchScope(),
-                        m_controller.getDefaultScope());
-                    m_searchTab.enableExpiredResourcesSearch(controller.getDialogMode() == I_CmsGalleryProviderConstants.GalleryMode.ade);
+                        m_controller.getDefaultScope(),
+                        m_controller.getShowExpiredDefault());
+                    m_searchTab.enableExpiredResourcesSearch(true);
                     m_searchTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_searchTab, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
                     break;
