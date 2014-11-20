@@ -945,7 +945,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
                         role = CmsRole.valueOfGroupName(principal);
                     }
                     if (role != null) {
-                        result = OpenCms.getRoleManager().hasRole(cms, role);
+                        result = OpenCms.getRoleManager().hasRole(
+                            cms,
+                            role.forOrgUnit(cms.getRequestContext().getCurrentUser().getOuFqn()));
                     }
                 }
                 if (result) {
