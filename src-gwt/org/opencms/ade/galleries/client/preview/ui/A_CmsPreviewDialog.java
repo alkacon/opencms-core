@@ -137,6 +137,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
         m_tabsHolder.getElement().getStyle().setHeight(detailsHeight, Unit.PX);
         m_tabbedPanel = new CmsTabbedPanel<Widget>(CmsTabbedPanelStyle.classicTabs);
         m_tabsHolder.add(m_tabbedPanel);
+        m_selectButton.setUseMinWidth(true);
         m_selectButton.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SELECT_0));
         m_selectButton.setVisible(false);
         m_closePreview.setText(Messages.get().key(Messages.GUI_PREVIEW_CLOSE_BUTTON_0));
