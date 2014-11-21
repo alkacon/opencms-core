@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,14 +43,14 @@ import junit.framework.TestSuite;
 /**
  * Test case for {@link CmsSystemInfo}.
  * <p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestCmsSystemInfo extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsSystemInfo(String arg0) {
@@ -60,7 +60,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -203,7 +203,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
 
         String versionId = OpenCms.getSystemInfo().getVersionId();
 
-        // here we distinguish the test between build done manually 
+        // here we distinguish the test between build done manually
         // and a dynamic build done by a CI system like Jenkins
 
         if (versionId.startsWith("Manual")) {
@@ -215,11 +215,11 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
             CmsSystemInfo.BuildInfoItem value;
 
             value = info.get("build.number");
-            assertEquals("(not set)", value.getValue());
+            assertEquals("(not set, manual build)", value.getValue());
             assertEquals("Build Number", value.getNiceName());
 
             value = info.get("build.date");
-            assertEquals("(not set)", value.getValue());
+            assertEquals("(not set, manual build)", value.getValue());
             assertEquals("Build Date", value.getNiceName());
 
             value = info.get("build.info");
