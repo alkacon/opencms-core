@@ -993,7 +993,7 @@ public final class CmsSiteManagerImpl {
      */
     public boolean startsWithShared(String path) {
 
-        return (m_sharedFolder != null) && CmsStringUtil.joinPaths(path, "/").startsWith(m_sharedFolder);
+        return (m_sharedFolder != null) && CmsFileUtil.addTrailingSeparator(path).startsWith(m_sharedFolder);
     }
 
     /**

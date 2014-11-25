@@ -282,6 +282,9 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         assertEquals("/foo/bar/baz", CmsStringUtil.joinPaths("/foo", "bar", "baz"));
         assertEquals("/foo/bar/baz", CmsStringUtil.joinPaths("/foo/", "/bar/", "/baz"));
         assertEquals("/foo/bar/baz", CmsStringUtil.joinPaths("/foo", "/bar/", "baz"));
+        assertEquals("/foo/bar/baz", CmsStringUtil.joinPaths("/foo//bar/", "/baz"));
+        assertEquals("/foo/bar/baz", CmsStringUtil.joinPaths("/foo/////////bar/", "/baz"));
+        assertEquals("/foo/bar/baz", CmsStringUtil.joinPaths("//////////foo/////////bar/////", "//////baz"));
     }
 
     /**

@@ -1106,7 +1106,10 @@ public final class CmsStringUtil {
      * Concatenates multiple paths and separates them with '/'.<p>
      * 
      * Consecutive slashes will be reduced to a single slash in the resulting string.
-     * For example, joinPaths("/foo/", "/bar", "baz") will return "/foo/bar/baz".
+     * For example joinPaths("/foo/", "/bar", "baz") will return "/foo/bar/baz".<p>
+     * 
+     * If one of the argument paths already contains a double "//" this will also be reduced to '/'.
+     * For example joinPaths("/foo//bar/", "/baz") will return "/foo/bar/baz".
      * 
      * @param paths the array of paths
      *  
@@ -1114,15 +1117,24 @@ public final class CmsStringUtil {
      */
     public static String joinPaths(String... paths) {
 
-        if (paths.length < 2) {
-            return paths[0];
-        }
         StringBuffer result = new StringBuffer(paths.length * 32);
-        result.append(CmsFileUtil.addTrailingSeparator(paths[0]));
-        for (int i = 1; i < (paths.length - 1); i++) {
-            result.append(CmsFileUtil.removeLeadingSeparator(CmsFileUtil.addTrailingSeparator(paths[i])));
+        boolean noSlash = true;
+        for (int i = 0; i < paths.length; i++) {
+            for (int j = 0; j < paths[i].length(); j++) {
+                char c = paths[i].charAt(j);
+                if (c != '/') {
+                    result.append(c);
+                    noSlash = true;
+                } else if (noSlash) {
+                    result.append('/');
+                    noSlash = false;
+                }
+            }
+            if (noSlash && (i < (paths.length - 1))) {
+                result.append('/');
+                noSlash = false;
+            }
         }
-        result.append(CmsFileUtil.removeLeadingSeparator(paths[paths.length - 1]));
         return result.toString();
     }
 
