@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -168,11 +169,15 @@ public class CmsXmlSeoConfiguration {
         Locale en = new Locale("en");
         for (I_CmsXmlContentValue value : content.getValues(N_INCLUDE, en)) {
             String include = value.getStringValue(rootCms);
-            m_includes.add(include);
+            if (!CmsStringUtil.isEmpty(include)) {
+                m_includes.add(include);
+            }
         }
         for (I_CmsXmlContentValue value : content.getValues(N_EXCLUDE, en)) {
             String exclude = value.getStringValue(rootCms);
-            m_excludes.add(exclude);
+            if (!CmsStringUtil.isEmpty(exclude)) {
+                m_excludes.add(exclude);
+            }
         }
         I_CmsXmlContentValue robotsValue = content.getValue(N_MODE, en);
         m_mode = robotsValue.getStringValue(rootCms);
