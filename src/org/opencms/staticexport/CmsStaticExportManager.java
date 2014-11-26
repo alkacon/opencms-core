@@ -1743,6 +1743,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public boolean isExportLink(CmsObject cms, String vfsName) {
 
         LOG.info("isExportLink? " + vfsName);
+        if (!isStaticExportEnabled()) {
+            return false;
+        }
         String siteRoot = cms.getRequestContext().getSiteRoot();
         // vfsname may still be a root path for a site with a different site root 
         CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(vfsName);
