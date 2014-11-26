@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import java.util.List;
 
 import com.google.common.base.Optional;
 
-/** 
+/**
  * Test cases for {@link org.opencms.util.CmsStringUtil}.<p>
  */
 public class TestCmsStringUtil extends OpenCmsTestCase {
@@ -140,7 +140,7 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     }
 
     /**
-     * Tests the body tag extraction.<p> 
+     * Tests the body tag extraction.<p>
      */
     public void testExtractHtmlBody() {
 
@@ -249,8 +249,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
 
     /**
      * Test for the getRelativeSubPath utility method.<p>
-     * 
-     * @throws Exception
+     *
+     * @throws Exception in case the test fails
      */
     public void testGetRelativeSubPath() throws Exception {
 
@@ -261,6 +261,27 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         assertEquals("/foo", CmsStringUtil.getRelativeSubPath("/bar/", "/bar/foo/"));
         assertEquals(null, CmsStringUtil.getRelativeSubPath("/foo", "/foo1"));
         assertEquals(null, CmsStringUtil.getRelativeSubPath("/foo", "/bar"));
+    }
+
+    /**
+     * Test case for join path method-<p>
+     */
+    public void testJoinPath() {
+
+        assertEquals("/system/", CmsStringUtil.joinPaths("/system/"));
+        assertEquals("/system/", CmsStringUtil.joinPaths("/system", "/"));
+        assertEquals("/system/", CmsStringUtil.joinPaths("/system", ""));
+        assertEquals("/system/", CmsStringUtil.joinPaths("/system/", "/"));
+        assertEquals("/system/", CmsStringUtil.joinPaths("/", "/system/", "/"));
+        assertEquals("/system/", CmsStringUtil.joinPaths("/", "system", "/"));
+        assertEquals("/system/", CmsStringUtil.joinPaths("", "/system/", ""));
+        assertEquals("/system/", CmsStringUtil.joinPaths("/system/", "/", "/"));
+        assertEquals("/system/", CmsStringUtil.joinPaths("/", "/", "/system/"));
+        assertEquals("/system/", CmsStringUtil.joinPaths("", "", "/system/"));
+        assertEquals("/foo/bar/baz", CmsStringUtil.joinPaths("/foo/", "/bar", "baz"));
+        assertEquals("/foo/bar/baz", CmsStringUtil.joinPaths("/foo", "bar", "baz"));
+        assertEquals("/foo/bar/baz", CmsStringUtil.joinPaths("/foo/", "/bar/", "/baz"));
+        assertEquals("/foo/bar/baz", CmsStringUtil.joinPaths("/foo", "/bar/", "baz"));
     }
 
     /**
@@ -278,7 +299,7 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     }
 
     /**
-     * Further tests.<p> 
+     * Further tests.<p>
      */
     public void testLine() {
 
@@ -313,7 +334,7 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         String toSplit;
         char delimChar = '/';
         String[] arrayResult;
-        List listResult;
+        List<String> listResult;
 
         // test usability for path-tokenization (e.g. admin tool of workplace)
         toSplit = "/system/workplace/admin/searchindex/";
@@ -326,7 +347,7 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
         assertEquals(Arrays.asList(arrayResult), listResult);
 
-        // test an empty String: 
+        // test an empty String:
         toSplit = "";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
         assertEquals(0, arrayResult.length);
@@ -413,7 +434,7 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         String toSplit;
         String delimString = "/";
         String[] arrayResult;
-        List listResult;
+        List<String> listResult;
 
         toSplit = "/system/workplace/admin/searchindex/";
 
@@ -426,7 +447,7 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
 
-        // test an empty String: 
+        // test an empty String:
         toSplit = "";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
         assertEquals(0, arrayResult.length);
@@ -504,7 +525,7 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         assertEquals("b", listResult.get(2));
         assertEquals("c", listResult.get(3));
 
-        // some tests with a separator longer than 1 
+        // some tests with a separator longer than 1
 
         delimString = ",,";
         toSplit = ",,system,,workplace,,admin,,searchindex,,";
@@ -517,7 +538,7 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
 
-        // test an empty String: 
+        // test an empty String:
         toSplit = "";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
         assertEquals(0, arrayResult.length);

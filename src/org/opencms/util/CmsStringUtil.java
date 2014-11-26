@@ -39,7 +39,6 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -1115,7 +1114,16 @@ public final class CmsStringUtil {
      */
     public static String joinPaths(String... paths) {
 
-        return joinPaths(Arrays.asList(paths));
+        if (paths.length < 2) {
+            return paths[0];
+        }
+        StringBuffer result = new StringBuffer(paths.length * 32);
+        result.append(CmsFileUtil.addTrailingSeparator(paths[0]));
+        for (int i = 1; i < (paths.length - 1); i++) {
+            result.append(CmsFileUtil.removeLeadingSeparator(CmsFileUtil.addTrailingSeparator(paths[i])));
+        }
+        result.append(CmsFileUtil.removeLeadingSeparator(paths[paths.length - 1]));
+        return result.toString();
     }
 
     /**
