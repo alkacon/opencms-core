@@ -80,6 +80,7 @@ import org.opencms.repository.CmsRepositoryManager;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsOrgUnitManager;
+import org.opencms.security.CmsPersistentLoginTokenHandler;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleManager;
 import org.opencms.security.CmsRoleViolationException;
@@ -1378,6 +1379,7 @@ public final class OpenCmsCore {
             // initialize ade manager
             // initialize the formatter configuration
             CmsFormatterConfiguration.initialize(adminCms);
+            CmsPersistentLoginTokenHandler.setAdminCms(adminCms);
             //m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
             m_adeManager = new CmsADEManager(adminCms, m_memoryMonitor, systemConfiguration);
             m_templateContextManager = new CmsTemplateContextManager(adminCms);
