@@ -314,6 +314,18 @@ task javadocModules(type: Javadoc, dependsOn: jar) {
     destinationDir = file("${buildDir}/docs/javadocModules")
 }
 
+task javadocJarModules(type: Jar, dependsOn: javadocModules) {
+    classifier = 'javadoc'
+    from "${buildDir}/docs/javadocModules"
+    baseName 'opencms-modules'
+}
+
+task sourcesJarModules(type: Jar) {
+    from sourceSets.modules.allSource
+    classifier = 'sources'
+    baseName 'opencms-modules'
+}
+
 task javadocGwt(type: Javadoc, dependsOn: jar) {
     doLast {
         copy {
