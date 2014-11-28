@@ -11,6 +11,9 @@ Properties vprops = new Properties()
 vprops.load(new FileInputStream("$projectDir/src/org/opencms/main/version.properties"))
 version = vprops['version.number']
 
+// alternative variable name for the case where the version variable is used for something else, e.g. javadoc
+ocmsVersion = version
+
 buildDir = build_directory
 repositories {
     mavenLocal()
@@ -248,8 +251,8 @@ javadoc {
         noDeprecatedList="false"
         noDeprecated="false"
         overview="${sourceSets.main.output.resourcesDir}/org/opencms/main/overview.html"
-        docTitle="OpenCms Core API, version $version"
-        windowTitle="OpenCms Core API, version $version"
+        docTitle="OpenCms Core API, version $ocmsVersion"
+        windowTitle="OpenCms Core API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
@@ -304,8 +307,8 @@ task javadocModules(type: Javadoc, dependsOn: jar) {
         linkSource="false"
         noDeprecatedList="false"
         noDeprecated="false"
-        docTitle="OpenCms Workplace Modules API, version $version"
-        windowTitle="OpenCms Workplace Modules API, version $version"
+        docTitle="OpenCms Workplace Modules API, version $ocmsVersion"
+        windowTitle="OpenCms Workplace Modules API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
@@ -343,8 +346,8 @@ task javadocGwt(type: Javadoc, dependsOn: jar) {
         linkSource="false"
         noDeprecatedList="false"
         noDeprecated="false"
-        docTitle="OpenCms GWT Components API, version $version"
-        windowTitle="OpenCms GWT Components API, version $version"
+        docTitle="OpenCms GWT Components API, version $ocmsVersion"
+        windowTitle="OpenCms GWT Components API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
@@ -404,8 +407,8 @@ task javadocSetup(type: Javadoc, dependsOn: jar) {
         linkSource="false"
         noDeprecatedList="false"
         noDeprecated="false"
-        docTitle="OpenCms Setup API, version $version"
-        windowTitle="OpenCms Setup API, version $version"
+        docTitle="OpenCms Setup API, version $ocmsVersion"
+        windowTitle="OpenCms Setup API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
