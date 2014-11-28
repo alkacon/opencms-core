@@ -12,7 +12,7 @@ vprops.load(new FileInputStream("$projectDir/src/org/opencms/main/version.proper
 version = vprops['version.number']
 
 // alternative variable name for the case where the version variable is used for something else, e.g. javadoc
-ocmsVersion = version
+ext.ocmsVersion = version
 
 buildDir = build_directory
 repositories {
