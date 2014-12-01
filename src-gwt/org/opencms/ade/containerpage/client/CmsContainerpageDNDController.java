@@ -112,6 +112,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** Creating new flag. */
     private boolean m_isNew;
 
+    /** The id of the container from which an element was dragged. */
+    private String m_originalContainerId;
+
     /** The original position of the draggable. */
     private int m_originalIndex;
 
@@ -177,6 +180,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             }
         }
 
+        String containerId = null;
+        if (target instanceof CmsContainerPageContainer) {
+            containerId = ((CmsContainerPageContainer)target).getContainerId();
+        }
+        m_originalContainerId = containerId;
+
         if (target != null) {
             handler.addTarget(target);
             if (target instanceof I_CmsDropContainer) {
@@ -219,22 +228,22 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         // will never be called 
                     }
 
+                    @SuppressWarnings("synthetic-access")
                     public void onSuccess(CmsUUID result) {
 
                         String idString = result.toString();
                         m_draggableId = idString;
 
-                        m_controller.getElement(idString, callback);
+                        m_controller.getElementForDragAndDropFromContainer(idString, m_originalContainerId, callback);
                     }
                 });
             } else {
-                m_controller.getElement(clientId, callback);
+                m_controller.getElementForDragAndDropFromContainer(clientId, m_originalContainerId, callback);
             }
 
         }
         if (target instanceof CmsContainerPageContainer) {
-            String id = ((CmsContainerPageContainer)target).getContainerId();
-            CmsContainerpageEditor.getZIndexManager().start(id);
+            CmsContainerpageEditor.getZIndexManager().start(containerId);
         } else {
             handler.setStartPosition(-1, 0);
         }
@@ -267,11 +276,15 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     } else {
                         CmsContainerElementData elementData = m_controller.getCachedElement(m_draggableId);
                         hasWritePermissions = elementData.hasWritePermission();
+                        if ((elementData.getDndId() != null)
+                            && (null != m_controller.getCachedElement(elementData.getDndId()))) {
+                            elementData = m_controller.getCachedElement(elementData.getDndId());
+                        }
                         containerElement = m_controller.getContainerpageUtil().createElement(elementData, container);
                         if (isListItem) {
                             listContainerElement = containerElement;
                         }
-                        m_controller.addToRecentList(m_draggableId, null);
+                        m_controller.addToRecentList(elementData.getClientId(), null);
                     }
                     handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
                     if (container.getPlaceholderIndex() >= container.getWidgetCount()) {
@@ -496,7 +509,13 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             // inserting element from menu
 
         }
-        m_draggableId = elementData.getClientId();
+
+        if ((elementData.getDndId() != null) && (m_controller.getCachedElement(elementData.getDndId()) != null)) {
+            m_draggableId = elementData.getDndId();
+            elementData = m_controller.getCachedElement(m_draggableId);
+        } else {
+            m_draggableId = elementData.getClientId();
+        }
         if (m_controller.isGroupcontainerEditing()) {
             CmsGroupContainerElementPanel groupContainer = m_controller.getGroupcontainer();
             if ((groupContainer != m_initialDropTarget)

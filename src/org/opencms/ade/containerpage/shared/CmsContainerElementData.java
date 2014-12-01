@@ -52,6 +52,12 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The group-container description. */
     private String m_description;
 
+    /** Dragging an element may require changing its settings, but this changes the id since it is computed from the settings. In the DND case this field contains the client id of the element with the changed settings. */
+    private String m_dndId;
+
+    /** The formatter configurations by container. */
+    private Map<String, Map<String, CmsFormatterConfig>> m_formatters;
+
     /** The inheritance infos off all sub-items. */
     private List<CmsInheritanceInfo> m_inheritanceInfos = new ArrayList<CmsInheritanceInfo>();
 
@@ -73,14 +79,11 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The contained sub-item id's. */
     private List<String> m_subItems = new ArrayList<String>();
 
-    /** The supported container types of a group-container. */
-    private Set<String> m_types;
-
     /** The title. */
     private String m_title;
 
-    /** The formatter configurations by container. */
-    private Map<String, Map<String, CmsFormatterConfig>> m_formatters;
+    /** The supported container types of a group-container. */
+    private Set<String> m_types;
 
     /**
      * Returns the contents.<p>
@@ -113,6 +116,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public String getDescription() {
 
         return m_description;
+    }
+
+    /** 
+     * Dragging an element may require changing its settings, but this changes the id since it is computed from the settings. In the DND case this method returns the client id of the element with the changed settings.<p>
+     *  
+     * @return the drag and drop element id, or null if it isn't available or needed 
+     */
+    public String getDndId() {
+
+        return m_dndId;
     }
 
     /**
@@ -287,6 +300,11 @@ public class CmsContainerElementData extends CmsContainerElement {
         return m_title;
     }
 
+    /** 
+     * If this element represents an element group, this method will return the supported container type.<p>
+     * 
+     * @return the supported container types
+     */
     public Set<String> getTypes() {
 
         return m_types;
@@ -349,6 +367,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setDescription(String description) {
 
         m_description = description;
+    }
+
+    /**
+     * During dragging and dropping in the container page editor, it may be required to substitute a different element for the element being dragged. This sets the id of the element to substitute.<p>
+     *   
+     * @param dndId the drag and drop replacement element's client id 
+     */
+    public void setDndId(String dndId) {
+
+        m_dndId = dndId;
     }
 
     /**

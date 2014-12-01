@@ -557,6 +557,18 @@ public class CmsElementUtil {
     }
 
     /**
+     * Returns the formatter configuration for the given element resource.<p>
+     *
+     * @param resource the element resource
+     *
+     * @return the formatter configuration
+     */
+    CmsFormatterConfiguration getFormatterConfiguration(CmsResource resource) {
+
+        return getConfigData().getFormatters(m_cms, resource);
+    }
+
+    /**
      * Checks if the maximum nesting level is reached for the given container.<p>
      * 
      * @param container the container
@@ -725,18 +737,6 @@ public class CmsElementUtil {
         } finally {
             m_cms.getRequestContext().setUri(oldUri);
         }
-    }
-
-    /**
-     * Returns the formatter configuration for the given element resource.<p>
-     *
-     * @param resource the element resource
-     *
-     * @return the formatter configuration
-     */
-    private CmsFormatterConfiguration getFormatterConfiguration(CmsResource resource) {
-
-        return getConfigData().getFormatters(m_cms, resource);
     }
 
     /**

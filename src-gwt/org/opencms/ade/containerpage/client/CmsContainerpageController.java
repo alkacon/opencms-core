@@ -443,6 +443,7 @@ public final class CmsContainerpageController {
                     m_clientIds,
                     getPageState(),
                     !isGroupcontainerEditing(),
+                    null,
                     getLocale(),
 
                     this);
@@ -502,6 +503,7 @@ public final class CmsContainerpageController {
                 m_clientIds,
                 getPageState(),
                 !isGroupcontainerEditing(),
+                null,
                 getLocale(),
 
                 this);
@@ -563,6 +565,9 @@ public final class CmsContainerpageController {
         /** The requested client id. */
         private String m_clientId;
 
+        /** If this action was triggered by drag and drop from a container, this should contain the id of the origin container. */
+        private String m_dndContainer;
+
         /**
          * Constructor.<p>
          * 
@@ -584,12 +589,15 @@ public final class CmsContainerpageController {
 
             boolean cached = false;
             if (m_elements.containsKey(m_clientId)) {
-                if (!hasNestedContainers()) {
+                if (!hasNestedContainers() && (m_dndContainer == null)) {
 
                     // When you have an element A representing a nested container, which then contains an element B,
                     // and the element settings of B have been changed, we would need to invalidate the cache for A. 
                     // Currently there is no time to implement this correctly, so we don't use the cached element in case
                     // we have nested containers. 
+
+                    // Additionally, in the drag and drop case we want to circumvent caching because dragging an element may require the settings
+                    // of an element to be changed on the server side.
 
                     CmsContainerElementData elementData = m_elements.get(m_clientId);
                     // check if the cached element data covers all possible containers in case new containers have been added to the page 
@@ -630,11 +638,22 @@ public final class CmsContainerpageController {
                     clientIds,
                     getPageState(),
                     !isGroupcontainerEditing(),
+                    m_dndContainer,
                     getLocale(),
 
                     this);
             }
 
+        }
+
+        /** 
+         * Sets the origin container for the drag and drop case.<p>
+         * 
+         * @param containerId the origin container name 
+         */
+        public void setDndContainer(String containerId) {
+
+            m_dndContainer = containerId;
         }
 
         /**
@@ -1341,6 +1360,23 @@ public final class CmsContainerpageController {
     public void getElement(final String clientId, final I_CmsSimpleCallback<CmsContainerElementData> callback) {
 
         SingleElementAction action = new SingleElementAction(clientId, callback);
+        action.execute();
+    }
+
+    /**
+     * Requests the data for a container element specified by the client id for drag and drop from a container. The data will be provided to the given call-back function.<p>
+     * 
+     * @param clientId the element id
+     * @param containerId the id of the container from which the element is being dragged 
+     * @param callback the call-back to execute with the requested data
+     */
+    public void getElementForDragAndDropFromContainer(
+        final String clientId,
+        final String containerId,
+        final I_CmsSimpleCallback<CmsContainerElementData> callback) {
+
+        SingleElementAction action = new SingleElementAction(clientId, callback);
+        action.setDndContainer(containerId);
         action.execute();
     }
 

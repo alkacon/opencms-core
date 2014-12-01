@@ -119,6 +119,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -136,6 +137,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**
@@ -489,7 +491,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementsData(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, org.opencms.util.CmsUUID, java.lang.String, java.util.Collection, java.util.Collection, boolean, java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementsData(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, org.opencms.util.CmsUUID, java.lang.String, java.util.Collection, java.util.Collection, boolean, java.lang.String, java.lang.String)
      */
     public Map<String, CmsContainerElementData> getElementsData(
         CmsContainerPageRpcContext context,
@@ -499,6 +501,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Collection<String> clientIds,
         Collection<CmsContainer> containers,
         boolean allowNested,
+        String dndSource,
         String locale) throws CmsRpcException {
 
         Map<String, CmsContainerElementData> result = null;
@@ -514,6 +517,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 detailContentId,
                 containers,
                 allowNested,
+                dndSource,
                 CmsLocaleManager.getLocale(locale));
         } catch (Throwable e) {
             error(e);
@@ -970,6 +974,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             ids,
             containers,
             false,
+            null,
             locale), removedElements);
     }
 
@@ -1033,6 +1038,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 detailContentId,
                 containers,
                 false,
+                null,
                 requestedLocale);
         } catch (Exception e) {
             error(e);
@@ -1101,6 +1107,69 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     throws CmsRpcException {
 
         saveDetailContainers(detailContainerResource, containers);
+    }
+
+    /**
+     * Gets the settings which should be updated for an element in the DND case.<p>
+     * 
+     * @param originalSettings the original settings 
+     * @param formatterConfig the formatter configuration for the element 
+     * @param containers the containers 
+     * @param dndContainer the id of the DND origin container 
+     * @param allowNested true if nested containers are allowed 
+     * 
+     * @return the map of settings to update  
+     */
+    Map<String, String> getSettingsToChangeForDnd(
+        Map<String, String> originalSettings,
+        CmsFormatterConfiguration formatterConfig,
+        Collection<CmsContainer> containers,
+        String dndContainer,
+        boolean allowNested) {
+
+        Map<String, String> result = Maps.newHashMap();
+        if (dndContainer == null) {
+            return result;
+        }
+        String key = CmsFormatterConfig.getSettingsKeyForContainer(dndContainer);
+        String formatterId = originalSettings.get(key);
+        if (formatterId == null) {
+            return result;
+        }
+        for (CmsContainer container : containers) {
+            if (container.getName().equals(dndContainer)) {
+                continue;
+            }
+            Map<String, I_CmsFormatterBean> formatterSelection = formatterConfig.getFormatterSelection(
+                container.getType(),
+                container.getWidth(),
+                allowNested);
+            if (formatterSelection.containsKey(formatterId)) {
+                String newKey = CmsFormatterConfig.getSettingsKeyForContainer(container.getName());
+                result.put(newKey, formatterId);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Creates a new container element bean from an existing one, but changes some of the individual settings in the copy.<p>
+     * 
+     * @param element the original container element 
+     * @param settingsToOverride the map of settings to change 
+     * 
+     * @return the new container element bean with the changed settings 
+     */
+    CmsContainerElementBean overrideSettings(CmsContainerElementBean element, Map<String, String> settingsToOverride) {
+
+        Map<String, String> settings = Maps.newHashMap(element.getIndividualSettings());
+        settings.putAll(settingsToOverride);
+        CmsContainerElementBean result = new CmsContainerElementBean(
+            element.getId(),
+            element.getFormatterId(),
+            settings,
+            element.isCreateNew());
+        return result;
     }
 
     /**
@@ -1361,6 +1430,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param detailContentId the detail content structure id
      * @param containers the containers for which the element data should be fetched 
      * @param allowNested if nested containers are allowed
+     * @param dndOriginContainer the container from which an element was dragged (null if this method is not called for DND)
      * @param locale the locale to use 
      * 
      * @return the elements data
@@ -1374,6 +1444,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
         boolean allowNested,
+        String dndOriginContainer,
         Locale locale) throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -1383,6 +1454,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Map<String, CmsContainerElementData> result = new HashMap<String, CmsContainerElementData>();
         Set<String> ids = new HashSet<String>();
         for (String elemId : clientIds) {
+            String dndId = null;
             if ((elemId == null) || ids.contains(elemId)) {
                 continue;
             }
@@ -1391,10 +1463,37 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 element = element.clone();
                 getSessionCache().setCacheContainerElement(element.editorHash(), element);
             }
+
+            if (dndOriginContainer != null) {
+                CmsFormatterConfiguration formatterConfig = elemUtil.getFormatterConfiguration(element.getResource());
+                Map<String, String> dndSettings = getSettingsToChangeForDnd(
+                    element.getIndividualSettings(),
+                    formatterConfig,
+                    containers,
+                    dndOriginContainer,
+                    allowNested);
+                if (!dndSettings.isEmpty()) {
+                    CmsContainerElementBean dndElementBean = overrideSettings(element, dndSettings);
+                    getSessionCache().setCacheContainerElement(dndElementBean.editorHash(), dndElementBean);
+                    dndId = dndElementBean.editorHash();
+                    Map<String, CmsContainerElementData> dndResults = getElements(
+                        page,
+                        Arrays.asList(dndId),
+                        uriParam,
+                        detailContentId,
+                        containers,
+                        allowNested,
+                        null,
+                        locale);
+                    result.putAll(dndResults);
+                }
+            }
+
             CmsContainerElementData elementData = elemUtil.getElementData(page, element, containers, allowNested);
             if (elementData == null) {
                 continue;
             }
+            elementData.setDndId(dndId);
             result.put(elemId, elementData);
             if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
                 // this is a group-container 

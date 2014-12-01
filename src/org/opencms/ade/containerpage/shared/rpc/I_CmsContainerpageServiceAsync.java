@@ -159,6 +159,7 @@ public interface I_CmsContainerpageServiceAsync {
      * @param clientIds the requested element id's
      * @param containers the containers of the current page
      * @param allowNested if nested containers are allowed
+     * @param dndSource in the DND case, the id of the origin container from which the element is dragged 
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
@@ -169,6 +170,7 @@ public interface I_CmsContainerpageServiceAsync {
         Collection<String> clientIds,
         Collection<CmsContainer> containers,
         boolean allowNested,
+        String dndSource,
         String locale,
         AsyncCallback<Map<String, CmsContainerElementData>> callback);
 
