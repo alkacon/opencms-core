@@ -614,7 +614,7 @@ public class CmsADEManager {
         if (hasView) {
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-            hasView = settings.getAccess().getPermissions(cms, resource).requiresViewPermission();
+            hasView = (settings == null) || settings.getAccess().getPermissions(cms, resource).requiresViewPermission();
             if (hasView
                 && CmsResourceTypeXmlContent.isXmlContent(resource)
                 && !CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
@@ -636,7 +636,7 @@ public class CmsADEManager {
                     CmsPermissionSet.ACCESS_WRITE,
                     false,
                     CmsResourceFilter.IGNORE_EXPIRATION)
-                && settings.getAccess().getPermissions(cms, resource).requiresWritePermission();
+                && ((settings == null) || settings.getAccess().getPermissions(cms, resource).requiresWritePermission());
         }
 
         String noEdit = new CmsResourceUtil(cms, resource).getNoEditReason(
