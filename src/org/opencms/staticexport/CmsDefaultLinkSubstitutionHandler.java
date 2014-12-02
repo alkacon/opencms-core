@@ -322,11 +322,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
                         boolean secureLink;
                         if (detailContent == null) {
-                            secureLink = exportManager.isSecureLink(
-                                cms,
-                                vfsName,
-                                targetSite.getSiteRoot(),
-                                secureRequest);
+                            secureLink = isSecureLink(cms, vfsName, targetSite, secureRequest);
                         } else {
                             secureLink = isDetailPageLinkSecure(
                                 cms,
@@ -563,6 +559,21 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
         // URI without path (typically local link)
         return suffix;
+    }
+
+    /**
+     * Checks if the link target is a secure link.<p
+     * 
+     * @param cms the current CMS context 
+     * @param vfsName the path of the link target
+     * @param targetSite the target site containing the detail page 
+     * @param secureRequest true if the currently running request is secure 
+     * 
+     * @return true if the link should be a secure link 
+     */
+    protected boolean isSecureLink(CmsObject cms, String vfsName, CmsSite targetSite, boolean secureRequest) {
+
+        return OpenCms.getStaticExportManager().isSecureLink(cms, vfsName, targetSite.getSiteRoot(), secureRequest);
     }
 
     /**
