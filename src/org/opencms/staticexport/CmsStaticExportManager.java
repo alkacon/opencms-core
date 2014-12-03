@@ -1877,8 +1877,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 // only cache result if read was successfull
                 OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
             } catch (CmsVfsResourceNotFoundException e) {
-                secureResource = "false";
-                // resource does not exist, no secure link will be required for any user
+                secureResource = SECURE_PROPERTY_VALUE_BOTH;
                 OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
             } catch (Exception e) {
                 // no secure link required (probably security issues, e.g. no access for current user)
