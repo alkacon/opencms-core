@@ -277,7 +277,7 @@ public class TestRoles extends OpenCmsTestCase {
         assertTrue(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
 
         // configure individual confirmation for CATEGORY_EDITOR
-        OpenCms.setRuntimeProperty("confirm.role.CATEGORY_EDITOR", "true");
+        OpenCms.setRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR", "true");
         OpenCms.getMemoryMonitor().clearCache();
 
         // we know user has no individual confirmation by default
@@ -285,7 +285,7 @@ public class TestRoles extends OpenCmsTestCase {
         assertTrue(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
 
         // configure individual confirmation for GALLERY_EDITOR
-        OpenCms.setRuntimeProperty("confirm.role.GALLERY_EDITOR", "true");
+        OpenCms.setRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR", "true");
         OpenCms.getMemoryMonitor().clearCache();
 
         // we know user has no individual confirmation by default still
@@ -293,7 +293,7 @@ public class TestRoles extends OpenCmsTestCase {
         assertFalse(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
 
         // now add individual confirmation for the user as CATEGORY_EDITOR
-        user.setAdditionalInfo("confirm.role.CATEGORY_EDITOR", "true");
+        user.setAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR", "true");
         cms.writeUser(user);
         OpenCms.getMemoryMonitor().clearCache();
         // must login again otherwise additional info will not be updated
@@ -304,7 +304,7 @@ public class TestRoles extends OpenCmsTestCase {
         assertFalse(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
 
         // now add individual confirmation for the user as GALLERY_EDITOR        
-        user.setAdditionalInfo("confirm.role.GALLERY_EDITOR", "true");
+        user.setAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR", "true");
         cms.writeUser(user);
         OpenCms.getMemoryMonitor().clearCache();
         cms.loginUser(user.getName(), "specUser");
@@ -320,12 +320,46 @@ public class TestRoles extends OpenCmsTestCase {
         roleMan.addUserToRole(cms, CmsRole.DEVELOPER, devUser.getName());
         cms.loginUser(devUser.getName(), "devUser");
 
-        assertTrue("true".equals(OpenCms.getRuntimeProperty("confirm.role.CATEGORY_EDITOR")));
-        assertTrue(devUser.getAdditionalInfo("confirm.role.CATEGORY_EDITOR") == null);
+        assertTrue("true".equals(OpenCms.getRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR")));
+        assertTrue(devUser.getAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR") == null);
         assertTrue(roleMan.hasRole(cms, CmsRole.CATEGORY_EDITOR));
-        assertTrue("true".equals(OpenCms.getRuntimeProperty("confirm.role.GALLERY_EDITOR")));
-        assertTrue(devUser.getAdditionalInfo("confirm.role.GALLERY_EDITOR") == null);
+        assertTrue("true".equals(OpenCms.getRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR")));
+        assertTrue(devUser.getAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR") == null);
         assertTrue(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
+
+        // now test lower ranking user GALLERY_EDITOR
+        // if a user has _only_ CATEGORY_EDITOR / GALLERY_EDITOR but not WORKPLACE_USER he should get access
+        // otherwise having the role CATEGORY_EDITOR / GALLERY_EDITOR would be pointless 
+        cms.loginUser("Admin", "admin");
+        CmsUser galUser = cms.createUser("galUser", "galUser", "galUser", null);
+        roleMan.addUserToRole(cms, CmsRole.GALLERY_EDITOR, galUser.getName());
+        cms.loginUser(galUser.getName(), "galUser");
+
+        assertTrue("true".equals(OpenCms.getRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR")));
+        assertTrue(galUser.getAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR") == null);
+        // the user is only GALLERY_EDITOR but not CATEGORY_EDITOR
+        assertFalse(roleMan.hasRole(cms, CmsRole.CATEGORY_EDITOR));
+        assertTrue("true".equals(OpenCms.getRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR")));
+        assertTrue(galUser.getAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR") == null);
+        // the user should have the CATEGORY_EDITOR role without individual confirmation
+        assertTrue(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
+
+        // now test lower ranking user CATEGORY_EDITOR
+        // if a user has _only_ CATEGORY_EDITOR / GALLERY_EDITOR but not WORKPLACE_USER he should get access
+        // otherwise having the role CATEGORY_EDITOR / GALLERY_EDITOR would be pointless 
+        cms.loginUser("Admin", "admin");
+        CmsUser catUser = cms.createUser("catUser", "catUser", "catUser", null);
+        roleMan.addUserToRole(cms, CmsRole.CATEGORY_EDITOR, catUser.getName());
+        cms.loginUser(catUser.getName(), "catUser");
+
+        assertTrue("true".equals(OpenCms.getRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR")));
+        assertTrue(catUser.getAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR") == null);
+        // the user should have the CATEGORY_EDITOR role without individual confirmation
+        assertTrue(roleMan.hasRole(cms, CmsRole.CATEGORY_EDITOR));
+        assertTrue("true".equals(OpenCms.getRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR")));
+        assertTrue(catUser.getAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR") == null);
+        // the user is only CATEGORY_EDITOR but not GALLERY_EDITOR 
+        assertFalse(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
     }
 
     /**

@@ -146,6 +146,9 @@ public final class CmsRole {
     /** Indicates if this role is a system role or a user defined role. */
     private boolean m_systemRole;
 
+    /** Prefix for individual user confirmation runtime property. */
+    public static final String CONFIRM_ROLE_PREFIX = "confirm.role.";
+
     /**
      * Initializes the system roles with the configured OpenCms system group names.<p>
      */
