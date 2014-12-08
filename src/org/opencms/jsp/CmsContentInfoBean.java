@@ -31,6 +31,10 @@ import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 /**
  * A container to store information about a collector's result.<p>
  *
@@ -71,6 +75,9 @@ public class CmsContentInfoBean {
     /** The total size of the collector's result list. */
     private int m_resultSize;
 
+    /** A map containing facets returned from a search. */
+    private Map<String, List<String>> m_facets;
+
     /**
      * Creates a new content info bean.<p>
      */
@@ -87,6 +94,19 @@ public class CmsContentInfoBean {
         m_pageNavStartIndex = 1;
         m_pageNavEndIndex = 1;
         m_pageNavLength = 10;
+    }
+
+    /**
+     * Returns all facets. 
+     * @return
+     */
+    public Map<String, List<String>> getFacets() {
+
+        if (null == m_facets) {
+            return Collections.<String, List<String>> emptyMap();
+        }
+
+        return m_facets;
     }
 
     /**
@@ -109,7 +129,11 @@ public class CmsContentInfoBean {
         return m_locale;
     }
 
-    /**
+    /**        if (null == m_facets) {
+            return Collections.<String, List<String>> emptyMap();
+        }
+
+        return m_facets;
      * Gets the javascript: link for creating and editing a new content.<p>
      *
      * @return the javascript: link for creating and editing a new content
@@ -257,6 +281,11 @@ public class CmsContentInfoBean {
     public boolean isLastResult() {
 
         return m_resultIndex == m_resultSize;
+    }
+
+    public void setFacets(Map<String, List<String>> facets) {
+
+        m_facets = facets;
     }
 
     /**
