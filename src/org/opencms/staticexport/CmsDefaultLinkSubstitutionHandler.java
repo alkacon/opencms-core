@@ -318,7 +318,8 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                         + cms.getRequestContext().getAttribute(ATTR_IS_IMAGE_LINK));
                     if ((linkType != imageId) && !hasIsImageLinkAttr) {
                         // check the secure property of the link
-                        boolean secureRequest = exportManager.isSecureLink(cms, oriUri);
+                        boolean secureRequest = cms.getRequestContext().isSecureRequest()
+                            || exportManager.isSecureLink(cms, oriUri);
 
                         boolean secureLink;
                         if (detailContent == null) {
@@ -562,21 +563,6 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
     }
 
     /**
-     * Checks if the link target is a secure link.<p
-     * 
-     * @param cms the current CMS context 
-     * @param vfsName the path of the link target
-     * @param targetSite the target site containing the detail page 
-     * @param secureRequest true if the currently running request is secure 
-     * 
-     * @return true if the link should be a secure link 
-     */
-    protected boolean isSecureLink(CmsObject cms, String vfsName, CmsSite targetSite, boolean secureRequest) {
-
-        return OpenCms.getStaticExportManager().isSecureLink(cms, vfsName, targetSite.getSiteRoot(), secureRequest);
-    }
-
-    /**
      * Checks whether a link to a detail page should be secure.<p>
      *
      * @param cms the current CMS context
@@ -609,6 +595,21 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             LOG.error("Error while checking whether detail page link should be secure: " + e.getLocalizedMessage(), e);
         }
         return result;
+    }
+
+    /**
+     * Checks if the link target is a secure link.<p
+     * 
+     * @param cms the current CMS context 
+     * @param vfsName the path of the link target
+     * @param targetSite the target site containing the detail page 
+     * @param secureRequest true if the currently running request is secure 
+     * 
+     * @return true if the link should be a secure link 
+     */
+    protected boolean isSecureLink(CmsObject cms, String vfsName, CmsSite targetSite, boolean secureRequest) {
+
+        return OpenCms.getStaticExportManager().isSecureLink(cms, vfsName, targetSite.getSiteRoot(), secureRequest);
     }
 
     /**
@@ -679,4 +680,5 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             return null;
         }
     }
+
 }

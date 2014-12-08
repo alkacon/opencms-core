@@ -1063,6 +1063,27 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
+     * Returns true if this request goes to a secure site.<p>
+     * 
+     * @param req the request to check 
+     * 
+     * @return true if the request goes to a secure site 
+     */
+    public boolean usesSecureSite(HttpServletRequest req) {
+
+        CmsSite site = matchRequest(req);
+        if (site == null) {
+            return false;
+        }
+        CmsSiteMatcher secureMatcher = site.getSecureServerMatcher();
+        boolean result = false;
+        if (secureMatcher != null) {
+            result = secureMatcher.equals(getRequestMatcher(req));
+        }
+        return result;
+    }
+
+    /**
      * Adds a new Site matcher object to the map of server names.
      * 
      * @param matcher the SiteMatcher of the server

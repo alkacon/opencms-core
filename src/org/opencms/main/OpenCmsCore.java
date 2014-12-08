@@ -2412,6 +2412,7 @@ public final class OpenCmsCore {
             project,
             contextInfo.getRequestedUri(),
             contextInfo.getSiteRoot(),
+            contextInfo.isSecureRequest(),
             contextInfo.getLocale(),
             contextInfo.getEncoding(),
             contextInfo.getRemoteAddr(),
@@ -2458,6 +2459,8 @@ public final class OpenCmsCore {
         Long requestTimeAttr = null;
         String remoteAddr;
 
+        boolean isSecureRequest = false;
+
         if (request != null) {
             // get path info from request
             requestedResource = getPathInfo(request);
@@ -2475,6 +2478,7 @@ public final class OpenCmsCore {
                 // no new session must be created here
                 requestTimeAttr = (Long)session.getAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
             }
+            isSecureRequest = OpenCms.getSiteManager().usesSecureSite(request);
         } else {
             // if no request is available, the IP is always set to localhost
             remoteAddr = CmsContextInfo.LOCALHOST;
@@ -2528,6 +2532,7 @@ public final class OpenCmsCore {
             project,
             requestedResource,
             siteRoot,
+            isSecureRequest,
             i18nInfo.getLocale(),
             i18nInfo.getEncoding(),
             remoteAddr,

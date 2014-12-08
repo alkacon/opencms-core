@@ -579,6 +579,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
+     * Returns the site matcher for the secure site, or null if no secure site is defined.<p>
+     * 
+     * @return the site matcher for the secure site 
+     */
+    protected CmsSiteMatcher getSecureServerMatcher() {
+
+        return m_secureServer;
+    }
+
+    /**
      * Sets the aliases for the site.<p>
      *      
      * @param aliases the aliases for the site

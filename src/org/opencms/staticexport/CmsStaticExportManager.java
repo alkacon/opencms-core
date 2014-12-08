@@ -559,11 +559,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORT_SITE_ROOT_2, siteRoot, vfsName));
         }
 
+        boolean usesSecureSite = OpenCms.getSiteManager().usesSecureSite(req);
         CmsContextInfo contextInfo = new CmsContextInfo(
             cms.getRequestContext().getCurrentUser(),
             cms.getRequestContext().getCurrentProject(),
             vfsName,
             siteRoot,
+            usesSecureSite,
             i18nInfo.getLocale(),
             i18nInfo.getEncoding(),
             remoteAddr,

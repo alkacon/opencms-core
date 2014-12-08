@@ -443,6 +443,7 @@ public class CmsSessionManager {
             userProject,
             null,
             userSiteRoot,
+            cms.getRequestContext().isSecureRequest(),
             null,
             null,
             null,
