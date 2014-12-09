@@ -226,20 +226,25 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
             assertEquals("Static version file", value.getValue());
             assertEquals("build.info", value.getNiceName());
         } else if (versionId.startsWith("Release")
+            || versionId.startsWith("Beta")
             || versionId.startsWith("Nightly")
             || versionId.startsWith("Milestone")) {
             // assume a build triggered by the Jenkins CI system
 
             Map<String, CmsSystemInfo.BuildInfoItem> info = OpenCms.getSystemInfo().getBuildInfo();
             // make sure we have the required values set
-            assertNotNull("build.number not set", info.get("build.number"));
             assertNotNull("build.date not set", info.get("build.date"));
             assertNotNull("build.type not set", info.get("build.type"));
             assertNotNull("build.system not set", info.get("build.system"));
             assertNotNull("build.gitid not set", info.get("build.gitid"));
             assertNotNull("build.gitbranch not set", info.get("build.gitbranch"));
 
-            assertEquals("Expected keys do not match", "build.number", info.get("build.number").getKeyName());
+            if (!versionId.startsWith("Milestone")) {
+                // don't use build number for Milestone builds as the continuation in the numbers is not assured
+                assertNotNull("build.number not set", info.get("build.number"));
+                assertEquals("Expected keys do not match", "build.number", info.get("build.number").getKeyName());
+            }
+
             assertEquals("Expected keys do not match", "build.date", info.get("build.date").getKeyName());
             assertEquals("Expected keys do not match", "build.system", info.get("build.system").getKeyName());
 
