@@ -355,7 +355,11 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
             // make sure this can also be used with a resource root path
             resourceName = resourceName.substring(cms.getRequestContext().getSiteRoot().length());
         }
-        boolean secure = OpenCms.getStaticExportManager().isSecureLink(cms, resourceName, false);
+        boolean secure = OpenCms.getStaticExportManager().isSecureLink(
+            cms,
+            resourceName,
+            cms.getRequestContext().isSecureRequest());
+
         return (secure ? getSecureUrl() : getUrl());
     }
 
