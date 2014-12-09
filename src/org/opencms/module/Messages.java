@@ -44,6 +44,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_DELETE_MODULE_CHECK_LOCKS_2 = "ERR_DELETE_MODULE_CHECK_LOCKS_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_FILE_IO_1 = "ERR_FILE_IO_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORT_MOD_ALREADY_INSTALLED_1 = "ERR_IMPORT_MOD_ALREADY_INSTALLED_1";
 
     /** Message constant for key in the resource bundle. */

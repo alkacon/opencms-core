@@ -68,9 +68,6 @@ public class CmsModule implements Comparable<CmsModule> {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModule.class);
 
-    /** The script to execute when the module is imported. */
-    private String m_importScript;
-
     /**
      * The module property key name to specifiy additional resources which are
      * part of a module outside of {system/modules}.
@@ -140,11 +137,20 @@ public class CmsModule implements Comparable<CmsModule> {
     /** The group of the module. */
     private String m_group;
 
+    /** The script to execute when the module is imported. */
+    private String m_importScript;
+
+    /** The import site. */
+    private String m_importSite;
+
     /** The name of this module, must be a valid Java package name. */
     private String m_name;
 
     /** The "nice" display name of this module. */
     private String m_niceName;
+
+    /** A timestamp from the time this object was created. */
+    private long m_objectCreateTime;
 
     /** The additional configuration parameters of this module. */
     private SortedMap<String, String> m_parameters;
@@ -170,6 +176,7 @@ public class CmsModule implements Comparable<CmsModule> {
         m_resources = Collections.emptyList();
         m_exportPoints = Collections.emptyList();
         m_dependencies = Collections.emptyList();
+        m_objectCreateTime = System.currentTimeMillis();
     }
 
     /**
@@ -179,7 +186,8 @@ public class CmsModule implements Comparable<CmsModule> {
      * @param niceName the "nice" display name of this module
      * @param group the group of this module
      * @param actionClass the (optional) module class name
-     * @param importScript the script to execute when the module is imported 
+     * @param importScript the script to execute when the module is imported
+     * @param importSite the site root into which this module should be imported  
      * @param description the description of this module
      * @param version the version of this module
      * @param authorName the name of the author of this module
@@ -198,6 +206,7 @@ public class CmsModule implements Comparable<CmsModule> {
         String group,
         String actionClass,
         String importScript,
+        String importSite,
         String description,
         CmsModuleVersion version,
         String authorName,
@@ -260,6 +269,7 @@ public class CmsModule implements Comparable<CmsModule> {
         } else {
             m_parameters = new TreeMap<String, String>(parameters);
         }
+        m_importSite = importSite;
 
         m_importScript = importScript;
 
@@ -324,6 +334,7 @@ public class CmsModule implements Comparable<CmsModule> {
             m_group,
             m_actionClass,
             m_importScript,
+            m_importSite,
             m_description,
             m_version,
             m_authorName,
@@ -551,6 +562,18 @@ public class CmsModule implements Comparable<CmsModule> {
     }
 
     /**
+     * Gets the import site.<p>
+     * 
+     * If this is not empty, then it will be used as the site root for importing and exporting this module.<p>
+     * 
+     * @return the import site
+     */
+    public String getImportSite() {
+
+        return m_importSite;
+    }
+
+    /**
      * Returns the name of this module.<p>
      * 
      * The module name must be a valid java package name.<p>
@@ -570,6 +593,16 @@ public class CmsModule implements Comparable<CmsModule> {
     public String getNiceName() {
 
         return m_niceName;
+    }
+
+    /** 
+     * Gets the timestamp of this object's creation time.<p>
+     * 
+     * @return the object creation timestamp 
+     */
+    public long getObjectCreateTime() {
+
+        return m_objectCreateTime;
     }
 
     /**
@@ -1017,6 +1050,20 @@ public class CmsModule implements Comparable<CmsModule> {
 
         checkFrozen();
         m_importScript = importScript;
+    }
+
+    /**
+     * Sets the import site.<p>
+     * 
+     * @param importSite the import site 
+     */
+    public void setImportSite(String importSite) {
+
+        checkFrozen();
+        if (importSite != null) {
+            importSite = importSite.trim();
+        }
+        m_importSite = importSite;
     }
 
     /**

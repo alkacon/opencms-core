@@ -72,6 +72,9 @@ import com.google.common.base.Joiner;
  */
 public class CmsJlanDiskInterface implements DiskInterface {
 
+    /** Attribute to control whether we need the filesize or not when reading a resource. */
+    public static final String NO_FILESIZE_REQUIRED = "NO_FILESIZE_REQUIRED";
+
     /** The standard resource filter used for reading resources. */
     public static final CmsResourceFilter STANDARD_FILTER = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED;
 
@@ -193,7 +196,9 @@ public class CmsJlanDiskInterface implements DiskInterface {
     public int fileExists(SrvSession session, TreeConnection connection, String path) {
 
         try {
-            CmsJlanNetworkFile file = getFileForPath(session, connection, path);
+            CmsObjectWrapper cms = getCms(session, connection);
+            cms.getRequestContext().setAttribute(NO_FILESIZE_REQUIRED, Boolean.TRUE);
+            CmsJlanNetworkFile file = getFileForPath(cms, session, connection, path);
             if (file == null) {
                 return FileStatus.NotExist;
             } else {
@@ -432,6 +437,33 @@ public class CmsJlanDiskInterface implements DiskInterface {
     /**
      * Helper method to get a network file object given a path.<p>
      * 
+     * @param cms the CMS context wrapper 
+     * @param session the current session 
+     * @param connection the current connection 
+     * @param path the file path 
+     * 
+     * @return the network file object for the given path 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsJlanNetworkFile getFileForPath(
+        CmsObjectWrapper cms,
+        SrvSession session,
+        TreeConnection connection,
+        String path) throws CmsException {
+
+        try {
+            String cmsPath = getCmsPath(path);
+            CmsResource resource = cms.readResource(cmsPath, STANDARD_FILTER);
+            CmsJlanNetworkFile result = new CmsJlanNetworkFile(cms, resource, path);
+            return result;
+        } catch (CmsVfsResourceNotFoundException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Helper method to get a network file object given a path.<p>
+     * 
      * @param session the current session 
      * @param connection the current connection 
      * @param path the file path 
@@ -442,15 +474,8 @@ public class CmsJlanDiskInterface implements DiskInterface {
     protected CmsJlanNetworkFile getFileForPath(SrvSession session, TreeConnection connection, String path)
     throws CmsException {
 
-        try {
-            CmsObjectWrapper cms = getCms(session, connection);
-            String cmsPath = getCmsPath(path);
-            CmsResource resource = cms.readResource(cmsPath, STANDARD_FILTER);
-            CmsJlanNetworkFile result = new CmsJlanNetworkFile(cms, resource, path);
-            return result;
-        } catch (CmsVfsResourceNotFoundException e) {
-            return null;
-        }
+        CmsObjectWrapper cms = getCms(session, connection);
+        return getFileForPath(cms, session, connection, path);
     }
 
     /**

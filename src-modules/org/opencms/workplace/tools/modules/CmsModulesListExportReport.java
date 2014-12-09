@@ -27,19 +27,21 @@
 
 package org.opencms.workplace.tools.modules;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.report.I_CmsReportThread;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListReport;
 import org.opencms.workplace.threads.CmsExportThread;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,11 +57,11 @@ import org.apache.commons.logging.Log;
  */
 public class CmsModulesListExportReport extends A_CmsListReport {
 
-    /** Modulename. */
-    private String m_paramModule;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModulesListExportReport.class);
+
+    /** Modulename. */
+    private String m_paramModule;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -97,6 +99,7 @@ public class CmsModulesListExportReport extends A_CmsListReport {
      * 
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
+    @Override
     public I_CmsReportThread initializeThread() {
 
         I_CmsReportThread exportThread = new CmsExportThread(getCms(), getExportHandler(), false);
@@ -122,14 +125,27 @@ public class CmsModulesListExportReport extends A_CmsListReport {
         String moduleName = getParamModule();
 
         // get all module resources
-        List resList = OpenCms.getModuleManager().getModule(moduleName).getResources();
+        CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
+        List<String> resList = module.getResources();
+
         // check if all resources are valid
-        List resListCopy = new ArrayList();
-        for (Iterator it = resList.iterator(); it.hasNext();) {
-            String res = (String)it.next();
+        List<String> resListCopy = new ArrayList<String>();
+
+        CmsObject resourceCheckCms = getCms();
+        try {
+            resourceCheckCms = OpenCms.initCmsObject(resourceCheckCms);
+            String importSite = module.getImportSite();
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(importSite)) {
+                resourceCheckCms.getRequestContext().setSiteRoot(importSite);
+            }
+        } catch (CmsException e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        for (String res : resList) {
             try {
                 if (res != null) {
-                    getCms().readResource(res);
+                    resourceCheckCms.readResource(res);
                     resListCopy.add(res);
                 }
             } catch (CmsException e) {
@@ -139,13 +155,11 @@ public class CmsModulesListExportReport extends A_CmsListReport {
                 }
             }
         }
-
         resListCopy = CmsFileUtil.removeRedundancies(resListCopy);
-
         String[] resources = new String[resListCopy.size()];
 
         for (int i = 0; i < resListCopy.size(); i++) {
-            resources[i] = (String)resListCopy.get(i);
+            resources[i] = resListCopy.get(i);
         }
 
         String filename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
@@ -153,7 +167,7 @@ public class CmsModulesListExportReport extends A_CmsListReport {
                 + CmsSystemInfo.FOLDER_MODULES
                 + moduleName
                 + "_"
-                + OpenCms.getModuleManager().getModule(moduleName).getVersion().toString());
+                + module.getVersion().toString());
 
         CmsModuleImportExportHandler moduleExportHandler = new CmsModuleImportExportHandler();
         moduleExportHandler.setFileName(filename);

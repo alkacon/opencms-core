@@ -76,6 +76,7 @@ public class CmsModulesEdit extends CmsModulesEditBase {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -89,18 +90,18 @@ public class CmsModulesEdit extends CmsModulesEditBase {
         if (dialog.equals(PAGES[0])) {
             result.append(dialogBlockStart(key("label.moduleinformation")));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 6));
+            result.append(createDialogRowsHtml(0, 7));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key("label.modulecreator")));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(7, 8));
+            result.append(createDialogRowsHtml(8, 9));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
             if (CmsStringUtil.isEmpty(m_module.getName())) {
                 result.append(dialogBlockStart(key("label.modulefolder")));
                 result.append(createWidgetTableStart());
-                result.append(createDialogRowsHtml(9, 15));
+                result.append(createDialogRowsHtml(10, 16));
                 result.append(createWidgetTableEnd());
                 result.append(dialogBlockEnd());
             }
@@ -115,6 +116,7 @@ public class CmsModulesEdit extends CmsModulesEditBase {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         super.defineWidgets();
@@ -129,6 +131,7 @@ public class CmsModulesEdit extends CmsModulesEditBase {
         addWidget(new CmsWidgetDialogParameter(m_module, "group", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "actionClass", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "importScript", PAGES[0], new CmsTextareaWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_module, "importSite", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "authorName", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "authorEmail", PAGES[0], new CmsInputWidget()));
         // add the second page only when creating a new module

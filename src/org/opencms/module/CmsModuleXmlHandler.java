@@ -77,9 +77,6 @@ public class CmsModuleXmlHandler {
     /** The node name for the class node. */
     public static final String N_CLASS = "class";
 
-    /** Node for the import script. */
-    public static final String N_IMPORT_SCRIPT = "import-script";
-
     /** The node name for the datecreated node. */
     public static final String N_DATECREATED = "datecreated";
 
@@ -97,6 +94,9 @@ public class CmsModuleXmlHandler {
 
     /** The node name for the group node. */
     public static final String N_GROUP = "group";
+
+    /** Node for the import script. */
+    public static final String N_IMPORT_SCRIPT = "import-script";
 
     /** The node name for a module. */
     public static final String N_MODULE = "module";
@@ -124,6 +124,9 @@ public class CmsModuleXmlHandler {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModuleXmlHandler.class);
+
+    /** The node name for the import site. */
+    private static final String N_IMPORT_SITE = "import-site";
 
     /** The list of dependencies for a module. */
     private List<CmsModuleDependency> m_dependencies;
@@ -178,19 +181,20 @@ public class CmsModuleXmlHandler {
         // NOTE: If you change the order of parameters here or add new ones, you may
         // also need to change the corresponding parameter indexes in the method addXmlDigesterRulesForVersion5Modules.
 
-        digester.addCallMethod("*/" + N_MODULE, "createdModule", 12);
+        digester.addCallMethod("*/" + N_MODULE, "createdModule", 13);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NAME, 0);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NICENAME, 1);
         digester.addCallParam("*/" + N_MODULE + "/" + N_GROUP, 2);
         digester.addCallParam("*/" + N_MODULE + "/" + N_CLASS, 3);
         digester.addCallParam("*/" + N_MODULE + "/" + N_IMPORT_SCRIPT, 4);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DESCRIPTION, 5);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_VERSION, 6);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHORNAME, 7);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHOREMAIL, 8);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 9);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 10);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 11);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_IMPORT_SITE, 5);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DESCRIPTION, 6);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_VERSION, 7);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHORNAME, 8);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHOREMAIL, 9);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 10);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 11);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 12);
 
         // add rules for module dependencies
         digester.addCallMethod("*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY, "addDependency", 2);
@@ -290,6 +294,11 @@ public class CmsModuleXmlHandler {
         String importScript = module.getImportScript();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(importScript)) {
             moduleElement.addElement(N_IMPORT_SCRIPT).setText(importScript);
+        }
+
+        String importSite = module.getImportSite();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(importSite)) {
+            moduleElement.addElement(N_IMPORT_SITE).setText(importSite);
         }
 
         if (CmsStringUtil.isNotEmpty(module.getDescription())) {
@@ -551,6 +560,7 @@ public class CmsModuleXmlHandler {
      * @param group the group of the module
      * @param actionClass the (optional) module action class name
      * @param importScript the import script
+     * @param importSite the import site root 
      * @param description the description of this module
      * @param version the version of this module
      * @param authorName the name of the author of this module
@@ -565,6 +575,7 @@ public class CmsModuleXmlHandler {
         String group,
         String actionClass,
         String importScript,
+        String importSite,
         String description,
         String version,
         String authorName,
@@ -620,6 +631,7 @@ public class CmsModuleXmlHandler {
             group,
             actionClass,
             importScript,
+            importSite,
             description,
             moduleVersion,
             authorName,

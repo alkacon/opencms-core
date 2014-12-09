@@ -24,6 +24,7 @@
 	group?, 
 	class?, 
 	import-script?,
+	import-site?,
 	description?,
 	version,
 	authorname?,
@@ -68,6 +69,13 @@
 # This is a script for the CMSShell which will be executed when the module is imported.
 -->
 <!ELEMENT import-script (#PCDATA)>
+
+<!--
+# The optional import site.
+# This is set as the site root when exporting/importing the module, and thus is only useful 
+# for modules which don't keep all their files under /system/ (e.g. content modules). 
+-->
+<!ELEMENT import-site (#PCDATA)>
 
 <!--
 # The (optional) description of the module.

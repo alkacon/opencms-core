@@ -82,6 +82,9 @@ public class CmsModuleManager {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModuleManager.class);
 
+    /** The import/export repository. */
+    private CmsModuleImportExportRepository m_importExportRepository = new CmsModuleImportExportRepository();
+
     /** The list of module export points. */
     private Set<CmsExportPoint> m_moduleExportPoints;
 
@@ -719,6 +722,16 @@ public class CmsModuleManager {
     }
 
     /**
+     * Returns the importExportRepository.<p>
+     *
+     * @return the importExportRepository
+     */
+    public CmsModuleImportExportRepository getImportExportRepository() {
+
+        return m_importExportRepository;
+    }
+
+    /**
      * Returns the module with the given module name,
      * or <code>null</code> if no module with the given name is configured.<p>
      * 
@@ -815,6 +828,7 @@ public class CmsModuleManager {
 
         // initialize the export points
         initModuleExportPoints();
+        m_importExportRepository.initialize(cms);
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_NUM_CLASSES_INITIALIZED_1, new Integer(count)));

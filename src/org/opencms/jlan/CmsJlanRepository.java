@@ -124,6 +124,8 @@ public class CmsJlanRepository implements I_CmsRepository {
     public CmsJlanRepository() {
 
         m_deviceContext = new CmsJlanDeviceContext(this);
+        m_deviceContext.enableChangeHandler(true);
+        m_deviceContext.setFileServerNotifications(true);
         m_originalDiskInterface = new CmsJlanDiskInterface();
         m_diskInterface = createLoggingProxy(m_originalDiskInterface);
     }
