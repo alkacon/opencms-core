@@ -13,7 +13,10 @@ OPENCMS_VERSION_NUMBER="${OpenCmsNumber:-9.5.x}"
 #
 # Values used in the test cases are:
 # "Release" for a release build
+# "Beta" for a bet build
 # "Nightly" for a nightly build
+# "Milestone" for a milestone build
+# "Manual" for a manual triggered build
 #
 OPENCMS_BUILD_TYPE="${OpenCmsBuildType:-Manual}"
 
@@ -76,8 +79,9 @@ echo "# " >> "$OUTPUT_FILE"
 #
 echo "version.number=$OPENCMS_VERSION_NUMBER" >> "$OUTPUT_FILE"
 echo "version.id=$OPENCMS_VERSION_ID" >> "$OUTPUT_FILE"
-#
-echo "build.number=$OPENCMS_BUILD_NUMBER" >> "$OUTPUT_FILE"
+if [ $OPENCMS_BUILD_TYPE != "Milestone" ]; then
+    echo "build.number=$OPENCMS_BUILD_NUMBER" >> "$OUTPUT_FILE"
+fi
 echo "build.date=$OPENCMS_BUILD_DATE" >> "$OUTPUT_FILE"
 echo "build.type=$OPENCMS_BUILD_TYPE" >> "$OUTPUT_FILE"
 echo "build.system=$OPENCMS_BUILD_SYSTEM" >> "$OUTPUT_FILE"
@@ -86,7 +90,9 @@ echo "build.gitbranch=$OPENCMS_GIT_BRANCH" >> "$OUTPUT_FILE"
 #
 # Nice names for the build information (optional).
 #
-echo "nicename.build.number=Build Number" >> "$OUTPUT_FILE"
+if [ $OPENCMS_BUILD_TYPE != "Milestone" ]; then
+    echo "nicename.build.number=Build Number" >> "$OUTPUT_FILE"
+fi    
 echo "nicename.build.date=Build Date" >> "$OUTPUT_FILE"
 echo "nicename.build.type=Build Type" >> "$OUTPUT_FILE"
 echo "nicename.build.system=Build System" >> "$OUTPUT_FILE"
