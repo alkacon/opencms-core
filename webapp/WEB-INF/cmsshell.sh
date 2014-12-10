@@ -33,5 +33,5 @@ for JAR in ${OPENCMS_BASE}/lib/*.jar; do
    OPENCMS_CLASSPATH="${OPENCMS_CLASSPATH}:${JAR}"
 done
 
-java -classpath "${OPENCMS_CLASSPATH}:${TOMCAT_CLASSPATH}:classes" org.opencms.main.CmsShell -base="${OPENCMS_BASE}" "$@"
+java -classpath "${OPENCMS_CLASSPATH}:${TOMCAT_CLASSPATH}:${OPENCMS_BASE}/classes" org.opencms.main.CmsShell -base="${OPENCMS_BASE}" "$@"
 
