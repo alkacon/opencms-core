@@ -145,6 +145,7 @@
 		<xsd:attribute name="locale" type="xsd:string" use="optional" />
 		<xsd:attribute name="default" type="xsd:string" use="optional" />
 		<xsd:attribute name="boost" type="xsd:string" use="optional" />
+		<xsd:attribute name="addto" type="xsd:string" use="optional" />
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsDefaultAppinfoSolrFieldMapping">

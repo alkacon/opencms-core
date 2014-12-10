@@ -265,6 +265,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Constant for the "targetfield" appinfo attribute name. */
     public static final String APPINFO_ATTR_TARGET_FIELD = "targetfield";
 
+    /** Constant for the "addto" appinfo attribute name. */
+    public static final String APPINFO_ATTR_ADD_TO = "addto";
+
+    /** Constant for the "page" value of the appinfo attribute "addto". */
+    public static final String APPINFO_VALUE_ADD_TO_PAGE = "page";
+
+    /** Constant for the "element" value of the appinfo attribute "addto". */
+    public static final String APPINFO_VALUE_ADD_TO_CONTENT = "element";
+
     /** Constant for the "type" appinfo attribute name. */
     public static final String APPINFO_ATTR_TYPE = "type";
 
@@ -524,6 +533,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The Solr field configurations. */
     protected Map<String, CmsSearchField> m_searchFields;
+
+    /** The Solr field configurations added to the container pages contents are on. */
+    protected Map<String, CmsSearchField> m_searchFieldsPage;
 
     /** The search settings. */
     protected Map<String, Boolean> m_searchSettings;
@@ -947,6 +959,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public Set<CmsSearchField> getSearchFields() {
 
         return Collections.unmodifiableSet(new HashSet<CmsSearchField>(m_searchFields.values()));
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchFieldsForPage()
+     */
+    public Set<CmsSearchField> getSearchFieldsForPage() {
+
+        return Collections.unmodifiableSet(new HashSet<CmsSearchField>(m_searchFieldsPage.values()));
     }
 
     /**
@@ -1658,13 +1678,38 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param field the Solr field
      */
+    @Deprecated
     protected void addSearchField(CmsXmlContentDefinition contentDefinition, CmsSearchField field) {
+
+        addSearchField(contentDefinition, field, I_CmsXmlContentHandler.MappingType.ELEMENT);
+    }
+
+    /**
+     * Adds a Solr field for an element.<p>
+     *
+     * @param contentDefinition the XML content definition this XML content handler belongs to
+     * @param field the Solr field
+     * @param type the type, specifying if the field should be attached to the document of the XML content or to all container pages the content is placed on
+     */
+    protected void addSearchField(
+        CmsXmlContentDefinition contentDefinition,
+        CmsSearchField field,
+        I_CmsXmlContentHandler.MappingType type) {
 
         Locale locale = null;
         if (field instanceof CmsSolrField) {
             locale = ((CmsSolrField)field).getLocale();
         }
-        m_searchFields.put(CmsXmlUtils.concatXpath(locale != null ? locale.toString() : null, field.getName()), field);
+        String key = CmsXmlUtils.concatXpath(locale != null ? locale.toString() : null, field.getName());
+        switch (type) {
+            case PAGE:
+                m_searchFieldsPage.put(key, field);
+                break;
+            case ELEMENT:
+            default:
+                m_searchFields.put(key, field);
+                break;
+        }
     }
 
     /**
@@ -1915,6 +1960,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         m_titleMappings = new ArrayList<String>(2);
         m_formatters = new ArrayList<CmsFormatterBean>();
         m_searchFields = new HashMap<String, CmsSearchField>();
+        m_searchFieldsPage = new HashMap<String, CmsSearchField>();
         m_allowedTemplates = new CmsDefaultSet<String>();
         m_allowedTemplates.setDefaultMembership(true);
         m_displayTypes = new HashMap<String, DisplayType>();
@@ -2389,8 +2435,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         CmsSearchFieldMapping map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.ITEM, param);
                         field.addMapping(map);
                     }
-
-                    addSearchField(contentDefinition, field);
+                    Set<I_CmsXmlContentHandler.MappingType> mappingTypes = parseSearchMappingTypes(solrElement);
+                    for (I_CmsXmlContentHandler.MappingType type : mappingTypes) {
+                        addSearchField(contentDefinition, field, type);
+                    }
                 }
             }
         }
@@ -2632,6 +2680,32 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             return messages.key(keyName);
         }
         return CmsMessages.formatUnknownKey(keyName);
+    }
+
+    /**
+     * @param solrElement the XML node of the &lt;solrfield&gt; node
+     * @return parsed values of the attribute "addto"
+     */
+    protected Set<MappingType> parseSearchMappingTypes(Element solrElement) {
+
+        Set<MappingType> result = new HashSet<MappingType>();
+        String mappingTypes = solrElement.attributeValue(APPINFO_ATTR_ADD_TO);
+        if (mappingTypes != null) {
+            String[] types = mappingTypes.split(",");
+            for (int i = 0; i < types.length; i++) {
+                String type = types[i].trim();
+                if (APPINFO_VALUE_ADD_TO_PAGE.equals(type)) {
+                    result.add(MappingType.PAGE);
+                } else if (APPINFO_VALUE_ADD_TO_CONTENT.equals(type)) {
+                    result.add(MappingType.ELEMENT);
+                }
+            }
+        } else {
+            // for backwards compatibility
+            result.add(MappingType.ELEMENT);
+        }
+
+        return result;
     }
 
     /**
