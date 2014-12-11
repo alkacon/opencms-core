@@ -46,6 +46,7 @@ import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.commons.CmsPreferences;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -1503,11 +1504,15 @@ public class CmsUserSettings {
             }
         } else if (cms != null) {
             Iterator<String> itKeys = m_user.getAdditionalInfo().keySet().iterator();
+            List<String> keysToDelete = new ArrayList<String>(3);
             while (itKeys.hasNext()) {
                 String key = itKeys.next();
                 if (key.startsWith(PREFERENCES + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS)) {
-                    m_user.deleteAdditionalInfo(key);
+                    keysToDelete.add(key);
                 }
+            }
+            for (String key : keysToDelete) {
+                m_user.deleteAdditionalInfo(key);
             }
         }
         // start settings for galleries
