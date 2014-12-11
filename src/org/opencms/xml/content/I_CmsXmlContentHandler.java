@@ -77,6 +77,17 @@ public interface I_CmsXmlContentHandler {
         wide
     }
 
+    /**
+     * The available mapping types. Currently only available for searchsettings (using the "addto" attribute in the node &lt;solrfield&gt;).
+     */
+    public static enum MappingType {
+        /** map for the content's resource */
+        ELEMENT,
+
+        /** map for all container pages the content is placed on */
+        PAGE
+    }
+    
     /** Mapping name for the 'date expired' mapping. */
     String ATTRIBUTE_DATEEXPIRED = "dateexpired";
 
@@ -339,6 +350,13 @@ public interface I_CmsXmlContentHandler {
      * @return the Search fields for this XMl content
      */
     Set<CmsSearchField> getSearchFields();
+
+    /**
+     * Returns all configured Search fields for this XML content that should be attached to container pages the content is placed on.<p>
+     *
+     * @return the Search fields for this XMl content
+     */
+    Set<CmsSearchField> getSearchFieldsForPage();
 
     /**
      * Returns the search content settings defined in the annotation node of this XML content.<p>

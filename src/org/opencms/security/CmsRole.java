@@ -146,6 +146,60 @@ public final class CmsRole {
     /** Indicates if this role is a system role or a user defined role. */
     private boolean m_systemRole;
 
+    /** Prefix for individual user confirmation runtime property. */
+    public static final String CONFIRM_ROLE_PREFIX = "confirm.role.";
+
+    /**
+     * Initializes the system roles with the configured OpenCms system group names.<p>
+     */
+    static {
+
+        ROOT_ADMIN = new CmsRole("ROOT_ADMIN", null, "/RoleRootAdmins");
+        WORKPLACE_MANAGER = new CmsRole("WORKPLACE_MANAGER", CmsRole.ROOT_ADMIN, "/RoleWorkplaceManager");
+        DATABASE_MANAGER = new CmsRole("DATABASE_MANAGER", CmsRole.ROOT_ADMIN, "/RoleDatabaseManager");
+
+        ADMINISTRATOR = new CmsRole("ADMINISTRATOR", CmsRole.ROOT_ADMIN, "RoleAdministrators");
+        PROJECT_MANAGER = new CmsRole("PROJECT_MANAGER", CmsRole.ADMINISTRATOR, "RoleProjectmanagers");
+        ACCOUNT_MANAGER = new CmsRole("ACCOUNT_MANAGER", CmsRole.ADMINISTRATOR, "RoleAccountManagers");
+        VFS_MANAGER = new CmsRole("VFS_MANAGER", CmsRole.ADMINISTRATOR, "RoleVfsManagers");
+        DEVELOPER = new CmsRole("DEVELOPER", CmsRole.VFS_MANAGER, "RoleDevelopers");
+        WORKPLACE_USER = new CmsRole("WORKPLACE_USER", CmsRole.DEVELOPER, "RoleWorkplaceUsers");
+
+        // the following roles all include the workplace user role
+        PROJECT_MANAGER.m_children.add(WORKPLACE_USER);
+        ACCOUNT_MANAGER.m_children.add(WORKPLACE_USER);
+
+        GALLERY_EDITOR = new CmsRole("GALLERY_EDITOR", CmsRole.WORKPLACE_USER, "RoleGalleryEditor");
+        CATEGORY_EDITOR = new CmsRole("CATEGORY_EDITOR", CmsRole.WORKPLACE_USER, "RoleCategoryEditor");
+        EDITOR = new CmsRole("EDITOR", CmsRole.GALLERY_EDITOR, "RoleEditor");
+
+        // the category editor role also includes the editor role
+        CATEGORY_EDITOR.m_children.add(EDITOR);
+
+        ELEMENT_AUTHOR = new CmsRole("ELEMENT_AUTHOR", CmsRole.EDITOR, "RoleElementAuthor");
+
+        // create a lookup list for the system roles
+        SYSTEM_ROLES = Collections.unmodifiableList(Arrays.asList(new CmsRole[] {
+            ROOT_ADMIN,
+            WORKPLACE_MANAGER,
+            DATABASE_MANAGER,
+            ADMINISTRATOR,
+            PROJECT_MANAGER,
+            ACCOUNT_MANAGER,
+            VFS_MANAGER,
+            DEVELOPER,
+            WORKPLACE_USER,
+            GALLERY_EDITOR,
+            CATEGORY_EDITOR,
+            EDITOR,
+            ELEMENT_AUTHOR}));
+
+        // now initialize all system roles
+        for (int i = 0; i < SYSTEM_ROLES.size(); i++) {
+            (SYSTEM_ROLES.get(i)).initialize();
+        }
+    }
+
     /**
      * Creates a user defined role.<p>
      * 
@@ -200,57 +254,6 @@ public final class CmsRole {
         }
         if (parentRole != null) {
             parentRole.m_children.add(this);
-        }
-    }
-
-    /**
-     * Initializes the system roles with the configured OpenCms system group names.<p>
-     */
-    static {
-
-        ROOT_ADMIN = new CmsRole("ROOT_ADMIN", null, "/RoleRootAdmins");
-        WORKPLACE_MANAGER = new CmsRole("WORKPLACE_MANAGER", CmsRole.ROOT_ADMIN, "/RoleWorkplaceManager");
-        DATABASE_MANAGER = new CmsRole("DATABASE_MANAGER", CmsRole.ROOT_ADMIN, "/RoleDatabaseManager");
-
-        ADMINISTRATOR = new CmsRole("ADMINISTRATOR", CmsRole.ROOT_ADMIN, "RoleAdministrators");
-        PROJECT_MANAGER = new CmsRole("PROJECT_MANAGER", CmsRole.ADMINISTRATOR, "RoleProjectmanagers");
-        ACCOUNT_MANAGER = new CmsRole("ACCOUNT_MANAGER", CmsRole.ADMINISTRATOR, "RoleAccountManagers");
-        VFS_MANAGER = new CmsRole("VFS_MANAGER", CmsRole.ADMINISTRATOR, "RoleVfsManagers");
-        DEVELOPER = new CmsRole("DEVELOPER", CmsRole.VFS_MANAGER, "RoleDevelopers");
-        WORKPLACE_USER = new CmsRole("WORKPLACE_USER", CmsRole.DEVELOPER, "RoleWorkplaceUsers");
-
-        // the following roles all include the workplace user role
-        PROJECT_MANAGER.m_children.add(WORKPLACE_USER);
-        ACCOUNT_MANAGER.m_children.add(WORKPLACE_USER);
-
-        GALLERY_EDITOR = new CmsRole("GALLERY_EDITOR", CmsRole.WORKPLACE_USER, "RoleGalleryEditor");
-        CATEGORY_EDITOR = new CmsRole("CATEGORY_EDITOR", CmsRole.WORKPLACE_USER, "RoleCategoryEditor");
-        EDITOR = new CmsRole("EDITOR", CmsRole.GALLERY_EDITOR, "RoleEditor");
-
-        // the category manger role also includes the sitemap manager role
-        CATEGORY_EDITOR.m_children.add(EDITOR);
-
-        ELEMENT_AUTHOR = new CmsRole("ELEMENT_AUTHOR", CmsRole.EDITOR, "RoleElementAuthor");
-
-        // create a lookup list for the system roles
-        SYSTEM_ROLES = Collections.unmodifiableList(Arrays.asList(new CmsRole[] {
-            ROOT_ADMIN,
-            WORKPLACE_MANAGER,
-            DATABASE_MANAGER,
-            ADMINISTRATOR,
-            PROJECT_MANAGER,
-            ACCOUNT_MANAGER,
-            VFS_MANAGER,
-            DEVELOPER,
-            WORKPLACE_USER,
-            GALLERY_EDITOR,
-            CATEGORY_EDITOR,
-            EDITOR,
-            ELEMENT_AUTHOR}));
-
-        // now initialize all system roles
-        for (int i = 0; i < SYSTEM_ROLES.size(); i++) {
-            (SYSTEM_ROLES.get(i)).initialize();
         }
     }
 

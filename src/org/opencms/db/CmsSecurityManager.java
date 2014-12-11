@@ -2937,7 +2937,32 @@ public final class CmsSecurityManager {
             return false;
         }
 
-        result = Boolean.valueOf(hasRole(role, roles));
+        boolean hasRole = hasRole(role, roles);
+
+        // hack: require individual user based confirmation for certain roles
+        // this is for updated older systems where content managers have been WORKPLACE_USER only
+        // to prevent access to certain ADE management functions
+        if (hasRole && ((CmsRole.CATEGORY_EDITOR.equals(role)) || (CmsRole.GALLERY_EDITOR.equals(role)))) {
+            String info = CmsRole.CONFIRM_ROLE_PREFIX + role.getRoleName();
+            Object prop = OpenCms.getRuntimeProperty(info);
+            if ((prop != null) && Boolean.valueOf(prop.toString()).booleanValue()) {
+                // individual user based confirmation for the role is required
+                // if the user is a WORKPLACE_USER
+                Object val = user.getAdditionalInfo(info);
+                if ((val == null) || !Boolean.valueOf(val.toString()).booleanValue()) {
+                    // no individual user confirmation present
+                    if (hasRole(CmsRole.WORKPLACE_USER, roles)
+                        && !hasRole(CmsRole.DEVELOPER, roles)
+                        && !hasRole(CmsRole.PROJECT_MANAGER, roles)
+                        && !hasRole(CmsRole.ACCOUNT_MANAGER, roles)) {
+                        // user is a WORKPLACE_USER, confirmation is required but not present
+                        hasRole = false;
+                    }
+                }
+            }
+        }
+
+        result = Boolean.valueOf(hasRole);
         OpenCms.getMemoryMonitor().cacheRole(key, result.booleanValue());
         return result.booleanValue();
     }
@@ -7091,14 +7116,11 @@ public final class CmsSecurityManager {
      */
     protected boolean hasRole(CmsRole role, List<CmsGroup> roles) {
 
-        // iterates the roles the user are in
-        Iterator<CmsGroup> itGroups = roles.iterator();
-        while (itGroups.hasNext()) {
-            String groupName = (itGroups.next()).getName();
+        // iterates the role groups the user is in
+        for (CmsGroup group : roles) {
+            String groupName = group.getName();
             // iterate the role hierarchy
-            Iterator<String> itDistinctGroupNames = role.getDistinctGroupNames().iterator();
-            while (itDistinctGroupNames.hasNext()) {
-                String distictGroupName = itDistinctGroupNames.next();
+            for (String distictGroupName : role.getDistinctGroupNames()) {
                 if (distictGroupName.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
                     // this is a ou independent role
                     // we need an exact match, and we ignore the ou parameter
