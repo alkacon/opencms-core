@@ -3378,6 +3378,19 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Initializes the default groups for an organizational unit.<p>
+     * 
+     * @param context the request context 
+     * @param ou the organizational unit 
+     */
+    public void initializeOrgUnit(CmsRequestContext context, CmsOrganizationalUnit ou) {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        m_driverManager.initOrgUnit(dbc, ou);
+
+    }
+
+    /**
      * Checks if the specified resource is inside the current project.<p>
      *
      * The project "view" is determined by a set of path prefixes.

@@ -813,7 +813,12 @@ public class CmsUserDriver implements I_CmsUserDriver {
     public void fillDefaults(CmsDbContext dbc) throws CmsInitException {
 
         try {
-            internalCreateDefaultGroups(dbc, "", "", false);
+            CmsOrganizationalUnit ou = (CmsOrganizationalUnit)(dbc.getAttribute(CmsDriverManager.ATTR_INIT_OU));
+            if (ou == null) {
+                internalCreateDefaultGroups(dbc, "", "", false);
+            } else {
+                internalCreateDefaultGroups(dbc, ou.getName(), ou.getDescription(), ou.hasFlagWebuser());
+            }
         } catch (CmsException e) {
             if (CmsLog.INIT.isErrorEnabled()) {
                 CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DEFAULT_USERS_CREATION_FAILED_0), e);
@@ -2199,6 +2204,10 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_SYSTEM_ROLES_CREATION_FAILED_0), e);
             }
             throw new CmsInitException(Messages.get().container(Messages.ERR_INITIALIZING_USER_DRIVER_0), e);
+        }
+
+        if (dbc.getAttribute(CmsDriverManager.ATTR_INIT_OU) != null) {
+            return;
         }
 
         if (webuser) {

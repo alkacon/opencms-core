@@ -36,8 +36,12 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsUserSearchParameters;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsInitException;
+import org.opencms.main.CmsLog;
 
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * This manager provide access to the organizational unit related operations.<p>
@@ -45,6 +49,9 @@ import java.util.List;
  * @since 6.5.6
  */
 public class CmsOrgUnitManager {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsOrgUnitManager.class);
 
     /** The security manager. */
     private final CmsSecurityManager m_securityManager;
@@ -269,6 +276,25 @@ public class CmsOrgUnitManager {
 
         CmsOrganizationalUnit orgUnit = readOrganizationalUnit(cms, ouFqn);
         return m_securityManager.getUsersWithoutAdditionalInfo(cms.getRequestContext(), orgUnit, recursive);
+    }
+
+    /** 
+     * Initializes the organizational units.<p>
+     * 
+     * @param cms the admin CMS context 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public void initialize(CmsObject cms) throws CmsException {
+
+        List<CmsOrganizationalUnit> ous = getOrganizationalUnits(cms, "", true);
+        for (CmsOrganizationalUnit ou : ous) {
+            try {
+                m_securityManager.initializeOrgUnit(cms.getRequestContext(), ou);
+            } catch (CmsInitException e) {
+                LOG.error("Error while initializing OU " + ou.getName() + ": " + e.getLocalizedMessage(), e);
+            }
+        }
     }
 
     /**

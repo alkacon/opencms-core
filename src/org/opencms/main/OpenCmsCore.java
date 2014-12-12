@@ -1347,6 +1347,8 @@ public final class OpenCmsCore {
             // initialize the XML content type manager
             m_xmlContentTypeManager.initialize(initCmsObject(adminCms));
 
+            m_orgUnitManager.initialize(initCmsObject(adminCms));
+
             // initialize the module manager
             m_moduleManager.initialize(initCmsObject(adminCms), m_configurationManager);
 

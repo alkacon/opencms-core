@@ -369,6 +369,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** The VFS driver. */
     private I_CmsVfsDriver m_vfsDriver;
 
+    /** Attribute for signalling to the user driver that a specific OU should be initialized by fillDefaults. */
+    public static final String ATTR_INIT_OU = "INIT_OU";
+
     /**
      * Private constructor, initializes some required member variables.<p>
      */
@@ -5140,6 +5143,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
         dbc1.clear();
         getUserDriver().createRootOrganizationalUnit(dbc2);
         dbc2.clear();
+    }
+
+    /** 
+     * Initializes the organizational unit.<p>
+     * 
+     * @param dbc the DB context 
+     * @param ou the organizational unit 
+     */
+    public void initOrgUnit(CmsDbContext dbc, CmsOrganizationalUnit ou) {
+
+        try {
+            dbc.setAttribute(ATTR_INIT_OU, ou);
+            m_userDriver.fillDefaults(dbc);
+        } finally {
+            dbc.removeAttribute(ATTR_INIT_OU);
+        }
     }
 
     /**
