@@ -438,9 +438,9 @@ public class CmsModuleXmlHandler {
         digester.addCallMethod("*/" + N_MODULE + "/author", "setOldModule");
 
         // base module information
-        digester.addCallParam("*/" + N_MODULE + "/author", 7);
-        digester.addCallParam("*/" + N_MODULE + "/email", 8);
-        digester.addCallParam("*/" + N_MODULE + "/creationdate", 9);
+        digester.addCallParam("*/" + N_MODULE + "/author", 8);
+        digester.addCallParam("*/" + N_MODULE + "/email", 9);
+        digester.addCallParam("*/" + N_MODULE + "/creationdate", 10);
 
         // dependencies
         digester.addCallParam("*/" + N_MODULE + "/dependencies/dependency/name", 0);
