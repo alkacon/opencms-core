@@ -3949,14 +3949,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         // if roles of child OUs are not requested and the role does not belong to the requested OU don't include the role children
                         continue;
                     }
-                    // get the child roles
-                    Iterator<CmsRole> itChildRoles = role.getChildren(true).iterator();
-                    while (itChildRoles.hasNext()) {
-                        CmsRole childRole = itChildRoles.next();
-                        if (childRole.isSystemRole()) {
-                            // include system roles only
-                            allGroups.add(readGroup(dbc, childRole.getGroupName()));
+                    CmsOrganizationalUnit currentOu = readOrganizationalUnit(dbc, group.getOuFqn());
+                    boolean readChildRoleGroups = true;
+                    if (currentOu.hasFlagWebuser() && role.forOrgUnit(null).equals(CmsRole.ACCOUNT_MANAGER)) {
+                        readChildRoleGroups = false;
+                    }
+                    if (readChildRoleGroups) {
+                        // get the child roles
+                        Iterator<CmsRole> itChildRoles = role.getChildren(true).iterator();
+                        while (itChildRoles.hasNext()) {
+                            CmsRole childRole = itChildRoles.next();
+                            if (childRole.isSystemRole()) {
+                                // include system roles only
+                                allGroups.add(readGroup(dbc, childRole.getGroupName()));
+                            }
                         }
+                    } else {
+                        LOG.info("Skipping child role group check for web user OU " + currentOu.getName());
                     }
                     if (includeChildOus) {
                         // if needed include the roles of child ous
@@ -3976,7 +3985,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                                 }
                             }
                             // add child roles in child ous
-                            itChildRoles = role.getChildren(true).iterator();
+                            Iterator<CmsRole> itChildRoles = role.getChildren(true).iterator();
                             while (itChildRoles.hasNext()) {
                                 CmsRole childRole = itChildRoles.next();
                                 try {
