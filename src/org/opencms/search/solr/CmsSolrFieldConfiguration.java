@@ -440,6 +440,12 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                     null,
                     null,
                     CmsSearchField.BOOST_DEFAULT), prop.getValue());
+
+                // Also write the property using the dynamic field '_s' in order to prevent tokenization 
+                // of the property. The resulting field is named '<property>_prop_s'. 
+                document.addSearchField(new CmsSolrField(prop.getName()
+                    + CmsSearchField.FIELD_DYNAMIC_PROPERTIES
+                    + "_s", null, null, null, CmsSearchField.BOOST_DEFAULT), prop.getValue());
             }
         }
         return document;

@@ -145,6 +145,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** HTTP header Accept-Language. */
     private String m_acceptLanguageHeader;
 
+    /** CMS context with admin permissions. */
+    private CmsObject m_adminCms;
+
     /** Cache for the export links. */
     private Map<String, Boolean> m_cacheExportLinks;
 
@@ -264,9 +267,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** Prefix to use for internal OpenCms files with unsubstituted context values. */
     private String m_vfsPrefixConfigured;
-
-    /** CMS context with admin permissions. */
-    private CmsObject m_adminCms;
 
     /**
      * Creates a new static export property object.<p>
@@ -559,11 +559,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORT_SITE_ROOT_2, siteRoot, vfsName));
         }
 
+        boolean usesSecureSite = OpenCms.getSiteManager().usesSecureSite(req);
         CmsContextInfo contextInfo = new CmsContextInfo(
             cms.getRequestContext().getCurrentUser(),
             cms.getRequestContext().getCurrentProject(),
             vfsName,
             siteRoot,
+            usesSecureSite,
             i18nInfo.getLocale(),
             i18nInfo.getEncoding(),
             remoteAddr,
@@ -1846,6 +1848,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (!cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             return false;
         }
+
         String cacheKey = OpenCms.getStaticExportManager().getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName);
         String secureResource = OpenCms.getStaticExportManager().getCacheSecureLinks().get(cacheKey);
         if (secureResource == null) {
@@ -1872,8 +1875,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 // only cache result if read was successfull
                 OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
             } catch (CmsVfsResourceNotFoundException e) {
-                secureResource = "false";
-                // resource does not exist, no secure link will be required for any user
+                secureResource = SECURE_PROPERTY_VALUE_BOTH;
                 OpenCms.getStaticExportManager().getCacheSecureLinks().put(cacheKey, secureResource);
             } catch (Exception e) {
                 // no secure link required (probably security issues, e.g. no access for current user)

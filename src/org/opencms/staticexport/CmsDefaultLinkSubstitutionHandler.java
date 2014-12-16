@@ -61,15 +61,15 @@ import org.apache.commons.logging.Log;
  */
 public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionHandler {
 
-    /** Key for a request context attribute to control whether the getRootPath method uses the current site root for workplace requests.
-     *  The getRootPath method clears this attribute when called.
-     */
-    public static final String DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS = "DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS";
-
     /**
      * Request context attribute name to make the link substitution handler treat the link like an image link.<p>
      */
     public static final String ATTR_IS_IMAGE_LINK = "IS_IMAGE_LINK";
+
+    /** Key for a request context attribute to control whether the getRootPath method uses the current site root for workplace requests.
+     *  The getRootPath method clears this attribute when called. 
+     */
+    public static final String DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS = "DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultLinkSubstitutionHandler.class);
@@ -283,8 +283,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             // check if either the current site or the target site does have a secure server configured
             if (targetSite.hasSecureServer() || currentSite.hasSecureServer()) {
 
-                if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
-                    && !OpenCms.getSiteManager().startsWithShared(vfsName)) {
+                if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
                     // don't make a secure connection to the "/system" folder (why ?)
                     int linkType = -1;
                     try {
@@ -319,15 +318,12 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                         + cms.getRequestContext().getAttribute(ATTR_IS_IMAGE_LINK));
                     if ((linkType != imageId) && !hasIsImageLinkAttr) {
                         // check the secure property of the link
-                        boolean secureRequest = exportManager.isSecureLink(cms, oriUri);
+                        boolean secureRequest = cms.getRequestContext().isSecureRequest()
+                            || exportManager.isSecureLink(cms, oriUri);
 
                         boolean secureLink;
                         if (detailContent == null) {
-                            secureLink = exportManager.isSecureLink(
-                                cms,
-                                vfsName,
-                                targetSite.getSiteRoot(),
-                                secureRequest);
+                            secureLink = isSecureLink(cms, vfsName, targetSite, secureRequest);
                         } else {
                             secureLink = isDetailPageLinkSecure(
                                 cms,
@@ -602,6 +598,21 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
     }
 
     /**
+     * Checks if the link target is a secure link.<p
+     * 
+     * @param cms the current CMS context 
+     * @param vfsName the path of the link target
+     * @param targetSite the target site containing the detail page 
+     * @param secureRequest true if the currently running request is secure 
+     * 
+     * @return true if the link should be a secure link 
+     */
+    protected boolean isSecureLink(CmsObject cms, String vfsName, CmsSite targetSite, boolean secureRequest) {
+
+        return OpenCms.getStaticExportManager().isSecureLink(cms, vfsName, targetSite.getSiteRoot(), secureRequest);
+    }
+
+    /**
      * Gets the suffix (query + fragment) of the URI.<p>
      *
      * @param uri the URI
@@ -669,4 +680,5 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             return null;
         }
     }
+
 }

@@ -290,8 +290,10 @@ Each job can have an optional list of parameters.
 <!ATTLIST secure
 	server CDATA #REQUIRED
 	exclusive (true|false|TRUE|FALSE) "false"
-	error (true|false|TRUE|FALSE) "false">
-<!ELEMENT alias EMPTY>
+	error (true|false|TRUE|FALSE) "false"
+	usePermanentRedirects (true|false|TRUE|FALSE) "false" 
+	>
+<!ELEMENT alias EMPTY>	
 <!ATTLIST alias
 	server CDATA #REQUIRED
 	offset CDATA #IMPLIED>
