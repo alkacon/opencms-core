@@ -58,8 +58,20 @@ public class CmsXmlChangeDefaultUpload extends A_CmsXmlWorkplace {
     @Override
     protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
-        CmsSetupXmlHelper.setValue(document, xpath, "gwt");
-        return true;
+        if (document.selectSingleNode("/"
+            + CmsConfigurationManager.N_ROOT
+            + "/"
+            + CmsWorkplaceConfiguration.N_WORKPLACE
+            + "/"
+            + CmsWorkplaceConfiguration.N_DEFAULTPREFERENCES
+            + "/"
+            + CmsWorkplaceConfiguration.N_WORKPLACEPREFERENCES
+            + "/"
+            + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS) != null) {
+            CmsSetupXmlHelper.setValue(document, xpath, "gwt");
+            return true;
+        }
+        return false;
     }
 
     /**
