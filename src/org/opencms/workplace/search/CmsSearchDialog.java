@@ -373,8 +373,11 @@ public class CmsSearchDialog extends CmsWidgetDialog {
             o = getDialogObject();
         }
         if (!(o instanceof CmsSearchWorkplaceBean)) {
-            // read params from config
-            m_search = new CmsSearchWorkplaceBean(getSettings().getExplorerResource());
+            String oldExplorerMode = getSettings().getExplorerMode();
+            getSettings().setExplorerMode(null);
+            String explorerResource = getSettings().getExplorerResource();
+            getSettings().setExplorerMode(oldExplorerMode);
+            m_search = new CmsSearchWorkplaceBean(explorerResource);
         } else {
             // reuse params stored in session
             m_search = (CmsSearchWorkplaceBean)o;
