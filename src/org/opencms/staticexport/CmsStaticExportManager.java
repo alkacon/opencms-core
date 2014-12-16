@@ -1849,10 +1849,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             return false;
         }
 
-        if (fromSecure && OpenCms.getSiteManager().startsWithShared(vfsName)) {
-            // shared folder is not its own site, if we are coming from a secure page then links to shared should also be secure
-            return true;
-        }
         String cacheKey = OpenCms.getStaticExportManager().getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName);
         String secureResource = OpenCms.getStaticExportManager().getCacheSecureLinks().get(cacheKey);
         if (secureResource == null) {
