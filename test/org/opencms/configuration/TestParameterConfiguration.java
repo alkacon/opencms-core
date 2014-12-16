@@ -31,6 +31,7 @@ import org.opencms.test.OpenCmsTestCase;
 
 import java.io.File;
 import java.net.URL;
+import java.net.URLDecoder;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -42,7 +43,7 @@ public class TestParameterConfiguration extends OpenCmsTestCase {
     /**
      * Tests escaping and unescaping values in the parameter configuration.<p>
      * 
-     * @throws Exception
+     * @throws Exception in case the test fails
      */
     public void testEscapeUnescapeParameterConfiguration() throws Exception {
 
@@ -62,7 +63,7 @@ public class TestParameterConfiguration extends OpenCmsTestCase {
     /**
      * Test merging the parameter configuration.<p>
      * 
-     * @throws Exception
+     * @throws Exception in case the test fails
      */
     public void testMergeParameterConfiguration() throws Exception {
 
@@ -90,15 +91,17 @@ public class TestParameterConfiguration extends OpenCmsTestCase {
     /**
      * Test reading the parameter configuration.<p>
      * 
-     * @throws Exception
+     * @throws Exception in case the test fails
      */
     public void testReadParameterConfiguration() throws Exception {
 
         String testPropPath = "org/opencms/configuration/opencms-test.properties";
         URL url = this.getClass().getClassLoader().getResource(testPropPath);
-        File file = new File(url.getPath());
-        System.out.println("URL: " + url);
-        System.out.println("File: " + file);
+        String decodedPath = URLDecoder.decode(url.getPath(), "UTF-8");
+        File file = new File(decodedPath);
+        System.out.println("URL: '" + url + "'");
+        System.out.println("URL path decoded: '" + decodedPath + "'");
+        System.out.println("File: '" + file + "'");
         // make sure the test properties file is found
         assertTrue("Test property file '" + file.getAbsolutePath() + "' not found", file.exists());
 
