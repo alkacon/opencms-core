@@ -677,6 +677,8 @@ allModuleNames.split(',').each{ moduleName ->
                         '-strict'
                         // '-draftCompile' // Speeds up compile with 25%
                     ]
+            jvmArgs = [ '-Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory']
+            
 
             maxHeapSize = max_heap_size
         }
