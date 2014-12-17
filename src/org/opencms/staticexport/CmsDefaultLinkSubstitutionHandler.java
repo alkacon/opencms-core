@@ -667,7 +667,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             try {
                 cms.getRequestContext().setSiteRoot("");
                 // real root paths have priority over detail contents 
-                if (cms.existsResource(result)) {
+                if (cms.existsResource(path)) {
                     return null;
                 }
             } finally {
