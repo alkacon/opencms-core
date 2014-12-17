@@ -7,6 +7,7 @@
 # It can be accessed in OpenCms by OpenCms.getSystemInfo().getVersionNumber().
 #
 OPENCMS_VERSION_NUMBER="${OpenCmsNumber:-9.5.x}"
+OPENCMS_VERSION_NUMBER="${OpenCmsVersionNumber:-$OPENCMS_VERSION_NUMBER}"
 
 #
 # The type of build generated.
@@ -17,6 +18,7 @@ OPENCMS_VERSION_NUMBER="${OpenCmsNumber:-9.5.x}"
 # "Nightly" for a nightly build
 # "Milestone" for a milestone build
 # "Manual" for a manual triggered build
+# "Auto" for an automated CI build
 #
 OPENCMS_BUILD_TYPE="${OpenCmsBuildType:-Manual}"
 
