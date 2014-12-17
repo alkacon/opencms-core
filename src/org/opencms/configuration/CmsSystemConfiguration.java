@@ -996,7 +996,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 8, A_ERROR);
         digester.addCallParam(
             "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE,
-            5,
+            9,
             A_USE_PERMANENT_REDIRECTS);
         // add an alias to the currently configured site
         digester.addCallMethod(
