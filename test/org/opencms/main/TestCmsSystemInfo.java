@@ -228,6 +228,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         } else if (versionId.startsWith("Release")
             || versionId.startsWith("Beta")
             || versionId.startsWith("Nightly")
+            || versionId.startsWith("Auto")
             || versionId.startsWith("Milestone")) {
             // assume a build triggered by the Jenkins CI system
 
@@ -248,10 +249,10 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
             assertEquals("Expected keys do not match", "build.date", info.get("build.date").getKeyName());
             assertEquals("Expected keys do not match", "build.system", info.get("build.system").getKeyName());
 
-            // the git commit ID should be 7 chars long
-            assertTrue(info.get("build.gitid").getValue().length() == 7);
-            // the build system name is hard coded
-            assertEquals("Jenkins", info.get("build.system").getValue());
+            assertTrue("The git commit ID should be 7 chars long", info.get("build.gitid").getValue().length() == 7);
+            assertTrue(
+                "We always assume the build system name starts with 'Jenkins'",
+                info.get("build.system").getValue().startsWith("Jenkins"));
         } else {
             fail("No valid version information for test cases found, version id is '"
                 + OpenCms.getSystemInfo().getVersionId()
