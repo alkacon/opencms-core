@@ -54,6 +54,7 @@ OUTPUT_FILE="$OUTPUT_BASE/src/org/opencms/main/version.properties"
 # These will be provided to OpenCms as list of variables that 
 # can be accessed by OpenCms.getSystemInfo().getBuildInfo().
 #
+JENKINS_BUILD_NUMBER="${JENKINS_BUILD_NUMBER:-#$BUILD_NUMBER}"
 OPENCMS_BUILD_NUMBER="${JENKINS_BUILD_NUMBER:-Unknown}"
 OPENCMS_BUILD_DATE=$(date +"%Y-%m-%d %H:%M")
 GIT_COMMIT="${GIT_COMMIT:-Unknown}"
@@ -77,9 +78,12 @@ echo "# OpenCms Version Information:"
 echo "# "
 echo "# Build Type    : $OPENCMS_BUILD_TYPE"
 echo "# Build System  : $OPENCMS_BUILD_SYSTEM"
+echo "# Build Number  : $OPENCMS_BUILD_NUMBER"
 echo "# Version Number: $OPENCMS_VERSION_NUMBER"
 echo "# Version ID    : $OPENCMS_VERSION_ID"
 echo "# Version File  : $OUTPUT_FILE"
+echo "# Git commit    : $OPENCMS_GIT_ID"
+echo "# Git branch    : $OPENCMS_GIT_BRANCH"
 echo "# "
 
 #
