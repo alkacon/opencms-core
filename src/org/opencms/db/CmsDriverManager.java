@@ -3960,8 +3960,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         while (itChildRoles.hasNext()) {
                             CmsRole childRole = itChildRoles.next();
                             if (childRole.isSystemRole()) {
-                                // include system roles only
-                                allGroups.add(readGroup(dbc, childRole.getGroupName()));
+                                if (canReadRoleInOu(currentOu, childRole)) {
+                                    // include system roles only
+                                    allGroups.add(readGroup(dbc, childRole.getGroupName()));
+                                }
                             }
                         }
                     } else {
@@ -3977,7 +3979,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             CmsOrganizationalUnit subOu = itSubOus.next();
                             // add role in child ou
                             try {
-                                allGroups.add(readGroup(dbc, role.forOrgUnit(subOu.getName()).getGroupName()));
+                                if (canReadRoleInOu(subOu, role)) {
+                                    allGroups.add(readGroup(dbc, role.forOrgUnit(subOu.getName()).getGroupName()));
+                                }
                             } catch (CmsDbEntryNotFoundException e) {
                                 // ignore, this may happen while deleting an orgunit
                                 if (LOG.isDebugEnabled()) {
@@ -3989,7 +3993,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             while (itChildRoles.hasNext()) {
                                 CmsRole childRole = itChildRoles.next();
                                 try {
-                                    allGroups.add(readGroup(dbc, childRole.forOrgUnit(subOu.getName()).getGroupName()));
+                                    if (canReadRoleInOu(subOu, childRole)) {
+                                        allGroups.add(readGroup(
+                                            dbc,
+                                            childRole.forOrgUnit(subOu.getName()).getGroupName()));
+                                    }
                                 } catch (CmsDbEntryNotFoundException e) {
                                     // ignore, this may happen while deleting an orgunit
                                     if (LOG.isDebugEnabled()) {
@@ -10323,6 +10331,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
             flags | CmsDriverManager.READMODE_ONLY_FILES);
 
         publishList.addAll(filterResources(dbc, publishList, fileList), true);
+    }
+
+    /**
+     * Helper method to check whether we should bother with reading the group for a given role in a given OU.<p>
+     * 
+     * This is important because webuser OUs don't have most role groups, and their absence is not cached, so we want to avoid reading them.
+     * 
+     * @param ou the OU 
+     * @param role the role 
+     * @return true if we should read the role in the OU
+     */
+    private boolean canReadRoleInOu(CmsOrganizationalUnit ou, CmsRole role) {
+
+        if (ou.hasFlagWebuser() && !role.getRoleName().equals(CmsRole.ACCOUNT_MANAGER.getRoleName())) {
+            return false;
+        }
+        return true;
     }
 
     /**
