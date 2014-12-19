@@ -194,8 +194,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         I_CmsEventListener.KEY_RESOURCE));
                     reIndexResources(resources);
                     break;
-                case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
-                case I_CmsEventListener.EVENT_RESOURCE_MOVED:
                 case I_CmsEventListener.EVENT_RESOURCE_DELETED:
                     List<CmsResource> eventResources = (List<CmsResource>)event.getData().get(
                         I_CmsEventListener.KEY_RESOURCES);
@@ -209,6 +207,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     }
                     reIndexResources(resourcesToDelete);
                     break;
+                case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
+                case I_CmsEventListener.EVENT_RESOURCE_MOVED:
                 case I_CmsEventListener.EVENT_RESOURCE_COPIED:
                 case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
                     // a list of resources has been modified - offline indexes require (re)indexing
