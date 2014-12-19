@@ -28,9 +28,11 @@
 package org.opencms.main;
 
 import org.opencms.configuration.CmsSearchConfiguration;
+import org.opencms.module.CmsModuleVersion;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -190,16 +192,27 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
      */
     public void testOpenCmsVersionAndBuildNumber() {
 
-        String version = OpenCms.getSystemInfo().getVersionNumber();
-        // make sure to bump this up with every major version number, or else the test would fail ;)
+        String configuredVersion = OpenCms.getSystemInfo().getVersionNumber();
+
+        // make sure to bump this up with every major version number
         String expectedVersion = "9.5";
 
-        assertTrue("OpenCms Version number not set correctly, expected prefix ["
-            + expectedVersion
-            + "] but was ["
-            + version.substring(0, expectedVersion.length())
-            + "]"
-            + version.substring(expectedVersion.length()), version.startsWith(expectedVersion));
+        checkVersions(configuredVersion, expectedVersion, true);
+
+        /*
+        // some extra calls to make sure the version check method really works as expected
+        
+        checkVersions("9.5", expectedVersion, true);
+        checkVersions("9.5_customer", expectedVersion, true);
+        checkVersions("9.7.x", expectedVersion, true);
+        checkVersions("10.0.x Specialname", expectedVersion, true);
+
+        checkVersions("9.4_customer", expectedVersion, false);
+        checkVersions("9.4.x", expectedVersion, false);
+        checkVersions("Nothing", expectedVersion, false);
+        checkVersions("", expectedVersion, false);
+        checkVersions("9", expectedVersion, false);
+        */
 
         String versionId = OpenCms.getSystemInfo().getVersionId();
 
@@ -271,5 +284,57 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
             // unable to read the file, so we fail
             fail("version.properties file not available");
         }
+    }
+
+    /**
+     * Compare version numbers.
+     * 
+     * @param configuredVersion the configured version
+     * @param expectedVersion the expected version
+     * @param larger indicates if the configured version number is expected to be larger or smaller
+     */
+    private void checkVersions(String configuredVersion, String expectedVersion, boolean larger) {
+
+        StringBuffer workVersion = new StringBuffer();
+        String[] nums = CmsStringUtil.splitAsArray(configuredVersion, '.');
+        for (String num : nums) {
+            int substr = 0;
+            for (int i = 0; i < num.length(); i++) {
+                if (!Character.isDigit(num.charAt(i))) {
+                    substr = i;
+                    break;
+                }
+            }
+            if (substr > 0) {
+                num = num.substring(0, substr);
+            }
+            try {
+                Integer.parseInt(num);
+            } catch (NumberFormatException e) {
+                // first non-string mean no more numbers should follow
+                break;
+            }
+            if (workVersion.length() > 0) {
+                workVersion.append('.');
+            }
+            workVersion.append(num);
+        }
+        if (workVersion.length() == 0) {
+            workVersion.append(0.0);
+        }
+
+        CmsModuleVersion v1 = new CmsModuleVersion(expectedVersion);
+        CmsModuleVersion v2 = new CmsModuleVersion(workVersion.toString());
+
+        System.out.println("\nExpected Version  : " + v1);
+        System.out.println("Configured Version: " + v2 + " [" + configuredVersion + "]");
+
+        assertTrue("OpenCms Version number not set correctly, expected a version equal or "
+            + (larger ? "larger" : "smaller")
+            + " then ["
+            + expectedVersion
+            + "] but got ["
+            + configuredVersion
+            + "]", larger == (v2.compareTo(v1) >= 0));
     }
 }
