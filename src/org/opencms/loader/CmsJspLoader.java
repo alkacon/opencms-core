@@ -748,7 +748,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 }
             } else {
                 jspModificationDate = jspFile.lastModified();
-                if (jspModificationDate <= resource.getDateLastModified()) {
+                if (jspModificationDate < resource.getDateLastModified()) {
                     // file in real FS is older then file in VFS
                     mustUpdate = true;
                 } else if (controller.getCurrentRequest().isDoRecompile()) {
@@ -820,6 +820,13 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                                 FileOutputStream fs = new FileOutputStream(jspFile);
                                 fs.write(contents);
                                 fs.close();
+
+                                // we set the modification date to (approximately) that of the VFS resource. This is needed because in the Online project, the old version of a JSP
+                                // may be generated in the RFS JSP repository *after* the JSP has been changed, but *before* it has been published, which would lead
+                                // to it not being updated after the changed JSP is published. 
+
+                                // Note: the RFS may only support second precision for the last modification date 
+                                jspFile.setLastModified((1 + (resource.getDateLastModified() / 1000)) * 1000);
                             }
                             if (controller.getCurrentRequest().isOnline()) {
                                 m_onlineJsps.put(jspVfsName, Boolean.TRUE);

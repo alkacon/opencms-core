@@ -125,7 +125,10 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         infoBean.setResourceType(elementBean.getResourceType());
         m_settings = elementBean.getSettings();
         A_CmsFormFieldPanel formFieldPanel = null;
+        boolean isEditableModelPage = CmsCoreProvider.get().getUserInfo().isDeveloper()
+            && CmsContainerpageController.get().getData().isModelPage();
         if (m_contextInfo.shouldShowElementTemplateContextSelection()
+            || isEditableModelPage
             || m_elementBean.hasAlternativeFormatters(m_containerId)) {
             CmsFieldsetFormFieldPanel fieldSetPanel = new CmsFieldsetFormFieldPanel(
                 infoBean,
@@ -156,8 +159,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 });
                 formatterFieldset.add(m_formatterSelect);
             }
-            if (CmsCoreProvider.get().getUserInfo().isDeveloper()
-                && CmsContainerpageController.get().getData().isModelPage()) {
+            if (isEditableModelPage) {
                 CmsFieldSet createNewFieldSet = new CmsFieldSet();
                 createNewFieldSet.setLegend(org.opencms.ade.containerpage.client.Messages.get().key(
                     org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LEGEND_0
