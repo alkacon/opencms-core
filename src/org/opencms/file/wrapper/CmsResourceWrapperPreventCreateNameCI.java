@@ -77,14 +77,14 @@ public class CmsResourceWrapperPreventCreateNameCI extends A_CmsResourceWrapper 
         String resourcepath,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException {
+        List<CmsProperty> properties) throws CmsIllegalArgumentException {
 
         String name = CmsResource.getName(resourcepath);
         if (m_disabledNames.contains(name.toLowerCase())) {
-            throw new CmsPermissionViolationException(Messages.get().container(
+            throw new CmsSilentWrapperException(new CmsPermissionViolationException(Messages.get().container(
                 Messages.ERR_PERM_DENIED_2,
                 resourcepath,
-                "+c"));
+                "+c")));
         } else {
             return null;
         }

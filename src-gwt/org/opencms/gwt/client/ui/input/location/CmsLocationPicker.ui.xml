@@ -1,0 +1,22 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
+>
+	<ui:with field="input" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
+	<ui:with field="main" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+<g:HTMLPanel styleName="{main.locationPickerCss.locationField} {main.generalCss.clearFix}">
+	<div class="{main.locationPickerCss.mapPreview} {main.generalCss.cornerAll}">
+		<div ui:field="m_mapPreview"></div>
+	</div>
+	<div ui:field="m_fieldBox" class="{main.locationPickerCss.displayBox} {input.inputCss.selectionInput} {main.generalCss.cornerAll}">
+		<div class="{main.locationPickerCss.inputContainer}">
+			<input:CmsSimpleTextBox ui:field="m_textbox" />
+		</div>
+		<g:Label ui:field="m_fader" styleName="{input.inputCss.fader}"/>
+		<cms:CmsPushButton ui:field="m_openerButton" addStyleNames="{main.locationPickerCss.opener}"/>
+	</div>
+	<div ui:field="m_locationInfoPanel" class="{main.locationPickerCss.locationInfo} {main.generalCss.cornerAll}" />
+</g:HTMLPanel>
+</ui:UiBinder>

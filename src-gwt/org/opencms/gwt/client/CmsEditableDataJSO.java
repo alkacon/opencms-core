@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,13 +27,14 @@
 
 package org.opencms.gwt.client;
 
+import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Javascript overlay object holding data needed to edit a content collector list element.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsEditableData {
@@ -48,14 +49,22 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
 
     /**
      * Parses the given JSON text and returns the editable data object.<p>
-     * 
+     *
      * @param jsonText the JSON text to parse
-     * 
+     *
      * @return the data object
      */
     public static native CmsEditableDataJSO parseEditableData(String jsonText) /*-{
                                                                                return eval('(' + jsonText + ')');
                                                                                }-*/;
+
+    /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#getContextId()
+     */
+    public String getContextId() {
+
+        return getString(CmsEditorConstants.ATTR_CONTEXT_ID);
+    }
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getEditId()
@@ -77,6 +86,20 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
     public native String getElementName() /*-{
                                           return this.elementname ? this.elementname : "";
                                           }-*/;
+
+    /**
+     * Gets the element view.<p>
+     * 
+     * @return the element view 
+     */
+    public CmsUUID getElementView() {
+
+        String elementViewString = getString(CmsEditorConstants.ATTR_ELEMENT_VIEW);
+        if (elementViewString == null) {
+            return null;
+        }
+        return new CmsUUID(elementViewString);
+    }
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getNewLink()
@@ -104,6 +127,14 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
                                            }-*/;
 
     /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#getPostCreateHandler()
+     */
+    public String getPostCreateHandler() {
+
+        return getString(CmsEditorConstants.PARAM_POST_CREATE_HANDLER);
+    }
+
+    /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getSitePath()
      */
     public native String getSitePath() /*-{
@@ -120,7 +151,7 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
 
     /**
      * Returns if the delete button should be present.<p>
-     * 
+     *
      * @return <code>true</code> if the delete button should be present
      */
     public native boolean hasDelete() /*-{
@@ -129,7 +160,7 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
 
     /**
      * Returns if the edit button should be present.<p>
-     * 
+     *
      * @return <code>true</code> if the edit button should be present
      */
     public native boolean hasEdit() /*-{
@@ -138,7 +169,7 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
 
     /**
      * Returns if the new button should be present.<p>
-     * 
+     *
      * @return <code>true</code> if the new button should be present
      */
     public native boolean hasNew() /*-{
@@ -161,8 +192,19 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
                                                     }-*/;
 
     /**
+     * Reads an attribute of the underlying Javascript object as a string.<p>
+     *
+     * @param attribute the name of the attribute
+     *
+     * @return the string contained in the given attribute
+     */
+    private native String getString(String attribute) /*-{
+                                                      return this[attribute];
+                                                      }-*/;
+
+    /**
      * Returns the structure id as string.<p>
-     * 
+     *
      * @return the structure id as string
      */
     private native String nativeGetStructureId() /*-{

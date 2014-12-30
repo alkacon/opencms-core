@@ -36,7 +36,9 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
+import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
@@ -54,6 +56,7 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -138,11 +141,13 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
             if (m_numItems == 0) {
                 setLoading(false);
+                onContentChange();
                 return false;
             }
             boolean hasMore = m_itemIterator.hasNext();
             if (!hasMore) {
                 setLoading(false);
+                onContentChange();
                 return false;
             } else {
                 CmsTreeItem treeItem = m_itemIterator.next();
@@ -262,9 +267,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
     /** The batch size for adding new elements to the tab.<p> */
     protected static final int LOAD_BATCH_SIZE = 50;
 
-    /** Text metrics key. */
-    private static final String TM_GALLERY_TAB = "GalleryTab";
-
     /** An iterator which produces new list items which should be added to the tab.<p> */
     protected Iterator<CmsTreeItem> m_itemIterator;
 
@@ -291,7 +293,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
     public CmsGalleriesTab(CmsGalleriesTabHandler tabHandler) {
 
         super(GalleryTabId.cms_tab_galleries);
-        m_scrollList.truncate(TM_GALLERY_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         getList().addScrollHandler(new CmsScrollToBottomHandler(new Runnable() {
 
             public void run() {
@@ -361,6 +362,24 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
         return m_loading;
 
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
+     */
+    @Override
+    public void onSelection() {
+
+        super.onSelection();
+        Timer timer = new Timer() {
+
+            @Override
+            public void run() {
+
+                m_quickSearch.setFocus(true);
+            }
+        };
+        timer.schedule(20);
     }
 
     /**
@@ -470,7 +489,14 @@ public class CmsGalleriesTab extends A_CmsListTab {
             checkBox.setChecked(true);
         }
         if (galleryInfo.isEditable()) {
-            listItemWidget.addButton(createUploadButtonForTarget(galleryInfo.getPath(), false));
+            if (CmsEditExternalLinkDialog.LINK_GALLERY_RESOURCE_TYPE_NAME.equals(galleryInfo.getType())) {
+                CmsPushButton createExternalLink = createNewExternalLinkButton(galleryInfo.getPath());
+                if (createExternalLink != null) {
+                    listItemWidget.addButton(createExternalLink);
+                }
+            } else {
+                listItemWidget.addButton(createUploadButtonForTarget(galleryInfo.getPath(), false));
+            }
         }
         listItemWidget.addButton(createSelectButton(selectionHandler));
         CmsTreeItem treeItem = new CmsTreeItem(forTree, checkBox, listItemWidget);

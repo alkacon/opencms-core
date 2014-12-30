@@ -59,6 +59,7 @@ public class CmsListItemSelectionAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
      */
+    @Override
     public String buttonHtml(CmsWorkplace wp) {
 
         if (!isVisible()) {

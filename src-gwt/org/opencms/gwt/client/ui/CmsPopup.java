@@ -275,7 +275,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     private Element m_main;
 
     /** The own notification widget. */
-    private A_CmsNotificationWidget m_ownNotificationWidget;
+    private CmsNotificationWidget m_ownNotificationWidget;
 
     /** The parent notification widget. */
     private I_CmsNotificationWidget m_parentNotificationWidget;
@@ -1086,9 +1086,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      * 
      * @return the notification widget for this dialog 
      */
-    protected A_CmsNotificationWidget createDialogNotificationWidget() {
+    protected CmsNotificationWidget createDialogNotificationWidget() {
 
-        return new CmsDialogNotificationWidget();
+        return new CmsNotificationWidget();
     }
 
     /**

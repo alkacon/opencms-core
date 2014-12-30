@@ -110,6 +110,9 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
     /** Sample file. */
     private static final String SAMPLE_SCHEMA = "/system/modules/org.opencms.workplace.tools.modules/samples/sample-schema.xsd";
 
+    /** The sample schema type name. */
+    private static final String SAMPLE_SCHEMA_TYPE_NAME = "SampleType";
+
     /** Message bundle file name suffix. */
     private static final String SUFFIX_BUNDLE_FILE = ".workplace";
 
@@ -361,6 +364,23 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
         String schemaFile = CmsStringUtil.joinPaths(schemaFolder, m_resInfo.getName() + ".xsd");
         if (!cms.existsResource(schemaFile)) {
             cms.copyResource(SAMPLE_SCHEMA, schemaFile, CmsResource.COPY_AS_NEW);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_resInfo.getSchemaTypeName())) {
+                // replace the sample schema type name with the provided name
+                try {
+                    CmsFile schema = cms.readFile(schemaFile);
+                    OpenCms.getLocaleManager();
+                    String schemaContent = new String(schema.getContents(), CmsLocaleManager.getResourceEncoding(
+                        cms,
+                        schema));
+                    schemaContent = schemaContent.replaceAll(SAMPLE_SCHEMA_TYPE_NAME, m_resInfo.getSchemaTypeName());
+                    schema.setContents(schemaContent.getBytes());
+                    cms.writeFile(schema);
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    getReport().addError(e);
+                }
+            }
+
         }
         m_resInfo.setSchema(schemaFile);
         String filetypesFolder = "/system/workplace/resources/filetypes/";

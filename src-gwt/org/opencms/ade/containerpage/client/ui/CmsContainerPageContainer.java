@@ -27,16 +27,19 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageDNDController;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.ade.containerpage.shared.I_CmsContainer;
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
+import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -44,8 +47,8 @@ import java.util.List;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -76,6 +79,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         /** Flag indicating the element is positioned absolute. */
         private boolean m_isAbsolute;
 
+        /** Flag indicating if the given element is visible. */
+        private boolean m_isVisible;
+
         /**
          * Constructor.<p>
          * 
@@ -87,9 +93,13 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             String positioning = CmsDomUtil.getCurrentStyle(m_element, Style.position);
             m_isAbsolute = Position.ABSOLUTE.getCssName().equals(positioning)
                 || Position.FIXED.getCssName().equals(positioning);
+
             if (!m_isAbsolute) {
-                m_elementPosition = CmsPositionBean.getInnerDimensions(element);
-                m_float = CmsDomUtil.getCurrentStyle(m_element, Style.floatCss);
+                m_isVisible = !Display.NONE.getCssName().equals(m_element.getStyle().getDisplay());
+                if (m_isVisible) {
+                    m_elementPosition = CmsPositionBean.getBoundingClientRect(element);
+                    m_float = CmsDomUtil.getCurrentStyle(m_element, Style.floatCss);
+                }
             }
         }
 
@@ -179,7 +189,20 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             return "right".equals(m_float);
         }
 
+        /**
+         * Returns if the given element is visible.<p>
+         * 
+         * @return <code>true</code> if the given element is visible
+         */
+        public boolean isVisible() {
+
+            return m_isVisible;
+        }
+
     }
+
+    /** Name of a special property for the container id. */
+    public static final String PROP_CONTAINER_MARKER = "opencmsContainerId";
 
     /** Flag indicating if this container is a detail view only container. */
     boolean m_detailOnly;
@@ -193,8 +216,20 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** The container type. */
     private String m_containerType;
 
+    /** The list of nested sub containers that are also valid drop targets during the current drag and drop. */
+    private List<I_CmsDropTarget> m_dnDChildren;
+
+    /** Flag indicating if the container is editable by the current user. */
+    private boolean m_editable;
+
     /** The element position info cache. */
     private List<ElementPositionInfo> m_elementPositions;
+
+    /** The content to display in case the container is empty. */
+    private String m_emptyContainerContent;
+
+    /** The element to display in case the container is empty. */
+    private Element m_emptyContainerElement;
 
     /** Highlighting border for this container. */
     private CmsHighlightingBorder m_highlighting;
@@ -217,27 +252,36 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** The drag and drop placeholder position index. */
     private int m_placeholderIndex = -1;
 
+    /** Flag indicating the current place holder visibility. */
+    private boolean m_placeholderVisible;
+
     /** Flag indicating the element positions need to be re-evaluated. */
     private boolean m_requiresPositionUpdate = true;
-
-    /** The wrapped widget. This will be a @link com.google.gwt.user.client.RootPanel. */
-    private Widget m_widget;
 
     /**
      * Constructor.<p>
      * 
      * @param containerData the container data
+     * @param element the container element
      */
-    public CmsContainerPageContainer(I_CmsContainer containerData) {
+    public CmsContainerPageContainer(CmsContainer containerData, Element element) {
 
-        initWidget(RootPanel.get(containerData.getName()));
+        setElement(element);
+
+        if (!containerData.isSubContainer()) {
+            RootPanel.detachOnWindowClose(this);
+        }
         m_containerId = containerData.getName();
+        element.setPropertyString(PROP_CONTAINER_MARKER, containerData.getName());
         m_containerType = containerData.getType();
         m_maxElements = containerData.getMaxElements();
         m_isDetailView = containerData.isDetailView();
         m_detailOnly = containerData.isDetailOnly();
         m_configuredWidth = containerData.getWidth();
+        m_editable = containerData.isEditable();
+        m_emptyContainerContent = containerData.getEmptyContainerContent();
         addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
+        onAttach();
     }
 
     /**
@@ -247,6 +291,17 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public void add(Widget w) {
 
         add(w, (Element)getElement());
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#addDndChild(org.opencms.gwt.client.dnd.I_CmsDropTarget)
+     */
+    public void addDndChild(I_CmsDropTarget child) {
+
+        if (m_dnDChildren == null) {
+            m_dnDChildren = new ArrayList<I_CmsDropTarget>();
+        }
+        m_dnDChildren.add(child);
     }
 
     /**
@@ -260,11 +315,35 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
+     * Check if the empty container content should be displayed or removed.<p>
+     */
+    public void checkEmptyContainers() {
+
+        if (getWidgetCount() == 0) {
+            if (m_emptyContainerElement != null) {
+                m_emptyContainerElement.getStyle().clearDisplay();
+            } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_emptyContainerContent)) {
+                // add empty container element
+                try {
+                    m_emptyContainerElement = CmsDomUtil.createElement(m_emptyContainerContent);
+                    getElement().appendChild(m_emptyContainerElement);
+                } catch (Exception e) {
+                    CmsDebugLog.getInstance().printLine(e.getMessage());
+                }
+            }
+        } else if (m_emptyContainerElement != null) {
+            m_emptyContainerElement.removeFromParent();
+            m_emptyContainerElement = null;
+        }
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#checkMaxElementsOnEnter()
      */
     public void checkMaxElementsOnEnter() {
 
-        if (getWidgetCount() >= m_maxElements) {
+        int count = getWidgetCount();
+        if (count >= m_maxElements) {
             Widget overflowElement = null;
             int index = 0;
             for (Widget widget : this) {
@@ -283,6 +362,11 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
                 m_overflowingElement.removeFromParent();
             }
         }
+        if (count == 0) {
+            if (m_emptyContainerElement != null) {
+                m_emptyContainerElement.getStyle().setDisplay(Display.NONE);
+            }
+        }
     }
 
     /**
@@ -293,6 +377,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         if (m_overflowingElement != null) {
             add(m_overflowingElement);
         }
+        if (m_emptyContainerElement != null) {
+            m_emptyContainerElement.getStyle().clearDisplay();
+        }
     }
 
     /**
@@ -300,17 +387,29 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public boolean checkPosition(int x, int y, Orientation orientation) {
 
-        // ignore orientation
-        int scrollTop = getElement().getOwnerDocument().getScrollTop();
-        // use cached position
-        int relativeTop = (y + scrollTop) - m_ownPosition.getTop();
-        if ((relativeTop > 0) && (m_ownPosition.getHeight() > relativeTop)) {
-            // cursor is inside the height of the element, check horizontal position
-            int scrollLeft = getElement().getOwnerDocument().getScrollLeft();
-            int relativeLeft = (x + scrollLeft) - m_ownPosition.getLeft();
-            return (relativeLeft > 0) && (m_ownPosition.getWidth() > relativeLeft);
+        if (m_ownPosition != null) {
+            // ignore orientation
+            int scrollTop = getElement().getOwnerDocument().getScrollTop();
+            // use cached position
+            int relativeTop = (y + scrollTop) - m_ownPosition.getTop();
+            if ((relativeTop > 0) && (m_ownPosition.getHeight() > relativeTop)) {
+                // cursor is inside the height of the element, check horizontal position
+                int scrollLeft = getElement().getOwnerDocument().getScrollLeft();
+                int relativeLeft = (x + scrollLeft) - m_ownPosition.getLeft();
+                return (relativeLeft > 0) && (m_ownPosition.getWidth() > relativeLeft);
+            }
         }
         return false;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#clearDnDChildren()
+     */
+    public void clearDnDChildren() {
+
+        if (m_dnDChildren != null) {
+            m_dnDChildren.clear();
+        }
     }
 
     /**
@@ -371,11 +470,35 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
+     * @see org.opencms.gwt.client.dnd.I_CmsNestedDropTarget#getDnDChildren()
+     */
+    public List<I_CmsDropTarget> getDnDChildren() {
+
+        return m_dnDChildren;
+    }
+
+    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#getPlaceholderIndex()
      */
     public int getPlaceholderIndex() {
 
         return m_placeholderIndex;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#getPositionInfo()
+     */
+    public CmsPositionBean getPositionInfo() {
+
+        return m_ownPosition;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsNestedDropTarget#hasDnDChildren()
+     */
+    public boolean hasDnDChildren() {
+
+        return (m_dnDChildren != null) && !m_dnDChildren.isEmpty();
     }
 
     /**
@@ -397,22 +520,24 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public void highlightContainer() {
 
-        getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
+        highlightContainer(CmsPositionBean.getBoundingClientRect(getElement()));
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#highlightContainer(org.opencms.gwt.client.util.CmsPositionBean)
+     */
+    public void highlightContainer(CmsPositionBean positionInfo) {
+
         // remove any remaining highlighting
         if (m_highlighting != null) {
             m_highlighting.removeFromParent();
         }
-        // adding the 'clearFix' style to all targets containing floated elements
-        // in some layouts this may lead to inappropriate clearing after the target, 
-        // but it is still necessary as it forces the target to enclose it's floated content 
-        if ((getWidgetCount() > 0)
-            && !CmsDomUtil.getCurrentStyle(getWidget(0).getElement(), CmsDomUtil.Style.floatCss).equals(
-                CmsDomUtil.StyleValue.none.toString())) {
-            getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
-        }
         // cache the position info, to be used during drag and drop
-        m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
-        m_highlighting = new CmsHighlightingBorder(m_ownPosition, CmsHighlightingBorder.BorderColor.red);
+        m_ownPosition = positionInfo;
+        m_highlighting = new CmsHighlightingBorder(
+            m_ownPosition,
+            CmsHighlightingBorder.BorderColor.red,
+            CmsContainerpageDNDController.HIGHLIGHTING_OFFSET);
         RootPanel.get().add(m_highlighting);
     }
 
@@ -430,20 +555,10 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public void insertPlaceholder(Element placeholder, int x, int y, Orientation orientation) {
 
         m_placeholder = placeholder;
+        m_placeholderVisible = false;
+        m_placeholder.getStyle().setDisplay(Display.NONE);
         m_requiresPositionUpdate = true;
         repositionPlaceholder(x, y, orientation);
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Widget#isAttached()
-     */
-    @Override
-    public boolean isAttached() {
-
-        if (m_widget != null) {
-            return m_widget.isAttached();
-        }
-        return false;
     }
 
     /**
@@ -465,16 +580,20 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.Widget#onBrowserEvent(com.google.gwt.user.client.Event)
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#isEditable()
      */
-    @Override
-    public void onBrowserEvent(Event event) {
+    public boolean isEditable() {
 
-        // Fire any handler added to the composite itself.
-        super.onBrowserEvent(event);
+        return m_editable;
+    }
 
-        // Delegate events to the widget.
-        m_widget.onBrowserEvent(event);
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#onConsumeChildren(java.util.List)
+     */
+    public void onConsumeChildren(List<CmsContainerPageElementPanel> children) {
+
+        // TODO Auto-generated method stub
+
     }
 
     /**
@@ -491,8 +610,18 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public void refreshHighlighting() {
 
         if (m_highlighting != null) {
-            // cache the position info, to be used during drag and drop
-            m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
+            refreshHighlighting(CmsPositionBean.getBoundingClientRect(getElement()));
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#refreshHighlighting(org.opencms.gwt.client.util.CmsPositionBean)
+     */
+    public void refreshHighlighting(CmsPositionBean positionInfo) {
+
+        // cache the position info, to be used during drag and drop
+        m_ownPosition = positionInfo;
+        if (m_highlighting != null) {
             m_highlighting.setPosition(m_ownPosition);
         }
     }
@@ -506,8 +635,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             m_highlighting.removeFromParent();
             m_highlighting = null;
         }
-        removeStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
-        removeStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
     }
 
     /**
@@ -521,6 +648,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         }
         m_placeholderIndex = -1;
         m_requiresPositionUpdate = true;
+
+        // check if the empty container content should be displayed or removed
+        checkEmptyContainers();
     }
 
     /**
@@ -537,13 +667,37 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
+     * Sets the empty container element.<p>
+     * 
+     * @param emptyContainerElement the empty container element
+     */
+    public void setEmptyContainerElement(Element emptyContainerElement) {
+
+        m_emptyContainerElement = emptyContainerElement;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#setPlaceholderVisibility(boolean)
+     */
+    public void setPlaceholderVisibility(boolean visible) {
+
+        if (m_placeholderVisible != visible) {
+            m_placeholderVisible = visible;
+            m_requiresPositionUpdate = true;
+            if (m_placeholderVisible) {
+                m_placeholder.getStyle().clearDisplay();
+            } else {
+                m_placeholder.getStyle().setDisplay(Display.NONE);
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#showEditableListButtons()
      */
     public void showEditableListButtons() {
 
-        Iterator<Widget> it = iterator();
-        while (it.hasNext()) {
-            Widget child = it.next();
+        for (Widget child : this) {
             if (child instanceof CmsContainerPageElementPanel) {
                 ((CmsContainerPageElementPanel)child).showEditableListButtons();
             }
@@ -563,38 +717,11 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
-     * Provides subclasses access to the topmost widget that defines this
-     * composite.
-     * 
-     * @return the widget
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#updatePositionInfo()
      */
-    protected Widget getWidget() {
+    public void updatePositionInfo() {
 
-        return m_widget;
-    }
-
-    /**
-     * Sets the widget to be wrapped by the composite. The wrapped widget must be
-     * set before calling any {@link Widget} methods on this object, or adding it
-     * to a panel. This method may only be called once for a given composite.
-     * 
-     * @param widget the widget to be wrapped
-     */
-    protected void initWidget(Widget widget) {
-
-        // Validate. Make sure the widget is not being set twice.
-        if (m_widget != null) {
-            throw new IllegalStateException("Composite.initWidget() may only be " + "called once.");
-        }
-
-        // Use the contained widget's element as the composite's element,
-        // effectively merging them within the DOM.
-        setElement((Element)widget.getElement());
-
-        adopt(widget);
-
-        // Logical attach.
-        m_widget = widget;
+        m_ownPosition = CmsPositionBean.getBoundingClientRect(getElement());
     }
 
     /**
@@ -616,7 +743,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             if (info.getElement() == m_placeholder) {
                 indexCorrection = 1;
             }
-            if (info.isAbsolute()) {
+            if (info.isAbsolute() || !info.isVisible()) {
                 continue;
             }
 
@@ -701,6 +828,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             m_elementPositions.add(new ElementPositionInfo((Element)node));
         }
         m_requiresPositionUpdate = false;
-        m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
+        m_ownPosition = CmsPositionBean.getBoundingClientRect(getElement());
     }
 }

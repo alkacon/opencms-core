@@ -59,6 +59,7 @@ public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getHelpText()
      */
+    @Override
     public CmsMessageContainer getHelpText() {
 
         if (isEnabled()) {
@@ -70,6 +71,7 @@ public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isEnabled()
      */
+    @Override
     public boolean isEnabled() {
 
         if (getResourceName() != null) {
@@ -81,6 +83,7 @@ public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
     /**
      * @see org.opencms.workplace.list.A_CmsListDefaultJsAction#jsCode()
      */
+    @Override
     public String jsCode() {
 
         StringBuffer jsCode = new StringBuffer(256);

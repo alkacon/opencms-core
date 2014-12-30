@@ -177,7 +177,7 @@ public class CmsUpdateThread extends Thread {
                             org.opencms.main.Messages.INIT_LINE_0));
 
                     }
-                    m_shell.start(new FileInputStream(new File(m_updateBean.getWebAppRfsPath()
+                    m_shell.execute(new FileInputStream(new File(m_updateBean.getWebAppRfsPath()
                         + CmsUpdateBean.FOLDER_UPDATE
                         + "cmsupdate.txt")));
                     if (CmsLog.INIT.isInfoEnabled()) {

@@ -29,13 +29,10 @@ package org.opencms.ade.sitemap.client.toolbar;
 
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
-import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
-import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * Sitemap toolbar clipboard button.<p>
@@ -44,11 +41,17 @@ import com.google.gwt.user.client.ui.FlowPanel;
  */
 public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
 
-    /** The clear deleted list button. */
-    private CmsPushButton m_clearDeleted;
+    /** The clear deleted list button enabled flag. */
+    private boolean m_clearDeleted;
 
-    /** The clear modified list button. */
-    private CmsPushButton m_clearModified;
+    /** The clear modified list button enabled flag. */
+    private boolean m_clearModified;
+
+    /** The modified list tab. */
+    private CmsListTab m_modifiedTab;
+
+    /** The deleted list tab. */
+    private CmsListTab m_deletedTab;
 
     /**
      * Constructor.<p>
@@ -63,26 +66,6 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
             I_CmsButton.ButtonData.CLIPBOARD.getIconClass(),
             toolbar,
             controller);
-        m_clearModified = createClearButton(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
-
-                getController().clearModifiedList();
-            }
-        });
-        m_clearDeleted = createClearButton(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
-
-                getController().clearDeletedList();
-            }
-        });
     }
 
     /**
@@ -92,10 +75,9 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
      */
     public void enableClearDeleted(boolean enable) {
 
-        if (enable) {
-            m_clearDeleted.enable();
-        } else {
-            m_clearDeleted.disable(Messages.get().key(Messages.GUI_DISABLE_CLEAR_LIST_0));
+        m_clearDeleted = enable;
+        if (m_deletedTab != null) {
+            m_deletedTab.setClearButtonEnabled(enable);
         }
     }
 
@@ -106,10 +88,9 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
      */
     public void enableClearModified(boolean enable) {
 
-        if (enable) {
-            m_clearModified.enable();
-        } else {
-            m_clearModified.disable(Messages.get().key(Messages.GUI_DISABLE_CLEAR_LIST_0));
+        m_clearModified = enable;
+        if (m_modifiedTab != null) {
+            m_modifiedTab.setClearButtonEnabled(enable);
         }
     }
 
@@ -117,33 +98,36 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
      * @see org.opencms.ade.sitemap.client.toolbar.A_CmsToolbarListMenuButton#initContent()
      */
     @Override
-    protected void initContent() {
+    protected boolean initContent() {
 
         CmsToolbarClipboardView view = new CmsToolbarClipboardView(this, getController());
-        FlowPanel modifiedTab = createTab(view.getModified());
+        m_modifiedTab = createTab(view.getModified());
+        m_modifiedTab.addClearListButton(new ClickHandler() {
 
-        modifiedTab.add(m_clearModified);
-        addTab(modifiedTab, Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_TITLE_0));
-        FlowPanel deletedTab = createTab(view.getDeleted());
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
 
-        deletedTab.add(m_clearDeleted);
-        addTab(deletedTab, Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_TITLE_0));
-    }
+                getController().clearModifiedList();
+            }
+        });
+        m_modifiedTab.setClearButtonEnabled(m_clearModified);
+        addTab(m_modifiedTab, Messages.get().key(Messages.GUI_CLIPBOARD_MODIFIED_TITLE_0));
+        m_deletedTab = createTab(view.getDeleted());
 
-    /**
-     * Creates a clear list button.<p>
-     * 
-     * @param handler the button click handler
-     * 
-     * @return the created button widget
-     */
-    private CmsPushButton createClearButton(ClickHandler handler) {
+        m_deletedTab.addClearListButton(new ClickHandler() {
 
-        CmsPushButton clearButton = new CmsPushButton();
-        clearButton.setText(Messages.get().key(Messages.GUI_CLIPBOARD_CLEAR_LIST_0));
-        clearButton.setTitle(Messages.get().key(Messages.GUI_CLIPBOARD_CLEAR_LIST_0));
-        clearButton.addClickHandler(handler);
-        clearButton.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.clipboardCss().listClearButton());
-        return clearButton;
+            /**
+             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+             */
+            public void onClick(ClickEvent event) {
+
+                getController().clearDeletedList();
+            }
+        });
+        m_deletedTab.setClearButtonEnabled(m_clearDeleted);
+        addTab(m_deletedTab, Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_TITLE_0));
+        return true;
     }
 }

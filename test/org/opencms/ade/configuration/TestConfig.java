@@ -45,6 +45,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -75,11 +76,11 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Test constructor.<p>
      * 
-     * @param arg0
+     * @param name the name 
      */
-    public TestConfig(String arg0) {
+    public TestConfig(String name) {
 
-        super(arg0);
+        super(name);
     }
 
     /**
@@ -98,15 +99,20 @@ public class TestConfig extends OpenCmsTestCase {
      * 
      * @param rootPath the root path of the folder 
      * @param deep if true, creates all parent folders
+     * @param unlock true if the created folder should be unlocked 
      * 
      * @throws CmsException if something goes wrong 
      */
-    public void createFolder(String rootPath, boolean deep) throws CmsException {
+    public void createFolder(String rootPath, boolean deep, boolean unlock) throws CmsException {
 
         CmsObject cms = getCmsObject();
         cms.getRequestContext().setSiteRoot("");
         if (!deep) {
-            cms.createResource(rootPath, CmsResourceTypeFolder.getStaticTypeId());
+            CmsResource res = cms.createResource(rootPath, CmsResourceTypeFolder.getStaticTypeId());
+            if (unlock) {
+                cms.unlockResource(res);
+
+            }
         } else {
             List<String> parents = new ArrayList<String>();
             String currentPath = rootPath;
@@ -120,7 +126,11 @@ public class TestConfig extends OpenCmsTestCase {
             for (String parent : parents) {
                 System.out.println("Creating folder: " + parent);
                 try {
-                    cms.createResource(parent, CmsResourceTypeFolder.getStaticTypeId());
+                    CmsResource res = cms.createResource(parent, CmsResourceTypeFolder.getStaticTypeId());
+                    if (unlock) {
+                        cms.unlockResource(res);
+
+                    }
                 } catch (CmsVfsResourceAlreadyExistsException e) {
                     // nop 
                 }
@@ -132,7 +142,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests the 'creatable' check of the CmsResourceTypeConfig class.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testCreatable() throws Exception {
 
@@ -143,8 +153,8 @@ public class TestConfig extends OpenCmsTestCase {
         String plainDir = contentDirectory + "/" + plain;
         String binaryDir = contentDirectory + "/" + binary;
 
-        createFolder(plainDir, true);
-        createFolder(binaryDir, true);
+        createFolder(plainDir, true, false);
+        createFolder(binaryDir, true, false);
 
         CmsObject cms = rootCms();
         String username = "User_testCreatable";
@@ -190,7 +200,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests the option to create contents locally.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testCreateContentsLocally() throws Exception {
 
@@ -226,7 +236,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Another test for the option to create contents locally.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testCreateContentsLocally2() throws Exception {
 
@@ -291,7 +301,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Another test for the option to create contents locally.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testCreateContentsLocally3() throws Exception {
 
@@ -340,7 +350,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests the creation of local contents when no folder name has been defined anywhere.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testCreateContentsLocally4() throws Exception {
 
@@ -372,7 +382,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests the creation of new contents by the CmsResourceTypeConfig class.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testCreateElements() throws Exception {
 
@@ -381,9 +391,8 @@ public class TestConfig extends OpenCmsTestCase {
         String baseDirectory = "/sites/default/testCreateElements";
         String contentDirectory = baseDirectory + "/.content";
         String articleDirectory = contentDirectory + "/" + typename;
-
         try {
-            createFolder(articleDirectory, true);
+            createFolder(articleDirectory, true, true);
         } catch (CmsVfsResourceAlreadyExistsException e) {
             System.out.println("***" + e);
         }
@@ -413,7 +422,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests the generation of the default content folder name.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testDefaultFolderName() throws Exception {
 
@@ -434,7 +443,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Another test for the the generation of the content folder name.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testDefaultFolderName2() throws Exception {
 
@@ -466,7 +475,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests inheritance of detail page configurations.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testDetailPages2() throws Exception {
 
@@ -511,7 +520,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests the 'Disable all' option for model pages.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testDiscardInheritedModelPages() throws Exception {
 
@@ -564,7 +573,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests the 'Disable all' option for resource types.<p>
      *  
-     * @throws Exception
+     * @throws Exception  -
      */
     public void testDiscardInheritedTypes() throws Exception {
 
@@ -598,8 +607,53 @@ public class TestConfig extends OpenCmsTestCase {
     }
 
     /**
+     * Tests that the 'disable all' option in an intermediate sitemap level does not prevent resource type configurations from being inherited.<p>
+     *  
+     * @throws Exception -
+     */
+    public void testDiscardInheritedTypesMultilevel() throws Exception {
+
+        CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
+        CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsFolderOrName(
+            "/.content",
+            "foldername2"), "pattern2_%(number)");
+        CmsResourceTypeConfig typeConf3 = new CmsResourceTypeConfig("baz", false, folder, "blah");
+        CmsTestConfigData config1 = new CmsTestConfigData(
+            "/",
+            list(typeConf1, typeConf2, typeConf3),
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            NO_MODEL_PAGES);
+
+        CmsTestConfigData config2 = new CmsTestConfigData("/", NO_TYPES, NO_PROPERTIES, NO_DETAILPAGES, NO_MODEL_PAGES);
+        config2.setIsDiscardInheritedTypes(true);
+
+        CmsResourceTypeConfig typeConf4 = new CmsResourceTypeConfig("baz", false, null, null);
+        CmsTestConfigData config3 = new CmsTestConfigData(
+            "/",
+            list(typeConf4),
+            NO_PROPERTIES,
+            NO_DETAILPAGES,
+            NO_MODEL_PAGES
+
+        );
+
+        config1.initialize(rootCms());
+        config2.initialize(rootCms());
+        config3.initialize(rootCms());
+        config2.setParent(config1);
+        config3.setParent(config2);
+        List<CmsResourceTypeConfig> resourceTypeConfig = config3.getResourceTypes();
+        assertEquals(1, resourceTypeConfig.size());
+        assertEquals("baz", resourceTypeConfig.get(0).getTypeName());
+        assertEquals(folder, resourceTypeConfig.get(0).getFolderOrName());
+        assertEquals(typeConf3.getNamePattern(false), resourceTypeConfig.get(0).getNamePattern(false));
+    }
+
+    /**
      * Tests inheritance of folder names for resource types.<p>
-     * @throws Exception
+     * @throws Exception -
      */
     public void testInheritedFolderName1() throws Exception {
 
@@ -631,7 +685,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests inheritance of folder names for resource types.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testInheritedFolderName2() throws Exception {
 
@@ -663,7 +717,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests inheritance of name patterns for resource types.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testInheritNamePattern() throws Exception {
 
@@ -693,7 +747,7 @@ public class TestConfig extends OpenCmsTestCase {
 
     /**
      * Tests inheritance of property definitions.<p>
-     * @throws Exception
+     * @throws Exception -
      */
     public void testInheritProperties() throws Exception {
 
@@ -737,7 +791,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests inheritance of resource types.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testInheritResourceTypes1() throws Exception {
 
@@ -769,7 +823,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests inheritance of model pages.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testModelPages1() throws Exception {
 
@@ -809,7 +863,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests inheritance of model pages.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testModelPages2() throws Exception {
 
@@ -844,7 +898,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests overriding of resource types.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testOverrideResourceType() throws Exception {
 
@@ -876,16 +930,20 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests the configuration parser.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testParseConfiguration() throws Exception {
 
         CmsObject cms = rootCms();
         CmsConfigurationReader configReader = new CmsConfigurationReader(rootCms());
-        CmsADEConfigData configData = configReader.parseSitemapConfiguration(
+        CmsADEConfigDataInternal configDataInternal = configReader.parseSitemapConfiguration(
             "/",
             cms.readResource("/sites/default/test.config"));
-        configData.initialize(rootCms());
+        CmsADEConfigData configData = new CmsADEConfigData(configDataInternal, new CmsADEConfigCacheState(
+            cms,
+            new HashMap<CmsUUID, CmsADEConfigDataInternal>(),
+            new ArrayList<CmsADEConfigDataInternal>(),
+            new HashMap<CmsUUID, CmsElementView>()));
         assertFalse(configData.isModuleConfiguration());
         assertEquals(1, configData.getResourceTypes().size());
         CmsResourceTypeConfig v8article = configData.getResourceType("v8article");
@@ -916,16 +974,20 @@ public class TestConfig extends OpenCmsTestCase {
 
     /**
      * Tests the parsing of module configurations.<p>
-     * @throws Exception
+     * @throws Exception -
      */
     public void testParseModuleConfiguration() throws Exception {
 
         CmsObject cms = rootCms();
         CmsConfigurationReader configReader = new CmsConfigurationReader(rootCms());
-        CmsADEConfigData configData = configReader.parseSitemapConfiguration(
+        CmsADEConfigDataInternal configDataInternal = configReader.parseSitemapConfiguration(
             "/",
             cms.readResource("/sites/default/testmod.config"));
-        configData.initialize(rootCms());
+        CmsADEConfigData configData = new CmsADEConfigData(configDataInternal, new CmsADEConfigCacheState(
+            cms,
+            new HashMap<CmsUUID, CmsADEConfigDataInternal>(),
+            new ArrayList<CmsADEConfigDataInternal>(),
+            new HashMap<CmsUUID, CmsElementView>()));
         assertTrue(configData.isModuleConfiguration());
         assertEquals(1, configData.getResourceTypes().size());
         CmsResourceTypeConfig anothertype = configData.getResourceType("anothertype");
@@ -956,7 +1018,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Test for disabling single resource types.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testRemoveResourceType() throws Exception {
 
@@ -993,7 +1055,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Test for reordering resource types.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testReorderResourceTypes() throws Exception {
 
@@ -1030,7 +1092,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests folder name generation.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testResolveFolderName1() throws Exception {
 
@@ -1051,7 +1113,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests that for each configuration file there are distinct resource type configuration objects.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testResourceTypeConfigObjectsNotSame() throws Exception {
 
@@ -1123,7 +1185,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Helper method for dumping the whole VFS tree to the console.<p>
      * 
-     * @throws CmsException
+     * @throws CmsException -
      */
     protected void dumpTree() throws CmsException {
 
@@ -1158,7 +1220,7 @@ public class TestConfig extends OpenCmsTestCase {
      * 
      * @param rootPath the file root path 
      * @return the structure id of the file 
-     * @throws CmsException
+     * @throws CmsException -
      */
     protected CmsUUID getId(String rootPath) throws CmsException {
 
@@ -1186,7 +1248,7 @@ public class TestConfig extends OpenCmsTestCase {
      *  
      * @return a CMS context in the root site
      *   
-     * @throws CmsException
+     * @throws CmsException -
      */
     protected CmsObject rootCms() throws CmsException {
 

@@ -955,6 +955,17 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         }
         m_titleBox.setWidth(Math.max(0, width - 30) + "px");
         m_subtitle.truncate(textMetricsPrefix + TM_SUBTITLE, width);
+        truncateAdditionalInfo(textMetricsPrefix, widgetWidth);
+    }
+
+    /**
+     * Truncates the additional info items.<p>
+     * 
+     * @param textMetricsPrefix the text metrics prefix 
+     * @param widgetWidth the width to truncate to 
+     */
+    public void truncateAdditionalInfo(final String textMetricsPrefix, final int widgetWidth) {
+
         for (Widget addInfo : m_additionalInfo) {
             ((AdditionalInfoItem)addInfo).truncate(textMetricsPrefix, widgetWidth - 10);
         }
@@ -1070,7 +1081,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
         m_iconPanel.setVisible(false);
         m_title.setText(infoBean.getTitle());
-        m_subtitle.setText(infoBean.getSubTitle());
+        setSubtitleLabel(infoBean.getSubTitle());
 
         // set the resource type icon if present
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getResourceType())) {
@@ -1085,8 +1096,11 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
         CmsResourceState resourceState = infoBean.getResourceState();
 
-        if ((resourceState != null) && resourceState.isChanged() && infoBean.isMarkChangedState()) {
+        if ((resourceState != null) && !resourceState.isUnchanged() && infoBean.isMarkChangedState()) {
             String title = Messages.get().key(Messages.GUI_UNPUBLISHED_CHANGES_TITLE_0);
+            if (resourceState.isNew()) {
+                title = Messages.get().key(Messages.GUI_UNPUBLISHED_CHANGES_NEW_TITLE_0);
+            }
             setTopRightIcon(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().changed(), title);
         }
 

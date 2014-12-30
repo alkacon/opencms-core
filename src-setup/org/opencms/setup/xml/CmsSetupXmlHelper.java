@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -495,10 +496,21 @@ public class CmsSetupXmlHelper {
         if (document != null) {
             try {
                 CmsXmlUtils.validateXmlStructure(document, CmsEncoder.ENCODING_UTF_8, new CmsXmlEntityResolver(null));
-                OutputStream out = new FileOutputStream(getFile(xmlFilename));
+                OutputStream out = null;
+                out = new FileOutputStream(getFile(xmlFilename));
                 CmsXmlUtils.marshal(document, out, CmsEncoder.ENCODING_UTF_8);
             } catch (FileNotFoundException e) {
                 throw new CmsXmlException(new CmsMessageContainer(null, e.toString()));
+            } catch (CmsXmlException e) {
+                // write invalid config files to the file system with a prefix of "invalid-" so they can be inspected for errors 
+                try {
+                    OutputStream invalidOut = new FileOutputStream(getFile("invalid-" + xmlFilename));
+                    CmsXmlUtils.marshal(document, invalidOut, CmsEncoder.ENCODING_UTF_8);
+                } catch (IOException e2) {
+                    // ignore 
+
+                }
+                throw e;
             }
         }
     }

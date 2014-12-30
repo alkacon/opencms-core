@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,21 +27,19 @@
 
 package org.opencms.ade.contenteditor;
 
-import com.alkacon.acacia.shared.ContentDefinition;
-import com.alkacon.acacia.shared.Entity;
-import com.alkacon.acacia.shared.EntityHtml;
-import com.alkacon.acacia.shared.Type;
-import com.alkacon.acacia.shared.ValidationResult;
-import com.alkacon.vie.shared.I_Entity;
-import com.alkacon.vie.shared.I_EntityAttribute;
-import com.alkacon.vie.shared.I_Type;
-
+import org.opencms.acacia.shared.CmsAttributeConfiguration;
+import org.opencms.acacia.shared.CmsEntity;
+import org.opencms.acacia.shared.CmsEntityAttribute;
+import org.opencms.acacia.shared.CmsEntityHtml;
+import org.opencms.acacia.shared.CmsType;
+import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.CmsElementUtil;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
+import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -72,21 +70,27 @@ import org.opencms.workplace.explorer.CmsNewResourceXmlContent;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -96,7 +100,7 @@ import org.apache.commons.logging.Log;
 import org.dom4j.Element;
 
 /**
- * Service to provide entity persistence within OpenCms.<p>
+ * Service to provide entity persistence within OpenCms. <p>
  */
 public class CmsContentService extends CmsGwtService implements I_CmsContentService {
 
@@ -109,14 +113,17 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /** The serial version id. */
     private static final long serialVersionUID = 7873052619331296648L;
 
+    /** The session cache. */
+    private CmsADESessionCache m_sessionCache;
+
     /** The current users workplace locale. */
     private Locale m_workplaceLocale;
 
     /**
      * Returns the entity attribute name representing the given content value.<p>
-     * 
+     *
      * @param contentValue the content value
-     * 
+     *
      * @return the attribute name
      */
     public static String getAttributeName(I_CmsXmlContentValue contentValue) {
@@ -126,10 +133,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the entity attribute name to use for this element.<p>
-     * 
+     *
      * @param elementName the element name
      * @param parentType the parent type
-     * 
+     *
      * @return the attribute name
      */
     public static String getAttributeName(String elementName, String parentType) {
@@ -139,9 +146,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the entity id to the given content value.<p>
-     * 
+     *
      * @param contentValue the content value
-     * 
+     *
      * @return the entity id
      */
     public static String getEntityId(I_CmsXmlContentValue contentValue) {
@@ -155,7 +162,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         if (contentValue.isChoiceOption()) {
             result += "/"
-                + Type.CHOICE_ATTRIBUTE_NAME
+                + CmsType.CHOICE_ATTRIBUTE_NAME
                 + "_"
                 + contentValue.getName()
                 + "["
@@ -167,10 +174,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the RDF annotations required for in line editing.<p>
-     * 
+     *
      * @param parentValue the parent XML content value
      * @param childNames the child attribute names separated by '|'
-     * 
+     *
      * @return the RDFA
      */
     public static String getRdfaAttributes(I_CmsXmlContentValue parentValue, String childNames) {
@@ -200,11 +207,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the RDF annotations required for in line editing.<p>
-     * 
+     *
      * @param document the parent XML document
      * @param contentLocale the content locale
      * @param childName the child attribute name
-     * 
+     *
      * @return the RDFA
      */
     public static String getRdfaAttributes(I_CmsXmlDocument document, Locale contentLocale, String childName) {
@@ -225,9 +232,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the type URI.<p>
-     * 
+     *
      * @param xmlContentDefinition the type content definition
-     * 
+     *
      * @return the type URI
      */
     public static String getTypeUri(CmsXmlContentDefinition xmlContentDefinition) {
@@ -237,11 +244,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Fetches the initial content definition.<p>
-     * 
+     *
      * @param request the current request
-     * 
+     *
      * @return the initial content definition
-     * 
+     *
      * @throws CmsRpcException if something goes wrong
      */
     public static CmsContentDefinition prefetch(HttpServletRequest request) throws CmsRpcException {
@@ -259,25 +266,116 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see com.alkacon.acacia.shared.rpc.I_ContentService#loadContentDefinition(java.lang.String)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#callEditorChangeHandlers(java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.Collection, java.util.Collection)
      */
-    public ContentDefinition loadContentDefinition(String entityId) throws CmsRpcException {
+    public CmsContentDefinition callEditorChangeHandlers(
+        String entityId,
+        CmsEntity editedLocaleEntity,
+        Collection<String> skipPaths,
+        Collection<String> changedScopes) throws CmsRpcException {
 
-        return loadDefinition(entityId);
+        CmsContentDefinition result = null;
+        CmsUUID structureId = CmsContentDefinition.entityIdToUuid(editedLocaleEntity.getId());
+
+        if (structureId != null) {
+            CmsObject cms = getCmsObject();
+            CmsResource resource = null;
+            Locale locale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+            try {
+                resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+                ensureLock(resource);
+                CmsFile file = cms.readFile(resource);
+                CmsXmlContent content = getContentDocument(file, true).clone();
+                checkAutoCorrection(cms, content);
+                synchronizeLocaleIndependentForEntity(file, content, skipPaths, editedLocaleEntity);
+                for (I_CmsXmlContentEditorChangeHandler handler : content.getContentDefinition().getContentHandler().getEditorChangeHandlers()) {
+                    Set<String> handlerScopes = evaluateScope(handler.getScope(), content.getContentDefinition());
+                    if (!Collections.disjoint(changedScopes, handlerScopes)) {
+                        handler.handleChange(cms, content, locale, changedScopes);
+                    }
+                }
+                result = readContentDefinition(file, content, entityId, locale, false);
+            } catch (Exception e) {
+                error(e);
+            }
+        }
+        return result;
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#cancelEdit(org.opencms.util.CmsUUID, boolean)
      */
-    public CmsContentDefinition loadDefinition(String entityId) throws CmsRpcException {
+    public void cancelEdit(CmsUUID structureId, boolean delete) throws CmsRpcException {
+
+        try {
+            getSessionCache().uncacheXmlContent(structureId);
+            CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            if (delete) {
+                ensureLock(resource);
+                getCmsObject().deleteResource(
+                    getCmsObject().getSitePath(resource),
+                    CmsResource.DELETE_PRESERVE_SIBLINGS);
+            }
+            tryUnlock(resource);
+        } catch (Throwable t) {
+            error(t);
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#copyLocale(java.util.Collection, org.opencms.acacia.shared.CmsEntity)
+     */
+    public void copyLocale(Collection<String> locales, CmsEntity sourceLocale) throws CmsRpcException {
+
+        try {
+            CmsUUID structureId = CmsContentDefinition.entityIdToUuid(sourceLocale.getId());
+
+            CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsFile file = getCmsObject().readFile(resource);
+            CmsXmlContent content = getSessionCache().getCacheXmlContent(structureId);
+            synchronizeLocaleIndependentForEntity(file, content, Collections.<String> emptyList(), sourceLocale);
+            Locale sourceContentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(sourceLocale.getId()));
+            for (String loc : locales) {
+                Locale targetLocale = CmsLocaleManager.getLocale(loc);
+                if (content.hasLocale(targetLocale)) {
+                    content.removeLocale(targetLocale);
+                }
+                content.copyLocale(sourceContentLocale, targetLocale);
+            }
+        } catch (Throwable t) {
+            error(t);
+        }
+    }
+
+    /**
+     * @see org.opencms.acacia.shared.rpc.I_CmsContentService#loadContentDefinition(java.lang.String)
+     */
+    public CmsContentDefinition loadContentDefinition(String entityId) throws CmsRpcException {
+
+        throw new CmsRpcException(new UnsupportedOperationException());
+    }
+
+    /**
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.Collection)
+     */
+    public CmsContentDefinition loadDefinition(
+        String entityId,
+        CmsEntity editedLocaleEntity,
+        Collection<String> skipPaths) throws CmsRpcException {
 
         CmsContentDefinition definition = null;
         try {
             CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
             CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+            CmsFile file = getCmsObject().readFile(resource);
+            CmsXmlContent content = getContentDocument(file, true);
+            if (editedLocaleEntity != null) {
+                synchronizeLocaleIndependentForEntity(file, content, skipPaths, editedLocaleEntity);
+            }
             definition = readContentDefinition(
-                resource,
+                file,
+                content,
                 CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
                 contentLocale,
                 false);
@@ -288,40 +386,65 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadInitialDefinition(java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String)
      */
-    public CmsContentDefinition loadDefinition(String entityId, String newLink, CmsUUID modelFileId, String editContext)
-    throws CmsRpcException {
+    public CmsContentDefinition loadInitialDefinition(
+        String entityId,
+        String newLink,
+        CmsUUID modelFileId,
+        String editContext,
+        String mode,
+        String postCreateHandler) throws CmsRpcException {
 
         CmsContentDefinition result = null;
         getCmsObject().getRequestContext().setAttribute(CmsXmlContentEditor.ATTRIBUTE_EDITCONTEXT, editContext);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink)) {
-            try {
-                CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
-                CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-                Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
-                result = readContentDefnitionForNew(newLink, resource, modelFileId, contentLocale);
-            } catch (Throwable t) {
-                error(t);
+        try {
+            CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
+            CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink)) {
+                result = readContentDefnitionForNew(
+                    newLink,
+                    resource,
+                    modelFileId,
+                    contentLocale,
+                    mode,
+                    postCreateHandler);
+            } else {
+                CmsFile file = getCmsObject().readFile(resource);
+                CmsXmlContent content = getContentDocument(file, false);
+                result = readContentDefinition(
+                    file,
+                    content,
+                    CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
+                    contentLocale,
+                    false);
             }
-        } else {
-            result = loadDefinition(entityId);
+        } catch (Throwable t) {
+            error(t);
         }
         return result;
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadNewDefinition(java.lang.String)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadNewDefinition(java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.Collection)
      */
-    public CmsContentDefinition loadNewDefinition(String entityId) throws CmsRpcException {
+    public CmsContentDefinition loadNewDefinition(
+        String entityId,
+        CmsEntity editedLocaleEntity,
+        Collection<String> skipPaths) throws CmsRpcException {
 
         CmsContentDefinition definition = null;
         try {
             CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
             CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+            CmsFile file = getCmsObject().readFile(resource);
+            CmsXmlContent content = getContentDocument(file, true);
+            synchronizeLocaleIndependentForEntity(file, content, skipPaths, editedLocaleEntity);
             definition = readContentDefinition(
-                resource,
+                file,
+                content,
                 CmsContentDefinition.uuidToEntityId(structureId, contentLocale.toString()),
                 contentLocale,
                 true);
@@ -365,14 +488,26 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         }
                         CmsUUID modelFileId = null;
                         String paramModelFile = getRequest().getParameter(CmsNewResourceXmlContent.PARAM_MODELFILE);
+
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramModelFile)) {
                             modelFileId = cms.readResource(paramModelFile).getStructureId();
                         }
-                        result = readContentDefnitionForNew(paramNewLink, resource, modelFileId, locale);
+
+                        String mode = getRequest().getParameter(CmsEditorConstants.PARAM_MODE);
+                        String postCreateHandler = getRequest().getParameter(
+                            CmsEditorConstants.PARAM_POST_CREATE_HANDLER);
+                        result = readContentDefnitionForNew(
+                            paramNewLink,
+                            resource,
+                            modelFileId,
+                            locale,
+                            mode,
+                            postCreateHandler);
                     } else {
 
                         CmsFile file = cms.readFile(resource);
                         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+                        getSessionCache().setCacheXmlContent(resource.getStructureId(), content);
                         if (locale == null) {
                             locale = getBestAvailableLocale(resource, content);
                         }
@@ -389,16 +524,18 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#saveAndDeleteEntities(java.util.List, java.util.List, boolean)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#saveAndDeleteEntities(org.opencms.acacia.shared.CmsEntity, java.util.List, java.util.Collection, java.lang.String, boolean)
      */
-    public ValidationResult saveAndDeleteEntities(
-        List<Entity> changedEntities,
+    public CmsValidationResult saveAndDeleteEntities(
+        CmsEntity lastEditedEntity,
         List<String> deletedEntities,
+        Collection<String> skipPaths,
+        String lastEditedLocale,
         boolean clearOnSuccess) throws CmsRpcException {
 
         CmsUUID structureId = null;
-        if (!changedEntities.isEmpty()) {
-            structureId = CmsContentDefinition.entityIdToUuid(changedEntities.get(0).getId());
+        if (lastEditedEntity != null) {
+            structureId = CmsContentDefinition.entityIdToUuid(lastEditedEntity.getId());
         }
         if ((structureId == null) && !deletedEntities.isEmpty()) {
             structureId = CmsContentDefinition.entityIdToUuid(deletedEntities.get(0));
@@ -410,16 +547,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
                 ensureLock(resource);
                 CmsFile file = cms.readFile(resource);
-                CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+                CmsXmlContent content = getContentDocument(file, true);
                 checkAutoCorrection(cms, content);
-                for (Entity entity : changedEntities) {
-                    String entityId = entity.getId();
-                    Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
-                    if (content.hasLocale(contentLocale)) {
-                        content.removeLocale(contentLocale);
-                    }
-                    content.addLocale(cms, contentLocale);
-                    addEntityAttributes(cms, content, "", entity, contentLocale);
+                if (lastEditedEntity != null) {
+                    synchronizeLocaleIndependentForEntity(file, content, skipPaths, lastEditedEntity);
                 }
                 for (String deleteId : deletedEntities) {
                     Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(deleteId));
@@ -427,7 +558,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         content.removeLocale(contentLocale);
                     }
                 }
-                ValidationResult validationResult = validateContent(cms, structureId, content);
+                CmsValidationResult validationResult = validateContent(cms, structureId, content);
                 if (validationResult.hasErrors()) {
                     return validationResult;
                 }
@@ -436,10 +567,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
                 if (clearOnSuccess) {
                     tryUnlock(resource);
+                    getSessionCache().uncacheXmlContent(structureId);
                 }
             } catch (Exception e) {
                 if (resource != null) {
                     tryUnlock(resource);
+                    getSessionCache().uncacheXmlContent(structureId);
                 }
                 error(e);
             }
@@ -448,25 +581,25 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see com.alkacon.acacia.shared.rpc.I_ContentService#saveEntities(java.util.List)
+     * @see org.opencms.acacia.shared.rpc.I_CmsContentService#saveEntities(java.util.List)
      */
-    public ValidationResult saveEntities(List<Entity> entities) throws CmsRpcException {
+    public CmsValidationResult saveEntities(List<CmsEntity> entities) {
 
-        return saveAndDeleteEntities(entities, Collections.<String> emptyList(), true);
+        throw new UnsupportedOperationException();
     }
 
     /**
-     * @see com.alkacon.acacia.shared.rpc.I_ContentService#saveEntity(com.alkacon.acacia.shared.Entity)
+     * @see org.opencms.acacia.shared.rpc.I_CmsContentService#saveEntity(org.opencms.acacia.shared.CmsEntity)
      */
-    public ValidationResult saveEntity(Entity entity) throws CmsRpcException {
+    public CmsValidationResult saveEntity(CmsEntity entity) {
 
-        return saveEntities(Collections.singletonList(entity));
+        throw new UnsupportedOperationException();
     }
 
     /**
-     * @see com.alkacon.acacia.shared.rpc.I_ContentService#updateEntityHtml(com.alkacon.acacia.shared.Entity, java.lang.String, java.lang.String)
+     * @see org.opencms.acacia.shared.rpc.I_CmsContentService#updateEntityHtml(org.opencms.acacia.shared.CmsEntity, java.lang.String, java.lang.String)
      */
-    public EntityHtml updateEntityHtml(Entity entity, String contextUri, String htmlContextInfo) throws Exception {
+    public CmsEntityHtml updateEntityHtml(CmsEntity entity, String contextUri, String htmlContextInfo) throws Exception {
 
         CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entity.getId());
         if (structureId != null) {
@@ -482,7 +615,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 }
                 content.addLocale(cms, contentLocale);
                 addEntityAttributes(cms, content, "", entity, contentLocale);
-                ValidationResult validationResult = validateContent(cms, structureId, content);
+                CmsValidationResult validationResult = validateContent(cms, structureId, content);
                 String htmlContent = null;
                 if (!validationResult.hasErrors()) {
                     file.setContents(content.marshal());
@@ -496,10 +629,14 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     CmsContainer container = new CmsContainer(
                         containerName,
                         containerType,
+                        null,
                         containerWidth,
                         maxElements,
                         detailView,
-                        Collections.<CmsContainerElement> emptyList());
+                        true,
+                        Collections.<CmsContainerElement> emptyList(),
+                        null,
+                        null);
                     CmsUUID detailContentId = null;
                     if (contextInfo.has(CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID)) {
                         detailContentId = new CmsUUID(contextInfo.getString(CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID));
@@ -514,9 +651,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     htmlContent = elementUtil.getContentByContainer(
                         file,
                         contextInfo.getString(CmsCntPageData.JSONKEY_ELEMENT_ID),
-                        container);
+                        container,
+                        true);
                 }
-                return new EntityHtml(htmlContent, validationResult);
+                return new CmsEntityHtml(htmlContent, validationResult);
 
             } catch (Exception e) {
                 error(e);
@@ -526,13 +664,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see com.alkacon.acacia.shared.rpc.I_ContentService#validateEntities(java.util.List)
+     * @see org.opencms.acacia.shared.rpc.I_CmsContentService#validateEntities(java.util.List)
      */
-    public ValidationResult validateEntities(List<Entity> changedEntities) throws CmsRpcException {
+    public CmsValidationResult validateEntities(List<CmsEntity> changedEntities) throws CmsRpcException {
 
         CmsUUID structureId = null;
         if (changedEntities.isEmpty()) {
-            return new ValidationResult(null, null);
+            return new CmsValidationResult(null, null);
         }
         structureId = CmsContentDefinition.entityIdToUuid(changedEntities.get(0).getId());
         if (structureId != null) {
@@ -541,7 +679,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
                 CmsFile file = cms.readFile(resource);
                 CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-                for (Entity entity : changedEntities) {
+                for (CmsEntity entity : changedEntities) {
                     String entityId = entity.getId();
                     Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
                     if (content.hasLocale(contentLocale)) {
@@ -555,15 +693,15 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 error(e);
             }
         }
-        return new ValidationResult(null, null);
+        return new CmsValidationResult(null, null);
     }
 
     /**
      * Decodes the newlink request parameter if possible.<p>
-     * 
-     * @param newLink the parameter to decode 
-     * 
-     * @return the decoded value 
+     *
+     * @param newLink the parameter to decode
+     *
+     * @return the decoded value
      */
     protected String decodeNewLink(String newLink) {
 
@@ -587,9 +725,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the element name to the given element.<p>
-     * 
+     *
      * @param attributeName the attribute name
-     * 
+     *
      * @return the element name
      */
     protected String getElementName(String attributeName) {
@@ -603,7 +741,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /**
      * Helper method to determine the encoding of the given file in the VFS,
      * which must be set using the "content-encoding" property.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param file the file which is to be checked
      * @return the encoding for the file
@@ -622,40 +760,41 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Parses the element into an entity.<p>
-     * 
+     *
      * @param content the entity content
      * @param element the current element
      * @param locale the content locale
      * @param entityId the entity id
      * @param parentPath the parent path
      * @param typeName the entity type name
-     * @param registeredTypes the types used within the entity
-     * 
+     * @param visitor the content type visitor
+     * @param includeInvisible include invisible attributes
+     *
      * @return the entity
      */
-    protected Entity readEntity(
+    protected CmsEntity readEntity(
         CmsXmlContent content,
         Element element,
         Locale locale,
         String entityId,
         String parentPath,
         String typeName,
-        Map<String, I_Type> registeredTypes) {
+        CmsContentTypeVisitor visitor,
+        boolean includeInvisible) {
 
         String newEntityId = entityId + (CmsStringUtil.isNotEmptyOrWhitespaceOnly(parentPath) ? "/" + parentPath : "");
-        Entity newEntity = new Entity(newEntityId, typeName);
-        Entity result = newEntity;
+        CmsEntity newEntity = new CmsEntity(newEntityId, typeName);
+        CmsEntity result = newEntity;
 
-        @SuppressWarnings("unchecked")
         List<Element> elements = element.elements();
-        I_Type type = registeredTypes.get(typeName);
+        CmsType type = visitor.getTypes().get(typeName);
         boolean isChoice = type.isChoice();
         String choiceTypeName = null;
         // just needed for choice attributes
         Map<String, Integer> attributeCounter = null;
         if (isChoice) {
-            choiceTypeName = type.getAttributeTypeName(Type.CHOICE_ATTRIBUTE_NAME);
-            type = registeredTypes.get(type.getAttributeTypeName(Type.CHOICE_ATTRIBUTE_NAME));
+            choiceTypeName = type.getAttributeTypeName(CmsType.CHOICE_ATTRIBUTE_NAME);
+            type = visitor.getTypes().get(type.getAttributeTypeName(CmsType.CHOICE_ATTRIBUTE_NAME));
             attributeCounter = new HashMap<String, Integer>();
         }
         int counter = 0;
@@ -667,8 +806,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         for (Element child : elements) {
             String attributeName = getAttributeName(child.getName(), typeName);
             String subTypeName = type.getAttributeTypeName(attributeName);
-            if (registeredTypes.get(subTypeName) == null) {
+            if (visitor.getTypes().get(subTypeName) == null) {
                 // in case there is no type configured for this element, the schema may have changed, skip the element
+                continue;
+            }
+            if (!includeInvisible && !visitor.getAttributeConfigurations().get(attributeName).isVisible()) {
+                // skip attributes marked as invisible, there content should not be transfered to the client
                 continue;
             }
             if (isChoice && (attributeCounter != null)) {
@@ -689,29 +832,30 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 previousName = attributeName;
             }
             if (isChoice) {
-                result = new Entity(newEntityId
+                result = new CmsEntity(newEntityId
                     + "/"
-                    + Type.CHOICE_ATTRIBUTE_NAME
+                    + CmsType.CHOICE_ATTRIBUTE_NAME
                     + "_"
                     + child.getName()
                     + "["
                     + counter
                     + "]", choiceTypeName);
-                newEntity.addAttributeValue(Type.CHOICE_ATTRIBUTE_NAME, result);
+                newEntity.addAttributeValue(CmsType.CHOICE_ATTRIBUTE_NAME, result);
             }
             String path = parentPath + child.getName();
-            if (registeredTypes.get(subTypeName).isSimpleType()) {
+            if (visitor.getTypes().get(subTypeName).isSimpleType()) {
                 I_CmsXmlContentValue value = content.getValue(path, locale, counter);
                 result.addAttributeValue(attributeName, value.getStringValue(cms));
             } else {
-                Entity subEntity = readEntity(
+                CmsEntity subEntity = readEntity(
                     content,
                     child,
                     locale,
                     entityId,
                     path + "[" + (counter + 1) + "]",
                     subTypeName,
-                    registeredTypes);
+                    visitor,
+                    includeInvisible);
                 result.addAttributeValue(attributeName, subEntity);
 
             }
@@ -723,13 +867,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /**
      * Reads the types from the given content definition and adds the to the map of already registered
      * types if necessary.<p>
-     * 
+     *
      * @param xmlContentDefinition the XML content definition
      * @param locale the messages locale
-     * 
-     * @return the types of the given content definition 
+     *
+     * @return the types of the given content definition
      */
-    protected Map<String, I_Type> readTypes(CmsXmlContentDefinition xmlContentDefinition, Locale locale) {
+    protected Map<String, CmsType> readTypes(CmsXmlContentDefinition xmlContentDefinition, Locale locale) {
 
         CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(getCmsObject(), null, locale);
         visitor.visitTypes(xmlContentDefinition, locale);
@@ -737,8 +881,64 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * Synchronizes the locale independent fields.<p>
+     *
+     * @param file the content file
+     * @param content the XML content
+     * @param skipPaths the paths to skip during locale synchronization
+     * @param entities the edited entities
+     * @param lastEdited the last edited locale
+     *
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void synchronizeLocaleIndependentFields(
+        CmsFile file,
+        CmsXmlContent content,
+        Collection<String> skipPaths,
+        Collection<CmsEntity> entities,
+        Locale lastEdited) throws CmsXmlException {
+
+        CmsEntity lastEditedEntity = null;
+        for (CmsEntity entity : entities) {
+            if (lastEdited.equals(CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entity.getId())))) {
+                lastEditedEntity = entity;
+            } else {
+                synchronizeLocaleIndependentForEntity(file, content, skipPaths, entity);
+            }
+        }
+        if (lastEditedEntity != null) {
+            // prepare the last edited last, to sync locale independent fields
+            synchronizeLocaleIndependentForEntity(file, content, skipPaths, lastEditedEntity);
+        }
+    }
+
+    /**
+     * Transfers values marked as invisible from the original entity to the target entity.<p>
+     *
+     * @param original the original entity
+     * @param target the target entiy
+     * @param visitor the type visitor holding the content type configuration
+     */
+    protected void transferInvisibleValues(CmsEntity original, CmsEntity target, CmsContentTypeVisitor visitor) {
+
+        List<String> invisibleAttributes = new ArrayList<String>();
+        for (Entry<String, CmsAttributeConfiguration> configEntry : visitor.getAttributeConfigurations().entrySet()) {
+            if (!configEntry.getValue().isVisible()) {
+                invisibleAttributes.add(configEntry.getKey());
+            }
+        }
+        CmsContentDefinition.transferValues(
+            original,
+            target,
+            invisibleAttributes,
+            visitor.getTypes(),
+            visitor.getAttributeConfigurations(),
+            true);
+    }
+
+    /**
      * Adds the attribute values of the entity to the given XML content.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param content the XML content
      * @param parentPath the parent path
@@ -749,17 +949,17 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         CmsObject cms,
         CmsXmlContent content,
         String parentPath,
-        I_Entity entity,
+        CmsEntity entity,
         Locale contentLocale) {
 
-        for (I_EntityAttribute attribute : entity.getAttributes()) {
-            if (Type.CHOICE_ATTRIBUTE_NAME.equals(attribute.getAttributeName())) {
-                List<I_Entity> choiceEntities = attribute.getComplexValues();
+        for (CmsEntityAttribute attribute : entity.getAttributes()) {
+            if (CmsType.CHOICE_ATTRIBUTE_NAME.equals(attribute.getAttributeName())) {
+                List<CmsEntity> choiceEntities = attribute.getComplexValues();
                 for (int i = 0; i < choiceEntities.size(); i++) {
-                    List<I_EntityAttribute> choiceAttributes = choiceEntities.get(i).getAttributes();
+                    List<CmsEntityAttribute> choiceAttributes = choiceEntities.get(i).getAttributes();
                     // each choice entity may only have a single attribute with a single value
                     assert (choiceAttributes.size() == 1) && choiceAttributes.get(0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
-                    I_EntityAttribute choiceAttribute = choiceAttributes.get(0);
+                    CmsEntityAttribute choiceAttribute = choiceAttributes.get(0);
                     String elementPath = parentPath + getElementName(choiceAttribute.getAttributeName());
                     if (choiceAttribute.isSimpleValue()) {
                         String value = choiceAttribute.getSimpleValue();
@@ -769,7 +969,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         }
                         field.setStringValue(cms, value);
                     } else {
-                        I_Entity child = choiceAttribute.getComplexValue();
+                        CmsEntity child = choiceAttribute.getComplexValue();
                         I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
                         if (field == null) {
                             field = content.addValue(cms, elementPath, contentLocale, i);
@@ -791,9 +991,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
                     }
                 } else {
-                    List<I_Entity> entities = attribute.getComplexValues();
+                    List<CmsEntity> entities = attribute.getComplexValues();
                     for (int i = 0; i < entities.size(); i++) {
-                        I_Entity child = entities.get(i);
+                        CmsEntity child = entities.get(i);
                         I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
                         if (field == null) {
                             field = content.addValue(cms, elementPath, contentLocale, i);
@@ -807,10 +1007,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Check if automatic content correction is required. Returns <code>true</code> if the content was changed.<p>
-     * 
+     *
      * @param cms the cms context
      * @param content the content to check
-     * 
+     *
      * @return <code>true</code> if the content was changed
      * @throws CmsXmlException if the automatic content correction failed
      */
@@ -829,11 +1029,122 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * Returns the best available locale present in the given XML content, or the default locale.<p>
+     * Evaluates any wildcards in the given scope and returns all allowed permutations of it.<p>
      * 
+     * a path like Paragraph* /Image should result in Paragraph[0]/Image, Paragraph[1]/Image and Paragraph[2]/Image
+     * in case max occurrence for Paragraph is 3
+     * 
+     * @param scope the scope
+     * @param definition the content definition
+     * 
+     * @return the evaluate scope permutations
+     */
+    private Set<String> evaluateScope(String scope, CmsXmlContentDefinition definition) {
+
+        Set<String> evaluatedScopes = new HashSet<String>();
+        if (scope.contains("*")) {
+            // evaluate wildcards to get all allowed permutations of the scope
+            // a path like Paragraph*/Image should result in Paragraph[0]/Image, Paragraph[1]/Image and Paragraph[2]/Image
+            // in case max occurrence for Paragraph is 3
+
+            String[] pathElements = scope.split("/");
+            String parentPath = "";
+
+            for (int i = 0; i < pathElements.length; i++) {
+                String elementName = pathElements[i];
+                boolean hasWildCard = elementName.endsWith("*");
+
+                if (hasWildCard) {
+                    elementName = elementName.substring(0, elementName.length() - 1);
+                    parentPath = CmsStringUtil.joinPaths(parentPath, elementName);
+                    I_CmsXmlSchemaType type = definition.getSchemaType(parentPath);
+                    Set<String> tempScopes = new HashSet<String>();
+                    if (type.getMaxOccurs() == Integer.MAX_VALUE) {
+                        throw new IllegalStateException(
+                            "Can not use fields with unbounded maxOccurs in scopes for editor change handler.");
+                    }
+                    for (int j = 0; j < type.getMaxOccurs(); j++) {
+                        if (evaluatedScopes.isEmpty()) {
+                            tempScopes.add(elementName + "[" + (j + 1) + "]");
+                        } else {
+
+                            for (String evScope : evaluatedScopes) {
+                                tempScopes.add(CmsStringUtil.joinPaths(evScope, elementName + "[" + (j + 1) + "]"));
+                            }
+                        }
+                    }
+                    evaluatedScopes = tempScopes;
+                } else {
+                    parentPath = CmsStringUtil.joinPaths(parentPath, elementName);
+                    Set<String> tempScopes = new HashSet<String>();
+                    if (evaluatedScopes.isEmpty()) {
+                        tempScopes.add(elementName);
+                    } else {
+                        for (String evScope : evaluatedScopes) {
+                            tempScopes.add(CmsStringUtil.joinPaths(evScope, elementName));
+                        }
+                    }
+                    evaluatedScopes = tempScopes;
+                }
+            }
+        } else {
+            evaluatedScopes.add(scope);
+        }
+        return evaluatedScopes;
+    }
+
+    /**
+     * Evaluates the values of the locale independent fields and the paths to skip during locale synchronization.<p>
+     *
+     * @param content the XML content
+     * @param syncValues the map of synchronization values
+     * @param skipPaths the list o paths to skip
+     */
+    private void evaluateSyncLocaleValues(
+        CmsXmlContent content,
+        Map<String, String> syncValues,
+        Collection<String> skipPaths) {
+
+        CmsObject cms = getCmsObject();
+        for (Locale locale : content.getLocales()) {
+            for (String elementPath : content.getContentDefinition().getContentHandler().getSynchronizations()) {
+                for (I_CmsXmlContentValue contentValue : content.getSimpleValuesBelowPath(elementPath, locale)) {
+                    String valuePath = contentValue.getPath();
+                    boolean skip = false;
+                    for (String skipPath : skipPaths) {
+                        if (valuePath.startsWith(skipPath)) {
+                            skip = true;
+                            break;
+                        }
+                    }
+                    if (!skip) {
+                        String value = contentValue.getStringValue(cms);
+                        if (syncValues.containsKey(valuePath)) {
+                            if (!syncValues.get(valuePath).equals(value)) {
+                                // in case the current value does not match the previously stored value,
+                                // remove it and add the parent path to the skipPaths list
+                                syncValues.remove(valuePath);
+                                int pathLevelDiff = (CmsResource.getPathLevel(valuePath) - CmsResource.getPathLevel(elementPath)) + 1;
+                                for (int i = 0; i < pathLevelDiff; i++) {
+                                    valuePath = CmsXmlUtils.removeLastXpathElement(valuePath);
+                                }
+                                skipPaths.add(valuePath);
+                            }
+                        } else {
+                            syncValues.put(valuePath, value);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the best available locale present in the given XML content, or the default locale.<p>
+     *
      * @param resource the resource
      * @param content the XML content
-     * 
+     *
      * @return the locale
      */
     private Locale getBestAvailableLocale(CmsResource resource, CmsXmlContent content) {
@@ -869,11 +1180,51 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * Returns the path elements for the given content value.<p>
+     * Returns the change handler scopes.<p>
      * 
+     * @param definition the content definition
+     * 
+     * @return the scopes
+     */
+    private Set<String> getChangeHandlerScopes(CmsXmlContentDefinition definition) {
+
+        List<I_CmsXmlContentEditorChangeHandler> changeHandlers = definition.getContentHandler().getEditorChangeHandlers();
+        Set<String> scopes = new HashSet<String>();
+        for (I_CmsXmlContentEditorChangeHandler handler : changeHandlers) {
+            String scope = handler.getScope();
+            scopes.addAll(evaluateScope(scope, definition));
+        }
+        return scopes;
+    }
+
+    /**
+     * Returns the XML content document.<p>
+     * 
+     * @param file the resource file
+     * @param fromCache <code>true</code> to use the cached document
+     * 
+     * @return the content document
+     * 
+     * @throws CmsXmlException if reading the XML fails
+     */
+    private CmsXmlContent getContentDocument(CmsFile file, boolean fromCache) throws CmsXmlException {
+
+        CmsXmlContent content;
+        if (fromCache) {
+            content = getSessionCache().getCacheXmlContent(file.getStructureId());
+        } else {
+            content = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
+            getSessionCache().setCacheXmlContent(file.getStructureId(), content);
+        }
+        return content;
+    }
+
+    /**
+     * Returns the path elements for the given content value.<p>
+     *
      * @param content the XML content
      * @param value the content value
-     * 
+     *
      * @return the path elements
      */
     private String[] getPathElements(CmsXmlContent content, I_CmsXmlContentValue value) {
@@ -897,10 +1248,23 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * Returns the session cache.<p>
+     * 
+     * @return the session cache
+     */
+    private CmsADESessionCache getSessionCache() {
+
+        if (m_sessionCache == null) {
+            m_sessionCache = CmsADESessionCache.getCache(getRequest(), getCmsObject());
+        }
+        return m_sessionCache;
+    }
+
+    /**
      * Returns the workplace locale.<p>
-     * 
-     * @param cms the current OpenCms context 
-     * 
+     *
+     * @param cms the current OpenCms context
+     *
      * @return the current users workplace locale
      */
     private Locale getWorkplaceLocale(CmsObject cms) {
@@ -913,15 +1277,15 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Reads the content definition for the given resource and locale.<p>
-     * 
+     *
      * @param file the resource file
      * @param content the XML content
      * @param entityId the entity id
      * @param locale the content locale
      * @param newLocale if the locale content should be created as new
-     * 
+     *
      * @return the content definition
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private CmsContentDefinition readContentDefinition(
@@ -936,6 +1300,25 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             timer = System.currentTimeMillis();
         }
         CmsObject cms = getCmsObject();
+        List<Locale> availableLocalesList = OpenCms.getLocaleManager().getAvailableLocales(cms, file);
+        if (!availableLocalesList.contains(locale)) {
+            availableLocalesList.retainAll(content.getLocales());
+            List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, file);
+            Locale replacementLocale = OpenCms.getLocaleManager().getBestMatchingLocale(
+                locale,
+                defaultLocales,
+                availableLocalesList);
+            LOG.info("Can't edit locale "
+                + locale
+                + " of file "
+                + file.getRootPath()
+                + " because it is not configured as available locale. Using locale "
+                + replacementLocale
+                + " instead.");
+            locale = replacementLocale;
+            entityId = CmsContentDefinition.uuidToEntityId(file.getStructureId(), locale.toString());
+        }
+
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(entityId)) {
             entityId = CmsContentDefinition.uuidToEntityId(file.getStructureId(), locale.toString());
         }
@@ -958,13 +1341,24 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 Messages.LOG_TAKE_VISITING_TYPES_TIME_1,
                 "" + (System.currentTimeMillis() - timer)));
         }
-        Entity entity = null;
+        CmsEntity entity = null;
+        Map<String, String> syncValues = new HashMap<String, String>();
+        Collection<String> skipPaths = new HashSet<String>();
+        evaluateSyncLocaleValues(content, syncValues, skipPaths);
         if (content.hasLocale(locale) && newLocale) {
             // a new locale is requested, so remove the present one
             content.removeLocale(locale);
         }
         if (!content.hasLocale(locale)) {
             content.addLocale(cms, locale);
+            // sync the locale values
+            if (!visitor.getLocaleSynchronizations().isEmpty() && (content.getLocales().size() > 1)) {
+                for (Locale contentLocale : content.getLocales()) {
+                    if (!contentLocale.equals(locale)) {
+                        content.synchronizeLocaleIndependentValues(cms, skipPaths, contentLocale);
+                    }
+                }
+            }
         }
         Element element = content.getLocaleNode(locale);
         if (LOG.isDebugEnabled()) {
@@ -977,7 +1371,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             entityId,
             "",
             getTypeUri(content.getContentDefinition()),
-            visitor.getTypes());
+            visitor,
+            false);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_TAKE_READING_ENTITY_TIME_1,
@@ -1001,9 +1396,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         String typeName = OpenCms.getResourceManager().getResourceType(file.getTypeId()).getTypeName();
         boolean autoUnlock = OpenCms.getWorkplaceManager().shouldAcaciaUnlock();
+        Map<String, CmsEntity> entities = new HashMap<String, CmsEntity>();
+        entities.put(entityId, entity);
 
         return new CmsContentDefinition(
-            entity,
+            entityId,
+            entities,
             visitor.getAttributeConfigurations(),
             visitor.getWidgetConfigurations(),
             visitor.getComplexWidgetData(),
@@ -1012,55 +1410,39 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             locale.toString(),
             contentLocales,
             availableLocales,
+            visitor.getLocaleSynchronizations(),
+            syncValues,
+            skipPaths,
             title,
             cms.getSitePath(file),
             typeName,
             performedAutoCorrection,
-            autoUnlock);
-    }
-
-    /**
-     * Reads the content definition for the given resource and locale.<p>
-     * 
-     * @param resource the resource
-     * @param entityId the entity id
-     * @param locale the content locale
-     * @param newLocale if the locale content should be created as new
-     * 
-     * @return the content definition
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private CmsContentDefinition readContentDefinition(
-        CmsResource resource,
-        String entityId,
-        Locale locale,
-        boolean newLocale) throws CmsException {
-
-        CmsObject cms = getCmsObject();
-        CmsFile file = cms.readFile(resource);
-        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-        return readContentDefinition(file, content, entityId, locale, newLocale);
+            autoUnlock,
+            getChangeHandlerScopes(content.getContentDefinition()));
     }
 
     /**
      * Creates a new resource according to the new link, or returns the model file informations
      * modelFileId is <code>null</code> but required.<p>
-     * 
+     *
      * @param newLink the new link
      * @param referenceResource the reference resource
      * @param modelFileId the model file structure id
      * @param locale the content locale
-     * 
+     * @param mode the content creation mode
+     * @param postCreateHandler the class name for the post-create handler
+     *
      * @return the content definition
-     * 
+     *
      * @throws CmsException if creating the resource failed
      */
     private CmsContentDefinition readContentDefnitionForNew(
         String newLink,
         CmsResource referenceResource,
         CmsUUID modelFileId,
-        Locale locale) throws CmsException {
+        Locale locale,
+        String mode,
+        String postCreateHandler) throws CmsException {
 
         String sitePath = getCmsObject().getSitePath(referenceResource);
         String resourceType = OpenCms.getResourceManager().getResourceType(referenceResource.getTypeId()).getTypeName();
@@ -1091,23 +1473,76 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             newLink,
             locale,
             sitePath,
-            modelFile);
+            modelFile,
+            mode,
+            postCreateHandler);
         CmsResource resource = getCmsObject().readResource(newFileName, CmsResourceFilter.IGNORE_EXPIRATION);
-        CmsContentDefinition contentDefinition = readContentDefinition(resource, null, locale, false);
+        CmsFile file = getCmsObject().readFile(resource);
+        CmsXmlContent content = getContentDocument(file, false);
+        CmsContentDefinition contentDefinition = readContentDefinition(file, content, null, locale, false);
         contentDefinition.setDeleteOnCancel(true);
         return contentDefinition;
     }
 
     /**
+     * Synchronizes the locale independent fields for the given entity.<p>
+     *
+     * @param file the content file
+     * @param content the XML content
+     * @param skipPaths the paths to skip during locale synchronization
+     * @param entity the entity
+     *
+     * @throws CmsXmlException if something goes wrong
+     */
+    private void synchronizeLocaleIndependentForEntity(
+        CmsFile file,
+        CmsXmlContent content,
+        Collection<String> skipPaths,
+        CmsEntity entity) throws CmsXmlException {
+
+        CmsObject cms = getCmsObject();
+        String entityId = entity.getId();
+        Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
+        CmsContentTypeVisitor visitor = null;
+        CmsEntity originalEntity = null;
+        if (content.getHandler().hasVisibilityHandlers()) {
+            visitor = new CmsContentTypeVisitor(cms, file, contentLocale);
+            visitor.visitTypes(content.getContentDefinition(), getWorkplaceLocale(cms));
+        }
+        if (content.hasLocale(contentLocale)) {
+            if ((visitor != null) && visitor.hasInvisibleFields()) {
+                // we need to add invisible content values to the entity before saving
+                Element element = content.getLocaleNode(contentLocale);
+                originalEntity = readEntity(
+                    content,
+                    element,
+                    contentLocale,
+                    entityId,
+                    "",
+                    getTypeUri(content.getContentDefinition()),
+                    visitor,
+                    true);
+            }
+            content.removeLocale(contentLocale);
+        }
+        content.addLocale(cms, contentLocale);
+        if ((visitor != null) && visitor.hasInvisibleFields()) {
+            transferInvisibleValues(originalEntity, entity, visitor);
+        }
+        addEntityAttributes(cms, content, "", entity, contentLocale);
+        content.synchronizeLocaleIndependentValues(cms, skipPaths, contentLocale);
+    }
+
+    /**
      * Validates the given XML content.<p>
-     *  
+     *
      * @param cms the cms context
      * @param structureId the structure id
      * @param content the XML content
-     * 
+     *
      * @return the validation result
      */
-    private ValidationResult validateContent(CmsObject cms, CmsUUID structureId, CmsXmlContent content) {
+    private CmsValidationResult validateContent(CmsObject cms, CmsUUID structureId, CmsXmlContent content) {
 
         CmsXmlContentErrorHandler errorHandler = content.validate(cms);
         Map<String, Map<String[], String>> errorsByEntity = new HashMap<String, Map<String[], String>>();
@@ -1137,19 +1572,19 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     warnings);
             }
         }
-        return new ValidationResult(errorsByEntity, warningsByEntity);
+        return new CmsValidationResult(errorsByEntity, warningsByEntity);
     }
 
     /**
      * Writes the xml content to the vfs and re-initializes the member variables.<p>
-     * 
+     *
      * @param cms the cms context
      * @param file the file to write to
      * @param content the content
      * @param encoding the file encoding
-     * 
-     * @return the content 
-     * 
+     *
+     * @return the content
+     *
      * @throws CmsException if writing the file fails
      */
     private CmsXmlContent writeContent(CmsObject cms, CmsFile file, CmsXmlContent content, String encoding)
@@ -1163,8 +1598,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 org.opencms.workplace.editors.Messages.ERR_INVALID_CONTENT_ENC_1,
                 file.getRootPath()), e);
         }
-        // the file content might have been modified during the write operation    
+        // the file content might have been modified during the write operation
         file = cms.writeFile(file);
         return CmsXmlContentFactory.unmarshal(cms, file);
     }
+
 }

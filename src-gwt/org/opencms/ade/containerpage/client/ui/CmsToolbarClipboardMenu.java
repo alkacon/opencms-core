@@ -27,13 +27,16 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.CmsFavoritesDNDController;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.gwt.client.ui.CmsToolbarPopup;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDebugLog;
 
@@ -41,6 +44,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -71,7 +76,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
     private CmsRecentTab m_recent;
 
     /** The favorite and recent list tabs. */
-    private CmsTabbedPanel<Widget> m_tabs;
+    CmsTabbedPanel<A_CmsClipboardTab> m_tabs;
 
     /**
      * Constructor.<p>
@@ -83,7 +88,12 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
         super(I_CmsButton.ButtonData.CLIPBOARD, handler);
 
         m_content = new FlowPanel();
-        m_tabs = new CmsTabbedPanel<Widget>();
+        m_tabs = new CmsTabbedPanel<A_CmsClipboardTab>();
+        m_favorites = new CmsFavoriteTab(this);
+        m_recent = new CmsRecentTab();
+
+        m_tabs.add(m_favorites, Messages.get().key(Messages.GUI_TAB_FAVORITES_TITLE_0));
+        m_tabs.add(m_recent, Messages.get().key(Messages.GUI_TAB_RECENT_TITLE_0));
         m_tabs.addSelectionHandler(new SelectionHandler<Integer>() {
 
             /**
@@ -94,15 +104,24 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
                 if (m_isEditingFavorites) {
                     m_favorites.saveFavorites();
                 }
+                CmsContainerpageController.get().saveClipboardTab(event.getSelectedItem().intValue());
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                    public void execute() {
+
+                        updateSize();
+                    }
+                });
+
             }
         });
-        m_favorites = new CmsFavoriteTab(this);
-        m_recent = new CmsRecentTab();
 
-        m_tabs.add(m_favorites, Messages.get().key(Messages.GUI_TAB_FAVORITES_TITLE_0));
-        m_tabs.add(m_recent, Messages.get().key(Messages.GUI_TAB_RECENT_TITLE_0));
         SimplePanel tabsContainer = new SimplePanel();
         tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
+        int dialogHeight = CmsToolbarPopup.getAvailableHeight();
+        int dialogWidth = CmsToolbarPopup.getAvailableWidth();
+        tabsContainer.setHeight(dialogHeight + "px");
+        getPopup().setWidth(dialogWidth);
         tabsContainer.add(m_tabs);
         m_content.add(tabsContainer);
         setMenuWidget(m_content);
@@ -127,26 +146,6 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
     public void addToRecent(CmsListItem listItem) {
 
         m_recent.addListItem(listItem);
-    }
-
-    /**
-     * Replaces old versions of the given item with the new one.<p>
-     * 
-     * @param listItem the list item
-     */
-    public void replaceFavoriteItem(CmsListItem listItem) {
-
-        m_favorites.replaceItem(listItem);
-    }
-
-    /**
-     * Replaces old versions of the given item with the new one.<p>
-     * 
-     * @param listItem the list item
-     */
-    public void replaceRecentItem(CmsListItem listItem) {
-
-        m_recent.replaceItem(listItem);
     }
 
     /**
@@ -189,6 +188,25 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
         Document.get().getBody().addClassName(I_CmsButton.ButtonData.CLIPBOARD.getIconClass());
         getHandler().loadFavorites();
         getHandler().loadRecent();
+        CmsRpcAction<Integer> tabAction = new CmsRpcAction<Integer>() {
+
+            @Override
+            public void execute() {
+
+                start(1, false);
+                CmsContainerpageController.get().getContainerpageService().loadClipboardTab(this);
+            }
+
+            @Override
+            protected void onResponse(Integer result) {
+
+                stop(false);
+                m_tabs.selectTab(result.intValue(), false);
+                updateSize();
+            }
+
+        };
+        tabAction.execute();
     }
 
     /**
@@ -213,6 +231,26 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
     }
 
     /**
+     * Replaces old versions of the given item with the new one.<p>
+     * 
+     * @param listItem the list item
+     */
+    public void replaceFavoriteItem(CmsListItem listItem) {
+
+        m_favorites.replaceItem(listItem);
+    }
+
+    /**
+     * Replaces old versions of the given item with the new one.<p>
+     * 
+     * @param listItem the list item
+     */
+    public void replaceRecentItem(CmsListItem listItem) {
+
+        m_recent.replaceItem(listItem);
+    }
+
+    /**
      * Saves the favorite list.<p>
      */
     public void saveFavorites() {
@@ -232,5 +270,22 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
             }
         }
         getHandler().saveFavoriteList(clientIds);
+    }
+
+    /**
+     * Updates the popup size according to the tab contents.<p>
+     */
+    public void updateSize() {
+
+        int availableHeight = CmsToolbarPopup.getAvailableHeight();
+        int dialogWidth = CmsToolbarPopup.getAvailableWidth();
+
+        A_CmsClipboardTab tab = m_tabs.getWidget(m_tabs.getSelectedIndex());
+        int requiredHeight = tab.getRequiredHeight() + 31;
+        int dialogHeight = availableHeight > requiredHeight ? requiredHeight : availableHeight;
+        m_tabs.getParent().setHeight(dialogHeight + "px");
+        getPopup().setWidth(dialogWidth);
+        tab.getList().truncate("CLIPBOARD_TM", dialogWidth - 40);
+        tab.getScrollPanel().onResizeDescendant();
     }
 }

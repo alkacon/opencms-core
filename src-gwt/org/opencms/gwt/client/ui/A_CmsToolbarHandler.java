@@ -88,6 +88,9 @@ public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
         entry.setBean(bean);
         if (bean.hasSubMenu()) {
             entry.setSubMenu(transformEntries(bean.getSubMenu(), structureId));
+            if (entry.getSubMenu().isEmpty()) {
+                return null;
+            }
         }
         return entry;
     }

@@ -36,8 +36,6 @@ import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -45,7 +43,10 @@ import com.google.gwt.user.client.ui.RootPanel;
  * 
  * @since 8.0.0
  */
-public final class CmsDebugLog extends Composite {
+public final class CmsDebugLog {
+
+    /** The debug log element id. */
+    private static final String CMS_DEBUG_LOG_ID = "cms_debug_log";
 
     /** Global debugging flag. */
     private static final boolean DEBUG = false;
@@ -54,7 +55,7 @@ public final class CmsDebugLog extends Composite {
     private static CmsDebugLog m_debug;
 
     /** The wrapped widget. */
-    protected HTML m_html;
+    protected Element m_html;
 
     /**
      * Constructor.<p>
@@ -64,21 +65,25 @@ public final class CmsDebugLog extends Composite {
         if (!DEBUG) {
             return;
         }
-        m_html = new HTML();
-        initWidget(m_html);
-        Style style = getElement().getStyle();
-        style.setWidth(200, Unit.PX);
-        style.setHeight(500, Unit.PX);
-        style.setPadding(10, Unit.PX);
-        style.setOverflow(Overflow.AUTO);
-        style.setBorderStyle(BorderStyle.SOLID);
-        style.setBorderColor(I_CmsLayoutBundle.INSTANCE.constants().css().borderColor());
-        style.setBorderWidth(1, Unit.PX);
-        style.setPosition(Position.FIXED);
-        style.setTop(50, Unit.PX);
-        style.setRight(50, Unit.PX);
-        style.setBackgroundColor(I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog());
-        style.setZIndex(10);
+        m_html = DOM.getElementById(CMS_DEBUG_LOG_ID);
+        if (m_html == null) {
+            m_html = DOM.createDiv();
+            m_html.setAttribute("id", CMS_DEBUG_LOG_ID);
+            Style style = m_html.getStyle();
+            style.setWidth(400, Unit.PX);
+            style.setHeight(700, Unit.PX);
+            style.setPadding(10, Unit.PX);
+            style.setOverflow(Overflow.AUTO);
+            style.setBorderStyle(BorderStyle.SOLID);
+            style.setBorderColor(I_CmsLayoutBundle.INSTANCE.constants().css().borderColor());
+            style.setBorderWidth(1, Unit.PX);
+            style.setPosition(Position.FIXED);
+            style.setTop(50, Unit.PX);
+            style.setRight(50, Unit.PX);
+            style.setBackgroundColor(I_CmsLayoutBundle.INSTANCE.constants().css().backgroundColorDialog());
+            style.setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexPopup());
+            RootPanel.getBodyElement().appendChild(m_html);
+        }
     }
 
     /**
@@ -101,9 +106,6 @@ public final class CmsDebugLog extends Composite {
 
         if (m_debug == null) {
             m_debug = new CmsDebugLog();
-            if (DEBUG) {
-                RootPanel.get().add(m_debug);
-            }
         }
         return m_debug;
     }
@@ -116,7 +118,7 @@ public final class CmsDebugLog extends Composite {
         if (!DEBUG) {
             return;
         }
-        m_html.setHTML("");
+        m_html.setInnerHTML("");
     }
 
     /**
@@ -131,7 +133,6 @@ public final class CmsDebugLog extends Composite {
         }
         Element child = DOM.createElement("p");
         child.setInnerHTML(text);
-        m_html.getElement().insertFirst(child);
-
+        m_html.insertFirst(child);
     }
 }

@@ -110,6 +110,9 @@ public final class CmsSiteManagerImpl {
     /** The site matcher that matches the workplace site. */
     private CmsSiteMatcher m_workplaceSiteMatcher;
 
+    /** Contains all configured site matchers in a list for direct access. */
+    private List<CmsSiteMatcher> m_siteMatchers;
+
     /**
      * Creates a new CmsSiteManager.<p>
      *
@@ -182,7 +185,8 @@ public final class CmsSiteManagerImpl {
             Boolean.toString(site.isWebserver()),
             secureUrl,
             Boolean.toString(site.isExclusiveUrl()),
-            Boolean.toString(site.isExclusiveError()));
+            Boolean.toString(site.isExclusiveError()),
+            Boolean.toString(site.usesPermanentRedirects()));
 
         // re-initialize, will freeze the state when finished
         initialize(cms);
@@ -206,6 +210,7 @@ public final class CmsSiteManagerImpl {
      * @param exclusive if set to <code>true</code>, secure resources will only be available using the configured secure url
      * @param error if exclusive, and set to <code>true</code> will generate a 404 error, 
      *                             if set to <code>false</code> will redirect to secure URL
+     * @param usePermanentRedirects if set to "true", permanent redirects should be used when redirecting to the secure URL                           
      * 
      * @throws CmsConfigurationException if the site contains a server name, that is already assigned
      */
@@ -218,7 +223,8 @@ public final class CmsSiteManagerImpl {
         String webserver,
         String secureServer,
         String exclusive,
-        String error) throws CmsConfigurationException {
+        String error,
+        String usePermanentRedirects) throws CmsConfigurationException {
 
         if (m_frozen) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
@@ -258,6 +264,7 @@ public final class CmsSiteManagerImpl {
             site.setSecureServer(matcher);
             site.setExclusiveUrl(Boolean.valueOf(exclusive).booleanValue());
             site.setExclusiveError(Boolean.valueOf(error).booleanValue());
+            site.setUsePermanentRedirects(Boolean.valueOf(usePermanentRedirects).booleanValue());
             addServer(matcher, site);
         }
 
@@ -278,13 +285,13 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Returns a list of all sites available for the current user.<p>
+     * Returns a list of all sites available (visible) for the current user.<p>
      * 
      * @param cms the current OpenCms user context 
      * @param workplaceMode if true, the root and current site is included for the admin user
      *                      and the view permission is required to see the site root
      * 
-     * @return a list of all site available for the current user
+     * @return a list of all sites available for the current user
      */
     public List<CmsSite> getAvailableSites(CmsObject cms, boolean workplaceMode) {
 
@@ -313,7 +320,7 @@ public final class CmsSiteManagerImpl {
         i = m_siteMatcherSites.keySet().iterator();
         while (i.hasNext()) {
             CmsSite site = m_siteMatcherSites.get(i.next());
-            String folder = site.getSiteRoot() + "/";
+            String folder = CmsFileUtil.addTrailingSeparator(site.getSiteRoot());
             if (!siteroots.contains(folder)) {
                 siteroots.add(folder);
                 siteServers.put(folder, site.getSiteMatcher());
@@ -321,7 +328,7 @@ public final class CmsSiteManagerImpl {
         }
         // add default site
         if (workplaceMode && (m_defaultSite != null)) {
-            String folder = m_defaultSite.getSiteRoot() + "/";
+            String folder = CmsFileUtil.addTrailingSeparator(m_defaultSite.getSiteRoot());
             if (!siteroots.contains(folder)) {
                 siteroots.add(folder);
             }
@@ -333,12 +340,14 @@ public final class CmsSiteManagerImpl {
             cms.getRequestContext().setSiteRoot("/");
             if (workplaceMode && OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)) {
                 if (!siteroots.contains("/")) {
+                    // add the root site if the user is in the workplace and has the required role 
                     siteroots.add("/");
                 }
-                if (!siteroots.contains(storedSiteRoot + "/")) {
-                    siteroots.add(storedSiteRoot + "/");
+                if (!siteroots.contains(CmsFileUtil.addTrailingSeparator(storedSiteRoot))) {
+                    siteroots.add(CmsFileUtil.addTrailingSeparator(storedSiteRoot));
                 }
             }
+            // add the shared site
             String shared = OpenCms.getSiteManager().getSharedFolder();
             if (showShared && (shared != null) && !siteroots.contains(shared)) {
                 siteroots.add(shared);
@@ -742,7 +751,7 @@ public final class CmsSiteManagerImpl {
             }
 
             // set site lists to unmodifiable 
-            m_siteMatcherSites = Collections.unmodifiableMap(m_siteMatcherSites);
+            setSiteMatcherSites(m_siteMatcherSites);
 
             // store additional site roots to optimize lookups later
             for (String root : m_siteRootSites.keySet()) {
@@ -892,7 +901,7 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Removed a site.<p>
+     * Removes a site from the list of configured sites.<p>
      * 
      * @param cms the cms object
      * @param site the site to remove
@@ -922,7 +931,7 @@ public final class CmsSiteManagerImpl {
                 siteMatcherSites.put(entry.getKey(), entry.getValue());
             }
         }
-        m_siteMatcherSites = Collections.unmodifiableMap(siteMatcherSites);
+        setSiteMatcherSites(siteMatcherSites);
 
         // remove the site from the map holding the site roots as keys and the sites as values
         Map<String, CmsSite> siteRootSites = new HashMap<String, CmsSite>(m_siteRootSites);
@@ -988,7 +997,7 @@ public final class CmsSiteManagerImpl {
      */
     public boolean startsWithShared(String path) {
 
-        return (m_sharedFolder != null) && CmsStringUtil.joinPaths(path, "/").startsWith(m_sharedFolder);
+        return (m_sharedFolder != null) && CmsFileUtil.addTrailingSeparator(path).startsWith(m_sharedFolder);
     }
 
     /**
@@ -1054,6 +1063,27 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
+     * Returns true if this request goes to a secure site.<p>
+     * 
+     * @param req the request to check 
+     * 
+     * @return true if the request goes to a secure site 
+     */
+    public boolean usesSecureSite(HttpServletRequest req) {
+
+        CmsSite site = matchRequest(req);
+        if (site == null) {
+            return false;
+        }
+        CmsSiteMatcher secureMatcher = site.getSecureServerMatcher();
+        boolean result = false;
+        if (secureMatcher != null) {
+            result = secureMatcher.equals(getRequestMatcher(req));
+        }
+        return result;
+    }
+
+    /**
      * Adds a new Site matcher object to the map of server names.
      * 
      * @param matcher the SiteMatcher of the server
@@ -1068,9 +1098,9 @@ public final class CmsSiteManagerImpl {
                 Messages.ERR_DUPLICATE_SERVER_NAME_1,
                 matcher.getUrl()));
         }
-        Map<CmsSiteMatcher, CmsSite> sites = new HashMap<CmsSiteMatcher, CmsSite>(m_siteMatcherSites);
-        sites.put(matcher, site);
-        m_siteMatcherSites = Collections.unmodifiableMap(sites);
+        Map<CmsSiteMatcher, CmsSite> siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>(m_siteMatcherSites);
+        siteMatcherSites.put(matcher, site);
+        setSiteMatcherSites(siteMatcherSites);
     }
 
     /**
@@ -1083,13 +1113,12 @@ public final class CmsSiteManagerImpl {
     private CmsSiteMatcher getRequestMatcher(HttpServletRequest req) {
 
         CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
-        // this is needed to get the right configured time offset
-        List<CmsSiteMatcher> allMatechers = new ArrayList<CmsSiteMatcher>(m_siteMatcherSites.keySet());
-        int index = allMatechers.indexOf(matcher);
+        // this is required to get the right configured time offset
+        int index = m_siteMatchers.indexOf(matcher);
         if (index < 0) {
             return matcher;
         }
-        return allMatechers.get(index);
+        return m_siteMatchers.get(index);
     }
 
     /**
@@ -1128,5 +1157,17 @@ public final class CmsSiteManagerImpl {
             return m_siteRootSites.get(rootPath.substring(0, pos));
         }
         return null;
+    }
+
+    /**
+     * Sets the class member variables {@link #m_siteMatcherSites} and  {@link #m_siteMatchers} 
+     * from the provided map of configured site matchers.<p>
+     *  
+     * @param siteMatcherSites the site matches to set
+     */
+    private void setSiteMatcherSites(Map<CmsSiteMatcher, CmsSite> siteMatcherSites) {
+
+        m_siteMatcherSites = Collections.unmodifiableMap(siteMatcherSites);
+        m_siteMatchers = Collections.unmodifiableList(new ArrayList<CmsSiteMatcher>(m_siteMatcherSites.keySet()));
     }
 }

@@ -27,30 +27,22 @@
 
 package org.opencms.search.extractors;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 /**
  * Tests the text extraction form a Pdf file.<p>
  */
-public class TestMsPowerPointExtraction extends TestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestMsPowerPointExtraction(String arg0) {
-
-        super(arg0);
-    }
+public class TestMsPowerPointExtraction extends OpenCmsTestCase {
 
     /**
      * Tests the PowerPoint text extraction for old OLE2 documents.<p>
+     *
+     * Also checks special chars like "&auml; &ouml; &uuml; &Auml; &Ouml; &Uuml; &szlig;"<p>
      *
      * @throws Exception if the test fails
      */
@@ -62,6 +54,7 @@ public class TestMsPowerPointExtraction extends TestCase {
         System.out.println("Core POI came from " + path);
 
         // open an input stream for the test file        
+        @SuppressWarnings("resource")
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.ppt");
 
         // extract the content
@@ -90,7 +83,7 @@ public class TestMsPowerPointExtraction extends TestCase {
         assertTrue(result.indexOf("Some content on a second sheet.") > -1);
         assertTrue(result.indexOf("Some content on the third sheet.") > -1);
         // NOTE: Euro symbol conversion fails - possible reason is that Extraction method class handles only ISO
-        // this is "äöüÄÖÜß"
+        // this is "&auml; &ouml; &uuml; &Auml; &Ouml; &Uuml; &szlig;"
         assertTrue(result.indexOf("\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df") > -1);
 
         assertEquals("Alkacon Software - The OpenCms experts", items.get(I_CmsExtractionResult.ITEM_TITLE));
@@ -111,6 +104,7 @@ public class TestMsPowerPointExtraction extends TestCase {
     public void testPPtExtractionOOXML() throws Exception {
 
         // open an input stream for the test file        
+        @SuppressWarnings("resource")
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.pptx");
 
         // extract the content
@@ -139,7 +133,7 @@ public class TestMsPowerPointExtraction extends TestCase {
         assertTrue(result.indexOf("Some content on a second sheet.") > -1);
         assertTrue(result.indexOf("Some content on the third sheet.") > -1);
         // NOTE: Euro symbol conversion fails - possible reason is that Extraction method class handles only ISO
-        // this is "äöüÄÖÜß"
+        // this is "&auml; &ouml; &uuml; &Auml; &Ouml; &Uuml; &szlig;"
         assertTrue(result.indexOf("\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df") > -1);
 
         assertEquals("Alkacon Software - The OpenCms experts", items.get(I_CmsExtractionResult.ITEM_TITLE));

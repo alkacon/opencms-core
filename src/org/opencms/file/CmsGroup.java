@@ -31,6 +31,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Locale;
@@ -71,6 +72,52 @@ public class CmsGroup extends CmsPrincipal {
         m_description = description;
         m_flags = flags;
         m_parentId = parentId;
+    }
+
+    /**
+     * Checks if the given String starts with {@link I_CmsPrincipal#PRINCIPAL_GROUP} followed by a dot.<p>
+     * 
+     * <ul>
+     * <li>Works if the given String is <code>null</code>.
+     * <li>Removes white spaces around the String before the check.
+     * <li>Also works with prefixes not being in upper case.
+     * <li>Does not check if the group after the prefix actually exists.
+     * </ul>
+     * 
+     * @param principalName the group name to check
+     * 
+     * @return <code>true</code> in case the String starts with {@link I_CmsPrincipal#PRINCIPAL_GROUP}
+     */
+    public static boolean hasPrefix(String principalName) {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(principalName)
+            && (principalName.trim().toUpperCase().startsWith(I_CmsPrincipal.PRINCIPAL_GROUP + "."));
+    }
+
+    /**
+     * Removes the prefix if the given String starts with {@link I_CmsPrincipal#PRINCIPAL_GROUP} followed by a dot.<p>
+     * 
+     * <ul>
+     * <li>Works if the given String is <code>null</code>.
+     * <li>If the given String does not start with {@link I_CmsPrincipal#PRINCIPAL_GROUP} followed by a dot it is returned unchanged.
+     * <li>Removes white spaces around the group name.
+     * <li>Also works with prefixes not being in upper case. 
+     * <li>Does not check if the group after the prefix actually exists.
+     * </ul>
+     * 
+     * @param principalName the group name to remove the prefix from
+     * 
+     * @return the given String with the prefix {@link I_CmsPrincipal#PRINCIPAL_GROUP} with the following dot removed
+     */
+    public static String removePrefix(String principalName) {
+
+        String result = principalName;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(principalName)) {
+            if (hasPrefix(principalName)) {
+                result = principalName.trim().substring(I_CmsPrincipal.PRINCIPAL_GROUP.length() + 1);
+            }
+        }
+        return result;
     }
 
     /**
@@ -131,26 +178,6 @@ public class CmsGroup extends CmsPrincipal {
     }
 
     /**
-     * Returns <code>true</code> if this group is enabled as a project user group.<p> 
-     * 
-     * @return <code>true</code> if this group is enabled as a project user group 
-     */
-    public boolean isProjectCoWorker() {
-
-        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_PROJECT_USER) == I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
-    }
-
-    /**
-     * Returns <code>true</code> if this group is enabled as a project manager group.<p> 
-     * 
-     * @return <code>true</code> if this group is enabled as a project manager group
-     */
-    public boolean isProjectManager() {
-
-        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER) == I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER;
-    }
-
-    /**
      * Checks if this group is a role group.<p>
      * 
      * @return <code>true</code> if this group is a role group
@@ -187,30 +214,6 @@ public class CmsGroup extends CmsPrincipal {
     public void setParentId(CmsUUID parentId) {
 
         m_parentId = parentId;
-    }
-
-    /**
-     * Sets the project user flag for this group to the given value.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setProjectCoWorker(boolean value) {
-
-        if (isProjectCoWorker() != value) {
-            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_GROUP_PROJECT_USER);
-        }
-    }
-
-    /**
-     * Sets the project manager flag for this group to the given value.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setProjectManager(boolean value) {
-
-        if (isProjectManager() != value) {
-            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER);
-        }
     }
 
     /**

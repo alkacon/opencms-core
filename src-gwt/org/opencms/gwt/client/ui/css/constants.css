@@ -4,6 +4,8 @@
 
 /** The font family for everything. */
 @def fontFamily literal("Verdana,Helvetica,Arial,sans-serif");
+
+@def fontFamilyMono literal("monospace");
 /** The normal font size. */
 @def fontSize 12px;
 /** The small font size. */

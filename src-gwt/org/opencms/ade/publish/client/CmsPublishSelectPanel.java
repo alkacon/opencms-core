@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,6 +39,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
@@ -80,10 +82,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is the main widget of the publish dialog.<p>
- * 
+ *
  * It allows the user to choose which resources from the publish list should be published
  * and/or removed from the publish list.
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPublishSelectPanel extends Composite
@@ -105,8 +107,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         /**
          * Gets the action text.<P>
-         * 
-         * @return the action text 
+         *
+         * @return the action text
          */
         public String getAction() {
 
@@ -115,8 +117,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         /**
          * Gets the new state.<p>
-         * 
-         * @return the new state 
+         *
+         * @return the new state
          */
         public CmsTriStateCheckBox.State getState() {
 
@@ -125,17 +127,17 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         /**
          * Gets the new text.<p>
-         * 
-         * @return the new text 
+         *
+         * @return the new text
          */
         public String getText() {
 
             return m_text;
         }
 
-        /** 
+        /**
          * Sets the action text.<p>
-         * 
+         *
          * @param action the action text
          */
         public void setAction(String action) {
@@ -145,8 +147,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         /**
          * Sets the new state.<p>
-         * 
-         * @param state the new state 
+         *
+         * @param state the new state
          */
         public void setState(CmsTriStateCheckBox.State state) {
 
@@ -155,8 +157,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         /**
          * Sets the new text.<p>
-         * 
-         * @param text the new text 
+         *
+         * @param text the new text
          */
         public void setText(String text) {
 
@@ -180,8 +182,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param numItems the maximal number of items to add  
+         *
+         * @param numItems the maximal number of items to add
          */
         public MoreItemsCommand(int numItems) {
 
@@ -213,7 +215,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * When dynamically adding groups on scrolling, the number of groups should be calculated such that the total sum of resources
-     * in the groups is the smallest number greater or equal to this constant.<p> 
+     * in the groups is the smallest number greater or equal to this constant.<p>
      */
     private static final int MIN_BATCH_SIZE = 20;
 
@@ -310,12 +312,12 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /** The current group panel. */
     private CmsPublishGroupPanel m_currentGroupPanel;
-
     /** The id of the virtual project used for 'direct publish'. */
     private CmsUUID m_directPublishId;
 
     /** Indicates whether a previously selected project has been found. */
     private boolean m_foundOldProject;
+
     /** The list of group panels for each publish list group. */
     private List<CmsPublishGroupPanel> m_groupPanels = new ArrayList<CmsPublishGroupPanel>();
 
@@ -333,9 +335,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param publishDialog the publish dialog to which this panel should belong
-     * @param projects a map of projects, where the keys are the project ids and the values are the names of the projects 
+     * @param projects a map of projects, where the keys are the project ids and the values are the names of the projects
      * @param publishOptions the initial publish options
      * @param workflows the available workflows
      * @param selectedWorkflowId the selected workflow id
@@ -355,13 +357,17 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_actionButtons = new ArrayList<CmsPushButton>();
         initWidget(UI_BINDER.createAndBindUi(this));
         boolean enableAddContents = false;
+        boolean addContent = false;
         try {
             enableAddContents = Boolean.parseBoolean(publishOptions.getParameters().get(
                 CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS));
+            addContent = Boolean.parseBoolean(publishOptions.getParameters().get(
+                CmsPublishOptions.PARAM_INCLUDE_CONTENTS));
         } catch (Exception e) {
-            // ignore; enableAddContents remains the default value 
+            // ignore; enableAddContents remains the default value
         }
         m_checkboxAddContents.setVisible(enableAddContents);
+        m_checkboxAddContents.setChecked(addContent);
         if (enableAddContents) {
             m_directPublishId = publishOptions.getProjectId();
         }
@@ -424,7 +430,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         m_projectSelector.setItems(projectSelectItems);
         m_projectSelector.addStyleName(CSS.selector());
-        if (!publishOptions.getProjectId().isNullUUID() && m_foundOldProject) {
+        if (!(null == publishOptions.getProjectId()) && m_foundOldProject) {
             m_projectSelector.setFormValueAsString(publishOptions.getProjectId().toString());
         }
 
@@ -447,12 +453,12 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_initialized = true;
     }
 
-    /** 
+    /**
      * Formats a number of publish resources in a more user-friendly form.<p>
-     * 
+     *
      * @param resourceCount a number of resources
-     *  
-     * @return the formatted number of resources 
+     *
+     * @return the formatted number of resources
      */
     public static String formatResourceCount(int resourceCount) {
 
@@ -461,10 +467,10 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Updates the state of a check box used for selecting/deselecting items.<p>
-     * 
-     * @param states the selection states of the items for the check box 
-     * 
-     * @return the data needed to update the check box 
+     *
+     * @param states the selection states of the items for the check box
+     *
+     * @return the data needed to update the check box
      */
     public static CheckBoxUpdate updateCheckbox(CmsPublishItemStateSummary states) {
 
@@ -500,11 +506,11 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         return result;
     }
 
-    /** 
+    /**
      * Check for problems with new/deleted folders in the publish selection.<p>
-     * 
-     * @param resourceIds the ids of the resources selected for publishing 
-     * @return true if there are problems with nested 
+     *
+     * @param resourceIds the ids of the resources selected for publishing
+     * @return true if there are problems with nested
      */
     public boolean checkForProblems(Set<CmsUUID> resourceIds) {
 
@@ -547,7 +553,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Returns the buttons of this panel which should be shown as the buttons of the publish dialog.<p>
-     * 
+     *
      * @return a list of buttons
      */
     public List<CmsPushButton> getButtons() {
@@ -578,8 +584,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Returns the ids of the resources which should be published.<p>
-     * 
-     * @return a set of id strings 
+     *
+     * @return a set of id strings
      */
     public Set<CmsUUID> getResourcesToPublish() {
 
@@ -588,7 +594,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Returns the set of ids of resources which have been selected for removal.<p>
-     * 
+     *
      * @return a set of id strings
      */
     public Set<CmsUUID> getResourcesToRemove() {
@@ -600,8 +606,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Gets the global map of selection controllers.<p>
-     * 
-     * @return the map of selection controller 
+     *
+     * @return the map of selection controller
      */
     public Map<CmsUUID, CmsPublishItemSelectionController> getSelectionControllers() {
 
@@ -610,10 +616,10 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Returns if the resource list is being shown.<p>
-     * 
+     *
      * The resource list is now shown if it is too long.<p>
-     * 
-     * @return true if the resource list is being shown 
+     *
+     * @return true if the resource list is being shown
      */
     public boolean isShowResources() {
 
@@ -636,21 +642,21 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
                     m_groupPanels.get(key).updateCheckboxState(entry.getValue());
                 }
             }
-
         }
     }
 
     /**
      * Sets the publish groups used by this widget.<p>
-     * 
+     *
      * @param groups the new publish groups
-     * @param newData true if the groups are new data which has been loaded  
+     * @param newData true if the groups are new data which has been loaded
+     * @param defaultWorkflow if not null, selects the given workflow
      */
-    public void setGroupList(CmsPublishGroupList groups, boolean newData) {
+    public void setGroupList(CmsPublishGroupList groups, boolean newData, String defaultWorkflow) {
 
         if (groups.getToken() == null) {
+            setGroups(groups.getGroups(), newData, defaultWorkflow);
             setShowResources(true, "");
-            setGroups(groups.getGroups(), newData);
         } else {
             setShowResources(false, groups.getTooManyResourcesMessage());
         }
@@ -661,9 +667,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     /**
      * Sets the mode to either show resources, or only show a "too many resources" message.<p>
      * In the latter case, the check boxes for the siblings/related resources will be deactivated.<p>
-     * 
-     * @param showResources true if the resource list should be shown, false if only the given message should be shown 
-     * @param tooManyResourcesMessage the message to show if there are too many resources to display 
+     *
+     * @param showResources true if the resource list should be shown, false if only the given message should be shown
+     * @param tooManyResourcesMessage the message to show if there are too many resources to display
      */
     public void setShowResources(boolean showResources, String tooManyResourcesMessage) {
 
@@ -676,23 +682,28 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_tooManyResources.setVisible(!showResources);
         m_tooManyResources.setText(tooManyResourcesMessage);
         m_selectAll.setVisible(showResources);
+        enableActions(true);
         if (!showResources) {
             m_checkboxProblems.setVisible(false);
             m_noResources.setVisible(false);
             m_scrollPanel.setVisible(false);
+        } else {
+            addMoreListItems();
+            showProblemCount(m_model.countProblems());
+            onChangePublishSelection();
         }
     }
 
     /**
      * Returns true if the publish button should be enabled.<p>
-     * 
-     * @return true if the publish button should be enabled 
+     *
+     * @return true if the publish button should be enabled
      */
     public boolean shouldEnablePublishButton() {
 
-        boolean enablePublishButton = (getResourcesToRemove().size() != 0)
-            || (getResourcesToPublish().size() != 0)
-            || !m_showResources;
+        boolean enablePublishButton = !m_showResources
+            || (getResourcesToRemove().size() != 0)
+            || (getResourcesToPublish().size() != 0);
         return enablePublishButton;
 
     }
@@ -714,7 +725,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     public void updateDialogTitle() {
 
         String title;
-        if (m_model.getGroups().size() > 1) {
+        if ((m_model != null) && (m_model.getGroups().size() > 1)) {
             title = Messages.get().key(
                 Messages.GUI_PUBLISH_DIALOG_TITLE_3,
                 m_publishDialog.getSelectedWorkflow().getNiceName(),
@@ -738,12 +749,12 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Tries to add a new publish list item to the panel, and returns false if there aren't any items left.<p>
-     * 
-     * @return true if an item could be added, false if no items are left 
+     *
+     * @return true if an item could be added, false if no items are left
      */
     protected boolean addNextItem() {
 
-        // this method is so complicated because to add the next item, 
+        // this method is so complicated because to add the next item,
         // you may need to skip to another group and create the corresponding widget
 
         if (m_model.isEmpty()) {
@@ -751,24 +762,24 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         }
         // now we know there is at least one group
         if (m_currentGroupPanel == null) {
-            // this case happens if the method is called for the first time  
+            // this case happens if the method is called for the first time
             m_currentGroupPanel = addGroupPanel(m_model.getGroups().get(0), 0);
         }
         while (true) {
             if (m_currentGroupPanel.hasMoreItems()) {
-                // found next item in the current group 
+                // found next item in the current group
                 boolean found = m_currentGroupPanel.addNextItem();
                 if (found) {
                     m_scrollPanel.onResizeDescendant();
                     return true;
                 }
             } else if (m_currentGroupIndex < (m_model.getGroups().size() - 1)) {
-                // didn't find item in the current group, so skip to next group if available  
-                // and create the group widget 
+                // didn't find item in the current group, so skip to next group if available
+                // and create the group widget
                 m_currentGroupIndex += 1;
                 m_currentGroupPanel = addGroupPanel(m_model.getGroups().get(m_currentGroupIndex), m_currentGroupIndex);
             } else {
-                // all groups exhausted 
+                // all groups exhausted
                 m_scrollPanel.onResizeDescendant();
                 return false;
             }
@@ -777,7 +788,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Executes the given action.<p>
-     * 
+     *
      * @param action the action to execute on the selected resources
      */
     protected void executeAction(CmsWorkflowAction action) {
@@ -796,8 +807,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Event handler for the 'add contents' check box.<p>
-     * 
-     * @param event
+     *
+     * @param event the click event
      */
     @UiHandler("m_checkboxAddContents")
     protected void onAddContentsClick(ClickEvent event) {
@@ -808,7 +819,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * The event handler for the Cancel button.<p>
-     * 
+     *
      * @param e the event
      */
     @UiHandler("m_cancelButton")
@@ -819,9 +830,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Handles the click event for problem resources check box.<p>
-     * 
+     *
      * @param event the click event
-     * 
+     *
      * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
      */
     @UiHandler("m_checkboxProblems")
@@ -832,9 +843,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Handling the value change event for the project selector.<p>
-     * 
+     *
      * @param event the change event
-     *  
+     *
      * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent)
      */
     @UiHandler("m_projectSelector")
@@ -842,15 +853,16 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
         if (m_initialized) {
             m_publishDialog.setProjectId(new CmsUUID(event.getValue()));
+            m_publishDialog.setProjectChanged();
             m_publishDialog.updateResourceList();
         }
     }
 
     /**
      * Handles the click event for related resources check box.<p>
-     * 
+     *
      * @param event the click event
-     * 
+     *
      * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
      */
     @UiHandler("m_checkboxRelated")
@@ -865,9 +877,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Handles the click event for sibling resources check box.<p>
-     * 
+     *
      * @param event the click event
-     * 
+     *
      * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
      */
     @UiHandler("m_checkboxSiblings")
@@ -882,9 +894,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Handling the value change event for the project selector.<p>
-     * 
+     *
      * @param event the change event
-     *  
+     *
      * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent)
      */
     @UiHandler("m_workflowSelector")
@@ -905,11 +917,11 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         }
     }
 
-    /** 
+    /**
      * Sets the publish groups.<p>
-     * 
-     * @param groups the list of publish groups 
-     * @param newData true if the data is new 
+     *
+     * @param groups the list of publish groups
+     * @param newData true if the data is new
      */
     protected void setGroups(List<CmsPublishGroup> groups, boolean newData) {
 
@@ -947,14 +959,63 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     }
 
     /**
+     * Sets the publish groups.<p>
+     *
+     * @param groups the list of publish groups
+     * @param newData true if the data is new
+     * @param defaultWorkflow the default workflow id
+     */
+    protected void setGroups(List<CmsPublishGroup> groups, boolean newData, String defaultWorkflow) {
+
+        m_model = new CmsPublishDataModel(groups, this);
+        m_model.setSelectionChangeAction(new Runnable() {
+
+            public void run() {
+
+                onChangePublishSelection();
+            }
+        });
+        m_currentGroupIndex = 0;
+        m_currentGroupPanel = null;
+        m_problemsPanel.clear();
+        if (newData) {
+            m_showProblemsOnly = false;
+            m_checkboxProblems.setChecked(false);
+            m_checkboxProblems.setVisible(false);
+            m_problemsPanel.setVisible(false);
+        }
+        m_groupPanels.clear();
+        m_groupPanelContainer.clear();
+        m_scrollPanel.onResizeDescendant();
+        enableActions(false);
+
+        int numGroups = groups.size();
+        setResourcesVisible(numGroups > 0);
+
+        if (numGroups == 0) {
+            return;
+        }
+        enableActions(true);
+        addMoreListItems();
+        showProblemCount(m_model.countProblems());
+
+        if (defaultWorkflow != null) {
+            m_workflowSelector.setFormValue(defaultWorkflow, false);
+            m_publishDialog.setWorkflowId(defaultWorkflow);
+            m_actions = m_publishDialog.getSelectedWorkflow().getActions();
+            m_publishDialog.setPanel(CmsPublishDialog.PANEL_SELECT);
+        }
+    }
+
+    /**
      * Enables or disables the "only show resources with problems" mode.<p>
-     * 
+     *
      * @param enabled if true, enable the mode, else disable it
      */
     protected void setProblemMode(boolean enabled) {
 
         m_showProblemsOnly = enabled;
-        setGroups(m_model.getGroups(), false);
+        setGroups(m_model.getGroups(), false, null);
     }
 
     /**
@@ -966,12 +1027,33 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     }
 
     /**
+     * Gets the context menu handler for the publish items' context menus.<p>
+     * 
+     * @return the context menu handler 
+     */
+    CmsContextMenuHandler getContextMenuHandler() {
+
+        return m_publishDialog.getContextMenuHandler();
+
+    }
+
+    /**
+     * Returns the content editor handler.<p>
+     * 
+     * @return the content editor handler
+     */
+    I_CmsContentEditorHandler getEditorHandler() {
+
+        return m_publishDialog.getEditorHandler();
+    }
+
+    /**
      * Adds a new group panel.<p>
-     * 
-     * @param group the publish group for which a panel should be added   
-     * @param currentIndex the index of the publish group 
-     * 
-     * @return the publish group panel which has been added    
+     *
+     * @param group the publish group for which a panel should be added
+     * @param currentIndex the index of the publish group
+     *
+     * @return the publish group panel which has been added
      */
     private CmsPublishGroupPanel addGroupPanel(CmsPublishGroup group, int currentIndex) {
 
@@ -983,6 +1065,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             this,
             m_model,
             m_selectionControllers,
+            getContextMenuHandler(),
+            getEditorHandler(),
             m_showProblemsOnly);
         if (m_model.hasSingleGroup()) {
             groupPanel.hideGroupSelectCheckBox();
@@ -993,7 +1077,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     }
 
     /**
-     * Adds the scroll handler to the scroll panel which makes more groups visible when the user 
+     * Adds the scroll handler to the scroll panel which makes more groups visible when the user
      * scrolls to the bottom.<p>
      */
     private void addScrollHandler() {
@@ -1016,7 +1100,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Enables action buttons.<p>
-     * 
+     *
      * @param enable <code>true</code> to enable the action buttons
      */
     private void enableActions(boolean enable) {
@@ -1028,8 +1112,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Enables / disables the 'add contents' option in the publish options object.<p>
-     * 
-     * @param addContents true if folder contents should be added 
+     *
+     * @param addContents true if folder contents should be added
      */
     private void setAddContents(boolean addContents) {
 
@@ -1039,8 +1123,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
     }
 
     /**
-     * Shows either the scroll panel or the "no resources" label and hides the other one.<p> 
-     * 
+     * Shows either the scroll panel or the "no resources" label and hides the other one.<p>
+     *
      * @param visible if true, set the scroll panel to visible, otherwise the "no resources" label
      */
     private void setResourcesVisible(boolean visible) {
@@ -1054,7 +1138,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Shows the problem count in the panel.<p>
-     * 
+     *
      * @param numProblems the number of resources with publish problems
      */
     private void showProblemCount(int numProblems) {
@@ -1075,8 +1159,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Updates the state of the check box for all items.<p>
-     * 
-     * @param value the state to use to update the check box 
+     *
+     * @param value the state to use to update the check box
      */
     private void updateCheckboxState(CmsPublishItemStateSummary value) {
 

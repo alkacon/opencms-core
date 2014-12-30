@@ -76,18 +76,19 @@ public class CmsRestoreStateAction extends CmsListDefaultAction {
     /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
      */
+    @Override
     public boolean isVisible() {
 
         String paramResource = getResource();
         if (paramResource == null) {
             return false;
         }
-        
+
         // not for offline entries
         if ("-1".equals(getItem().getId())) {
             return false;
         }
-        
+
         String itemResource = getCms().getRequestContext().removeSiteRoot(
             (String)getItem().get(CmsHistoryList.LIST_COLUMN_RESOURCE_PATH));
         return paramResource.equals(itemResource);

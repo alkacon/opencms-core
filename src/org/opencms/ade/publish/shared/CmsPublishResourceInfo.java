@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,14 +27,12 @@
 
 package org.opencms.ade.publish.shared;
 
-import org.opencms.util.CmsStringUtil;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A publish resource additional information bean.<p>
- * 
- * @since 7.6 
+ *
+ * @since 7.6
  */
 public class CmsPublishResourceInfo implements IsSerializable {
 
@@ -57,8 +55,8 @@ public class CmsPublishResourceInfo implements IsSerializable {
         WORKFLOW;
     }
 
-    /** The no preview available reason. */
-    private String m_noPreviewReason;
+    /** Flag to hide the publish resource. */
+    private boolean m_hidden;
 
     /** The additional info type.*/
     private Type m_type;
@@ -66,9 +64,9 @@ public class CmsPublishResourceInfo implements IsSerializable {
     /** The additional info.*/
     private String m_value;
 
-    /** 
-     * Creates a new publish resource additional information bean.<p> 
-     * 
+    /**
+     * Creates a new publish resource additional information bean.<p>
+     *
      * @param value the additional info
      * @param type the additional info type
      **/
@@ -79,21 +77,25 @@ public class CmsPublishResourceInfo implements IsSerializable {
     }
 
     /**
+     * Creates a new publish resource additional information bean.<p>
+     *
+     * @param value the additional info
+     * @param type the additional info type
+     * @param hidden flag to hide the publish resource
+     **/
+    public CmsPublishResourceInfo(String value, Type type, boolean hidden) {
+
+        m_type = type;
+        m_value = value;
+        m_hidden = hidden;
+    }
+
+    /**
      * For serialization.<p>
      */
     protected CmsPublishResourceInfo() {
 
         // for serialization
-    }
-
-    /**
-     * Returns the no preview available reason.<p>
-     * 
-     * @return the no preview available reason
-     */
-    public String getNoPreviewReason() {
-
-        return m_noPreviewReason;
     }
 
     /**
@@ -117,18 +119,8 @@ public class CmsPublishResourceInfo implements IsSerializable {
     }
 
     /**
-     * Returns if the no preview available reason is set.<p>
-     * 
-     * @return <code>true</code> if the no preview available reason is not empty
-     */
-    public boolean hasNoPreviewReason() {
-
-        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_noPreviewReason);
-    }
-
-    /**
      * Returns if there is a problem type set.<p>
-     * 
+     *
      * @return <code>true</code> if the problem type is set
      */
     public boolean hasProblemType() {
@@ -137,12 +129,12 @@ public class CmsPublishResourceInfo implements IsSerializable {
     }
 
     /**
-     * Sets the no preview available reason.<p>
-     * 
-     * @param noPreviewReason the no preview available reason
+     * Returns true if the publish resource should be hidden.<p>
+     *
+     * @return true if the publish resource should be hidden
      */
-    public void setNoPreviewReason(String noPreviewReason) {
+    public boolean isHidden() {
 
-        m_noPreviewReason = noPreviewReason;
+        return m_hidden;
     }
 }

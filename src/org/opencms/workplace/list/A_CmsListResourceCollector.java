@@ -49,6 +49,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
+
 /**
  * Collector to provide {@link CmsResource} objects for a explorer List.<p>
  * 
@@ -140,14 +142,6 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
     }
 
     /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateTypeId(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     */
-    public int getCreateTypeId(CmsObject cms, String collectorName, String param) {
-
-        return -1;
-    }
-
-    /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateParam(org.opencms.file.CmsObject)
      */
     public String getCreateParam(CmsObject cms) {
@@ -161,6 +155,14 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
     public String getCreateParam(CmsObject cms, String collectorName, String param) {
 
         return null;
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateTypeId(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public int getCreateTypeId(CmsObject cms, String collectorName, String param) {
+
+        return -1;
     }
 
     /**
@@ -411,6 +413,20 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
             }
             return resources;
         }
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String, int)
+     */
+    public List<CmsResource> getResults(CmsObject cms, String collectorName, String params, int numResults)
+    throws CmsException {
+
+        List<CmsResource> result = getResults(cms, collectorName, params);
+        if ((numResults > 0) && (result.size() > numResults)) {
+            return Lists.newArrayList(result.subList(0, numResults));
+        }
+
+        return result;
     }
 
     /**

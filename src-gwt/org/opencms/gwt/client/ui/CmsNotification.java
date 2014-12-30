@@ -27,8 +27,12 @@
 
 package org.opencms.gwt.client.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.Timer;
 
 /**
  * User feedback provider.<p>
@@ -41,6 +45,12 @@ public final class CmsNotification {
      * Notification Mode.<p>
      */
     public static enum Mode {
+
+        /** Alert mode. */
+        BROADCAST,
+
+        /** Blocking mode. */
+        BUSY,
 
         /** Normal mode. */
         NORMAL,
@@ -73,12 +83,15 @@ public final class CmsNotification {
     /** The widget. */
     private I_CmsNotificationWidget m_widget;
 
+    /** The current notifications. */
+    private List<CmsNotificationMessage> m_messages;
+
     /**
      * Hide constructor.<p>
      */
     private CmsNotification() {
 
-        // empty
+        m_messages = new ArrayList<CmsNotificationMessage>();
     }
 
     /**
@@ -92,65 +105,6 @@ public final class CmsNotification {
             INSTANCE = new CmsNotification();
         }
         return INSTANCE;
-    }
-
-    /**
-     * Returns if the message of the old mode and type needs to be restored after a new message has been shown.<p>
-     * 
-     * @param oldMode the old mode
-     * @param newMode the new mode
-     * @param oldType the old type
-     * @param newType the new type
-     * 
-     * @return <code>true</code> if the message needs to be restored
-     */
-    public static boolean shouldRestoreMessage(Mode oldMode, Mode newMode, Type oldType, Type newType) {
-
-        // only sticky messages will be restored
-        if (!Mode.STICKY.equals(oldMode)) {
-            return false;
-        }
-
-        // if new mode is not sticky also, restore
-        if (!Mode.STICKY.equals(newMode)) {
-            return true;
-        }
-
-        // if new type is superior to the old one, don't restore
-        if (isSuperiorType(oldType, newType)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks if the new type is superior to the old type.<p>
-     * 
-     * @param oldType the old type
-     * @param newType the new type
-     * 
-     * @return <code>true</code> if the new type is superior to the old type
-     */
-    private static boolean isSuperiorType(Type oldType, Type newType) {
-
-        if (oldType == null) {
-            return true;
-        }
-        if (newType == null) {
-            return false;
-        }
-        // do not overwrite a higher or equal level notification
-        switch (newType) {
-            case ERROR:
-                return !oldType.equals(Type.ERROR);
-            case NORMAL:
-                return false;
-            case WARNING:
-                return oldType.equals(Type.NORMAL);
-            default:
-        }
-        return true;
     }
 
     /**
@@ -174,40 +128,74 @@ public final class CmsNotification {
     }
 
     /**
-     * Hides the notification message.<p>
+     * Removes the given notification message.<p>
+     * 
+     * @param message the message to remove
      */
-    public void hide() {
+    public void removeMessage(CmsNotificationMessage message) {
 
-        if (m_widget != null) {
-            m_widget.hide();
+        m_messages.remove(message);
+        if (hasWidget()) {
+            m_widget.removeMessage(message);
         }
     }
 
     /**
-     * Sends a new notification.<p>
+     * Sends a new notification, that will be removed automatically.<p>
      * 
      * @param type the notification type
      * @param message the message
      */
     public void send(Type type, final String message) {
 
-        if (m_widget != null) {
-            m_widget.show(Mode.NORMAL, type, message);
+        final CmsNotificationMessage notificationMessage = new CmsNotificationMessage(Mode.NORMAL, type, message);
+        m_messages.add(notificationMessage);
+        if (hasWidget()) {
+            m_widget.addMessage(notificationMessage);
         }
+        Timer timer = new Timer() {
+
+            @Override
+            public void run() {
+
+                removeMessage(notificationMessage);
+            }
+        };
+        timer.schedule(4000 * (type == Type.NORMAL ? 1 : 2));
+
     }
 
     /**
-     * Sends a new blocking notification.<p>
+     * Sends a new blocking alert notification that can be closed by the user.<p>
      * 
      * @param type the notification type
      * @param message the message
      */
-    public void sendBlocking(Type type, final String message) {
+    public void sendAlert(Type type, String message) {
 
-        sendSticky(type, message);
-        if (m_widget != null) {
-            m_widget.setBlocking();
+        CmsNotificationMessage notificationMessage = new CmsNotificationMessage(Mode.BROADCAST, type, message);
+        m_messages.add(notificationMessage);
+        if (hasWidget()) {
+            m_widget.addMessage(notificationMessage);
         }
+    }
+
+    /**
+     * Sends a new blocking notification that can not be removed by the user.<p>
+     * 
+     * @param type the notification type
+     * @param message the message
+     * 
+     * @return the message, use to hide the message 
+     */
+    public CmsNotificationMessage sendBusy(Type type, final String message) {
+
+        CmsNotificationMessage notificationMessage = new CmsNotificationMessage(Mode.BUSY, type, message);
+        m_messages.add(notificationMessage);
+        if (hasWidget()) {
+            m_widget.addMessage(notificationMessage);
+        }
+        return notificationMessage;
     }
 
     /**
@@ -232,16 +220,21 @@ public final class CmsNotification {
     }
 
     /**
-     * Sends a new sticky notification.<p>
+     * Sends a new sticky notification that can not be removed by the user.<p>
      * 
      * @param type the notification type
      * @param message the message
+     * 
+     *  @return the message, use to hide the message 
      */
-    public void sendSticky(Type type, final String message) {
+    public CmsNotificationMessage sendSticky(Type type, String message) {
 
-        if (m_widget != null) {
-            m_widget.show(Mode.STICKY, type, message);
+        CmsNotificationMessage notificationMessage = new CmsNotificationMessage(Mode.STICKY, type, message);
+        m_messages.add(notificationMessage);
+        if (hasWidget()) {
+            m_widget.addMessage(notificationMessage);
         }
+        return notificationMessage;
     }
 
     /**
@@ -251,6 +244,13 @@ public final class CmsNotification {
      */
     public void setWidget(I_CmsNotificationWidget widget) {
 
+        if (m_widget != null) {
+            m_widget.clearMessages();
+        }
         m_widget = widget;
+        m_widget.clearMessages();
+        for (CmsNotificationMessage message : m_messages) {
+            m_widget.addMessage(message);
+        }
     }
 }

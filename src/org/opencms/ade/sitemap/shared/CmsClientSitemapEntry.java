@@ -30,6 +30,7 @@ package org.opencms.ade.sitemap.shared;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.CmsClientLock;
+import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -138,11 +139,11 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** True if this entry has been just created, and its name hasn't been directly changed. */
     private boolean m_new;
 
-    /** The no edit reason. */
-    private String m_noEditReason;
-
     /** The properties for the entry itself. */
     private Map<String, CmsClientProperty> m_ownProperties = new HashMap<String, CmsClientProperty>();
+
+    /** The permission info. */
+    private CmsPermissionInfo m_permissionInfo;
 
     /** The relative position between siblings. */
     private int m_position = -1;
@@ -152,6 +153,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /** The resource state. */
     private CmsResourceState m_resourceState;
+
+    /** The resource type id. */
+    private int m_resourceTypeId;
 
     /** The resource type name. */
     private String m_resourceTypeName;
@@ -337,7 +341,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public String getNoEditReason() {
 
-        return m_noEditReason;
+        return m_permissionInfo.getNoEditReason();
     }
 
     /**
@@ -393,6 +397,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public CmsResourceState getResourceState() {
 
         return m_resourceState;
+    }
+
+    /**
+     * Returns the resource type id.<p>
+     * 
+     * @return the resource type id
+     */
+    public int getResourceTypeId() {
+
+        return m_resourceTypeId;
     }
 
     /**
@@ -518,7 +532,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public boolean isEditable() {
 
-        return CmsStringUtil.isEmptyOrWhitespaceOnly(m_noEditReason)
+        return m_permissionInfo.hasWritePermission()
+            && CmsStringUtil.isEmptyOrWhitespaceOnly(getNoEditReason())
             && !hasForeignFolderLock()
             && !hasBlockingLockedChildren()
             && (((getLock() == null) || (getLock().getLockOwner() == null)) || getLock().isOwnedByUser());
@@ -857,16 +872,6 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Sets the no edit reason.<p>
-     *
-     * @param noEditReason the no edit reason to set
-     */
-    public void setNoEditReason(String noEditReason) {
-
-        m_noEditReason = noEditReason;
-    }
-
-    /**
      * Sets the properties for the entry itself.<p>
      * 
      * @param properties the properties for the entry itself 
@@ -874,6 +879,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setOwnProperties(Map<String, CmsClientProperty> properties) {
 
         m_ownProperties = properties;
+    }
+
+    /**
+     * Sets the permission info.<p>
+     *
+     * @param permissionInfo the permission info to set
+     */
+    public void setPermissionInfo(CmsPermissionInfo permissionInfo) {
+
+        m_permissionInfo = permissionInfo;
     }
 
     /**
@@ -914,6 +929,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setResourceState(CmsResourceState resourceState) {
 
         m_resourceState = resourceState;
+    }
+
+    /**
+     * Sets the resource type id.<p>
+     * 
+     * @param resourceTypeId the resource type id
+     */
+    public void setResourceTypeId(int resourceTypeId) {
+
+        m_resourceTypeId = resourceTypeId;
     }
 
     /**
@@ -1074,7 +1099,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setAliases(source.getAliases());
         setRedirectTarget(source.getRedirectTarget());
         setResourceState(source.getResourceState());
-        setNoEditReason(source.getNoEditReason());
+        setPermissionInfo(source.m_permissionInfo);
     }
 
     /**

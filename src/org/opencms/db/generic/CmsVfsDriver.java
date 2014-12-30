@@ -152,9 +152,15 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             parameters.add(new CmsPreparedStatementStringParameter(filter.getNamePattern()));
         }
 
-        if (filter.getState() != null) {
-            sqlConditions.add("STATE = ?");
-            parameters.add(new CmsPreparedStatementIntParameter(filter.getState().intValue()));
+        if ((filter.getStates() != null) && (filter.getStates().length > 0)) {
+            List<String> stateConditions = new ArrayList<String>();
+            stateConditions.add("1 = 0");
+            for (int i = 0; i < filter.getStates().length; i++) {
+                stateConditions.add("STATE = ?");
+                parameters.add(new CmsPreparedStatementIntParameter(filter.getStates()[i]));
+            }
+            sqlConditions.add("( " + CmsStringUtil.listAsString(stateConditions, " OR ") + ")");
+
         }
 
         if (filter.getRejectStructureId() != null) {

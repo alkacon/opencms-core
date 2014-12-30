@@ -150,6 +150,8 @@ public class CmsSolrQuery extends SolrQuery {
         setFields(ALL_RETURN_FIELDS);
         setRequestHandler(DEFAULT_QUERY_TYPE);
         setRows(DEFAULT_ROWS);
+        // Prevent Solr from returning expired documents
+        addFilterQuery("expired:[NOW TO *]");
 
         // set the values from the request context
         if (cms != null) {
@@ -260,6 +262,7 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
+    <<<<<<< HEAD
      * Removes the expiration flag.
      */
     public void removeExpiration() {
@@ -276,6 +279,8 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
+    =======
+    >>>>>>> branch_9_future
      * Sets the categories only if not set in the query parameters.<p>
      *
      * @param categories the categories to set
@@ -484,6 +489,7 @@ public class CmsSolrQuery extends SolrQuery {
      * Creates a filter query on the given field name.<p>
      * 
      * Creates and adds a filter query.<p>
+    <<<<<<< HEAD
      * 
      * @param fieldName the field name to create a filter query on
      * @param vals the values that should match for the given field

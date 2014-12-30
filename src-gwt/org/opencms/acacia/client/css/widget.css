@@ -1,0 +1,407 @@
+@external html-face, textboxGhostMode, scrollContainer, popupContent, gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled, mce-opencmsDialog, mce-window, mce-window-head, closeButton;
+
+/* TinyMCE plugin popup dialog styles, all used classes are external. */
+div.mce-opencmsDialog.mce-window{
+	background: transparent;
+}
+
+.mce-opencmsDialog.mce-window .mce-window-head{
+	display: none;
+}
+
+@sprite .mce-opencmsDialog.mce-window > .closeButton{
+	gwt-image: "gwtImages.dialogCloseImage";
+    background-color: transparent;
+    cursor: pointer;
+    height: 23px;
+    overflow: hidden;
+    position: absolute;
+    right: -11px;
+    top: -12px;
+    width: 23px;
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+div.radioButtonPanel {
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+    border-radius: value("constants.css.borderRadius");
+    border: 1px solid #7788AA /*value("constants.css.borderColor")*/;
+    display: block;
+    vertical-alignment: middle;
+    padding-bottom: 1px;
+    padding-left: 3px;
+    padding-top: 3px;
+}
+
+div.selectBoxPanel{
+	display: block;
+	width: auto;
+}
+
+div.categoryPanel {
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+}
+
+div.categoryPanel:hover {
+	cursor: pointer;	
+}
+
+div.selectBoxPopup {
+	border: 1px solid #7788AA !important /*value("constants.css.borderColor")*/;
+}
+
+div.textAreaBoxPanel textarea.textAreaBox {
+	background: none repeat scroll 0 0 transparent;
+	display: block;
+	color: value("constants.css.textColor");
+	box-shadow: none;
+	width: 99%;
+	border: none;
+	resize: none;
+	overflow: hidden;
+	font-family: value("constants.css.fontFamilyMono");
+	padding: 3px 0 0 3px;
+	outline:none;
+}
+
+.colorpickerpopup > div.popupContent > div {
+	
+}
+div.inActive div.textAreaBoxPanel{
+	height: 18px !important;
+}
+
+div.textAreaBoxPanel{
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+}
+
+div.vfsInputBox{
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+}
+
+div.textBox{
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+	font-family: value("constants.css.fontFamily");
+	padding: 0px 4px;
+	margin: 0px;
+}
+div.textBox > input[type="text"]{
+	width:100%;
+	outline:none;
+	display: block;
+	color: value("constants.css.textColor");
+	box-shadow: none;
+	vertical-align: baseline;
+	height: 18px;
+	line-height: value("constants.css.lineHeight");
+	border-radius: value("constants.css.borderRadius");
+	font-size: value("constants.css.fontSize");
+}
+
+div.passwordTextBox{
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+	width: auto;
+	padding: 0px 4px;
+}
+
+div.passwordTextBox input[type="text"]{
+	border: none;
+	font-family: value("constants.css.fontFamily");
+	display: block;
+	color: value("constants.css.textColor");
+	box-shadow: none;
+	height: 18px;
+	font-size: 12px;
+	width:100%;
+	padding: 0;
+	outline:none;
+}
+
+div.calendarStyle input[type="text"] {
+	box-shadow: none;
+	color: value("constants.css.textColor");
+	font-size: 12px;
+	padding-top:2px;
+	font-style:normal;
+	outline: none;
+}
+div.calendarStyle input[type="text"].textboxGhostMode{
+	color: #7788AA;
+	font-style:normal;
+	outline: none;
+}
+
+
+div.calendarStyle {
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+	font-family: value("constants.css.fontFamily");
+	display: block;
+	width: auto;
+	padding: 0px 4px;
+	height: 18px;
+}
+
+
+input[type="text"].displayTextBox{
+	background: none repeat scroll 0 0 transparent;
+	height: 18px;
+	display: block;
+	color: #7788AA;
+	box-shadow: none;
+	width: 100%;
+	border: medium none;
+}
+
+input[type="text"].displayTextBox:disabled{
+	background: none repeat scroll 0 0 transparent;
+	height: 18px;
+	display: block;
+	color: value("constants.css.textColorDisabled");
+	box-shadow: none;
+	width: 100%;
+}
+
+div.displayTextBoxPanel{
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 transparent;
+}
+
+input[type="text"].comboBoxInput {
+    border: medium none;
+    box-shadow: none;
+    color: value("constants.css.textColor");
+    display: block;
+    height: 16px;
+    width: 100%;
+    font-size: 12px;
+    padding-top: 1px;
+    outline:none;
+}
+
+.radioButtonlabel,
+.checkboxlabel {
+	display: block;
+}
+
+.radioButtonlabel.cmsState-up,
+.checkboxlabel .cmsState-up {
+  	color: #7788AA;
+  	display: block;
+}
+div.checkboxlabel .cmsState-up-disabled,
+div.checkboxlabel .cmsState-down-disabled,
+div.radioButtonlabel.cmsState-up-disabled,
+div.radioButtonlabel.cmsState-down-disabled{
+  	display: block;
+}
+
+.radioButtonlabel.cmsState-down , .radioButtonlabel.cmsState-down-hovering, 
+.checkboxlabel .cmsState-down, .checkboxlabel .cmsState-down-hovering{
+  	color: #000000;
+  	display: block;
+}
+.radioButtonlabel.cmsState-up-hovering, 
+.checkboxlabel .cmsState-up-hovering{
+	color: #445577;
+  	display: block;
+}
+
+.radioButtonlabel div.html-face,
+.checkboxlabel div.html-face{
+	text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+    font-weight: normal;
+  	font-size: 12px ;
+}
+
+/** Colorpicker styles*/
+
+div.colorPickerValue {
+	background: none repeat scroll 0 0 white;
+    border: 1px solid #7788AA;
+    border-radius: 3px 3px 3px 3px;
+    display: block;
+    height: 17px;
+    margin-left: 105px;
+    padding: 1px 4px 0;
+    position: relative;
+    width: auto;	
+}
+
+div.colorPickerValue input[type="text"]{
+	background-color: #FFFFFF;
+    border: none;
+    box-shadow: none;
+    color: #222222;
+    display: block;
+    font-size: 12px;
+    height: 16px;
+    padding: 0;
+    width: 100%;
+    outline:none;
+}
+
+div.colorPicker{
+	border: 1px solid #7788AA;
+    border-radius: 3px 3px 3px 3px;
+    cursor: pointer;
+    display: block;
+    height: 18px;
+    float:left;
+    width: 100px;
+}
+
+
+
+/** Checkbox styles*/
+
+.defaultView > div > .checkBoxStyle.inActive .label, .compactView > div > .checkBoxStyle.inActive .label, .firstColumn > div > .checkBoxStyle.inActive .label, .secondColumn > div > .checkBoxStyle.inActive .label{
+	color: #000000;
+}
+.defaultView > div > .checkBoxStyle:hover.inActive .label, .compactView > div > .checkBoxStyle:hover.inActive .label, .firstColumn > div > .checkBoxStyle:hover.inActive .label, .secondColumn > div > .checkBoxStyle:hover.inActive .label{
+	color: #000000;
+}
+
+.defaultView > div > .checkBoxStyle:hover .label, .compactView > div > .checkBoxStyle:hover .label, .firstColumn > div > .checkBoxStyle:hover .label, .secondColumn > div > .checkBoxStyle:hover .label  {
+	color: #445577;
+}
+
+.defaultView > div > .checkBoxStyle div.label, .compactView > div > .checkBoxStyle div.label, .firstColumn > div > .checkBoxStyle div.label, .secondColumn > div > .checkBoxStyle div.label{
+		margin: 0px 3px 0px 20px;
+}
+.defaultView > div > .checkBoxStyle .widget, .compactView > div > .checkBoxStyle .widget, .firstColumn > div > .checkBoxStyle .widget, .secondColumn > div > .checkBoxStyle .widget{
+	position: absolute;
+	margin: 0 !important;
+	left: 0 !important;
+}
+
+.defaultView > div > div.checkBoxStyle, .compactView > div > div.checkBoxStyle, .firstColumn > div > div.checkBoxStyle, .secondColumn > div > div.checkBoxStyle{
+	position: relative;
+	height: 22px;
+}
+
+
+/** The "empty value" parameters. */
+.emptyValue div.selectBoxSelected{
+	color: value("constants.css.borderColor");
+	font-style: italic;
+}
+.emptyValue div.displayTextBoxPanel{
+	background: transparent;
+}
+
+.emptyValue div.textAreaBoxPanel , .emptyValue div.categoryPanel, .emptyValue div.textBox, .emptyValue div.vfsInputBox,
+.emptyValue div.radioButtonPanel, .emptyValue div.displayTextBoxPanel, .emptyValue div.colorPickerValue, .emptyValue div.colorPicker,
+.emptyValue div.calendarStyle, .emptyValue div.passwordTextBox, .emptyValue div.selectBoxSelected, .emptyValue div.textAreaBoxPanel{
+    border-color: value("constants.css.borderColor");
+}
+
+/** The "has error" parameters. */
+
+.hasError div.selectBoxSelected, .hasError .radioButtonPanel, .hasError.inputField, .hasError div.textAreaBoxPanel, .hasError div.textBox, .hasError div.calendarStyle, .hasError input.passwordTextBox, .hasError .colorPickerValue, .hasError .colorPicker, .hasError .vfsInputBox{
+	border: 1px solid value("constants.css.borderColorHighlight");
+}
+
+/** The "has warning" parameters. */
+
+.hasWarning div.selectBoxSelected, .hasWarning .radioButtonPanel, .hasWarning.inputField, .hasWarning div.textAreaBoxPanel, .hasWarning div.textBox, .hasWarning div.calendarStyle, .hasWarning input.passwordTextBox, .hasWarning .colorPickerValue, .hasWarning .colorPicker, .hasWarning .vfsInputBox {
+	border: 1px solid #FFAA00;
+}
+
+
+
+/** The entity parameters. */
+
+
+.entity .checkBoxStyle .widget{
+	top: 3px;
+}
+
+/** The "drag helper" parameters. */
+.dragHelper .checkBoxStyle .label{
+	margin: 0px 3px 0px 20px;
+}
+.dragHelper .checkBoxStyle .widget{
+	position: absolute;
+	top: 5px;
+}
+
+.dragHelper .radioButtonPanel {
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+    border-radius: value("constants.css.borderRadius");
+    border: 1px solid #7788AA /*value("constants.css.borderColor")*/;
+    display: block;
+    vertical-alignment: middle;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    padding-top: 3px;
+}
+
+.scrollContainer table{
+	width: 100%
+}
+.scrollContainer td{
+	border:1px solid #000;
+	overflow:hidden; 
+}
+	
+div.inputField{
+	margin-right: 12px;
+	position: relative;
+}
+
+div.inputField>div{
+	bottom:1px;
+	right:2px;
+}
+
+@external .mce-panel;
+@external .mce-caret;
+
+/**  Copied from skin.min.css in the TinyMCE editor and increased specificity. */ 
+.mce-panel.mce-panel { 
+	
+    background-color: #F0F0F0;
+    background-image: linear-gradient(to bottom, #FDFDFD, #DDDDDD) ;
+    background-repeat: repeat-x;
+    border: 0 solid #9E9E9E;
+}
+
+.mce-caret.mce-caret {
+    border-left: 4px solid rgba(0, 0, 0, 0);
+    border-right: 4px solid rgba(0, 0, 0, 0);
+    border-top: 4px solid #444444;
+    content: "";
+    display: inline-block;
+    height: 0;
+    vertical-align: top;
+    width: 0;
+}
+
+
+.widgetHolder{}
+.inActive{}
+.attributeValue{}
+.singleLine{}
+.floatDecoratedPanel{}
+.primary{}
+.floatBox{}
+.decorationBox{}
+.decorationBoxSmall{}
+.openerNoHover, .openerHover{}

@@ -35,7 +35,6 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
-import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -190,10 +189,7 @@ public class CmsEditProjectDialog extends CmsWidgetDialog {
             if (!isNewProject()) {
                 ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), m_project.getOuFqn());
             } else {
-                ou = (CmsOrganizationalUnit)OpenCms.getRoleManager().getOrgUnitsForRole(
-                    getCms(),
-                    CmsRole.PROJECT_MANAGER,
-                    true).get(0);
+                ou = OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.PROJECT_MANAGER, true).get(0);
             }
             return ou.getDisplayName(getLocale());
         } catch (CmsException e) {
@@ -428,8 +424,7 @@ public class CmsEditProjectDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
         }
         addWidget(new CmsWidgetDialogParameter(m_project, "description", "", PAGES[0], new CmsTextareaWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(this, "managerGroup", PAGES[0], new CmsGroupWidget(new Integer(
-            I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER), null)));
+        addWidget(new CmsWidgetDialogParameter(this, "managerGroup", PAGES[0], new CmsGroupWidget(null, null)));
         addWidget(new CmsWidgetDialogParameter(this, "userGroup", PAGES[0], new CmsGroupWidget(null, null)));
         if (isNewProject()) {
             int ous = 1;

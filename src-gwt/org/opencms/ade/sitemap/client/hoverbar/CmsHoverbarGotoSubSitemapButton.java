@@ -54,7 +54,7 @@ public class CmsHoverbarGotoSubSitemapButton extends CmsPushButton {
 
         setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarGotoSub());
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_GOTO_SUB_0));
-        setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        setButtonStyle(ButtonStyle.IMAGE, null);
         setVisible(false);
         addClickHandler(new ClickHandler() {
 

@@ -212,34 +212,18 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
      * Returns the group container bean for the given locale.<p>
      *
      * @param cms the cms context
-     * @param locale the locale to use
      *
      * @return the group container bean
      */
-    public CmsGroupContainerBean getGroupContainer(CmsObject cms, Locale locale) {
+    public CmsGroupContainerBean getGroupContainer(CmsObject cms) {
 
-        Locale theLocale = locale;
-        if (!m_groupContainers.containsKey(theLocale)) {
-            LOG.info(Messages.get().container(
-            // TODO: change message
-                Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
-                cms.getSitePath(getFile()),
-                theLocale.toString()).key());
-            theLocale = Locale.ENGLISH;
-            if (!m_groupContainers.containsKey(theLocale)) {
-                theLocale = OpenCms.getLocaleManager().getDefaultLocales(cms, getFile()).get(0);
-                if (!m_groupContainers.containsKey(theLocale)) {
-                    // locale not found!!
-                    LOG.error(Messages.get().container(
-                    // TODO: change message
-                        Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
-                        cms.getSitePath(getFile()),
-                        theLocale).key());
-                    return null;
-                }
-            }
+        if (m_groupContainers.containsKey(CmsLocaleManager.MASTER_LOCALE)) {
+            return m_groupContainers.get(CmsLocaleManager.MASTER_LOCALE);
+        } else if (!m_groupContainers.isEmpty()) {
+            return m_groupContainers.get(m_groupContainers.keySet().iterator().next());
+        } else {
+            return null;
         }
-        return m_groupContainers.get(theLocale);
     }
 
     /**

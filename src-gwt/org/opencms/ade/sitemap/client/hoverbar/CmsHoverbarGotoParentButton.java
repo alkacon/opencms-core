@@ -53,7 +53,7 @@ public class CmsHoverbarGotoParentButton extends CmsPushButton {
 
         setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarParent());
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_PARENT_0));
-        setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        setButtonStyle(ButtonStyle.IMAGE, null);
         setVisible(false);
         addClickHandler(new ClickHandler() {
 

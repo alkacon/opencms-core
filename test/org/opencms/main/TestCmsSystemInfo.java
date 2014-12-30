@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,8 +30,11 @@ package org.opencms.main;
 import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -40,15 +43,14 @@ import junit.framework.TestSuite;
 /**
  * Test case for {@link CmsSystemInfo}.
  * <p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestCmsSystemInfo extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.
-     * <p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsSystemInfo(String arg0) {
@@ -58,8 +60,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.
-     * <p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -69,9 +70,11 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsSystemInfo.class.getName());
 
+        suite.addTest(new TestCmsSystemInfo("testGetConfigurationFileRfsPath"));
         suite.addTest(new TestCmsSystemInfo("testGetAbsoluteRfsPathRelativeToWebApplication"));
         suite.addTest(new TestCmsSystemInfo("testGetAbsoluteRfsPathRelativeToWebInf"));
-        suite.addTest(new TestCmsSystemInfo("getConfigurationFileRfsPath"));
+        suite.addTest(new TestCmsSystemInfo("testOpenCmsVersionPropertiesFile"));
+        suite.addTest(new TestCmsSystemInfo("testOpenCmsVersionAndBuildNumber"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -92,30 +95,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
     }
 
     /**
-     * Tests {@link CmsSystemInfo#getConfigurationFileRfsPath()}.
-     * <p>
-     * 
-     */
-    public void getConfigurationFileRfsPath() {
-
-        CmsSystemInfo sysinfo = OpenCms.getSystemInfo();
-        assertNotNull(sysinfo);
-        String path;
-        File file;
-
-        path = sysinfo.getConfigurationFileRfsPath();
-        assertNotNull(path);
-        path = path.trim();
-        assertEquals(true, path.length() != 0);
-        file = new File(path).getAbsoluteFile();
-        assertEquals(true, file.exists());
-        assertEquals(true, file.isFile());
-    }
-
-    /**
      * Tests {@link CmsSystemInfo#getAbsoluteRfsPathRelativeToWebApplication(String)}.
-     * <p>
-     * 
      */
     public void testGetAbsoluteRfsPathRelativeToWebApplication() {
 
@@ -152,8 +132,6 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
 
     /**
      * Tests {@link CmsSystemInfo#getAbsoluteRfsPathRelativeToWebInf(String)}.
-     * <p>
-     * 
      */
     public void testGetAbsoluteRfsPathRelativeToWebInf() {
 
@@ -186,5 +164,112 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         file = new File(path).getAbsoluteFile();
         assertEquals(file.getAbsolutePath() + " does not exist.", true, file.exists());
         assertEquals(true, file.isFile());
+    }
+
+    /**
+     * Tests {@link CmsSystemInfo#getConfigurationFileRfsPath()}.
+     */
+    public void testGetConfigurationFileRfsPath() {
+
+        CmsSystemInfo sysinfo = OpenCms.getSystemInfo();
+        assertNotNull(sysinfo);
+        String path;
+        File file;
+
+        path = sysinfo.getConfigurationFileRfsPath();
+        assertNotNull(path);
+        path = path.trim();
+        assertEquals(true, path.length() != 0);
+        file = new File(path).getAbsoluteFile();
+        assertEquals(true, file.exists());
+        assertEquals(true, file.isFile());
+    }
+
+    /**
+     * Tests the OpenCms version and build number.
+     */
+    public void testOpenCmsVersionAndBuildNumber() {
+
+        String version = OpenCms.getSystemInfo().getVersionNumber();
+        // make sure to bump this up with every major version number, or else the test would fail ;)
+        String expectedVersion = "9.5";
+
+        assertTrue("OpenCms Version number not set correctly, expected prefix ["
+            + expectedVersion
+            + "] but was ["
+            + version.substring(0, expectedVersion.length())
+            + "]"
+            + version.substring(expectedVersion.length()), version.startsWith(expectedVersion));
+
+        String versionId = OpenCms.getSystemInfo().getVersionId();
+
+        // here we distinguish the test between build done manually
+        // and a dynamic build done by a CI system like Jenkins
+
+        if (versionId.startsWith("Manual")) {
+            // assume this is a manual build triggered outside of a CI system
+
+            assertEquals("Unexpected version ID '" + versionId + "'", "Manual build", versionId);
+
+            Map<String, CmsSystemInfo.BuildInfoItem> info = OpenCms.getSystemInfo().getBuildInfo();
+            CmsSystemInfo.BuildInfoItem value;
+
+            value = info.get("build.number");
+            assertEquals("(not set, manual build)", value.getValue());
+            assertEquals("Build Number", value.getNiceName());
+
+            value = info.get("build.date");
+            assertEquals("(not set, manual build)", value.getValue());
+            assertEquals("Build Date", value.getNiceName());
+
+            value = info.get("build.info");
+            assertEquals("Static version file", value.getValue());
+            assertEquals("build.info", value.getNiceName());
+        } else if (versionId.startsWith("Release")
+            || versionId.startsWith("Beta")
+            || versionId.startsWith("Nightly")
+            || versionId.startsWith("Auto")
+            || versionId.startsWith("Milestone")) {
+            // assume a build triggered by the Jenkins CI system
+
+            Map<String, CmsSystemInfo.BuildInfoItem> info = OpenCms.getSystemInfo().getBuildInfo();
+            // make sure we have the required values set
+            assertNotNull("build.date not set", info.get("build.date"));
+            assertNotNull("build.type not set", info.get("build.type"));
+            assertNotNull("build.system not set", info.get("build.system"));
+            assertNotNull("build.gitid not set", info.get("build.gitid"));
+            assertNotNull("build.gitbranch not set", info.get("build.gitbranch"));
+
+            if (!versionId.startsWith("Milestone")) {
+                // don't use build number for Milestone builds as the continuation in the numbers is not assured
+                assertNotNull("build.number not set", info.get("build.number"));
+                assertEquals("Expected keys do not match", "build.number", info.get("build.number").getKeyName());
+            }
+
+            assertEquals("Expected keys do not match", "build.date", info.get("build.date").getKeyName());
+            assertEquals("Expected keys do not match", "build.system", info.get("build.system").getKeyName());
+
+            assertTrue("The git commit ID should be 7 chars long", info.get("build.gitid").getValue().length() == 7);
+            assertTrue(
+                "We always assume the build system name starts with 'Jenkins'",
+                info.get("build.system").getValue().startsWith("Jenkins"));
+        } else {
+            fail("No valid version information for test cases found, version id is '"
+                + OpenCms.getSystemInfo().getVersionId()
+                + "'\n\nThis indicates manual unexpected changes in 'src/org/opencms/main/version.properties'");
+        }
+    }
+
+    /**
+     * Test to make sure that the version info file is available.
+     */
+    public void testOpenCmsVersionPropertiesFile() {
+
+        try {
+            CmsFileUtil.readFile("org/opencms/main/version.properties");
+        } catch (IOException e) {
+            // unable to read the file, so we fail
+            fail("version.properties file not available");
+        }
     }
 }

@@ -77,6 +77,8 @@ public final class CmsRequestContext {
     /** File name translator. */
     private CmsResourceTranslator m_fileTranslator;
 
+    private boolean m_isSecureRequest;
+
     /** The locale used by this request context. */
     private Locale m_locale;
 
@@ -108,6 +110,7 @@ public final class CmsRequestContext {
      * @param project the current project
      * @param requestedUri the requested OpenCms VFS URI
      * @param siteRoot the users current site root
+     * @param isSecureRequest true if this is a secure request
      * @param locale the users current locale 
      * @param encoding the encoding to use for this request
      * @param remoteAddr the remote IP address of the user
@@ -121,6 +124,7 @@ public final class CmsRequestContext {
         CmsProject project,
         String requestedUri,
         String siteRoot,
+        boolean isSecureRequest,
         Locale locale,
         String encoding,
         String remoteAddr,
@@ -133,6 +137,7 @@ public final class CmsRequestContext {
         m_user = user;
         m_currentProject = project;
         m_uri = requestedUri;
+        m_isSecureRequest = isSecureRequest;
         setSiteRoot(siteRoot);
         m_locale = locale;
         m_encoding = encoding;
@@ -447,6 +452,16 @@ public final class CmsRequestContext {
     public String getUri() {
 
         return m_uri;
+    }
+
+    /**
+     * Returns true if this is a secure request.<p>
+     * 
+     * @return true if this is secure 
+     */
+    public boolean isSecureRequest() {
+
+        return m_isSecureRequest;
     }
 
     /**

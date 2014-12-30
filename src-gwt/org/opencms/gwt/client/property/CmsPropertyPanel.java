@@ -27,13 +27,13 @@
 
 package org.opencms.gwt.client.property;
 
-import com.alkacon.geranium.client.I_DescendantResizeHandler;
-
+import org.opencms.gwt.client.I_DescendantResizeHandler;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
@@ -136,7 +136,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         m_simpleTabWrapper.add(m_simpleTab);
         m_simpleTab.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_simpleTab.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.propertiesCss().vfsModeSimplePropertiesBox());
-
+        m_simpleTab.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
         m_sharedTabWrapper.add(createListItemWidget(info));
         m_sharedTabWrapper.add(m_sharedTab);
 
@@ -217,11 +217,13 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
         String used = Messages.get().key(Messages.GUI_PROPERTY_BLOCK_USED_0);
         CmsFieldSet usedFieldSet = new CmsFieldSet();
+        usedFieldSet.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
         usedFieldSet.setLegend(used);
         usedFieldSet.setAnimationDuration(50);
 
         String unused = Messages.get().key(Messages.GUI_PROPERTY_BLOCK_UNUSED_0);
         CmsFieldSet unusedFieldSet = new CmsFieldSet();
+        unusedFieldSet.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
         unusedFieldSet.setOpen(false);
         unusedFieldSet.setLegend(unused);
         unusedFieldSet.setAnimationDuration(50);

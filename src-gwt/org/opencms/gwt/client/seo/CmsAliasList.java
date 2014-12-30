@@ -580,10 +580,10 @@ public class CmsAliasList extends Composite {
     /**
      * Validation method used when adding a new alias.<p>
      *
-     * @param structureId
-     * @param sitePaths
-     * @param newSitePath
-     * @param errorCallback
+     * @param structureId the structure id
+     * @param sitePaths the site paths
+     * @param newSitePath the new site path
+     * @param errorCallback on error callback
      */
     protected void validateSingle(
         CmsUUID structureId,

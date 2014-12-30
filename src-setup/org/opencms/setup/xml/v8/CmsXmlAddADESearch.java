@@ -505,6 +505,26 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                             + "                </resourcetypes>\n"
                             + "            </documenttype>     \n"
                             + "            <documenttype>\n"
+                            + "                <name>xmlcontent-solr</name>\n"
+                            + "            <class>org.opencms.search.solr.CmsSolrDocumentXmlContent</class>\n"
+                            + "            <mimetypes>\n"
+                            + "                <mimetype>text/html</mimetype>\n"
+                            + "</mimetypes>\n"
+                            + "<resourcetypes>\n"
+                            + "    <resourcetype>xmlcontent-solr</resourcetype>\n"
+                            + "</resourcetypes>\n"
+                            + "</documenttype>\n"
+                            + "<documenttype>\n"
+                            + "    <name>containerpage-solr</name>\n"
+                            + "    <class>org.opencms.search.solr.CmsSolrDocumentContainerPage</class>\n"
+                            + "    <mimetypes>\n"
+                            + "        <mimetype>text/html</mimetype>\n"
+                            + "    </mimetypes>\n"
+                            + "    <resourcetypes>\n"
+                            + "        <resourcetype>containerpage-solr</resourcetype>\n"
+                            + "    </resourcetypes>\n"
+                            + "</documenttype>\n"
+                            + "            <documenttype>\n"
                             + "                <name>msoffice-ole2</name>\n"
                             + "                <class>org.opencms.search.documents.CmsDocumentMsOfficeOLE2</class>\n"
                             + "                <mimetypes>\n"
@@ -628,10 +648,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                     return false;
                 }
                 // create doc type
-                createIndexSource(doc, xpath, "gallery_source", CmsVfsIndexer.class, new String[] {
-                    "/sites/",
-                    "/shared/",
-                    "/system/galleries/"}, new String[] {
+                createIndexSource(doc, xpath, "gallery_source", CmsVfsIndexer.class, new String[] {"/"}, new String[] {
                     "xmlpage-galleries",
                     "xmlcontent-galleries",
                     "jsp",
@@ -711,6 +728,20 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 mapping.setParam("Title");
                 field.addMapping(mapping);
                 fieldConf.addField(field);
+
+                // <field name="sort-title" store="false" index="untokenized">
+                field = new CmsLuceneField();
+                field.setName("sort-title");
+                field.setStored("false");
+                field.setIndexed("untokenized");
+                field.setDisplayNameForConfiguration("sort-title");
+                // <mapping type="property">Title</mapping>
+                mapping = new CmsSearchFieldMapping();
+                mapping.setType("property");
+                mapping.setParam("Title");
+                field.addMapping(mapping);
+                fieldConf.addField(field);
+
                 // <field name="description" store="true" index="true">
                 field = new CmsLuceneField();
                 field.setName("description");

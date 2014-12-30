@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>9.4.0</opencms_version>
+		<createdate>Thu, 13 Mar 2014 15:38:24 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<module>
+		<name>org.opencms.workplace.spellcheck</name>
+		<nicename><![CDATA[OpenCms 9 Spellcheck Dictionaries]]></nicename>
+		<group>OpenCms Workplace</group>
+		<class>org.opencms.search.solr.spellchecking.CmsSpellcheckingModuleAction</class>
+		<description><![CDATA[<p>This module contains the OpenCms spellcheck dictionaries.</p>
+<p><i>&copy; 2013 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>9.5.0</version>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/modules/org.opencms.workplace.spellcheck/"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>11d01d36-a38b-11e3-ae69-591400608713</uuidstructure>
+			<datelastmodified>Tue, 04 Mar 2014 10:52:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 04 Mar 2014 10:52:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>13cbc662-a38b-11e3-ae69-591400608713</uuidstructure>
+			<datelastmodified>Tue, 04 Mar 2014 10:52:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 04 Mar 2014 10:52:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.spellcheck</destination>
+			<type>folder</type>
+			<uuidstructure>1c240a81-aac5-11e3-b868-591400608713</uuidstructure>
+			<datelastmodified>Thu, 13 Mar 2014 15:35:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Mar 2014 15:35:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.spellcheck/resources</destination>
+			<type>folder</type>
+			<uuidstructure>1c2765e3-aac5-11e3-b868-591400608713</uuidstructure>
+			<datelastmodified>Thu, 13 Mar 2014 15:35:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Mar 2014 15:35:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.spellcheck/resources/dict_de.zip</source>
+			<destination>system/modules/org.opencms.workplace.spellcheck/resources/dict_de.zip</destination>
+			<type>binary</type>
+			<uuidstructure>3d891535-aac5-11e3-b868-591400608713</uuidstructure>
+			<uuidresource>3d891536-aac5-11e3-b868-591400608713</uuidresource>
+			<datelastmodified>Mon, 13 Jan 2014 15:41:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Mar 2014 15:36:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dict_de]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.spellcheck/resources/dict_en.zip</source>
+			<destination>system/modules/org.opencms.workplace.spellcheck/resources/dict_en.zip</destination>
+			<type>binary</type>
+			<uuidstructure>3d963498-aac5-11e3-b868-591400608713</uuidstructure>
+			<uuidresource>3d963499-aac5-11e3-b868-591400608713</uuidresource>
+			<datelastmodified>Mon, 13 Jan 2014 15:41:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Mar 2014 15:36:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dict_en]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.spellcheck/resources/dict_es.zip</source>
+			<destination>system/modules/org.opencms.workplace.spellcheck/resources/dict_es.zip</destination>
+			<type>binary</type>
+			<uuidstructure>3d9e23db-aac5-11e3-b868-591400608713</uuidstructure>
+			<uuidresource>3d9e23dc-aac5-11e3-b868-591400608713</uuidresource>
+			<datelastmodified>Mon, 13 Jan 2014 15:41:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Mar 2014 15:36:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dict_es]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.spellcheck/resources/dict_fr.zip</source>
+			<destination>system/modules/org.opencms.workplace.spellcheck/resources/dict_fr.zip</destination>
+			<type>binary</type>
+			<uuidstructure>3db4b91e-aac5-11e3-b868-591400608713</uuidstructure>
+			<uuidresource>3db4b91f-aac5-11e3-b868-591400608713</uuidresource>
+			<datelastmodified>Mon, 13 Jan 2014 15:41:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Mar 2014 15:36:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dict_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.spellcheck/resources/dict_ru.zip</source>
+			<destination>system/modules/org.opencms.workplace.spellcheck/resources/dict_ru.zip</destination>
+			<type>binary</type>
+			<uuidstructure>3dc64551-aac5-11e3-b868-591400608713</uuidstructure>
+			<uuidresource>3dc64552-aac5-11e3-b868-591400608713</uuidresource>
+			<datelastmodified>Mon, 13 Jan 2014 15:41:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Mar 2014 15:36:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dict_ru]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

@@ -32,7 +32,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
@@ -52,8 +51,6 @@ import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.CmsShellReport;
-import org.opencms.security.CmsDefaultPasswordHandler;
-import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.test.OpenCmsTestCase;
@@ -83,6 +80,7 @@ import junit.framework.TestSuite;
 /**
  * Comment for <code>TestCmsImportExport</code>.<p>
  */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
@@ -113,7 +111,6 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         suite.addTest(new TestCmsImportExport("testImportMovedFolder"));
         suite.addTest(new TestCmsImportExport("testImportWrongSite"));
         suite.addTest(new TestCmsImportExport("testSetup"));
-        suite.addTest(new TestCmsImportExport("testUserImport"));
         suite.addTest(new TestCmsImportExport("testImportExportFolder"));
         suite.addTest(new TestCmsImportExport("testImportExportId"));
         suite.addTest(new TestCmsImportExport("testImportExportBrokenLinksHtml"));
@@ -663,31 +660,6 @@ public class TestCmsImportExport extends OpenCmsTestCase {
     }
 
     /**
-     * Compares imported and exported resources.<p>
-     * 
-     * @param cms the current OpenCms Object
-     * @param path the path the the root folder
-     * @param startResources the list of original resources before exporting and importing
-     * 
-     * @throws CmsException in case of errors accessing the OpenCms VFS
-     */
-    private void assertResources(CmsObject cms, String path, List<CmsResource> startResources) throws CmsException {
-
-        List<CmsResource> endResources = cms.readResources(path, CmsResourceFilter.ALL, true);
-
-        for (CmsResource res : startResources) {
-            if (!endResources.contains(res)) {
-                fail("Resource " + res + " not found in imported resources!");
-            }
-        }
-        for (CmsResource res : endResources) {
-            if (!startResources.contains(res)) {
-                fail("Resource " + res + " was additionally imported!");
-            }
-        }
-    }
-
-    /**
      * Tests import with structure id.<p>
      * 
      * @throws Exception if something goes wrong
@@ -844,6 +816,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 // ok
             }
 
+            printExceptionWarning();
+
             // re-import the exported files
             // this should not work since the system has files with the same ids
             OpenCms.getImportExportManager().importData(
@@ -947,6 +921,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             } catch (Exception e) {
                 // ok
             }
+
+            printExceptionWarning();
 
             // re-import the exported files
             OpenCms.getImportExportManager().importData(
@@ -1967,25 +1943,28 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         echo("Testing the import of a resource in the wrong site.");
 
         String site = "/sites/default";
+        String newSite = "/sites/new";
         String filename = "/newfileWrongSite.html";
         String zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             "packages/testImportWrongSite.zip");
 
         try {
             cms.getRequestContext().setSiteRoot("");
+            cms.createResource(newSite, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+            cms.getRequestContext().setSiteRoot(site);
 
             // create file
-            CmsResource res = cms.createResource(site + filename, CmsResourceTypePlain.getStaticTypeId());
+            CmsResource res = cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId());
 
             // publish the file
-            cms.unlockResource(site + filename);
-            OpenCms.getPublishManager().publishResource(cms, site + filename);
+            cms.unlockResource(filename);
+            OpenCms.getPublishManager().publishResource(cms, filename);
             OpenCms.getPublishManager().waitWhileRunning();
 
             // export the file
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
             List exportPaths = new ArrayList(1);
-            exportPaths.add(site + filename);
+            exportPaths.add(filename);
             CmsExportParameters params = new CmsExportParameters(
                 zipExportFilename,
                 null,
@@ -2005,8 +1984,9 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 new CmsShellReport(cms.getRequestContext().getLocale()));
 
             // now import the file in a different site
-            cms.getRequestContext().setSiteRoot(site);
+            cms.getRequestContext().setSiteRoot(newSite);
 
+            printExceptionWarning();
             // re-import the exported files
             OpenCms.getImportExportManager().importData(
                 cms,
@@ -2027,7 +2007,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                     path += "/";
                 }
                 assertTrue("Path " + path + " does not exist as expected", cms.existsResource(path)); // the old file
-                assertFalse("Path " + site + path + " should not exist", cms.existsResource(site + path)); // the new file
+                assertFalse("Path " + newSite + path + " should not exist", cms.existsResource(newSite + path)); // the new file
             }
         } finally {
             try {
@@ -2064,38 +2044,28 @@ public class TestCmsImportExport extends OpenCmsTestCase {
     }
 
     /**
-     * Tests if the user passwords are imported correctly.<p>
-     * The password digests are hex-128 (legacy) encoded, and
-     * should be converted to base-64. 
+     * Compares imported and exported resources.<p>
      * 
-     * @throws Exception if something goes wrong
+     * @param cms the current OpenCms Object
+     * @param path the path the the root folder
+     * @param startResources the list of original resources before exporting and importing
+     * 
+     * @throws CmsException in case of errors accessing the OpenCms VFS
      */
-    public void testUserImport() throws Exception {
+    private void assertResources(CmsObject cms, String path, List<CmsResource> startResources) throws CmsException {
 
-        CmsObject cms = getCmsObject();
+        List<CmsResource> endResources = cms.readResources(path, CmsResourceFilter.ALL, true);
 
-        echo("Testing the user import.");
-        I_CmsPasswordHandler passwordHandler = new CmsDefaultPasswordHandler();
-        CmsUser user;
-
-        // check if passwords will be converted
-        echo("Testing passwords of imported users");
-
-        // check the admin user
-        user = cms.readUser("Admin");
-        assertEquals(user.getPassword(), passwordHandler.digest("admin", "MD5", CmsEncoder.ENCODING_UTF_8));
-
-        // check the guest user
-        user = cms.readUser("Guest");
-        assertEquals(user.getPassword(), passwordHandler.digest("", "MD5", CmsEncoder.ENCODING_UTF_8));
-
-        // check the test1 user
-        user = cms.readUser("test1");
-        assertEquals(user.getPassword(), passwordHandler.digest("test1", "MD5", CmsEncoder.ENCODING_UTF_8));
-
-        // check the test2 user
-        user = cms.readUser("test2");
-        assertEquals(user.getPassword(), passwordHandler.digest("test2", "MD5", CmsEncoder.ENCODING_UTF_8));
+        for (CmsResource res : startResources) {
+            if (!endResources.contains(res)) {
+                fail("Resource " + res + " not found in imported resources!");
+            }
+        }
+        for (CmsResource res : endResources) {
+            if (!startResources.contains(res)) {
+                fail("Resource " + res + " was additionally imported!");
+            }
+        }
     }
 
     /**

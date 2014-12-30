@@ -28,7 +28,6 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
-import org.opencms.ade.galleries.client.CmsGalleryController;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
@@ -239,6 +238,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadSmallIcon());
         m_uploadButton.removeStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_main = uibinder.createAndBindUi(this);
+        m_main.getElement().getStyle().setBackgroundColor("white");
         initWidget(m_main);
         m_allowUploads = allowUploads;
         if (m_allowUploads) {
@@ -515,7 +515,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     /**
      * Handles the focus event on the opener.<p>
      * 
-     * @param event  
+     * @param event  the focus event
      */
     @UiHandler("m_textbox")
     protected void onFocusTextbox(FocusEvent event) {
@@ -532,7 +532,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             m_popup = createPopup();
             m_popup.center();
         } else {
-            m_popup.searchElement(getCurrentElement());
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getCurrentElement())) {
+                m_popup.searchElement(getCurrentElement());
+            } else {
+                m_popup.center();
+            }
         }
     }
 
@@ -809,9 +813,6 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             }
         };
         m_configuration.setCurrentElement(getCurrentElement());
-        if (m_configuration.getStartFolder() == null) {
-            m_configuration.setStartFolder(CmsGalleryController.getLastSelectedGallery(m_configuration));
-        }
         return new CmsGalleryPopup(handler, m_configuration);
     }
 

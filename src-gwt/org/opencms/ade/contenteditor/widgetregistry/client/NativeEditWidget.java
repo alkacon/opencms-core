@@ -27,7 +27,7 @@
 
 package org.opencms.ade.contenteditor.widgetregistry.client;
 
-import com.alkacon.acacia.client.widgets.I_EditWidget;
+import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
@@ -51,27 +51,27 @@ public final class NativeEditWidget extends JavaScriptObject {
      * 
      * @return the wrapping native java script object
      */
-    public static native NativeEditWidget wrapWidget(I_EditWidget widget)/*-{
+    public static native NativeEditWidget wrapWidget(I_CmsEditWidget widget)/*-{
                                                                          var nat = {
                                                                          instance : widget
                                                                          };
                                                                          nat.getElement = function() {
-                                                                         return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::asWidget()().@com.google.gwt.user.client.ui.Widget::getElement()();
+                                                                         return this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::asWidget()().@com.google.gwt.user.client.ui.Widget::getElement()();
                                                                          }
                                                                          nat.isActive = function() {
-                                                                         return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::isActive()();
+                                                                         return this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::isActive()();
                                                                          }
                                                                          nat.setActive = function(active) {
-                                                                         return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::setActive(Z)(active);
+                                                                         return this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::setActive(Z)(active);
                                                                          }
                                                                          nat.getValue = function() {
-                                                                         return this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::getValue()();
+                                                                         return this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::getValue()();
                                                                          }
                                                                          nat.setValue = function(value, fireEvent) {
-                                                                         this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::setValue(Ljava/lang/String;Z)(value, fireEvent);
+                                                                         this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::setValue(Ljava/lang/String;Z)(value, fireEvent);
                                                                          }
                                                                          nat.onAttachWidget = function() {
-                                                                         this.instance.@com.alkacon.acacia.client.widgets.I_EditWidget::onAttachWidget()();
+                                                                         this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::onAttachWidget()();
                                                                          }
                                                                          nat.onChange = function() {
                                                                          if (this.onChangeCommand != null) {
@@ -84,8 +84,8 @@ public final class NativeEditWidget extends JavaScriptObject {
                                                                          }
                                                                          };
                                                                          var nativeHandler = @org.opencms.ade.contenteditor.widgetregistry.client.NativeEditWidget::getNativeHandler(Lorg/opencms/ade/contenteditor/widgetregistry/client/NativeEditWidget;)(nat);
-                                                                         widget.@com.alkacon.acacia.client.widgets.I_EditWidget::addValueChangeHandler(Lcom/google/gwt/event/logical/shared/ValueChangeHandler;)(nativeHandler);
-                                                                         widget.@com.alkacon.acacia.client.widgets.I_EditWidget::addFocusHandler(Lcom/google/gwt/event/dom/client/FocusHandler;)(nativeHandler);
+                                                                         widget.@org.opencms.acacia.client.widgets.I_CmsEditWidget::addValueChangeHandler(Lcom/google/gwt/event/logical/shared/ValueChangeHandler;)(nativeHandler);
+                                                                         widget.@org.opencms.acacia.client.widgets.I_CmsEditWidget::addFocusHandler(Lcom/google/gwt/event/dom/client/FocusHandler;)(nativeHandler);
                                                                          return nat;
                                                                          }-*/;
 

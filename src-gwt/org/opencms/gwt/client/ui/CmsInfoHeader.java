@@ -32,6 +32,7 @@ import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.dom.client.ParagraphElement;
 import com.google.gwt.dom.client.SpanElement;
@@ -39,6 +40,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -49,7 +51,7 @@ public class CmsInfoHeader extends Composite {
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
      */
-    protected interface I_CmsInfoHeaderUiBinder extends UiBinder<Widget, CmsInfoHeader> {
+    protected interface I_CmsInfoHeaderUiBinder extends UiBinder<HTMLPanel, CmsInfoHeader> {
         // GWT interface, nothing to do here
     }
 
@@ -76,6 +78,13 @@ public class CmsInfoHeader extends Composite {
     @UiField
     protected DivElement m_typeIcon;
 
+    /** The button bar. */
+    @UiField
+    protected Element m_buttonBar;
+
+    /** The main panel. */
+    private HTMLPanel m_main;
+
     /**
      * Constructor.<p>
      * 
@@ -87,7 +96,8 @@ public class CmsInfoHeader extends Composite {
      */
     public CmsInfoHeader(String title, String description, String path, String locale, String typeIcon) {
 
-        initWidget(uiBinder.createAndBindUi(this));
+        m_main = uiBinder.createAndBindUi(this);
+        initWidget(m_main);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
             title = Messages.get().key(Messages.GUI_NO_TITLE_0);
         }
@@ -102,5 +112,15 @@ public class CmsInfoHeader extends Composite {
         } else {
             m_typeIcon.removeFromParent();
         }
+    }
+
+    /**
+     * Adds a button to the top right of the info header.<p>
+     * 
+     * @param button the button to add
+     */
+    public void addButtonTopRight(Widget button) {
+
+        m_main.add(button, m_buttonBar);
     }
 }

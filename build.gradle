@@ -4,7 +4,16 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 sourceCompatibility = java_target_version
 targetCompatibility = java_target_version
-version = version_number
+
+// use the same properties file as the OpenCms core does for the version information
+// please note that in a Jenkins CI build, this properties file should be dynamically generated
+Properties vprops = new Properties()
+vprops.load(new FileInputStream("$projectDir/src/org/opencms/main/version.properties"))
+version = vprops['version.number']
+
+// alternative variable name for the case where the version variable is used for something else, e.g. javadoc
+ext.ocmsVersion = version
+
 buildDir = build_directory
 repositories {
     mavenLocal()
@@ -39,18 +48,18 @@ if (project.hasProperty('external_directories')){
 }
 
 configurations {
-    
+
     distribution {
         description = 'libraries included into the opencms distribution'
         transitive = false
     }
-    
+
     compile {
         description = 'used to compile the opencms.jar and the modules jars'
         transitive = false
         extendsFrom distribution
     }
-    
+
     modulesCompile {
         description = 'used to compile the modules classes'
         transitive = false
@@ -79,6 +88,14 @@ configurations {
         transitive = false
         extendsFrom modulesCompile
     }
+    
+    testGwtCompile{
+        description = 'needed to run GWT test cases'
+        transitive = false
+        extendsFrom gwtCompile
+    }
+    
+    testGwtRuntime{ transitive = false }
 
     setupCompile {
         transitive = false
@@ -117,7 +134,32 @@ sourceSets{
         resources.srcDir 'src-modules'
         resources.srcDir 'src-setup'
     }
+    
+    testGwt {
+        java.srcDir 'src-gwt'
+        resources.srcDir 'src-gwt'
+        java.srcDir 'test-gwt'
+        resources.srcDir 'test-gwt'
+    }
 }
+
+// adding generated dependencies during configuration phase to avoid build path problems in IDE
+sourceSets.modules.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
+sourceSets.setup.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
+sourceSets.gwt.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
+sourceSets.gwt.compileClasspath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
+sourceSets.test.compileClasspath += fileTree('webapp/setup/database'){ include '**/*.jar' }
+sourceSets.test.compileClasspath += files("$buildDir/classes/setup") { builtBy 'setupClasses' }
+sourceSets.test.compileClasspath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
+sourceSets.test.compileClasspath += files("$buildDir/classes/gwt") { builtBy 'gwtClasses' }
+sourceSets.testGwt.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
+sourceSets.testGwt.compileClasspath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
+
+
+
+
+project.ext.componentsRuntimeClassPath=configurations.componentsRuntime
+componentsRuntimeClassPath += files("${project.buildDir}/libs/opencms-components.jar") { builtBy 'componentsJar' }
 
 task componentsJar(type: Jar) {
     from sourceSets.components.output
@@ -152,11 +194,11 @@ if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).ex
 task enhance << {
     ant.taskdef(
             name      : 'openjpaenhancer',
-            classpath : configurations.modulesCompile.asPath,
+            classpath : sourceSets.modules.compileClasspath.asPath,
             classname : 'org.apache.openjpa.ant.PCEnhancerTask'
             )
 
-    ant.openjpaenhancer(classpath : configurations.modulesCompile.asPath){
+    ant.openjpaenhancer(classpath : sourceSets.modules.compileClasspath.asPath){
         fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence"){ exclude(name: '*$*.class') }
         config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
     }
@@ -180,15 +222,6 @@ jar {
 
     metaInf {  from("${projectDir}/webapp/WEB-INF/opencms.tld") }
 
-    from ("${projectDir}/webapp/WEB-INF/setupdata/version.properties"){
-        include 'version.properties'
-        filter(ReplaceTokens, tokens: [
-            OPENCMS_VERSION_NUMBER: version_number,
-            OPENCMS_VERSION_NAME: version_number
-        ])
-        into '/org/opencms/main/'
-    }
-
     doLast {
         if (tasks.findByPath('tomcatUpdate')!=null&&gradle.taskGraph.hasTask(tasks['tomcatUpdate'])){
             println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
@@ -207,7 +240,7 @@ javadoc {
             into "${buildDir}/docs/javadoc/logos"
         }
     }
-    options.addStringOption("sourcepath", "")
+    
     project.configure(options) {
         memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
         charSet = "UTF-8"
@@ -218,8 +251,8 @@ javadoc {
         noDeprecatedList="false"
         noDeprecated="false"
         overview="${sourceSets.main.output.resourcesDir}/org/opencms/main/overview.html"
-        docTitle="OpenCms Core API, version $version_number"
-        windowTitle="OpenCms Core API, version $version_number"
+        docTitle="OpenCms Core API, version $ocmsVersion"
+        windowTitle="OpenCms Core API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
@@ -259,39 +292,12 @@ task gwtJar(dependsOn: jar, type: Jar) {
 
 task javadocModules(type: Javadoc, dependsOn: jar) {
     doLast {
-    copy {
-        from  "${projectDir}/doc/javadoc/logos"
-        into "${buildDir}/docs/javadocModules/logos"
-    }
-}
-options.addStringOption("sourcepath", "")
-project.configure(options) {
-    memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
-    charSet = "UTF-8"
-    author="true"
-    version="true"
-    source= java_target_version
-    linkSource="false"
-    noDeprecatedList="false"
-    noDeprecated="false"
-    docTitle="OpenCms Workplace Modules API, version $version_number"
-    windowTitle="OpenCms Workplace Modules API, version $version_number"
-    stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
-        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
-}
-source = sourceSets.modules.allJava
-classpath = project.sourceSets.modules.compileClasspath
-destinationDir = file("${buildDir}/docs/javadocModules")
-}
-
-task javadocGwt(type: Javadoc, dependsOn: jar) {
-        doLast {
         copy {
             from  "${projectDir}/doc/javadoc/logos"
-            into "${buildDir}/docs/javadocGwt/logos"
+            into "${buildDir}/docs/javadocModules/logos"
         }
     }
-    options.addStringOption("sourcepath", "")
+    
     project.configure(options) {
         memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
         charSet = "UTF-8"
@@ -301,8 +307,47 @@ task javadocGwt(type: Javadoc, dependsOn: jar) {
         linkSource="false"
         noDeprecatedList="false"
         noDeprecated="false"
-        docTitle="OpenCms GWT Components API, version $version_number"
-        windowTitle="OpenCms GWT Components API, version $version_number"
+        docTitle="OpenCms Workplace Modules API, version $ocmsVersion"
+        windowTitle="OpenCms Workplace Modules API, version $ocmsVersion"
+        stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
+        header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
+    }
+    source = sourceSets.modules.allJava
+    classpath = project.sourceSets.modules.compileClasspath
+    destinationDir = file("${buildDir}/docs/javadocModules")
+}
+
+task javadocJarModules(type: Jar, dependsOn: javadocModules) {
+    classifier = 'javadoc'
+    from "${buildDir}/docs/javadocModules"
+    baseName 'opencms-modules'
+}
+
+task sourcesJarModules(type: Jar) {
+    from sourceSets.modules.allSource
+    classifier = 'sources'
+    baseName 'opencms-modules'
+}
+
+task javadocGwt(type: Javadoc, dependsOn: jar) {
+    doLast {
+        copy {
+            from  "${projectDir}/doc/javadoc/logos"
+            into "${buildDir}/docs/javadocGwt/logos"
+        }
+    }
+    
+    project.configure(options) {
+        memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+        charSet = "UTF-8"
+        author="true"
+        version="true"
+        source= java_target_version
+        linkSource="false"
+        noDeprecatedList="false"
+        noDeprecated="false"
+        docTitle="OpenCms GWT Components API, version $ocmsVersion"
+        windowTitle="OpenCms GWT Components API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
@@ -352,7 +397,7 @@ task javadocSetup(type: Javadoc, dependsOn: jar) {
             into "${buildDir}/docs/javadocSetup/logos"
         }
     }
-    options.addStringOption("sourcepath", "")
+    
     project.configure(options) {
         memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
         charSet = "UTF-8"
@@ -362,8 +407,8 @@ task javadocSetup(type: Javadoc, dependsOn: jar) {
         linkSource="false"
         noDeprecatedList="false"
         noDeprecated="false"
-        docTitle="OpenCms Setup API, version $version_number"
-        windowTitle="OpenCms Setup API, version $version_number"
+        docTitle="OpenCms Setup API, version $ocmsVersion"
+        windowTitle="OpenCms Setup API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
@@ -482,7 +527,7 @@ allModuleNames.split(',').each{ moduleName ->
             def syncedManifest="${project.buildDir}/extra/${moduleName}/manifest.xml"
             from syncedManifest
             doFirst{
-                ant.taskdef(resource: 'org/opencms/util/ant/taskdefs.properties', classpath: configurations.componentsRuntime.asPath)
+                ant.taskdef(resource: 'org/opencms/util/ant/taskdefs.properties', classpath: componentsRuntimeClassPath.asPath)
                 ant.syncmanifest(
                         srcmanifestfile: "${moduleFolder}/resources/manifest.xml",
                         dstmanifestfile: syncedManifest,
@@ -514,7 +559,7 @@ allModuleNames.split(',').each{ moduleName ->
             sourceSets[moduleName].resources.includes.add(pack.replaceAll('\\.','/')+'/**')
         }
 
-        sourceSets[moduleName].compileClasspath=configurations.modulesCompile
+        sourceSets[moduleName].compileClasspath=sourceSets.modules.compileClasspath
 
         task "jar_$moduleName" (type: Jar) {
             manifest {
@@ -545,6 +590,7 @@ allModuleNames.split(',').each{ moduleName ->
             source = sourceSets[moduleName].allJava
             classpath = project.sourceSets[moduleName].compileClasspath
             destinationDir = file("${buildDir}/docs/javadoc${moduleName}")
+            
         }
 
         task "javadocJar_$moduleName"(type: Jar) {
@@ -584,7 +630,7 @@ allModuleNames.split(',').each{ moduleName ->
                 // to clean the output directory, delete it first
                 def dir = file(buildDir)
                 if (dir.exists()){
-                    delete{ delete dir }
+                    delete(dir)
                 }
                 dir.mkdirs()
             }
@@ -593,16 +639,20 @@ allModuleNames.split(',').each{ moduleName ->
 
             classpath {
                 [
-                    sourceSets.main.java.srcDirs,
                     // Java source core
+                    sourceSets.main.java.srcDirs,
+                    // Java source gwt
                     sourceSets.gwt.java.srcDirs,
-                    // Java source
-                    sourceSets.gwt.output.resourcesDir,
+                    // Java source modules
+                    sourceSets.modules.java.srcDirs,
                     // Generated resources
-                    sourceSets.gwt.output.classesDir,
+                    sourceSets.gwt.output.resourcesDir,
                     // Generated classes
+                    sourceSets.gwt.output.classesDir,
+                    // Dependecies
                     sourceSets.gwt.compileClasspath,
-                    // Deps
+
+                    // Souceset folders of the current module
                     sourceSets[moduleName+'_gwt'].java.srcDirs,
                     sourceSets[moduleName+'_gwt'].output.resourcesDir,
                     sourceSets[moduleName+'_gwt'].output.classesDir
@@ -627,6 +677,8 @@ allModuleNames.split(',').each{ moduleName ->
                         '-strict'
                         // '-draftCompile' // Speeds up compile with 25%
                     ]
+            jvmArgs = [ '-Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory']
+            
 
             maxHeapSize = max_heap_size
         }
@@ -642,7 +694,7 @@ allModuleNames.split(',').each{ moduleName ->
             doFirst{
                 // to clean the output directory, delete it first
                 if (destDir.exists()){
-                    delete { delete destDir }
+                    delete(destDir)
                 }
                 destDir.mkdirs()
             }
@@ -710,9 +762,8 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
         include '**/*.txt'
         include '**/*.xml'
         filter(ReplaceTokens, tokens: [
-            OPENCMS_VERSION_NUMBER: version_number,
-            OPENCMS_VERSION_NAME: version_number,
-            OPENCMS_VERSION: product_name+' '+version_number,
+            OPENCMS_VERSION_NUMBER: version,
+            OPENCMS_VERSION: product_name+' '+version,
             DRIVERS_VFS: drivers_vfs,
             DRIVERS_PROJECT: drivers_project,
             DRIVERS_USER: drivers_user,
@@ -752,19 +803,26 @@ task updater (dependsOn: setupJar, type: Zip){
         exclude 'update/empty.jar'
         exclude 'update/readme.txt'
         filter(ReplaceTokens, tokens: [
-            OPENCMS_VERSION_NUMBER: version_number,
-            OPENCMS_VERSION: product_name+' '+version_number
+            OPENCMS_VERSION_NUMBER: version,
+            OPENCMS_VERSION: product_name+' '+version
         ])
     }
-    from ("${projectDir}/webapp/WEB-INF/solr/conf"){
+    from ("${projectDir}/webapp/WEB-INF/solr"){
         into '/WEB-INF/solr-update/'
-        include 'schema.xml'
-        include 'solrconfig.xml'
+        include 'conf/schema.xml'
+        include 'conf/solrconfig.xml'
+        include 'solr.xml'
     }
+    from ("${projectDir}/webapp/WEB-INF/solr") {
+        into '/WEB-INF/solr-complete/'
+        include '*'
+        include '**/*'
+    }
+    
     from ("${projectDir}/webapp/update/readme.txt"){
         filter(ReplaceTokens, tokens: [
-            OPENCMS_VERSION_NUMBER: version_number,
-            OPENCMS_VERSION: product_name+' '+version_number
+            OPENCMS_VERSION_NUMBER: version,
+            OPENCMS_VERSION: product_name+' '+version
         ])
     }
     from ("${projectDir}/webapp/WEB-INF"){
@@ -777,6 +835,7 @@ task updater (dependsOn: setupJar, type: Zip){
         include 'classes/repository.properties'
         include 'sun-jaxws.xml'
         include 'wsdl/**'
+        include 'spellcheck/**'
     }
     from ("${project.buildDir}/libs") {
         include 'opencms.jar'
@@ -814,15 +873,49 @@ task bindist (dependsOn: war, type: Zip){
         include 'license.txt'
         include 'history.txt'
         filter(ReplaceTokens, tokens: [
-            OPENCMS_VERSION_NUMBER: version_number,
-            OPENCMS_VERSION: product_name+' '+version_number
+            OPENCMS_VERSION_NUMBER: version,
+            OPENCMS_VERSION: product_name+' '+version
         ])
     }
 }
 
+
 test {
+    classpath += fileTree('webapp/setup/database'){ include '**/*.jar' }
+    classpath += files("$buildDir/classes/setup") { builtBy 'setupClasses' }
+    classpath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
+    classpath += files("$buildDir/classes/gwt") { builtBy 'gwtClasses' }
     useJUnit()
     include 'org/opencms/test/AllTests*'
+    // important: exclude all anonymous classes
+    exclude '**/*$*.class'
+    scanForTestClasses false
+    testClassesDir = sourceSets.test.output.classesDir
+    systemProperties['test.data.path'] = "${projectDir}/test/data"
+    systemProperties['test.webapp.path'] = "${projectDir}/webapp"
+    systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
+    maxHeapSize = max_heap_size
+    jvmArgs '-XX:MaxPermSize=256m'
+    testLogging.showStandardStreams = true
+    ignoreFailures true
+}
+
+task testSingle(type: Test, dependsOn: [compileTestJava]) {
+    description "Runs a specified test case set like this: -PtestCaseToRun=org/opencms/main/TestCmsSystemInfo*"
+    classpath += fileTree('webapp/setup/database'){ include '**/*.jar' }
+    classpath += files("$buildDir/classes/setup") { builtBy 'setupClasses' }
+    classpath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
+    classpath += files("$buildDir/classes/gwt") { builtBy 'gwtClasses' }
+    useJUnit()
+    if (!project.hasProperty('testCaseToRun')){
+        ext {
+            testCaseToRun='org/opencms/main/TestCmsSystemInfo*'
+        }
+    }
+    doFirst{
+        println "Running test case : ${testCaseToRun}"
+    }    
+    include testCaseToRun
     // important: exclude all anonymous classes
     exclude '**/*$*.class'
     scanForTestClasses false
@@ -859,6 +952,26 @@ task sourcesJarTest(type: Jar) {
     from sourceSets.test.allSource
     classifier = 'sources'
     baseName 'opencms-test'
+}
+
+
+task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
+    classpath=sourceSets.testGwt.runtimeClasspath
+    classpath += files("${projectDir}/src")
+    classpath += files("${projectDir}/src-gwt")
+    classpath += files("${projectDir}/test-gwt")
+    useJUnit()
+    include 'org/opencms/client/test/AllTests*'
+    // important: exclude all anonymous classes
+    exclude '**/*$*.class'
+    scanForTestClasses false
+    testClassesDir = sourceSets.testGwt.output.classesDir
+    systemProperties['gwt.args'] = "-logLevel WARN"
+    systemProperties['java.awt.headless'] = "true"
+    maxHeapSize = max_heap_size
+    jvmArgs '-XX:MaxPermSize=256m'
+    testLogging.showStandardStreams = true
+    ignoreFailures true
 }
 
 artifacts {
@@ -1024,7 +1137,7 @@ if (project.hasProperty('publish_repository')){
                         def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
                         dependency.setGroupId("org.opencms")
                         dependency.setArtifactId("opencms-core")
-                        dependency.setVersion(version_number)
+                        dependency.setVersion(version)
                         pom.dependencies.add(dependency)
                     }
                 }
@@ -1072,7 +1185,7 @@ if (project.hasProperty('publish_repository')){
                             def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
                             dependency.setGroupId("org.opencms")
                             dependency.setArtifactId("opencms-core")
-                            dependency.setVersion(version_number)
+                            dependency.setVersion(version)
                             pom.dependencies.add(dependency)
                         }
                     }
@@ -1201,7 +1314,7 @@ install {
                     def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
                     dependency.setGroupId("org.opencms")
                     dependency.setArtifactId("opencms-core")
-                    dependency.setVersion(version_number)
+                    dependency.setVersion(version)
                     pom.dependencies.add(dependency)
                 }
             }
@@ -1248,7 +1361,7 @@ install {
                         def dependency = pom.model.class.classLoader.loadClass("org.apache.maven.model.Dependency").newInstance();
                         dependency.setGroupId("org.opencms")
                         dependency.setArtifactId("opencms-core")
-                        dependency.setVersion(version_number)
+                        dependency.setVersion(version)
                         pom.dependencies.add(dependency)
                     }
                 }
@@ -1261,3 +1374,12 @@ install {
 tasks.withType(JavaCompile) {
     options.compilerArgs += ["-sourcepath", ""]
 }
+tasks.withType(Javadoc) {
+    options.addStringOption("sourcepath", "")
+}
+
+
+        
+
+
+

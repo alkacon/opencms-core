@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -72,12 +73,23 @@ public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
+     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow()
      */
     @Override
-    public void onShow(CmsHoverbarShowEvent event) {
+    public void onShow() {
 
-        setVisible(true);
+        setVisible(checkVisible());
+    }
+
+    /**
+     * Checks if the menu entry should be visible.<p>
+     *  
+     * @return true if the menu entry should be visible 
+     */
+    protected boolean checkVisible() {
+
+        return !CmsSitemapView.getInstance().isModelPageMode()
+            && (!CmsSitemapView.getInstance().isGalleryMode() || getHoverbar().getController().getData().isGalleryManager());
     }
 
 }

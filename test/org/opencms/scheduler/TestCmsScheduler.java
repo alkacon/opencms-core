@@ -29,6 +29,7 @@ package org.opencms.scheduler;
 
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -36,8 +37,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-
-import junit.framework.TestCase;
 
 import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
@@ -52,23 +51,13 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @since 6.0.0
  */
-public class TestCmsScheduler extends TestCase {
+public class TestCmsScheduler extends OpenCmsTestCase {
 
     /** Number of seconds to wait. */
     public static final int SECONDS_TO_WAIT = 30;
 
     /** Number of threads to run. */
     public static final int THREADS_TO_RUN = 20;
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsScheduler(String arg0) {
-
-        super(arg0);
-    }
 
     /**
      * Tests activating and deactivating of scheduled jobs.<p>

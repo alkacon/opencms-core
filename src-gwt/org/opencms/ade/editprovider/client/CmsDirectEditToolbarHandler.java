@@ -33,6 +33,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.A_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
@@ -65,6 +66,26 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
 
     /** The context menu commands. */
     private Map<String, I_CmsContextMenuCommand> m_contextMenuCommands;
+
+    /** The editor handler. */
+    private I_CmsContentEditorHandler m_editorHandler;
+
+    /**
+     * Constructor.<p>
+     */
+    public CmsDirectEditToolbarHandler() {
+
+        m_editorHandler = new I_CmsContentEditorHandler() {
+
+            /**
+             * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, org.opencms.util.CmsUUID, boolean)
+             */
+            public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
+
+                Window.Location.reload();
+            }
+        };
+    }
 
     /**
      * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#activateSelection()
@@ -111,6 +132,14 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
             m_contextMenuCommands = initializer.initCommands();
         }
         return m_contextMenuCommands;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getEditorHandler()
+     */
+    public I_CmsContentEditorHandler getEditorHandler() {
+
+        return m_editorHandler;
     }
 
     /**
@@ -206,7 +235,14 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
                 deactivateCurrentButton();
 
             }
-        });
+        }, new Runnable() {
+
+            public void run() {
+
+                showPublishDialog();
+            }
+
+        }, null);
     }
 
     /**

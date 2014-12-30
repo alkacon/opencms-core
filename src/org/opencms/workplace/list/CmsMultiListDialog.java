@@ -46,25 +46,25 @@ public class CmsMultiListDialog {
     private A_CmsListDialog m_activeWp;
 
     /** the workplace instances for the lists. */
-    private List m_wps;
+    private List<A_CmsListDialog> m_wps;
 
     /**
      * Default constructor.<p>
      * 
      * @param wps the lists to be displayed
      */
-    public CmsMultiListDialog(List wps) {
+    public CmsMultiListDialog(List<A_CmsListDialog> wps) {
 
         m_wps = wps;
-        Iterator i = m_wps.iterator();
+        Iterator<A_CmsListDialog> i = m_wps.iterator();
         while (i.hasNext()) {
-            A_CmsListDialog wp = (A_CmsListDialog)i.next();
+            A_CmsListDialog wp = i.next();
             if (wp.isActive()) {
                 m_activeWp = wp;
             }
         }
         if (m_activeWp == null) {
-            m_activeWp = (A_CmsListDialog)m_wps.get(0);
+            m_activeWp = m_wps.get(0);
         }
     }
 
@@ -98,9 +98,9 @@ public class CmsMultiListDialog {
             return;
         }
 
-        Iterator i = m_wps.iterator();
+        Iterator<A_CmsListDialog> i = m_wps.iterator();
         while (i.hasNext()) {
-            A_CmsListDialog wp = (A_CmsListDialog)i.next();
+            A_CmsListDialog wp = i.next();
             wp.refreshList();
         }
 
@@ -127,9 +127,9 @@ public class CmsMultiListDialog {
      */
     public boolean isForwarded() {
 
-        Iterator i = m_wps.iterator();
+        Iterator<A_CmsListDialog> i = m_wps.iterator();
         while (i.hasNext()) {
-            A_CmsListDialog wp = (A_CmsListDialog)i.next();
+            A_CmsListDialog wp = i.next();
             if (wp.isForwarded()) {
                 return true;
             }
@@ -171,9 +171,9 @@ public class CmsMultiListDialog {
 
         StringBuffer result = new StringBuffer(2048);
         result.append("<table id='twolists' cellpadding='0' cellspacing='0' align='center' width='100%'>\n");
-        Iterator i = m_wps.iterator();
+        Iterator<A_CmsListDialog> i = m_wps.iterator();
         while (i.hasNext()) {
-            A_CmsListDialog wp = (A_CmsListDialog)i.next();
+            A_CmsListDialog wp = i.next();
             result.append("\t<tr>\n");
             result.append("\t\t<td valign='top'>\n");
             result.append("\t\t\t").append(wp.defaultActionHtmlContent()).append("\n");

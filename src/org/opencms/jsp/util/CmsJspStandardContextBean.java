@@ -30,6 +30,8 @@ package org.opencms.jsp.util;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsFunctionReference;
+import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
+import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsFile;
@@ -39,13 +41,16 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.jsp.CmsJspBean;
+import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.jsp.Messages;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
@@ -60,6 +65,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -78,6 +84,449 @@ import org.apache.commons.logging.Log;
  * @since 8.0
  */
 public final class CmsJspStandardContextBean {
+
+    /**
+     * Container element wrapper to add some API methods.<p>
+     */
+    public class CmsContainerElementWrapper extends CmsContainerElementBean {
+
+        /** The wrapped element instance. */
+        private CmsContainerElementBean m_wrappedElement;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param element the element to wrap
+         */
+        protected CmsContainerElementWrapper(CmsContainerElementBean element) {
+
+            m_wrappedElement = element;
+
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#clone()
+         */
+        @Override
+        public CmsContainerElementBean clone() {
+
+            return m_wrappedElement.clone();
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#editorHash()
+         */
+        @Override
+        public String editorHash() {
+
+            return m_wrappedElement.editorHash();
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#equals(java.lang.Object)
+         */
+        @Override
+        public boolean equals(Object obj) {
+
+            return m_wrappedElement.equals(obj);
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#getFormatterId()
+         */
+        @Override
+        public CmsUUID getFormatterId() {
+
+            return m_wrappedElement.getFormatterId();
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#getId()
+         */
+        @Override
+        public CmsUUID getId() {
+
+            return m_wrappedElement.getId();
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#getIndividualSettings()
+         */
+        @Override
+        public Map<String, String> getIndividualSettings() {
+
+            return m_wrappedElement.getIndividualSettings();
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#getInheritanceInfo()
+         */
+        @Override
+        public CmsInheritanceInfo getInheritanceInfo() {
+
+            return m_wrappedElement.getInheritanceInfo();
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#getInstanceId()
+         */
+        @Override
+        public String getInstanceId() {
+
+            return m_wrappedElement.getInstanceId();
+        }
+
+        /**
+         * Returns the parent element if present.<p>
+         * 
+         * @return the parent element or <code>null</code> if not available
+         */
+        public CmsContainerElementWrapper getParent() {
+
+            CmsContainerElementBean parent = getParentElement(m_wrappedElement);
+            return parent != null ? new CmsContainerElementWrapper(getParentElement(m_wrappedElement)) : null;
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#getResource()
+         */
+        @Override
+        public CmsResource getResource() {
+
+            return m_wrappedElement.getResource();
+        }
+
+        /**
+         * Returns a lazy initialized setting map.<p>
+         * 
+         * @return the settings
+         */
+        public Map<String, ElementSettingWrapper> getSetting() {
+
+            return CmsCollectionsGenericWrapper.createLazyMap(new SettingsTransformer(m_wrappedElement));
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#getSettings()
+         */
+        @Override
+        public Map<String, String> getSettings() {
+
+            return m_wrappedElement.getSettings();
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#getSitePath()
+         */
+        @Override
+        public String getSitePath() {
+
+            return m_wrappedElement.getSitePath();
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#hashCode()
+         */
+        @Override
+        public int hashCode() {
+
+            return m_wrappedElement.hashCode();
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#initResource(org.opencms.file.CmsObject)
+         */
+        @Override
+        public void initResource(CmsObject cms) throws CmsException {
+
+            m_wrappedElement.initResource(cms);
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#initSettings(org.opencms.file.CmsObject, org.opencms.xml.containerpage.I_CmsFormatterBean)
+         */
+        @Override
+        public void initSettings(CmsObject cms, I_CmsFormatterBean formatterBean) {
+
+            m_wrappedElement.initSettings(cms, formatterBean);
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#isCreateNew()
+         */
+        @Override
+        public boolean isCreateNew() {
+
+            return m_wrappedElement.isCreateNew();
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#isGroupContainer(org.opencms.file.CmsObject)
+         */
+        @Override
+        public boolean isGroupContainer(CmsObject cms) throws CmsException {
+
+            return m_wrappedElement.isGroupContainer(cms);
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#isInheritedContainer(org.opencms.file.CmsObject)
+         */
+        @Override
+        public boolean isInheritedContainer(CmsObject cms) throws CmsException {
+
+            return m_wrappedElement.isInheritedContainer(cms);
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#isInMemoryOnly()
+         */
+        @Override
+        public boolean isInMemoryOnly() {
+
+            return m_wrappedElement.isInMemoryOnly();
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#isReleasedAndNotExpired()
+         */
+        @Override
+        public boolean isReleasedAndNotExpired() {
+
+            return m_wrappedElement.isReleasedAndNotExpired();
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#isTemporaryContent()
+         */
+        @Override
+        public boolean isTemporaryContent() {
+
+            return m_wrappedElement.isTemporaryContent();
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#removeInstanceId()
+         */
+        @Override
+        public void removeInstanceId() {
+
+            m_wrappedElement.removeInstanceId();
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#setFormatterId(org.opencms.util.CmsUUID)
+         */
+        @Override
+        public void setFormatterId(CmsUUID formatterId) {
+
+            m_wrappedElement.setFormatterId(formatterId);
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#setHistoryFile(org.opencms.file.CmsFile)
+         */
+        @Override
+        public void setHistoryFile(CmsFile file) {
+
+            m_wrappedElement.setHistoryFile(file);
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#setInheritanceInfo(org.opencms.ade.containerpage.shared.CmsInheritanceInfo)
+         */
+        @Override
+        public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
+
+            m_wrappedElement.setInheritanceInfo(inheritanceInfo);
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#setTemporaryFile(org.opencms.file.CmsFile)
+         */
+        @Override
+        public void setTemporaryFile(CmsFile elementFile) {
+
+            m_wrappedElement.setTemporaryFile(elementFile);
+        }
+
+        /**
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#toString()
+         */
+        @Override
+        public String toString() {
+
+            return m_wrappedElement.toString();
+        }
+    }
+
+    /**
+     * Provides a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * (named) dynamic function or resource type as a key.<p>
+     */
+    public class CmsDetailLookupTransformer implements Transformer {
+
+        /** The selected prefix. */
+        private String m_prefix;
+
+        /**
+         * Constructor with a prefix.<p>
+         * 
+         * The prefix is used to distinguish between type detail pages and function detail pages.<p>
+         * 
+         * @param prefix the prefix to use
+         */
+        public CmsDetailLookupTransformer(String prefix) {
+
+            m_prefix = prefix;
+        }
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        @Override
+        public Object transform(Object input) {
+
+            String type = m_prefix + String.valueOf(input);
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+                m_cms,
+                m_cms.addSiteRoot(m_cms.getRequestContext().getUri()));
+            List<CmsDetailPageInfo> detailPages = config.getDetailPagesForType(type);
+            if ((detailPages == null) || (detailPages.size() == 0)) {
+                return "[No detail page configured for type =" + type + "=]";
+            }
+            CmsDetailPageInfo mainDetailPage = detailPages.get(0);
+            CmsUUID id = mainDetailPage.getId();
+            try {
+                CmsResource r = m_cms.readResource(id);
+                return OpenCms.getLinkManager().substituteLink(m_cms, r);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                return "[Error reading detail page for type =" + type + "=]";
+            }
+        }
+    }
+
+    /**
+     * Element setting value wrapper.<p>
+     */
+    public class ElementSettingWrapper extends A_CmsJspValueWrapper {
+
+        /** Flag indicating the setting has been configured. */
+        private boolean m_exists;
+
+        /** The wrapped value. */
+        private String m_value;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param value the wrapped value
+         * @param exists flag indicating the setting has been configured
+         */
+        ElementSettingWrapper(String value, boolean exists) {
+
+            m_value = value;
+            m_exists = exists;
+        }
+
+        /**
+         * Returns if the setting has been configured.<p>
+         * 
+         * @return <code>true</code> if the setting has been configured
+         */
+        @Override
+        public boolean getExists() {
+
+            return m_exists;
+        }
+
+        /**
+         * Returns if the setting value is null or empty.<p>
+         * 
+         * @return <code>true</code> if the setting value is null or empty
+         */
+        @Override
+        public boolean getIsEmpty() {
+
+            return CmsStringUtil.isEmpty(m_value);
+        }
+
+        /**
+         * Returns if the setting value is null or white space only.<p>
+         * 
+         * @return <code>true</code> if the setting value is null or white space only
+         */
+        @Override
+        public boolean getIsEmptyOrWhitespaceOnly() {
+
+            return CmsStringUtil.isEmptyOrWhitespaceOnly(m_value);
+        }
+
+        /**
+         * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getIsSet()
+         */
+        @Override
+        public boolean getIsSet() {
+
+            return getExists() && !getIsEmpty();
+        }
+
+        /**
+         * Returns the value.<p>
+         * 
+         * @return the value
+         */
+        public String getValue() {
+
+            return m_value;
+        }
+
+        /**
+         * Returns the string value.<p>
+         * 
+         * @return the string value
+         */
+        @Override
+        public String toString() {
+
+            return m_value != null ? m_value : "";
+        }
+    }
+
+    /**
+     * The element setting transformer.<p>
+     */
+    public class SettingsTransformer implements Transformer {
+
+        /** The element formatter config. */
+        private I_CmsFormatterBean m_formatter;
+
+        /** The element. */
+        private CmsContainerElementBean m_transformElement;
+
+        /**
+         * Constructor.<p>
+         * 
+         * @param element the element
+         */
+        SettingsTransformer(CmsContainerElementBean element) {
+
+            m_transformElement = element;
+            m_formatter = getElementFormatter(element);
+        }
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        @Override
+        public Object transform(Object arg0) {
+
+            return new ElementSettingWrapper(m_transformElement.getSettings().get(arg0), m_formatter != null
+            ? m_formatter.getSettings().get(arg0) != null
+            : m_transformElement.getSettings().get(arg0) != null);
+        }
+    }
 
     /**
      * Bean containing a template name and URI.<p>
@@ -203,14 +652,26 @@ public final class CmsJspStandardContextBean {
     /** The currently rendered element. */
     private CmsContainerElementBean m_element;
 
-    /** Cached object for the EL 'function' accessor. */
-    private Object m_function;
+    /** The elements of the current page. */
+    private Map<String, CmsContainerElementBean> m_elementInstances;
+
+    /** The lazy initialized map which allows access to the dynamic function beans. */
+    private Map<String, CmsDynamicFunctionBeanWrapper> m_function;
+
+    /** The lazy initialized map for the function detail pages. */
+    private Map<String, String> m_functionDetailPage;
 
     /** The currently displayed container page. */
     private CmsContainerPageBean m_page;
 
+    /** The parent containers to the given element instance ids. */
+    private Map<String, CmsContainerBean> m_parentContainers;
+
     /** The current request. */
     private ServletRequest m_request;
+
+    /** The lazy initialized map for the detail pages. */
+    private Map<String, String> m_typeDetailPage;
 
     /** The VFS content access bean. */
     private CmsJspVfsAccessBean m_vfsBean;
@@ -285,7 +746,7 @@ public final class CmsJspStandardContextBean {
             result.m_detailContentResource = getDetailContent().getCopy();
         }
         result.m_element = getElement();
-        result.m_page = getPage();
+        result.setPage(getPage());
         return result;
     }
 
@@ -339,7 +800,7 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns the detail content site path. Returns <code>null</code> if not available.<p>
+     * Returns the detail content site path, or <code>null</code> if not available.<p>
      * 
      * @return the detail content site path
      */
@@ -365,75 +826,93 @@ public final class CmsJspStandardContextBean {
      * 
      * @return the currently rendered element
      */
-    public CmsContainerElementBean getElement() {
+    public CmsContainerElementWrapper getElement() {
 
-        return m_element;
+        return m_element != null ? new CmsContainerElementWrapper(m_element) : null;
     }
 
     /**
-     * Returns a map which allows access to dynamic function beans using the JSP EL.<p>
+     * Alternative method name for getReloadMarker(). 
      * 
-     * When given a key, the returned map will look up the corresponding dynamic function in the module configuration.<p>
+     * @see org.opencms.jsp.util.CmsJspStandardContextBean#getReloadMarker()
      * 
-     * @return  a map which allows access to dynamic function beans
+     * @return the reload marker 
      */
-    public Object getFunction() {
+    public String getEnableReload() {
 
-        if (m_function != null) {
-            return m_function;
-        }
-        Transformer transformer = new Transformer() {
+        return getReloadMarker();
+    }
 
-            public Object transform(Object key) {
+    /**
+     * Returns a lazy initialized Map which allows access to the dynamic function beans using the JSP EL.<p>
+     * 
+     * When given a key, the returned map will look up the corresponding dynamic function bean in the module configuration.<p>
+     * 
+     * @return a lazy initialized Map which allows access to the dynamic function beans using the JSP EL
+     */
+    public Map<String, CmsDynamicFunctionBeanWrapper> getFunction() {
 
-                try {
-                    CmsDynamicFunctionBean dynamicFunction = readDynamicFunctionBean((String)key);
-                    CmsDynamicFunctionBeanWrapper wrapper = new CmsDynamicFunctionBeanWrapper(m_cms, dynamicFunction);
-                    return wrapper;
+        if (m_function == null) {
 
-                } catch (CmsException e) {
-                    return new CmsDynamicFunctionBeanWrapper(m_cms, null);
+            Transformer transformer = new Transformer() {
+
+                @Override
+                public Object transform(Object input) {
+
+                    try {
+                        CmsDynamicFunctionBean dynamicFunction = readDynamicFunctionBean((String)input);
+                        CmsDynamicFunctionBeanWrapper wrapper = new CmsDynamicFunctionBeanWrapper(
+                            m_cms,
+                            dynamicFunction);
+                        return wrapper;
+
+                    } catch (CmsException e) {
+                        return new CmsDynamicFunctionBeanWrapper(m_cms, null);
+                    }
                 }
-            }
-        };
-        m_function = CmsCollectionsGenericWrapper.createLazyMap(transformer);
+            };
+            m_function = CmsCollectionsGenericWrapper.createLazyMap(transformer);
+        }
         return m_function;
 
     }
 
     /**
-     * Returns a lazy map which computes the detail page link as a value when given the name of a (named) dynamic function
-     * as a key.<p>
+     * Deprecated method to access function detail pages using the EL.<p>
      * 
-     * @return a lazy map for computing function detail page links  
+     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * (named) dynamic function as a key
+     * 
+     * @deprecated use {@link #getFunctionDetailPage()} instead 
      */
+    @Deprecated
     public Map<String, String> getFunctionDetail() {
 
-        Transformer transformer = new Transformer() {
+        return getFunctionDetailPage();
+    }
 
-            public Object transform(Object key) {
+    /**
+     * Returns a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * (named) dynamic function as a key.<p>
+     * 
+     * The provided Map key is assumed to be a String that represents a named dynamic function.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;a href=${cms.functionDetailPage['search']} /&gt
+     * </pre>
+     *  
+     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * (named) dynamic function as a key
+     * 
+     * @see #getTypeDetailPage()
+     */
+    public Map<String, String> getFunctionDetailPage() {
 
-                String detailType = CmsDetailPageInfo.FUNCTION_PREFIX + key;
-                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
-                    m_cms,
-                    m_cms.addSiteRoot(m_cms.getRequestContext().getUri()));
-                List<CmsDetailPageInfo> detailPages = config.getDetailPagesForType(detailType);
-                if ((detailPages == null) || (detailPages.size() == 0)) {
-                    return "";
-                }
-                CmsDetailPageInfo mainDetailPage = detailPages.get(0);
-                CmsUUID id = mainDetailPage.getId();
-                CmsResource detailRes;
-                try {
-                    detailRes = m_cms.readResource(id);
-                    return OpenCms.getLinkManager().substituteLink(m_cms, detailRes);
-                } catch (CmsException e) {
-                    LOG.warn(e.getLocalizedMessage(), e);
-                    return "";
-                }
-            }
-        };
-        return CmsCollectionsGenericWrapper.createLazyMap(transformer);
+        if (m_functionDetailPage == null) {
+            m_functionDetailPage = CmsCollectionsGenericWrapper.createLazyMap(new CmsDetailLookupTransformer(
+                CmsDetailPageInfo.FUNCTION_PREFIX));
+        }
+        return m_functionDetailPage;
     }
 
     /**
@@ -446,6 +925,7 @@ public final class CmsJspStandardContextBean {
 
         Transformer transformer = new Transformer() {
 
+            @Override
             public Object transform(Object contentAccess) {
 
                 CmsXmlContent content = (CmsXmlContent)(((CmsJspContentAccessBean)contentAccess).getRawContent());
@@ -522,6 +1002,7 @@ public final class CmsJspStandardContextBean {
 
         Transformer transformer = new Transformer() {
 
+            @Override
             public Object transform(Object uri) {
 
                 try {
@@ -552,6 +1033,21 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns a HTML comment string that will cause the container page editor to reload the page if the element or its settings
+     * were edited.<p>
+     * 
+     * @return the reload marker 
+     */
+    public String getReloadMarker() {
+
+        if (m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            return ""; // reload marker is not needed in Online mode 
+        } else {
+            return CmsGwtConstants.FORMATTER_RELOAD_MARKER;
+        }
+    }
+
+    /**
      * Returns the request context.<p>
      * 
      * @return the request context
@@ -570,6 +1066,16 @@ public final class CmsJspStandardContextBean {
 
         return m_cms.getRequestContext().removeSiteRoot(
             OpenCms.getADEManager().getSubSiteRoot(m_cms, m_cms.getRequestContext().getRootUri()));
+    }
+
+    /**
+     * Returns the system information.<p>
+     * 
+     * @return the system information
+     */
+    public CmsSystemInfo getSystemInfo() {
+
+        return OpenCms.getSystemInfo();
     }
 
     /**
@@ -629,6 +1135,29 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * resource type as a key.<p>
+     * 
+     * The provided Map key is assumed to be the name of a resource type that has a detail page configured.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;a href=${cms.typeDetailPage['bs-blog']} /&gt
+     * </pre>
+     *  
+     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * resource type as a key
+     * 
+     * @see #getFunctionDetailPage()
+     */
+    public Map<String, String> getTypeDetailPage() {
+
+        if (m_typeDetailPage == null) {
+            m_typeDetailPage = CmsCollectionsGenericWrapper.createLazyMap(new CmsDetailLookupTransformer(""));
+        }
+        return m_typeDetailPage;
+    }
+
+    /**
      * Returns an initialized VFS access bean.<p>
      * 
      * @return an initialized VFS access bean
@@ -653,36 +1182,25 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Checks whether a detail page is available for the container element.<p>
+     * Returns <code>true</code in case a detail page is available for the current element.<p>
      * 
-     * @return true if there is a detail page for the container element
+     * @return <code>true</code in case a detail page is available for the current element
      */
     public boolean isDetailPageAvailable() {
 
-        if (m_cms == null) {
-            return false;
+        boolean result = false;
+        if ((m_cms != null) && (m_element != null) && !m_element.isInMemoryOnly() && (m_element.getResource() != null)) {
+            try {
+                String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
+                    m_cms,
+                    m_element.getResource().getRootPath(),
+                    m_cms.getRequestContext().getUri());
+                result = detailPage != null;
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
         }
-        CmsContainerElementBean element = getElement();
-        if (element == null) {
-            return false;
-        }
-        if (element.isInMemoryOnly()) {
-            return false;
-        }
-        CmsResource res = element.getResource();
-        if (res == null) {
-            return false;
-        }
-        try {
-            String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
-                m_cms,
-                res.getRootPath(),
-                m_cms.getRequestContext().getUri());
-            return detailPage != null;
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-            return false;
-        }
+        return result;
     }
 
     /**
@@ -725,6 +1243,7 @@ public final class CmsJspStandardContextBean {
     public void setDetailOnlyPage(CmsContainerPageBean detailOnlyPage) {
 
         m_detailOnlyPage = detailOnlyPage;
+        clearPageData();
     }
 
     /**
@@ -755,6 +1274,7 @@ public final class CmsJspStandardContextBean {
     public void setPage(CmsContainerPageBean page) {
 
         m_page = page;
+        clearPageData();
     }
 
     /** 
@@ -786,6 +1306,73 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns the formatter configuration to the given element.<p>
+     * 
+     * @param element the element
+     * 
+     * @return the formatter configuration
+     */
+    protected I_CmsFormatterBean getElementFormatter(CmsContainerElementBean element) {
+
+        if (m_elementInstances == null) {
+            initPageData();
+        }
+        I_CmsFormatterBean formatter = null;
+        CmsContainerBean container = m_parentContainers.get(element.getInstanceId());
+        if (container == null) {
+            // use the current container
+            container = getContainer();
+        }
+        String containerName = container.getName();
+        Map<String, String> settings = element.getSettings();
+        if (settings != null) {
+            String formatterConfigId = settings.get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
+            if (CmsUUID.isValidUUID(formatterConfigId)) {
+                formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
+                    new CmsUUID(formatterConfigId));
+            }
+        }
+        if (formatter == null) {
+            try {
+                CmsResource resource = m_cms.readResource(m_cms.getRequestContext().getUri());
+
+                CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(m_cms, resource.getRootPath());
+                CmsFormatterConfiguration formatters = config.getFormatters(m_cms, resource);
+                int width = -2;
+                try {
+                    width = Integer.parseInt(container.getWidth());
+                } catch (Exception e) {
+                    // ignore
+                }
+                formatter = formatters.getDefaultSchemaFormatter(container.getType(), width);
+            } catch (CmsException e1) {
+                LOG.error(e1.getLocalizedMessage(), e1);
+            }
+        }
+        return formatter;
+    }
+
+    /**
+     * Returns the parent element if available.<p>
+     * 
+     * @param element the element
+     * 
+     * @return the parent element or null
+     */
+    protected CmsContainerElementBean getParentElement(CmsContainerElementBean element) {
+
+        if (m_elementInstances == null) {
+            initPageData();
+        }
+        CmsContainerElementBean parent = null;
+        CmsContainerBean cont = m_parentContainers.get(element.getInstanceId());
+        if ((cont != null) && cont.isNestedContainer()) {
+            parent = m_elementInstances.get(cont.getParentInstanceId());
+        }
+        return parent;
+    }
+
+    /**
      * Reads a dynamic function bean, given its name in the module configuration.<p>
      * 
      * @param configuredName the name of the dynamic function in the module configuration  
@@ -809,6 +1396,15 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Clears the page element data.<p>
+     */
+    private void clearPageData() {
+
+        m_elementInstances = null;
+        m_parentContainers = null;
+    }
+
+    /**
      * Convenience method for getting a request attribute without an explicit cast.<p>
      * 
      * @param name the attribute name 
@@ -820,6 +1416,52 @@ public final class CmsJspStandardContextBean {
         Object attribute = m_request.getAttribute(name);
 
         return attribute != null ? (A)attribute : null;
+    }
+
+    /**
+     * Initializes the page element data.<p>
+     */
+    private void initPageData() {
+
+        m_elementInstances = new HashMap<String, CmsContainerElementBean>();
+        m_parentContainers = new HashMap<String, CmsContainerBean>();
+        if (m_page != null) {
+            for (CmsContainerBean container : m_page.getContainers().values()) {
+                for (CmsContainerElementBean element : container.getElements()) {
+                    m_elementInstances.put(element.getInstanceId(), element);
+                    m_parentContainers.put(element.getInstanceId(), container);
+                    try {
+                        if (element.isGroupContainer(m_cms) || element.isInheritedContainer(m_cms)) {
+                            List<CmsContainerElementBean> children;
+                            if (element.isGroupContainer(m_cms)) {
+                                children = CmsJspTagContainer.getGroupContainerElements(
+                                    m_cms,
+                                    element,
+                                    m_request,
+                                    container.getType());
+                            } else {
+                                children = CmsJspTagContainer.getInheritedContainerElements(m_cms, element);
+                            }
+                            for (CmsContainerElementBean childElement : children) {
+                                m_elementInstances.put(childElement.getInstanceId(), childElement);
+                                m_parentContainers.put(childElement.getInstanceId(), container);
+                            }
+                        }
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+            }
+            // also add detail only data
+            if (m_detailOnlyPage != null) {
+                for (CmsContainerBean container : m_detailOnlyPage.getContainers().values()) {
+                    for (CmsContainerElementBean element : container.getElements()) {
+                        m_elementInstances.put(element.getInstanceId(), element);
+                        m_parentContainers.put(element.getInstanceId(), container);
+                    }
+                }
+            }
+        }
     }
 
 }

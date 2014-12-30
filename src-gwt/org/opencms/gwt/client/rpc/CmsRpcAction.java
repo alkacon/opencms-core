@@ -30,6 +30,7 @@ package org.opencms.gwt.client.rpc;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsNotificationMessage;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.UmbrellaException;
@@ -48,6 +49,9 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
 
     /** The message displayed when loading. */
     private String m_loadingMessage = Messages.get().key(Messages.GUI_LOADING_0);
+
+    /** The current notification. */
+    private CmsNotificationMessage m_notification;
 
     /** The result, used only for synchronized request. */
     private T m_result;
@@ -166,7 +170,10 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
             m_timer.cancel();
             m_timer = null;
         }
-        CmsNotification.get().hide();
+        if (m_notification != null) {
+            CmsNotification.get().removeMessage(m_notification);
+            m_notification = null;
+        }
         if (displayDone) {
             CmsNotification.get().send(CmsNotification.Type.NORMAL, Messages.get().key(Messages.GUI_DONE_0));
         }
@@ -191,9 +198,9 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
     protected void show(boolean blocking) {
 
         if (blocking) {
-            CmsNotification.get().sendBlocking(CmsNotification.Type.NORMAL, m_loadingMessage);
+            m_notification = CmsNotification.get().sendBusy(CmsNotification.Type.NORMAL, m_loadingMessage);
         } else {
-            CmsNotification.get().sendSticky(CmsNotification.Type.NORMAL, m_loadingMessage);
+            m_notification = CmsNotification.get().sendSticky(CmsNotification.Type.NORMAL, m_loadingMessage);
         }
     }
 }

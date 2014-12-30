@@ -98,7 +98,7 @@ public class CmsGwtService extends RemoteServiceServlet {
      */
     public void checkPermissions(CmsObject cms) throws CmsRoleViolationException {
 
-        OpenCms.getRoleManager().checkRole(cms, CmsRole.WORKPLACE_USER);
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ELEMENT_AUTHOR);
     }
 
     /**
@@ -248,6 +248,22 @@ public class CmsGwtService extends RemoteServiceServlet {
     }
 
     /**
+     * Clears the objects stored in thread local.<p>
+     */
+    protected void clearThreadStorage() {
+
+        if (m_perThreadCmsObject != null) {
+            m_perThreadCmsObject.remove();
+        }
+        if (perThreadRequest != null) {
+            perThreadRequest.remove();
+        }
+        if (perThreadResponse != null) {
+            perThreadResponse.remove();
+        }
+    }
+
+    /**
      * We do not want that the server goes to fetch files from the servlet context.<p>
      * 
      * @see com.google.gwt.user.server.rpc.RemoteServiceServlet#doGetSerializationPolicy(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
@@ -378,22 +394,6 @@ public class CmsGwtService extends RemoteServiceServlet {
             getCmsObject().unlockResource(resource);
         } catch (CmsException e) {
             LOG.debug("Unable to unlock " + resource.getRootPath(), e);
-        }
-    }
-
-    /**
-     * Clears the objects stored in thread local.<p>
-     */
-    protected void clearThreadStorage() {
-
-        if (m_perThreadCmsObject != null) {
-            m_perThreadCmsObject.remove();
-        }
-        if (perThreadRequest != null) {
-            perThreadRequest.remove();
-        }
-        if (perThreadResponse != null) {
-            perThreadResponse.remove();
         }
     }
 }

@@ -58,6 +58,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -76,7 +77,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @since 7.5.2
  * 
- * @see #getContainerPage(CmsObject, Locale)
+ * @see #getContainerPage(CmsObject)
  */
 public class CmsXmlContainerPage extends CmsXmlContent {
 
@@ -97,6 +98,8 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         Key,
         /** Container name node name. */
         Name,
+        /** Parent element instance id node name. */
+        ParentInstanceId,
         /** Container type node name. */
         Type,
         /** Element URI node name. */
@@ -199,7 +202,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         // content definition must be set here since it's used during document creation
         m_contentDefinition = contentDefinition;
         // create the XML document according to the content definition
-        Document document = m_contentDefinition.createDocument(cms, this, locale);
+        Document document = m_contentDefinition.createDocument(cms, this, CmsLocaleManager.MASTER_LOCALE);
         // initialize the XML content structure
         initDocument(cms, document, encoding, m_contentDefinition);
     }
@@ -208,40 +211,41 @@ public class CmsXmlContainerPage extends CmsXmlContent {
      * Saves a container page bean to the in-memory XML structure and returns the changed content.<p>
      * 
      * @param cms the current CMS context 
-     * @param locale the locale for which the content should be replaced 
      * @param cntPage the container page bean 
      * @return the new content for the container page 
      * @throws CmsException if something goes wrong 
      */
-    public byte[] createContainerPageXml(CmsObject cms, Locale locale, CmsContainerPageBean cntPage)
-    throws CmsException {
+    public byte[] createContainerPageXml(CmsObject cms, CmsContainerPageBean cntPage) throws CmsException {
 
         // make sure all links are validated 
-        checkLinkConcistency(cms, locale);
-        writeContainerPage(cms, locale, cntPage);
+        writeContainerPage(cms, cntPage);
+        checkLinkConcistency(cms);
         return marshal();
 
     }
 
     /**
-     * Returns the container page bean for the given locale.<p>
-     *
-     * @param cms the cms context
-     * @param locale the locale to use
-     *
-     * @return the container page bean
+     * Gets the container page content as a bean.<p>
+     * 
+     * @param cms the current CMS context 
+     * @return the bean containing the container page data 
      */
-    public CmsContainerPageBean getContainerPage(CmsObject cms, Locale locale) {
+    public CmsContainerPageBean getContainerPage(CmsObject cms) {
 
-        Locale theLocale = locale;
-        if (!m_cntPages.containsKey(theLocale)) {
-            LOG.warn(Messages.get().container(
-                Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
-                cms.getSitePath(getFile()),
-                theLocale.toString()).key());
-            return null;
+        Locale masterLocale = CmsLocaleManager.MASTER_LOCALE;
+        Locale localeToLoad = null;
+        // always use master locale if possible, otherwise use the first locale.
+        // this is important for 'legacy' container pages which were created before container pages became locale independent 
+        if (m_cntPages.containsKey(masterLocale)) {
+            localeToLoad = masterLocale;
+        } else if (!m_cntPages.isEmpty()) {
+            localeToLoad = m_cntPages.keySet().iterator().next();
         }
-        return m_cntPages.get(theLocale);
+        if (localeToLoad == null) {
+            return null;
+        } else {
+            return m_cntPages.get(localeToLoad);
+        }
     }
 
     /**
@@ -257,18 +261,17 @@ public class CmsXmlContainerPage extends CmsXmlContent {
      * Saves given container page in the current locale, and not only in memory but also to VFS.<p>
      * 
      * @param cms the current cms context
-     * @param locale the content locale
      * @param cntPage the container page to save
      * 
      * @throws CmsException if something goes wrong
      */
-    public void save(CmsObject cms, Locale locale, CmsContainerPageBean cntPage) throws CmsException {
+    public void save(CmsObject cms, CmsContainerPageBean cntPage) throws CmsException {
 
         CmsFile file = getFile();
 
         // lock the file
         cms.lockResourceTemporary(cms.getSitePath(file));
-        byte[] data = createContainerPageXml(cms, locale, cntPage);
+        byte[] data = createContainerPageXml(cms, cntPage);
         file.setContents(data);
         cms.writeFile(file);
     }
@@ -277,24 +280,24 @@ public class CmsXmlContainerPage extends CmsXmlContent {
      * Saves a container page in in-memory XML structure.<p>
      * 
      * @param cms the current CMS context 
-     * @param locale the locale for which the content should be replaced 
      * @param cntPage the container page bean to save
      * 
      * @throws CmsException if something goes wrong 
      */
-    public void writeContainerPage(CmsObject cms, Locale locale, CmsContainerPageBean cntPage) throws CmsException {
+    public void writeContainerPage(CmsObject cms, CmsContainerPageBean cntPage) throws CmsException {
 
         // keep unused containers
-        CmsContainerPageBean savePage = addUnusedContainers(cms, locale, cntPage);
+        CmsContainerPageBean savePage = addUnusedContainers(cms, cntPage);
 
-        // wipe the locale
-        if (hasLocale(locale)) {
+        // Replace existing locales with master locale 
+        for (Locale locale : getLocales()) {
             removeLocale(locale);
         }
-        addLocale(cms, locale);
+        Locale masterLocale = CmsLocaleManager.MASTER_LOCALE;
+        addLocale(cms, masterLocale);
 
         // add the nodes to the raw XML structure
-        Element parent = getLocaleNode(locale);
+        Element parent = getLocaleNode(masterLocale);
         saveContainerPage(cms, parent, savePage);
         initDocument(m_document, m_encoding, m_contentDefinition);
     }
@@ -303,12 +306,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
      * Merges the containers of the current document that are not used in the given container page with it.<p>
      * 
      * @param cms the current CMS context
-     * @param locale the content locale
      * @param cntPage the container page to merge
      * 
      * @return a new container page with the additional unused containers
      */
-    protected CmsContainerPageBean addUnusedContainers(CmsObject cms, Locale locale, CmsContainerPageBean cntPage) {
+    protected CmsContainerPageBean addUnusedContainers(CmsObject cms, CmsContainerPageBean cntPage) {
 
         // get the used containers first
         Map<String, CmsContainerBean> currentContainers = cntPage.getContainers();
@@ -318,7 +320,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         }
 
         // now get the unused containers 
-        CmsContainerPageBean currentContainerPage = getContainerPage(cms, locale);
+        CmsContainerPageBean currentContainerPage = getContainerPage(cms);
         if (currentContainerPage != null) {
             for (String cntName : currentContainerPage.getNames()) {
                 if (!currentContainers.containsKey(cntName)) {
@@ -327,18 +329,44 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             }
         }
 
-        return new CmsContainerPageBean(locale, containers);
+        // check if any nested containers have lost their parent element
+
+        // first collect all present elements
+        Map<String, CmsContainerElementBean> pageElements = new HashMap<String, CmsContainerElementBean>();
+        for (CmsContainerBean container : containers) {
+            for (CmsContainerElementBean element : container.getElements()) {
+                pageElements.put(element.getInstanceId(), element);
+            }
+        }
+        Iterator<CmsContainerBean> cntIt = containers.iterator();
+        while (cntIt.hasNext()) {
+            CmsContainerBean container = cntIt.next();
+            // check all unused nested containers if their parent element is still part of the page
+            if (!currentContainers.containsKey(container.getName())
+                && container.isNestedContainer()
+                && !pageElements.containsKey(container.getParentInstanceId())) {
+                // remove the sub elements from the page list
+                for (CmsContainerElementBean element : container.getElements()) {
+                    pageElements.remove(element.getInstanceId());
+                }
+                // remove the container
+                cntIt.remove();
+            }
+        }
+
+        return new CmsContainerPageBean(containers);
     }
 
     /**
      * Checks the link consistency for a given locale and reinitializes the document afterwards.<p>
      * 
      * @param cms the cms context
-     * @param locale the locale
      */
-    protected void checkLinkConcistency(CmsObject cms, Locale locale) {
+    protected void checkLinkConcistency(CmsObject cms) {
 
-        for (I_CmsXmlContentValue contentValue : getValues(locale)) {
+        Locale masterLocale = CmsLocaleManager.MASTER_LOCALE;
+
+        for (I_CmsXmlContentValue contentValue : getValues(masterLocale)) {
             if (contentValue instanceof CmsXmlVfsFileValue) {
                 CmsLink link = ((CmsXmlVfsFileValue)contentValue).getLink(cms);
                 link.checkConsistency(cms);
@@ -383,7 +411,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         m_elementLocales = new HashMap<String, Set<Locale>>();
         m_elementNames = new HashMap<Locale, Set<String>>();
         m_locales = new HashSet<Locale>();
-        m_cntPages = new HashMap<Locale, CmsContainerPageBean>();
+        m_cntPages = new LinkedHashMap<Locale, CmsContainerPageBean>();
         clearBookmarks();
 
         // initialize the bookmarks
@@ -415,6 +443,12 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     // type
                     Element type = container.element(XmlNode.Type.name());
                     addBookmarkForElement(type, locale, container, cntPath, cntDef);
+
+                    // parent instance id
+                    Element parentInstance = container.element(XmlNode.ParentInstanceId.name());
+                    if (parentInstance != null) {
+                        addBookmarkForElement(parentInstance, locale, container, cntPath, cntDef);
+                    }
 
                     List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
                     // Elements
@@ -472,11 +506,15 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             elements.add(new CmsContainerElementBean(elementId, formatterId, propertiesMap, createNew));
                         }
                     }
-                    CmsContainerBean newContainerBean = new CmsContainerBean(name.getText(), type.getText(), elements);
+                    CmsContainerBean newContainerBean = new CmsContainerBean(
+                        name.getText(),
+                        type.getText(),
+                        parentInstance != null ? parentInstance.getText() : null,
+                        elements);
                     containers.add(newContainerBean);
                 }
 
-                m_cntPages.put(locale, new CmsContainerPageBean(locale, containers));
+                m_cntPages.put(locale, new CmsContainerPageBean(containers));
             } catch (NullPointerException e) {
                 LOG.error(
                     org.opencms.xml.content.Messages.get().getBundle().key(
@@ -506,6 +544,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             Element cntElement = parent.addElement(XmlNode.Containers.name());
             cntElement.addElement(XmlNode.Name.name()).addCDATA(container.getName());
             cntElement.addElement(XmlNode.Type.name()).addCDATA(container.getType());
+            if (container.isNestedContainer()) {
+                cntElement.addElement(XmlNode.ParentInstanceId.name()).addCDATA(container.getParentInstanceId());
+            }
 
             // the elements
             for (CmsContainerElementBean element : container.getElements()) {

@@ -1,0 +1,29 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="http://www.opencms.org/image.xsd"/>
+	<xsd:include schemaLocation="http://www.opencms.org/link.xsd"/>
+
+	<xsd:element name="BootstrapParagraphs" type="OpenCmsBootstrapParagraphs"/>
+	
+	<xsd:complexType name="OpenCmsBootstrapParagraphs">
+		<xsd:sequence>
+			<xsd:element name="BootstrapParagraph" type="OpenCmsBootstrapParagraph" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsBootstrapParagraph">
+		<xsd:sequence>
+			<xsd:element name="Headline" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Text" type="OpenCmsHtml" />
+			<xsd:element name="Image" type="OpenCmsBootstrapImage" minOccurs="0" />
+			<xsd:element name="Link" type="OpenCmsBootstrapLink" minOccurs="0" maxOccurs="5" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

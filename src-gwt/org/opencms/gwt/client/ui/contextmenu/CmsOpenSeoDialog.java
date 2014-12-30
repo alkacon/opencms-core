@@ -79,6 +79,7 @@ public class CmsOpenSeoDialog implements I_CmsHasContextMenuCommand, I_CmsContex
                 @Override
                 protected void onResponse(final CmsPropertiesBean propertyData) {
 
+                    stop(false);
                     CmsRpcAction<CmsListInfoBean> infoAction = new CmsRpcAction<CmsListInfoBean>() {
 
                         @Override

@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.ade.sitemap.CmsSitemapActionElement" contentType="text/plain" %><%
+<%@ page import="org.opencms.ade.sitemap.CmsSitemapActionElement" contentType="text/html" %><%
   CmsSitemapActionElement jsp = new CmsSitemapActionElement(pageContext, request, response);
 %><!DOCTYPE html>
 <html style="height:100%;">

@@ -87,6 +87,7 @@ public class CmsListPrintDialog extends CmsDialog {
     /**
      * @see org.opencms.workplace.tools.CmsToolDialog#dialogTitle()
      */
+    @Override
     public String dialogTitle() {
 
         // build title

@@ -26,7 +26,8 @@
  */
 
 package org.opencms.setup.xml.v7;
-import org.opencms.configuration.CmsConfigurationManager;
+
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.CmsPropertyDefinition;
@@ -40,7 +41,6 @@ import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
-
 
 /**
  * Adds the new rename and comment context menues for image galleries.<p>
@@ -316,8 +316,6 @@ public class CmsXmlAddImgGalleryContextMenues extends A_CmsXmlWorkplace {
             xp.append("']");
             // ???: linkgallery, htmlgallery, tablegallery
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "linkgallery"));
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "htmlgallery"));
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "tablegallery"));
 
             xp = new StringBuffer(256);
             xp.append("/").append(CmsConfigurationManager.N_ROOT);

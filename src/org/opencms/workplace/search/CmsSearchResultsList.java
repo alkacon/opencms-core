@@ -114,6 +114,7 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -122,15 +123,16 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             // forward to the editor
-            Map params = new HashMap();
-            params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
-            params.put(CmsDialog.PARAM_CLOSELINK, CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp");
-            params.put(CmsEditor.PARAM_BACKLINK, CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp");
-            params.put(CmsDialog.PARAM_RESOURCE, getSelectedItem().get(LIST_COLUMN_NAME));
+            Map<String, String[]> params = new HashMap<String, String[]>();
+            params.put(CmsDialog.PARAM_ACTION, new String[] {CmsDialog.DIALOG_INITIAL});
+            params.put(CmsDialog.PARAM_CLOSELINK, new String[] {CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp"});
+            params.put(CmsEditor.PARAM_BACKLINK, new String[] {CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp"});
+            params.put(CmsDialog.PARAM_RESOURCE, new String[] {(String)getSelectedItem().get(LIST_COLUMN_NAME)});
             getToolManager().jspForwardPage(this, "/system/workplace/explorer/search/edit.jsp", params);
         } else {
             throwListUnsupportedActionException();
@@ -140,6 +142,7 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
@@ -168,6 +171,7 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
      * 
      * @return html code
      */
+    @Override
     protected String defaultActionHtmlStart() {
 
         StringBuffer result = new StringBuffer(2048);
@@ -188,14 +192,15 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // excerpt detail is enabled
         if (detailId.equals(LIST_DETAIL_EXCERPT)) {
             CmsSearchResourcesCollector collector = (CmsSearchResourcesCollector)getCollector();
-            Iterator itResources = getList().getAllContent().iterator();
+            Iterator<CmsListItem> itResources = getList().getAllContent().iterator();
             while (itResources.hasNext()) {
-                CmsListItem item = (CmsListItem)itResources.next();
+                CmsListItem item = itResources.next();
                 // get excerpt for item
                 if (!item.getId().equals(CmsUUID.getNullUUID().toString())) {
                     CmsSearchResult result = collector.getSearchResult(item.getId());
@@ -210,6 +215,7 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -221,6 +227,7 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
@@ -232,9 +239,9 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
         scoreCol.setAlign(CmsListColumnAlignEnum.ALIGN_RIGHT);
         metadata.addColumn(scoreCol);
 
-        Iterator it = metadata.getColumnDefinitions().iterator();
+        Iterator<CmsListColumnDefinition> it = metadata.getColumnDefinitions().iterator();
         while (it.hasNext()) {
-            CmsListColumnDefinition column = (CmsListColumnDefinition)it.next();
+            CmsListColumnDefinition column = it.next();
             column.setSorteable(false);
         }
     }
@@ -242,6 +249,7 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setColumnVisibilities()
      */
+    @Override
     protected void setColumnVisibilities() {
 
         super.setColumnVisibilities();
@@ -251,6 +259,7 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         super.setIndependentActions(metadata);
@@ -268,6 +277,7 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.I_CmsListFormatter#format(java.lang.Object, java.util.Locale)
              */
+            @Override
             public String format(Object data, Locale locale) {
 
                 return (String)data;
@@ -279,6 +289,7 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no LMAs
@@ -287,6 +298,7 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (getSearchParams() == null) {
@@ -301,8 +313,11 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
      */
     private CmsSearchWorkplaceBean getSearchParams() {
 
-        if (m_searchParams == null) {
-            m_searchParams = (CmsSearchWorkplaceBean)((Map)getSettings().getDialogObject()).get(CmsSearchDialog.class.getName());
+        if ((m_searchParams == null) && (getSettings().getDialogObject() instanceof Map<?, ?>)) {
+            Map<?, ?> dialogObject = (Map<?, ?>)getSettings().getDialogObject();
+            if (dialogObject.get(CmsSearchDialog.class.getName()) instanceof CmsSearchWorkplaceBean) {
+                m_searchParams = (CmsSearchWorkplaceBean)dialogObject.get(CmsSearchDialog.class.getName());
+            }
         }
         return m_searchParams;
     }

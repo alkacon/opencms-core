@@ -162,7 +162,7 @@ public class TestProjects extends OpenCmsTestCase {
                 projectName,
                 "Unit test project 1",
                 OpenCms.getDefaultUsers().getGroupUsers(),
-                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+                OpenCms.getDefaultUsers().getGroupAdministrators(),
                 CmsProject.PROJECT_TYPE_NORMAL);
             cms.getRequestContext().setCurrentProject(project);
             cms.copyResourceToProject("/sites/default/index.html");
@@ -205,7 +205,7 @@ public class TestProjects extends OpenCmsTestCase {
             projectName,
             "Unit test project 2",
             OpenCms.getDefaultUsers().getGroupUsers(),
-            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+            OpenCms.getDefaultUsers().getGroupAdministrators(),
             CmsProject.PROJECT_TYPE_NORMAL);
 
         // some basic project tests
@@ -269,7 +269,7 @@ public class TestProjects extends OpenCmsTestCase {
             projectName,
             projectName,
             OpenCms.getDefaultUsers().getGroupUsers(),
-            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+            OpenCms.getDefaultUsers().getGroupAdministrators(),
             CmsProject.PROJECT_TYPE_NORMAL);
         cms.getRequestContext().setCurrentProject(project);
         // add folder to project
@@ -328,56 +328,6 @@ public class TestProjects extends OpenCmsTestCase {
     }
 
     /**
-     * Test the "move folder in project" function.<p>
-     * 
-     * @throws Exception if the test fails
-     */
-    public void testMoveFolderInProject() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing moving folder in project");
-
-        String projectName = "testMoveFolderInProject";
-
-        cms.getRequestContext().setSiteRoot("/sites/default/");
-        String folderName = "/xmlcontent/";
-
-        // create new project
-        CmsProject project = cms.createProject(
-            projectName,
-            projectName,
-            OpenCms.getDefaultUsers().getGroupUsers(),
-            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
-            CmsProject.PROJECT_TYPE_NORMAL);
-        cms.getRequestContext().setCurrentProject(project);
-        // add folder to project
-        cms.copyResourceToProject(folderName);
-
-        // check the project resources
-        List<String> resNames = cms.readProjectResources(project);
-        assertEquals(1, resNames.size());
-        assertEquals(cms.getRequestContext().addSiteRoot(folderName), resNames.get(0));
-
-        // move folder
-        String destFolder = "/testMoveFolderInProject/";
-        cms.lockResource(folderName);
-        cms.moveResource(folderName, destFolder);
-
-        // check the project resources
-        resNames = cms.readProjectResources(project);
-        assertEquals(1, resNames.size());
-        assertEquals(cms.getRequestContext().addSiteRoot(destFolder), resNames.get(0));
-
-        // undo changes
-        cms.undoChanges(destFolder, CmsResource.UNDO_MOVE_CONTENT);
-
-        // check the project resources
-        resNames = cms.readProjectResources(project);
-        assertEquals(1, resNames.size());
-        assertEquals(cms.getRequestContext().addSiteRoot(folderName), resNames.get(0));
-    }
-
-    /**
      * Test the "delete new folder in project" function.<p>
      * 
      * @throws Exception if the test fails
@@ -399,7 +349,7 @@ public class TestProjects extends OpenCmsTestCase {
             projectName,
             projectName,
             OpenCms.getDefaultUsers().getGroupUsers(),
-            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+            OpenCms.getDefaultUsers().getGroupAdministrators(),
             CmsProject.PROJECT_TYPE_NORMAL);
         cms.getRequestContext().setCurrentProject(project);
         // add new folder to project
@@ -456,7 +406,7 @@ public class TestProjects extends OpenCmsTestCase {
             projectName,
             "Unit test project 3",
             OpenCms.getDefaultUsers().getGroupUsers(),
-            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+            OpenCms.getDefaultUsers().getGroupAdministrators(),
             CmsProject.PROJECT_TYPE_NORMAL);
 
         // use the main folder as start folder for the project
@@ -509,6 +459,56 @@ public class TestProjects extends OpenCmsTestCase {
     }
 
     /**
+     * Test the "move folder in project" function.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testMoveFolderInProject() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing moving folder in project");
+
+        String projectName = "testMoveFolderInProject";
+
+        cms.getRequestContext().setSiteRoot("/sites/default/");
+        String folderName = "/xmlcontent/";
+
+        // create new project
+        CmsProject project = cms.createProject(
+            projectName,
+            projectName,
+            OpenCms.getDefaultUsers().getGroupUsers(),
+            OpenCms.getDefaultUsers().getGroupAdministrators(),
+            CmsProject.PROJECT_TYPE_NORMAL);
+        cms.getRequestContext().setCurrentProject(project);
+        // add folder to project
+        cms.copyResourceToProject(folderName);
+
+        // check the project resources
+        List<String> resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(folderName), resNames.get(0));
+
+        // move folder
+        String destFolder = "/testMoveFolderInProject/";
+        cms.lockResource(folderName);
+        cms.moveResource(folderName, destFolder);
+
+        // check the project resources
+        resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(destFolder), resNames.get(0));
+
+        // undo changes
+        cms.undoChanges(destFolder, CmsResource.UNDO_MOVE_CONTENT);
+
+        // check the project resources
+        resNames = cms.readProjectResources(project);
+        assertEquals(1, resNames.size());
+        assertEquals(cms.getRequestContext().addSiteRoot(folderName), resNames.get(0));
+    }
+
+    /**
      * Test the "readProjectResources" method.<p>
      * 
      * @throws Exception if the test fails
@@ -528,7 +528,7 @@ public class TestProjects extends OpenCmsTestCase {
                 projectName,
                 "Unit test project 4",
                 OpenCms.getDefaultUsers().getGroupUsers(),
-                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+                OpenCms.getDefaultUsers().getGroupAdministrators(),
                 CmsProject.PROJECT_TYPE_NORMAL);
             cms.getRequestContext().setCurrentProject(project);
             cms.copyResourceToProject("/sites/default/index.html");

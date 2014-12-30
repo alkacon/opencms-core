@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -216,7 +217,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
      * 
      * @return a comma separated list of the default search type names 
      */
-    protected static String getDefaultSearchTypes(CmsObject cms, CmsResource resource) {
+    public static String getDefaultSearchTypes(CmsObject cms, CmsResource resource) {
 
         StringBuffer result = new StringBuffer();
         String referenceSitePath = cms.getSitePath(resource);
@@ -233,6 +234,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
                 result.append(typeName).append(",");
             }
         }
+        result.append(CmsResourceTypeXmlContainerPage.getStaticTypeName()).append(",");
         result.append(CmsResourceTypeBinary.getStaticTypeName()).append(",");
         result.append(CmsResourceTypeImage.getStaticTypeName()).append(",");
         result.append(CmsResourceTypePlain.getStaticTypeName());
@@ -586,6 +588,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
             config.put(I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH, cms.getSitePath(resource));
             config.put(I_CmsGalleryProviderConstants.CONFIG_LOCALE, contentLocale.toString());
             config.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE, GalleryMode.widget.name());
+            config.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_STORAGE_PREFIX, "linkselect");
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_selectableTypes)) {
                 config.put(I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES, m_selectableTypes.trim());
             }

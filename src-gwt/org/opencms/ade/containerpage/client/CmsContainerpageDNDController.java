@@ -29,11 +29,15 @@ package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsDroppedElementModeSelectionDialog;
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementReuseMode;
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.ade.galleries.client.ui.CmsResultListItem;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
@@ -41,10 +45,13 @@ import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -52,8 +59,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.base.Objects;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
@@ -64,7 +73,6 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -74,79 +82,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsContainerpageDNDController implements I_CmsDNDController {
 
-    /**
-     * Bean holding info about draggable elements.<p>
-     */
-    protected class DragInfo {
-
-        /** The drag helper element. */
-        private Element m_dragHelper;
-
-        /** The cursor offset top. */
-        private int m_offsetX;
-
-        /** The cursor offset left. */
-        private int m_offsetY;
-
-        /** The placeholder element. */
-        private Element m_placeholder;
-
-        /**
-         * Constructor.<p>
-         * 
-         * @param dragHelper the drag helper element
-         * @param placeholder the elements place-holder
-         * @param offsetX the cursor offset x
-         * @param offsetY the cursor offset y
-         */
-        protected DragInfo(Element dragHelper, Element placeholder, int offsetX, int offsetY) {
-
-            m_dragHelper = dragHelper;
-            m_placeholder = placeholder;
-            m_offsetX = offsetX;
-            m_offsetY = offsetY;
-        }
-
-        /**
-         * Returns the offset x.<p>
-         *
-         * @return the offset x
-         */
-        public int getOffsetX() {
-
-            return m_offsetX;
-        }
-
-        /**
-         * Returns the offset y.<p>
-         *
-         * @return the offset y
-         */
-        public int getOffsetY() {
-
-            return m_offsetY;
-        }
-
-        /**
-         * Returns the drag helper element.<p>
-         * 
-         * @return the drag helper element
-         */
-        protected Element getDragHelper() {
-
-            return m_dragHelper;
-        }
-
-        /**
-         * Returns the placeholder element.<p>
-         * 
-         * @return the placeholder element
-         */
-        protected Element getPlaceholder() {
-
-            return m_placeholder;
-        }
-    }
+    /** The container highlighting offset. */
+    public static final int HIGHLIGHTING_OFFSET = 4;
 
     /** The minimum margin set to empty containers. */
     private static final int MINIMUM_CONTAINER_MARGIN = 10;
@@ -164,7 +101,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     private I_CmsDropTarget m_currentTarget;
 
     /** Map of current drag info beans. */
-    private Map<I_CmsDropTarget, DragInfo> m_dragInfos;
+    private Map<I_CmsDropTarget, Element> m_dragInfos;
 
     /** The drag overlay. */
     private Element m_dragOverlay;
@@ -174,6 +111,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
     /** Creating new flag. */
     private boolean m_isNew;
+
+    /** The id of the container from which an element was dragged. */
+    private String m_originalContainerId;
 
     /** The original position of the draggable. */
     private int m_originalIndex;
@@ -186,7 +126,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     public CmsContainerpageDNDController(CmsContainerpageController controller) {
 
         m_controller = controller;
-        m_dragInfos = new HashMap<I_CmsDropTarget, DragInfo>();
+        m_dragInfos = new HashMap<I_CmsDropTarget, Element>();
     }
 
     /**
@@ -221,7 +161,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /**
      * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onDragStart(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
      */
-    public boolean onDragStart(I_CmsDraggable draggable, I_CmsDropTarget target, final CmsDNDHandler handler) {
+    public boolean onDragStart(final I_CmsDraggable draggable, I_CmsDropTarget target, final CmsDNDHandler handler) {
 
         installDragOverlay();
         m_currentTarget = null;
@@ -240,20 +180,23 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             }
         }
 
+        String containerId = null;
+        if (target instanceof CmsContainerPageContainer) {
+            containerId = ((CmsContainerPageContainer)target).getContainerId();
+        }
+        m_originalContainerId = containerId;
+
         if (target != null) {
             handler.addTarget(target);
             if (target instanceof I_CmsDropContainer) {
                 prepareTargetContainer((I_CmsDropContainer)target, draggable, handler.getPlaceholder());
+                Element helper = handler.getDragHelper();
+                handler.setCursorOffsetX(helper.getOffsetWidth() - 15);
+                handler.setCursorOffsetY(20);
             }
         }
 
-        m_dragInfos.put(
-            target,
-            new DragInfo(
-                handler.getDragHelper(),
-                handler.getPlaceholder(),
-                handler.getCursorOffsetX(),
-                handler.getCursorOffsetY()));
+        m_dragInfos.put(target, handler.getPlaceholder());
         m_controller.getHandler().hideMenu();
         String clientId = draggable.getId();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(clientId)) {
@@ -269,12 +212,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
              */
             public void execute(CmsContainerElementData arg) {
 
-                prepareHelperElements(arg, handler);
+                prepareHelperElements(arg, handler, draggable);
             }
         };
         if (isNewId(clientId)) {
             // for new content elements dragged from the gallery menu, the given id contains the resource type name
-            //clientId = m_controller.getNewResourceId(clientId);
             m_isNew = true;
             m_controller.getNewElement(clientId, callback);
         } else {
@@ -286,22 +228,22 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         // will never be called 
                     }
 
+                    @SuppressWarnings("synthetic-access")
                     public void onSuccess(CmsUUID result) {
 
                         String idString = result.toString();
                         m_draggableId = idString;
 
-                        m_controller.getElement(idString, callback);
+                        m_controller.getElementForDragAndDropFromContainer(idString, m_originalContainerId, callback);
                     }
                 });
             } else {
-                m_controller.getElement(clientId, callback);
+                m_controller.getElementForDragAndDropFromContainer(clientId, m_originalContainerId, callback);
             }
 
         }
         if (target instanceof CmsContainerPageContainer) {
-            String id = ((CmsContainerPageContainer)target).getContainerId();
-            CmsContainerpageEditor.getZIndexManager().start(id);
+            CmsContainerpageEditor.getZIndexManager().start(containerId);
         } else {
             handler.setStartPosition(-1, 0);
         }
@@ -314,6 +256,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     public void onDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
         boolean changedContainerpage = false;
+        boolean isListItem = draggable instanceof CmsListItem;
+        CmsContainerPageElementPanel listContainerElement = null;
+        final boolean[] triggerReload = {false};
+        boolean hasWritePermissions = true;
+
         if (target != m_initialDropTarget) {
             if (target instanceof I_CmsDropContainer) {
                 I_CmsDropContainer container = (I_CmsDropContainer)target;
@@ -325,11 +272,19 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         containerElement = m_controller.getContainerpageUtil().createElement(
                             m_controller.getCachedElement(m_draggableId),
                             container);
-                        containerElement.setNewType(m_draggableId);
+                        containerElement.setNewType(CmsContainerpageController.getServerId(m_draggableId));
                     } else {
                         CmsContainerElementData elementData = m_controller.getCachedElement(m_draggableId);
+                        hasWritePermissions = elementData.hasWritePermission();
+                        if ((elementData.getDndId() != null)
+                            && (null != m_controller.getCachedElement(elementData.getDndId()))) {
+                            elementData = m_controller.getCachedElement(elementData.getDndId());
+                        }
                         containerElement = m_controller.getContainerpageUtil().createElement(elementData, container);
-                        m_controller.addToRecentList(m_draggableId, null);
+                        if (isListItem) {
+                            listContainerElement = containerElement;
+                        }
+                        m_controller.addToRecentList(elementData.getClientId(), null);
                     }
                     handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
                     if (container.getPlaceholderIndex() >= container.getWidgetCount()) {
@@ -339,9 +294,15 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     }
                     // changes are only relevant to the container page if not group-container editing
                     changedContainerpage = !m_controller.isGroupcontainerEditing();
+                    triggerReload[0] = containerElement.getElement().getInnerHTML().contains(
+                        CmsGwtConstants.FORMATTER_RELOAD_MARKER)
+                        && changedContainerpage
+                        && !m_isNew;
+
                     if (draggable instanceof CmsContainerPageElementPanel) {
                         ((CmsContainerPageElementPanel)draggable).removeFromParent();
                     }
+                    m_controller.initializeSubContainers(containerElement);
                 } catch (Exception e) {
                     CmsDebugLog.getInstance().printLine(e.getMessage());
                 }
@@ -349,13 +310,14 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     container.getElement().removeClassName(
                         I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
                 }
+
             } else if (target instanceof CmsList<?>) {
                 m_controller.addToFavoriteList(m_draggableId);
             }
         } else if ((target instanceof I_CmsDropContainer)
             && (draggable instanceof CmsContainerPageElementPanel)
             && isChangedPosition(target)) {
-
+            CmsDomUtil.showOverlay(draggable.getElement(), false);
             I_CmsDropContainer container = (I_CmsDropContainer)target;
             int count = container.getWidgetCount();
             handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
@@ -368,14 +330,100 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             // changes are only relevant to the container page if not group-container editing
             changedContainerpage = !m_controller.isGroupcontainerEditing();
         } else if (draggable instanceof CmsContainerPageElementPanel) {
+            CmsDomUtil.showOverlay(draggable.getElement(), false);
             // to reset mouse over state remove and attach the option bar 
             CmsContainerPageElementPanel containerElement = (CmsContainerPageElementPanel)draggable;
             CmsElementOptionBar optionBar = containerElement.getElementOptionBar();
             optionBar.removeFromParent();
             containerElement.setElementOptionBar(optionBar);
         }
-        if (changedContainerpage) {
-            m_controller.setPageChanged();
+        final Runnable checkReload = new Runnable() {
+
+            public void run() {
+
+                if (triggerReload[0]) {
+                    CmsContainerpageController.get().reloadPage();
+                }
+            }
+
+        };
+
+        if (listContainerElement != null) {
+            final CmsContainerPageElementPanel finalListContainerElement = listContainerElement;
+            final String serverIdStr = CmsContainerpageController.getServerId(m_draggableId);
+            CmsUUID structureId = new CmsUUID(serverIdStr);
+
+            AsyncCallback<String> modeCallback = new AsyncCallback<String>() {
+
+                public void onFailure(Throwable caught) {
+
+                    finalListContainerElement.removeFromParent();
+                }
+
+                public void onSuccess(String result) {
+
+                    if (Objects.equal(result, CmsEditorConstants.MODE_COPY)) {
+                        final CmsContainerpageController controller = CmsContainerpageController.get();
+                        CmsContainerElementData data = controller.getCachedElement(finalListContainerElement.getId());
+                        final Map<String, String> settings = data.getSettings();
+                        controller.copyElement(serverIdStr, new AsyncCallback<CmsUUID>() {
+
+                            public void onFailure(Throwable caught) {
+
+                                // this should never happen, in theory
+
+                            }
+
+                            public void onSuccess(CmsUUID resultId) {
+
+                                controller.getElementWithSettings(
+                                    "" + resultId,
+                                    settings,
+                                    new I_CmsSimpleCallback<CmsContainerElementData>() {
+
+                                        public void execute(CmsContainerElementData newData) {
+
+                                            try {
+                                                controller.replaceContainerElement(finalListContainerElement, newData);
+                                                controller.setPageChanged(checkReload);
+                                            } catch (Exception e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        }
+                                    });
+                            }
+                        });
+
+                    } else if (Objects.equal(result, CmsEditorConstants.MODE_REUSE)) {
+                        m_controller.setPageChanged(checkReload);
+                    }
+
+                }
+            };
+            ElementReuseMode reuseMode = CmsContainerpageController.get().getData().getElementReuseMode();
+            if (!hasWritePermissions) {
+                // User is not allowed to create this element in current view, so reuse the element instead 
+                reuseMode = ElementReuseMode.reuse;
+            }
+            switch (reuseMode) {
+                case ask:
+                    // when dropping elements from the into the page, we ask the user if the dropped element should 
+                    // be used, or a copy of it. If the user wants a copy, we copy the corresponding resource and replace the element
+                    // in the page 
+                    CmsDroppedElementModeSelectionDialog.showDialog(structureId, modeCallback);
+                    break;
+                case copy:
+                    modeCallback.onSuccess(CmsEditorConstants.MODE_COPY);
+                    break;
+                case reuse:
+                default:
+                    modeCallback.onSuccess(CmsEditorConstants.MODE_REUSE);
+                    break;
+            }
+        } else {
+            if (changedContainerpage) {
+                m_controller.setPageChanged(checkReload);
+            }
         }
         stopDrag(handler);
     }
@@ -386,7 +434,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     public void onPositionedPlaceholder(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
         if (hasChangedPosition(target)) {
-            updateHighlighting();
+            checkPlaceholderVisibility(target);
+            updateHighlighting(false);
         }
     }
 
@@ -395,18 +444,14 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     public boolean onTargetEnter(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        DragInfo info = m_dragInfos.get(target);
-        if (info != null) {
-            hideCurrentHelpers(handler);
-            replaceCurrentHelpers(handler, info);
+        Element placeholder = m_dragInfos.get(target);
+        if (placeholder != null) {
+            handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
+            handler.setPlaceholder(placeholder);
+            placeholder.getStyle().clearDisplay();
             if ((target != m_initialDropTarget) && (target instanceof I_CmsDropContainer)) {
                 ((I_CmsDropContainer)target).checkMaxElementsOnEnter();
             }
-        }
-        if (target != m_initialDropTarget) {
-            showOriginalPositionPlaceholder(draggable, true);
-        } else {
-            hideOriginalPositionPlaceholder(draggable);
         }
         if (target instanceof CmsContainerPageContainer) {
             CmsContainerPageContainer cont = (CmsContainerPageContainer)target;
@@ -422,17 +467,16 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         m_currentTarget = null;
         m_currentIndex = -1;
-        DragInfo info = m_dragInfos.get(m_initialDropTarget);
-        if (info != null) {
-            hideCurrentHelpers(handler);
-            replaceCurrentHelpers(handler, info);
+        Element placeholder = m_dragInfos.get(m_initialDropTarget);
+        if (placeholder != null) {
             handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
+            handler.setPlaceholder(placeholder);
+            placeholder.getStyle().setDisplay(Display.NONE);
             if ((target != m_initialDropTarget) && (target instanceof I_CmsDropContainer)) {
                 ((I_CmsDropContainer)target).checkMaxElementsOnLeave();
             }
         }
-        showOriginalPositionPlaceholder(draggable, false);
-        updateHighlighting();
+        updateHighlighting(false);
         if (target instanceof CmsContainerPageContainer) {
             String id = ((CmsContainerPageContainer)target).getContainerId();
             CmsContainerpageEditor.getZIndexManager().leave(id);
@@ -445,8 +489,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      * 
      * @param elementData the element data
      * @param handler the drag and drop handler
+     * @param draggable the draggable
      */
-    protected void prepareHelperElements(CmsContainerElementData elementData, CmsDNDHandler handler) {
+    protected void prepareHelperElements(
+        CmsContainerElementData elementData,
+        CmsDNDHandler handler,
+        I_CmsDraggable draggable) {
 
         if (!handler.isDragging()) {
             return;
@@ -462,12 +510,17 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         }
 
+        if ((elementData.getDndId() != null) && (m_controller.getCachedElement(elementData.getDndId()) != null)) {
+            m_draggableId = elementData.getDndId();
+            elementData = m_controller.getCachedElement(m_draggableId);
+        } else {
+            m_draggableId = elementData.getClientId();
+        }
         if (m_controller.isGroupcontainerEditing()) {
             CmsGroupContainerElementPanel groupContainer = m_controller.getGroupcontainer();
             if ((groupContainer != m_initialDropTarget)
                 && !(elementData.isGroupContainer() || elementData.isInheritContainer())
-                && elementData.getContents().containsKey(groupContainer.getContainerId())) {
-                Element helper = null;
+                && (elementData.getContents().get(groupContainer.getContainerId()) != null)) {
                 Element placeholder = null;
                 Set<String> cssResources = elementData.getCssResources(groupContainer.getContainerId());
                 if ((cssResources != null) && !cssResources.isEmpty()) {
@@ -478,17 +531,16 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 }
                 try {
                     String htmlContent = elementData.getContents().get(groupContainer.getContainerId());
-                    helper = CmsDomUtil.createElement(htmlContent);
+                    placeholder = CmsDomUtil.createElement(htmlContent);
                     // ensure any embedded flash players are set opaque so UI elements may be placed above them
-                    CmsDomUtil.fixFlashZindex(helper);
-                    placeholder = CmsDomUtil.clone(helper);
+                    CmsDomUtil.fixFlashZindex(placeholder);
                     placeholder.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
                 } catch (Exception e) {
                     CmsDebugLog.getInstance().printLine(e.getMessage());
                 }
 
-                if (helper != null) {
-                    prepareDragInfo(helper, placeholder, groupContainer, handler);
+                if (placeholder != null) {
+                    prepareDragInfo(placeholder, groupContainer, handler);
                     groupContainer.highlightContainer();
                 }
             }
@@ -496,30 +548,39 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
         if (!m_controller.isEditingDisabled()) {
             for (CmsContainerPageContainer container : m_controller.getContainerTargets().values()) {
-
+                if (draggable.getElement().isOrHasChild(container.getElement())) {
+                    // skip containers that are children of the draggable element
+                    continue;
+                }
                 if ((container != m_initialDropTarget)
                     && !container.isDetailView()
-                    && elementData.getContents().containsKey(container.getContainerId())) {
+                    && (elementData.getContents().get(container.getContainerId()) != null)) {
 
-                    Element helper = null;
                     Element placeholder = null;
                     if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
-                        helper = DOM.createDiv();
+                        placeholder = DOM.createDiv();
                         String content = "";
                         for (String groupId : elementData.getSubItems()) {
                             CmsContainerElementData subData = m_controller.getCachedElement(groupId);
-                            if ((subData != null) && subData.getContents().containsKey(container.getContainerId())) {
-                                content += subData.getContents().get(container.getContainerId());
+                            if (subData != null) {
+                                if (subData.isShowInContext(CmsContainerpageController.get().getData().getTemplateContextInfo().getCurrentContext())) {
+                                    if ((subData.getContents().get(container.getContainerId()) != null)) {
+                                        content += subData.getContents().get(container.getContainerId());
+                                    }
+                                } else {
+                                    content += "<div class='"
+                                        + CmsTemplateContextInfo.DUMMY_ELEMENT_MARKER
+                                        + "' style='display: none !important;'></div>";
+                                }
                             }
                         }
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
-                            helper.setInnerHTML(content);
+                            placeholder.setInnerHTML(content);
                             // ensure any embedded flash players are set opaque so UI elements may be placed above them
-                            CmsDomUtil.fixFlashZindex(helper);
+                            CmsDomUtil.fixFlashZindex(placeholder);
                         } else {
-                            helper.addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
+                            placeholder.addClassName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
                         }
-                        placeholder = CmsDomUtil.clone(helper);
                     } else {
                         Set<String> cssResources = elementData.getCssResources(container.getContainerId());
                         if ((cssResources != null) && !cssResources.isEmpty()) {
@@ -530,31 +591,37 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         }
                         try {
                             String htmlContent = elementData.getContents().get(container.getContainerId());
-                            helper = CmsDomUtil.createElement(htmlContent);
+                            placeholder = CmsDomUtil.createElement(htmlContent);
                             // ensure any embedded flash players are set opaque so UI elements may be placed above them
-                            CmsDomUtil.fixFlashZindex(helper);
-                            placeholder = CmsDomUtil.clone(helper);
+                            CmsDomUtil.fixFlashZindex(placeholder);
                             placeholder.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragPlaceholder());
                         } catch (Exception e) {
                             CmsDebugLog.getInstance().printLine(e.getMessage());
                         }
                     }
-                    if (helper != null) {
-                        prepareDragInfo(helper, placeholder, container, handler);
+                    if (placeholder != null) {
+                        prepareDragInfo(placeholder, container, handler);
                     }
                 }
             }
+            initNestedContainers();
             // add highlighting after all drag targets have been initialized
-            for (I_CmsDropTarget target : m_dragInfos.keySet()) {
-                if (target instanceof I_CmsDropContainer) {
-                    if (target == m_initialDropTarget) {
-                        // the initial target is already highlighted, update the position
-                        ((I_CmsDropContainer)target).refreshHighlighting();
-                    } else {
-                        ((I_CmsDropContainer)target).highlightContainer();
-                    }
-                }
-            }
+            updateHighlighting(true);
+        }
+    }
+
+    /**
+     * Checks and sets if the place holder should be visible.<p>
+     *  
+     * @param target the target container
+     */
+    private void checkPlaceholderVisibility(I_CmsDropTarget target) {
+
+        if (target instanceof I_CmsDropContainer) {
+            I_CmsDropContainer container = (I_CmsDropContainer)target;
+            container.setPlaceholderVisibility((container != m_initialDropTarget)
+                || ((m_currentIndex - m_originalIndex) > 1)
+                || ((m_originalIndex - m_currentIndex) > 0));
         }
     }
 
@@ -576,25 +643,32 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     }
 
     /**
-     * Hides the current drag helper and place-holder.<p>
-     * 
-     * @param handler the drag and drop handler
+     * Initializes the nested container infos.<p>
      */
-    private void hideCurrentHelpers(CmsDNDHandler handler) {
+    private void initNestedContainers() {
 
-        handler.getDragHelper().getStyle().setDisplay(Display.NONE);
-        handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
-    }
+        for (CmsContainer container : m_controller.getContainers().values()) {
+            if (container.isSubContainer()) {
+                CmsContainerPageContainer containerWidget = m_controller.m_targetContainers.get(container.getName());
+                // check if the sub container is a valid drop targets
+                if (m_dragInfos.keySet().contains(containerWidget)) {
+                    CmsContainer parentContainer = m_controller.getContainers().get(container.getParentContainerName());
+                    // add the container to all it's ancestors as a dnd child
+                    while (parentContainer != null) {
+                        if (m_dragInfos.keySet().contains(
+                            m_controller.m_targetContainers.get(parentContainer.getName()))) {
+                            m_controller.m_targetContainers.get(parentContainer.getName()).addDndChild(containerWidget);
+                        }
+                        if (parentContainer.isSubContainer()) {
+                            parentContainer = m_controller.getContainers().get(parentContainer.getParentContainerName());
+                        } else {
+                            parentContainer = null;
+                        }
+                    }
+                }
+            }
 
-    /**
-     * Hides the the draggable on it'e original position.<p>
-     * 
-     * @param draggable the draggable
-     */
-    private void hideOriginalPositionPlaceholder(I_CmsDraggable draggable) {
-
-        draggable.getElement().getStyle().setDisplay(Display.NONE);
-        CmsDomUtil.showOverlay(draggable.getElement(), false);
+        }
     }
 
     /**
@@ -660,13 +734,13 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /**
      * Sets styles of helper elements, appends the to the drop target and puts them into a drag info bean.<p>
      * 
-     * @param dragHelper the drag helper element
      * @param placeholder the placeholder element
      * @param target the drop target
      * @param handler the drag and drop handler
      */
-    private void prepareDragInfo(Element dragHelper, Element placeholder, I_CmsDropTarget target, CmsDNDHandler handler) {
+    private void prepareDragInfo(Element placeholder, I_CmsDropContainer target, CmsDNDHandler handler) {
 
+        target.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
         String positioning = CmsDomUtil.getCurrentStyle(
             target.getElement(),
             org.opencms.gwt.client.util.CmsDomUtil.Style.position);
@@ -683,32 +757,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 }
             }
         }
-
-        target.getElement().appendChild(dragHelper);
-        // preparing helper styles
-        int width = CmsDomUtil.getCurrentStyleInt(dragHelper, CmsDomUtil.Style.width);
-        Style style = dragHelper.getStyle();
-        style.setPosition(Position.ABSOLUTE);
-        style.setMargin(0, Unit.PX);
-        style.setWidth(width, Unit.PX);
-        style.setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexDND());
-        dragHelper.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
-        dragHelper.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().shadow());
-        if (!CmsDomUtil.hasBackgroundImage(dragHelper)) {
-            dragHelper.getStyle().setBackgroundColor(CmsDomUtil.getEffectiveBackgroundColor(dragHelper));
-        }
-        if (!CmsDomUtil.hasBorder(dragHelper)) {
-            dragHelper.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElementBorder());
-        }
-        style.setDisplay(Display.NONE);
-        m_dragInfos.put(target, new DragInfo(dragHelper, placeholder, width - 15, handler.getCursorOffsetY()));
+        m_dragInfos.put(target, placeholder);
         handler.addTarget(target);
-
-        // adding drag handle
-        Element button = DOM.createDiv();
-        button.appendChild((new Image(I_CmsImageBundle.INSTANCE.icons().moveIconActive())).getElement());
-        button.addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragHandle());
-        dragHelper.appendChild(button);
     }
 
     /**
@@ -732,7 +782,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
         m_originalIndex = targetContainer.getWidgetIndex((Widget)draggable);
         targetContainer.getElement().insertBefore(placeholder, draggable.getElement());
-        draggable.getElement().getStyle().setDisplay(Display.NONE);
+        targetContainer.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
+        CmsDomUtil.showOverlay(draggable.getElement(), true);
         targetContainer.highlightContainer();
     }
 
@@ -747,34 +798,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
     }
 
-    /**
-     * Replaces the current drag helper and place-holder in the drag handler sets them both to visible.<p>
-     *  
-     * @param handler the drag and drop handler
-     * @param info the drag info referencing the replacement helpers
-     */
-    private void replaceCurrentHelpers(CmsDNDHandler handler, DragInfo info) {
-
-        handler.setDragHelper(info.getDragHelper());
-        handler.setPlaceholder(info.getPlaceholder());
-        handler.setCursorOffsetX(info.getOffsetX());
-        handler.setCursorOffsetY(info.getOffsetY());
-        handler.getDragHelper().getStyle().setDisplay(Display.BLOCK);
-        handler.getPlaceholder().getStyle().clearDisplay();
-    }
-
-    /**
-     * Shows the draggable on it's original position.<p>
-     * 
-     * @param draggable the draggable
-     * @param withOverlay <code>true</code> to show the disabling overlay
-     */
-    private void showOriginalPositionPlaceholder(I_CmsDraggable draggable, boolean withOverlay) {
-
-        draggable.getElement().getStyle().clearDisplay();
-        CmsDomUtil.showOverlay(draggable.getElement(), withOverlay);
-    }
-
     /** 
      * Function which is called when the drag process is stopped, either by cancelling or dropping.<p>
      * 
@@ -785,17 +808,19 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         removeDragOverlay();
         CmsContainerpageEditor.getZIndexManager().stop();
         for (I_CmsDropTarget target : m_dragInfos.keySet()) {
+            target.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragging());
+            target.getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().clearFix());
             Style targetStyle = target.getElement().getStyle();
             if (!(target instanceof CmsGroupContainerElementPanel)) {
                 targetStyle.clearPosition();
             }
             targetStyle.clearMarginTop();
             targetStyle.clearMarginBottom();
-            m_dragInfos.get(target).getDragHelper().removeFromParent();
             if (target instanceof I_CmsDropContainer) {
                 ((I_CmsDropContainer)target).removeHighlighting();
             }
         }
+        handler.getDragHelper().removeFromParent();
         m_currentTarget = null;
         m_currentIndex = -1;
         m_isNew = false;
@@ -815,6 +840,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 for (I_CmsDropTarget target : dragTargets) {
                     if (target instanceof I_CmsDropContainer) {
                         ((I_CmsDropContainer)target).refreshHighlighting();
+                        // reset the nested container infos
+                        ((I_CmsDropContainer)target).clearDnDChildren();
                     }
                 }
             }
@@ -826,13 +853,52 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
     /**
      * Updates the drag target highlighting.<p>
+     * 
+     * @param initial <code>true</code> when initially highlighting the drop containers 
      */
-    private void updateHighlighting() {
+    private void updateHighlighting(boolean initial) {
 
+        Map<I_CmsDropContainer, CmsPositionBean> containers = new HashMap<I_CmsDropContainer, CmsPositionBean>();
         for (I_CmsDropTarget target : m_dragInfos.keySet()) {
-            if (target instanceof I_CmsDropContainer) {
-                ((I_CmsDropContainer)target).refreshHighlighting();
+            if ((target instanceof I_CmsDropContainer)
+                && !Display.NONE.getCssName().equalsIgnoreCase(
+                    CmsDomUtil.getCurrentStyle(target.getElement(), CmsDomUtil.Style.display))) {
+                if (initial && (target != m_initialDropTarget)) {
+                    ((I_CmsDropContainer)target).highlightContainer();
+                } else {
+                    ((I_CmsDropContainer)target).updatePositionInfo();
+                }
+                containers.put((I_CmsDropContainer)target, ((I_CmsDropContainer)target).getPositionInfo());
             }
+        }
+        List<I_CmsDropContainer> containersToMatch = new ArrayList<I_CmsDropContainer>(containers.keySet());
+        for (I_CmsDropContainer contA : containers.keySet()) {
+            containersToMatch.remove(contA);
+            for (I_CmsDropContainer contB : containersToMatch) {
+                CmsPositionBean posA = containers.get(contA);
+                CmsPositionBean posB = containers.get(contB);
+                if (CmsPositionBean.checkCollision(posA, posB, HIGHLIGHTING_OFFSET * 3)) {
+                    if (contA.hasDnDChildren() && contA.getDnDChildren().contains(contB)) {
+                        if (!posA.isInside(posB, HIGHLIGHTING_OFFSET)) {
+                            // the nested container is not completely inside the other
+                            // increase the size of the outer container
+                            posA.ensureSurrounds(posB, HIGHLIGHTING_OFFSET);
+                        }
+                    } else if (contB.hasDnDChildren() && contB.getDnDChildren().contains(contA)) {
+                        if (!posB.isInside(posA, HIGHLIGHTING_OFFSET)) {
+                            // the nested container is not completely inside the other
+                            // increase the size of the outer container
+                            posB.ensureSurrounds(posA, HIGHLIGHTING_OFFSET);
+                        }
+                    } else {
+                        CmsPositionBean.avoidCollision(posA, posB, HIGHLIGHTING_OFFSET * 3);
+                    }
+                }
+            }
+        }
+
+        for (Entry<I_CmsDropContainer, CmsPositionBean> containerEntry : containers.entrySet()) {
+            containerEntry.getKey().refreshHighlighting(containerEntry.getValue());
         }
     }
 }

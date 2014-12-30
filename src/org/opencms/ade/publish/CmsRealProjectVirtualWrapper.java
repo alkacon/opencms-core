@@ -28,6 +28,7 @@
 package org.opencms.ade.publish;
 
 import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -83,6 +84,14 @@ public class CmsRealProjectVirtualWrapper implements I_CmsVirtualProject {
     public CmsUUID getProjectId() {
 
         return m_projectId;
+    }
+
+    /**
+     * @see org.opencms.ade.publish.I_CmsVirtualProject#getRelatedResourceProvider(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsPublishOptions)
+     */
+    public I_CmsPublishRelatedResourceProvider getRelatedResourceProvider(CmsObject cmsObject, CmsPublishOptions options) {
+
+        return CmsDummyRelatedResourceProvider.INSTANCE;
     }
 
     /**

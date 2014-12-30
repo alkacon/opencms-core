@@ -47,6 +47,15 @@ public class CmsDummyZIndexManager implements I_CmsContainerZIndexManager {
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.I_CmsContainerZIndexManager#clear()
+     */
+    public void clear() {
+
+        // do nothing
+
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.I_CmsContainerZIndexManager#enter(java.lang.String)
      */
     public void enter(String containerName) {

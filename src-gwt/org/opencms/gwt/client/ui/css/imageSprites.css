@@ -137,6 +137,38 @@
 	vertical-align: middle;
 }
 
+@sprite .tablePreviewIcon:hover {
+	gwt-image: "icons.previewIconActive";
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+@sprite .tablePreviewIcon {
+	gwt-image: "icons.previewIconDeactivated";
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+@sprite .tableReplaceIcon {
+	gwt-image: "icons.replaceIconDeactivated";
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+@sprite .tableReplaceIcon:hover {
+	gwt-image: "icons.replaceIcon";
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+
+
+
+
 @sprite .cmsState-up .checkIcon, .cmsState-down-disabled .checkIcon, .cmsState-up-disabled .checkIcon {
 	gwt-image: "icons.checkIconDeactivated";
 	display: inline-block;
@@ -172,7 +204,16 @@
     vertical-align: middle;
 }
 
-
+@sprite .cmsState-down .bullsEyeIcon, .cmsState-up-hovering .bullsEyeIcon, .cmsState-down-hovering .bullsEyeIcon{
+    gwt-image: "icons.selectionIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+@sprite .cmsState-up .bullsEyeIcon, .cmsState-up-disabled .bullsEyeIcon, .cmsState-down-disabled .bullsEyeIcon{
+    gwt-image: "icons.selectionIconDeactivated";
+    display: inline-block;
+    vertical-align: middle;
+}
 
 @sprite .cmsState-down .lockIcon, .cmsState-up-hovering .lockIcon, .cmsState-down-hovering .lockIcon{
     gwt-image: "icons.lockIconActive";
@@ -244,16 +285,22 @@
 	cursor: pointer;
 }
 
+@sprite div.dialogCloseIcon, span.dialogCloseIcon{
+	gwt-image: "dialogCloseImage";
+	display: inline-block;
+	cursor: pointer;
+}
+
 @sprite div.warningIcon, span.warningIcon{
-	gwt-image: "warningSmallImage"; 
+	gwt-image: "warningSmallImage";
 }
 
 @sprite table tr td.warningBigIcon, div.warningBigIcon, span.warningBigIcon{
-	gwt-image: "warningBigImage"; 
+	gwt-image: "warningBigImage";
 }
 
 @sprite div.directoryIcon, span.directoryIcon{
-	gwt-image: "directorySmallImage"; 
+	gwt-image: "directorySmallImage";
 }
 
 @sprite div.imageSearchIcon, span.imageSearchIcon{

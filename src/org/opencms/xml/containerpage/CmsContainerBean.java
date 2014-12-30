@@ -28,6 +28,7 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -47,6 +48,9 @@ public class CmsContainerBean {
     /** A lazy initialized map that describes if a certain element if part of this container. */
     private transient Map<CmsUUID, Boolean> m_containsElement;
 
+    /** Flag indicating this container is used on detail pages only. */
+    private boolean m_detailOnly;
+
     /** The id's of of all elements in this container. */
     private transient List<CmsUUID> m_elementIds;
 
@@ -59,6 +63,12 @@ public class CmsContainerBean {
     /** The container name. */
     private final String m_name;
 
+    /** The optional container parameter. */
+    private String m_param;
+
+    /** The parent element instance id. */
+    private String m_parentInstanceId;
+
     /** The container type. */
     private String m_type;
 
@@ -70,13 +80,20 @@ public class CmsContainerBean {
      * 
      * @param name the container name
      * @param type the container type
+     * @param parentInstanceId the parent instance id
      * @param maxElements the maximal number of elements in the container
      * @param elements the elements
      **/
-    public CmsContainerBean(String name, String type, int maxElements, List<CmsContainerElementBean> elements) {
+    public CmsContainerBean(
+        String name,
+        String type,
+        String parentInstanceId,
+        int maxElements,
+        List<CmsContainerElementBean> elements) {
 
         m_name = name;
         m_type = type;
+        m_parentInstanceId = parentInstanceId;
         m_maxElements = maxElements;
         m_elements = (elements == null
         ? Collections.<CmsContainerElementBean> emptyList()
@@ -88,11 +105,12 @@ public class CmsContainerBean {
      * 
      * @param name the container name
      * @param type the container type
+     * @param parentInstanceId the parent instance id
      * @param elements the elements
      **/
-    public CmsContainerBean(String name, String type, List<CmsContainerElementBean> elements) {
+    public CmsContainerBean(String name, String type, String parentInstanceId, List<CmsContainerElementBean> elements) {
 
-        this(name, type, -1, elements);
+        this(name, type, parentInstanceId, -1, elements);
     }
 
     /**
@@ -173,6 +191,31 @@ public class CmsContainerBean {
     }
 
     /**
+     * Returns the (optional) container parameter.<p>
+     * 
+     * This is useful for a dynamically generated nested container,
+     * to pass information to the formatter used inside that container. 
+     * 
+     * If no parameters have been set, this will return <code>null</code>
+     *  
+     * @return the (optional) container parameter
+     */
+    public String getParam() {
+
+        return m_param;
+    }
+
+    /**
+     * Returns the the parent instance id.<p>
+     * 
+     * @return the parent instance id
+     */
+    public String getParentInstanceId() {
+
+        return m_parentInstanceId;
+    }
+
+    /**
      * Returns the type of this container.<p>
      *
      * @return the type of this container
@@ -193,6 +236,36 @@ public class CmsContainerBean {
     }
 
     /**
+     * Returns if this container is used on detail pages only.<p>
+     * 
+     * @return <code>true</code> if this container is used on detail pages only
+     */
+    public boolean isDetailOnly() {
+
+        return m_detailOnly;
+    }
+
+    /**
+     * Returns if the given container is a nested container.<p>
+     * 
+     * @return <code>true</code> if the given container is a nested container
+     */
+    public boolean isNestedContainer() {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_parentInstanceId);
+    }
+
+    /**
+     * Sets if this container is used on detail pages only.<p>
+     * 
+     * @param detailOnly <code>true</code> if this container is used on detail pages only
+     */
+    public void setDetailOnly(boolean detailOnly) {
+
+        m_detailOnly = detailOnly;
+    }
+
+    /**
      * Sets the maximal number of elements in the container.<p>
      *
      * @param maxElements the maximal number of elements to set
@@ -200,6 +273,19 @@ public class CmsContainerBean {
     public void setMaxElements(int maxElements) {
 
         m_maxElements = maxElements;
+    }
+
+    /**
+     * Sets the container parameter.<p>
+     * 
+     * This is useful for a dynamically generated nested container,
+     * to pass information to the formatter used inside that container. 
+     *  
+     * @param param the parameter String to set
+     */
+    public void setParam(String param) {
+
+        m_param = param;
     }
 
     /**

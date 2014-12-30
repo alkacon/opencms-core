@@ -55,6 +55,9 @@
 						<mapping suffix=".jar" />
 						<mapping suffix=".flv" />
 						<mapping suffix=".swf" />
+						<mapping suffix=".mp4" />
+						<mapping suffix=".ogv" />
+						<mapping suffix=".webm" />
 					</mappings>
 					<param name="gallery.type.names">downloadgallery</param>
 				</type>
@@ -698,6 +701,9 @@
 				<mimetype extension=".onepkg" type="application/onenote" />
 				<mimetype extension=".rar" type="application/x-rar-compressed" />
 				<mimetype extension=".flv" type="video/x-flv" />
+				<mimetype extension=".webm" type="video/webm" />
+				<mimetype extension=".ogv" type="video/ogg" />
+				<mimetype extension=".mp4" type="video/mp4" />
 			</mimetypes>
 			<html-converters>
 				<html-converter name="true"
@@ -822,6 +828,7 @@
 				<widget class="org.opencms.widgets.CmsAdeImageGalleryWidget"
 					alias="ImageGalleryWidget" />
 				<widget class="org.opencms.widgets.CmsTypeComboWidget" alias="TypeComboWidget" />
+				<widget class="org.opencms.widgets.CmsLocationPickerWidget" alias="LocationPickerWidget" />
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue"

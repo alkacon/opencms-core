@@ -43,6 +43,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
@@ -51,6 +52,7 @@ import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
+import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
@@ -66,6 +68,7 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
@@ -83,7 +86,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.AnchorElement;
@@ -94,7 +96,6 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
@@ -143,7 +144,7 @@ public final class CmsContainerpageController {
          *  
          * @return true if the container should be processed, true if it should be skipped 
          */
-        boolean beginContainer(String name, CmsContainerJso container);
+        boolean beginContainer(String name, CmsContainer container);
 
         /**
          * This method is called after all elements of a container have been processed.<p>
@@ -185,9 +186,9 @@ public final class CmsContainerpageController {
         }
 
         /**
-         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#beginContainer(java.lang.String, org.opencms.ade.containerpage.client.CmsContainerJso)
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#beginContainer(java.lang.String, org.opencms.ade.containerpage.shared.CmsContainer)
          */
-        public boolean beginContainer(String name, CmsContainerJso container) {
+        public boolean beginContainer(String name, CmsContainer container) {
 
             return !container.isDetailView();
         }
@@ -228,13 +229,13 @@ public final class CmsContainerpageController {
     /** 
      * Visitor implementation which is used to gather the container contents for saving.<p>
      */
-    protected class SaveDataVisitor implements I_PageContentVisitor {
+    protected class PageStateVisitor implements I_PageContentVisitor {
 
         /** The current container name. */
         protected String m_containerName;
 
         /** The contaienr which is currently being processed. */
-        protected CmsContainerJso m_currentContainer;
+        protected CmsContainer m_currentContainer;
 
         /** The list of collected containers. */
         protected List<CmsContainer> m_resultContainers = new ArrayList<CmsContainer>();
@@ -243,9 +244,81 @@ public final class CmsContainerpageController {
         List<CmsContainerElement> m_currentElements;
 
         /**
-         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#beginContainer(java.lang.String, org.opencms.ade.containerpage.client.CmsContainerJso)
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#beginContainer(java.lang.String, org.opencms.ade.containerpage.shared.CmsContainer)
          */
-        public boolean beginContainer(String name, CmsContainerJso container) {
+        public boolean beginContainer(String name, CmsContainer container) {
+
+            m_currentContainer = container;
+            m_containerName = name;
+            m_currentElements = new ArrayList<CmsContainerElement>();
+            return true;
+        }
+
+        /**
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#endContainer()
+         */
+        public void endContainer() {
+
+            m_resultContainers.add(new CmsContainer(
+                m_containerName,
+                m_currentContainer.getType(),
+                null,
+                m_currentContainer.getWidth(),
+                m_currentContainer.getMaxElements(),
+                m_currentContainer.isDetailView(),
+                true,
+                m_currentElements,
+                m_currentContainer.getParentContainerName(),
+                m_currentContainer.getParentInstanceId()));
+        }
+
+        /**
+         * Gets the list of collected containers.<p>
+         * 
+         * @return the list of containers 
+         */
+        public List<CmsContainer> getContainers() {
+
+            return m_resultContainers;
+        }
+
+        /**
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#handleElement(org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)
+         */
+        public void handleElement(CmsContainerPageElementPanel elementWidget) {
+
+            CmsContainerElement element = new CmsContainerElement();
+            element.setClientId(elementWidget.getId());
+            element.setResourceType(elementWidget.getNewType());
+            element.setNew(elementWidget.isNew());
+            element.setSitePath(elementWidget.getSitePath());
+            element.setNewEditorDisabled(elementWidget.isNewEditorDisabled());
+            m_currentElements.add(element);
+        }
+
+    }
+
+    /** 
+     * Visitor implementation which is used to gather the container contents for saving.<p>
+     */
+    protected class SaveDataVisitor implements I_PageContentVisitor {
+
+        /** The current container name. */
+        protected String m_containerName;
+
+        /** The contaienr which is currently being processed. */
+        protected CmsContainer m_currentContainer;
+
+        /** The list of collected containers. */
+        protected List<CmsContainer> m_resultContainers = new ArrayList<CmsContainer>();
+
+        /** The list of elements of the currently processed container which have already been processed. */
+        List<CmsContainerElement> m_currentElements;
+
+        /**
+         * @see org.opencms.ade.containerpage.client.CmsContainerpageController.I_PageContentVisitor#beginContainer(java.lang.String, org.opencms.ade.containerpage.shared.CmsContainer)
+         */
+        public boolean beginContainer(String name, CmsContainer container) {
 
             if (container.isDetailView() || ((getData().getDetailId() != null) && !container.isDetailOnly())) {
                 m_currentContainer = null;
@@ -267,10 +340,14 @@ public final class CmsContainerpageController {
             m_resultContainers.add(new CmsContainer(
                 m_containerName,
                 m_currentContainer.getType(),
+                null,
                 m_currentContainer.getWidth(),
                 m_currentContainer.getMaxElements(),
                 m_currentContainer.isDetailView(),
-                m_currentElements));
+                true,
+                m_currentElements,
+                m_currentContainer.getParentContainerName(),
+                m_currentContainer.getParentInstanceId()));
         }
 
         /**
@@ -360,11 +437,13 @@ public final class CmsContainerpageController {
                 m_callback.execute(result);
             } else {
                 getContainerpageService().getElementsData(
-                    CmsCoreProvider.get().getStructureId(),
+                    getData().getRpcContext(),
                     getData().getDetailId(),
                     getRequestParams(),
                     m_clientIds,
-                    m_containerBeans,
+                    getPageState(),
+                    !isGroupcontainerEditing(),
+                    null,
                     getLocale(),
 
                     this);
@@ -418,11 +497,13 @@ public final class CmsContainerpageController {
         public void execute() {
 
             getContainerpageService().getElementsData(
-                CmsCoreProvider.get().getStructureId(),
+                getData().getRpcContext(),
                 getData().getDetailId(),
                 getRequestParams(),
                 m_clientIds,
-                m_containerBeans,
+                getPageState(),
+                !isGroupcontainerEditing(),
+                null,
                 getLocale(),
 
                 this);
@@ -440,13 +521,19 @@ public final class CmsContainerpageController {
             }
             addElements(result);
             Iterator<org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel> it = getAllDragElements().iterator();
+            final boolean[] reloadMarkerFound = {false};
             while (it.hasNext()) {
                 org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel containerElement = it.next();
                 if (!m_clientIds.contains(containerElement.getId())) {
                     continue;
                 }
                 try {
-                    replaceContainerElement(containerElement, m_elements.get(containerElement.getId()));
+                    CmsContainerPageElementPanel replacer = replaceContainerElement(
+                        containerElement,
+                        m_elements.get(containerElement.getId()));
+                    if (replacer.getElement().getInnerHTML().contains(CmsGwtConstants.FORMATTER_RELOAD_MARKER)) {
+                        reloadMarkerFound[0] = true;
+                    }
                 } catch (Exception e) {
                     CmsDebugLog.getInstance().printLine("trying to replace");
                     CmsDebugLog.getInstance().printLine(e.getLocalizedMessage());
@@ -456,6 +543,10 @@ public final class CmsContainerpageController {
             if (isGroupcontainerEditing()) {
                 getGroupEditor().updateBackupElements(result);
                 getGroupcontainer().refreshHighlighting();
+            } else {
+                if (reloadMarkerFound[0]) {
+                    CmsContainerpageController.get().reloadPage();
+                }
             }
             m_handler.updateClipboard(result);
             resetEditButtons();
@@ -473,6 +564,9 @@ public final class CmsContainerpageController {
 
         /** The requested client id. */
         private String m_clientId;
+
+        /** If this action was triggered by drag and drop from a container, this should contain the id of the origin container. */
+        private String m_dndContainer;
 
         /**
          * Constructor.<p>
@@ -495,13 +589,29 @@ public final class CmsContainerpageController {
 
             boolean cached = false;
             if (m_elements.containsKey(m_clientId)) {
-                cached = true;
-                CmsContainerElementData elementData = m_elements.get(m_clientId);
-                if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
-                    for (String subItemId : elementData.getSubItems()) {
-                        if (!m_elements.containsKey(subItemId)) {
-                            cached = false;
-                            break;
+                if (!hasNestedContainers() && (m_dndContainer == null)) {
+
+                    // When you have an element A representing a nested container, which then contains an element B,
+                    // and the element settings of B have been changed, we would need to invalidate the cache for A. 
+                    // Currently there is no time to implement this correctly, so we don't use the cached element in case
+                    // we have nested containers. 
+
+                    // Additionally, in the drag and drop case we want to circumvent caching because dragging an element may require the settings
+                    // of an element to be changed on the server side.
+
+                    CmsContainerElementData elementData = m_elements.get(m_clientId);
+                    // check if the cached element data covers all possible containers in case new containers have been added to the page 
+                    if (elementData.getContents().keySet().containsAll(m_targetContainers.keySet())) {
+
+                        cached = true;
+
+                        if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
+                            for (String subItemId : elementData.getSubItems()) {
+                                if (!m_elements.containsKey(subItemId)) {
+                                    cached = false;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
@@ -522,16 +632,28 @@ public final class CmsContainerpageController {
                 List<String> clientIds = new ArrayList<String>();
                 clientIds.add(m_clientId);
                 getContainerpageService().getElementsData(
-                    CmsCoreProvider.get().getStructureId(),
+                    getData().getRpcContext(),
                     getData().getDetailId(),
                     getRequestParams(),
                     clientIds,
-                    m_containerBeans,
+                    getPageState(),
+                    !isGroupcontainerEditing(),
+                    m_dndContainer,
                     getLocale(),
 
                     this);
             }
 
+        }
+
+        /** 
+         * Sets the origin container for the drag and drop case.<p>
+         * 
+         * @param containerId the origin container name 
+         */
+        public void setDndContainer(String containerId) {
+
+            m_dndContainer = containerId;
         }
 
         /**
@@ -562,7 +684,7 @@ public final class CmsContainerpageController {
 
             if (result != null) {
                 addElements(result);
-                m_callback.execute(m_elements.get(m_clientId));
+                m_callback.execute(result.get(m_clientId));
             }
         }
     }
@@ -576,14 +698,14 @@ public final class CmsContainerpageController {
     /** Instance of the data provider. */
     private static CmsContainerpageController INSTANCE;
 
-    /** The list of beans for the containers on the current page. */
-    protected List<CmsContainer> m_containerBeans;
-
     /** The container element data. All requested elements will be cached here.*/
     protected Map<String, CmsContainerElementData> m_elements;
 
     /** The new element data by resource type name. */
     protected Map<String, CmsContainerElementData> m_newElements;
+
+    /** The gallery data update timer. */
+    Timer m_galleryUpdateTimer;
 
     /** The container-page handler. */
     CmsContainerpageHandler m_handler;
@@ -601,10 +723,7 @@ public final class CmsContainerpageController {
     private CmsContainerpageUtil m_containerpageUtil;
 
     /** The container data. */
-    private Map<String, CmsContainerJso> m_containers;
-
-    /** The container types within this page. */
-    private Set<String> m_containerTypes;
+    private Map<String, CmsContainer> m_containers;
 
     /** The XML content editor handler. */
     private CmsContentEditorHandler m_contentEditorHandler;
@@ -624,6 +743,9 @@ public final class CmsContainerpageController {
     /** Edit button position timer. */
     private Timer m_editButtonsPositionTimer;
 
+    /** The current element view. */
+    private CmsUUID m_elementView;
+
     /** The currently editing group-container editor. */
     private A_CmsGroupEditor m_groupEditor;
 
@@ -635,6 +757,9 @@ public final class CmsContainerpageController {
 
     /** The current lock status for the page. */
     private LockStatus m_lockStatus = LockStatus.unknown;
+
+    /** The browser location at the time the containerpage controller was initialized. */
+    private String m_originalUrl;
 
     /** Flag if the container-page has changed. */
     private boolean m_pageChanged;
@@ -650,11 +775,13 @@ public final class CmsContainerpageController {
      */
     public CmsContainerpageController() {
 
+        m_originalUrl = Window.Location.getHref();
         INSTANCE = this;
         try {
             m_data = (CmsCntPageData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
                 getContainerpageService(),
                 CmsCntPageData.DICT_NAME);
+            m_elementView = m_data.getElementView();
         } catch (SerializationException e) {
             CmsErrorDialog.handleException(new Exception(
                 "Deserialization of page data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
@@ -663,6 +790,9 @@ public final class CmsContainerpageController {
         m_smallElementsHandler = new CmsSmallElementsHandler(getContainerpageService());
         if (m_data != null) {
             m_smallElementsHandler.setEditSmallElements(m_data.isEditSmallElementsInitially(), false);
+            m_data.setRpcContext(new CmsContainerPageRpcContext(
+                CmsCoreProvider.get().getStructureId(),
+                m_data.getTemplateContextInfo().getCurrentContext()));
         }
     }
 
@@ -702,7 +832,7 @@ public final class CmsContainerpageController {
 
         String serverId = clientId;
         if (clientId.contains(CLIENT_ID_SEPERATOR)) {
-            serverId = clientId.substring(0, clientId.indexOf(CLIENT_ID_SEPERATOR));
+            serverId = clientId.substring(0, clientId.lastIndexOf(CLIENT_ID_SEPERATOR));
         }
         return serverId;
     }
@@ -833,6 +963,31 @@ public final class CmsContainerpageController {
         };
         action.execute();
 
+    }
+
+    /**
+     * Checks for container elements that are no longer present within the DOM.<p>
+     */
+    public void cleanUpContainers() {
+
+        List<String> removed = new ArrayList<String>();
+        for (Entry<String, CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
+            if (!RootPanel.getBodyElement().isOrHasChild(entry.getValue().getElement())) {
+                removed.add(entry.getKey());
+            }
+        }
+        for (String containerId : removed) {
+            m_targetContainers.remove(containerId);
+            m_containers.remove(containerId);
+        }
+        CmsContainerpageEditor.getZIndexManager().clear();
+        for (CmsContainerPageContainer cont : m_targetContainers.values()) {
+            Element elem = cont.getElement();
+            CmsContainerpageEditor.getZIndexManager().addContainer(cont.getContainerId(), elem);
+        }
+        if (removed.size() > 0) {
+            scheduleGalleryUpdate();
+        }
     }
 
     /**
@@ -1076,7 +1231,7 @@ public final class CmsContainerpageController {
      * 
      * @return the container data
      */
-    public CmsContainerJso getContainer(String containerName) {
+    public CmsContainer getContainer(String containerName) {
 
         return m_containers.get(containerName);
     }
@@ -1111,7 +1266,7 @@ public final class CmsContainerpageController {
      *
      * @return the containers
      */
-    public Map<String, CmsContainerJso> getContainers() {
+    public Map<String, CmsContainer> getContainers() {
 
         return m_containers;
     }
@@ -1135,15 +1290,11 @@ public final class CmsContainerpageController {
     public Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> getContainerTargets() {
 
         Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> result = new HashMap<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer>();
-        if (isDetailPage()) {
-            // in case of a detail page, regular containers are not considered a drop target
-            for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
-                if (entry.getValue().isDetailOnly() || entry.getValue().isDetailView()) {
-                    result.put(entry.getKey(), entry.getValue());
-                }
+        for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
+            if (entry.getValue().isEditable()
+                && (!isDetailPage() || (entry.getValue().isDetailOnly() || entry.getValue().isDetailView()))) {
+                result.put(entry.getKey(), entry.getValue());
             }
-        } else {
-            result.putAll(m_targetContainers);
         }
         return result;
     }
@@ -1213,6 +1364,23 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Requests the data for a container element specified by the client id for drag and drop from a container. The data will be provided to the given call-back function.<p>
+     * 
+     * @param clientId the element id
+     * @param containerId the id of the container from which the element is being dragged 
+     * @param callback the call-back to execute with the requested data
+     */
+    public void getElementForDragAndDropFromContainer(
+        final String clientId,
+        final String containerId,
+        final I_CmsSimpleCallback<CmsContainerElementData> callback) {
+
+        SingleElementAction action = new SingleElementAction(clientId, callback);
+        action.setDndContainer(containerId);
+        action.execute();
+    }
+
+    /**
      * Requests the data for container elements specified by the client id. The data will be provided to the given call-back function.<p>
      * 
      * @param clientIds the element id's
@@ -1222,6 +1390,70 @@ public final class CmsContainerpageController {
 
         MultiElementAction action = new MultiElementAction(clientIds, callback);
         action.execute();
+    }
+
+    /**
+     * Returns the current element view.<p>
+     * 
+     * @return the current element view
+     */
+    public CmsUUID getElementView() {
+
+        return m_elementView;
+    }
+
+    /**
+     * Retrieves a container element with a given set of settings.<p>
+     * 
+     * @param clientId the id of the container element
+     * @param settings the set of settings
+     *  
+     * @param callback the callback which should be executed when the element has been loaded 
+     */
+    public void getElementWithSettings(
+        final String clientId,
+        final Map<String, String> settings,
+        final I_CmsSimpleCallback<CmsContainerElementData> callback) {
+
+        CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                start(200, false);
+                getContainerpageService().getElementWithSettings(
+                    getData().getRpcContext(),
+                    getData().getDetailId(),
+                    getRequestParams(),
+                    clientId,
+                    settings,
+                    getPageState(),
+                    !isGroupcontainerEditing(),
+                    getLocale(),
+                    this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(CmsContainerElementData result) {
+
+                stop(false);
+                if (result != null) {
+                    // cache the loaded element
+                    m_elements.put(result.getClientId(), result);
+                }
+                callback.execute(result);
+            }
+
+        };
+        action.execute();
+
     }
 
     /**
@@ -1294,11 +1526,12 @@ public final class CmsContainerpageController {
                 public void execute() {
 
                     getContainerpageService().getNewElementData(
-                        CmsCoreProvider.get().getStructureId(),
+                        getData().getRpcContext(),
                         getData().getDetailId(),
                         getRequestParams(),
                         resourceType,
-                        m_containerBeans,
+                        getPageState(),
+                        !isGroupcontainerEditing(),
                         getLocale(),
                         this);
                 }
@@ -1328,6 +1561,19 @@ public final class CmsContainerpageController {
         } else {
             return "" + ownId;
         }
+    }
+
+    /**
+     * Returns the deserialized element data.<p>
+     * 
+     * @param data the data to deserialize
+     * 
+     * @return the container element
+     * @throws SerializationException if deserialization fails
+     */
+    public CmsContainer getSerializedContainer(String data) throws SerializationException {
+
+        return (CmsContainer)CmsRpcPrefetcher.getSerializedObjectFromString(getContainerpageService(), data);
     }
 
     /**
@@ -1380,6 +1626,7 @@ public final class CmsContainerpageController {
 
         if (element.isNew()) {
             element.removeFromParent();
+            cleanUpContainers();
             setPageChanged();
             return;
         }
@@ -1435,7 +1682,12 @@ public final class CmsContainerpageController {
                                     }
                                 };
                             }
+                            I_CmsDropContainer container = element.getParentTarget();
                             element.removeFromParent();
+                            if (container instanceof CmsContainerPageContainer) {
+                                ((CmsContainerPageContainer)container).checkEmptyContainers();
+                            }
+                            cleanUpContainers();
                             setPageChanged(nextActions);
                         }
                     });
@@ -1505,8 +1757,7 @@ public final class CmsContainerpageController {
 
         m_elements = new HashMap<String, CmsContainerElementData>();
         m_newElements = new HashMap<String, CmsContainerElementData>();
-        m_containerTypes = new HashSet<String>();
-        m_containers = new HashMap<String, CmsContainerJso>();
+        m_containers = new HashMap<String, CmsContainer>();
         if (m_data == null) {
             m_handler.m_editor.disableEditing(Messages.get().key(Messages.ERR_READING_CONTAINER_PAGE_DATA_0));
             CmsErrorDialog dialog = new CmsErrorDialog(
@@ -1515,18 +1766,11 @@ public final class CmsContainerpageController {
             dialog.center();
             return;
         }
-        JsArray<CmsContainerJso> containers = CmsContainerJso.getContainers();
-        for (int i = 0; i < containers.length(); i++) {
-            CmsContainerJso container = containers.get(i);
-            m_containerTypes.add(container.getType());
-            m_containers.put(container.getName(), container);
-        }
-        m_containerBeans = createEmptyContainerBeans();
         // ensure any embedded flash players are set opaque so UI elements may be placed above them
         CmsDomUtil.fixFlashZindex(RootPanel.getBodyElement());
-        m_targetContainers = m_containerpageUtil.consumeContainers(m_containers);
+        m_targetContainers = m_containerpageUtil.consumeContainers(m_containers, RootPanel.getBodyElement());
         for (CmsContainerPageContainer cont : m_targetContainers.values()) {
-            Element elem = DOM.getElementById(cont.getContainerId());
+            Element elem = cont.getElement();
             CmsContainerpageEditor.getZIndexManager().addContainer(cont.getContainerId(), elem);
         }
         resetEditButtons();
@@ -1561,6 +1805,38 @@ public final class CmsContainerpageController {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(historyToken)) {
             m_contentEditorHandler.openEditorForHistory(historyToken);
         }
+
+        updateGalleryData();
+    }
+
+    /**
+     * Checks for element sub containers.<p>
+     * 
+     * @param containerElement the container element
+     */
+    public void initializeSubContainers(CmsContainerPageElementPanel containerElement) {
+
+        int containerCount = m_targetContainers.size();
+        m_targetContainers.putAll(m_containerpageUtil.consumeContainers(m_containers, containerElement.getElement()));
+        if (m_targetContainers.size() > containerCount) {
+            // in case new containers have been added, the gallery data needs to be updated
+            scheduleGalleryUpdate();
+        }
+    }
+
+    /**
+     * Returns if the given container is editable.<p>
+     * 
+     * @param dragParent the parent container
+     * 
+     * @return <code>true</code> if the given container is editable
+     */
+    public boolean isContainerEditable(I_CmsDropContainer dragParent) {
+
+        boolean isSubElement = dragParent instanceof CmsGroupContainerElementPanel;
+        boolean isContainerEditable = dragParent.isEditable()
+            && (isSubElement || !isDetailPage() || dragParent.isDetailView() || dragParent.isDetailOnly());
+        return isContainerEditable;
     }
 
     /**
@@ -1603,6 +1879,24 @@ public final class CmsContainerpageController {
     public boolean isGroupcontainerEditing() {
 
         return m_groupEditor != null;
+    }
+
+    /**
+     * Checks whether the given element should be inline editable.<p>
+     * 
+     * @param element the element
+     * @param dragParent the element parent
+     * 
+     * @return <code>true</code> if the element should be inline editable
+     */
+    public boolean isInlineEditable(CmsContainerPageElementPanel element, I_CmsDropContainer dragParent) {
+
+        return !getData().isUseClassicEditor()
+            && CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason())
+            && hasActiveSelection()
+            && m_elementView.equals(element.getElementView())
+            && isContainerEditable(dragParent)
+            && (!(dragParent instanceof CmsGroupContainerElementPanel) || isGroupcontainerEditing());
     }
 
     /**
@@ -1668,7 +1962,8 @@ public final class CmsContainerpageController {
                 getContainerpageService().getFavoriteList(
                     CmsCoreProvider.get().getStructureId(),
                     getData().getDetailId(),
-                    m_containerBeans,
+                    getPageState(),
+                    !isGroupcontainerEditing(),
                     getLocale(),
                     this);
             }
@@ -1706,7 +2001,8 @@ public final class CmsContainerpageController {
                 getContainerpageService().getRecentList(
                     CmsCoreProvider.get().getStructureId(),
                     getData().getDetailId(),
-                    m_containerBeans,
+                    getPageState(),
+                    !isGroupcontainerEditing(),
                     getLocale(),
                     this);
             }
@@ -1784,6 +2080,28 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Reinitializes the buttons in the container element menus.<p>
+     */
+    public void reinitializeButtons() {
+
+        if (isGroupcontainerEditing()) {
+            m_groupEditor.reinitializeButtons();
+        } else {
+            List<CmsContainerPageElementPanel> elemWidgets = getAllContainerPageElements(true);
+
+            for (CmsContainerPageElementPanel elemWidget : elemWidgets) {
+                if (requiresOptionBar(elemWidget, elemWidget.getParentTarget())) {
+                    getContainerpageUtil().addOptionBar(elemWidget);
+                } else {
+                    // otherwise remove any present option bar
+                    elemWidget.setElementOptionBar(null);
+                }
+                elemWidget.showEditableListButtons();
+            }
+        }
+    }
+
+    /**
      * Re-initializes the inline editing.<p>
      */
     public void reInitInlineEditing() {
@@ -1795,15 +2113,20 @@ public final class CmsContainerpageController {
         }
         if (isGroupcontainerEditing()) {
             for (Widget element : m_groupEditor.getGroupContainerWidget()) {
-                if ((element instanceof CmsContainerPageElementPanel)) {
+                if (((element instanceof CmsContainerPageElementPanel) && isInlineEditable(
+                    (CmsContainerPageElementPanel)element,
+                    m_groupEditor.getGroupContainerWidget()))) {
                     ((CmsContainerPageElementPanel)element).initInlineEditor(this);
                 }
             }
         } else {
             for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
-                for (Widget element : container) {
-                    if (element instanceof CmsContainerPageElementPanel) {
-                        ((CmsContainerPageElementPanel)element).initInlineEditor(this);
+                if (isContainerEditable(container)) {
+                    for (Widget element : container) {
+                        if ((element instanceof CmsContainerPageElementPanel)
+                            && isInlineEditable((CmsContainerPageElementPanel)element, container)) {
+                            ((CmsContainerPageElementPanel)element).initInlineEditor(this);
+                        }
                     }
                 }
             }
@@ -1889,6 +2212,24 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Reloads the page.<p>
+     */
+    public void reloadPage() {
+
+        Timer timer = new Timer() {
+
+            @Override
+            @SuppressWarnings("synthetic-access")
+            public void run() {
+
+                Window.Location.assign(m_originalUrl);
+            }
+        };
+        timer.schedule(150);
+
+    }
+
+    /**
      * Removes the given container element from its parent container.<p>
      * 
      * @param dragElement the element to remove
@@ -1910,9 +2251,14 @@ public final class CmsContainerpageController {
             if (id != null) {
                 addToRecentList(id, null);
             }
+            I_CmsDropContainer container = dragElement.getParentTarget();
             switch (removeMode) {
                 case saveAndCheckReferences:
                     dragElement.removeFromParent();
+                    if (container instanceof CmsContainerPageContainer) {
+                        ((CmsContainerPageContainer)container).checkEmptyContainers();
+                    }
+                    cleanUpContainers();
                     Runnable checkReferencesAction = new Runnable() {
 
                         public void run() {
@@ -1928,6 +2274,10 @@ public final class CmsContainerpageController {
                 case silent:
                 default:
                     dragElement.removeFromParent();
+                    if (container instanceof CmsContainerPageContainer) {
+                        ((CmsContainerPageContainer)container).checkEmptyContainers();
+                    }
+                    cleanUpContainers();
                     setPageChanged();
                     break;
             }
@@ -1945,17 +2295,15 @@ public final class CmsContainerpageController {
      * @throws Exception if something goes wrong
      */
     public CmsContainerPageElementPanel replaceContainerElement(
-        org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel containerElement,
+        CmsContainerPageElementPanel containerElement,
         CmsContainerElementData elementData) throws Exception {
 
         I_CmsDropContainer parentContainer = containerElement.getParentTarget();
         String containerId = parentContainer.getContainerId();
-
+        CmsContainerPageElementPanel replacer = null;
         String elementContent = elementData.getContents().get(containerId);
         if ((elementContent != null) && (elementContent.trim().length() > 0)) {
-            org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel replacer = getContainerpageUtil().createElement(
-                elementData,
-                parentContainer);
+            replacer = getContainerpageUtil().createElement(elementData, parentContainer);
             if (containerElement.isNew()) {
                 // if replacing element data has the same structure id, keep the 'new' state by setting the new type property
                 // this should only be the case when editing settings of a new element that has not been created in the VFS yet
@@ -1963,6 +2311,9 @@ public final class CmsContainerpageController {
                 if (elementData.getClientId().startsWith(id)) {
                     replacer.setNewType(containerElement.getNewType());
                 }
+            }
+            if (containerElement.isOverrideNew()) {
+                replacer.setNewType(elementData.getResourceType());
             }
             if (isGroupcontainerEditing() && (containerElement.getInheritanceInfo() != null)) {
                 // in case of inheritance container editing, keep the inheritance info
@@ -1972,9 +2323,25 @@ public final class CmsContainerpageController {
             }
             parentContainer.insert(replacer, parentContainer.getWidgetIndex(containerElement));
             containerElement.removeFromParent();
-            return replacer;
+            initializeSubContainers(replacer);
         }
-        return null;
+        cleanUpContainers();
+        return replacer;
+    }
+
+    /**
+     * Checks whether the given element should display the option bar.<p>
+     * 
+     * @param element the element
+     * @param dragParent the element parent
+     * 
+     * @return <code>true</code> if the given element should display the option bar
+     */
+    public boolean requiresOptionBar(CmsContainerPageElementPanel element, I_CmsDropContainer dragParent) {
+
+        return element.hasViewPermission()
+            && (m_elementView.equals(element.getElementView()) || isGroupcontainerEditing())
+            && isContainerEditable(dragParent);
     }
 
     /**
@@ -2034,13 +2401,11 @@ public final class CmsContainerpageController {
                         getContainerpageService().saveDetailContainers(
                             getData().getDetailContainerPage(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     } else {
                         getContainerpageService().saveContainerpage(
                             CmsCoreProvider.get().getStructureId(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     }
                 }
@@ -2081,13 +2446,11 @@ public final class CmsContainerpageController {
                         getContainerpageService().saveDetailContainers(
                             getData().getDetailContainerPage(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     } else {
                         getContainerpageService().saveContainerpage(
                             CmsCoreProvider.get().getStructureId(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     }
                 }
@@ -2106,6 +2469,31 @@ public final class CmsContainerpageController {
             };
             action.execute();
         }
+    }
+
+    /** 
+     * Saves the clipboard tab  index selected by the user.<p>
+     * 
+     * @param tabIndex the tab index 
+     */
+    public void saveClipboardTab(final int tabIndex) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                start(1, false);
+                getContainerpageService().saveClipboardTab(tabIndex, this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                stop(false);
+            }
+        };
+        action.execute();
     }
 
     /**
@@ -2128,7 +2516,6 @@ public final class CmsContainerpageController {
                         getContainerpageService().saveDetailContainers(
                             getData().getDetailContainerPage(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     } else if (lockContainerpage()) {
                         setLoadingMessage(org.opencms.gwt.client.Messages.get().key(
@@ -2137,7 +2524,6 @@ public final class CmsContainerpageController {
                         getContainerpageService().saveContainerpage(
                             CmsCoreProvider.get().getStructureId(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     }
                 }
@@ -2209,12 +2595,13 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
+                    start(0, true);
                     getContainerpageService().saveGroupContainer(
-                        CmsCoreProvider.get().getStructureId(),
+                        getData().getRpcContext(),
                         getData().getDetailId(),
                         getRequestParams(),
                         groupContainer,
-                        m_containerBeans,
+                        getPageState(),
                         getLocale(),
                         this);
                 }
@@ -2225,6 +2612,7 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(CmsGroupContainerSaveResult saveResult) {
 
+                    stop(false);
                     Map<String, CmsContainerElementData> elementData = saveResult.getElementData();
                     m_elements.putAll(elementData);
                     try {
@@ -2267,11 +2655,12 @@ public final class CmsContainerpageController {
                 @Override
                 public void execute() {
 
+                    start(0, true);
                     getContainerpageService().saveInheritanceContainer(
                         CmsCoreProvider.get().getStructureId(),
                         getData().getDetailId(),
                         inheritanceContainer,
-                        m_containerBeans,
+                        getPageState(),
                         getLocale(),
                         this);
                 }
@@ -2282,6 +2671,7 @@ public final class CmsContainerpageController {
                 @Override
                 protected void onResponse(Map<String, CmsContainerElementData> result) {
 
+                    stop(false);
                     m_elements.putAll(result);
                     try {
                         replaceContainerElement(groupContainerElement, result.get(groupContainerElement.getId()));
@@ -2325,6 +2715,33 @@ public final class CmsContainerpageController {
     public void setDndController(CmsCompositeDNDController dnd) {
 
         m_dndController = dnd;
+    }
+
+    /**
+     * Sets the element view.<p>
+     * 
+     * @param elementView the element view
+     */
+    public void setElementView(final CmsUUID elementView) {
+
+        m_elementView = elementView;
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                getContainerpageService().setElementView(elementView, this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                // nothing to do
+            }
+        };
+        action.execute();
+        reinitializeButtons();
+        updateGalleryData();
     }
 
     /**
@@ -2460,7 +2877,9 @@ public final class CmsContainerpageController {
      */
     protected void addElements(Map<String, CmsContainerElementData> elements) {
 
-        m_elements.putAll(elements);
+        for (CmsContainerElementData element : elements.values()) {
+            m_elements.put(element.getClientId(), element);
+        }
     }
 
     /**
@@ -2506,6 +2925,35 @@ public final class CmsContainerpageController {
         removeEditButtonsPositionTimer();
         m_handler.deactivateCurrentButton();
         m_handler.disableToolbarButtons();
+    }
+
+    /**
+     * Helper method to get all current container page elements.<p>
+     * 
+     * @param includeGroupContents true if the contents of group containers should also be included
+     * 
+     * @return the list of current container page elements 
+     */
+    protected List<CmsContainerPageElementPanel> getAllContainerPageElements(boolean includeGroupContents) {
+
+        List<CmsContainerPageElementPanel> elemWidgets = new ArrayList<CmsContainerPageElementPanel>();
+        for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : CmsContainerpageController.get().getContainerTargets().entrySet()) {
+            Iterator<Widget> elIt = entry.getValue().iterator();
+            while (elIt.hasNext()) {
+                try {
+                    org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)elIt.next();
+                    elemWidgets.add(elementWidget);
+                    if (includeGroupContents && (elementWidget instanceof CmsGroupContainerElementPanel)) {
+                        List<CmsContainerPageElementPanel> groupChildren = ((CmsGroupContainerElementPanel)elementWidget).getGroupChildren();
+                        elemWidgets.addAll(groupChildren);
+                    }
+                } catch (ClassCastException e) {
+                    // no proper container element, skip it (this should never happen!)
+                    CmsDebugLog.getInstance().printLine("WARNING: there is an inappropriate element within a container");
+                }
+            }
+        }
+        return elemWidgets;
     }
 
     /**
@@ -2555,6 +3003,18 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the containers of the page in their current state.<p>
+     * 
+     * @return the containers of the page
+     */
+    protected List<CmsContainer> getPageState() {
+
+        PageStateVisitor visitor = new PageStateVisitor();
+        processPageContent(visitor);
+        return visitor.getContainers();
+    }
+
+    /**
      * Returns the request parameters of the displayed container-page.<p>
      * 
      * @return the request parameters
@@ -2562,6 +3022,23 @@ public final class CmsContainerpageController {
     protected String getRequestParams() {
 
         return m_data.getRequestParams();
+    }
+
+    /** 
+     * Checks if any of the containers are nested containers.<p>
+     * 
+     * @return true if there are nested containers 
+     */
+    protected boolean hasNestedContainers() {
+
+        boolean hasNestedContainers = false;
+        for (CmsContainer container : m_containers.values()) {
+            if (container.getParentContainerName() != null) {
+                hasNestedContainers = true;
+                break;
+            }
+        }
+        return hasNestedContainers;
     }
 
     /**
@@ -2640,7 +3117,7 @@ public final class CmsContainerpageController {
 
         for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : m_targetContainers.entrySet()) {
 
-            CmsContainerJso cnt = m_containers.get(entry.getKey());
+            CmsContainer cnt = m_containers.get(entry.getKey());
             if (visitor.beginContainer(entry.getKey(), cnt)) {
                 Iterator<Widget> elIt = entry.getValue().iterator();
                 while (elIt.hasNext()) {
@@ -2681,6 +3158,26 @@ public final class CmsContainerpageController {
         }
         if (changed) {
             setPageChanged();
+        }
+    }
+
+    /**
+     * Schedules an update of the gallery data according to the current element view and the editable containers.<p>
+     */
+    protected void scheduleGalleryUpdate() {
+
+        // only if not already scheduled 
+        if (m_galleryUpdateTimer != null) {
+            m_galleryUpdateTimer = new Timer() {
+
+                @Override
+                public void run() {
+
+                    m_galleryUpdateTimer = null;
+                    updateGalleryData();
+                }
+            };
+            m_galleryUpdateTimer.schedule(50);
         }
     }
 
@@ -2726,13 +3223,11 @@ public final class CmsContainerpageController {
                         getContainerpageService().syncSaveDetailContainers(
                             getData().getDetailContainerPage(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     } else {
                         getContainerpageService().syncSaveContainerpage(
                             CmsCoreProvider.get().getStructureId(),
                             getPageContent(),
-                            getLocale(),
                             this);
                     }
                 }
@@ -2766,6 +3261,22 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns the pages of editable containers.<p>
+     * 
+     * @return the containers
+     */
+    List<CmsContainer> getEditableContainers() {
+
+        List<CmsContainer> containers = new ArrayList<CmsContainer>();
+        for (CmsContainer container : m_containers.values()) {
+            if (isContainerEditable(m_targetContainers.get(container.getName()))) {
+                containers.add(container);
+            }
+        }
+        return containers;
+    }
+
+    /**
      * Handles a window resize to reset highlighting and the edit button positions.<p>
      */
     void handleResize() {
@@ -2790,6 +3301,34 @@ public final class CmsContainerpageController {
             };
             m_resizeTimer.schedule(300);
         }
+    }
+
+    /**
+     * Updates the gallery data according to the current element view and the editable containers.<p>
+     * This method should only be called from the gallery update timer to avoid unnecessary requests.<p>
+     */
+    void updateGalleryData() {
+
+        CmsRpcAction<CmsGalleryDataBean> dataAction = new CmsRpcAction<CmsGalleryDataBean>() {
+
+            @Override
+            public void execute() {
+
+                getContainerpageService().getGalleryDataForPage(
+                    getEditableContainers(),
+                    getElementView(),
+                    CmsCoreProvider.get().getUri(),
+                    getData().getLocale(),
+                    this);
+            }
+
+            @Override
+            protected void onResponse(CmsGalleryDataBean result) {
+
+                m_handler.m_editor.getAdd().updateGalleryData(result);
+            }
+        };
+        dataAction.execute();
     }
 
     /**
@@ -2859,79 +3398,6 @@ public final class CmsContainerpageController {
             m_lockStatus = LockStatus.failed;
             m_handler.m_editor.disableEditing(getData().getLockInfo());
         }
-    }
-
-    /**
-     * Creates beans for each of this page's containers and ignore their contents.<p>
-     * 
-     * @return a list of container beans without contents 
-     */
-    private List<CmsContainer> createEmptyContainerBeans() {
-
-        List<CmsContainer> result = new ArrayList<CmsContainer>();
-        for (CmsContainerJso containerJso : m_containers.values()) {
-            CmsContainer container = new CmsContainer(
-                containerJso.getName(),
-                containerJso.getType(),
-                containerJso.getWidth(),
-                containerJso.getMaxElements(),
-                containerJso.isDetailView(),
-                null);
-            result.add(container);
-        }
-        return result;
-    }
-
-    /**
-     * Retrieves a container element with a given set of settings.<p>
-     * 
-     * @param clientId the id of the container element
-     * @param settings the set of settings
-     *  
-     * @param callback the callback which should be executed when the element has been loaded 
-     */
-    private void getElementWithSettings(
-        final String clientId,
-        final Map<String, String> settings,
-        final I_CmsSimpleCallback<CmsContainerElementData> callback) {
-
-        CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                start(200, false);
-                getContainerpageService().getElementWithSettings(
-                    CmsCoreProvider.get().getStructureId(),
-                    getData().getDetailId(),
-                    getRequestParams(),
-                    clientId,
-                    settings,
-                    m_containerBeans,
-                    getLocale(),
-                    this);
-
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(CmsContainerElementData result) {
-
-                stop(false);
-                if (result != null) {
-                    // cache the loaded element
-                    m_elements.put(result.getClientId(), result);
-                }
-                callback.execute(result);
-            }
-
-        };
-        action.execute();
     }
 
     /**

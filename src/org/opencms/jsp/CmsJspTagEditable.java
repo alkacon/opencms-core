@@ -205,12 +205,16 @@ public class CmsJspTagEditable extends BodyTagSupport {
      * @param context the current JSP page context
      * @param container the parent content load container
      * @param mode the direct edit mode to use (may be <code>null</code>, which means current use mode on page)
+     * @param id an id for the content info bean, if available 
      * 
      * @throws CmsException in case of invalid collector settings
      * @throws JspException in case writing to page context fails 
      */
-    public static void insertEditEmpty(PageContext context, I_CmsXmlContentContainer container, CmsDirectEditMode mode)
-    throws CmsException, JspException {
+    public static void insertEditEmpty(
+        PageContext context,
+        I_CmsXmlContentContainer container,
+        CmsDirectEditMode mode,
+        String id) throws CmsException, JspException {
 
         ServletRequest req = context.getRequest();
         if (isEditableRequest(req)
@@ -238,9 +242,15 @@ public class CmsJspTagEditable extends BodyTagSupport {
                 && (collector.getCreateTypeId(cms, container.getCollectorName(), container.getCollectorParam()) != -1)) {
                 String createFolderName = CmsResource.getFolderPath(createLink);
                 createParam = CmsEncoder.encode(container.getCollectorName() + "|" + createParam);
-                getDirectEditProvider(context).insertDirectEditEmptyList(
-                    context,
-                    new CmsDirectEditParams(createFolderName, CmsDirectEditButtonSelection.NEW, mode, createParam));
+                CmsDirectEditParams params = new CmsDirectEditParams(
+                    createFolderName,
+                    CmsDirectEditButtonSelection.NEW,
+                    mode,
+                    createParam);
+                params.setId(id);
+                params.setCollectorName(container.getCollectorName());
+                params.setCollectorParams(container.getCollectorParam());
+                getDirectEditProvider(context).insertDirectEditEmptyList(context, params);
             }
         }
     }
@@ -530,7 +540,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
         if (ancestor != null) {
             // parent content container available, use preloaded values from this container
             container = (I_CmsXmlContentContainer)ancestor;
-            insertEditEmpty(pageContext, container, m_mode == null ? CmsDirectEditMode.AUTO : m_mode);
+            insertEditEmpty(pageContext, container, m_mode == null ? CmsDirectEditMode.AUTO : m_mode, null);
         }
     }
 }

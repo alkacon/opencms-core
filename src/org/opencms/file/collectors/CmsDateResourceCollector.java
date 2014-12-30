@@ -138,6 +138,15 @@ public class CmsDateResourceCollector extends A_CmsResourceCollector {
     public List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
     throws CmsDataAccessException, CmsException {
 
+        return getResults(cms, collectorName, param, -1);
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public List<CmsResource> getResults(CmsObject cms, String collectorName, String param, int numResults)
+    throws CmsDataAccessException, CmsException {
+
         // if action is not set use default
         if (collectorName == null) {
             collectorName = COLLECTORS[0];
@@ -146,16 +155,16 @@ public class CmsDateResourceCollector extends A_CmsResourceCollector {
         switch (COLLECTORS_LIST.indexOf(collectorName)) {
             case 0:
                 // "allInFolderDateDesc"
-                return allInFolderDate(cms, param, false, false);
+                return allInFolderDate(cms, param, false, false, numResults);
             case 1:
                 // "allInFolderDateAsc"
-                return allInFolderDate(cms, param, false, true);
+                return allInFolderDate(cms, param, false, true, numResults);
             case 2:
                 // "allInSubTreeDateDesc"
-                return allInFolderDate(cms, param, true, false);
+                return allInFolderDate(cms, param, true, false, numResults);
             case 3:
                 // "allInSubTreeDateAsc"
-                return allInFolderDate(cms, param, true, true);
+                return allInFolderDate(cms, param, true, true, numResults);
             default:
                 throw new CmsDataAccessException(Messages.get().container(
                     Messages.ERR_COLLECTOR_NAME_INVALID_1,
@@ -172,12 +181,13 @@ public class CmsDateResourceCollector extends A_CmsResourceCollector {
      * @param tree if true, look in folder and all child folders, if false, look only in given folder
      * @param asc if <code>true</code>, the sort is ascending (old dates first), otherwise it is descending 
      *      (new dates first)
+     * @param numResults number of results 
      * 
      * @return a List of all resources in the folder pointed to by the parameter sorted by the selected dates
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List<CmsResource> allInFolderDate(CmsObject cms, String param, boolean tree, boolean asc)
+    protected List<CmsResource> allInFolderDate(CmsObject cms, String param, boolean tree, boolean asc, int numResults)
     throws CmsException {
 
         CmsExtendedCollectorData data = new CmsExtendedCollectorData(param);
@@ -196,6 +206,6 @@ public class CmsDateResourceCollector extends A_CmsResourceCollector {
         CmsDateResourceComparator comparator = new CmsDateResourceComparator(cms, dateIdentifiers, asc);
         Collections.sort(result, comparator);
 
-        return shrinkToFit(result, data.getCount());
+        return shrinkToFit(result, data.getCount(), numResults);
     }
 }

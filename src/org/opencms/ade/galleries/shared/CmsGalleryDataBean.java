@@ -58,6 +58,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The galleries to display in the list with available galleries. */
     private List<CmsGalleryFolderBean> m_galleries;
 
+    /** The prefix for the key used to store the last selected gallery. */
+    private String m_galleryStoragePrefix;
+
     /** The content locale. */
     private String m_locale;
 
@@ -106,6 +109,17 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** List of site selector options. */
     private List<CmsSiteSelectorOption> m_vfsSiteSelectorOptions;
 
+    /** The default value for the 'include expired' option. */
+    private boolean m_includeExpiredDefault;
+
+    /**
+     * Default constructor.<p>
+     */
+    public CmsGalleryDataBean() {
+
+        // do nothing 
+    }
+
     /**
      * Returns the categories.<p>
      *
@@ -145,6 +159,26 @@ public class CmsGalleryDataBean implements IsSerializable {
 
         return m_galleries;
 
+    }
+
+    /**
+     * Gets the prefix for the key used to store the last selected gallery.<p>
+     * 
+     * @return the gallery key prefix 
+     */
+    public String getGalleryStoragePrefix() {
+
+        return m_galleryStoragePrefix;
+    }
+
+    /**
+     * Gets the default value for the "include expired" option.<p>
+     * 
+     * @return the default value 
+     */
+    public boolean getIncludeExpiredDefault() {
+
+        return m_includeExpiredDefault;
     }
 
     /**
@@ -336,6 +370,26 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setGalleries(List<CmsGalleryFolderBean> galleries) {
 
         m_galleries = galleries;
+    }
+
+    /**
+     * Sets the prefix for the key used to store the last selected gallery.<p>
+     * 
+     * @param prefix the prefix for the gallery key 
+     */
+    public void setGalleryStoragePrefix(String prefix) {
+
+        m_galleryStoragePrefix = prefix;
+    }
+
+    /**
+     * Sets the default value for the 'include expired' option.<p>
+     * 
+     * @param includeExpiredDefault the default value to set 
+     */
+    public void setIncludeExpiredDefault(boolean includeExpiredDefault) {
+
+        m_includeExpiredDefault = includeExpiredDefault;
     }
 
     /**

@@ -29,11 +29,11 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @since 8.0.0
  */
-public class CmsRecentTab extends Composite {
+public class CmsRecentTab extends A_CmsClipboardTab {
 
     /** The ui-binder interface for this widget. */
     interface I_CmsRecentTabUiBinder extends UiBinder<Widget, CmsRecentTab> {
@@ -55,6 +55,10 @@ public class CmsRecentTab extends Composite {
     @UiField(provided = true)
     protected CmsList<CmsListItem> m_listPanel = new CmsList<CmsListItem>();
 
+    /** The scroll panel. */
+    @UiField
+    protected CmsScrollPanel m_scrollPanel;
+
     /**
      * Constructor.<p>
      */
@@ -64,40 +68,20 @@ public class CmsRecentTab extends Composite {
     }
 
     /**
-     * Adds an item to the recent list.<p>
-     * 
-     * @param item the item to add
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsClipboardTab#getList()
      */
-    public void addListItem(CmsListItem item) {
+    @Override
+    public CmsList<CmsListItem> getList() {
 
-        m_listPanel.add(item);
+        return m_listPanel;
     }
 
     /**
-     * Clears the recent list.<p>
+     * @see org.opencms.ade.containerpage.client.ui.A_CmsClipboardTab#getScrollPanel()
      */
-    public void clearList() {
+    @Override
+    public CmsScrollPanel getScrollPanel() {
 
-        m_listPanel.clear();
+        return m_scrollPanel;
     }
-
-    /**
-     * Replaces the item with the same id if present.<p>
-     * 
-     * @param item the new item
-     */
-    public void replaceItem(CmsListItem item) {
-
-        CmsListItem oldItem = m_listPanel.getItem(item.getId());
-        if (oldItem != null) {
-            int index = m_listPanel.getWidgetIndex(oldItem);
-            m_listPanel.removeItem(oldItem);
-            if (index >= m_listPanel.getWidgetCount()) {
-                m_listPanel.addItem(item);
-            } else {
-                m_listPanel.insertItem(item, index);
-            }
-        }
-    }
-
 }

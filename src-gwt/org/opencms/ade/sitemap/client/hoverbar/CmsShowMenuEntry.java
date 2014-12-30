@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -60,14 +61,16 @@ public class CmsShowMenuEntry extends A_CmsSitemapMenuEntry {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
+     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow()
      */
     @Override
-    public void onShow(CmsHoverbarShowEvent event) {
+    public void onShow() {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = entry.isInNavigation() && entry.isHiddenNavigationEntry();
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode()
+            && entry.isInNavigation()
+            && entry.isHiddenNavigationEntry();
         setVisible(show);
         if (show && !entry.isEditable()) {
             setActive(false);

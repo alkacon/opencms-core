@@ -34,6 +34,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.I_CmsMacroResolver;
 import org.opencms.util.PrintfFormat;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsNumberSuffixNameSequence;
@@ -99,7 +100,25 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
     }
 
     /** Start sequence for macro with digits. */
-    private static final String MACRO_NUMBER_START = "%(" + I_CmsFileNameGenerator.MACRO_NUMBER + ":";
+    private static final String MACRO_NUMBER_DIGIT_SEPARATOR = ":";
+
+    /**
+     * Checks the given pattern for the number macro.<p>
+     * 
+     * @param pattern the pattern to check
+     * 
+     * @return <code>true</code> if the pattern contains the macro
+     */
+    public static boolean hasNumberMacro(String pattern) {
+
+        // check both macro variants
+        return hasNumberMacro(pattern, "" + I_CmsMacroResolver.MACRO_DELIMITER + I_CmsMacroResolver.MACRO_START, ""
+            + I_CmsMacroResolver.MACRO_END)
+            || hasNumberMacro(
+                pattern,
+                "" + I_CmsMacroResolver.MACRO_DELIMITER_OLD + I_CmsMacroResolver.MACRO_START_OLD,
+                "" + I_CmsMacroResolver.MACRO_END_OLD);
+    }
 
     /**
      * Removes the file extension if it only consists of letters.<p>
@@ -111,6 +130,28 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
     public static String removeExtension(String path) {
 
         return path.replaceFirst("\\.[a-zA-Z]*$", "");
+    }
+
+    /**
+     * Checks the given pattern for the number macro.<p>
+     * 
+     * @param pattern the pattern to check
+     * @param macroStart the macro start string
+     * @param macroEnd the macro end string
+     * 
+     * @return <code>true</code> if the pattern contains the macro
+     */
+    private static boolean hasNumberMacro(String pattern, String macroStart, String macroEnd) {
+
+        String macro = I_CmsFileNameGenerator.MACRO_NUMBER;
+        String macroPart = macroStart + macro + MACRO_NUMBER_DIGIT_SEPARATOR;
+        int prefixIndex = pattern.indexOf(macroPart);
+        if (prefixIndex >= 0) {
+            // this macro contains an individual digit setting
+            char n = pattern.charAt(prefixIndex + macroPart.length());
+            macro = macro + MACRO_NUMBER_DIGIT_SEPARATOR + n;
+        }
+        return pattern.contains(macroStart + macro + macroEnd);
     }
 
     /**
@@ -187,6 +228,12 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
      */
     protected String getNewFileNameFromList(List<String> fileNames, String checkPattern, int defaultDigits) {
 
+        if (!hasNumberMacro(checkPattern)) {
+            throw new IllegalArgumentException(Messages.get().getBundle().key(
+                Messages.ERR_FILE_NAME_PATTERN_WITHOUT_NUMBER_MACRO_1,
+                checkPattern));
+        }
+
         String checkFileName, checkTempFileName;
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
         Set<String> extensionlessNames = new HashSet<String>();
@@ -196,23 +243,42 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
         String macro = I_CmsFileNameGenerator.MACRO_NUMBER;
         int useDigits = defaultDigits;
-
-        int prefixIndex = checkPattern.indexOf(MACRO_NUMBER_START);
+        String macroStart = ""
+            + I_CmsMacroResolver.MACRO_DELIMITER
+            + I_CmsMacroResolver.MACRO_START
+            + macro
+            + MACRO_NUMBER_DIGIT_SEPARATOR;
+        int prefixIndex = checkPattern.indexOf(macroStart);
+        if (prefixIndex < 0) {
+            macroStart = ""
+                + I_CmsMacroResolver.MACRO_DELIMITER_OLD
+                + I_CmsMacroResolver.MACRO_START_OLD
+                + macro
+                + MACRO_NUMBER_DIGIT_SEPARATOR;
+            prefixIndex = checkPattern.indexOf(macroStart);
+        }
         if (prefixIndex >= 0) {
             // this macro contains an individual digit setting
-            char n = checkPattern.charAt(prefixIndex + MACRO_NUMBER_START.length());
+            char n = checkPattern.charAt(prefixIndex + macroStart.length());
             macro = macro + ':' + n;
             useDigits = Character.getNumericValue(n);
         }
 
         CmsNumberFactory numberFactory = new CmsNumberFactory(useDigits);
         resolver.addDynamicMacro(macro, numberFactory);
-
+        Set<String> checked = new HashSet<String>();
         int j = 0;
         do {
             numberFactory.setNumber(++j);
             // resolve macros in file name
             checkFileName = resolver.resolveMacros(checkPattern);
+            if (checked.contains(checkFileName)) {
+                // the file name has been checked before, abort the search
+                throw new RuntimeException(Messages.get().getBundle().key(
+                    Messages.ERR_NO_FILE_NAME_AVAILABLE_FOR_PATTERN_1,
+                    checkPattern));
+            }
+            checked.add(checkFileName);
             // get name of the resolved temp file
             checkTempFileName = CmsWorkplace.getTemporaryFileName(checkFileName);
         } while (extensionlessNames.contains(removeExtension(checkFileName))

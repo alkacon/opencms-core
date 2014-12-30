@@ -72,9 +72,7 @@ public class CmsXmlGroupContainerHandler extends CmsDefaultXmlContentHandler {
     throws CmsException {
 
         CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, resource);
-        CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(
-            cms,
-            cms.getRequestContext().getLocale());
+        CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(cms);
         List<CmsContainerElementBean> elemBeans = groupContainer.getElements();
         List<CmsContainerElementBean> result = new ArrayList<CmsContainerElementBean>();
         for (CmsContainerElementBean elementBean : elemBeans) {

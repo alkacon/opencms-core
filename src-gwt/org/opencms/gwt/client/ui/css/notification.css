@@ -34,18 +34,8 @@ div.notificationOverlay {
 	background-color: value("constants.css.backgroundColorOverlay"); 
 }
 
-@if user.agent ie6 { 
-	.notificationOverlay { 
-		filter: literal("alpha(opacity = 50)"); 
-	}
-} @elif user.agent ie8 { 
-	.notificationOverlay { 
-		-ms-filter: "alpha(opacity = 50)";
-	}
-} @else {
-	.notificationOverlay { 
-		opacity: 0.5; 
-	}
+.notificationOverlay { 
+	opacity: 0.5; 
 }
 .popup div.notificationContainer{
 	top: 50px;
@@ -64,12 +54,50 @@ div.notificationContainer {
 	display: none;
 }
 
-.blocking .loadingAnimation{
-	display: inline-block;
+/** Broadcast messages */
+p.messageTime{
+	font-size: 10px;
+	line-height: 10px;
+	color: value("constants.css.textColorDisabled");
+}
+
+div.messageWrap{
+	background-color: value("constants.css.backgroundColorDialog");
+	border-top: 1px solid value("constants.css.borderColor");
+	margin: 0 -15px -5px;
+	padding: 0 15px 5px;
+}
+/** Broadcast messages */
+
+.notificationContainer div.closeButton{
+	position: absolute;
+	top:2px;
+	right: 2px;
+}
+
+div.notificationContainer, .notificationContainer div.messagesPanel > div{
+	text-align: center;
+}
+
+.messagesPanel {
+	margin-top: 30px; 	
+} 
+
+.notificationMessage div.messageContent{
+	dislay: inline-block;
+}
+
+.notificationMessage div.messageContent p{
+	margin: 4px 0px;
+	text-align: left;
+}
+
+.notificationMessage div.messageContent br{
+	display: block;
 }
 
 div.notificationMessage, span.notificationMessage {
-	font-weight: bold; 
+	font-weight: normal; 
 	font-size: value("constants.css.fontSizeBig");
 	padding: 5px 15px; 
 	line-height: value("constants.css.lineHeightBig");
@@ -81,28 +109,21 @@ div.notificationMessage, span.notificationMessage {
     overflow: auto;
     border-width: 2px;
     border-style: solid;
-    text-align: center;
+    position: relative;
+    text-align: left;
+}
+
+
+div.notificationMessage b, span.notificationMessage b{
+	font-weight: bold;
 }
 
 .popup div.notificationMessage, .popup span.notificationMessage {
 	max-width: 80%;
 	min-width: 40%;
 }
-
-.blocking .notificationContainer .notificationMessage {
-	background: transparent;
-	border: none;
-}
-/** browser specific styles **/
-@if user.agent ie8 {
-	/** ie7, ie8 **/
-	.blocking .notificationContainer .notificationMessage{
-		-ms-filter: none; 
-	}
-} @else {
-	.blocking .notificationContainer .notificationMessage{
-		box-shadow: none;
-	}
+.busy .loadingAnimation{
+	display: inline-block;
 }
 
 .notificationError .notificationMessage { 

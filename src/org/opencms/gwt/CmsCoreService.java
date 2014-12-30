@@ -36,8 +36,11 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
+import org.opencms.gwt.shared.CmsBroadcastMessage;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
@@ -46,25 +49,31 @@ import org.opencms.gwt.shared.CmsCoreData.UserInfo;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
+import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.jobs.CmsPublishScheduledJob;
+import org.opencms.security.CmsPasswordInfo;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleManager;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -91,10 +100,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.Buffer;
+import org.apache.commons.logging.Log;
 
 /**
  * Provides general core services.<p>
@@ -119,11 +132,60 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /** The xml-content editor URI. */
     private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
 
+    /** The log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsCoreService.class);
+
     /** Serialization uid. */
     private static final long serialVersionUID = 5915848952948986278L;
 
     /** The session cache. */
     private CmsADESessionCache m_sessionCache;
+
+    /**
+     * Builds the tree structure for the given categories.<p>
+     * 
+     * @param cms the current cms context
+     * @param categories the categories
+     * 
+     * @return the tree root element
+     */
+    public static List<CmsCategoryTreeEntry> buildCategoryTree(CmsObject cms, List<CmsCategory> categories) {
+
+        List<CmsCategoryTreeEntry> result = new ArrayList<CmsCategoryTreeEntry>();
+        for (CmsCategory category : categories) {
+            CmsCategoryTreeEntry current = new CmsCategoryTreeEntry(category);
+            current.setSitePath(cms.getRequestContext().removeSiteRoot(category.getRootPath()));
+            String parentPath = CmsResource.getParentFolder(current.getPath());
+            CmsCategoryTreeEntry parent = null;
+            parent = findCategory(result, parentPath);
+            if (parent != null) {
+                parent.addChild(current);
+            } else {
+                result.add(current);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Helper method for getting the category beans for the given site path.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param sitePath the site path 
+     * @return the list of category beans 
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public static List<CmsCategoryTreeEntry> getCategoriesForSitePathStatic(CmsObject cms, String sitePath)
+    throws CmsException {
+
+        List<CmsCategoryTreeEntry> result;
+        CmsCategoryService catService = CmsCategoryService.getInstance();
+        // get the categories
+        List<CmsCategory> categories = catService.readCategories(cms, "", true, sitePath);
+        result = buildCategoryTree(cms, categories);
+        return result;
+    }
 
     /**
      * Returns the context menu entries for the given URI.<p>
@@ -146,21 +208,31 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             }
             CmsResourceUtil[] resUtil = new CmsResourceUtil[1];
             resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId, CmsResourceFilter.ONLY_VISIBLE));
-            if (hasViewPermissions(cms, resUtil[0].getResource())) {
-                // the explorer type settings
-                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                    resUtil[0].getResourceTypeName());
-                // only if the user has access to this resource type
-                if ((settings != null)) {
-                    // get the context menu configuration for the given selection mode
-                    CmsExplorerContextMenu contextMenu = settings.getContextMenu();
-                    // transform the context menu into beans
-                    List<CmsContextMenuEntryBean> allEntries = transformToMenuEntries(
-                        cms,
-                        contextMenu.getAllEntries(),
-                        resUtil);
-                    // filter the result
-                    result = filterEntries(allEntries);
+            CmsResource resource = resUtil[0].getResource();
+            if (hasViewPermissions(cms, resource)) {
+                String fallbackType = resource.isFolder()
+                ? CmsResourceTypeFolder.getStaticTypeName()
+                : CmsResourceTypePlain.getStaticTypeName();
+                String[] lookupTypes = {resUtil[0].getResourceTypeName(), fallbackType};
+
+                for (String currentType : lookupTypes) {
+                    // the explorer type settings
+                    CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(currentType);
+                    // only if the user has access to this resource type
+                    if ((settings != null)) {
+                        // get the context menu configuration for the given selection mode
+                        CmsExplorerContextMenu contextMenu = settings.getContextMenu();
+                        // transform the context menu into beans
+                        List<CmsContextMenuEntryBean> allEntries = transformToMenuEntries(
+                            cms,
+                            contextMenu.getAllEntries(),
+                            resUtil);
+                        // filter the result
+                        result = filterEntries(allEntries);
+                        if (!result.isEmpty()) {
+                            break;
+                        }
+                    }
                 }
             }
         } catch (CmsException e) {
@@ -311,6 +383,43 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             }
         }
         return result;
+    }
+
+    /**
+     * FInds a category in the given tree.<p>
+     * 
+     * @param tree the the tree to search in
+     * @param path the path to search for
+     * 
+     * @return the category with the given path or <code>null</code> if not found
+     */
+    private static CmsCategoryTreeEntry findCategory(List<CmsCategoryTreeEntry> tree, String path) {
+
+        if (path == null) {
+            return null;
+        }
+        // we assume that the category to find is descendant of tree
+        List<CmsCategoryTreeEntry> children = tree;
+        boolean found = true;
+        while (found) {
+            if (children == null) {
+                return null;
+            }
+            // since the categories are sorted it is faster to go backwards
+            found = false;
+            for (int i = children.size() - 1; i >= 0; i--) {
+                CmsCategoryTreeEntry child = children.get(i);
+                if (path.equals(child.getPath())) {
+                    return child;
+                }
+                if (path.startsWith(child.getPath())) {
+                    children = child.getChildren();
+                    found = true;
+                    break;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -489,11 +598,71 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#changePassword(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public String changePassword(String oldPassword, String newPassword, String newPasswordConfirm)
+    throws CmsRpcException {
+
+        System.out.println("changing password from " + oldPassword + " to " + newPassword);
+        CmsObject cms = getCmsObject();
+        CmsPasswordInfo passwordBean = new CmsPasswordInfo(cms);
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        try {
+            passwordBean.setCurrentPwd(oldPassword);
+            passwordBean.setNewPwd(newPassword);
+            passwordBean.setConfirmation(newPasswordConfirm);
+            passwordBean.applyChanges();
+            return null;
+        } catch (CmsSecurityException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return e.getMessageContainer().key(wpLocale);
+        } catch (CmsIllegalArgumentException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return e.getMessageContainer().key(wpLocale);
+        } catch (Exception e) {
+            error(e);
+            return null; // will never be executed 
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#createUUID()
      */
     public CmsUUID createUUID() {
 
         return new CmsUUID();
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getBroadcast()
+     */
+    public List<CmsBroadcastMessage> getBroadcast() {
+
+        CmsSessionInfo sessionInfo = OpenCms.getSessionManager().getSessionInfo(getRequest().getSession());
+        if (sessionInfo == null) {
+            return null;
+        }
+        String sessionId = sessionInfo.getSessionId().toString();
+        Buffer messageQueue = OpenCms.getSessionManager().getBroadcastQueue(sessionId);
+        if (!messageQueue.isEmpty()) {
+            CmsMessages messages = org.opencms.workplace.Messages.get().getBundle(
+                OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()));
+            List<CmsBroadcastMessage> result = new ArrayList<CmsBroadcastMessage>();
+            // the user has pending messages, display them all
+            while (!messageQueue.isEmpty()) {
+                CmsBroadcast broadcastMessage = (CmsBroadcast)messageQueue.remove();
+                CmsBroadcastMessage message = new CmsBroadcastMessage(
+                    broadcastMessage.getUser() != null
+                    ? broadcastMessage.getUser().getName()
+                    : messages.key(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0),
+                    messages.getDateTime(broadcastMessage.getSendTime()),
+                    broadcastMessage.getMessage());
+                result.add(message);
+            }
+            return result;
+        }
+        // no message pending, return null
+        return null;
     }
 
     /**
@@ -534,13 +703,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      */
     public List<CmsCategoryTreeEntry> getCategoriesForSitePath(String sitePath) throws CmsRpcException {
 
-        CmsCategoryService catService = CmsCategoryService.getInstance();
         List<CmsCategoryTreeEntry> result = null;
         CmsObject cms = getCmsObject();
         try {
-            // get the categories
-            List<CmsCategory> categories = catService.readCategories(cms, "", true, sitePath);
-            result = buildCategoryTree(cms, categories);
+            result = getCategoriesForSitePathStatic(cms, sitePath);
         } catch (Throwable e) {
             error(e);
         }
@@ -698,6 +864,63 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#loadUserSettings()
+     */
+    public CmsUserSettingsBean loadUserSettings() throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        CmsClientUserSettingConverter converter = new CmsClientUserSettingConverter(cms, getRequest(), getResponse());
+        try {
+            return converter.loadSettings();
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
+        //        CmsUserSettingsBean result = new CmsUserSettingsBean();
+        //        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        //        CmsMessages wpMessages = org.opencms.workplace.commons.Messages.get().getBundle(wpLocale);
+        //
+        //        CmsWorkplaceSettings workplaceSettings = CmsWorkplace.initAndStoreSettings(cms, getRequest().getSession());
+        //        SelectOptions options = CmsPreferences.getOptionsForLanguage(
+        //            workplaceSettings,
+        //            workplaceSettings.getUserSettings());
+        //
+        //        CmsXmlContentProperty languageProp = new CmsXmlContentProperty("language",//name
+        //            "string",//type
+        //            "select_notnull",//widget
+        //            options.toClientSelectWidgetConfiguration(),//widgetconfig
+        //            null,//regex
+        //            null,//ruletype
+        //            null,//default
+        //            wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_LANGUAGE_0),//nicename
+        //            null,//description
+        //            null,//error
+        //            null//preferfolder
+        //        );
+        //        result.addSetting(wpLocale.toString(), languageProp);
+        //
+        //        for (int i = 0; i < 30; i++) {
+        //            String propName = "User setting " + i;
+        //            CmsXmlContentProperty prop = new CmsXmlContentProperty(propName,//name
+        //                "string",//type
+        //                "string",//widget
+        //                "",//widgetconfig
+        //                null,//regex
+        //                null,//ruletype
+        //                null,//default
+        //                null,//nicename
+        //                null,//description
+        //                null,//error
+        //                null//preferfolder
+        //            );
+        //
+        //            result.addSetting("cow" + i, prop);
+        //        }
+        //        return result;
+
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#lockIfExists(java.lang.String)
      */
     public String lockIfExists(String sitePath) throws CmsRpcException {
@@ -816,7 +1039,15 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsRoleManager roleManager = OpenCms.getRoleManager();
         boolean isAdmin = roleManager.hasRole(cms, CmsRole.ADMINISTRATOR);
         boolean isDeveloper = roleManager.hasRole(cms, CmsRole.DEVELOPER);
-        UserInfo userInfo = new UserInfo(cms.getRequestContext().getCurrentUser().getName(), isAdmin, isDeveloper);
+        boolean isCategoryManager = roleManager.hasRole(cms, CmsRole.CATEGORY_EDITOR);
+        UserInfo userInfo = new UserInfo(
+            cms.getRequestContext().getCurrentUser().getName(),
+            isAdmin,
+            isDeveloper,
+            isCategoryManager);
+        String aboutLink = OpenCms.getLinkManager().substituteLink(
+            getCmsObject(),
+            "/system/modules/org.opencms.gwt/about.jsp");
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             EDITOR_BACKLINK_URI,
@@ -834,11 +1065,30 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             isShowHelp,
             toolbarVisible,
             defaultWorkplaceLink,
+            aboutLink,
             userInfo,
             OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCmsObject()),
             OpenCms.getWorkplaceManager().isKeepAlive(),
             OpenCms.getADEManager().getParameters(getCmsObject()));
         return data;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#saveUserSettings(java.util.Map, java.util.Set)
+     */
+    public void saveUserSettings(Map<String, String> userSettings, Set<String> edited) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsClientUserSettingConverter converter = new CmsClientUserSettingConverter(
+                cms,
+                getRequest(),
+                getResponse());
+            userSettings.keySet().retainAll(edited);
+            converter.saveSettings(userSettings);
+        } catch (Exception e) {
+            error(e);
+        }
     }
 
     /**
@@ -1051,71 +1301,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         }
         CmsUser owner = cms.readUser(lock.getUserId());
         return CmsLockInfo.forLockedResource(owner.getName());
-    }
-
-    /**
-     * Builds the tree structure for the given categories.<p>
-     * 
-     * @param cms the current cms context
-     * @param categories the categories
-     * 
-     * @return the tree root element
-     * 
-     * @throws Exception if something goes wrong
-     */
-    private List<CmsCategoryTreeEntry> buildCategoryTree(CmsObject cms, List<CmsCategory> categories) throws Exception {
-
-        List<CmsCategoryTreeEntry> result = new ArrayList<CmsCategoryTreeEntry>();
-        for (CmsCategory category : categories) {
-            CmsCategoryTreeEntry current = new CmsCategoryTreeEntry(category);
-            current.setSitePath(cms.getRequestContext().removeSiteRoot(category.getRootPath()));
-            String parentPath = CmsResource.getParentFolder(current.getPath());
-            CmsCategoryTreeEntry parent = null;
-            parent = findCategory(result, parentPath);
-            if (parent != null) {
-                parent.addChild(current);
-            } else {
-                result.add(current);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * FInds a category in the given tree.<p>
-     * 
-     * @param tree the the tree to search in
-     * @param path the path to search for
-     * 
-     * @return the category with the given path or <code>null</code> if not found
-     */
-    private CmsCategoryTreeEntry findCategory(List<CmsCategoryTreeEntry> tree, String path) {
-
-        if (path == null) {
-            return null;
-        }
-        // we assume that the category to find is descendant of tree
-        List<CmsCategoryTreeEntry> children = tree;
-        boolean found = true;
-        while (found) {
-            if (children == null) {
-                return null;
-            }
-            // since the categories are sorted it is faster to go backwards
-            found = false;
-            for (int i = children.size() - 1; i >= 0; i--) {
-                CmsCategoryTreeEntry child = children.get(i);
-                if (path.equals(child.getPath())) {
-                    return child;
-                }
-                if (path.startsWith(child.getPath())) {
-                    children = child.getChildren();
-                    found = true;
-                    break;
-                }
-            }
-        }
-        return null;
     }
 
     /**

@@ -1,21 +1,27 @@
+#
+# Default .gitignore for the Alkacon OpenCms project
+# 
+# After initial checkout, you should do 'git update-index --assume-unchanged <file>' 
+# for the following files:
+#
+# - /.gitignore
+# - /.classpath
+# - /test/test.properties
+# - /.settings/gradle/org.springsource.ide.eclipse.gradle.core.prefs 
+#
+# In Eclipse this is available in the dialog 'Team > Advanced > Assume unchanged'
+#
+# If you make changes to the files that you really want to commit, 
+# do a 'No Assume unchanged' first.
+#
 /bin
 /.project
 /.settings/*
 /test/data/WEB-INF/index
 /test/data/WEB-INF/config
 /gwt-unitCache
-Thumbs.db
 /xbuild.properties
-/modules/org.opencms.ade.containerpage/resources/system/modules/org.opencms.ade.containerpage/resources/containerpage
-/modules/org.opencms.ade.editprovider/resources/system/modules/org.opencms.ade.editprovider/resources/editprovider
-/modules/org.opencms.ade.galleries/resources/system/modules/org.opencms.ade.galleries/resources/galleries
-/modules/org.opencms.ade.sitemap/resources/system/modules/org.opencms.ade.sitemap/resources/sitemap
-/modules/org.opencms.ade.upload/resources/system/modules/org.opencms.ade.upload/resources/upload
-/modules/org.opencms.ade.contenteditor/resources/system/modules/org.opencms.ade.contenteditor/resources/contenteditor
-/modules/org.opencms.ade.contenteditor/resources/system/modules/org.opencms.ade.contenteditor/resources/org.opencms.ade.contenteditor.scripts.js
-/modules/org.opencms.ade.postupload/resources/system/modules/org.opencms.ade.postupload/resources/postupload
-/modules/org.opencms.ade.properties/resources/system/modules/org.opencms.ade.properties/resources/properties
-/modules/org.opencms.ade.publish/resources/system/modules/org.opencms.ade.publish/resources/publish
+/hostedmode-war
 /.gradle
 **/.gradle
-/hostedmode-war
+Thumbs.db

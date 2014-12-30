@@ -172,6 +172,7 @@ public class TestModuleIssues extends OpenCmsTestCase {
             "test",
             "test",
             null,
+            null,
             "test",
             new CmsModuleVersion("0.0.1"),
             "test",

@@ -282,6 +282,17 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      */
     public CmsTextBox() {
 
+        this(new TextBox());
+    }
+
+    /**
+     * Creates a new text box based on an underlying GWT text box instance.<p>
+     * 
+     * @param textbox the GWT text box instance to wrap
+     */
+    public CmsTextBox(TextBox textbox) {
+
+        m_textbox = textbox;
         setEnabled(true);
         m_textbox.setStyleName(CSS.textBox());
         m_textbox.getElement().setId("CmsTextBox_" + (idCounter++));
@@ -306,6 +317,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         m_textboxContainer.setPaddingX(4);
         sinkEvents(Event.ONPASTE);
         initWidget(m_panel);
+
     }
 
     /**
@@ -321,7 +333,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
              */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                return new CmsTextBox();
+                return new CmsTextBox().colorWhite();
             }
         });
     }
@@ -376,6 +388,17 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     public void blur() {
 
         m_textbox.getElement().blur();
+    }
+
+    /**
+     * Sets the background color to white.<p>
+     * 
+     * @return this widget 
+     */
+    public CmsTextBox colorWhite() {
+
+        getTextBoxContainer().addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().textBoxPanelWhite());
+        return this;
     }
 
     /**

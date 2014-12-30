@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -61,17 +62,19 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
+     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow()
      */
     @Override
-    public void onShow(CmsHoverbarShowEvent event) {
+    public void onShow() {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = (entry != null)
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode()
+            && (entry != null)
             && controller.isDetailPage(entry)
             && controller.getData().canEditDetailPages()
             && !controller.getDetailPageTable().isDefaultDetailPage(entry.getId());
         setVisible(show);
+
     }
 }

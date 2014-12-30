@@ -37,7 +37,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.I_CmsSearchDocument;
-import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
@@ -81,6 +80,52 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
     public CmsSolrDocumentContainerPage(String name) {
 
         super(name);
+    }
+
+    /**
+     * Merges the given list of extraction results into a single one.<p>
+     * 
+     * @param cms the CMS object to use
+     * @param resource the indexed resource
+     * 
+     * @param all the extraction result objects to merge
+     * @param conf the Solr field configuration
+     * 
+     * @return the merged result
+     */
+    protected static I_CmsExtractionResult merge(
+        CmsObject cms,
+        CmsResource resource,
+        List<I_CmsExtractionResult> all,
+        CmsSolrFieldConfiguration conf) {
+
+        StringBuffer content = new StringBuffer();
+        Map<String, String> items = new HashMap<String, String>();
+        Set<CmsSearchField> fields = new HashSet<CmsSearchField>();
+
+        for (I_CmsExtractionResult ex : all) {
+            if (ex.getContent() != null) {
+                content.append(ex.getContent());
+            }
+            if (ex.getContentItems() != null) {
+                for (Entry<String, String> item : ex.getContentItems().entrySet()) {
+                    String key = item.getKey();
+                    String value = item.getValue();
+                    if (items.containsKey(key) && (items.get(key) != null)) {
+                        if (!items.get(key).equals(value)) {
+                            items.put(key, items.get(key) + " " + value);
+                        }
+                    } else {
+                        items.put(key, value);
+                    }
+                }
+            }
+            Set<CmsSearchField> mappedFields = conf.getXSDMappings(cms, resource);
+            if (mappedFields != null) {
+                fields.addAll(mappedFields);
+            }
+        }
+        return new CmsExtractionResult(content.toString(), items);
     }
 
     /**
@@ -128,7 +173,7 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
             Locale locale = index.getLocaleForResource(cms, resource, containerPage.getLocales());
 
             List<I_CmsExtractionResult> all = new ArrayList<I_CmsExtractionResult>();
-            CmsContainerPageBean containerBean = containerPage.getContainerPage(cms, locale);
+            CmsContainerPageBean containerBean = containerPage.getContainerPage(cms);
             if (containerBean != null) {
                 for (CmsContainerElementBean element : containerBean.getElements()) {
                     // check all elements in this container
@@ -141,8 +186,7 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                         && formatters.isSearchContent(element.getFormatterId())) {
                         // the content of this element must be included for the container page
                         element.initResource(cms);
-                        I_CmsDocumentFactory xmlFac = index.getDocumentFactory(element.getResource());
-                        all.add(xmlFac.extractContent(cms, element.getResource(), index));
+                        all.add(CmsSolrDocumentXmlContent.extractXmlContent(cms, element.getResource(), index));
                     }
                 }
             }
@@ -173,51 +217,5 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
     public boolean isUsingCache() {
 
         return true;
-    }
-
-    /**
-     * Merges the given list of extraction results into a single one.<p>
-     * 
-     * @param cms the CMS object to use
-     * @param resource 
-     * 
-     * @param all the extraction result objects to merge
-     * @param conf the Solr field configuration
-     * 
-     * @return the merged result
-     */
-    private I_CmsExtractionResult merge(
-        CmsObject cms,
-        CmsResource resource,
-        List<I_CmsExtractionResult> all,
-        CmsSolrFieldConfiguration conf) {
-
-        StringBuffer content = new StringBuffer();
-        Map<String, String> items = new HashMap<String, String>();
-        Set<CmsSearchField> fields = new HashSet<CmsSearchField>();
-
-        for (I_CmsExtractionResult ex : all) {
-            if (ex.getContent() != null) {
-                content.append(ex.getContent());
-            }
-            if (ex.getContentItems() != null) {
-                for (Entry<String, String> item : ex.getContentItems().entrySet()) {
-                    String key = item.getKey();
-                    String value = item.getValue();
-                    if (items.containsKey(key) && (items.get(key) != null)) {
-                        if (!items.get(key).equals(value)) {
-                            items.put(key, items.get(key) + " " + value);
-                        }
-                    } else {
-                        items.put(key, value);
-                    }
-                }
-            }
-            Set<CmsSearchField> mappedFields = conf.getXSDMappings(cms, resource);
-            if (mappedFields != null) {
-                fields.addAll(mappedFields);
-            }
-        }
-        return new CmsExtractionResult(content.toString(), items);
     }
 }

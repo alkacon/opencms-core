@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
+import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -46,8 +47,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.FacetField.Count;
 
 /**
  * A Solr collector.<p>
@@ -55,6 +60,50 @@ import java.util.Map;
  * @since 8.5.0
  */
 public class CmsSolrCollector extends A_CmsResourceCollector {
+
+    /**
+     * Acts as an wrapper so that the Solr Collector is able to return facets delivered by Solr whilst returning the list of CmsResources. 
+     */
+    public static class CmsSolrCollectorResult {
+
+        /** Returns a list of {@link org.opencms.file.CmsResource} Objects that are gathered in the VFS using the collector. */
+        private List<CmsResource> resources;
+
+        /** Returns a map of Facets that are gathered by Solr using the collector. */
+        private Map<String, List<String>> facets;
+
+        /**
+         * Default constructor.  
+         * @param resources The list of resources that are returned by the collector. 
+         * @param facets The facets that are returned by the Solr collector. 
+         */
+        public CmsSolrCollectorResult(List<CmsResource> resources, Map<String, List<String>> facets) {
+
+            this.resources = resources;
+            this.facets = facets;
+        }
+
+        /**
+         * Returns the facets.<p>
+         *
+         * @return the facets
+         */
+        public Map<String, List<String>> getFacets() {
+
+            return facets;
+        }
+
+        /**
+         * Returns the resources.<p>
+         *
+         * @return the resources
+         */
+        public List<CmsResource> getResources() {
+
+            return resources;
+        }
+
+    }
 
     /** Constant array of the collectors implemented by this class. */
     private static final String[] COLLECTORS = {"byQuery", "byContext"};
@@ -74,6 +123,13 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
     public List<String> getCollectorNames() {
 
         return COLLECTORS_LIST;
+    }
+
+    public CmsSolrCollector getCopy() {
+
+        CmsSolrCollector result = new CmsSolrCollector();
+        result.m_order = m_order;
+        return result;
     }
 
     /**
@@ -146,7 +202,51 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public List<CmsResource> getResults(CmsObject cms, String name, String param) throws CmsException {
+    public List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
+    throws CmsDataAccessException, CmsException {
+
+        return getResults(cms, collectorName, param, -1);
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public List<CmsResource> getResults(CmsObject cms, String name, String param, int numResults) throws CmsException {
+
+        final CmsSolrCollectorResult results = getResultsWithFacets(cms, name, param, numResults);
+        if (null != results) {
+            return results.resources;
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns an object of type CmsSolrCollectorResult that contains a list of CmsResource objects and Solr facets. 
+     * 
+     * @param cms the current CmsObject 
+     * @param collectorName the name of the collector to use
+     * @param param an optional collector parameter
+     * @return An instance of CmsSolrCollectorResult. 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsSolrCollectorResult getResultsWithFacets(CmsObject cms, String name, String param) throws CmsException {
+
+        return getResultsWithFacets(cms, name, param, -1);
+    }
+
+    /**
+     * Returns an object of type CmsSolrCollectorResult that contains a list of CmsResource objects and Solr facets.
+     * 
+     * @param cms the current CmsObject 
+     * @param collectorName the name of the collector to use
+     * @param param an optional collector parameter
+     * @param numResults the desired number of results (overrides result number possibl
+     * @return An instance of CmsSolrCollectorResult. 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsSolrCollectorResult getResultsWithFacets(CmsObject cms, String name, String param, int numResults)
+    throws CmsException {
 
         name = name == null ? COLLECTORS[1] : name;
         Map<String, String> paramsAsMap = getParamsAsMap(param);
@@ -156,8 +256,32 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
         if (excludeTimerange) {
             q.removeExpiration();
         }
+        if (numResults > 0) {
+            q.setRows(Integer.valueOf(numResults));
+        }
         CmsSolrIndex index = CmsSearchManager.getIndexSolr(cms, pm);
-        return new ArrayList<CmsResource>(index.search(cms, q, true));
+        CmsSolrResultList results = index.search(cms, q, true);
+
+        // Convert the facets
+        final Map<String, List<String>> facets;
+
+        if (null == results.getFacetFields()) {
+            // If no facets are returned return immutable empty map
+            facets = Collections.<String, List<String>> emptyMap();
+        } else {
+            // Otherwise convert the results
+            facets = new HashMap<String, List<String>>();
+            for (FacetField f : results.getFacetFields()) {
+                String fieldName = f.getName();
+                List<String> values = new LinkedList<String>();
+                for (Count c : f.getValues()) {
+                    values.add(c.getName());
+                }
+                facets.put(fieldName, values);
+            }
+        }
+
+        return new CmsSolrCollectorResult(new ArrayList<CmsResource>(results), facets);
     }
 
     /**

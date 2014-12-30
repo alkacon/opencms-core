@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,12 +29,15 @@ package org.opencms.gwt.client.ui.resourceinfo;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.contextmenu.CmsAbout;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings;
 import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
+import org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog;
+import org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
@@ -63,7 +66,7 @@ public class CmsResourceInfoView extends Composite {
     /**
      * Context menu handler for resource info boxes.<p>
      */
-    static class ContextMenuHandler extends CmsContextMenuHandler {
+    public static class ContextMenuHandler extends CmsContextMenuHandler {
 
         /** Set of context menu actions which we do not want to appear in the context menu for the relation source items. */
         protected static Set<String> m_filteredActions = new HashSet<String>();
@@ -71,7 +74,15 @@ public class CmsResourceInfoView extends Composite {
         static {
             m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
             m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
-            m_filteredActions.add(CmsLogout.class.getName());
+            m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
+            for (Class<?> cls : new Class[] {
+                CmsEditUserSettings.class,
+                CmsAbout.class,
+                CmsShowWorkplace.class,
+                CmsOpenSeoDialog.class,
+                CmsLogout.class}) {
+                m_filteredActions.add(cls.getName());
+            }
         }
 
         /**
@@ -98,7 +109,7 @@ public class CmsResourceInfoView extends Composite {
 
     }
 
-    /** 
+    /**
      * The uiBinder interface for this widget.<p>
      */
     interface I_CmsResourceInfoViewUiBinder extends UiBinder<Widget, CmsResourceInfoView> {
@@ -212,7 +223,7 @@ public class CmsResourceInfoView extends Composite {
 
     /**
      * Creates a new widget instance.<p>
-     * 
+     *
      * @param status the resource information to display
      */
     public CmsResourceInfoView(CmsResourceStatusBean status) {
@@ -220,7 +231,7 @@ public class CmsResourceInfoView extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
         CmsListItemWidget infoBox = new CmsListItemWidget(status.getListInfo());
         infoBox.addButton(new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler()));
-        m_infoBoxContainer.add(new CmsListItem(infoBox));
+        m_infoBoxContainer.add(infoBox);
         m_dateCreated.setText(status.getDateCreated());
         m_dateExpired.setText(status.getDateExpired());
         m_dateLastModified.setText(status.getDateLastModified());
@@ -262,11 +273,11 @@ public class CmsResourceInfoView extends Composite {
 
     /**
      * Helper method to generate the HTML for a span with a CSS class and some text.<p>
-     * 
-     * @param className the CSS class 
+     *
+     * @param className the CSS class
      * @param text the text
-     *  
-     * @return the HTML for the span 
+     *
+     * @return the HTML for the span
      */
     private String makeSpan(String className, String text) {
 

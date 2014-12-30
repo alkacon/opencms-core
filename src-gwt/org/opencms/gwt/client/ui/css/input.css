@@ -1,4 +1,4 @@
-@external gwt-ToggleButton, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
+@external gwt-ToggleButton, gwt-SuggestBoxPopup, item-selected, cmsState-up-disabled, cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled;
 
 @external html-face;
 
@@ -30,16 +30,14 @@ input.textBox {
 	height: auto;
 	vertical-align: baseline;
 }
+
+.comboBoxOpener input {
+	outline: none;
+}
+
 input.textBox:focus{
 	box-shadow:none;
 }
-
-.multiCheckboxPanel {
-	border: 1px solid value("constants.css.borderColor");
-	overflow:hidden;
-}
-
-
 
 .highTextBoxes .textBox {
 	height: 20px;
@@ -50,6 +48,42 @@ input.textboxGhostMode {
 	color: value("constants.css.textColorDisabled") /*!important*/;
 }
 
+.textBoxPanelWhite {
+	background-color: white; 
+}
+
+
+
+.textBoxPanelDisabled {
+	background-color: value("constants.css.backgroundColorDisabled");
+}
+
+.textBoxPanelDisabled * {
+	color: value("constants.css.textColorDisabled");
+	cursor: default;
+}
+
+.showDisabledAsGhostMode .textBoxPanelDisabled { 
+	background-color: white;
+}
+
+.showDisabledAsGhostMode .textBoxPanelDisabled input {
+	font-style: oblique; 
+	color: value("constants.css.textColorDisabled");
+}
+	
+	
+	
+
+
+.textBoxPanelError {
+	border: 1px solid value("constants.css.borderColorHighlight");
+	background-color: value("constants.css.backgroundColorInputError");
+	overflow:hidden;
+}
+
+
+
 .weakText * {
 	font-style: oblique !important;
 	color: value("constants.css.textColorDisabled") !important;
@@ -57,9 +91,19 @@ input.textboxGhostMode {
 
 .textBoxWidget, .checkBox {}
 
+.checkBox .html-face {
+	font-weight: normal; 
+}
+
 input.textBoxReadOnly {
 	background-color: value("constants.css.backgroundColorDisabled");
 }
+
+.textBoxPanel {
+	border: 1px solid value("constants.css.borderColor");
+	overflow:hidden;
+}
+
 
 .colorPicker {
 background-color: transparent;
@@ -72,10 +116,6 @@ background-color: transparent;
 
 
 
-.textBoxPanel {
-	border: 1px solid value("constants.css.borderColor");
-	overflow:hidden;
-}
 
 div.textArea {
     overflow:hidden;
@@ -95,6 +135,7 @@ div.textArea > div.disableTextArea {
 }
 div.textArea textarea{
 	border:none;
+	font-family: value("constants.css.fontFamilyMono");
 }
 
 .checkBox .gwt-ToggleButton {
@@ -230,20 +271,9 @@ div.textArea textarea{
 }
 
 
-.textBoxPanelDisabled {
-	background-color: value("constants.css.backgroundColorDisabled");
-}
 
-.textBoxPanelDisabled * {
-	color: value("constants.css.textColorDisabled");
-	cursor: default;
-}
 
-.textBoxPanelError {
-	border: 1px solid value("constants.css.borderColorHighlight");
-	background-color: value("constants.css.backgroundColorInputError");
-	overflow:hidden;
-}
+
 
 .formLabel {
 	font-weight: normal;
@@ -256,9 +286,21 @@ div.textArea textarea{
 
 
 
-.selectBoxSelector div{
+.selectBoxSelector div, div.gwt-SuggestBoxPopup > div{
 	border-radius: value("constants.css.borderRadius");
 }
+
+div.gwt-SuggestBoxPopup{
+	border: 1px solid value("constants.css.borderColor");
+	border-top-width: 0px;
+	background-color: value("constants.css.backgroundColorDialog");
+	padding: 2px 0px;
+	z-index: value("constants.css.zIndexPopup");
+	border-bottom-left-radius: value("constants.css.borderRadius");
+	border-bottom-right-radius: value("constants.css.borderRadius");
+	margin-left: -5px;
+}
+
 
 div.error, .error {
 	text-align: left;
@@ -291,6 +333,12 @@ div.error, .error {
 	background-color: value("constants.css.backgroundColorStateStandard");
 }
 
+.comboBox .openerNoHover.selectBoxSelected, .comboBox .openerHover.selectBoxSelected { 
+	background-image: none;
+	background-color: white; 
+}
+
+
 @sprite .openerHover.selectBoxSelected {
 	width: auto;
 	height: auto;
@@ -303,16 +351,17 @@ div.error, .error {
 	background-color: value("constants.css.backgroundColorStateHover");
 }
 
-.transparentSelectBox .openerNoHover.selectBoxSelected, .transparentSelectBox .openerHover.selectBoxSelected {
+.noSelectionSelectBox .openerNoHover.selectBoxSelected, .noSelectionSelectBox .openerHover.selectBoxSelected {
 	background-image: none !important;
 	font-style: oblique !important; 
+	background-color: white !important; 
 }
 
-.transparentSelectBox * {
-	background-color: transparent !important; 
-}
+/*.noSelectionSelectBox * {
+	background-color: white !important; 
+}*/
 
-.transparentSelectBox .selectBoxOpener {
+.noSelectionSelectBox .selectBoxOpener {
 	color: value("constants.css.textColorDisabled") !important; 
 }
 
@@ -356,7 +405,7 @@ div.selectBoxCell, div.selectorPopup div.selectBoxSelector div.selectBoxCell{
 	font-size: value("constants.css.fontSize");
 }
 
-div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHover{
+div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHover, div.gwt-SuggestBoxPopup .item-selected{
 	background-color: value("constants.css.backgroundColorHighlight");
 }
 
@@ -374,9 +423,13 @@ div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHov
 }
 
 div.selectBoxOpener {
-	margin: 2px 12px 2px 5px;
+	margin: 3px 12px 3px 5px;
 	cursor: pointer;
 }
+
+.comboBoxOpener { 
+   margin: 1px 12px 1px 5px; 
+}  
 
 .selectBoxSelected .comboBoxOpener{
 	border: medium none;
@@ -420,41 +473,26 @@ div.categoryItem{
 @def FADER_LEFT_RIGHT literal("left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%"); 
 @def FADER_TOP_BOTTOM literal("top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,1) 100%");  
 
-@if user.agent ie8 {
-	div.dataValue{
-		background-color: value("constants.css.gradientFormDialogColor");
-	}
-	div.fader {
-		filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 );");
-	}
-	div.textArea div.fader{
-		filter: literal("progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 );");
-	}
-} @else {
-	div.dataValue{
-		background-image: value("constants.css.gradientFormDialogIE9");
-		background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-		background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-		background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-		background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-		background-image: literal("linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	}
-	div.fader, div.textArea div.fader {
-		background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-		background-image: literal("-moz-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
-		background-image: literal("-ms-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
-		background-image: literal("-webkit-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
-		background-image: literal("-o-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
-		background-image: literal("linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
-	}
-	div.textArea div.fader{
-		background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjkwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-		background-image: literal("-moz-linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
-		background-image: literal("-ms-linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
-		background-image: literal("-webkit-linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
-		background-image: literal("-o-linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
-		background-image: literal("linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
-	}
+div.dataValue{
+	background-image: value("constants.css.gradientFormDialogIE9");
+	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+}
+div.fader, div.textArea div.fader {
+	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background-image: literal("-moz-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
+	background-image: literal("-ms-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
+	background-image: literal("-webkit-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
+	background-image: literal("linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
+}
+div.textArea div.fader{
+	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjkwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background-image: literal("-moz-linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
+	background-image: literal("-ms-linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
+	background-image: literal("-webkit-linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
+	background-image: literal("linear-gradient(")FADER_TOP_BOTTOM literal(")") !important;
 } 
 
 div.fader{
@@ -580,9 +618,11 @@ div.formLabel {
 	width: formLabelWidth;
 	overflow: hidden;
 	vertical-align: top;
-	margin-top: 2px;
+	margin-top: 3px;
+	line-height: 16px;
 	float: left;
 }
+
 
 div.formWidgetContainer {
 	width: widgetContainerWidth;
@@ -610,4 +650,31 @@ div.formDescriptionLabel {
 
 .textAreaBox{}
 .selectBoxPopup{}
+
+@def PARENT_GRADIENT literal("left, #FFFFFF 0%, #F4F7F9 80%, #E1E4E8 100%");  
+@def PARENT_GRADIENT_IE9 literal("url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2Y0ZjdmOSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlMWU0ZTgiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+)");
+	
+.formGradientBackground  {
+	background: #EEEEEE !important;
+ 	background-image: PARENT_GRADIENT_IE9 !important;
+	background-image: literal("-moz-linear-gradient(")PARENT_GRADIENT literal(")") !important;
+	background-image: literal("-ms-linear-gradient(")PARENT_GRADIENT literal(")") !important;
+	background-image: literal("-webkit-linear-gradient(")PARENT_GRADIENT literal(")") !important;
+	background-image: literal("-o-linear-gradient(")PARENT_GRADIENT literal(")") !important;
+	background-image: literal("linear-gradient(")PARENT_GRADIENT literal(")") !important;
+}
+
+.formGradientBackground .fieldset-fieldsetVisible, .formGradientBackground .properties-vfsModeSimplePropertiesBox { 
+	background: transparent !important; 
+}
+
+.formWidgetContainer .checkBox { 
+	margin-top: 2px; 
+}
+
+.multiCheckboxPanel {
+	border: 1px solid value("constants.css.borderColor");
+	overflow:hidden;
+}
+
 

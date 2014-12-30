@@ -158,7 +158,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
                 m_formatNames = dialog.getImageFormatNames().split(",");
             }
         }
-        readFormatsConfig(galleryMode, dialog.isNativeWidget());
+        readFormatsConfig(galleryMode, dialog.isNativeWidget(), dialog.isOverrideFormats());
         if (m_useFormats) {
             generateFormats();
         }
@@ -632,14 +632,24 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
      * 
      * @param mode the gallery mode
      * @param isNativeWidget if the dialog is used as a native widget
+     * @param overrideFormats true if the formats from the gallery dialog should take priority in 'editor' mode 
      */
-    private void readFormatsConfig(GalleryMode mode, boolean isNativeWidget) {
+    private void readFormatsConfig(GalleryMode mode, boolean isNativeWidget, boolean overrideFormats) {
 
         switch (mode) {
             case editor:
-                m_useFormats = true;
-                m_formatNames = DEFAULT_FORMAT_NAMES;
-                m_formatValues = DEFAULT_FORMAT_VALUES;
+                if (!overrideFormats) {
+                    m_useFormats = true;
+                    m_formatNames = DEFAULT_FORMAT_NAMES;
+                    m_formatValues = DEFAULT_FORMAT_VALUES;
+                } else {
+                    if ((m_formatNames == null) && m_useFormats) {
+                        m_formatNames = DEFAULT_FORMAT_NAMES;
+                    }
+                    if ((m_formatValues == null) && m_useFormats) {
+                        m_formatValues = DEFAULT_FORMAT_VALUES;
+                    }
+                }
                 break;
             case widget:
                 if (!isNativeWidget) {

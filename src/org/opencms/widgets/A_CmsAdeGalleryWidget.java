@@ -282,6 +282,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
 
         Map<String, String> result = new HashMap<String, String>();
         result.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE, A_CmsAjaxGallery.MODE_WIDGET);
+        result.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_STORAGE_PREFIX, getGalleryStoragePrefix());
         result.put(I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES, getGalleryTypes());
         if (param.getId() != null) {
             result.put(I_CmsGalleryProviderConstants.KEY_FIELD_ID, param.getId());
@@ -306,6 +307,16 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
         }
         result.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_NAME, getGalleryName());
         return result;
+    }
+
+    /** 
+     * Gets the prefix for the key used to store the last selected gallery.<p>
+     * 
+     * @return the key prefix 
+     */
+    protected String getGalleryStoragePrefix() {
+
+        return "";
     }
 
     /**

@@ -164,7 +164,7 @@ public class CmsModuleAddResourceTypes extends CmsWidgetDialog {
             result.append(createWidgetErrorHeader());
 
             result.append(createWidgetBlockStart(getMessages().key(Messages.GUI_ADD_TYPES_LABEL_0)));
-            result.append(createDialogRowsHtml(0, 4));
+            result.append(createDialogRowsHtml(0, 5));
             result.append(createWidgetBlockEnd());
 
             // close widget table
@@ -190,6 +190,7 @@ public class CmsModuleAddResourceTypes extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(m_resInfo, "niceName", new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_resInfo, "title", new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_resInfo, "description", new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_resInfo, "schemaTypeName", new CmsInputWidget()));
     }
 
     /**

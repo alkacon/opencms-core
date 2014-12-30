@@ -37,11 +37,16 @@ import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
+import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
+import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
+import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.ade.sitemap.shared.CmsSitemapInfo;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.configuration.CmsDefaultUserSettings;
@@ -59,6 +64,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
 import org.opencms.file.types.CmsResourceTypeUnknownFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -69,6 +75,7 @@ import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsTemplateFinder;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
+import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsClientLock;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
@@ -94,9 +101,13 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategory;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsDateUtil;
@@ -106,7 +117,7 @@ import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.containerpage.CmsContainerBean;
@@ -198,6 +209,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /** The path to the JSP used to upload aliases. */
     public static final String ALIAS_IMPORT_PATH = "/system/modules/org.opencms.ade.sitemap/pages/import-aliases.jsp";
 
+    /** The galleries folder name. */
+    public static final String GALLERIES_FOLDER_NAME = ".galleries";
+
     /** The configuration key for the functionDetail attribute in the container.info property. */
     public static final String KEY_FUNCTION_DETAIL = "functionDetail";
 
@@ -244,6 +258,26 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Creates a client property bean from a server-side property.<p>
+     *
+     * @param prop the property from which to create the client property
+     * @param preserveOrigin if true, the origin will be copied into the new object
+     *
+     * @return the new client property
+     */
+    public static CmsClientProperty createClientProperty(CmsProperty prop, boolean preserveOrigin) {
+
+        CmsClientProperty result = new CmsClientProperty(
+            prop.getName(),
+            prop.getStructureValue(),
+            prop.getResourceValue());
+        if (preserveOrigin) {
+            result.setOrigin(prop.getOrigin());
+        }
+        return result;
+    }
+
+    /**
      * Fetches the sitemap data.<p>
      *
      * @param request the current request
@@ -265,6 +299,136 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             service.clearThreadStorage();
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#changeCategory(java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String)
+     */
+    public void changeCategory(String entryPoint, CmsUUID id, String title, String name) throws CmsRpcException {
+
+        try {
+            name = OpenCms.getResourceManager().getFileTranslator().translateResource(name.trim().replace('/', '-'));
+            CmsObject cms = getCmsObject();
+            CmsResource categoryResource = cms.readResource(id);
+            ensureLock(categoryResource);
+            String sitePath = cms.getSitePath(categoryResource);
+            String newPath = CmsStringUtil.joinPaths(CmsResource.getParentFolder(sitePath), name);
+            cms.writePropertyObject(sitePath, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null));
+            if (!CmsStringUtil.joinPaths("/", newPath, "/").equals(CmsStringUtil.joinPaths("/", sitePath, "/"))) {
+                cms.moveResource(sitePath, newPath);
+            }
+        } catch (Exception e) {
+            error(e);
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.CmsGwtService#checkPermissions(org.opencms.file.CmsObject)
+     */
+    @Override
+    public void checkPermissions(CmsObject cms) throws CmsRoleViolationException {
+
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.EDITOR);
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createCategory(java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String)
+     */
+    public void createCategory(String entryPoint, CmsUUID id, String title, String name) throws CmsRpcException {
+
+        try {
+            name = OpenCms.getResourceManager().getFileTranslator().translateResource(name.trim().replace('/', '-'));
+            CmsObject cms = getCmsObject();
+            CmsCategoryService catService = CmsCategoryService.getInstance();
+
+            CmsCategory createdCategory = null;
+            if (id.isNullUUID()) {
+                String localRepositoryPath = CmsStringUtil.joinPaths(
+                    entryPoint,
+                    OpenCms.getWorkplaceManager().getCategoryFolder());
+
+                // ensure category repository exists
+                if (!cms.existsResource(localRepositoryPath)) {
+                    tryUnlock(cms.createResource(
+                        localRepositoryPath,
+                        OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId()));
+                }
+                createdCategory = catService.createCategory(cms, null, name, title, "", localRepositoryPath);
+            } else {
+                CmsResource parentResource = cms.readResource(id);
+                CmsCategory parent = catService.getCategory(cms, parentResource);
+                createdCategory = catService.createCategory(
+                    cms,
+                    parent,
+                    name,
+                    title,
+                    "",
+                    cms.getRequestContext().removeSiteRoot(parentResource.getRootPath()));
+            }
+            tryUnlock(cms.readResource(createdCategory.getId()));
+        } catch (Exception e) {
+            error(e);
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createNewGalleryFolder(java.lang.String, java.lang.String, int)
+     */
+    public CmsGalleryFolderEntry createNewGalleryFolder(String parentFolder, String title, int folderTypeId)
+    throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        CmsGalleryFolderEntry folderEntry = null;
+        try {
+            if (!cms.existsResource(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                CmsResource parent = cms.createResource(parentFolder, CmsResourceTypeFolder.getStaticTypeId());
+                tryUnlock(parent);
+            }
+            String folderName = OpenCms.getResourceManager().getFileTranslator().translateResource(title);
+
+            folderName = OpenCms.getResourceManager().getNameGenerator().getUniqueFileName(
+                cms,
+                parentFolder,
+                folderName);
+            String folderPath = CmsStringUtil.joinPaths(parentFolder, folderName);
+
+            CmsResource galleryFolder = cms.createResource(
+                folderPath,
+                folderTypeId,
+                null,
+                Collections.singletonList(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null)));
+            folderEntry = readGalleryFolderEntry(
+                galleryFolder,
+                OpenCms.getResourceManager().getResourceType(galleryFolder).getTypeName());
+            tryUnlock(galleryFolder);
+        } catch (CmsException e) {
+            error(e);
+        }
+        return folderEntry;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createNewModelPage(java.lang.String, java.lang.String, java.lang.String, org.opencms.util.CmsUUID)
+     */
+    public CmsModelPageEntry createNewModelPage(String entryPointUri, String title, String description, CmsUUID copyId)
+    throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource rootResource = cms.readResource(entryPointUri);
+            CmsModelPageHelper helper = new CmsModelPageHelper(getCmsObject(), rootResource);
+            CmsResource page = helper.createPageInModelFolder(title, description, copyId);
+            String configPath = CmsStringUtil.joinPaths(entryPointUri, ".content/.config");
+            CmsResource configResource = cms.readResource(configPath);
+            helper.addModelPageToSitemapConfiguration(configResource, page, false);
+
+            CmsModelPageEntry result = helper.createModelPageEntry(page);
+            OpenCms.getADEManager().waitForCacheUpdate(false);
+            return result;
+        } catch (Throwable e) {
+            error(e);
+            return null;
+        }
     }
 
     /**
@@ -350,6 +514,31 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getCategoryData(java.lang.String)
+     */
+    public CmsSitemapCategoryData getCategoryData(String entryPoint) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            List<CmsCategoryTreeEntry> entries = CmsCoreService.getCategoriesForSitePathStatic(cms, entryPoint);
+            CmsSitemapCategoryData categoryData = new CmsSitemapCategoryData();
+            for (CmsCategoryTreeEntry entry : entries) {
+                categoryData.add(entry);
+            }
+            CmsResource entryPointResource = cms.readResource(entryPoint);
+            String basePath = CmsStringUtil.joinPaths(
+                entryPointResource.getRootPath(),
+                OpenCms.getWorkplaceManager().getCategoryFolder());
+
+            categoryData.setBasePath(basePath);
+            return categoryData;
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getChildren(java.lang.String, org.opencms.util.CmsUUID, int)
      */
     public CmsClientSitemapEntry getChildren(String entryPointUri, CmsUUID entryId, int levels) throws CmsRpcException {
@@ -367,13 +556,71 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
             boolean isRoot = root.equals(entryPointUri);
             entry = toClientEntry(navElement, isRoot);
-            if ((levels > 0) && (isRoot || (rootRes.isFolder() && (!isSubSitemap(navElement))))) {
+            if ((levels > 0) && (isRoot || (rootRes.isFolder()))) {
                 entry.setSubEntries(getChildren(root, levels, null), null);
             }
         } catch (Throwable e) {
             error(e);
         }
         return entry;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getGalleryData(java.lang.String)
+     */
+    public Map<CmsGalleryType, List<CmsGalleryFolderEntry>> getGalleryData(String entryPointUri) {
+
+        List<String> subSitePaths = OpenCms.getADEManager().getSubSitePaths(
+            getCmsObject(),
+            getCmsObject().getRequestContext().addSiteRoot(entryPointUri));
+        List<CmsGalleryType> galleryTypes = collectGalleryTypes();
+        Map<CmsGalleryType, List<CmsGalleryFolderEntry>> result = new HashMap<CmsGalleryType, List<CmsGalleryFolderEntry>>();
+        for (CmsGalleryType type : galleryTypes) {
+            List<CmsGalleryFolderEntry> galleries = null;
+            try {
+                galleries = getGalleriesForType(entryPointUri, type, subSitePaths);
+            } catch (CmsException e) {
+                log(e.getLocalizedMessage(), e);
+            }
+            result.put(type, galleries);
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getModelPages(org.opencms.util.CmsUUID)
+     */
+    public List<CmsModelPageEntry> getModelPages(CmsUUID rootId) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource rootResource = cms.readResource(rootId);
+            CmsModelPageHelper modelPageHelper = new CmsModelPageHelper(getCmsObject(), rootResource);
+            List<CmsModelPageEntry> entries = modelPageHelper.getModelPages();
+            return entries;
+        } catch (Throwable e) {
+            error(e);
+            return null; // will  never be reached 
+        }
+
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getNewElementInfo(java.lang.String)
+     */
+    public List<CmsNewResourceInfo> getNewElementInfo(String entryPointUri) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            String rootPath = cms.getRequestContext().addSiteRoot(entryPointUri);
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, rootPath);
+            Locale locale = getLocaleForNewResourceInfos(cms, config);
+            List<CmsNewResourceInfo> result = getNewResourceInfos(cms, config, locale);
+            return result;
+        } catch (Throwable e) {
+            error(e);
+            return null;
+        }
     }
 
     /**
@@ -425,6 +672,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsObject cms = getCmsObject();
 
         try {
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.EDITOR);
             String openPath = getRequest().getParameter(CmsCoreData.PARAM_PATH);
             if (!isValidOpenPath(cms, openPath)) {
                 // if no path is supplied, start from root
@@ -441,6 +689,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
             boolean isSecure = site.hasSecureServer();
             String parentSitemap = null;
+
             if (configData.getBasePath() != null) {
                 CmsADEConfigData parentConfigData = OpenCms.getADEManager().lookupConfiguration(
                     cms,
@@ -457,14 +706,22 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             List<CmsNewResourceInfo> resourceTypeInfos = null;
             boolean canEditDetailPages = false;
             boolean isOnlineProject = CmsProject.isOnlineProject(cms.getRequestContext().getCurrentProject().getUuid());
+            String defaultGalleryFolder = GALLERIES_FOLDER_NAME;
+            Locale locale = getLocaleForNewResourceInfos(cms, configData);
 
-            Locale locale = CmsLocaleManager.getDefaultLocale();
             try {
                 String basePath = configData.getBasePath();
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
                 CmsResource baseDir = rootCms.readResource(basePath, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-                locale = CmsLocaleManager.getMainLocale(cms, baseDir);
+                CmsProperty galleryFolderProp = cms.readPropertyObject(
+                    baseDir,
+                    CmsPropertyDefinition.PROPERTY_GALLERIES_FOLDER,
+                    true);
+                if (!galleryFolderProp.isNullProperty()
+                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(galleryFolderProp.getValue())) {
+                    defaultGalleryFolder = galleryFolderProp.getValue();
+                }
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
@@ -521,6 +778,17 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             boolean canEditAliases = OpenCms.getAliasManager().hasPermissionsForMassEdit(cms, siteRoot);
             List<CmsListInfoBean> subsitemapFolderTypeInfos = collectSitemapTypeInfos(cms, configData);
 
+            // evaluate the editor mode
+            EditorMode editorMode = EditorMode.navigation;
+            String modeParam = getRequest().getParameter(CmsSitemapData.PARAM_EDITOR_MODE);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(modeParam)) {
+                try {
+                    editorMode = EditorMode.valueOf(modeParam);
+                } catch (Exception e) {
+                    // ignore
+                }
+            }
+
             result = new CmsSitemapData(
                 (new CmsTemplateFinder(cms)).getTemplates(),
                 propertyConfig,
@@ -548,11 +816,38 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 aliasImportUrl,
                 canEditAliases,
                 OpenCms.getWorkplaceManager().getDefaultUserSettings().getSubsitemapCreationMode() == CmsDefaultUserSettings.SubsitemapCreationMode.createfolder,
-                subsitemapFolderTypeInfos);
+                OpenCms.getRoleManager().hasRole(cms, CmsRole.GALLERY_EDITOR),
+                OpenCms.getRoleManager().hasRole(cms, CmsRole.CATEGORY_EDITOR),
+                subsitemapFolderTypeInfos,
+                editorMode,
+                defaultGalleryFolder);
+
+            CmsUUID rootId = cms.readResource("/", CmsResourceFilter.ALL).getStructureId();
+            result.setSiteRootId(rootId);
         } catch (Throwable e) {
             error(e);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#removeModelPage(java.lang.String, org.opencms.util.CmsUUID)
+     */
+    public void removeModelPage(String entryPointUri, CmsUUID id) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource rootResource = cms.readResource(entryPointUri);
+            CmsModelPageHelper helper = new CmsModelPageHelper(getCmsObject(), rootResource);
+            String configPath = CmsStringUtil.joinPaths(entryPointUri, ".content/.config");
+            CmsResource configResource = cms.readResource(configPath);
+            helper.removeModelPage(configResource, id);
+            OpenCms.getADEManager().waitForCacheUpdate(false);
+        } catch (Throwable e) {
+            error(e);
+
+        }
+
     }
 
     /**
@@ -649,7 +944,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         String title = titleProp.getValue(defaultTitle);
         String path = cms.getSitePath(resource);
         String subtitle = path;
-        return new CmsBrokenLinkBean(title, subtitle);
+        return new CmsBrokenLinkBean(resource.getStructureId(), title, subtitle);
 
     }
 
@@ -695,7 +990,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      *
      * @return list of changed sitemap entries
      *
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     protected CmsSitemapChange saveInternal(String entryPoint, CmsSitemapChange change) throws CmsException {
 
@@ -801,43 +1096,44 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsUUID elementId,
         CmsUUID formatterId) throws CmsException {
 
-        List<Locale> pageLocales = page.getLocales();
-        for (Locale locale : pageLocales) {
-            CmsContainerPageBean bean = page.getContainerPage(cms, locale);
-            List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
-            Collection<CmsContainerBean> originalContainers = bean.getContainers().values();
-            if ((containerName == null) && !originalContainers.isEmpty()) {
-                CmsContainerBean firstContainer = originalContainers.iterator().next();
-                containerName = firstContainer.getName();
-            }
-            boolean foundContainer = false;
-            for (CmsContainerBean cntBean : originalContainers) {
-                boolean isDetailTarget = cntBean.getName().equals(containerName);
-                if (isDetailTarget && !foundContainer) {
-                    foundContainer = true;
-                    List<CmsContainerElementBean> newElems = new ArrayList<CmsContainerElementBean>();
-                    newElems.addAll(cntBean.getElements());
-                    CmsContainerElementBean newElement = new CmsContainerElementBean(
-                        elementId,
-                        formatterId,
-                        new HashMap<String, String>(),
-                        false);
-                    newElems.add(0, newElement);
-                    CmsContainerBean newCntBean = new CmsContainerBean(cntBean.getName(), cntBean.getType(), newElems);
-                    containerBeans.add(newCntBean);
-                } else {
-                    containerBeans.add(cntBean);
-                }
-            }
-            if (!foundContainer) {
-                throw new CmsException(Messages.get().container(
-                    Messages.ERR_NO_FUNCTION_DETAIL_CONTAINER_1,
-                    page.getFile().getRootPath()));
-            }
-            CmsContainerPageBean bean2 = new CmsContainerPageBean(locale, new ArrayList<CmsContainerBean>(
-                containerBeans));
-            page.writeContainerPage(cms, locale, bean2);
+        CmsContainerPageBean bean = page.getContainerPage(cms);
+        List<CmsContainerBean> containerBeans = new ArrayList<CmsContainerBean>();
+        Collection<CmsContainerBean> originalContainers = bean.getContainers().values();
+        if ((containerName == null) && !originalContainers.isEmpty()) {
+            CmsContainerBean firstContainer = originalContainers.iterator().next();
+            containerName = firstContainer.getName();
         }
+        boolean foundContainer = false;
+        for (CmsContainerBean cntBean : originalContainers) {
+            boolean isDetailTarget = cntBean.getName().equals(containerName);
+            if (isDetailTarget && !foundContainer) {
+                foundContainer = true;
+                List<CmsContainerElementBean> newElems = new ArrayList<CmsContainerElementBean>();
+                newElems.addAll(cntBean.getElements());
+                CmsContainerElementBean newElement = new CmsContainerElementBean(
+                    elementId,
+                    formatterId,
+                    new HashMap<String, String>(),
+                    false);
+                newElems.add(0, newElement);
+                CmsContainerBean newCntBean = new CmsContainerBean(
+                    cntBean.getName(),
+                    cntBean.getType(),
+                    cntBean.getParentInstanceId(),
+                    newElems);
+                containerBeans.add(newCntBean);
+            } else {
+                containerBeans.add(cntBean);
+            }
+        }
+        if (!foundContainer) {
+            throw new CmsException(Messages.get().container(
+                Messages.ERR_NO_FUNCTION_DETAIL_CONTAINER_1,
+                page.getFile().getRootPath()));
+        }
+        CmsContainerPageBean bean2 = new CmsContainerPageBean(new ArrayList<CmsContainerBean>(containerBeans));
+        page.writeContainerPage(cms, bean2);
+
     }
 
     /**
@@ -967,6 +1263,61 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Returns all available gallery folder resource types.<p>
+     * 
+     * @return the gallery folder resource types
+     */
+    private List<CmsGalleryType> collectGalleryTypes() {
+
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
+        Map<String, List<String>> galleryContentTypes = new HashMap<String, List<String>>();
+        List<CmsGalleryType> result = new ArrayList<CmsGalleryType>();
+        for (I_CmsResourceType resourceType : OpenCms.getResourceManager().getResourceTypes()) {
+            if (resourceType instanceof CmsResourceTypeFolderExtended) {
+                // found a configured extended folder resource type
+                CmsResourceTypeFolderExtended galleryType = (CmsResourceTypeFolderExtended)resourceType;
+                String folderClassName = galleryType.getFolderClassName();
+                if (CmsStringUtil.isNotEmpty(folderClassName)) {
+                    // only process this as a gallery if the folder name is not empty
+                    try {
+                        // check, if the folder class is a subclass of A_CmsGallery
+                        if (A_CmsAjaxGallery.class.isAssignableFrom(Class.forName(folderClassName))) {
+                            CmsGalleryType gallery = new CmsGalleryType();
+                            gallery.setTypeId(resourceType.getTypeId());
+                            gallery.setTypeName(resourceType.getTypeName());
+                            gallery.setNiceName(CmsWorkplaceMessages.getResourceTypeName(
+                                wpLocale,
+                                resourceType.getTypeName()));
+                            gallery.setDescription(CmsWorkplaceMessages.getResourceTypeDescription(
+                                wpLocale,
+                                resourceType.getTypeName()));
+                            result.add(gallery);
+                        }
+                    } catch (Exception e) {
+                        this.log(e.getLocalizedMessage(), e);
+                    }
+                }
+            } else {
+                List<I_CmsResourceType> galleryTypes = resourceType.getGalleryTypes();
+                if ((galleryTypes != null) && !galleryTypes.isEmpty()) {
+                    for (I_CmsResourceType galleryType : galleryTypes) {
+                        List<String> typeList = galleryContentTypes.get(galleryType.getTypeName());
+                        if (typeList == null) {
+                            typeList = new ArrayList<String>();
+                            galleryContentTypes.put(galleryType.getTypeName(), typeList);
+                        }
+                        typeList.add(resourceType.getTypeName());
+                    }
+                }
+            }
+        }
+        for (CmsGalleryType galleryType : result) {
+            galleryType.setContentTypeNames(galleryContentTypes.get(galleryType.getTypeName()));
+        }
+        return result;
+    }
+
+    /**
      * Gets the information for the available sitemap folder types.<p>
      * 
      * @param cms the current CMS context 
@@ -1042,26 +1393,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Creates a client property bean from a server-side property.<p>
-     *
-     * @param prop the property from which to create the client property
-     * @param preserveOrigin if true, the origin will be copied into the new object
-     *
-     * @return the new client property
-     */
-    private CmsClientProperty createClientProperty(CmsProperty prop, boolean preserveOrigin) {
-
-        CmsClientProperty result = new CmsClientProperty(
-            prop.getName(),
-            prop.getStructureValue(),
-            prop.getResourceValue());
-        if (preserveOrigin) {
-            result.setOrigin(prop.getOrigin());
-        }
-        return result;
-    }
-
-    /**
      * Creates a navigation level type info.<p>
      *
      * @return the navigation level type info bean
@@ -1104,7 +1435,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         Locale contentLocale = page.getLocales().get(0);
         CmsObject cloneCms = OpenCms.initCmsObject(cms);
         cloneCms.getRequestContext().setLocale(contentLocale);
-        CmsContainerPageBean pageBean = page.getContainerPage(cms, contentLocale);
+        CmsContainerPageBean pageBean = page.getContainerPage(cms);
         boolean needsChanges = false;
         List<CmsContainerBean> updatedContainers = new ArrayList<CmsContainerBean>();
         for (CmsContainerBean container : pageBean.getContainers().values()) {
@@ -1114,7 +1445,15 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     needsChanges = true;
                     String typeName = OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName();
                     CmsResourceTypeConfig typeConfig = configData.getResourceType(typeName);
-                    CmsResource newResource = typeConfig.createNewElement(cloneCms, null);
+                    if (typeConfig == null) {
+                        throw new IllegalArgumentException("Can not copy template model element '"
+                            + element.getResource().getRootPath()
+                            + "' because the resource type '"
+                            + typeName
+                            + "' is not available in this sitemap.");
+                    }
+
+                    CmsResource newResource = typeConfig.createNewElement(cloneCms, element.getResource());
                     CmsContainerElementBean newBean = new CmsContainerElementBean(
                         newResource.getStructureId(),
                         element.getFormatterId(),
@@ -1129,13 +1468,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsContainerBean updatedContainer = new CmsContainerBean(
                 container.getName(),
                 container.getType(),
+                container.getParentInstanceId(),
                 container.getMaxElements(),
                 updatedElements);
             updatedContainers.add(updatedContainer);
         }
         if (needsChanges) {
-            CmsContainerPageBean updatedPage = new CmsContainerPageBean(contentLocale, updatedContainers);
-            page.writeContainerPage(cms, contentLocale, updatedPage);
+            CmsContainerPageBean updatedPage = new CmsContainerPageBean(updatedContainers);
+            page.writeContainerPage(cms, updatedPage);
         }
     }
 
@@ -1166,6 +1506,13 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 content = cms.readFile(copyPage).getContents();
                 properties = cms.readPropertyObjects(copyPage, false);
             }
+            List<CmsProperty> filteredProperties = new ArrayList<CmsProperty>();
+            for (CmsProperty property : properties) {
+                if (!property.getName().equals(CmsPropertyDefinition.PROPERTY_DESCRIPTION)) {
+                    filteredProperties.add(property);
+                }
+            }
+            properties = filteredProperties;
             if (isRedirectType(change.getNewResourceTypeId())) {
                 entryPath = CmsStringUtil.joinPaths(cms.getSitePath(parentFolder), change.getName());
                 newRes = cms.createResource(
@@ -1419,10 +1766,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * @param subSitemapFolder the sub-sitemap folder in which the .content folder should be created 
      * 
      * @throws CmsException if something goes wrong 
-     * @throws CmsLoaderException
      */
-    private void createSitemapContentFolder(CmsObject cms, CmsResource subSitemapFolder)
-    throws CmsException, CmsLoaderException {
+    private void createSitemapContentFolder(CmsObject cms, CmsResource subSitemapFolder) throws CmsException {
 
         String sitePath = cms.getSitePath(subSitemapFolder);
         String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
@@ -1694,6 +2039,85 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Returns the galleries of the given sub site for the requested gallery type.<p>
+     * 
+     * @param entryPointUri the sub site entry point
+     * @param galleryType the gallery type
+     * @param subSitePaths the sub site paths
+     * 
+     * @return the gallery folder entries
+     * 
+     * @throws CmsException if reading the resources fails
+     */
+    private List<CmsGalleryFolderEntry> getGalleriesForType(
+        String entryPointUri,
+        CmsGalleryType galleryType,
+        List<String> subSitePaths) throws CmsException {
+
+        List<CmsGalleryFolderEntry> galleries = new ArrayList<CmsGalleryFolderEntry>();
+        List<CmsResource> galleryFolders = getCmsObject().readResources(
+            entryPointUri,
+            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryType.getTypeId()));
+        for (CmsResource folder : galleryFolders) {
+            try {
+                if (!isInSubsite(subSitePaths, folder.getRootPath())) {
+                    galleries.add(readGalleryFolderEntry(folder, galleryType.getTypeName()));
+                }
+            } catch (CmsException ex) {
+                log(ex.getLocalizedMessage(), ex);
+            }
+        }
+        // create a tree structure
+        Collections.sort(galleries, new Comparator<CmsGalleryFolderEntry>() {
+
+            public int compare(CmsGalleryFolderEntry o1, CmsGalleryFolderEntry o2) {
+
+                return o1.getSitePath().compareTo(o2.getSitePath());
+            }
+        });
+        List<CmsGalleryFolderEntry> galleryTree = new ArrayList<CmsGalleryFolderEntry>();
+        for (int i = 0; i < galleries.size(); i++) {
+            boolean isSubGallery = false;
+            if (i > 0) {
+                for (int j = i - 1; j >= 0; j--) {
+                    if (galleries.get(i).getSitePath().startsWith(galleries.get(j).getSitePath())) {
+                        galleries.get(j).addSubGallery(galleries.get(i));
+                        isSubGallery = true;
+                        break;
+                    }
+                }
+            }
+            if (!isSubGallery) {
+                galleryTree.add(galleries.get(i));
+            }
+        }
+        return galleryTree;
+    }
+
+    /**
+     * Gets the locale to use for creating the new resource info beans.<p>
+     *  
+     * @param cms the CMS context 
+     * @param configData  the sitemap configuration
+     *  
+     * @return the locale to use 
+     */
+    private Locale getLocaleForNewResourceInfos(CmsObject cms, CmsADEConfigData configData) {
+
+        Locale locale = CmsLocaleManager.getDefaultLocale();
+        try {
+            String basePath = configData.getBasePath();
+            CmsObject rootCms = OpenCms.initCmsObject(cms);
+            rootCms.getRequestContext().setSiteRoot("");
+            CmsResource baseDir = rootCms.readResource(basePath, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            locale = CmsLocaleManager.getMainLocale(cms, baseDir);
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        return locale;
+    }
+
+    /**
      * Returns the modified list from the current user.<p>
      *
      * @return the modified list
@@ -1781,7 +2205,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      *
      * @return the list of all property names
      *
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     private List<String> getPropertyNames(CmsObject cms) throws CmsException {
 
@@ -2030,6 +2454,26 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Returns if the given path is located below one of the given sub site paths.<p>
+     * 
+     * @param subSitePaths the sub site root paths
+     * @param path the root path to check
+     * 
+     * @return <code>true</code> if the given path is located below one of the given sub site paths
+     */
+    private boolean isInSubsite(List<String> subSitePaths, String path) {
+
+        boolean result = false;
+        for (String subSite : subSitePaths) {
+            if (path.startsWith(subSite)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns if the given type id matches the xml-redirect resource type.<p>
      *
      * @param typeId the resource type id
@@ -2186,6 +2630,27 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Reads the gallery folder properties.<p>
+     * 
+     * @param folder the folder resource
+     * @param typeName the  resource type name
+     * 
+     * @return the folder entry data
+     * 
+     * @throws CmsException if the folder properties can not be read
+     */
+    private CmsGalleryFolderEntry readGalleryFolderEntry(CmsResource folder, String typeName) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        CmsGalleryFolderEntry folderEntry = new CmsGalleryFolderEntry();
+        folderEntry.setResourceType(typeName);
+        folderEntry.setSitePath(cms.getSitePath(folder));
+        folderEntry.setStructureId(folder.getStructureId());
+        folderEntry.setOwnProperties(getClientProperties(cms, folder, false));
+        return folderEntry;
+    }
+
+    /**
      * Helper method for removing all locales except one from a container page.<p>
      *
      * @param page the container page to proces
@@ -2335,7 +2800,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
      * @param isRoot true if the entry is a root entry
      *
      * @return the client sitemap entry
-     * @throws CmsException
+     * 
+     * @throws CmsException if something goes wrong
      */
     private CmsClientSitemapEntry toClientEntry(CmsJspNavElement navElement, boolean isRoot) throws CmsException {
 
@@ -2363,6 +2829,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
         boolean isDefault = isDefaultFile(ownResource);
         clientEntry.setId(ownResource.getStructureId());
+        clientEntry.setResourceTypeId(ownResource.getTypeId());
         clientEntry.setFolderDefaultPage(isDefault);
         if (navElement.getResource().isFolder()) {
             entryFolder = navElement.getResource();
@@ -2439,8 +2906,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         clientEntry.setInNavigation(isRoot || navElement.isInNavigation());
         String type = OpenCms.getResourceManager().getResourceType(ownResource).getTypeName();
         clientEntry.setResourceTypeName(type);
-        String noEditReason = new CmsResourceUtil(cms, ownResource).getNoEditReason(getWorkplaceLocale(), true);
-        clientEntry.setNoEditReason(noEditReason);
+        clientEntry.setPermissionInfo(OpenCms.getADEManager().getPermissionInfo(cms, ownResource, null));
         return clientEntry;
     }
 
@@ -2469,6 +2935,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsClientSitemapEntry entry = toClientEntry(navElement, navElement.isInNavigation());
         entry.setSubEntries(getChildren(parentPath, 2, null), null);
         change.setUpdatedEntry(entry);
+        change.setParentId(cms.readParentFolder(deleted.getStructureId()).getStructureId());
         return change;
     }
 

@@ -419,7 +419,8 @@ public class CmsLogin extends CmsJspLoginBean {
                 // bad resource name, use workplace as default
                 resource = CmsFrameset.JSP_WORKPLACE_URI;
             }
-            if (!getCmsObject().existsResource(resource, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_directEditPath)
+                && !getCmsObject().existsResource(resource, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
                 // requested resource does either not exist or is not readable by user
                 if (CmsFrameset.JSP_WORKPLACE_URI.equals(resource)) {
                     // we know the Workplace exists, so the user does not have access to the Workplace
@@ -439,13 +440,14 @@ public class CmsLogin extends CmsJspLoginBean {
                 }
             }
             if (m_action == ACTION_DISPLAY) {
-                // the login was invalid
+                //the login was invalid
                 m_requestedResource = null;
                 // destroy the generated session
                 HttpSession session = getRequest().getSession(false);
                 if (session != null) {
                     session.invalidate();
                 }
+                setCookieData();
             } else {
                 // successfully logged in, so set the cookie
                 setCookieData();
@@ -794,7 +796,11 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("}\n");
 
         // function to check IE version, in case of a version < IE8 login will be disabled and an error message shown.
-        html.append("function checkBrowser(){\n  if ($.browser.msie && $.browser.version<8){\n  $('#");
+        html.append("function checkBrowser(){\n ");
+        html.append("var div = document.createElement(\"div\");\n");
+        html.append("div.innerHTML = \"<!--[if lt IE 8]><i></i><![endif]-->\";\n");
+        html.append("var isIeLessThan8 = (div.getElementsByTagName(\"i\").length == 1);\n");
+        html.append("if (isIeLessThan8) {\n  $('#");
         html.append(PARAM_FORM);
         html.append("').after('<div style=\"color: #B31B34; font-weight: bold; font-size: 14px; margin: 20px; text-align: center;\">");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_UNSUPPORTED_BROWSER_0));

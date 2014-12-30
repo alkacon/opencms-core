@@ -27,11 +27,9 @@
 
 package org.opencms.ade.contenteditor;
 
-import com.alkacon.acacia.shared.AttributeConfiguration;
-import com.alkacon.acacia.shared.TabInfo;
-import com.alkacon.acacia.shared.Type;
-import com.alkacon.vie.shared.I_Type;
-
+import org.opencms.acacia.shared.CmsAttributeConfiguration;
+import org.opencms.acacia.shared.CmsTabInfo;
+import org.opencms.acacia.shared.CmsType;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.file.CmsFile;
@@ -74,7 +72,7 @@ public class CmsContentTypeVisitor {
         private String m_attributeName;
 
         /** The attribute type configuration. */
-        private AttributeConfiguration m_config;
+        private CmsAttributeConfiguration m_config;
 
         /** The configured display type. */
         private DisplayType m_configuredType;
@@ -94,7 +92,7 @@ public class CmsContentTypeVisitor {
          * @param rule the applied rule
          */
         protected DisplayTypeEvaluator(
-            AttributeConfiguration config,
+            CmsAttributeConfiguration config,
             DisplayType configuredType,
             DisplayType defaultType,
             EvaluationRule rule) {
@@ -124,7 +122,7 @@ public class CmsContentTypeVisitor {
          * 
          * @return the attribute configuration 
          */
-        protected AttributeConfiguration getEvaluatedConfiguration(DisplayType predecessor, DisplayType successor) {
+        protected CmsAttributeConfiguration getEvaluatedConfiguration(DisplayType predecessor, DisplayType successor) {
 
             DisplayType resultingType = m_configuredType;
 
@@ -218,7 +216,7 @@ public class CmsContentTypeVisitor {
     }
 
     /** The attribute configurations. */
-    private Map<String, AttributeConfiguration> m_attributeConfigurations;
+    private Map<String, CmsAttributeConfiguration> m_attributeConfigurations;
 
     /** The CMS context used for this visitor. */
     private CmsObject m_cms;
@@ -232,17 +230,23 @@ public class CmsContentTypeVisitor {
     /** The content resource. */
     private CmsFile m_file;
 
+    /** Indicates the visited content has fields that are configured to be invisible to the current user. */
+    private boolean m_hasInvisible;
+
     /** The content locale. */
     private Locale m_locale;
+
+    /** The locale synchronized attribute names. */
+    private List<String> m_localeSynchronizations;
 
     /** The messages. */
     private CmsMultiMessages m_messages;
 
     /** The registered types. */
-    private Map<String, I_Type> m_registeredTypes;
+    private Map<String, CmsType> m_registeredTypes;
 
     /** The tab informations. */
-    private List<TabInfo> m_tabInfos;
+    private List<CmsTabInfo> m_tabInfos;
 
     /** The widget configurations. */
     private Map<String, CmsExternalWidgetConfiguration> m_widgetConfigurations;
@@ -299,9 +303,19 @@ public class CmsContentTypeVisitor {
      *
      * @return the tabInfos
      */
-    public List<TabInfo> getTabInfos() {
+    public List<CmsTabInfo> getTabInfos() {
 
         return m_tabInfos;
+    }
+
+    /**
+     * Returns if the visited content has invisible fields.<p>
+     * 
+     * @return <code>true</code>  if the visited content has invisible fields
+     */
+    public boolean hasInvisibleFields() {
+
+        return m_hasInvisible;
     }
 
     /**
@@ -361,9 +375,10 @@ public class CmsContentTypeVisitor {
         }
         // generate a new multi messages object and add the messages from the workplace
 
-        m_attributeConfigurations = new HashMap<String, AttributeConfiguration>();
+        m_attributeConfigurations = new HashMap<String, CmsAttributeConfiguration>();
         m_widgetConfigurations = new HashMap<String, CmsExternalWidgetConfiguration>();
-        m_registeredTypes = new HashMap<String, I_Type>();
+        m_registeredTypes = new HashMap<String, CmsType>();
+        m_localeSynchronizations = new ArrayList<String>();
         m_tabInfos = collectTabInfos(xmlContentDefinition);
         readTypes(xmlContentDefinition, "");
     }
@@ -373,9 +388,19 @@ public class CmsContentTypeVisitor {
      * 
      * @return the attribute configurations
      */
-    protected Map<String, AttributeConfiguration> getAttributeConfigurations() {
+    protected Map<String, CmsAttributeConfiguration> getAttributeConfigurations() {
 
         return m_attributeConfigurations;
+    }
+
+    /**
+     * Returns the locale synchronized attribute names.<p>
+     * 
+     * @return the locale synchronized attribute names
+     */
+    protected List<String> getLocaleSynchronizations() {
+
+        return m_localeSynchronizations;
     }
 
     /**
@@ -383,7 +408,7 @@ public class CmsContentTypeVisitor {
      * 
      * @return the types
      */
-    protected Map<String, I_Type> getTypes() {
+    protected Map<String, CmsType> getTypes() {
 
         return m_registeredTypes;
     }
@@ -405,16 +430,16 @@ public class CmsContentTypeVisitor {
      * 
      * @return the tab informations
      */
-    private List<TabInfo> collectTabInfos(CmsXmlContentDefinition definition) {
+    private List<CmsTabInfo> collectTabInfos(CmsXmlContentDefinition definition) {
 
-        List<TabInfo> result = new ArrayList<TabInfo>();
+        List<CmsTabInfo> result = new ArrayList<CmsTabInfo>();
         if (definition.getContentHandler().getTabs() != null) {
             for (CmsXmlContentTab xmlTab : definition.getContentHandler().getTabs()) {
                 String tabName = m_messages.keyDefault(A_CmsWidget.LABEL_PREFIX
                     + definition.getInnerName()
                     + "."
                     + xmlTab.getTabName(), xmlTab.getTabName());
-                result.add(new TabInfo(tabName, xmlTab.getIdName(), xmlTab.getStartName(), xmlTab.isCollapsed()));
+                result.add(new CmsTabInfo(tabName, xmlTab.getIdName(), xmlTab.getStartName(), xmlTab.isCollapsed()));
             }
         }
         return result;
@@ -499,7 +524,7 @@ public class CmsContentTypeVisitor {
             return true;
         }
         if (m_tabInfos != null) {
-            for (TabInfo info : m_tabInfos) {
+            for (CmsTabInfo info : m_tabInfos) {
                 if (info.isCollapsed()
                     && path.startsWith(info.getStartName())
                     && !path.substring(info.getStartName().length() + 1).contains("/")) {
@@ -590,13 +615,24 @@ public class CmsContentTypeVisitor {
             // may happen if no widget was set for the value
             CmsContentService.LOG.debug(e.getMessage(), e);
         }
-        AttributeConfiguration result = new AttributeConfiguration(
+        // remove the leading slash from element path to check visibility
+        boolean visible = !m_contentHandler.hasVisibilityHandlers()
+            || m_contentHandler.isVisible(cms, schemaType, path.substring(1), m_file, m_locale);
+        if (!visible) {
+            // set the has invisible flag
+            m_hasInvisible = true;
+        }
+        boolean localeSynchronized = m_contentHandler.hasSynchronizedElements()
+            && m_contentHandler.getSynchronizations().contains(path.substring(1));
+        CmsAttributeConfiguration result = new CmsAttributeConfiguration(
             label,
             getHelp(schemaType),
             widgetName,
             widgetConfig,
             readDefaultValue(schemaType, path),
-            configuredType.name());
+            configuredType.name(),
+            visible,
+            localeSynchronized);
         return new DisplayTypeEvaluator(result, configuredType, defaultType, rule);
     }
 
@@ -619,25 +655,23 @@ public class CmsContentTypeVisitor {
      * 
      * @param xmlContentDefinition the XML content definition
      * @param path the element path
+     * 
+     * @return the type 
      */
-    private void readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
+    private CmsType readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
 
         String typeName = CmsContentService.getTypeUri(xmlContentDefinition);
         if (m_registeredTypes.containsKey(typeName)) {
-            return;
+            return m_registeredTypes.get(typeName);
         }
-        Type type = new Type(typeName);
+        CmsType type = new CmsType(typeName);
         type.setChoiceMaxOccurrence(xmlContentDefinition.getChoiceMaxOccurs());
         m_registeredTypes.put(typeName, type);
+        CmsType choiceType = null;
         if (type.isChoice()) {
-            Type choiceType = new Type(typeName + "/" + Type.CHOICE_ATTRIBUTE_NAME);
+            choiceType = new CmsType(typeName + "/" + CmsType.CHOICE_ATTRIBUTE_NAME);
             m_registeredTypes.put(choiceType.getId(), choiceType);
-            type.addAttribute(
-                Type.CHOICE_ATTRIBUTE_NAME,
-                choiceType.getId(),
-                1,
-                xmlContentDefinition.getChoiceMaxOccurs());
-            type = choiceType;
+            type.addAttribute(CmsType.CHOICE_ATTRIBUTE_NAME, choiceType, 1, xmlContentDefinition.getChoiceMaxOccurs());
         }
         ArrayList<DisplayTypeEvaluator> evaluators = new ArrayList<DisplayTypeEvaluator>();
         for (I_CmsXmlSchemaType subType : xmlContentDefinition.getTypeSequence()) {
@@ -648,25 +682,37 @@ public class CmsContentTypeVisitor {
             DisplayTypeEvaluator ev = readConfiguration((A_CmsXmlContentValue)subType, childPath);
             ev.setAttributeName(subAttributeName);
             evaluators.add(ev);
+            CmsType subEntityType;
             if (subType.isSimpleType()) {
                 subTypeName = CmsContentService.TYPE_NAME_PREFIX + subType.getTypeName();
                 if (!m_registeredTypes.containsKey(subTypeName)) {
-                    m_registeredTypes.put(subTypeName, new Type(subTypeName));
+                    subEntityType = new CmsType(subTypeName);
+                    m_registeredTypes.put(subTypeName, subEntityType);
+                } else {
+                    subEntityType = m_registeredTypes.get(subTypeName);
                 }
             } else {
                 CmsXmlContentDefinition subTypeDefinition = ((CmsXmlNestedContentDefinition)subType).getNestedContentDefinition();
                 subTypeName = CmsContentService.getTypeUri(subTypeDefinition);
-                readTypes(subTypeDefinition, childPath);
+                subEntityType = readTypes(subTypeDefinition, childPath);
             }
-            type.addAttribute(subAttributeName, subTypeName, subType.getMinOccurs(), subType.getMaxOccurs());
+            if (choiceType != null) {
+                choiceType.addAttribute(subAttributeName, subEntityType, subType.getMinOccurs(), subType.getMaxOccurs());
+            } else {
+                type.addAttribute(subAttributeName, subEntityType, subType.getMinOccurs(), subType.getMaxOccurs());
+            }
         }
         DisplayType predecessor = null;
         for (int i = 0; i < evaluators.size(); i++) {
             DisplayTypeEvaluator ev = evaluators.get(i);
             DisplayType successor = ((i + 1) < evaluators.size()) ? evaluators.get(i + 1).getProposedType() : null;
-            AttributeConfiguration evaluated = ev.getEvaluatedConfiguration(predecessor, successor);
+            CmsAttributeConfiguration evaluated = ev.getEvaluatedConfiguration(predecessor, successor);
             m_attributeConfigurations.put(ev.getAttributeName(), evaluated);
+            if (evaluated.isLocaleSynchronized()) {
+                m_localeSynchronizations.add(ev.getAttributeName());
+            }
             predecessor = DisplayType.valueOf(evaluated.getDisplayType());
         }
+        return type;
     }
 }

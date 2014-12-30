@@ -110,7 +110,7 @@ public class CmsMove extends CmsMultiDialog {
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             boolean isFolder = false;
-            String source = (String)getResourceList().get(0);
+            String source = getResourceList().get(0);
             String target = CmsLinkManager.getAbsoluteUri(getParamTarget(), CmsResource.getParentFolder(source));
             if (!isMultiOperation()) {
                 CmsResource resource = getCms().readResource(source, CmsResourceFilter.ALL);
@@ -144,7 +144,7 @@ public class CmsMove extends CmsMultiDialog {
                 // if no exception is caused and "true" is returned move operation was successful
                 if (isMultiOperation() || isFolder) {
                     // set request attribute to reload the explorer tree view
-                    List folderList = new ArrayList(2);
+                    List<String> folderList = new ArrayList<String>(2);
                     String sourceParent = CmsResource.getParentFolder(source);
                     folderList.add(sourceParent);
                     try {
@@ -217,6 +217,7 @@ public class CmsMove extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -254,6 +255,7 @@ public class CmsMove extends CmsMultiDialog {
      * @return true, if the resource was successfully moved, otherwise false
      * @throws CmsException if moving is not successful
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         // check if the current resource is a folder for single operation
@@ -283,10 +285,10 @@ public class CmsMove extends CmsMultiDialog {
                 getCms().getRequestContext().setSiteRoot("/");
             }
 
-            Iterator i = getResourceList().iterator();
+            Iterator<String> i = getResourceList().iterator();
             // iterate the resources to move
             while (i.hasNext()) {
-                String resName = (String)i.next();
+                String resName = i.next();
                 try {
                     performSingleMoveOperation(resName, target, sitePrefix);
                 } catch (CmsException e) {

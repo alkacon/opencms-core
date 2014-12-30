@@ -28,6 +28,7 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -126,6 +127,12 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     /** The start view. */
     private String m_startView;
 
+    /** The user role. */
+    private String m_role;
+
+    /** The no role value. */
+    private static final String NO_ROLE = "NO_ROLE";
+
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -147,6 +154,39 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         try {
             // if new create it first
             if (isNewUser()) {
+                // test the group name
+                CmsGroup group = null;
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getGroup())) {
+                    group = getCms().readGroup(getGroup());
+                }
+
+                if (group != null) {
+                    if (group.getSimpleName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
+                        // in case the administrators group is selected, the administrator role must be selected also
+                        if (getRole().equals(NO_ROLE)) {
+                            throw new CmsIllegalArgumentException(Messages.get().container(
+                                Messages.ERR_ADD_TO_ADMINISTRATORS_GROUP_0));
+                        }
+                        CmsRole role = CmsRole.valueOfRoleName(getRole());
+                        if (!CmsRole.ROOT_ADMIN.getRoleName().equals(role.getRoleName())
+                            && !CmsRole.ADMINISTRATOR.getRoleName().equals(role.getRoleName())) {
+                            throw new CmsIllegalArgumentException(Messages.get().container(
+                                Messages.ERR_ADD_TO_ADMINISTRATORS_GROUP_0));
+                        }
+                    } else if (group.getSimpleName().equals(OpenCms.getDefaultUsers().getGroupUsers())) {
+                        // in case the users group is selected, the user should have at least one role
+                        if (getRole().equals(NO_ROLE)) {
+                            throw new CmsIllegalArgumentException(Messages.get().container(
+                                Messages.ERR_ADD_TO_USERS_GROUP_0));
+                        }
+                    } else if (group.getSimpleName().equals(OpenCms.getDefaultUsers().getGroupGuests())) {
+                        // in case the users group is selected, the user should have at least one role
+                        if (!getRole().equals(NO_ROLE)) {
+                            throw new CmsIllegalArgumentException(Messages.get().container(
+                                Messages.ERR_ADD_TO_GUESTS_GROUP_0));
+                        }
+                    }
+                }
                 m_pwdInfo.validate();
                 CmsUser newUser = createUser(
                     m_paramOufqn + m_user.getSimpleName(),
@@ -165,16 +205,19 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 m_pwdInfo.validate();
                 getCms().setPassword(m_user.getName(), m_pwdInfo.getNewPwd());
             }
-            // test the group name
-            if (isNewUser() && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getGroup())) {
-                getCms().readGroup(getGroup());
-            }
+
             // write the edited user
             writeUser(m_user);
             // set starting membership
             if (isNewUser()) {
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getGroup())) {
                     getCms().addUserToGroup(m_user.getName(), getGroup());
+                }
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRole()) && !getRole().equals(NO_ROLE)) {
+                    OpenCms.getRoleManager().addUserToRole(
+                        getCms(),
+                        CmsRole.valueOfRoleName(getRole()),
+                        m_user.getName());
                 }
             }
             // set starting settings
@@ -188,23 +231,31 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 settings.setStartProject(getStartProject());
             }
 
-            CmsObject tmp = OpenCms.initCmsObject(getCms());
-            tmp.getRequestContext().setSiteRoot(getSite());
-            String folder = tmp.getRequestContext().removeSiteRoot(getStartFolder());
+            boolean webuserOu = false;
             try {
-                CmsResource res = tmp.readResource(folder);
-                String siteRoot = OpenCms.getSiteManager().getSiteRoot(res.getRootPath());
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)
-                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(tmp.getRequestContext().getSiteRoot())
-                    && !tmp.getRequestContext().getSiteRoot().equals("/")) {
-                    folder = res.getRootPath().substring(siteRoot.length());
-                }
+                webuserOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).hasFlagWebuser();
             } catch (CmsException e) {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_SELECTED_FOLDER_NOT_IN_SITE_0));
+                // ignore
             }
-            settings.setStartFolder(folder);
-
+            // only set the start folder for non web users
+            if (!webuserOu) {
+                CmsObject tmp = OpenCms.initCmsObject(getCms());
+                tmp.getRequestContext().setSiteRoot(getSite());
+                String folder = tmp.getRequestContext().removeSiteRoot(getStartFolder());
+                try {
+                    CmsResource res = tmp.readResource(folder);
+                    String siteRoot = OpenCms.getSiteManager().getSiteRoot(res.getRootPath());
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)
+                        && CmsStringUtil.isNotEmptyOrWhitespaceOnly(tmp.getRequestContext().getSiteRoot())
+                        && !tmp.getRequestContext().getSiteRoot().equals("/")) {
+                        folder = res.getRootPath().substring(siteRoot.length());
+                    }
+                } catch (CmsException e) {
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.ERR_SELECTED_FOLDER_NOT_IN_SITE_0));
+                }
+                settings.setStartFolder(folder);
+            }
             settings.setStartView(getStartView());
             settings.save(getCms());
 
@@ -316,6 +367,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public CmsPasswordInfo getPwdInfo() {
 
         return m_pwdInfo;
+    }
+
+    /**
+     * Returns the user role.<p>
+     * 
+     * @return the user role
+     */
+    public String getRole() {
+
+        return m_role;
     }
 
     /**
@@ -463,6 +524,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Sets the user role.<p>
+     * 
+     * @param role the user role
+     */
+    public void setRole(String role) {
+
+        m_role = role;
+    }
+
+    /**
      * Sets the selfManagement.<p>
      *
      * @param selfManagement the selfManagement to set
@@ -547,7 +618,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             result.append(createDialogRowsHtml(6, 10));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            int row = isNewUser() ? 16 : 15;
+            int row = isNewUser() ? 17 : 15;
             if (!webuserOu) {
                 if (getSites().isEmpty()) {
                     row -= 1;
@@ -641,6 +712,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                         null,
                         null,
                         getParamOufqn())));
+                    addWidget(new CmsWidgetDialogParameter(this, "role", PAGES[0], new CmsSelectWidget(getRoles())));
                 }
             }
         } else {
@@ -865,7 +937,6 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
      * Returns a list of options for the project selector.<p>
      * 
      * @return a list of options for the project selector
-     * @throws CmsException 
      */
     private List<CmsSelectWidgetOption> getProjects() {
 
@@ -914,6 +985,33 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         }
 
         return projects;
+    }
+
+    /**
+     * Returns the role select options.<p>
+     * 
+     * @return the role select options
+     */
+    private List<CmsSelectWidgetOption> getRoles() {
+
+        List<CmsSelectWidgetOption> roleOptions = new ArrayList<CmsSelectWidgetOption>();
+        roleOptions.add(new CmsSelectWidgetOption(NO_ROLE, false, Messages.get().getBundle(getLocale()).key(
+            Messages.GUI_USER_EDITOR_NO_ROLE_0)));
+        try {
+            List<CmsRole> roles = new ArrayList<CmsRole>(OpenCms.getRoleManager().getRoles(
+                getCms(),
+                m_paramOufqn,
+                false));
+            // ensure the role sorting matches the system roles order
+            CmsRole.applySystemRoleOrder(roles);
+            for (CmsRole role : roles) {
+                roleOptions.add(new CmsSelectWidgetOption(role.getRoleName(), role.getRoleName().equals(
+                    CmsRole.ELEMENT_AUTHOR.getRoleName()), role.getDisplayName(getCms(), getLocale())));
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return roleOptions;
     }
 
     /**

@@ -30,8 +30,8 @@ package org.opencms.workplace.commons;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -154,12 +154,12 @@ public class CmsUndoChanges extends CmsMultiDialog {
      */
     public boolean actionCheckSiblings() {
 
-        List resourceList = this.getResourceList();
+        List<String> resourceList = getResourceList();
         String resourcePath;
-        Iterator itResourcePaths = resourceList.iterator();
+        Iterator<String> itResourcePaths = resourceList.iterator();
         boolean foundSibling = false;
         while (itResourcePaths.hasNext()) {
-            resourcePath = (String)itResourcePaths.next();
+            resourcePath = itResourcePaths.next();
             try {
                 foundSibling = this.recursiveCheckSiblings(resourcePath);
                 if (foundSibling) {
@@ -187,17 +187,17 @@ public class CmsUndoChanges extends CmsMultiDialog {
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             boolean isFolder = false;
-            String source = (String)getResourceList().get(0);
+            String source = getResourceList().get(0);
             if (!isMultiOperation()) {
                 CmsResource resource = getCms().readResource(source, CmsResourceFilter.ALL);
                 isFolder = resource.isFolder();
             }
             // get the folders to refresh
-            List folderList = new ArrayList(1 + getResourceList().size());
+            List<String> folderList = new ArrayList<String>(1 + getResourceList().size());
             folderList.add(CmsResource.getParentFolder(source));
-            Iterator it = getResourceList().iterator();
+            Iterator<String> it = getResourceList().iterator();
             while (it.hasNext()) {
-                String res = (String)it.next();
+                String res = it.next();
                 String target = resourceOriginalPath(getCms(), res);
                 if ((target != null) && !target.equals(res)) {
                     CmsResource resource = getCms().readResource(res, CmsResourceFilter.ALL);
@@ -377,6 +377,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -428,9 +429,9 @@ public class CmsUndoChanges extends CmsMultiDialog {
      */
     protected boolean isOperationOnMovedResource() {
 
-        Iterator i = getResourceList().iterator();
+        Iterator<String> i = getResourceList().iterator();
         while (i.hasNext()) {
-            String resName = (String)i.next();
+            String resName = i.next();
             String target = resourceOriginalPath(getCms(), resName);
             if ((target != null) && !target.equals(resName)) {
                 // found a moved resource
@@ -446,6 +447,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
      * @return true, if the changes on a resource were undone, otherwise false
      * @throws CmsException if undo changes is not successful
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         // check if the current resource is a folder for single operation
@@ -468,10 +470,10 @@ public class CmsUndoChanges extends CmsMultiDialog {
             mode = mode.includeMove();
         }
 
-        Iterator i = getResourceList().iterator();
+        Iterator<String> i = getResourceList().iterator();
         // iterate the resources to delete
         while (i.hasNext()) {
-            String resName = (String)i.next();
+            String resName = i.next();
             try {
                 // lock resource if autolock is enabled
                 checkLock(resName);
@@ -507,6 +509,8 @@ public class CmsUndoChanges extends CmsMultiDialog {
      * Depth first recursion for searching if a file has siblings with early termination.<p>
      * 
      * This avoids to read a whole resource tree (which will be hard for e.g.  /sites/).<p>
+     * 
+     * @param path the path to check the siblings in
      *   
      * @return true if a resource which is a sibling was found. 
      * 
@@ -526,10 +530,10 @@ public class CmsUndoChanges extends CmsMultiDialog {
             boolean undoRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
             if (undoRecursive) {
                 // don't read the whole tree, this is  expensive - most likely we will find a sibling faster step by step:
-                List subResources = cms.readResources(path, CmsResourceFilter.ALL, false);
-                Iterator itSubResources = subResources.iterator();
+                List<CmsResource> subResources = cms.readResources(path, CmsResourceFilter.ALL, false);
+                Iterator<CmsResource> itSubResources = subResources.iterator();
                 while (itSubResources.hasNext()) {
-                    resource = (CmsResource)itSubResources.next();
+                    resource = itSubResources.next();
                     result = this.recursiveCheckSiblings(cms.getSitePath(resource));
                     if (result) {
                         break; // shortcut
@@ -538,9 +542,8 @@ public class CmsUndoChanges extends CmsMultiDialog {
             }
 
         } else {
-            List siblings = cms.readSiblings(path, CmsResourceFilter.ALL);
+            List<CmsResource> siblings = cms.readSiblings(path, CmsResourceFilter.ALL);
             result = siblings.size() > 1;
-
         }
         return result;
     }

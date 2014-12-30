@@ -27,8 +27,7 @@
 
 package org.opencms.gwt.client.ui;
 
-import com.alkacon.geranium.client.I_DescendantResizeHandler;
-
+import org.opencms.gwt.client.I_DescendantResizeHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsFocusedScrollingHandler;
@@ -209,7 +208,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
     }
 
     /**
-     * @see com.alkacon.geranium.client.I_DescendantResizeHandler#onResizeDescendant()
+     * @see org.opencms.gwt.client.I_DescendantResizeHandler#onResizeDescendant()
      */
     public void onResizeDescendant() {
 
@@ -237,7 +236,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
     /**
      * Sets the default height of the scrolling panel.
      * 
-     * @param height 
+     * @param height the default height
      */
     public void setDefaultHeight(double height) {
 
@@ -331,7 +330,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
     /**
      * Sets the start parameters of the resize event.<p>
      * 
-     * @param event
+     * @param event the mouse event
      */
     protected void setStartParameters(MouseDownEvent event) {
 

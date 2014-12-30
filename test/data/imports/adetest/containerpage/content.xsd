@@ -24,11 +24,12 @@
 	<xsd:annotation>
 		<xsd:appinfo>
 			<formatters>
-				<formatter type="test" uri="/containerpage/formatter.jsp" />
+				<formatter type="test" uri="/sites/default/containerpage/formatter.jsp" />
+				<formatter type="content" uri="/sites/default/containerpage/formatter.jsp" />
 			</formatters>
-			<properties>
-				<property name="foo" type="string" default="bar" nice-name="F.O.O." widget="string" error="value must not be aaa" rule-regex="!aaa"/>
-			</properties>
+			<settings>
+				<setting name="foo" type="string" default="bar" nice-name="F.O.O." widget="string" error="value must not be aaa" rule-regex="!aaa"/>
+			</settings>
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>

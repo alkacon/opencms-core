@@ -480,6 +480,27 @@ public class CmsSetupDb extends Object {
      */
     public void setConnection(String DbDriver, String DbConStr, String DbConStrParams, String DbUser, String DbPwd) {
 
+        setConnection(DbDriver, DbConStr, DbConStrParams, DbUser, DbPwd, true);
+    }
+
+    /**
+     * Creates a new internal connection to the database.<p>
+     * 
+     * @param DbDriver JDBC driver class name
+     * @param DbConStr JDBC connect URL
+     * @param DbConStrParams JDBC connect URL params, or null
+     * @param DbUser JDBC database user
+     * @param DbPwd JDBC database password
+     * @param logErrors if set to 'true', errors are written to the log file
+     */
+    public void setConnection(
+        String DbDriver,
+        String DbConStr,
+        String DbConStrParams,
+        String DbUser,
+        String DbPwd,
+        boolean logErrors) {
+
         String jdbcUrl = DbConStr;
         try {
             if (DbConStrParams != null) {
@@ -494,7 +515,9 @@ public class CmsSetupDb extends Object {
             m_errors.add(Messages.get().getBundle().key(Messages.ERR_LOAD_JDBC_DRIVER_1, DbDriver));
             m_errors.add(CmsException.getStackTraceAsString(e));
         } catch (Exception e) {
-            System.out.println("Exception: " + CmsException.getStackTraceAsString(e));
+            if (logErrors) {
+                System.out.println("Exception: " + CmsException.getStackTraceAsString(e));
+            }
             m_errors.add(Messages.get().getBundle().key(Messages.ERR_DB_CONNECT_1, DbConStr));
             m_errors.add(CmsException.getStackTraceAsString(e));
         }

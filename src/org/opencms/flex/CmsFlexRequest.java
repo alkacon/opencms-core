@@ -75,14 +75,14 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     /** JSP Loader instance. */
     private static CmsJspLoader m_jspLoader;
 
+    /** The max allowed recursive include number.*/
+    private static final int MAX_INCLUDE_RECURSION = 5;
+
     /** Map of attributes from the original request. */
     private Map<String, Object> m_attributes;
 
     /** Flag to decide if this request can be cached or not. */
     private boolean m_canCache;
-
-    /** The parameter escaper. */
-    private CmsParameterEscaper m_escaper;
 
     /** The CmsFlexController for this request. */
     private CmsFlexController m_controller;
@@ -95,6 +95,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /** The site root of the requested resource. */
     private String m_elementUriSiteRoot;
+
+    /** The parameter escaper. */
+    private CmsParameterEscaper m_escaper;
 
     /** List of all include calls (to prevent an endless inclusion loop). */
     private List<String> m_includeCalls;
@@ -759,8 +762,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * Checks if a given target is already included in a top-layer of this
-     * wrapped request.<p>
+     * Checks if a given target has been included earlier and exceeds the max allowed recursions.<p>
      * 
      * The set of include calls is maintained to detect 
      * an endless inclusion loop.<p>
@@ -768,9 +770,20 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @param target the target name (absolute OpenCms URI) to check for
      * @return true if the target is already included, false otherwise
      */
-    boolean containsIncludeCall(String target) {
+    boolean exceedsCallLimit(String target) {
 
-        return m_includeCalls.contains(target);
+        if (m_includeCalls.contains(target)) {
+            int count = 0;
+            for (String call : m_includeCalls) {
+                if (call.equals(target)) {
+                    count++;
+                    if (count > MAX_INCLUDE_RECURSION) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /** 

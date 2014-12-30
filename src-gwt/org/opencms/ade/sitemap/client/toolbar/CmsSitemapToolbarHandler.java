@@ -32,6 +32,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsDisableable;
 import org.opencms.gwt.client.ui.A_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
@@ -60,6 +61,9 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
     /** The context menu entries. */
     private List<I_CmsContextMenuEntry> m_contextMenuEntries;
 
+    /** The content editor handler. */
+    private I_CmsContentEditorHandler m_editorHandler;
+
     /**
      * Constructor.<p>
      * 
@@ -68,6 +72,13 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
     public CmsSitemapToolbarHandler(List<CmsContextMenuEntryBean> menuBeans) {
 
         m_contextMenuEntries = transformEntries(menuBeans, null);
+        m_editorHandler = new I_CmsContentEditorHandler() {
+
+            public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
+
+                CmsSitemapView.getInstance().getController().updateEntry(sitePath);
+            }
+        };
     }
 
     /**
@@ -127,6 +138,14 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
             }
         }
         return m_contextMenuCommands;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getEditorHandler()
+     */
+    public I_CmsContentEditorHandler getEditorHandler() {
+
+        return m_editorHandler;
     }
 
     /**

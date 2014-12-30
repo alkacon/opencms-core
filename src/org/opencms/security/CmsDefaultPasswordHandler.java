@@ -31,6 +31,7 @@ import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -40,6 +41,8 @@ import java.security.SecureRandom;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 
+import com.lambdaworks.crypto.SCryptUtil;
+
 /**
  * Default implementation for OpenCms password validation,
  * just checks if a password is at last 4 characters long.<p>
@@ -47,6 +50,12 @@ import org.apache.commons.logging.Log;
  * @since 6.0.0 
  */
 public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
+
+    /** Parameter for SCrypt settings. */
+    public static String PARAM_SCRYPT_SETTINGS = "scrypt.settings";
+
+    /** Parameter for SCrypt fall back. */
+    public static String PARAM_SCRYPT_FALLBACK = "scrypt.fallback";
 
     /**  The minimum length of a password. */
     public static final int PASSWORD_MIN_LENGTH = 4;
@@ -61,10 +70,22 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     private CmsParameterConfiguration m_configuration;
 
     /** The digest type used. */
-    private String m_digestType = DIGEST_TYPE_MD5;
+    private String m_digestType = DIGEST_TYPE_SCRYPT;
 
     /** The encoding the encoding used for translating the input string to bytes. */
     private String m_inputEncoding = CmsEncoder.ENCODING_UTF_8;
+
+    /** SCrypt parameter: CPU cost, must be a power of 2. */
+    private int m_scryptN;
+
+    /** SCrypt parameter: Memory cost. */
+    private int m_scryptR;
+
+    /** SCrypt parameter: Parallelization parameter. */
+    private int m_scryptP;
+
+    /** SCrypt fall back algorithm. */
+    private String m_scryptFallback;
 
     /**
      * The constructor does not perform any operation.<p>
@@ -80,6 +101,39 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         m_configuration.put(paramName, paramValue);
+    }
+
+    /**
+     * @see org.opencms.security.I_CmsPasswordHandler#checkPassword(String, String, boolean)
+     */
+    public boolean checkPassword(String plainPassword, String digestedPassword, boolean useFallback) {
+
+        boolean success = false;
+        if (DIGEST_TYPE_PLAIN.equals(m_digestType)) {
+
+            success = plainPassword.equals(digestedPassword);
+        } else if (DIGEST_TYPE_SCRYPT.equals(m_digestType)) {
+            try {
+                success = SCryptUtil.check(plainPassword, digestedPassword);
+            } catch (IllegalArgumentException e) {
+                // hashed valued not right, check if we want to fall back to MD5 
+                if (useFallback) {
+                    try {
+                        success = digestedPassword.equals(digest(plainPassword, m_scryptFallback, m_inputEncoding));
+                    } catch (CmsPasswordEncryptionException e1) {
+                        // success will be false
+                    }
+                }
+            }
+        } else {
+            // old default MD5
+            try {
+                success = digestedPassword.equals(digest(plainPassword));
+            } catch (CmsPasswordEncryptionException e) {
+                // this indicates validation has failed
+            }
+        }
+        return success;
     }
 
     /**
@@ -104,6 +158,9 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
 
                 result = password;
 
+            } else if (DIGEST_TYPE_SCRYPT.equals(digestType.toLowerCase())) {
+
+                result = SCryptUtil.scrypt(password, m_scryptN, m_scryptR, m_scryptP);
             } else if (DIGEST_TYPE_SSHA.equals(digestType.toLowerCase())) {
 
                 byte[] salt = new byte[4];
@@ -194,6 +251,43 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_INIT_CONFIG_CALLED_1, this));
         }
         m_configuration = CmsParameterConfiguration.unmodifiableVersion(m_configuration);
+
+        // Set default SCrypt parameter values
+        m_scryptN = 16384; // CPU cost, must be a power of 2
+        m_scryptR = 8; // Memory cost
+        m_scryptP = 1; // Parallelization parameter
+
+        String scryptSettings = m_configuration.get(PARAM_SCRYPT_SETTINGS);
+        if (scryptSettings != null) {
+            String[] settings = CmsStringUtil.splitAsArray(scryptSettings, ',');
+            if (settings.length == 3) {
+                // we just require 3 correct parameters
+                m_scryptN = CmsStringUtil.getIntValue(settings[0], m_scryptN, "scryptN using " + m_scryptN);
+                m_scryptR = CmsStringUtil.getIntValue(settings[1], m_scryptR, "scryptR using " + m_scryptR);
+                m_scryptP = CmsStringUtil.getIntValue(settings[2], m_scryptP, "scryptP using " + m_scryptP);
+            } else {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_SCRYPT_PARAMETERS_1, scryptSettings));
+                }
+            }
+        }
+
+        // Initialize the SCrypt fall back
+        m_scryptFallback = DIGEST_TYPE_MD5;
+        String scryptFallback = m_configuration.get(PARAM_SCRYPT_FALLBACK);
+        if (scryptFallback != null) {
+
+            try {
+                MessageDigest.getInstance(scryptFallback);
+                // Configured fall back algorithm available
+                m_scryptFallback = scryptFallback;
+            } catch (NoSuchAlgorithmException e) {
+                // Configured fall back algorithm not available, use default MD5
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_SCRYPT_PARAMETERS_1, scryptFallback));
+                }
+            }
+        }
     }
 
     /**
@@ -203,7 +297,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
      */
     public void setDigestType(String digestType) {
 
-        m_digestType = digestType;
+        m_digestType = digestType.toLowerCase();
     }
 
     /**

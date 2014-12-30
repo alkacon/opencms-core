@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.client.util;
 
+import com.google.gwt.core.client.JavaScriptObject;
+
 /**
  * A class containing generic Javascript utility methods.<p>
  */
@@ -44,6 +46,28 @@ public final class CmsJsUtil {
      * Closes the browser window.
      */
     public static native void closeWindow() /*-{
-      $wnd.close();
-    }-*/;
+                                            $wnd.close();
+                                            }-*/;
+
+    /**
+     * Reads an attribute from a Javascript object.<p>
+     * 
+     * @param jso the Javascript object
+     * @param attr the name of the attribute 
+     * @return the value of the attribute
+     */
+    public static native JavaScriptObject getAttribute(JavaScriptObject jso, String attr) /*-{
+                                                                                          return jso[attr]; 
+                                                                                          }-*/;
+
+    /**
+     * Gets the current window as a Javascript object.<p>
+     * 
+     * @return the current window 
+     */
+    public static native JavaScriptObject getWindow() /*-{
+                                                      var result = $wnd; 
+                                                      return result; 
+                                                      }-*/;
+
 }

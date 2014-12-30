@@ -27,6 +27,15 @@
 
 package org.opencms.configuration;
 
+import org.opencms.configuration.preferences.CmsBuiltinPreference;
+import org.opencms.configuration.preferences.CmsEditorPreference;
+import org.opencms.configuration.preferences.CmsPreferenceData;
+import org.opencms.configuration.preferences.CmsStartGallleryPreference;
+import org.opencms.configuration.preferences.CmsUserDefinedPreference;
+import org.opencms.configuration.preferences.CmsUserSettingsStringPropertyWrapper;
+import org.opencms.configuration.preferences.CmsWrapperPreference;
+import org.opencms.configuration.preferences.I_CmsPreference;
+import org.opencms.configuration.preferences.PrefMetadata;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
@@ -35,11 +44,21 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsLog;
 import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -118,6 +137,9 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         createfolder
     }
 
+    /** The current default user settings. */
+    public static CmsDefaultUserSettings CURRENT_DEFAULT_SETTINGS;
+
     /** Constant for the publish related resources mode, checkbox disabled by default. */
     public static final CmsPublishRelatedResourcesMode PUBLISH_RELATED_RESOURCES_MODE_FALSE = CmsPublishRelatedResourcesMode.MODE_FALSE;
 
@@ -139,14 +161,11 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /** Publish button appearance: show never. */
     public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
 
-    /** 
-     * Array of the possible "button styles".
-     * Must be private because of Findbugs rule "MS".
-     */
-    private static final String[] BUTTON_STYLES = {"image", "textimage", "text"};
-
     /** Array list for fast lookup of "button styles". */
-    public static final List<String> BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
+    public static final List<String> BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(new String[] {
+        "image",
+        "textimage",
+        "text"}));
 
     /** Parameter for buttonstyle text & image. */
     private static final int BUTTONSTYLE_TEXTIMAGE = 1;
@@ -178,11 +197,57 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /** The enable relation deletion flag. */
     private boolean m_allowBrokenRelations = true;
 
+    /** The configured preference data. */
+    private List<CmsPreferenceData> m_preferenceData = new ArrayList<CmsPreferenceData>();
+
+    /** Stores the preference objects, with the preference names as keys, in order. */
+    private LinkedHashMap<String, I_CmsPreference> m_preferences = new LinkedHashMap<String, I_CmsPreference>();
+
     /** The publish related resources mode. */
     private CmsPublishRelatedResourcesMode m_publishRelatedResourcesMode;
 
     /** The subsitemap creation mode. */
     private SubsitemapCreationMode m_subsitemapCreationMode;
+
+    /**
+     * Adds a preference.<p>
+     * 
+     * @param name the name of the preference 
+     * @param value the default value 
+     * @param widget the widget to use for the preference 
+     * @param widgetConfig the widget configuration  
+     * @param niceName the nice name of the preference 
+     * @param description the description of the preference 
+     * @param ruleRegex the regex used for validation 
+     * @param error the validation error message 
+     * @param tab the tab to display the preference on 
+     */
+    public void addPreference(
+        String name,
+        String value,
+        String widget,
+        String widgetConfig,
+        String niceName,
+        String description,
+        String ruleRegex,
+        String error,
+        String tab) {
+
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            name,
+            "string",
+            widget,
+            widgetConfig,
+            ruleRegex,
+            null,
+            null,
+            niceName,
+            description,
+            error,
+            null);
+        CmsPreferenceData pref = new CmsPreferenceData(name, value, prop, tab);
+        m_preferenceData.add(pref);
+    }
 
     /**
      * Gets the default copy mode when copying a file of the user.<p>
@@ -303,7 +368,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getDirectEditButtonStyleString() {
 
-        return BUTTON_STYLES[getDirectEditButtonStyle()];
+        return BUTTON_STYLES_LIST.get(getDirectEditButtonStyle());
     }
 
     /**
@@ -313,7 +378,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getEditorButtonStyleString() {
 
-        return BUTTON_STYLES[getEditorButtonStyle()];
+        return BUTTON_STYLES_LIST.get(getEditorButtonStyle());
     }
 
     /**
@@ -323,7 +388,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getExplorerButtonStyleString() {
 
-        return BUTTON_STYLES[getExplorerButtonStyle()];
+        return BUTTON_STYLES_LIST.get(getExplorerButtonStyle());
     }
 
     /**
@@ -336,6 +401,16 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getListAllProjectsString() {
 
         return String.valueOf(getShowPublishNotification());
+    }
+
+    /**
+     * Gets the map of preferences.<p>
+     * 
+     * @return the map of preferences 
+     */
+    public Map<String, I_CmsPreference> getPreferences() {
+
+        return Collections.unmodifiableMap(m_preferences);
     }
 
     /**
@@ -546,7 +621,97 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getWorkplaceButtonStyleString() {
 
-        return BUTTON_STYLES[getWorkplaceButtonStyle()];
+        return BUTTON_STYLES_LIST.get(getWorkplaceButtonStyle());
+    }
+
+    /**
+     * Initializes the preference configuration.<p>
+     * 
+     * Note that this method should only be called once the resource types have been initialized, but after addPreference has been called for all configured preferences.
+     * 
+     * @param wpManager the active workplace manager
+     */
+    public void initPreferences(CmsWorkplaceManager wpManager) {
+
+        CURRENT_DEFAULT_SETTINGS = this;
+        Class<?> accessorClass = CmsUserSettingsStringPropertyWrapper.class;
+
+        // first initialize all built-in preferences. these are:
+        // a) Bean properties of CmsUserSettingsStringPropertyWrapper
+        // b) Editor setting preferences
+        // c) Gallery setting preferences 
+        PropertyDescriptor[] propDescs = PropertyUtils.getPropertyDescriptors(accessorClass);
+        for (PropertyDescriptor descriptor : propDescs) {
+            String name = descriptor.getName();
+            Method getter = descriptor.getReadMethod();
+            Method setter = descriptor.getWriteMethod();
+            if ((getter == null) || (setter == null)) {
+                continue;
+            }
+
+            PrefMetadata metadata = getter.getAnnotation(PrefMetadata.class);
+            if (metadata == null) {
+                CmsBuiltinPreference preference = new CmsBuiltinPreference(name);
+                m_preferences.put(preference.getName(), preference);
+            } else {
+                try {
+                    Constructor<?> constructor = metadata.type().getConstructor(String.class);
+                    I_CmsPreference pref = (I_CmsPreference)constructor.newInstance(name);
+                    m_preferences.put(pref.getName(), pref);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        Map<String, String> editorValues = getEditorSettings();
+        if (wpManager.getWorkplaceEditorManager() != null) {
+            for (String resType : wpManager.getWorkplaceEditorManager().getConfigurableEditors().keySet()) {
+                if (!editorValues.containsKey(resType)) {
+                    editorValues.put(resType, null);
+                }
+            }
+        }
+        for (Map.Entry<String, String> editorSettingEntry : editorValues.entrySet()) {
+            CmsEditorPreference pref = new CmsEditorPreference(
+                editorSettingEntry.getKey(),
+                editorSettingEntry.getValue());
+            m_preferences.put(pref.getName(), pref);
+        }
+
+        Map<String, String> galleryValues = new HashMap<String, String>(getStartGalleriesSettings());
+        for (String key : wpManager.getGalleries().keySet()) {
+            if (!galleryValues.containsKey(key)) {
+                galleryValues.put(key, null);
+            }
+        }
+        for (Map.Entry<String, String> galleryEntry : galleryValues.entrySet()) {
+            CmsStartGallleryPreference pref = new CmsStartGallleryPreference(
+                galleryEntry.getKey(),
+                galleryEntry.getValue());
+            m_preferences.put(pref.getName(), pref);
+        }
+
+        // Now process configured preferences. Each configuration entry is either 
+        // for a built-in preference, in which case we create a wrapper around the existing preference,
+        // or for a custom user-defined preference. 
+        for (CmsPreferenceData prefData : m_preferenceData) {
+            String name = prefData.getName();
+            I_CmsPreference pref = null;
+            if (m_preferences.containsKey(name)) {
+                // we first remove the existing preference, because in a LinkedHashMap, put(key, value) will not 
+                // update the position of the entry if the key already exists 
+                pref = new CmsWrapperPreference(prefData, m_preferences.remove(name));
+            } else {
+                pref = new CmsUserDefinedPreference(
+                    prefData.getName(),
+                    prefData.getDefaultValue(),
+                    prefData.getPropertyDefinition(),
+                    prefData.getTab());
+            }
+            m_preferences.put(pref.getName(), pref);
+            pref.setValue(this, prefData.getDefaultValue());
+        }
     }
 
     /**
@@ -1045,4 +1210,5 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
         return String.valueOf((getExplorerSettings() & setting) > 0);
     }
+
 }

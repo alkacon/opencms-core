@@ -41,16 +41,17 @@ import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
-import org.opencms.gwt.client.ui.CmsDialogNotificationWidget;
 import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsNotificationWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
+import org.opencms.gwt.client.ui.CmsToolbarPopup;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsNotificationWidget;
+import org.opencms.gwt.client.ui.I_CmsTruncable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -63,12 +64,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
-import com.google.gwt.event.logical.shared.HasResizeHandlers;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -82,13 +79,16 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @since 8.0.
  */
 public class CmsGalleryDialog extends Composite
-implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHandler, HasResizeHandlers {
+implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTruncable {
 
     /** The initial dialog width. */
-    public static final int DIALOG_HEIGHT = 486;
+    public static final int DEFAULT_DIALOG_HEIGHT = 486;
 
     /** The initial dialog width. */
-    public static final int DIALOG_WIDTH = 600;
+    public static final int DEFAULT_DIALOG_WIDTH = 650;
+
+    /** Text metrics key. */
+    private static final String TM_GALLERY_DIALOG = "GalleryDialog";
 
     /** The parent panel for the gallery dialog. */
     protected FlowPanel m_parentPanel;
@@ -117,6 +117,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /** The gallery handler. */
     private I_CmsGalleryHandler m_galleryHandler;
 
+    /** The dialog height. */
+    private int m_height;
+
     /** The image format names. */
     private String m_imageFormatNames;
 
@@ -128,6 +131,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
     /** The command which should be executed when this widget is attached to the DOM. */
     private Command m_onAttachCommand;
+
+    /** Flag which indicates that the formats from this object should have priority. */
+    private boolean m_overrideFormats;
 
     /** The results tab. */
     private CmsResultsTab m_resultsTab;
@@ -153,6 +159,12 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     /** The widget handler. */
     private I_CmsGalleryWidgetHandler m_widgetHandler;
 
+    /** The dialog width. */
+    private int m_width;
+
+    /** Flag indicating if the resource preview is visible. */
+    private boolean m_previewVisible;
+
     /**
      * The constructor.<p>
      * 
@@ -172,6 +184,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     public CmsGalleryDialog(I_CmsGalleryHandler galleryHandler, CmsTabbedPanelStyle style) {
 
         initCss();
+        m_height = DEFAULT_DIALOG_HEIGHT;
+        m_width = DEFAULT_DIALOG_WIDTH;
         m_isInitialSearch = false;
         // parent widget
         m_parentPanel = new FlowPanel();
@@ -179,7 +193,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         m_dialogElementId = HTMLPanel.createUniqueId();
         m_parentPanel.getElement().setId(m_dialogElementId);
         // set the default height of the dialog
-        m_parentPanel.getElement().getStyle().setHeight((DIALOG_HEIGHT), Unit.PX);
+        m_parentPanel.getElement().getStyle().setHeight((m_height), Unit.PX);
         // tabs
         m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(style);
         // add tabs to parent widget
@@ -191,7 +205,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
             public void onClick(ClickEvent event) {
 
-                m_parentPanel.removeStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
+                setPreviewVisible(true);
             }
         });
         m_showPreview.setVisible(false);
@@ -199,30 +213,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         // All composites must call initWidget() in their constructors.
         initWidget(m_parentPanel);
         ensureNotifications();
-        addResizeHandler(this);
         m_dndHandler = galleryHandler.getDndHandler();
         m_autoHideParent = galleryHandler.getAutoHideParent();
         m_galleryHandler = galleryHandler;
-
-    }
-
-    /**
-     * @see com.google.gwt.event.logical.shared.HasResizeHandlers#addResizeHandler(com.google.gwt.event.logical.shared.ResizeHandler)
-     */
-    public HandlerRegistration addResizeHandler(ResizeHandler handler) {
-
-        return addHandler(handler, ResizeEvent.getType());
-    }
-
-    /** 
-     * Adds a new tab to the gallery dialog.<p>
-     * 
-     * @param tab the tab to add 
-     * @param name the label for the tab 
-     */
-    public void addTab(A_CmsTab tab, String name) {
-
-        m_tabbedPanel.add(tab, name);
     }
 
     /**
@@ -303,8 +296,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
                         m_controller.getStartLocale(),
                         m_controller.getAvailableLocales(),
                         m_controller.getSearchScope(),
-                        m_controller.getDefaultScope());
-                    m_searchTab.enableExpiredResourcesSearch(controller.getDialogMode() == I_CmsGalleryProviderConstants.GalleryMode.ade);
+                        m_controller.getDefaultScope(),
+                        m_controller.getShowExpiredDefault());
+                    m_searchTab.enableExpiredResourcesSearch(true);
                     m_searchTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_searchTab, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
                     break;
@@ -336,6 +330,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         }
         m_tabbedPanel.addBeforeSelectionHandler(this);
         m_tabbedPanel.addSelectionHandler(this);
+        truncateTabs();
     }
 
     /**
@@ -516,6 +511,16 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
+     * Returns true if the formats from this dialog object should be prioritized by the format handler.<p>
+     * 
+     * @return the value of the 'override formats' flag 
+     */
+    public boolean isOverrideFormats() {
+
+        return m_overrideFormats;
+    }
+
+    /**
      * Returns the use formats flag.<p>
      *
      * @return the use formats flag
@@ -542,31 +547,27 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
-     * 
-     * @see com.google.gwt.event.logical.shared.ResizeHandler#onResize(com.google.gwt.event.logical.shared.ResizeEvent)
-     */
-    public void onResize(ResizeEvent event) {
-
-        // TODO: implement
-        // int newHeight = event.getHeight();
-        // int newWidth = event.getWidth();
-
-    }
-
-    /**
      * @see com.google.gwt.event.logical.shared.SelectionHandler#onSelection(com.google.gwt.event.logical.shared.SelectionEvent)
      */
     public void onSelection(SelectionEvent<Integer> event) {
 
         int selectedIndex = m_tabbedPanel.getSelectedIndex();
 
-        A_CmsTab tabWidget = m_tabbedPanel.getWidget(selectedIndex);
+        final A_CmsTab tabWidget = m_tabbedPanel.getWidget(selectedIndex);
         if ((tabWidget instanceof CmsResultsTab) && m_isInitialSearch) {
             // no search here
             m_isInitialSearch = false;
         } else {
             tabWidget.onSelection();
         }
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                updateSizeForTab(tabWidget);
+            }
+        });
+
     }
 
     /**
@@ -603,11 +604,13 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
      */
     public void setDialogSize(int width, int height) {
 
-        if (height > DIALOG_HEIGHT) {
-            m_parentPanel.setHeight(Integer.toString(height - 2));
-            m_parentPanel.setWidth(Integer.toString(width - 2));
-            ResizeEvent.fire(this, width, height);
+        if (height > 50) {
+            m_height = height;
+            m_parentPanel.setHeight(m_height + "px");
         }
+        m_width = width;
+        m_parentPanel.setWidth(m_width + "px");
+        truncateTabs();
     }
 
     /**
@@ -641,6 +644,33 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
+     * Sets the 'override formats' flag, which tells the format handler to prioritize the formats from the gallery dialog object.<p>
+     * 
+     * @param overrideFormats the new value for the 'override formats' flag 
+     */
+    public void setOverrideFormats(boolean overrideFormats) {
+
+        m_overrideFormats = overrideFormats;
+    }
+
+    /**
+     * Sets the preview visibility.<p>
+     * 
+     * @param visible the preview visibility
+     */
+    public void setPreviewVisible(boolean visible) {
+
+        m_previewVisible = visible;
+        if (m_previewVisible) {
+            useMaxDimensions();
+            m_parentPanel.removeStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
+        } else {
+            m_parentPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
+            updateSizes();
+        }
+    }
+
+    /**
      * Sets the use formats flag.<p>
      *
      * @param useFormats the use formats flag to set
@@ -661,13 +691,52 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsKey, int clientWidth) {
+
+        m_width = clientWidth;
+        m_parentPanel.setWidth(m_width + "px");
+        truncateTabs();
+    }
+
+    /**
+     * Updates the dialog size according to the requirements of the selected tab.<p>
+     * 
+     * @param tab the selected tab
+     */
+    public void updateSizeForTab(A_CmsTab tab) {
+
+        if (tab == m_resultsTab) {
+            m_resultsTab.updateListSize();
+        }
+        if (!m_previewVisible) {
+            int height = tab.getRequiredHeight() + 42;
+            int availableHeight = CmsToolbarPopup.getAvailableHeight();
+            setDialogSize(m_width, height < availableHeight ? height : availableHeight);
+            tab.onResize();
+        }
+    }
+
+    /**
      * Updates variable ui-element dimensions, execute after dialog has been attached and it's content is displayed.<p>
      */
     public void updateSizes() {
 
-        if (m_resultsTab != null) {
-            m_resultsTab.updateListSize();
+        int tabIndex = m_tabbedPanel.getSelectedIndex();
+        if (tabIndex >= 0) {
+            updateSizeForTab(m_tabbedPanel.getWidget(tabIndex));
         }
+    }
+
+    /**
+     * Sets the dialog to use the maximum available space.<p>
+     */
+    public void useMaxDimensions() {
+
+        int availableHeight = CmsToolbarPopup.getAvailableHeight();
+        int availableWidth = CmsToolbarPopup.getAvailableWidth();
+        setDialogSize(availableWidth, availableHeight);
     }
 
     /**
@@ -677,7 +746,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
 
         I_CmsNotificationWidget oldWidget = CmsNotification.get().getWidget();
         if (oldWidget == null) {
-            CmsDialogNotificationWidget newWidget = new CmsDialogNotificationWidget();
+            CmsNotificationWidget newWidget = new CmsNotificationWidget();
             CmsNotification.get().setWidget(newWidget);
             RootPanel.get().add(newWidget);
         }
@@ -746,5 +815,18 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, ResizeHan
         I_CmsLayoutBundle.INSTANCE.croppingDialogCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.imageEditorFormCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.imageAdvancedFormCss().ensureInjected();
+    }
+
+    /**
+     * Truncates the gallery tabs to the available width.<p>
+     */
+    private void truncateTabs() {
+
+        for (int i = 0; i < m_tabbedPanel.getTabCount(); i++) {
+            if (m_tabbedPanel.getWidget(i) instanceof I_CmsTruncable) {
+                I_CmsTruncable tab = (I_CmsTruncable)m_tabbedPanel.getWidget(i);
+                tab.truncate(TM_GALLERY_DIALOG, m_width - 50);
+            }
+        }
     }
 }

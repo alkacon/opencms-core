@@ -56,11 +56,11 @@ public class CmsClientVariant {
     /** 
      * Creates a new instance.<p>
      * 
-     * @param name
-     * @param message
-     * @param width
-     * @param height
-     * @param parameters
+     * @param name the internal name of the client variant
+     * @param message the nice name of the variant
+     * @param width the screen width
+     * @param height the screen height
+     * @param parameters parameters for the variant
      */
     public CmsClientVariant(
         String name,

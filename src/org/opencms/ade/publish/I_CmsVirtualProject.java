@@ -28,6 +28,7 @@
 package org.opencms.ade.publish;
 
 import org.opencms.ade.publish.shared.CmsProjectBean;
+import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
@@ -61,6 +62,16 @@ public interface I_CmsVirtualProject {
      * @return the project id 
      */
     CmsUUID getProjectId();
+
+    /**
+     * Returns an object that can be queried for 'related' resources specific to this virtual project.<p>
+     * 
+     * @param cmsObject the current CMS context 
+     * @param options the publish options 
+     * 
+     * @return the related resource provider 
+     */
+    I_CmsPublishRelatedResourceProvider getRelatedResourceProvider(CmsObject cmsObject, CmsPublishOptions options);
 
     /**
      * Gets the resources of the virtual project.<p>

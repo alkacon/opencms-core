@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui.contextmenu;
 
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.util.CmsUUID;
 
 import java.util.Map;
@@ -54,6 +55,13 @@ public interface I_CmsContextMenuHandler {
      * @return the available context menu commands as a map by class name
      */
     Map<String, I_CmsContextMenuCommand> getContextMenuCommands();
+
+    /**
+     * Returns the editor handler.<p>
+     * 
+     * @return the editor handler
+     */
+    I_CmsContentEditorHandler getEditorHandler();
 
     /**
      * Leaves the current page calling the target URI.<p>

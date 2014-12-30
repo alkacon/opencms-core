@@ -88,6 +88,7 @@ public class CmsListDefaultAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.list.CmsListDirectAction#resolveButtonStyle()
      */
+    @Override
     protected CmsHtmlIconButtonStyleEnum resolveButtonStyle() {
 
         if (getColumnForLink() == null) {
@@ -99,12 +100,14 @@ public class CmsListDefaultAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.list.CmsListDirectAction#resolveName(java.util.Locale)
      */
+    @Override
     protected String resolveName(Locale locale) {
 
         if (getColumnForLink() == null) {
             return super.resolveName(locale);
         }
-        Object content = (getItem().get(getColumnForLink()) != null) ? getItem().get(getColumnForLink())
+        Object content = (getItem().get(getColumnForLink()) != null)
+        ? getItem().get(getColumnForLink())
         : getName().key(locale);
         if (getColumnFormatter() != null) {
             return getColumnFormatter().format(content, locale);

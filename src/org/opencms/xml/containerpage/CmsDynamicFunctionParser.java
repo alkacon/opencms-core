@@ -61,9 +61,6 @@ public class CmsDynamicFunctionParser {
     /** The node name for the formatter settings. */
     public static final String N_CONTAINER_SETTINGS = "ContainerSettings";
 
-    /** The resource type for dynamic functions. */
-    public static final String TYPE_FUNCTION = "function";
-
     /**
      * Parses a dynamic function bean given a resource.<p>
      * 

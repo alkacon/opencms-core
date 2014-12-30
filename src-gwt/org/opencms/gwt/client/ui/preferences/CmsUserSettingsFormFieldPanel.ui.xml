@@ -1,0 +1,93 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:cmsi="urn:import:org.opencms.gwt.client.ui.input">
+	<ui:with type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle"
+		field="inputRes" />
+		
+		
+	<ui:style
+		type="org.opencms.gwt.client.ui.preferences.CmsUserSettingsFormFieldPanel.ExternalStyle">
+		
+		
+		
+		.scrollable {
+			/*width: 550px;*/
+		}
+		
+		.scrollContainer {
+			padding-right: 10px;
+			padding-left: 7px;
+			padding-top: 7px;
+		}
+		
+		.accountInfo {
+			margin-left: 10px;
+			
+		}
+		
+		.accountInfo table {
+			border-spacing: 5px;
+		}
+		
+		.titleColumn {
+			
+		}
+		
+		.border {
+			border: 1px solid #aaaaaa;
+			padding: 2px;
+			border-radius: 4px;
+		}
+		
+		.passwordButton {
+			margin-left: 13px;
+			margin-top: 20px;
+			margin-bottom: 7px; 
+		}
+		
+		.tab {
+			background-color: red;
+		}
+		</ui:style>
+
+
+	<g:FlowPanel>
+		<cms:CmsScrollPanel ui:field="m_basicTab"
+			addStyleNames="{style.tab}">
+			<g:FlowPanel
+				addStyleNames="{style.border} {inputRes.inputCss.formGradientBackground}">
+
+
+				<g:FlowPanel addStyleNames="{style.scrollContainer}">
+					<g:FlowPanel ui:field="m_basicSettingsPanel" />
+				</g:FlowPanel>
+
+			</g:FlowPanel>
+		</cms:CmsScrollPanel>
+
+
+		<cms:CmsScrollPanel ui:field="m_extendedTab"
+			addStyleNames="{style.tab}">
+			<g:FlowPanel
+				addStyleNames="{style.border}  {inputRes.inputCss.formGradientBackground}">
+
+				<g:FlowPanel addStyleNames="{style.scrollContainer}">
+					<g:FlowPanel ui:field="m_extendedSettingsPanel" />
+				</g:FlowPanel>
+
+			</g:FlowPanel>
+		</cms:CmsScrollPanel>
+
+		<cms:CmsScrollPanel ui:field="m_accountInfoTab"
+			addStyleNames="{style.tab}">
+			<g:FlowPanel
+				addStyleNames="{style.border} {inputRes.inputCss.formGradientBackground}">
+				<g:FlowPanel ui:field="m_accountInfoPanel"
+					addStyleNames="{style.accountInfo}"></g:FlowPanel>
+				<cms:CmsPushButton addStyleNames="{style.passwordButton}"
+					ui:field="m_passwordButton" />
+			</g:FlowPanel>
+		</cms:CmsScrollPanel>
+	</g:FlowPanel>
+</ui:UiBinder> 

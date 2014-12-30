@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Articles1 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="opencms://system/schemas/article1.xsd">
+  
+	<Article1 language="en">
+		<Name>NameFoo</Name>
+		<Text>TextFoo</Text>
+	</Article1>
+</Articles1>

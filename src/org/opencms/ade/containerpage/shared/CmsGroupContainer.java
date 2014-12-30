@@ -43,9 +43,6 @@ public class CmsGroupContainer extends CmsContainerElement {
     /** List of the contained elements id's. */
     private List<CmsContainerElement> m_elements;
 
-    /** The group-container title. */
-    private String m_title;
-
     /** The container types supported by this group container. */
     private Set<String> m_types;
 
@@ -67,16 +64,6 @@ public class CmsGroupContainer extends CmsContainerElement {
     public List<CmsContainerElement> getElements() {
 
         return m_elements;
-    }
-
-    /**
-     * Returns the group-container title.<p>
-     *
-     * @return the group-container title
-     */
-    public String getTitle() {
-
-        return m_title;
     }
 
     /**
@@ -108,16 +95,6 @@ public class CmsGroupContainer extends CmsContainerElement {
 
         m_elements = elements;
 
-    }
-
-    /**
-     * Sets the group-container title.<p>
-     *
-     * @param title the group-container title to set
-     */
-    public void setTitle(String title) {
-
-        m_title = title;
     }
 
     /**

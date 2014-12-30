@@ -705,6 +705,26 @@ public final class CmsFileUtil {
         return bytes;
     }
 
+    /**
+     * Removes a leading separator from a path if required.<p>
+     * 
+     * @param path the path to remove the leading separator from
+     * @return the path without a trailing separator
+     */
+    public static String removeLeadingSeparator(String path) {
+
+        int l = path.length();
+        if (l == 0) {
+            return "";
+        } else if (path.charAt(0) != '/') {
+            return path;
+        } else if (l == 1) {
+            return "";
+        } else {
+            return path.substring(1, l);
+        }
+    }
+
     /** 
      * Removes all resource names in the given List that are "redundant" because the parent folder name 
      * is also contained in the List.<p> 

@@ -28,6 +28,7 @@
 package org.opencms.xml.content;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -39,13 +40,11 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Locale;
 
-import junit.framework.TestCase;
-
 /**
  * Tests for generating an XML content.<p>
  * 
  */
-public class TestCmsXmlContent extends TestCase {
+public class TestCmsXmlContent extends OpenCmsTestCase {
 
     /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/test1.xsd";
@@ -58,45 +57,6 @@ public class TestCmsXmlContent extends TestCase {
     public TestCmsXmlContent(String arg0) {
 
         super(arg0);
-    }
-
-    /**
-     * Test unmarshalling an XML content from a String.<p>
-     * 
-     * @throws Exception in case something goes wrong
-     */
-    public void testUnmarshalFromString() throws Exception {
-
-        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
-
-        String content;
-        // unmarshal content definition
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
-        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
-        // store content definition in entitiy resolver
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-1.xml", CmsEncoder.ENCODING_UTF_8);
-        CmsXmlEntityResolver.cacheSystemId(
-            SCHEMA_SYSTEM_ID_1,
-            definition.getSchema().asXML().getBytes(CmsEncoder.ENCODING_UTF_8));
-        // now create the XML content
-        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
-
-        assertTrue(xmlcontent.hasValue("String", Locale.ENGLISH));
-        assertTrue(xmlcontent.hasValue("DateTime", Locale.ENGLISH));
-        assertTrue(xmlcontent.hasValue("Html", Locale.ENGLISH));
-        assertTrue(xmlcontent.hasValue("Locale", Locale.ENGLISH));
-
-        assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
-
-        CmsXmlStringValue stringValue = (CmsXmlStringValue)xmlcontent.getValue("String", Locale.ENGLISH);
-        CmsXmlDateTimeValue dateTimeValue = (CmsXmlDateTimeValue)xmlcontent.getValue("DateTime", Locale.ENGLISH);
-        CmsXmlHtmlValue htmlValue = (CmsXmlHtmlValue)xmlcontent.getValue("Html", Locale.ENGLISH);
-        CmsXmlLocaleValue localeValue = (CmsXmlLocaleValue)xmlcontent.getValue("Locale", Locale.ENGLISH);
-
-        assertEquals("Multitest 1", stringValue.getStringValue(null));
-        assertEquals("-58254180000", dateTimeValue.getStringValue(null));
-        assertEquals("<p>This is some Html</p>", htmlValue.getStringValue(null));
-        assertEquals("en_EN", localeValue.getStringValue(null));
     }
 
     /**
@@ -167,5 +127,44 @@ public class TestCmsXmlContent extends TestCase {
         value.moveUp();
         checkValue = xmlcontent.getValue(nn, Locale.ENGLISH, maxIndex - 1);
         assertEquals(node4, checkValue.getStringValue(null));
+    }
+
+    /**
+     * Test unmarshalling an XML content from a String.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testUnmarshalFromString() throws Exception {
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+
+        String content;
+        // unmarshal content definition
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
+        // store content definition in entitiy resolver
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-1.xml", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlEntityResolver.cacheSystemId(
+            SCHEMA_SYSTEM_ID_1,
+            definition.getSchema().asXML().getBytes(CmsEncoder.ENCODING_UTF_8));
+        // now create the XML content
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+
+        assertTrue(xmlcontent.hasValue("String", Locale.ENGLISH));
+        assertTrue(xmlcontent.hasValue("DateTime", Locale.ENGLISH));
+        assertTrue(xmlcontent.hasValue("Html", Locale.ENGLISH));
+        assertTrue(xmlcontent.hasValue("Locale", Locale.ENGLISH));
+
+        assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
+
+        CmsXmlStringValue stringValue = (CmsXmlStringValue)xmlcontent.getValue("String", Locale.ENGLISH);
+        CmsXmlDateTimeValue dateTimeValue = (CmsXmlDateTimeValue)xmlcontent.getValue("DateTime", Locale.ENGLISH);
+        CmsXmlHtmlValue htmlValue = (CmsXmlHtmlValue)xmlcontent.getValue("Html", Locale.ENGLISH);
+        CmsXmlLocaleValue localeValue = (CmsXmlLocaleValue)xmlcontent.getValue("Locale", Locale.ENGLISH);
+
+        assertEquals("Multitest 1", stringValue.getStringValue(null));
+        assertEquals("-58254180000", dateTimeValue.getStringValue(null));
+        assertEquals("<p>This is some Html</p>", htmlValue.getStringValue(null));
+        assertEquals("en_EN", localeValue.getStringValue(null));
     }
 }

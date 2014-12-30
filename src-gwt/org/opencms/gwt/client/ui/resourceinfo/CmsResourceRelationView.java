@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,6 +39,8 @@ import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
+import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog.DialogOptions;
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
@@ -46,6 +48,8 @@ import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoView.ContextMenuHan
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -53,7 +57,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -63,11 +66,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-/** 
- * Widget which shows which contents refer to a resource.<p> 
+/**
+ * Widget which shows which contents refer to a resource. <p>
  */
 public class CmsResourceRelationView extends Composite {
 
@@ -106,25 +108,24 @@ public class CmsResourceRelationView extends Composite {
     /** The resource status from which we get the related resources to display. */
     private CmsResourceStatusBean m_statusBean;
 
-    /** 
+    /**
      * Creates a new widget instance.<p>
-     * 
+     *
      * @param status the resource status from which we get the related resources to display.
-     * @param mode the display mode (display relation sources or targets)  
+     * @param mode the display mode (display relation sources or targets)
      */
     public CmsResourceRelationView(CmsResourceStatusBean status, Mode mode) {
 
         initWidget(m_panel);
         m_statusBean = status;
         m_mode = mode;
-        // wrap list info item in another panel to achieve layout uniformity with other similar widgets 
+        // wrap list info item in another panel to achieve layout uniformity with other similar widgets
         SimplePanel infoBoxPanel = new SimplePanel();
         infoBoxPanel.getElement().getStyle().setMarginTop(2, Style.Unit.PX);
         CmsListItemWidget infoWidget = new CmsListItemWidget(status.getListInfo());
         infoWidget.addButton(new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler()));
-        CmsListItem infoItem = new CmsListItem(infoWidget);
         m_panel.add(infoBoxPanel);
-        infoBoxPanel.add(infoItem);
+        infoBoxPanel.add(infoWidget);
         CmsFieldSet fieldset = new CmsFieldSet();
         CmsScrollPanel scrollPanel = GWT.create(CmsScrollPanel.class);
         m_scrollPanel = scrollPanel;
@@ -140,6 +141,7 @@ public class CmsResourceRelationView extends Composite {
     static {
         m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
         m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
+        m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
         m_filteredActions.add(CmsLogout.class.getName());
     }
 
@@ -163,8 +165,8 @@ public class CmsResourceRelationView extends Composite {
 
     /**
      * Sets the popup which contains this widget.<p>
-     * 
-     * @param popup the popup 
+     *
+     * @param popup the popup
      */
     public void setPopup(CmsPopup popup) {
 
@@ -191,18 +193,23 @@ public class CmsResourceRelationView extends Composite {
                     relationBean.getStructureId(),
                     new CmsResourceInfoView.ContextMenuHandler());
                 item.getListItemWidget().addButton(button);
+                final CmsResourceStatusRelationBean currentRelationBean = relationBean;
                 final boolean isContainerpage = CmsGwtConstants.TYPE_CONTAINERPAGE.equals(relationBean.getInfoBean().getResourceType());
                 final boolean isXmlContent = relationBean.isXmlContent();
-                final boolean isEditable = isXmlContent || isContainerpage;
+                final boolean isEditable = (isXmlContent || isContainerpage)
+                    && relationBean.getPermissionInfo().hasWritePermission();
                 if (isEditable) {
-                    final CmsResourceStatusRelationBean currentRelationBean = relationBean;
 
                     m_editButton = new CmsPushButton();
                     m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
                     m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
                     m_editButton.setTitle(org.opencms.gwt.client.Messages.get().key(
                         org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
-                    m_editButton.setEnabled(true);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(relationBean.getPermissionInfo().getNoEditReason())) {
+                        m_editButton.disable(relationBean.getPermissionInfo().getNoEditReason());
+                    } else {
+                        m_editButton.setEnabled(true);
+                    }
                     item.getListItemWidget().addButton(m_editButton);
                     m_editButton.addClickHandler(new ClickHandler() {
 
@@ -215,12 +222,20 @@ public class CmsResourceRelationView extends Composite {
                                 editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
                                 editableData.setStructureId(currentRelationBean.getStructureId());
                                 editableData.setSitePath(currentRelationBean.getSitePath());
-                                FormElement form = CmsContentEditorDialog.generateForm(editableData, false, "_blank");
-                                RootPanel.get().getElement().appendChild(form);
-                                form.submit();
-                                if (m_popup != null) {
-                                    m_popup.hide();
-                                }
+                                CmsContentEditorDialog.get().openEditDialog(
+                                    editableData,
+                                    false,
+                                    null,
+                                    new DialogOptions(),
+                                    new I_CmsContentEditorHandler() {
+
+                                        public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
+
+                                            if (m_popup != null) {
+                                                m_popup.hide();
+                                            }
+                                        }
+                                    });
                                 ((CmsPushButton)event.getSource()).clearHoverState();
                             }
                         }
@@ -247,8 +262,8 @@ public class CmsResourceRelationView extends Composite {
 
     /**
      * Gets the message to use for an empty relation list.<p>
-     * 
-     * @return the message to display for an empty relation list 
+     *
+     * @return the message to display for an empty relation list
      */
     private String getEmptyMessage() {
 
@@ -264,8 +279,8 @@ public class CmsResourceRelationView extends Composite {
 
     /**
      * Gets the label to use for the fieldset.<p>
-     * 
-     * @return the label for the fieldset 
+     *
+     * @return the label for the fieldset
      */
     private String getLegend() {
 
@@ -281,10 +296,10 @@ public class CmsResourceRelationView extends Composite {
 
     }
 
-    /** 
+    /**
      * Gets the relation beans to display.<p>
-     * 
-     * @return the list of relation beans to display 
+     *
+     * @return the list of relation beans to display
      */
     private ArrayList<CmsResourceStatusRelationBean> getRelationBeans() {
 

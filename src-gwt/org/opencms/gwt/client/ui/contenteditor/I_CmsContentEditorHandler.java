@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.client.ui.contenteditor;
 
+import org.opencms.util.CmsUUID;
+
 /**
  * Handler for the XML content editor.<p>
  * 
@@ -38,7 +40,8 @@ public interface I_CmsContentEditorHandler {
      * Executed by the XML content editor dialog on close.<p>
      * 
      * @param sitePath the sitepath of the edited resource
+     * @param structureId the structure id of the edited resource
      * @param isNew <code>true</code> if the resource was newly created
      */
-    void onClose(String sitePath, boolean isNew);
+    void onClose(String sitePath, CmsUUID structureId, boolean isNew);
 }

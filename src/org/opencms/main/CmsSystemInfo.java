@@ -34,22 +34,86 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
 /**
- * Provides access to system wide "read only" information.<p>
+ * Provides access to system wide "read only" information about the running OpenCms instance.<p>
  * 
- * Regarding the naming conventions used, this comes straight from the Servlet Spec v2.4:<p>
- *   
- * <i>SRV.3.1 Introduction to the ServletContext Interface<br>
- * [...] A ServletContext is rooted at a known path within a web server. For example
- * a servlet context could be located at http://www.mycorp.com/catalog. All
- * requests that begin with the /catalog request path, known as the <b>context path</b>, are
- * routed to the <b>web application</b> associated with the ServletContext.</i><p>   
- * 
+ * Contains information about:
+ * <ul>
+ * <li>version and build number</li>
+ * <li>server name</li>
+ * <li>mail settings</li>
+ * <li>configuration paths</li>
+ * <li>default character encoding</li>
+ * <li>...and more.</li>
+ * </ul>
+ *  
  * @since 6.0.0 
  */
 public class CmsSystemInfo {
+
+    /**
+     * Wrapper class used to access build information.<p>
+     */
+    public class BuildInfoItem {
+
+        /** The build information value. */
+        private String m_value;
+
+        /** The nice name for display. */
+        private String m_niceName;
+
+        /** The key name. */
+        private String m_keyName;
+
+        /**
+         * Creates a new instance wrapping a build info string array.<p>
+         * 
+         * @param value the value
+         * @param niceName the nice name 
+         * @param keyName the key name
+         */
+        public BuildInfoItem(String value, String niceName, String keyName) {
+
+            m_value = value;
+            m_niceName = niceName;
+            m_keyName = keyName;
+        }
+
+        /**
+         * Gets the key name for this build info item.<p>
+         * 
+         * @return the value 
+         */
+        public String getKeyName() {
+
+            return m_keyName;
+        }
+
+        /**
+         * Gets the nice name for this build info item.<p>
+         * 
+         * @return the nice name 
+         */
+        public String getNiceName() {
+
+            return m_niceName;
+        }
+
+        /**
+         * Gets the value for this build info item.<p>
+         * 
+         * @return the value 
+         */
+        public String getValue() {
+
+            return m_value;
+        }
+    }
 
     /** Name of the config folder property provides as Java VM parameter -Dopencms.config=.*/
     public static final String CONFIG_FOLDER_PROPERTY = "opencms.config";
@@ -82,8 +146,14 @@ public class CmsSystemInfo {
     /** Default encoding. */
     private static final String DEFAULT_ENCODING = CmsEncoder.ENCODING_UTF_8;
 
+    /** Static version id to use if version.properties can not be read. */
+    private static final String DEFAULT_VERSION_ID = "Static";
+
     /** Static version number to use if version.properties can not be read. */
-    private static final String DEFAULT_VERSION_NUMBER = "8.0.x";
+    private static final String DEFAULT_VERSION_NUMBER = "9.x.y";
+
+    /** The list of additional version information that was contained in the version.properties file. */
+    private Map<String, BuildInfoItem> m_buildInfo;
 
     /** The absolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
@@ -121,6 +191,9 @@ public class CmsSystemInfo {
     /** The absolute path to the persistence.xml file (in the "real" file system). */
     private String m_persistenceFileRfsPath;
 
+    /** True if detail contents are restricted to detail pages from the same site. */
+    private boolean m_restrictDetailContents;
+
     /** The name of the OpenCms server. */
     private String m_serverName;
 
@@ -132,6 +205,9 @@ public class CmsSystemInfo {
 
     /** The version identifier of this OpenCms installation, contains "OpenCms/" and the version number. */
     private String m_version;
+
+    /** The version ID of this OpenCms installation, usually set by the build system. */
+    private String m_versionId;
 
     /** The version number of this OpenCms installation. */
     private String m_versionNumber;
@@ -201,6 +277,22 @@ public class CmsSystemInfo {
             return f.getAbsolutePath();
         }
         return CmsFileUtil.normalizePath(getWebInfRfsPath() + path);
+    }
+
+    /**
+     * Returns the map of additional build information that was contained in the version.properties file.<p>
+     * 
+     * The values are String arrays of length 2. First in this array is the actual value,
+     * and second the "nice name" for the value that can be used to display the value somewhere.
+     * In case no nice name was provided, the second value will repeat the key name.<p>
+     * 
+     * @return the map of additional build information that was contained in the version.properties file
+     * 
+     * @since 9.5.0
+     */
+    public Map<String, BuildInfoItem> getBuildInfo() {
+
+        return m_buildInfo;
     }
 
     /**
@@ -484,7 +576,23 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the version number of this OpenCms system, for example <code>8.0.0</code>.<p>
+     * Returns the version ID of this OpenCms system.<p>
+     *
+     * The version ID is usually set dynamically by the build system.
+     * It can be used to identify intermediate builds when the main 
+     * version number has not changed.<p>
+     *
+     * @return the version ID of this OpenCms system
+     * 
+     * @since 9.5.0
+     */
+    public String getVersionId() {
+
+        return m_versionId;
+    }
+
+    /**
+     * Returns the version number of this OpenCms system, for example <code>9.5.0</code>.<p>
      *
      * @return the version number of this OpenCms system
      * 
@@ -540,6 +648,16 @@ public class CmsSystemInfo {
     public boolean isHistoryEnabled() {
 
         return m_historyEnabled;
+    }
+
+    /**
+     * Return true if detail contents are restricted to detail pages from the same site.<p>
+     * 
+     * @return true if detail contents are restricted to detail pages from the same site 
+     */
+    public boolean isRestrictDetailContents() {
+
+        return m_restrictDetailContents;
     }
 
     /**
@@ -634,6 +752,16 @@ public class CmsSystemInfo {
     }
 
     /**
+     * Sets the value of the 'restrict detail contents' option.<p>
+     * 
+     * @param restrictDetailContents the new value for the option 
+     */
+    protected void setRestrictDetailContents(boolean restrictDetailContents) {
+
+        m_restrictDetailContents = restrictDetailContents;
+    }
+
+    /**
      * Sets the server name.<p>
      * 
      * The server name is set in <code>opencms.properties</code>.
@@ -659,18 +787,32 @@ public class CmsSystemInfo {
 
         // initialize version information with static defaults
         m_versionNumber = DEFAULT_VERSION_NUMBER;
-        // set OpenCms version identifier with default values
+        m_versionId = DEFAULT_VERSION_ID;
         m_version = "OpenCms/" + m_versionNumber;
+        m_buildInfo = Collections.emptyMap();
         // read the version-informations from properties
         Properties props = new Properties();
         try {
             props.load(this.getClass().getClassLoader().getResourceAsStream("org/opencms/main/version.properties"));
         } catch (Throwable t) {
-            // ignore this exception - no properties found
+            // no properties found - we just use the defaults
             return;
         }
+        // initialize OpenCms version information from the property values
         m_versionNumber = props.getProperty("version.number", DEFAULT_VERSION_NUMBER);
-        // set OpenCms version identifier with property values
+        m_versionId = props.getProperty("version.id", DEFAULT_VERSION_ID);
         m_version = "OpenCms/" + m_versionNumber;
+        m_buildInfo = new TreeMap<String, BuildInfoItem>();
+
+        // iterate the properties and generate the build information from the entries
+        for (String key : props.stringPropertyNames()) {
+            if (!"version.number".equals(key) && !"version.id".equals(key) && !key.startsWith("nicename")) {
+                String value = props.getProperty(key);
+                String nicename = props.getProperty("nicename." + key, key);
+                m_buildInfo.put(key, new BuildInfoItem(value, nicename, key));
+            }
+        }
+        // make the map unmodifiable
+        m_buildInfo = Collections.unmodifiableMap(m_buildInfo);
     }
 }

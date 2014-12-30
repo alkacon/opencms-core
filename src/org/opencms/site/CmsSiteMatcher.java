@@ -36,6 +36,12 @@ import org.opencms.util.CmsStringUtil;
  */
 public final class CmsSiteMatcher implements Cloneable {
 
+    /** Wildcard for string matching. */
+    private static final String WILDCARD = "*";
+
+    /** Default matcher that always matches all other Site matchers. */
+    public static final CmsSiteMatcher DEFAULT_MATCHER = new CmsSiteMatcher(WILDCARD, WILDCARD, 0);
+
     /** Constant for the "http" port. */
     private static final int PORT_HTTP = 80;
 
@@ -47,12 +53,6 @@ public final class CmsSiteMatcher implements Cloneable {
 
     /** Constant for the "https" scheme. */
     private static final String SCHEME_HTTPS = "https";
-
-    /** Wildcard for string matching. */
-    private static final String WILDCARD = "*";
-
-    /** Default matcher that always matches all other Site matchers. */
-    public static final CmsSiteMatcher DEFAULT_MATCHER = new CmsSiteMatcher(WILDCARD, WILDCARD, 0);
 
     /** Hashcode buffer to save multiple calculations. */
     private Integer m_hashCode;
@@ -214,7 +214,7 @@ public final class CmsSiteMatcher implements Cloneable {
         }
         CmsSiteMatcher other = (CmsSiteMatcher)obj;
         return (m_serverPort == other.m_serverPort)
-            && m_serverName.equals(other.m_serverName)
+            && m_serverName.equalsIgnoreCase(other.m_serverName)
             && m_serverProtocol.equals(other.m_serverProtocol);
     }
 

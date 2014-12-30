@@ -35,8 +35,6 @@ import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 
-import java.util.Iterator;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -109,29 +107,6 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
             role = role.getParentRole();
             if (role.getParentRole() != null) {
                 dependency = dependency + ", ";
-            }
-        }
-        if (m_role.forOrgUnit(null).equals(CmsRole.WORKPLACE_USER)) {
-            // add all roles as parent of the workplace user role
-            dependency = "";
-            Iterator<CmsRole> itWuParents;
-            try {
-                itWuParents = OpenCms.getRoleManager().getRoles(getCms(), getParamOufqn(), false).iterator();
-            } catch (CmsException e) {
-                // should never happen
-                return dependency;
-            }
-            while (itWuParents.hasNext()) {
-                CmsRole wuParent = itWuParents.next();
-                if (wuParent.forOrgUnit(null).equals(CmsRole.WORKPLACE_USER)) {
-                    // skip the wu role itself
-                    continue;
-                }
-                String roleName = wuParent.getName(getCms().getRequestContext().getLocale());
-                if (dependency.length() > 0) {
-                    roleName += ", ";
-                }
-                dependency = roleName + dependency;
             }
         }
         return dependency;

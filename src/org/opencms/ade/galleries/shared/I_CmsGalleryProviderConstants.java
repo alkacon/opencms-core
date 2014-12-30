@@ -180,16 +180,16 @@ public interface I_CmsGalleryProviderConstants {
     String CONFIG_GALLERY_MODE = "gallerymode";
 
     /** Configuration key. */
-    String CONFIG_GALLERY_PATH = "gallerypath";
-
-    /** Configuration key. */
     String CONFIG_GALLERY_NAME = "galleryname";
 
     /** Configuration key. */
-    String CONFIG_GALLERY_TYPES = "gallerytypes";
+    String CONFIG_GALLERY_PATH = "gallerypath";
 
     /** Configuration key. */
-    String CONFIG_UPLOAD_FOLDER = "uploadfolder";
+    String CONFIG_GALLERY_STORAGE_PREFIX = "galleryprefix";
+
+    /** Configuration key. */
+    String CONFIG_GALLERY_TYPES = "gallerytypes";
 
     /** Configuration key. */
     String CONFIG_IMAGE_FORMAT_NAMES = "imageformatnames";
@@ -225,6 +225,9 @@ public interface I_CmsGalleryProviderConstants {
     String CONFIG_TREE_TOKEN = "treeToken";
 
     /** Configuration key. */
+    String CONFIG_UPLOAD_FOLDER = "uploadfolder";
+
+    /** Configuration key. */
     String CONFIG_USE_FORMATS = "useformats";
 
     /** The id for the HTML div containing the gallery dialog. */
@@ -239,6 +242,9 @@ public interface I_CmsGalleryProviderConstants {
     /** The key for the flag which controls whether the select button should be shown. */
     String KEY_SHOW_SELECT = "showSelect";
 
+    /** The parameter used to tell the gallery dialog to use the standard set of resource types from the VfsFileWidget. */
+    String PARAM_USE_LINK_DEFAULT_TYPES = "useLinkDefaultTypes";
+
     /** The folder resource type name. */
     String RESOURCE_TYPE_FOLDER = "folder";
 
@@ -250,4 +256,5 @@ public interface I_CmsGalleryProviderConstants {
 
     /** Path to the host page. */
     String VFS_OPEN_GALLERY_PATH = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
+
 }

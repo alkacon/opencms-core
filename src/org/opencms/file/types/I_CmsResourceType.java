@@ -43,10 +43,10 @@ import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import java.util.List;
 
 /**
- * Defines resource type descriptors for all resources in the VFS.<p>
+ * Resource type descriptors for all resources in the VFS.<p>
  * 
  * Each file in the VFS must belong to an initialized resource type.
- * The available resource type are read during system startup ftom the configuration 
+ * The available resource type are read during system startup from the configuration 
  * file <code>opencms-vfs.xml</code>.<p>
  * 
  * Certain resource types may require special handling for certain operations.
@@ -210,6 +210,34 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @see CmsObject#chtype(String, int)
      * @see CmsSecurityManager#chtype(org.opencms.file.CmsRequestContext, CmsResource, int)
      */
+    void chtype(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, I_CmsResourceType type)
+    throws CmsException;
+
+    /**
+     * Changes the resource type of a resource.<p>
+     * 
+     * OpenCms handles resources according to the resource type,
+     * not the file suffix. This is e.g. why a JSP in OpenCms can have the 
+     * suffix ".html" instead of ".jsp" only. Changing the resource type
+     * makes sense e.g. if you want to make a plain text file a JSP resource,
+     * or a binary file an image, etc.<p> 
+     *
+     * @param cms the initialized CmsObject
+     * @param securityManager the initialized OpenCms security manager
+     * @param resource the resource to change the type for
+     * @param type the new resource type for this resource
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#chtype(String, int)
+     * @see CmsSecurityManager#chtype(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * 
+     * @deprecated 
+     * Use {@link #chtype(CmsObject, CmsSecurityManager, CmsResource, I_CmsResourceType)} instead.
+     * Resource types should always be referenced either by this type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
     void chtype(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int type) throws CmsException;
 
     /**
@@ -447,7 +475,13 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * Returns the type id of this resource type.<p>
      *
      * @return the type id of this resource type
+     * 
+     * @deprecated 
+     * Use this class or {@link #getTypeName()} instead.
+     * Resource types should always be referenced either by this type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
      */
+    @Deprecated
     int getTypeId();
 
     /**
@@ -645,6 +679,35 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @see CmsObject#replaceResource(String, int, byte[], List)
      * @see CmsSecurityManager#replaceResource(org.opencms.file.CmsRequestContext, CmsResource, int, byte[], List)
      */
+    void replaceResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        I_CmsResourceType type,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException;
+
+    /**
+     * Replaces the content, type and properties of a resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param securityManager the initialized OpenCms security manager
+     * @param resource the name of the resource to replace
+     * @param type the new type of the resource
+     * @param content the new content of the resource
+     * @param properties the new properties of the resource
+     *  
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#replaceResource(String, int, byte[], List)
+     * @see CmsSecurityManager#replaceResource(org.opencms.file.CmsRequestContext, CmsResource, int, byte[], List)
+     * 
+     * @deprecated
+     * Use {@link #replaceResource(CmsObject, CmsSecurityManager, CmsResource, I_CmsResourceType, byte[], List)} instead.
+     * Resource types should always be referenced either by this type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
     void replaceResource(
         CmsObject cms,
         CmsSecurityManager securityManager,

@@ -27,6 +27,9 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import org.opencms.gwt.shared.CmsPermissionInfo;
+import org.opencms.util.CmsUUID;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -35,6 +38,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @since 8.0.0
  */
 public class CmsContainerElement implements IsSerializable {
+
+    /** HTML class used to identify containers. */
+    public static final String CLASS_CONTAINER = "cms_ade_container";
 
     /** HTML class used to identify container elements. */
     public static final String CLASS_CONTAINER_ELEMENT_END_MARKER = "cms_ade_element_end";
@@ -57,6 +63,9 @@ public class CmsContainerElement implements IsSerializable {
     /** The element client id. */
     private String m_clientId;
 
+    /** The element view this element belongs to by it's type. */
+    private CmsUUID m_elementView;
+
     /** Flag to indicate that this element may have settings. */
     private boolean m_hasSettings;
 
@@ -69,9 +78,6 @@ public class CmsContainerElement implements IsSerializable {
     /** Flag which controls whether the new editor is disabled for this element. */
     private boolean m_newEditorDisabled;
 
-    /** The no edit reason. If empty editing is allowed. */
-    private String m_noEditReason;
-
     /** Flag indicating if the given resource is released and not expired. */
     private boolean m_releasedAndNotExpired = true;
 
@@ -81,17 +87,14 @@ public class CmsContainerElement implements IsSerializable {
     /** The full site path. */
     private String m_sitePath;
 
-    /** 
-     * Indicates if the current user has view permissions on the element resource. 
-     * Without view permissions, the element can neither be edited, nor moved. 
-     **/
-    private boolean m_viewPermission;
+    /** The sub title. */
+    private String m_subTitle;
 
-    /** 
-     * Indicates if the current user has write permissions on the element resource. 
-     * Without write permissions, the element can not be edited. 
-     **/
-    private boolean m_writePermission;
+    /** The title. */
+    private String m_title;
+
+    /** The permission info for the element resource. */
+    private CmsPermissionInfo m_permissionInfo;
 
     /**
      * Default constructor.<p>
@@ -102,6 +105,33 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
+     * Copies the container element.<p>
+     * 
+     * @return the new copy of the container element
+     */
+    public CmsContainerElement copy() {
+
+        CmsContainerElement result = new CmsContainerElement();
+        result.m_clientId = m_clientId;
+        result.m_hasSettings = m_hasSettings;
+        result.m_inheritanceInfo = m_inheritanceInfo;
+        result.m_new = m_new;
+        result.m_newEditorDisabled = m_newEditorDisabled;
+        result.m_permissionInfo = new CmsPermissionInfo(
+            m_permissionInfo.hasViewPermission(),
+            m_permissionInfo.hasWritePermission(),
+            m_permissionInfo.getNoEditReason());
+        result.m_releasedAndNotExpired = m_releasedAndNotExpired;
+        result.m_resourceType = m_resourceType;
+        result.m_sitePath = m_sitePath;
+        result.m_subTitle = m_subTitle;
+        result.m_title = m_title;
+        result.m_elementView = m_elementView;
+        return result;
+
+    }
+
+    /**
      * Returns the client id.<p>
      *
      * @return the client id
@@ -109,6 +139,16 @@ public class CmsContainerElement implements IsSerializable {
     public String getClientId() {
 
         return m_clientId;
+    }
+
+    /**
+     * Returns the element view this element belongs to by it's type.<p>
+     *
+     * @return the element view
+     */
+    public CmsUUID getElementView() {
+
+        return m_elementView;
     }
 
     /**
@@ -128,7 +168,7 @@ public class CmsContainerElement implements IsSerializable {
      */
     public String getNoEditReason() {
 
-        return m_noEditReason;
+        return m_permissionInfo.getNoEditReason();
     }
 
     /**
@@ -152,6 +192,26 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
+     * Returns the sub title.<p>
+     * 
+     * @return the sub title
+     */
+    public String getSubTitle() {
+
+        return m_subTitle;
+    }
+
+    /**
+     * Returns the title.<p>
+     * 
+     * @return the title
+     */
+    public String getTitle() {
+
+        return m_title;
+    }
+
+    /**
      * Returns if the element may have settings.<p>
      *
      * @param containerId the container id
@@ -170,7 +230,7 @@ public class CmsContainerElement implements IsSerializable {
      */
     public boolean hasViewPermission() {
 
-        return m_viewPermission;
+        return m_permissionInfo.hasViewPermission();
     }
 
     /**
@@ -180,7 +240,7 @@ public class CmsContainerElement implements IsSerializable {
      */
     public boolean hasWritePermission() {
 
-        return m_writePermission;
+        return m_permissionInfo.hasWritePermission();
     }
 
     /**
@@ -244,6 +304,16 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
+     * Sets the element view.<p>
+     *
+     * @param elementView the element view to set
+     */
+    public void setElementView(CmsUUID elementView) {
+
+        m_elementView = elementView;
+    }
+
+    /**
      * Sets if the element may have settings.<p>
      *
      * @param hasSettings <code>true</code> if the element may have settings
@@ -284,13 +354,13 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
-     * Sets the no edit reason.<p>
+     * Sets the permission info.<p>
      *
-     * @param noEditReason the no edit reason to set
+     * @param permissionInfo the permission info to set
      */
-    public void setNoEditReason(String noEditReason) {
+    public void setPermissionInfo(CmsPermissionInfo permissionInfo) {
 
-        m_noEditReason = noEditReason;
+        m_permissionInfo = permissionInfo;
     }
 
     /**
@@ -324,23 +394,22 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
-     * Sets if the current user has view permissions for the element resource.<p>
-     *
-     * @param viewPermission the view permission to set
+     * Sets the sub title.<p>
+     * 
+     * @param subTitle the sub title
      */
-    public void setViewPermission(boolean viewPermission) {
+    public void setSubTitle(String subTitle) {
 
-        m_viewPermission = viewPermission;
+        m_subTitle = subTitle;
     }
 
     /**
-     * Sets the user write permission.<p>
-     *
-     * @param writePermission the user write permission to set
+     * Sets the title.<p>
+     * 
+     * @param title the title
      */
-    public void setWritePermission(boolean writePermission) {
+    public void setTitle(String title) {
 
-        m_writePermission = writePermission;
+        m_title = title;
     }
-
 }

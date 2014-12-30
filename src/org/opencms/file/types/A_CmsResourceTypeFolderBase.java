@@ -398,27 +398,41 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             // now walk through all sub-resources in the folder, and undo first
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = resources.get(i);
+
                 I_CmsResourceType type = getResourceType(childResource);
+
                 if (isMoved) {
                     securityManager.lockResource(cms.getRequestContext(), childResource, CmsLockType.EXCLUSIVE);
                 }
-                if (childResource.isFolder()) {
-                    // recurse into this method for subfolders
-                    type.undoChanges(cms, securityManager, childResource, mode);
-                } else if (!childResource.getState().isNew()) {
-                    // undo changes for changed files
-                    securityManager.undoChanges(cms.getRequestContext(), childResource, mode);
-                } else {
-                    // undo move for new files? move with the folder
-                    if (mode.isUndoMove()) {
-                        String newPath = cms.getRequestContext().removeSiteRoot(
-                            securityManager.readResource(
-                                cms.getRequestContext(),
-                                resource.getStructureId(),
-                                CmsResourceFilter.ALL).getRootPath()
-                                + childResource.getName());
-                        type.moveResource(cms, securityManager, childResource, newPath);
+                if (!childResource.getState().isNew()) {
+                    // can not use undo for new resources
+                    if (childResource.isFolder()) {
+                        // recurse into this method for subfolders
+                        type.undoChanges(cms, securityManager, childResource, mode);
+                    } else if (!childResource.getState().isNew()) {
+                        // undo changes for changed files
+                        securityManager.undoChanges(cms.getRequestContext(), childResource, mode);
+                    } else {
+                        // undo move for new files? move with the folder
+                        if (mode.isUndoMove()) {
+                            String newPath = cms.getRequestContext().removeSiteRoot(
+                                securityManager.readResource(
+                                    cms.getRequestContext(),
+                                    resource.getStructureId(),
+                                    CmsResourceFilter.ALL).getRootPath()
+                                    + childResource.getName());
+                            type.moveResource(cms, securityManager, childResource, newPath);
+                        }
                     }
+                } else if (isMoved) {
+                    // we still need to update the resource path for new resources
+                    String newPath = cms.getRequestContext().removeSiteRoot(
+                        securityManager.readResource(
+                            cms.getRequestContext(),
+                            resource.getStructureId(),
+                            CmsResourceFilter.ALL).getRootPath()
+                            + childResource.getName());
+                    type.moveResource(cms, securityManager, childResource, newPath);
                 }
             }
 

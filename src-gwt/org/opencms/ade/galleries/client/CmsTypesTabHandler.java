@@ -82,7 +82,16 @@ public class CmsTypesTabHandler extends A_CmsTabHandler {
     public void onSort(String sortParams, String filter) {
 
         // ignore filter, not available for this tab
-        m_controller.sortResults(sortParams);
+        m_controller.sortTypes(sortParams);
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#removeParam(java.lang.String)
+     */
+    @Override
+    public void removeParam(String paramKey) {
+
+        m_controller.removeTypeParam(paramKey);
     }
 
     /**
@@ -95,12 +104,4 @@ public class CmsTypesTabHandler extends A_CmsTabHandler {
         m_controller.addType(resourceType);
     }
 
-    /**
-     * @see org.opencms.ade.galleries.client.A_CmsTabHandler#removeParam(java.lang.String)
-     */
-    @Override
-    public void removeParam(String paramKey) {
-
-        m_controller.removeTypeParam(paramKey);
-    }
 }

@@ -237,6 +237,14 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Default JUnit constructor.<p>
+     */
+    public OpenCmsTestCase() {
+
+        super(null);
+    }
+
+    /**
+     * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */
@@ -247,6 +255,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * JUnit constructor.<p>
+     * 
      * @param arg0 JUnit parameters
      * @param initialize indicates if the configuration will be initialized
      */
@@ -508,7 +517,7 @@ public class OpenCmsTestCase extends TestCase {
      * @return the wrapped test 
      */
     public static Test generateSetupTestWrapper(
-        Class<? extends Test> testClass,
+        final Class<? extends Test> testClass,
         final String importFolder,
         final String targetFolder) {
 
@@ -522,7 +531,7 @@ public class OpenCmsTestCase extends TestCase {
                 @Override
                 protected void setUp() {
 
-                    setupOpenCms(importFolder, targetFolder);
+                    setupOpenCms(importFolder, targetFolder, null, testClass.getName());
                 }
 
                 /**
@@ -531,7 +540,7 @@ public class OpenCmsTestCase extends TestCase {
                 @Override
                 protected void tearDown() {
 
-                    removeOpenCms();
+                    removeOpenCms(testClass.getName());
                 }
             };
             return wrapper;
@@ -547,10 +556,10 @@ public class OpenCmsTestCase extends TestCase {
      * 
      * @return the test suite for the given class 
      * 
-     * @throws NoSuchMethodException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
+     * @throws NoSuchMethodException in case of problems
+     * @throws InstantiationException in case of problems
+     * @throws IllegalAccessException in case of problems
+     * @throws InvocationTargetException in case of problems
      */
     public static TestSuite generateTestSuite(Class<? extends Test> testClass)
     throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
@@ -699,18 +708,28 @@ public class OpenCmsTestCase extends TestCase {
         }
 
         // create a shell instance
-        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
+        m_shell = new CmsShell(
+            getTestDataPath("WEB-INF" + File.separator),
+            null,
+            null,
+            "${user}@${project}>",
+            null,
+            System.out,
+            System.err,
+            false);
 
         // open the test script 
         File script;
-        FileInputStream stream = null;
         CmsObject cms = null;
 
         try {
+            FileInputStream stream = null;
+
             // start the shell with the base script
             script = new File(getTestDataPath("scripts/script_import.txt"));
             stream = new FileInputStream(script);
-            m_shell.start(stream);
+            m_shell.execute(stream);
+            stream.close();
 
             // log in the Admin user and switch to the setup project
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
@@ -725,7 +744,8 @@ public class OpenCmsTestCase extends TestCase {
             // publish the current project by script
             script = new File(getTestDataPath("scripts/script_import_publish.txt"));
             stream = new FileInputStream(script);
-            m_shell.start(stream);
+            m_shell.execute(stream);
+            stream.close();
             OpenCms.getPublishManager().waitWhileRunning();
 
             // switch to the "Offline" project
@@ -765,10 +785,21 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Removes the initialized OpenCms database and all 
-     * temporary files created during the test run.<p>
+     * Removes the initialized OpenCms database and all temporary files created during the test run.<p>
+     * 
+     * Tries to ascertain the name of the test class from the stack trace.<p>
      */
     public static void removeOpenCms() {
+
+        removeOpenCms(getCurrentTestClass());
+    }
+
+    /**
+     * Removes the initialized OpenCms database and all temporary files created during the test run.<p>
+     * 
+     * @param testName the name of the test class (for writing it to the console)
+     */
+    public static void removeOpenCms(String testName) {
 
         // ensure logging does not throw exceptions
         OpenCmsTestLogAppender.setBreakOnError(false);
@@ -821,6 +852,8 @@ public class OpenCmsTestCase extends TestCase {
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
+
+        printInfoBox(new String[] {"Finished OpenCms test class:", testName});
     }
 
     /**
@@ -844,7 +877,15 @@ public class OpenCmsTestCase extends TestCase {
         }
 
         // create a shell instance
-        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
+        m_shell = new CmsShell(
+            getTestDataPath("WEB-INF" + File.separator),
+            null,
+            null,
+            "${user}@${project}>",
+            null,
+            System.out,
+            System.err,
+            false);
 
         // turn on exceptions after error logging
         OpenCmsTestLogAppender.setBreakOnError(true);
@@ -856,11 +897,18 @@ public class OpenCmsTestCase extends TestCase {
      * 
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
+     * 
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder) {
 
-        return setupOpenCms(importFolder, targetFolder, getTestDataPath("WEB-INF/config." + m_dbProduct + "/"), true);
+        return setupOpenCms(
+            importFolder,
+            targetFolder,
+            getTestDataPath("WEB-INF/config." + m_dbProduct + "/"),
+            null,
+            getCurrentTestClass(),
+            true);
     }
 
     /**
@@ -870,11 +918,18 @@ public class OpenCmsTestCase extends TestCase {
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
      * @param publish flag to signalize if the publish script should be called
+     * 
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, boolean publish) {
 
-        return setupOpenCms(importFolder, targetFolder, getTestDataPath("WEB-INF/config." + m_dbProduct + "/"), publish);
+        return setupOpenCms(
+            importFolder,
+            targetFolder,
+            getTestDataPath("WEB-INF/config." + m_dbProduct + "/"),
+            null,
+            getCurrentTestClass(),
+            publish);
     }
 
     /**
@@ -884,6 +939,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
      * @param specialConfigFolder the folder that contains the special configuration files for this setup
+     * 
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, String specialConfigFolder) {
@@ -893,6 +949,7 @@ public class OpenCmsTestCase extends TestCase {
             targetFolder,
             getTestDataPath("WEB-INF/config." + m_dbProduct + "/"),
             getTestDataPath(specialConfigFolder),
+            getCurrentTestClass(),
             true);
     }
 
@@ -909,7 +966,34 @@ public class OpenCmsTestCase extends TestCase {
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, String configFolder, boolean publish) {
 
-        return setupOpenCms(importFolder, targetFolder, configFolder, null, publish);
+        return setupOpenCms(importFolder, targetFolder, configFolder, null, getCurrentTestClass(), publish);
+    }
+
+    /**
+     * Sets up a complete OpenCms instance with configuration from the config-ori folder, 
+     * creating the usual projects, and importing a default database.<p>
+     * 
+     * @param importFolder the folder to import in the "real" FS
+     * @param targetFolder the target folder of the import in the VFS
+     * @param specialConfigFolder the folder that contains the special configuration files for this setup
+     * @param testName the name of the test class (for writing it to the console)
+     * 
+     * 
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     */
+    public static CmsObject setupOpenCms(
+        String importFolder,
+        String targetFolder,
+        String specialConfigFolder,
+        String testName) {
+
+        return setupOpenCms(
+            importFolder,
+            targetFolder,
+            getTestDataPath("WEB-INF/config." + m_dbProduct + "/"),
+            specialConfigFolder != null ? getTestDataPath(specialConfigFolder) : null,
+            testName,
+            true);
     }
 
     /**
@@ -920,7 +1004,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param targetFolder the target folder of the import in the VFS
      * @param configFolder the folder to copy the standard configuration files from
      * @param specialConfigFolder the folder that contains the special configuration fiiles for this setup
-
+     * @param testName the name of the test class (for writing it to the console)
      * @param publish publish only if set
      * 
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
@@ -930,7 +1014,15 @@ public class OpenCmsTestCase extends TestCase {
         String targetFolder,
         String configFolder,
         String specialConfigFolder,
+        String testName,
         boolean publish) {
+
+        printInfoBox(new String[] {
+            "Setting up OpenCms test class:",
+            testName,
+            "",
+            "Importing from: " + importFolder,
+            "Importing to  : " + targetFolder});
 
         // intialize a new resource storage
         m_resourceStorages = new HashMap<String, OpenCmsTestResourceStorage>();
@@ -974,23 +1066,34 @@ public class OpenCmsTestCase extends TestCase {
         setupDatabase();
 
         // create a shell instance
-        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
+        m_shell = new CmsShell(
+            getTestDataPath("WEB-INF" + File.separator),
+            null,
+            null,
+            "${user}@${project}>",
+            null,
+            System.out,
+            System.err,
+            false);
 
         // open the test script 
         File script;
-        FileInputStream stream = null;
         CmsObject cms = null;
 
         try {
+            FileInputStream stream = null;
+
             // start the shell with the base script
             script = new File(getTestDataPath("scripts/script_base.txt"));
             stream = new FileInputStream(script);
-            m_shell.start(stream);
+            m_shell.execute(stream);
+            stream.close();
 
             // add the default folders by script
             script = new File(getTestDataPath("scripts/script_default_folders.txt"));
             stream = new FileInputStream(script);
-            m_shell.start(stream);
+            m_shell.execute(stream);
+            stream.close();
 
             // log in the Admin user and switch to the setup project
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
@@ -1005,14 +1108,14 @@ public class OpenCmsTestCase extends TestCase {
             // create the default projects by script
             script = new File(getTestDataPath("scripts/script_default_projects.txt"));
             stream = new FileInputStream(script);
-            m_shell.start(stream);
+            m_shell.execute(stream);
             stream.close();
 
             if (publish) {
                 // publish the current project by script
                 script = new File(getTestDataPath("scripts/script_publish.txt"));
                 stream = new FileInputStream(script);
-                m_shell.start(stream);
+                m_shell.execute(stream);
                 stream.close();
                 OpenCms.getPublishManager().waitWhileRunning();
             } else {
@@ -1069,6 +1172,33 @@ public class OpenCmsTestCase extends TestCase {
             }
             fail(setupDb.getErrors().get(0));
         }
+    }
+
+    /**
+     * Returns the class name of the current test class from the current stack trace.<p>
+     * 
+     * Methods in this class, that is {@link OpenCmsTestCase} are ignored.<p>
+     * 
+     * @return the class name of the current test class from the current stack trace
+     */
+    protected static String getCurrentTestClass() {
+
+        String result = "unknown";
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        for (int i = 1; i < stackTraceElements.length; i++) {
+            // skip first method in stack, this is always ".getStackTrace()"
+            result = stackTraceElements[i].getClassName();
+            if (result.indexOf(OpenCmsTestCase.class.getName()) == -1) {
+                // first method name NOT from this class is what we want
+                int pos = result.indexOf('$');
+                // cut off any trailing "$1" just because it looks nicer in the output 
+                if (pos != -1) {
+                    result = result.substring(0, pos);
+                }
+                break;
+            }
+        }
+        return result;
     }
 
     /**
@@ -1189,6 +1319,28 @@ public class OpenCmsTestCase extends TestCase {
         CmsResource result = cms.createResource(vfsPath, type, content, properties);
         cms.unlockResource(vfsPath);
         return result;
+    }
+
+    /**
+     * Prints a message to System.out that Exceptions on the console are expected.<p>
+     */
+    protected static void printExceptionWarning() {
+
+        printInfoBox(new String[] {"ATTENTION: Exceptions in the console output are expected !"});
+    }
+
+    /**
+     * Prints  a nicely formatted info box to System.out.<p> 
+     * 
+     * @param lines the lines to print
+     */
+    protected static void printInfoBox(String[] lines) {
+
+        System.out.print("\n\n +------------------------------------------------------------------------------");
+        for (String line : lines) {
+            System.out.print("\n | " + line);
+        }
+        System.out.println("\n +------------------------------------------------------------------------------\n");
     }
 
     /**
@@ -1511,8 +1663,6 @@ public class OpenCmsTestCase extends TestCase {
             if (permission != null) {
                 excludeList.add(principal);
             }
-
-            // TODO: This is the code to recalculate the permission set if necessary. Its not completed yet!
 
             Map<CmsUUID, String> parents = getParents(cms, resourceName);
             List<CmsAccessControlEntry> aceList = cms.getAccessControlEntries(resourceName);
@@ -3363,7 +3513,7 @@ public class OpenCmsTestCase extends TestCase {
      * Deletes a given resource if possible.<p>
      * 
      * @param path the path of the resource to delete 
-     * @throws CmsException
+     * @throws CmsException in case somthing goes wrong
      */
     protected void delete(String path) throws CmsException {
 
@@ -3487,9 +3637,35 @@ public class OpenCmsTestCase extends TestCase {
 
         m_shell.exit();
 
-        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
+        m_shell = new CmsShell(
+            getTestDataPath("WEB-INF" + File.separator),
+            null,
+            null,
+            "${user}@${project}>",
+            null,
+            System.out,
+            System.err,
+            false);
 
         OpenCmsTestLogAppender.setBreakOnError(true);
+    }
+
+    /**
+     * Overrides the main test start method in order to output automatic markers.<p>
+     * 
+     * @see junit.framework.TestCase#runTest()
+     */
+    @Override
+    protected void runTest() throws Throwable {
+
+        Method runMethod = null;
+        try {
+            runMethod = getClass().getMethod(getName(), (Class[])null);
+            printInfoBox(new String[] {"Running OpenCms test case:", getClass().getName() + "#" + runMethod.getName()});
+        } catch (NoSuchMethodException e) {
+            fail("Method \"" + getName() + "\" not found");
+        }
+        super.runTest();
     }
 
     /**

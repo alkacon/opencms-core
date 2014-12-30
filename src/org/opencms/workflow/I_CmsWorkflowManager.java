@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,40 +47,41 @@ import java.util.Map;
  */
 public interface I_CmsWorkflowManager {
 
-    /** 
+    /**
      * Creates the formatter for formatting the resources to be displayed to the user.<p>
-     * @param cms the CMS context to use 
-     * @param workflow the current workflow 
-     * @param options the publish options 
-     * 
-     * @return the publish resource formatter to use 
+     * @param cms the CMS context to use
+     * @param workflow the current workflow
+     * @param options the publish options
+     *
+     * @return the publish resource formatter to use
      */
     I_CmsPublishResourceFormatter createFormatter(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options);
 
     /**
      * Executes a workflow action for a publish list token instead of a resource list.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param action the action to perform 
-     * @param token the publish list token to use 
-     * 
-     * @return the workflow response 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context to use
+     * @param action the action to perform
+     * @param token the publish list token to use
+     *
+     * @return the workflow response
+     * @throws CmsException if something goes wrong
+
      */
     CmsWorkflowResponse executeAction(CmsObject cms, CmsWorkflowAction action, CmsPublishListToken token)
     throws CmsException;
 
     /**
      * Executes a workflow action in the context of the current user.<p>
-     * 
+     *
      * @param userCms the current user's CMS context
-     * @param action the workflow action 
-     * @param options the publish options 
-     * @param resources the resources to be processed 
-     * 
-     * @return the workflow response for the executed action 
-     * 
-     * @throws CmsException if something goes wrong 
+     * @param action the workflow action
+     * @param options the publish options
+     * @param resources the resources to be processed
+     *
+     * @return the workflow response for the executed action
+     *
+     * @throws CmsException if something goes wrong
      */
     CmsWorkflowResponse executeAction(
         CmsObject userCms,
@@ -90,80 +91,94 @@ public interface I_CmsWorkflowManager {
 
     /**
      * Returns the current user's manageable projects.<p>
-     * 
-     * @param cms the CMS context to use 
+     *
+     * @param cms the CMS context to use
      * @param params the publish parameters
-     *  
+     *
      * @return the current user's manageable projects
      */
     List<CmsProjectBean> getManageableProjects(CmsObject cms, Map<String, String> params);
 
     /**
      * Gets the parameters of the workflow manager.<p>
-     * 
-     * @return the configuration parameters of the workflow manager 
+     *
+     * @return the configuration parameters of the workflow manager
      */
     Map<String, String> getParameters();
 
     /**
      * Gets a publish list token for the given parameters which can be used later to reconstruct the publish list.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param workflow the workflow 
-     * @param options the publish options 
-     * 
-     * @return the publish list token 
+     *
+     * @param cms the CMS context to use
+     * @param workflow the workflow
+     * @param options the publish options
+     *
+     * @return the publish list token
      */
     CmsPublishListToken getPublishListToken(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options);
 
     /**
      * Gets the virtual project object identified by the given id.<p>
-     * 
-     * @param projectId the virtual project id 
-     * @return the virtual project object 
+     *
+     * @param projectId the virtual project id
+     * @return the virtual project object
      */
     I_CmsVirtualProject getRealOrVirtualProject(CmsUUID projectId);
 
     /**
      * Gets the resource limit.<p>
-     * 
+     *
      * Publish lists which exceed this limit (counted before adding any related resources, siblings etc.) are not displayed to the user.<p>
-     * 
-     * @return the resource limit 
+     *
+     * @return the resource limit
      */
     int getResourceLimit();
 
     /**
+     * Gets the workflow id which should be used for a given workflow project.<p>
+     *
+     * @param projectId the project id
+     *
+     * @return the workflow id for the project
+     */
+    String getWorkflowForWorkflowProject(CmsUUID projectId);
+
+    /**
      * Returns the resources for the given workflow and project.<p>
-     * 
+     *
      * @param cms the user cms context
      * @param workflow the workflow
      * @param options the resource options
-     * 
+     * @param canOverride flag to indicate whether the workflow manager should be able to override the selected workflow
+     *
      * @return the workflow resources
      */
-    List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options);
+    CmsWorkflowResources getWorkflowResources(
+        CmsObject cms,
+        CmsWorkflow workflow,
+        CmsPublishOptions options,
+        boolean canOverride);
 
     /**
      * Returns the available workflows for the current user.<p>
-     * 
+     *
      * @param cms  the user cms context
-     * 
+     *
      * @return the available workflows
      */
     Map<String, CmsWorkflow> getWorkflows(CmsObject cms);
 
     /**
      * Initializes this workflow manager instance.<p>
-     * 
-     * @param adminCms the CMS context with admin privileges 
+     *
+     * @param adminCms the CMS context with admin privileges
      */
     void initialize(CmsObject adminCms);
 
     /**
      * Sets the configuration parameters of the workflow manager.<p>
-     * 
-     * @param parameters the map of configuration parameters 
+     *
+     * @param parameters the map of configuration parameters
      */
     void setParameters(Map<String, String> parameters);
 

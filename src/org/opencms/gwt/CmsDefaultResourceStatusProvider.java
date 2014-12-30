@@ -41,6 +41,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsResourceStatusRelationBean;
 import org.opencms.gwt.shared.CmsResourceStatusTabId;
@@ -98,11 +99,11 @@ public class CmsDefaultResourceStatusProvider {
         boolean cancelIfChanged) throws CmsException {
 
         CmsRelationTargetListBean result = new CmsRelationTargetListBean();
-        CmsResource content = cms.readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource content = cms.readResource(source, CmsResourceFilter.ALL);
         boolean isContainerPage = CmsResourceTypeXmlContainerPage.isContainerPage(content);
         for (CmsUUID structureId : additionalIds) {
             try {
-                CmsResource res = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsResource res = cms.readResource(structureId, CmsResourceFilter.ALL);
                 result.add(res);
                 if (res.getState().isChanged() && cancelIfChanged) {
                     return result;
@@ -117,7 +118,7 @@ public class CmsDefaultResourceStatusProvider {
                 continue;
             }
             try {
-                CmsResource target = relation.getTarget(cms, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsResource target = relation.getTarget(cms, CmsResourceFilter.ALL);
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(target);
                 if (isContainerPage && (type instanceof CmsResourceTypeJsp)) {
                     // ignore formatters for container pages, as the normal user probably doesn't want to deal with them  
@@ -155,7 +156,7 @@ public class CmsDefaultResourceStatusProvider {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         cms.getRequestContext().setLocale(locale);
-        CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ALL);
         String localizedTitle = null;
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(contentLocale)) {
             Locale realLocale = CmsLocaleManager.getLocale(contentLocale);
@@ -244,21 +245,31 @@ public class CmsDefaultResourceStatusProvider {
 
         // find all distinct relation sources 
         for (CmsRelation relation : relations) {
-            CmsResource currentSource = relation.getSource(cms, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource currentSource = relation.getSource(cms, CmsResourceFilter.ALL);
             relationSources.put(currentSource.getStructureId(), currentSource);
         }
 
         for (CmsResource relationResource : relationSources.values()) {
             try {
-                CmsResourceStatusRelationBean relationBean = createRelationBean(cms, relationResource);
-                result.getRelationSources().add(relationBean);
+                CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(
+                    cms,
+                    relationResource,
+                    resource.getRootPath());
+                if (permissionInfo.hasViewPermission()) {
+                    CmsResourceStatusRelationBean relationBean = createRelationBean(
+                        cms,
+                        contentLocale,
+                        relationResource,
+                        permissionInfo);
+                    result.getRelationSources().add(relationBean);
+                }
             } catch (CmsVfsResourceNotFoundException notfound) {
                 LOG.error(notfound.getLocalizedMessage(), notfound);
                 continue;
             }
         }
         if (includeTargets) {
-            result.getRelationTargets().addAll(getTargets(cms, structureId, additionalStructureIds));
+            result.getRelationTargets().addAll(getTargets(cms, contentLocale, resource, additionalStructureIds));
         }
         result.setTabs(getTabClientData(cms, resource));
         return result;
@@ -268,7 +279,8 @@ public class CmsDefaultResourceStatusProvider {
      * Gets the list of relation targets for a resource.<p>
      * 
      * @param cms the current CMS context 
-     * @param structureId the structure id of the resource for which we want the relation targets 
+     * @param locale the locale 
+     * @param resource the resource for which we want the relation targets 
      * @param additionalStructureIds structure ids of additional resources to include with the relation target
      *  
      * @return the list of relation beans for the relation targets
@@ -277,19 +289,26 @@ public class CmsDefaultResourceStatusProvider {
      */
     protected List<CmsResourceStatusRelationBean> getTargets(
         CmsObject cms,
-        CmsUUID structureId,
+        String locale,
+        CmsResource resource,
         List<CmsUUID> additionalStructureIds) throws CmsException {
 
         CmsRelationTargetListBean listBean = getContainerpageRelationTargets(
             cms,
-            structureId,
+            resource.getStructureId(),
             additionalStructureIds,
             false);
         List<CmsResourceStatusRelationBean> result = new ArrayList<CmsResourceStatusRelationBean>();
         for (CmsResource target : listBean.getResources()) {
             try {
-                CmsResourceStatusRelationBean relationBean = createRelationBean(cms, target);
-                result.add(relationBean);
+                CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(
+                    cms,
+                    target,
+                    resource.getRootPath());
+                if (permissionInfo.hasViewPermission()) {
+                    CmsResourceStatusRelationBean relationBean = createRelationBean(cms, locale, target, permissionInfo);
+                    result.add(relationBean);
+                }
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
@@ -301,16 +320,35 @@ public class CmsDefaultResourceStatusProvider {
     /** 
      * Creates a bean for a single resource which is part of a relation list.<p> 
      * 
-     * @param cms the current CMS context 
+     * @param cms the current CMS context
+     * @param locale the locale 
      * @param relationResource the resource 
+     * @param permissionInfo the permission info
      * 
      * @return the status bean for the resource
      * 
      * @throws CmsException if something goes wrong 
      */
-    CmsResourceStatusRelationBean createRelationBean(CmsObject cms, CmsResource relationResource) throws CmsException {
+    CmsResourceStatusRelationBean createRelationBean(
+        CmsObject cms,
+        String locale,
+        CmsResource relationResource,
+        CmsPermissionInfo permissionInfo) throws CmsException {
 
         CmsListInfoBean sourceBean = CmsVfsService.getPageInfo(cms, relationResource);
+        sourceBean.setMarkChangedState(true);
+        sourceBean.setResourceState(relationResource.getState());
+
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(locale)) {
+            Locale realLocale = CmsLocaleManager.getLocale(locale);
+            CmsGallerySearchResult result = CmsGallerySearch.searchById(
+                cms,
+                relationResource.getStructureId(),
+                realLocale);
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(result.getTitle())) {
+                sourceBean.setTitle(result.getTitle());
+            }
+        }
         String link = null;
         try {
             link = OpenCms.getLinkManager().substituteLink(cms, relationResource);
@@ -320,7 +358,8 @@ public class CmsDefaultResourceStatusProvider {
         CmsResourceStatusRelationBean relationBean = new CmsResourceStatusRelationBean(
             sourceBean,
             link,
-            relationResource.getStructureId());
+            relationResource.getStructureId(),
+            permissionInfo);
         if (CmsResourceTypeXmlContent.isXmlContent(relationResource)) {
             relationBean.setIsXmlContent(true);
         }

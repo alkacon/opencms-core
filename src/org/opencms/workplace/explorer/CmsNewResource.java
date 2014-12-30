@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -977,7 +978,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
 
         CmsResource resource = null;
         try {
-            resource = getCms().readResource(getParamCurrentFolder());
+            resource = getCms().readResource(getParamCurrentFolder(), CmsResourceFilter.ONLY_VISIBLE);
         } catch (CmsException e) {
             // ignore
         }

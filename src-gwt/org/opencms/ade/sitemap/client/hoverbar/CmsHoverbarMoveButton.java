@@ -63,13 +63,18 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
         addStyleName(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove());
         setImageClass(I_CmsImageBundle.INSTANCE.buttonCss().hoverbarMove());
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_MOVE_0));
-        setButtonStyle(ButtonStyle.TRANSPARENT, null);
+        setButtonStyle(ButtonStyle.IMAGE, null);
         hoverbar.addShowHandler(new I_CmsHoverbarShowHandler() {
 
             /**
              * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarShowHandler#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
              */
             public void onShow(CmsHoverbarShowEvent event) {
+
+                if (hoverbar.getEntry() == null) {
+                    // Can sometimes happen after deleting an element
+                    return;
+                }
 
                 m_sitePath = hoverbar.getEntry().getSitePath();
                 final CmsSitemapController controller = hoverbar.getController();

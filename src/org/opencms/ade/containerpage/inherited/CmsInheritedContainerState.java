@@ -40,7 +40,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,15 +66,14 @@ public class CmsInheritedContainerState {
      * @param cache the cache instance 
      * @param rootPath the root path 
      * @param name the name of the container configuration 
-     * @param locale the locale 
      */
-    public void addConfigurations(CmsContainerConfigurationCache cache, String rootPath, String name, Locale locale) {
+    public void addConfigurations(CmsContainerConfigurationCache cache, String rootPath, String name) {
 
         String currentPath = rootPath;
         List<CmsContainerConfiguration> configurations = new ArrayList<CmsContainerConfiguration>();
         synchronized (cache) {
             while (currentPath != null) {
-                CmsContainerConfiguration configuration = cache.getContainerConfiguration(currentPath, name, locale);
+                CmsContainerConfiguration configuration = cache.getContainerConfiguration(currentPath, name);
                 if (configuration == null) {
                     configuration = CmsContainerConfiguration.emptyConfiguration();
                 }
@@ -137,7 +135,7 @@ public class CmsInheritedContainerState {
         // STEP 2: Get elements which are referenced by the ordering  
         for (String key : ordering) {
             CmsContainerElementBean element = elementsByKey.get(key);
-            if (element != null) {
+            if ((element != null) && !keysUsed.contains(key)) {
                 CmsContainerElementBean elementToAdd = CmsContainerElementBean.cloneWithSettings(
                     element,
                     element.getIndividualSettings());

@@ -475,37 +475,6 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * @param target the target URI of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
-     * @param editable flag to indicate if direct edit should be enabled for the element 
-     * @param parameterMap a map of the request parameters
-     * @throws JspException in case there were problems including the target
-     * 
-     * @see org.opencms.jsp.CmsJspTagInclude
-     */
-    public void include(String target, String element, boolean editable, Map<String, ?> parameterMap)
-    throws JspException {
-
-        include(target, element, editable, true, parameterMap);
-    }
-
-    /**
-     * Include a named sub-element with parameters from the OpenCms VFS, same as
-     * using the <code>&lt;cms:include file="***" element="***" /&gt;</code> tag
-     * with parameters in the tag body.<p>
-     * 
-     * The parameter map should be a map where the keys are Strings 
-     * (the parameter names) and the values are of type String[].
-     * However, as a convenience feature,
-     * in case you provide just a String for the parameter value, 
-     * it will automatically be translated to a String[1].<p>
-     * 
-     * The handling of the <code>element</code> parameter depends on the 
-     * included file type. Most often it is used as template selector.<p>
-     * 
-     * <b>Important:</b> Exceptions that occur in the include process are NOT
-     * handled even if {@link #setSupressingExceptions(boolean)} was set to <code>true</code>.
-     * 
-     * @param target the target URI of the file in the OpenCms VFS (can be relative or absolute)
-     * @param element the element (template selector) to display from the target
      * @param editable flag to indicate if direct edit should be enabled for the element
      * @param cacheable flag to indicate if the target should be cacheable in the Flex cache
      * @param parameterMap a map of the request parameters
@@ -526,7 +495,6 @@ public class CmsJspActionElement extends CmsJspBean {
                 // ensure parameters are always of type String[] not just String
                 Iterator<?> i = parameterMap.entrySet().iterator();
                 while (i.hasNext()) {
-                    @SuppressWarnings("unchecked")
                     Map.Entry<String, ?> entry = (Entry<String, ?>)i.next();
                     String key = entry.getKey();
                     Object value = entry.getValue();
@@ -555,6 +523,37 @@ public class CmsJspActionElement extends CmsJspBean {
             CmsRequestUtil.getAtrributeMap(getRequest()),
             getRequest(),
             getResponse());
+    }
+
+    /**
+     * Include a named sub-element with parameters from the OpenCms VFS, same as
+     * using the <code>&lt;cms:include file="***" element="***" /&gt;</code> tag
+     * with parameters in the tag body.<p>
+     * 
+     * The parameter map should be a map where the keys are Strings 
+     * (the parameter names) and the values are of type String[].
+     * However, as a convenience feature,
+     * in case you provide just a String for the parameter value, 
+     * it will automatically be translated to a String[1].<p>
+     * 
+     * The handling of the <code>element</code> parameter depends on the 
+     * included file type. Most often it is used as template selector.<p>
+     * 
+     * <b>Important:</b> Exceptions that occur in the include process are NOT
+     * handled even if {@link #setSupressingExceptions(boolean)} was set to <code>true</code>.
+     * 
+     * @param target the target URI of the file in the OpenCms VFS (can be relative or absolute)
+     * @param element the element (template selector) to display from the target
+     * @param editable flag to indicate if direct edit should be enabled for the element 
+     * @param parameterMap a map of the request parameters
+     * @throws JspException in case there were problems including the target
+     * 
+     * @see org.opencms.jsp.CmsJspTagInclude
+     */
+    public void include(String target, String element, boolean editable, Map<String, ?> parameterMap)
+    throws JspException {
+
+        include(target, element, editable, true, parameterMap);
     }
 
     /**

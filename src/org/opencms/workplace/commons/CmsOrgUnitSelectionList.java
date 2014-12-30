@@ -114,6 +114,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.tools.CmsToolDialog#dialogTitle()
      */
+    @Override
     public String dialogTitle() {
 
         // build title
@@ -133,6 +134,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -141,6 +143,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -192,6 +195,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -200,15 +204,13 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        List ret = new ArrayList();
-
-        // get content        
-        List orgUnits = getOrgUnits();
-        Iterator itOrgUnits = orgUnits.iterator();
+        List<CmsListItem> ret = new ArrayList<CmsListItem>();
+        Iterator<CmsOrganizationalUnit> itOrgUnits = getOrgUnits().iterator();
         while (itOrgUnits.hasNext()) {
-            CmsOrganizationalUnit orgUnit = (CmsOrganizationalUnit)itOrgUnits.next();
+            CmsOrganizationalUnit orgUnit = itOrgUnits.next();
             CmsListItem item = getList().newItem(orgUnit.getName());
             item.set(LIST_COLUMN_DESCRIPTION, orgUnit.getDescription(getLocale()));
             item.set(LIST_COLUMN_PATH, CmsOrganizationalUnit.SEPARATOR + orgUnit.getName());
@@ -225,9 +227,9 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List getOrgUnits() throws CmsException {
+    protected List<CmsOrganizationalUnit> getOrgUnits() throws CmsException {
 
-        List ret = new ArrayList();
+        List<CmsOrganizationalUnit> ret = new ArrayList<CmsOrganizationalUnit>();
         CmsRole role = null;
         if (getParamRole() != null) {
             role = CmsRole.valueOfGroupName(getParamRole());
@@ -247,6 +249,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon display
@@ -275,6 +278,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.A_CmsListDirectJsAction#jsCode()
              */
+            @Override
             public String jsCode() {
 
                 return "window.opener.setOrgUnitFormValue('"
@@ -300,6 +304,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_PATH));
@@ -311,6 +316,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op     
@@ -319,6 +325,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         try {

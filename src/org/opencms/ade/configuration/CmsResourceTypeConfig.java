@@ -44,6 +44,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 
@@ -74,6 +75,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** True if this is a disabled configuration. */
     private boolean m_disabled;
 
+    /** The element view id. */
+    private CmsUUID m_elementView;
+
     /** A reference to a folder of folder name. */
     private CmsFolderOrName m_folderOrName;
 
@@ -96,7 +100,15 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     public CmsResourceTypeConfig(String typeName, boolean disabled, CmsFolderOrName folder, String pattern) {
 
-        this(typeName, disabled, folder, pattern, false, false, I_CmsConfigurationObject.DEFAULT_ORDER);
+        this(
+            typeName,
+            disabled,
+            folder,
+            pattern,
+            false,
+            false,
+            CmsElementView.DEFAULT_ELEMENT_VIEW.getId(),
+            I_CmsConfigurationObject.DEFAULT_ORDER);
     }
 
     /** 
@@ -108,6 +120,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param pattern the name pattern 
      * @param detailPagesDisabled true if detail page creation should be disabled for this type
      * @param addDisabled true if adding elements of this type via ADE should be disabled 
+     * @param elementView the element view id
      * @param order the number used for sorting resource types from modules  
      */
     public CmsResourceTypeConfig(
@@ -117,6 +130,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         String pattern,
         boolean detailPagesDisabled,
         boolean addDisabled,
+        CmsUUID elementView,
         int order) {
 
         m_typeName = typeName;
@@ -125,21 +139,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         m_namePattern = pattern;
         m_detailPagesDisabled = detailPagesDisabled;
         m_addDisabled = addDisabled;
+        m_elementView = elementView;
         m_order = order;
-    }
-
-    /** 
-     * Creates a new resource type configuration.<p>
-     * 
-     * @param typeName the resource type name 
-     * @param disabled true if this is a disabled configuration 
-     * @param folder the folder reference 
-     * @param pattern the name pattern 
-     * @param order the number used for sorting resource types from modules 
-     */
-    public CmsResourceTypeConfig(String typeName, boolean disabled, CmsFolderOrName folder, String pattern, int order) {
-
-        this(typeName, disabled, folder, pattern, false, false, order);
     }
 
     /** 
@@ -207,7 +208,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Checks whether the cms context is in the offline project and throws an exception otherwise.<p>
-     * @param cms
+     * 
+     * @param cms the cms context
      */
     public void checkOffline(CmsObject cms) {
 
@@ -337,6 +339,16 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
+     * Returns the element view id.<p>
+     * 
+     * @return the element view id
+     */
+    public CmsUUID getElementView() {
+
+        return m_elementView == null ? CmsElementView.DEFAULT_ELEMENT_VIEW.getId() : m_elementView;
+    }
+
+    /**
      * Computes the folder path for this resource type.<p>
      * 
      * @param cms the cms context to use 
@@ -460,9 +472,20 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
         CmsFolderOrName folderOrName = childConfig.m_folderOrName != null ? childConfig.m_folderOrName : m_folderOrName;
         String namePattern = childConfig.m_namePattern != null ? childConfig.m_namePattern : m_namePattern;
-        return new CmsResourceTypeConfig(m_typeName, false, folderOrName, namePattern, isDetailPagesDisabled()
-            || childConfig.isDetailPagesDisabled(), childConfig.isAddDisabled(), m_order);
-
+        CmsUUID elementView = childConfig.m_elementView != null ? childConfig.m_elementView : m_elementView;
+        CmsResourceTypeConfig result = new CmsResourceTypeConfig(
+            m_typeName,
+            false,
+            folderOrName,
+            namePattern,
+            isDetailPagesDisabled() || childConfig.isDetailPagesDisabled(),
+            childConfig.isAddDisabled(),
+            elementView,
+            m_order);
+        if (childConfig.isDisabled()) {
+            result.m_disabled = true;
+        }
+        return result;
     }
 
     /**
@@ -472,13 +495,26 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     protected CmsResourceTypeConfig copy() {
 
+        return copy(false);
+    }
+
+    /**
+     * Creates a shallow copy of this resource type configuration object.<p>
+     * 
+     * @param disabled true if the copy should be disabled regardless of whether the original is disabled 
+     * 
+     * @return a copy of the resource type configuration object 
+     */
+    protected CmsResourceTypeConfig copy(boolean disabled) {
+
         return new CmsResourceTypeConfig(
             m_typeName,
-            m_disabled,
+            m_disabled || disabled,
             getFolderOrName(),
             m_namePattern,
             m_detailPagesDisabled,
             isAddDisabled(),
+            m_elementView,
             m_order);
     }
 

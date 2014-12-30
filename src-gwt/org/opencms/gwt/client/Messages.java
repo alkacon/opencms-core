@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,8 +30,8 @@ package org.opencms.gwt.client;
 import org.opencms.gwt.client.util.CmsMessages;
 
 /**
- * Convenience class to access the localized messages of this OpenCms package.<p> 
- * 
+ * Convenience class to access the localized  messages of this OpenCms package.<p>
+ *
  * @since 8.0.0
  */
 public final class Messages {
@@ -79,6 +79,12 @@ public final class Messages {
     public static final String ERR_UPLOAD_BROWSER_SECURITY_0 = "ERR_UPLOAD_BROWSER_SECURITY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ABOUT_DIALOG_TITLE_0 = "GUI_ABOUT_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROADCAST_SEND_BY_1 = "GUI_BROADCAST_SEND_BY_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROKEN_LINK_NO_TITLE_0 = "GUI_BROKEN_LINK_NO_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -103,7 +109,28 @@ public final class Messages {
     public static final String GUI_CAPTION_DEFINE_PROPERTY_0 = "GUI_CAPTION_DEFINE_PROPERTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHANGE_PASSWORD_BUTTON_0 = "GUI_CHANGE_PASSWORD_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CLOSE_0 = "GUI_CLOSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRM_REVERT_TITLE_0 = "GUI_CONFIRM_REVERT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_MODE_ASK_0 = "GUI_CREATE_MODE_ASK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_MODE_BUTTON_COPY_0 = "GUI_CREATE_MODE_BUTTON_COPY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_MODE_BUTTON_NEW_0 = "GUI_CREATE_MODE_BUTTON_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_MODE_CAPTION_0 = "GUI_CREATE_MODE_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_NEW_LINK_DIALOG_TITLE_0 = "GUI_CREATE_NEW_LINK_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATE_AM_0 = "GUI_DATE_AM_0";
@@ -208,6 +235,27 @@ public final class Messages {
     public static final String GUI_DONE_0 = "GUI_DONE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_LINK_DIALOG_TITLE_0 = "GUI_EDIT_LINK_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_LINK_LABEL_FILE_NAME_0 = "GUI_EDIT_LINK_LABEL_FILE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_LINK_LABEL_LINK_0 = "GUI_EDIT_LINK_LABEL_LINK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_LINK_LABEL_TITLE_0 = "GUI_EDIT_LINK_LABEL_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_LINK_NO_CHANGES_0 = "GUI_EDIT_LINK_NO_CHANGES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_LINK_NO_FILE_NAME_0 = "GUI_EDIT_LINK_NO_FILE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_LINK_NO_LINK_0 = "GUI_EDIT_LINK_NO_LINK_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_CLOSE_CAPTION_0 = "GUI_EDITOR_CLOSE_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -230,6 +278,45 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_SELECT_DIALOG_TITLE_0 = "GUI_GALLERY_SELECT_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLUMN_PATH_0 = "GUI_HISTORY_COLUMN_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLUMN_SIZE_0 = "GUI_HISTORY_COLUMN_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_TEXT_0 = "GUI_HISTORY_DIALOG_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_TITLE_0 = "GUI_HISTORY_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_MODIFICATION_DATE_0 = "GUI_HISTORY_MODIFICATION_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_MODIFICATION_USER_0 = "GUI_HISTORY_MODIFICATION_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_NO_VERSIONS_0 = "GUI_HISTORY_NO_VERSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_OFFLINE_0 = "GUI_HISTORY_OFFLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_ONLINE_0 = "GUI_HISTORY_ONLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_PREVIEW_HELP_0 = "GUI_HISTORY_PREVIEW_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_PUBLISH_DATE_0 = "GUI_HISTORY_PUBLISH_DATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_REVERT_CONFIRMATION_0 = "GUI_HISTORY_REVERT_CONFIRMATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_REVERT_HELP_0 = "GUI_HISTORY_REVERT_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ICON_TITLE_EXPORT_0 = "GUI_ICON_TITLE_EXPORT_0";
@@ -260,6 +347,51 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOADING_0 = "GUI_LOADING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_ADDRESS_0 = "GUI_LOCATION_ADDRESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_DIALOG_TITLE_0 = "GUI_LOCATION_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_DISPLAY_3 = "GUI_LOCATION_DISPLAY_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_DYNAMIC_0 = "GUI_LOCATION_DYNAMIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_HYBRID_0 = "GUI_LOCATION_HYBRID_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_LATITUDE_0 = "GUI_LOCATION_LATITUDE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_LONGITUDE_0 = "GUI_LOCATION_LONGITUDE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_MODE_0 = "GUI_LOCATION_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_ROADMAP_0 = "GUI_LOCATION_ROADMAP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_SATELLITE_0 = "GUI_LOCATION_SATELLITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_SIZE_0 = "GUI_LOCATION_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_STATIC_0 = "GUI_LOCATION_STATIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_TERRAIN_0 = "GUI_LOCATION_TERRAIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_TYPE_0 = "GUI_LOCATION_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCATION_ZOOM_0 = "GUI_LOCATION_ZOOM_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCK_NOTIFICATION_2 = "GUI_LOCK_NOTIFICATION_2";
@@ -314,6 +446,18 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ORIGIN_SHARED_0 = "GUI_ORIGIN_SHARED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PASSWORD_CHANGE_TITLE_1 = "GUI_PASSWORD_CHANGE_TITLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PASSWORD_CONFIRM_0 = "GUI_PASSWORD_CONFIRM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PASSWORD_NEW_0 = "GUI_PASSWORD_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PASSWORD_OLD_0 = "GUI_PASSWORD_OLD_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PLEASE_WAIT_0 = "GUI_PLEASE_WAIT_0";
@@ -508,6 +652,7 @@ public final class Messages {
     public static final String GUI_SHOW_PREVIEW_0 = "GUI_SHOW_PREVIEW_0";
 
     /** Message constant for key in the resource bundle. */
+
     public static final String GUI_TARGETS_EMPTY_0 = "GUI_TARGETS_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -527,9 +672,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_BACK_0 = "GUI_TOOLBAR_BACK_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TOOLBAR_INHERITED_0 = "GUI_TOOLBAR_INHERITED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_CLIPBOARD_0 = "GUI_TOOLBAR_CLIPBOARD_0";
@@ -560,6 +702,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_INFO_0 = "GUI_TOOLBAR_INFO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_INHERITED_0 = "GUI_TOOLBAR_INHERITED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_MOVE_IN_0 = "GUI_TOOLBAR_MOVE_IN_0";
@@ -601,6 +746,12 @@ public final class Messages {
     public static final String GUI_TOOLBAR_TOGGLE_HELP_0 = "GUI_TOOLBAR_TOGGLE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDELETE_CAPTION_0 = "GUI_UNDELETE_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDELETE_TEXT_0 = "GUI_UNDELETE_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCK_0 = "GUI_UNLOCK_0";
 
     /** Message constant for key in the resource bundle. */
@@ -611,6 +762,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCKING_0 = "GUI_UNLOCKING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNPUBLISHED_CHANGES_NEW_TITLE_0 = "GUI_UNPUBLISHED_CHANGES_NEW_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNPUBLISHED_CHANGES_TITLE_0 = "GUI_UNPUBLISHED_CHANGES_TITLE_0";
@@ -664,6 +818,15 @@ public final class Messages {
     public static final String GUI_USAGE_EMPTY_0 = "GUI_USAGE_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSETTINGS_TAB_ACCOUNT_0 = "GUI_USERSETTINGS_TAB_ACCOUNT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSETTINGS_TAB_BASIC_0 = "GUI_USERSETTINGS_TAB_BASIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSETTINGS_TAB_EXTENDED_0 = "GUI_USERSETTINGS_TAB_EXTENDED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_YES_0 = "GUI_YES_0";
 
     /** Name of the used resource bundle. */
@@ -673,7 +836,7 @@ public final class Messages {
     private static CmsMessages INSTANCE;
 
     /**
-     * Hides the public constructor for this utility class.<p> 
+     * Hides the public constructor for this utility class.<p>
      */
     private Messages() {
 
@@ -682,7 +845,7 @@ public final class Messages {
 
     /**
      * Returns an instance of this localized message accessor.<p>
-     * 
+     *
      * @return an instance of this localized message accessor
      */
     public static CmsMessages get() {
@@ -695,7 +858,7 @@ public final class Messages {
 
     /**
      * Returns the bundle name for this OpenCms package.<p>
-     * 
+     *
      * @return the bundle name for this OpenCms package
      */
     public String getBundleName() {

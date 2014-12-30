@@ -118,12 +118,15 @@ public class CmsRebuildReport extends A_CmsListReport {
             CmsIllegalArgumentException ex = new CmsIllegalArgumentException(Messages.get().container(
                 Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
                 PARAM_INDEXES));
-            LOG.error(ex);
+            LOG.warn(ex);
+
             try {
                 getToolManager().jspForwardTool(this, "/searchindex", null);
             } catch (Exception e) {
                 LOG.error(e);
             }
+
+            throw ex;
         }
         List<String> indexes = extractIndexNames();
         CmsIndexingReportThread thread = new CmsIndexingReportThread(getCms(), indexes);

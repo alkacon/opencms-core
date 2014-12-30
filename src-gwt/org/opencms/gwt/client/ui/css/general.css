@@ -49,18 +49,8 @@ div.toolTip.cornerAll, div.toolTip {
 	color: value("constants.css.textColor");
 }
 
-@if user.agent ie6 {
-	.toolTip {
-		filter: literal("progid:DXImageTransform.Microsoft.Alpha( Opacity=85, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)");
-	}
-} @elif user.agent ie8 {
-	.toolTip {
-		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha( Opacity=85, FinishOpacity=0, Style=0, StartX=0,  FinishX=100, StartY=0, FinishY=100)";
-	}
-} @else {
-	.toolTip {
-		opacity: 0.85;
-	}
+.toolTip {
+	opacity: 0.85;
 }
 
 .toolTip p{
@@ -75,6 +65,7 @@ div.header{
 	width: value("constants.css.toolbarWidth");
 	padding: 10px 0px;
 	margin: 0px auto 10px;
+	position: relative;
 }
 
 /** joined vendor prefix style, for better fall back behavior */
@@ -102,6 +93,16 @@ div.header > div{
 div.header p{
 	font-size: value("constants.css.fontSize");
 	margin: 8px 0px;
+}
+
+div.header div.headerButtons{
+	position: absolute;
+	top: 10px;
+	right: 20px;
+}
+
+div.header div.headerButtons > div{
+	float: right;
 }
 
 .textSmall, div.textSmall{
@@ -176,18 +177,8 @@ div.header p{
 	border-top-left-radius: value("constants.css.borderRadius");
 	border-top-right-radius: value("constants.css.borderRadius");
 }
-/** browser specific styles **/
-@if user.agent ie8 {
-	/** ie7, ie8 **/
-	.shadow{
-		/** standard box-shadow is a gradient, but this is a solid color, so it has to be a bit lighter to look similar */ 
-		-ms-filter: "progid:DXImageTransform.Microsoft.DropShadow(color=value('constants.css.boxShadowColorIE'),offX=2,offY=2)"; 
-	}
-} @else {
-	/** opera, ie9, firefox, chrome */
-	.shadow{
-		box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
-	}
+.shadow{
+	box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
 }
 
 .clearStyles, .clearStyles *{
@@ -206,5 +197,21 @@ div.header p{
 	max-height: none;
 	min-width: 0;
 	max-width: none;
+}
+
+div.simpleFormRow{
+	height: 25px;
+	overflow: hidden;
+}
+div.simpleFormLabel{
+	vertical-align: middle;
+	width: 25%;
+	float: left;
+	padding-top: 5px;
+}
+div.simpleFormInputBox{
+	vertical-align: middle;
+	width: 70%;
+	float: right;
 }
 

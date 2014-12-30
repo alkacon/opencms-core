@@ -43,7 +43,7 @@ import java.util.List;
 public class CmsListRadioMultiAction extends CmsListMultiAction {
 
     /** A list of ids of related list item selection action ids. */
-    private final List m_relatedActionIds;
+    private final List<String> m_relatedActionIds;
 
     /**
      * Default Constructor.<p>
@@ -51,7 +51,7 @@ public class CmsListRadioMultiAction extends CmsListMultiAction {
      * @param id the unique id
      * @param relatedActionIds the ids of the related item selection actions
      */
-    public CmsListRadioMultiAction(String id, List relatedActionIds) {
+    public CmsListRadioMultiAction(String id, List<String> relatedActionIds) {
 
         super(id);
         m_relatedActionIds = relatedActionIds;
@@ -60,6 +60,7 @@ public class CmsListRadioMultiAction extends CmsListMultiAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
      */
+    @Override
     public String buttonHtml(CmsWorkplace wp) {
 
         if (!isVisible()) {
@@ -102,16 +103,16 @@ public class CmsListRadioMultiAction extends CmsListMultiAction {
     }
 
     /**
-     * Returns a comma separated list of related list iem selection action ids.<p>
+     * Returns a comma separated list of related list item selection action ids.<p>
      * 
-     * @return a comma separated list of related list iem selection action ids
+     * @return a comma separated list of related list item selection action ids
      */
     private String getRelatedActionIds() {
 
         StringBuffer ret = new StringBuffer(32);
-        Iterator it = m_relatedActionIds.iterator();
+        Iterator<String> it = m_relatedActionIds.iterator();
         while (it.hasNext()) {
-            ret.append(it.next().toString().trim());
+            ret.append(it.next().trim());
             if (it.hasNext()) {
                 ret.append(',');
             }

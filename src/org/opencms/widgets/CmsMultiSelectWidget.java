@@ -114,10 +114,12 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
     }
 
     /**
-     * @param cms
-     * @param formParameters
-     * @param widgetDialog
-     * @param param
+     * Sets the value of the widget parameter from the provided form parameters.<p>
+     * 
+     * @param cms the cms context
+     * @param formParameters the form parameters
+     * @param widgetDialog the widget dialog
+     * @param param the widget parameter
      */
     public static void setMultiSelectEditorValue(
         CmsObject cms,

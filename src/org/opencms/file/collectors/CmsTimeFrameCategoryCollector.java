@@ -539,6 +539,15 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
     public List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
     throws CmsDataAccessException, CmsException {
 
+        return getResults(cms, collectorName, param, -1);
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public List<CmsResource> getResults(CmsObject cms, String collectorName, String param, int numResults)
+    throws CmsDataAccessException, CmsException {
+
         // if action is not set use default
         if (collectorName == null) {
             collectorName = COLLECTOR_NAME;
@@ -546,7 +555,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
 
         if (COLLECTOR_NAME.equals(collectorName)) {
             // "singleFile"
-            return getTimeFrameAndCategories(cms, param);
+            return getTimeFrameAndCategories(cms, param, numResults);
         } else {
             throw new CmsDataAccessException(org.opencms.file.collectors.Messages.get().container(
                 org.opencms.file.collectors.Messages.ERR_COLLECTOR_NAME_INVALID_1,
@@ -559,12 +568,14 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
      * 
      * @param cms the current cms context
      * @param param the parameter
+     * @param numResults the number of results 
      * 
      * @return the resulting list of resources
      * 
      * @throws CmsException if something goes wrong reading the resources
      */
-    private List<CmsResource> getTimeFrameAndCategories(CmsObject cms, String param) throws CmsException {
+    private List<CmsResource> getTimeFrameAndCategories(CmsObject cms, String param, int numResults)
+    throws CmsException {
 
         List<CmsResource> result = null;
         CollectorDataPropertyBased data = new CollectorDataPropertyBased(param);
@@ -641,6 +652,6 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
         }
 
         // Step 5: result limit
-        return shrinkToFit(result, data.getCount());
+        return shrinkToFit(result, data.getCount(), numResults);
     }
 }

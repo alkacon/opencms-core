@@ -48,7 +48,6 @@ import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -109,20 +108,16 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
      * 
      * @param rootPath the root path 
      * @param name the configuration name 
-     * @param locale the locale to use 
      * 
      * @return the container configuration for the given combination of parameters 
      */
-    public synchronized CmsContainerConfiguration getContainerConfiguration(String rootPath, String name, Locale locale) {
+    public synchronized CmsContainerConfiguration getContainerConfiguration(String rootPath, String name) {
 
         readRemainingConfigurations();
         String key = getCacheKey(rootPath);
         if (m_configurationsByPath.containsKey(key)) {
             CmsContainerConfigurationGroup group = m_configurationsByPath.get(key);
-            CmsContainerConfiguration result = group.getConfiguration(name, locale);
-            if (result == null) {
-                result = group.getConfiguration(name, Locale.ENGLISH);
-            }
+            CmsContainerConfiguration result = group.getConfiguration(name);
             return result;
         }
         return null;

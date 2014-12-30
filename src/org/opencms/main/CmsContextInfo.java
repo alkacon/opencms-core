@@ -63,6 +63,9 @@ public class CmsContextInfo {
     /** Indicates if the configuration if this context info can still be changed or not. */
     private boolean m_frozen;
 
+    /** True if this was determined to be a request to a secure site. */
+    private boolean m_isSecureRequest;
+
     /** The locale to create the context with. */
     private Locale m_locale;
 
@@ -138,6 +141,7 @@ public class CmsContextInfo {
         setEncoding(requestContext.getEncoding());
         setRemoteAddr(requestContext.getRemoteAddress());
         setRequestTime(requestContext.getRequestTime());
+        setIsSecureRequest(requestContext.isSecureRequest());
         setOuFqn(requestContext.getOuFqn());
         setDetailResource(requestContext.getDetailResource());
     }
@@ -149,6 +153,7 @@ public class CmsContextInfo {
      * @param project the project to create the context with
      * @param requestedUri the request URI to create the context with
      * @param siteRoot the site root to create the context with
+     * @param isSecureRequest if this a secure request
      * @param locale the locale to create the context with
      * @param encoding the encoding to create the context with
      * @param remoteAddr the remote ip address to create the context with
@@ -160,6 +165,7 @@ public class CmsContextInfo {
         CmsProject project,
         String requestedUri,
         String siteRoot,
+        boolean isSecureRequest,
         Locale locale,
         String encoding,
         String remoteAddr,
@@ -172,6 +178,7 @@ public class CmsContextInfo {
         setProjectName(m_project.getName());
         setRequestedUri(requestedUri);
         setSiteRoot(siteRoot);
+        setIsSecureRequest(isSecureRequest);
         setLocale(locale);
         setEncoding(encoding);
         setRemoteAddr(remoteAddr);
@@ -208,6 +215,7 @@ public class CmsContextInfo {
         result.m_localeName = m_localeName;
         result.m_project = m_project;
         result.m_projectName = m_projectName;
+        result.m_isSecureRequest = m_isSecureRequest;
         result.m_remoteAddr = m_remoteAddr;
         result.m_requestedUri = m_requestedUri;
         result.m_requestTime = m_requestTime;
@@ -394,6 +402,16 @@ public class CmsContextInfo {
     }
 
     /**
+     * Returns true if this a secure request.<p>
+     * 
+     * @return true if this is a secure request
+     */
+    public boolean isSecureRequest() {
+
+        return m_isSecureRequest;
+    }
+
+    /**
      * Sets the detail content resource.<p>
      * 
      * @param detailResource the detail content resource to set 
@@ -414,6 +432,16 @@ public class CmsContextInfo {
 
         checkFrozen();
         m_encoding = CmsEncoder.lookupEncoding(encoding, OpenCms.getSystemInfo().getDefaultEncoding());
+    }
+
+    /**
+     * Sets the 'isSecureRequest' attribute.<p>
+     * 
+     * @param isSecureRequest  true if this a secure request
+     */
+    public void setIsSecureRequest(boolean isSecureRequest) {
+
+        m_isSecureRequest = isSecureRequest;
     }
 
     /**

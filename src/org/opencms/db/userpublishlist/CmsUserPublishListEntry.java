@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,9 +45,9 @@ public class CmsUserPublishListEntry {
 
     /**
      * Creates a new user publish list entry.<p>
-     * 
-     * @param userId the user id of the owner of the entry  
-     * @param structureId  the structure id of the publish list entry resource 
+     *
+     * @param userId the user id of the owner of the entry (if this field is null, and this object is passed to a method which deletes user publsih list entries, this is interpreted as deleting user publish list entries for all users)
+     * @param structureId  the structure id of the publish list entry resource
      * @param dateChanged the date at which the publish list entry was updated
      */
     public CmsUserPublishListEntry(CmsUUID userId, CmsUUID structureId, long dateChanged) {
@@ -59,8 +59,8 @@ public class CmsUserPublishListEntry {
 
     /**
      * Gets the modification date of the user publish list entry.<p>
-     *  
-     * @return the date changed 
+     *
+     * @return the date changed
      */
     public long getDateChanged() {
 
@@ -69,8 +69,8 @@ public class CmsUserPublishListEntry {
 
     /**
      * Gets the structure id of the resource in the publish list.<p>
-     *  
-     * @return the structure id of the resource in the publish list 
+     *
+     * @return the structure id of the resource in the publish list
      */
     public CmsUUID getStructureId() {
 
@@ -79,8 +79,8 @@ public class CmsUserPublishListEntry {
 
     /**
      * Gets the id of the user to whom the publish list entry belongs.<p>
-     * 
-     * @return the user id of the publish list entry 
+     *
+     * @return the user id of the publish list entry
      */
     public CmsUUID getUserId() {
 

@@ -39,7 +39,6 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -59,6 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
 import com.cybozu.labs.langdetect.Detector;
 import com.cybozu.labs.langdetect.DetectorFactory;
 import com.cybozu.labs.langdetect.LangDetectException;
+import com.google.common.base.Optional;
 
 /**
  * Provides String utility functions.<p>
@@ -112,6 +112,9 @@ public final class CmsStringUtil {
 
     /** Pattern to determine the document number for suffixes like '_0001'. */
     public static final Pattern PATTERN_NUMBER_SUFFIX = Pattern.compile("(.*)_(\\d+)(\\.[^\\.^\\n]*)?$");
+
+    /** Pattern matching one or more slashes. */
+    public static final Pattern PATTERN_SLASHES = Pattern.compile("/+");
 
     /** The place holder end sign in the pattern. */
     public static final String PLACEHOLDER_END = "}";
@@ -1095,7 +1098,7 @@ public final class CmsStringUtil {
 
         String result = listAsString(paths, "/");
         // result may now contain multiple consecutive slashes, so reduce them to single slashes
-        result = result.replaceAll("/+", "/");
+        result = PATTERN_SLASHES.matcher(result).replaceAll("/");
         return result;
     }
 
@@ -1103,7 +1106,10 @@ public final class CmsStringUtil {
      * Concatenates multiple paths and separates them with '/'.<p>
      * 
      * Consecutive slashes will be reduced to a single slash in the resulting string.
-     * For example, joinPaths("/foo/", "/bar", "baz") will return "/foo/bar/baz".
+     * For example joinPaths("/foo/", "/bar", "baz") will return "/foo/bar/baz".<p>
+     * 
+     * If one of the argument paths already contains a double "//" this will also be reduced to '/'.
+     * For example joinPaths("/foo//bar/", "/baz") will return "/foo/bar/baz".
      * 
      * @param paths the array of paths
      *  
@@ -1111,7 +1117,25 @@ public final class CmsStringUtil {
      */
     public static String joinPaths(String... paths) {
 
-        return joinPaths(Arrays.asList(paths));
+        StringBuffer result = new StringBuffer(paths.length * 32);
+        boolean noSlash = true;
+        for (int i = 0; i < paths.length; i++) {
+            for (int j = 0; j < paths[i].length(); j++) {
+                char c = paths[i].charAt(j);
+                if (c != '/') {
+                    result.append(c);
+                    noSlash = true;
+                } else if (noSlash) {
+                    result.append('/');
+                    noSlash = false;
+                }
+            }
+            if (noSlash && (i < (paths.length - 1))) {
+                result.append('/');
+                noSlash = false;
+            }
+        }
+        return result.toString();
     }
 
     /**
@@ -1234,6 +1258,29 @@ public final class CmsStringUtil {
     public static String padRight(String input, int size) {
 
         return (new PrintfFormat("%-" + size + "s")).sprintf(input);
+    }
+
+    /**
+     * Replaces a constant prefix with another string constant in a given text.<p>
+     * 
+     * If the input string does not start with the given prefix, Optional.absent() is returned.<p>
+     * 
+     * @param text the text for which to replace the prefix 
+     * @param origPrefix the original prefix 
+     * @param newPrefix the replacement prefix
+     * @param ignoreCase if true, upper-/lower case differences will be ignored  
+     *  
+     * @return an Optional containing either the string with the replaced prefix, or an absent value if the prefix could not be replaced 
+     */
+    public static Optional<String> replacePrefix(String text, String origPrefix, String newPrefix, boolean ignoreCase) {
+
+        String prefixTestString = ignoreCase ? text.toLowerCase() : text;
+        origPrefix = ignoreCase ? origPrefix.toLowerCase() : origPrefix;
+        if (prefixTestString.startsWith(origPrefix)) {
+            return Optional.of(newPrefix + text.substring(origPrefix.length()));
+        } else {
+            return Optional.absent();
+        }
     }
 
     /**

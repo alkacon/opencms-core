@@ -27,10 +27,10 @@
 
 package org.opencms.ade.contenteditor.widgetregistry.client;
 
-import com.alkacon.acacia.client.I_WidgetFactory;
-import com.alkacon.acacia.client.widgets.FormWidgetWrapper;
-import com.alkacon.acacia.client.widgets.I_EditWidget;
-import com.alkacon.acacia.client.widgets.I_FormEditWidget;
+import org.opencms.acacia.client.I_CmsWidgetFactory;
+import org.opencms.acacia.client.widgets.CmsFormWidgetWrapper;
+import org.opencms.acacia.client.widgets.I_CmsEditWidget;
+import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
@@ -38,7 +38,7 @@ import com.google.gwt.dom.client.Element;
 /**
  * A widget factory for native java script widgets.<p>
  */
-public final class WidgetFactoryWrapper extends JavaScriptObject implements I_WidgetFactory {
+public final class WidgetFactoryWrapper extends JavaScriptObject implements I_CmsWidgetFactory {
 
     /**
      * Constructor.<p>
@@ -48,11 +48,11 @@ public final class WidgetFactoryWrapper extends JavaScriptObject implements I_Wi
     }
 
     /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#createFormWidget(java.lang.String)
+     * @see org.opencms.acacia.client.I_CmsWidgetFactory#createFormWidget(java.lang.String)
      */
-    public I_FormEditWidget createFormWidget(String configuration) {
+    public I_CmsFormEditWidget createFormWidget(String configuration) {
 
-        return new FormWidgetWrapper(new WidgetWrapper(createNativeWidget(configuration)));
+        return new CmsFormWidgetWrapper(new WidgetWrapper(createNativeWidget(configuration)));
     }
 
     /**
@@ -65,9 +65,9 @@ public final class WidgetFactoryWrapper extends JavaScriptObject implements I_Wi
                                   }-*/;
 
     /**
-     * @see com.alkacon.acacia.client.I_WidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.dom.client.Element)
+     * @see org.opencms.acacia.client.I_CmsWidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.dom.client.Element)
      */
-    public I_EditWidget createInlineWidget(String configuration, Element element) {
+    public I_CmsEditWidget createInlineWidget(String configuration, Element element) {
 
         return new WidgetWrapper(createNativeWrapedElement(configuration, element));
     }

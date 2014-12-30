@@ -64,6 +64,7 @@ public final class AllTests {
         suite.addTest(TestPublishHistory.suite());
         suite.addTest(TestSubscriptionManager.suite());
         suite.addTest(TestAliases.suite());
+        suite.addTest(TestUrlNameMapping.suite());
         // $JUnit-END$
         return suite;
     }

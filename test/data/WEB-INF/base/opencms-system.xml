@@ -36,8 +36,9 @@
 		</requesthandlers>
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
 			<encoding>UTF-8</encoding>
-			<digest-type>MD5</digest-type>
+			<digest-type>scrypt</digest-type>
 			<param name="compatibility.convert.digestencoding">false</param>
+            <param name="scrypt.settings">8192,4,2</param>			
 		</passwordhandler>
 		<validationhandler class="org.opencms.security.CmsDefaultValidationHandler" />
 		<sites>
@@ -47,8 +48,12 @@
 			<site server="http://localhost:8080" uri="/sites/default/">
 				<secure server="https://localhost:443" />
 			</site>
+			<!-- If you add sites here, you also need to change the number of expected sites in TestCmsSiteConfiguration. -->
 			<site server="http://localhost:8081" uri="/sites/default/folder1/" />
 			<site server="http://localhost:8082" uri="/sites/testsite/" />
+			<site server="http://foo.org" uri="/sites/foo/" />
+			<site server="http://bar.org" uri="/sites/bar/" />
+			
 		</sites>
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>

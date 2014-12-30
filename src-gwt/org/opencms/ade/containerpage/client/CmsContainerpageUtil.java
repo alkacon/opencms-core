@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsMenuListItem;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -55,6 +56,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style;
@@ -65,7 +67,7 @@ import com.google.gwt.user.client.Window;
 
 /**
  * Utility class for the container-page editor.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainerpageUtil {
@@ -78,7 +80,7 @@ public class CmsContainerpageUtil {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the container page controller
      * @param optionButtons the tool-bar option buttons
      */
@@ -90,7 +92,7 @@ public class CmsContainerpageUtil {
 
     /**
      * Adds an option bar to the given drag element.<p>
-     * 
+     *
      * @param element the element
      */
     public void addOptionBar(CmsContainerPageElementPanel element) {
@@ -107,13 +109,15 @@ public class CmsContainerpageUtil {
 
     /**
      * Transforms all contained elements into {@link CmsContainerPageElementPanel}.<p>
-     * 
+     *
      * @param container the container
      */
     public void consumeContainerElements(I_CmsDropContainer container) {
 
+        boolean containsElements = false;
         // the drag element widgets are created from the existing DOM elements,
         Element child = container.getElement().getFirstChildElement();
+        List<CmsContainerPageElementPanel> children = Lists.newArrayList();
         while (child != null) {
             boolean isContainerElement = CmsDomUtil.hasClass(
                 CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER,
@@ -122,6 +126,7 @@ public class CmsContainerpageUtil {
                 CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER,
                 child);
             if (isContainerElement || isGroupcontainerElement) {
+                containsElements = true;
                 String serializedData = child.getAttribute("rel");
                 CmsContainerElement elementData = null;
                 try {
@@ -167,7 +172,7 @@ public class CmsContainerpageUtil {
                         // looking for the next marker that wraps the current element
                         Element endMarker = (Element)elementRoot.getNextSibling();
                         // only if the end marker node is not null and has neither the end-marker class or start-marker class
-                        // remove the current node and check the next sibling 
+                        // remove the current node and check the next sibling
                         while (!((endMarker == null) || ((endMarker.getNodeType() == Node.ELEMENT_NODE) && (CmsDomUtil.hasClass(
                             CmsContainerElement.CLASS_CONTAINER_ELEMENT_END_MARKER,
                             endMarker) || CmsDomUtil.hasClass(
@@ -209,6 +214,7 @@ public class CmsContainerpageUtil {
                             elementRoot,
                             container,
                             elementData);
+                        children.add(containerElement);
                         if (elementData.isNew()) {
                             containerElement.setNewType(elementData.getResourceType());
                         }
@@ -219,7 +225,6 @@ public class CmsContainerpageUtil {
                     }
                 } else if (isGroupcontainerElement && (container instanceof CmsContainerPageContainer)) {
                     if (elementData == null) {
-                        // deserialization failed, remove whole group container 
                         Element sibling = child.getNextSiblingElement();
                         container.getElement().removeChild(child);
                         child = sibling;
@@ -233,58 +238,81 @@ public class CmsContainerpageUtil {
                     if (groupContainer.getWidgetCount() == 0) {
                         groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
                     }
-                    // important: adding the option-bar only after the group-containers have been consumed 
-                    if (!m_controller.isDetailPage() || container.isDetailView() || container.isDetailOnly()) {
-                        //only allow editing if either element of detail only container or not in detail view 
-                        addOptionBar(groupContainer);
+                    children.add(groupContainer);
+                    // important: adding the option-bar only after the group-containers have been consumed
+                    if (container.isEditable()
+                        && (!m_controller.isDetailPage() || container.isDetailView() || container.isDetailOnly())) {
+                        //only allow editing if either element of detail only container or not in detail view
+                        if (m_controller.requiresOptionBar(groupContainer, container)) {
+                            addOptionBar(groupContainer);
+                        }
                     }
                     child = child.getNextSiblingElement();
                 }
             } else {
                 Element sibling = child.getNextSiblingElement();
-                container.getElement().removeChild(child);
+                if (!containsElements && (sibling == null) && (container instanceof CmsContainerPageContainer)) {
+                    // this element is no container element and is the container only child, assume it is an empty container marker
+                    ((CmsContainerPageContainer)container).setEmptyContainerElement(child);
+                } else {
+                    // e.g. option bar 
+                    if (!CmsContainerPageElementPanel.isOverlay(child)) {
+                        container.getElement().removeChild(child);
+                    }
+                }
                 child = sibling;
                 continue;
             }
         }
+        container.onConsumeChildren(children);
     }
 
     /**
      * The method will create {@link CmsContainerPageContainer} object for all given containers
      * by converting the associated DOM elements. The contained elements will be transformed into {@link CmsContainerPageElementPanel}.<p>
-     * 
+     *
      * @param containers the container data
-     * 
+     * @param context the parent element to the containers
+     *
      * @return the drag target containers
      */
-    public Map<String, CmsContainerPageContainer> consumeContainers(Map<String, CmsContainerJso> containers) {
+    public Map<String, CmsContainerPageContainer> consumeContainers(
+        Map<String, CmsContainer> containers,
+        Element context) {
 
         Map<String, CmsContainerPageContainer> result = new HashMap<String, CmsContainerPageContainer>();
-        Iterator<CmsContainerJso> it = containers.values().iterator();
-        while (it.hasNext()) {
-            CmsContainerJso container = it.next();
+        List<Element> containerElements = CmsDomUtil.getElementsByClass(CmsContainerElement.CLASS_CONTAINER, context);
+        for (Element containerElement : containerElements) {
+            String data = containerElement.getAttribute("rel");
             try {
-                CmsContainerPageContainer dragContainer = new CmsContainerPageContainer(container);
-                consumeContainerElements(dragContainer);
-                result.put(container.getName(), dragContainer);
+                CmsContainer container = m_controller.getSerializedContainer(data);
+                containers.put(container.getName(), container);
+                try {
+                    CmsContainerPageContainer dragContainer = new CmsContainerPageContainer(container, containerElement);
+                    consumeContainerElements(dragContainer);
+                    result.put(container.getName(), dragContainer);
+                } catch (Exception e) {
+                    CmsErrorDialog.handleException(new Exception("Error parsing container "
+                        + container.getName()
+                        + ". Please check if your HTML is well formed.", e));
+                }
             } catch (Exception e) {
-                CmsErrorDialog.handleException(new Exception("Error parsing container "
-                    + container.getName()
-                    + ". Please check if your HTML is well formed.", e));
+                CmsErrorDialog.handleException(new Exception(
+                    "Deserialization of container data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                    e));
             }
         }
-
         return result;
     }
 
     /**
      * Creates an drag container element.<p>
-     * 
-     * @param containerElement the container element data 
+     *
+     * @param containerElement the container element data
      * @param container the container parent
-     * 
+     *
      * @return the draggable element
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public CmsContainerPageElementPanel createElement(
@@ -317,13 +345,13 @@ public class CmsContainerpageUtil {
 
     /**
      * Creates a drag container element for group-container elements.<p>
-     * 
-     * @param containerElement the container element data 
+     *
+     * @param containerElement the container element data
      * @param subElements the sub-elements
      * @param container the drag parent
-     * 
+     *
      * @return the draggable element
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public CmsContainerPageElementPanel createGroupcontainerElement(
@@ -353,9 +381,9 @@ public class CmsContainerpageUtil {
 
     /**
      * Creates a list item.<p>
-     * 
+     *
      * @param containerElement the element data
-     * 
+     *
      * @return the list item widget
      */
     public CmsMenuListItem createListItem(final CmsContainerElementData containerElement) {
@@ -373,7 +401,7 @@ public class CmsContainerpageUtil {
                     editableData.setStructureId(new CmsUUID(
                         CmsContainerpageController.getServerId(containerElement.getClientId())));
                     editableData.setSitePath(containerElement.getSitePath());
-                    getController().getContentEditorHandler().openDialog(editableData, false, null);
+                    getController().getContentEditorHandler().openDialog(editableData, false, null, null);
                     ((CmsPushButton)event.getSource()).clearHoverState();
                 }
             });
@@ -384,7 +412,6 @@ public class CmsContainerpageUtil {
                 listItem.disableEdit(Messages.get().key(Messages.GUI_CLIPBOARD_ITEM_CAN_NOT_BE_EDITED_0), false);
             }
         }
-        listItem.initMoveHandle(m_controller.getDndHandler(), true);
         String clientId = containerElement.getClientId();
         String serverId = CmsContainerpageController.getServerId(clientId);
         if (CmsUUID.isValidUUID(serverId)) {
@@ -396,15 +423,15 @@ public class CmsContainerpageUtil {
                     Window.Location.reload();
                 }
             });
-            listItem.getListItemWidget().addButton(button);
+            listItem.getListItemWidget().addButtonToFront(button);
         }
-
+        listItem.initMoveHandle(m_controller.getDndHandler(), true);
         return listItem;
     }
 
     /**
      * Returns the container page controller.<p>
-     * 
+     *
      * @return the container page controller
      */
     protected CmsContainerpageController getController() {
@@ -414,7 +441,7 @@ public class CmsContainerpageUtil {
 
     /**
      * Displays the element parsing error dialog.<p>
-     * 
+     *
      * @param sitePath the element site path
      */
     private void alertParsingError(String sitePath) {
@@ -426,11 +453,11 @@ public class CmsContainerpageUtil {
 
     /**
      * Creates an drag container element.<p>
-     * 
+     *
      * @param element the DOM element
      * @param dragParent the drag parent
      * @param elementData the element data
-     * 
+     *
      * @return the draggable element
      */
     private CmsContainerPageElementPanel createElement(
@@ -444,25 +471,19 @@ public class CmsContainerpageUtil {
             elementData.getClientId(),
             elementData.getSitePath(),
             elementData.getNoEditReason(),
+            elementData.getTitle(),
+            elementData.getSubTitle(),
+            elementData.getResourceType(),
             elementData.hasSettings(dragParent.getContainerId()),
             elementData.hasViewPermission(),
             elementData.hasWritePermission(),
             elementData.isReleasedAndNotExpired(),
-            elementData.isNewEditorDisabled());
-        boolean isSubElement = dragParent instanceof CmsGroupContainerElementPanel;
-        boolean isContainerEditable = isSubElement
-            || !m_controller.isDetailPage()
-            || dragParent.isDetailView()
-            || dragParent.isDetailOnly();
-        if (isContainerEditable) {
+            elementData.isNewEditorDisabled(),
+            elementData.getElementView());
+        if (m_controller.requiresOptionBar(dragElement, dragParent)) {
             addOptionBar(dragElement);
         }
-        // only enable inline editing for the new content editor
-        // also ignore group container sub-elements unless group editing
-        if (!m_controller.getData().isUseClassicEditor()
-            && m_controller.hasActiveSelection()
-            && isContainerEditable
-            && (!isSubElement || m_controller.isGroupcontainerEditing())) {
+        if (m_controller.isInlineEditable(dragElement, dragParent)) {
             dragElement.initInlineEditor(m_controller);
         }
         return dragElement;
@@ -470,11 +491,11 @@ public class CmsContainerpageUtil {
 
     /**
      * Creates a drag container element. This will not add an option-bar!<p>
-     * 
+     *
      * @param element the DOM element
      * @param dragParent the drag parent
      * @param elementData the element data
-     * 
+     *
      * @return the draggable element
      */
     private CmsGroupContainerElementPanel createGroupcontainer(
@@ -489,10 +510,13 @@ public class CmsContainerpageUtil {
             elementData.getSitePath(),
             elementData.getResourceType(),
             elementData.getNoEditReason(),
+            elementData.getTitle(),
+            elementData.getSubTitle(),
             elementData.hasSettings(dragParent.getContainerId()),
             elementData.hasViewPermission(),
             elementData.hasWritePermission(),
-            elementData.isReleasedAndNotExpired());
+            elementData.isReleasedAndNotExpired(),
+            elementData.getElementView());
         return groupContainer;
     }
 

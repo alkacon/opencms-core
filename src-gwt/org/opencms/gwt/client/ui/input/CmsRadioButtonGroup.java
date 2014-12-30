@@ -29,6 +29,11 @@ package org.opencms.gwt.client.ui.input;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 
 /**
  * This class coordinates multiple radio buttons and makes sure that when a radio button of a group is
@@ -36,13 +41,24 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
  * 
  * @since 8.0.0
  */
-public class CmsRadioButtonGroup {
+public class CmsRadioButtonGroup implements HasValueChangeHandlers<String> {
+
+    /** The event bus. */
+    private transient SimpleEventBus m_eventBus;
 
     /** The currently selected radio button (null if none is selected). */
     private CmsRadioButton m_selectedButton;
 
     /** The object to which value change events should be fired. */
     private HasValueChangeHandlers<String> m_target;
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
 
     /** 
      * Deselects a selected radio button (if one is selected).<p>
@@ -54,7 +70,16 @@ public class CmsRadioButtonGroup {
                 m_selectedButton.setChecked(false);
             }
             m_selectedButton = null;
+            ValueChangeEvent.fire(this, null);
         }
+    }
+
+    /**
+     * @see com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.shared.GwtEvent)
+     */
+    public void fireEvent(GwtEvent<?> event) {
+
+        ensureHandlers().fireEventFromSource(event, this);
     }
 
     /**
@@ -85,6 +110,7 @@ public class CmsRadioButtonGroup {
             if (m_target != null) {
                 ValueChangeEvent.fire(m_target, button.getName());
             }
+            ValueChangeEvent.fire(this, button.getName());
         }
     }
 
@@ -96,6 +122,32 @@ public class CmsRadioButtonGroup {
     public void setValueChangeTarget(HasValueChangeHandlers<String> target) {
 
         m_target = target;
+    }
+
+    /**
+     * Adds this handler to the widget.
+     * 
+     * @param <H> the type of handler to add
+     * @param type the event type
+     * @param handler the handler
+     * @return {@link HandlerRegistration} used to remove the handler
+     */
+    protected final <H extends EventHandler> HandlerRegistration addHandler(final H handler, GwtEvent.Type<H> type) {
+
+        return ensureHandlers().addHandlerToSource(type, this, handler);
+    }
+
+    /**
+     * Lazy initializing the handler manager.<p>
+     * 
+     * @return the handler manager
+     */
+    private SimpleEventBus ensureHandlers() {
+
+        if (m_eventBus == null) {
+            m_eventBus = new SimpleEventBus();
+        }
+        return m_eventBus;
     }
 
 }

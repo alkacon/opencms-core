@@ -144,6 +144,24 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BLOCKING_LOCKED_CHILDREN_0 = "GUI_BLOCKING_LOCKED_CHILDREN_0";
 
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LOCAL_0 = "GUI_CATEGORIES_LOCAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_LOCAL_SUBTITLE_0 = "GUI_CATEGORIES_LOCAL_SUBTITLE_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_NONLOCAL_0 = "GUI_CATEGORIES_NONLOCAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_NONLOCAL_SUBTITLE_0 = "GUI_CATEGORIES_NONLOCAL_SUBTITLE_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORY_NAME_LABEL_0 = "GUI_CATEGORY_NAME_LABEL_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORY_TITLE_LABEL_0 = "GUI_CATEGORY_TITLE_LABEL_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CLIPBOARD_CLEAR_LIST_0 = "GUI_CLIPBOARD_CLEAR_LIST_0";
 
@@ -164,6 +182,24 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRM_LEAVING_TITLE_0 = "GUI_CONFIRM_LEAVING_TITLE_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_CONTEXTMENU_CATEGORY_MODE_0 = "GUI_CONTEXTMENU_CATEGORY_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTEXTMENU_EDIT_CATEGORY_0 = "GUI_CONTEXTMENU_EDIT_CATEGORY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MODEL_PAGE_0 = "GUI_COPY_MODEL_PAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0 = "GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEFAULT_TEMPLATE_TITLE_0 = "GUI_DEFAULT_TEMPLATE_TITLE_0";
@@ -205,6 +241,9 @@ public final class Messages {
     public static final String GUI_DND_ENTRY_TITLE_0 = "GUI_DND_ENTRY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_CATEGORY_CAPTION_1 = "GUI_EDIT_CATEGORY_CAPTION_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_ENTRY_TITLE_0 = "GUI_EDIT_ENTRY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -215,6 +254,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0 = "GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_MODELPAGE_CONTEXTMENU_0 = "GUI_EDIT_MODELPAGE_CONTEXTMENU_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_MODELPAGE_OK_0 = "GUI_EDIT_MODELPAGE_OK_0";
@@ -233,6 +275,27 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FUNCTION_TAB_TITLE_0 = "GUI_FUNCTION_TAB_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_CREATE_0 = "GUI_GALLERIES_CREATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_FOLDER_NAME_0 = "GUI_GALLERIES_LABEL_FOLDER_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_LABEL_TITLE_0 = "GUI_GALLERIES_LABEL_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_TYPES_TAB_0 = "GUI_GALLERIES_TYPES_TAB_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_MANAGER_ROLE_REQUIRED_0 = "GUI_GALLERY_MANAGER_ROLE_REQUIRED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_ROOT_SUBTITLE_0 = "GUI_GALLERY_ROOT_SUBTITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_ADVANCED_0 = "GUI_HOVERBAR_ADVANCED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_AVAILABILITY_0 = "GUI_HOVERBAR_AVAILABILITY_0";
@@ -269,6 +332,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_NEW_0 = "GUI_HOVERBAR_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_OPEN_GALLERY_0 = "GUI_HOVERBAR_OPEN_GALLERY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_PARENT_0 = "GUI_HOVERBAR_PARENT_0";
@@ -331,6 +397,21 @@ public final class Messages {
     public static final String GUI_MERGE_SITEMAP_CONFIRM_TITLE_0 = "GUI_MERGE_SITEMAP_CONFIRM_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODE_PAGE_TREE_ROOT_SUBTITLE_0 = "GUI_MODE_PAGE_TREE_ROOT_SUBTITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_PAGE_DESCRIPTION_LABEL_0 = "GUI_MODEL_PAGE_DESCRIPTION_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_PAGE_TITLE_LABEL_0 = "GUI_MODEL_PAGE_TITLE_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_PAGE_TREE_ROOT_TITLE_0 = "GUI_MODEL_PAGE_TREE_ROOT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_PAGES_0 = "GUI_MODEL_PAGES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NAME_0 = "GUI_NAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -338,6 +419,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_ENTRY_TITLE_0 = "GUI_NEW_ENTRY_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEW_GALLERY_VALIDATION_0 = "GUI_NEW_GALLERY_VALIDATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_PAGES_TAB_DESCRIPTION_0 = "GUI_NEW_PAGES_TAB_DESCRIPTION_0";
@@ -352,7 +436,13 @@ public final class Messages {
     public static final String GUI_NO_EDIT_NOTIFICATION_1 = "GUI_NO_EDIT_NOTIFICATION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_GALLERIES_AVAILABLE_0 = "GUI_NO_GALLERIES_AVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NON_NAVIGATION_BUTTON_TITLE_0 = "GUI_NON_NAVIGATION_BUTTON_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ONLY_GALLERIES_BUTTON_TITLE_0 = "GUI_ONLY_GALLERIES_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ONLY_NAVIGATION_BUTTON_TITLE_0 = "GUI_ONLY_NAVIGATION_BUTTON_TITLE_0";
@@ -397,7 +487,19 @@ public final class Messages {
     public static final String GUI_SELECT_MODEL_TITLE_0 = "GUI_SELECT_MODEL_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECT_VIEW_0 = "GUI_SELECT_VIEW_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_0 = "GUI_SITEMAP_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_CONTEXT_MENU_CREATE_CATEGORY_0 = "GUI_SITEMAP_CONTEXT_MENU_CREATE_CATEGORY_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_CREATE_CATEGORY_TITLE_0 = "GUI_SITEMAP_CREATE_CATEGORY_TITLE_0";
+
+    /**  Message constant for key in the resource bundle. */
+    public static final String GUI_SITEMAP_CREATE_SUBCATEGORY_TITLE_1 = "GUI_SITEMAP_CREATE_SUBCATEGORY_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_TOO_DEEP_MESSAGE_0 = "GUI_SITEMAP_TOO_DEEP_MESSAGE_0";
@@ -442,10 +544,16 @@ public final class Messages {
     public static final String GUI_TITLE_PROPERTY_DESC_0 = "GUI_TITLE_PROPERTY_DESC_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_CLIPBOARD_DISABLE_0 = "GUI_TOOLBAR_CLIPBOARD_DISABLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_NEW_BUTTON_TITLE_0 = "GUI_TOOLBAR_NEW_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_NEW_DISABLE_0 = "GUI_TOOLBAR_NEW_DISABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_NEW_GALLERY_TITLE_0 = "GUI_TOOLBAR_NEW_GALLERY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_REDO_0 = "GUI_TOOLBAR_REDO_0";

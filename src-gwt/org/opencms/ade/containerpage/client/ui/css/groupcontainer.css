@@ -24,16 +24,6 @@
 	z-index: value("constants.css.zIndexHighlighting");
 }
 
-@if user.agent ie6 {
-	.inputBox, .inputLabel{
-		display: inline;
-	}
-} @elif user.agent ie8 {
-	.inputBox, .inputLabel{
-		display: inline-block;
-	}
-} @else {
-	.inputBox, .inputLabel{
-		display: inline-block;
-	}
+.inputBox, .inputLabel{
+	display: inline-block;
 }

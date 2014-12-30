@@ -79,6 +79,13 @@ public abstract class A_CmsTab extends Composite {
     public abstract List<CmsSearchParamPanel> getParamPanels(CmsGallerySearchBean searchObj);
 
     /**
+     * Returns the height required by this tab.<p>
+     * 
+     * @return the height
+     */
+    public abstract int getRequiredHeight();
+
+    /**
      * Returns the tab id.<p>
      * 
      * @return the tab id
@@ -105,6 +112,14 @@ public abstract class A_CmsTab extends Composite {
 
         getTabHandler().onDeselection();
         m_isSelected = false;
+    }
+
+    /**
+     * Adjust content when outer dimensions are changed.<p>
+     */
+    public void onResize() {
+
+        // implement if required
     }
 
     /**

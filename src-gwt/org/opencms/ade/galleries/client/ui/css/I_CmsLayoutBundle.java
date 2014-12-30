@@ -122,12 +122,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
-        String listOnlyTab();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
         String noParamsMessage();
 
         /** Access method.<p>
@@ -218,6 +212,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
+        String shouldOnlyShowInFullTypeList();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String showParams();
 
         /** Access method.<p>
@@ -237,6 +237,24 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the CSS class name
          */
         String tabParamsPanel();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String typeModeSwitch();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String typesFull();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String typesImportant();
     }
 
     /** The base gallery field CSS. */
@@ -341,13 +359,59 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * 
          * @return the CSS class name
          */
-        String expired();
+        String bigImage();
+
+        /**
+         * Big image height constant.<p>
+         * 
+         * @return the big image height
+         */
+        int bigImageHeight();
+
+        /**
+         * Big image width constant.<p>
+         * 
+         * @return the big image width
+         */
+        int bigImageWidth();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String expiredImageOverlay();
 
         /** Access method.<p>
          * 
          * @return the CSS class name
          */
         String imageTile();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String smallImage();
+
+        /**
+         * Small image height constant.<p>
+         * 
+         * @return the small image height
+         */
+        int smallImageHeight();
+
+        /**
+         * Small image width constant.<p>
+         * 
+         * @return the small image width
+         */
+        int smallImageWidth();
+
+        /** Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String smallThumbnails();
 
         /** Access method.<p>
          * 

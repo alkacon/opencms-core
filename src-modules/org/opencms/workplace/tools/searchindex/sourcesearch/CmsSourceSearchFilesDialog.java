@@ -41,6 +41,7 @@ import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -69,7 +70,7 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
     private I_CmsListResourceCollector m_collector;
 
     /** The content sraech file list. */
-    private ArrayList<CmsResource> m_files;
+    private Collection<CmsResource> m_files;
 
     /** Stores the value of the request parameter for the project id. */
     private String m_paramProjectid;
@@ -145,7 +146,7 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
      * 
      * @return the content search result list
      */
-    public List<CmsResource> getFiles() {
+    public Collection<CmsResource> getFiles() {
 
         return m_files;
     }
@@ -203,7 +204,7 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
      * 
      * @param files the found files
      */
-    public void setList(ArrayList<CmsResource> files) {
+    public void seFiles(Collection<CmsResource> files) {
 
         m_files = files;
     }

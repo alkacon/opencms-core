@@ -29,25 +29,14 @@ package org.opencms.util;
 
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsIllegalArgumentException;
-
-import junit.framework.TestCase;
+import org.opencms.test.OpenCmsTestCase;
 
 /** 
  * Test cases for file name validation.<p>
  * 
  * @since 6.0.0
  */
-public class TestValidFilename extends TestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestValidFilename(String arg0) {
-
-        super(arg0);
-    }
+public class TestValidFilename extends OpenCmsTestCase {
 
     /**
      * Tests the file name validation method in the class CmsDriverManager.<p>

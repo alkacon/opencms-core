@@ -27,26 +27,16 @@
 
 package org.opencms.search.extractors;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 /**
  * Tests the text extraction form an Excel file.<p>
  */
-public class TestMsExcelExtraction extends TestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestMsExcelExtraction(String arg0) {
-
-        super(arg0);
-    }
+public class TestMsExcelExtraction extends OpenCmsTestCase {
 
     /**
      * Tests the Excel text extraction for old OLE2 documents.<p>

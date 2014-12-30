@@ -1,22 +1,25 @@
 @external gwt-TabLayoutPanel;
 
-ul.clipboardList{
-	overflow: auto;
-	/* position relative is required to hide overflowing content caused by layout bug in IE7 */
-	position: relative;
-	height: 441px;
+.menuTabContainer div.clipboardList{
 	border: 1px solid value("constants.css.borderColor");
-	padding: 0 2px;
 	background: value("constants.css.backgroundColorDialog");
+	position: absolute;
+	top: 6px;
+	bottom:	6px;
+	left: 6px;
+	right: 6px;
+}
+
+div.clipboardList ul{
+	padding: 0 2px;
+	min-height: 82px;
 }
 .listClearButton{
 	position: absolute;
 	top: -29px;
 	right: 0px;
 }
-.menuTabContainer{
-	height: 486px;
-}
+
 .menuTabContainer > div{
 	border: none;	
 }

@@ -53,4 +53,13 @@ public class CmsSolrLinkProcessor implements I_CmsSolrPostSearchProcessor {
         document.addField("link", OpenCms.getLinkManager().substituteLink(cms, resource));
         return ClientUtils.toSolrDocument(document);
     }
+
+    /**
+     * 
+     * @see org.opencms.search.solr.I_CmsSolrPostSearchProcessor#init()
+     */
+    public void init() {
+
+        // No actions necessary 
+    }
 }

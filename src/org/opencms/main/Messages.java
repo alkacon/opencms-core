@@ -424,6 +424,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ERROR_THREAD_SHUTDOWN_1 = "LOG_ERROR_THREAD_SHUTDOWN_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERROR_VFSBUNDLE_MANAGER_SHUTDOWN_1 = "LOG_ERROR_VFSBUNDLE_MANAGER_SHUTDOWN_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_WRITING_CONFIG_1 = "LOG_ERROR_WRITING_CONFIG_1";
 
     /** Message constant for key in the resource bundle. */

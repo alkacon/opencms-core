@@ -46,8 +46,8 @@ import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -99,6 +99,9 @@ public class CmsFormatterBeanParser {
 
     /** Content value node name. */
     public static final String N_DETAIL = "Detail";
+
+    /** Content value node name. */
+    public static final String N_NESTED_CONTAINERS = "NestedContainers";
 
     /** Content value node name. */
     public static final String N_HEAD_INCLUDE_CSS = "HeadIncludeCss";
@@ -191,7 +194,7 @@ public class CmsFormatterBeanParser {
     private String m_resourceType;
 
     /** Parsed field. */
-    private Map<String, CmsXmlContentProperty> m_settings = new HashMap<String, CmsXmlContentProperty>();
+    private Map<String, CmsXmlContentProperty> m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
 
     /**
      * Creates a new parser instance.<p>
@@ -277,6 +280,9 @@ public class CmsFormatterBeanParser {
         String isDetailStr = getString(root, N_DETAIL, "true");
         boolean isDetail = Boolean.parseBoolean(isDetailStr);
 
+        String hasNestedContainersString = getString(root, N_NESTED_CONTAINERS, "false");
+        boolean hasNestedContainers = Boolean.parseBoolean(hasNestedContainersString);
+
         parseMatch(root);
         parseHeadIncludes(root);
         parseSettings(root);
@@ -301,7 +307,8 @@ public class CmsFormatterBeanParser {
             m_settings,
             true,
             m_autoEnabled,
-            isDetail);
+            isDetail,
+            hasNestedContainers);
         return formatterBean;
     }
 

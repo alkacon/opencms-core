@@ -205,6 +205,7 @@ public class CmsSearchTab extends A_CmsTab {
      * @param availableLocales the available locales
      * @param scope the search scope 
      * @param defaultScope the default search scope 
+     * @param defaultIncludeExpired true if 'show expired' should be enabled by default 
      */
     @SuppressWarnings("deprecation")
     public CmsSearchTab(
@@ -213,7 +214,8 @@ public class CmsSearchTab extends A_CmsTab {
         String currentLocale,
         Map<String, String> availableLocales,
         CmsGallerySearchScope scope,
-        CmsGallerySearchScope defaultScope) {
+        CmsGallerySearchScope defaultScope,
+        boolean defaultIncludeExpired) {
 
         // initialize the tab
         super(GalleryTabId.cms_tab_search.name());
@@ -254,7 +256,8 @@ public class CmsSearchTab extends A_CmsTab {
         m_searchLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0));
         m_searchInput.setGhostValue(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0), true);
         m_searchInput.setGhostModeClear(true);
-        m_includeExpiredCheckBox.setChecked(false);
+        m_includeExpiredCheckBox.setChecked(defaultIncludeExpired);
+        m_tabHandler.setIncludeExpired(defaultIncludeExpired, false);
         m_includeExpiredCheckBox.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_INCLUDE_EXPIRED_0));
         // set the labels for the date box widgets
         m_dateCreatedStartLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_SINCE_0));
@@ -412,6 +415,15 @@ public class CmsSearchTab extends A_CmsTab {
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getRequiredHeight()
+     */
+    @Override
+    public int getRequiredHeight() {
+
+        return 210;
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getTabHandler()
      */
     @Override
@@ -536,7 +548,7 @@ public class CmsSearchTab extends A_CmsTab {
     protected void onIncludeExpiredChange(ValueChangeEvent<Boolean> event) {
 
         Boolean value = event.getValue();
-        m_tabHandler.setIncludeExpired(value.booleanValue());
+        m_tabHandler.setIncludeExpired(value.booleanValue(), true);
     }
 
     /**

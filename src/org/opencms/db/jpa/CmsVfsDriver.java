@@ -456,9 +456,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             parameters.add(new CmsQueryStringParameter(filter.getNamePattern()));
         }
 
-        if (filter.getState() != null) {
-            sqlConditions.add("T_CmsDAO%(PROJECT)UrlNameMappings.m_state = ?");
-            parameters.add(new CmsQueryIntParameter(filter.getState().intValue()));
+        if ((filter.getStates() != null) && (filter.getStates().length > 0)) {
+            List<String> stateConditions = new ArrayList<String>();
+            stateConditions.add("1 = 0");
+            for (int i = 0; i < filter.getStates().length; i++) {
+                sqlConditions.add("T_CmsDAO%(PROJECT)UrlNameMappings.m_state = ?");
+                parameters.add(new CmsQueryIntParameter(filter.getStates()[i]));
+            }
+            sqlConditions.add("( " + CmsStringUtil.listAsString(stateConditions, " OR ") + ")");
         }
 
         if (filter.getRejectStructureId() != null) {
@@ -1441,8 +1446,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             for (I_CmsDAOResourceRelations rr : res) {
                 CmsRelation rel = internalReadRelation(rr);
                 try {
-                    ous.add(m_driverManager.readOrganizationalUnit(dbc, rel.getSourcePath().substring(
-                        CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
+                    ous.add(m_driverManager.readOrganizationalUnit(
+                        dbc,
+                        rel.getSourcePath().substring(CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
                 } catch (CmsException e) {
                     // should never happen
                     if (LOG.isErrorEnabled()) {

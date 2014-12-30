@@ -39,10 +39,12 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -78,22 +80,32 @@ public final class CmsRole {
     /** The "ADMINISTRATOR" role, which is a parent to all organizational unit roles. */
     public static final CmsRole ADMINISTRATOR;
 
+    /** The "CATEGORY_EDITOR" role. */
+    public static final CmsRole CATEGORY_EDITOR;
+
+    /** The "ELEMENT_AUTHOR" role. */
+    public static final CmsRole ELEMENT_AUTHOR;
+
     /** The "EXPORT_DATABASE" role. */
     public static final CmsRole DATABASE_MANAGER;
 
     /** The "DEVELOPER" role. */
     public static final CmsRole DEVELOPER;
 
+    /** The "GALLERY_EDITOR" role. */
+    public static final CmsRole GALLERY_EDITOR;
+
     /** Identifier for role principals. */
     public static final String PRINCIPAL_ROLE = "ROLE";
 
-    /** The "DIRECT_EDIT_USER" role. */
-    // public static final CmsRole DIRECT_EDIT_USER;
     /** The "PROJECT_MANAGER" role. */
     public static final CmsRole PROJECT_MANAGER;
 
     /** The "ROOT_ADMIN" role, which is a parent to all other roles. */
     public static final CmsRole ROOT_ADMIN;
+
+    /** The "EDITOR" role. */
+    public static final CmsRole EDITOR;
 
     /** The "VFS_MANAGER" role. */
     public static final CmsRole VFS_MANAGER;
@@ -133,6 +145,60 @@ public final class CmsRole {
 
     /** Indicates if this role is a system role or a user defined role. */
     private boolean m_systemRole;
+
+    /** Prefix for individual user confirmation runtime property. */
+    public static final String CONFIRM_ROLE_PREFIX = "confirm.role.";
+
+    /**
+     * Initializes the system roles with the configured OpenCms system group names.<p>
+     */
+    static {
+
+        ROOT_ADMIN = new CmsRole("ROOT_ADMIN", null, "/RoleRootAdmins");
+        WORKPLACE_MANAGER = new CmsRole("WORKPLACE_MANAGER", CmsRole.ROOT_ADMIN, "/RoleWorkplaceManager");
+        DATABASE_MANAGER = new CmsRole("DATABASE_MANAGER", CmsRole.ROOT_ADMIN, "/RoleDatabaseManager");
+
+        ADMINISTRATOR = new CmsRole("ADMINISTRATOR", CmsRole.ROOT_ADMIN, "RoleAdministrators");
+        PROJECT_MANAGER = new CmsRole("PROJECT_MANAGER", CmsRole.ADMINISTRATOR, "RoleProjectmanagers");
+        ACCOUNT_MANAGER = new CmsRole("ACCOUNT_MANAGER", CmsRole.ADMINISTRATOR, "RoleAccountManagers");
+        VFS_MANAGER = new CmsRole("VFS_MANAGER", CmsRole.ADMINISTRATOR, "RoleVfsManagers");
+        DEVELOPER = new CmsRole("DEVELOPER", CmsRole.VFS_MANAGER, "RoleDevelopers");
+        WORKPLACE_USER = new CmsRole("WORKPLACE_USER", CmsRole.DEVELOPER, "RoleWorkplaceUsers");
+
+        // the following roles all include the workplace user role
+        PROJECT_MANAGER.m_children.add(WORKPLACE_USER);
+        ACCOUNT_MANAGER.m_children.add(WORKPLACE_USER);
+
+        GALLERY_EDITOR = new CmsRole("GALLERY_EDITOR", CmsRole.WORKPLACE_USER, "RoleGalleryEditor");
+        CATEGORY_EDITOR = new CmsRole("CATEGORY_EDITOR", CmsRole.WORKPLACE_USER, "RoleCategoryEditor");
+        EDITOR = new CmsRole("EDITOR", CmsRole.GALLERY_EDITOR, "RoleEditor");
+
+        // the category editor role also includes the editor role
+        CATEGORY_EDITOR.m_children.add(EDITOR);
+
+        ELEMENT_AUTHOR = new CmsRole("ELEMENT_AUTHOR", CmsRole.EDITOR, "RoleElementAuthor");
+
+        // create a lookup list for the system roles
+        SYSTEM_ROLES = Collections.unmodifiableList(Arrays.asList(new CmsRole[] {
+            ROOT_ADMIN,
+            WORKPLACE_MANAGER,
+            DATABASE_MANAGER,
+            ADMINISTRATOR,
+            PROJECT_MANAGER,
+            ACCOUNT_MANAGER,
+            VFS_MANAGER,
+            DEVELOPER,
+            WORKPLACE_USER,
+            GALLERY_EDITOR,
+            CATEGORY_EDITOR,
+            EDITOR,
+            ELEMENT_AUTHOR}));
+
+        // now initialize all system roles
+        for (int i = 0; i < SYSTEM_ROLES.size(); i++) {
+            (SYSTEM_ROLES.get(i)).initialize();
+        }
+    }
 
     /**
      * Creates a user defined role.<p>
@@ -192,39 +258,21 @@ public final class CmsRole {
     }
 
     /**
-     * Initializes the system roles with the configured OpenCms system group names.<p>
+     * Applies the system role order to a list of roles.<p>
+     * 
+     * @param roles the roles
      */
-    static {
+    public static void applySystemRoleOrder(List<CmsRole> roles) {
 
-        ROOT_ADMIN = new CmsRole("ROOT_ADMIN", null, "/RoleRootAdmins");
-        WORKPLACE_MANAGER = new CmsRole("WORKPLACE_MANAGER", CmsRole.ROOT_ADMIN, "/RoleWorkplaceManager");
-        DATABASE_MANAGER = new CmsRole("DATABASE_MANAGER", CmsRole.ROOT_ADMIN, "/RoleDatabaseManager");
-
-        ADMINISTRATOR = new CmsRole("ADMINISTRATOR", CmsRole.ROOT_ADMIN, "RoleAdministrators");
-        PROJECT_MANAGER = new CmsRole("PROJECT_MANAGER", CmsRole.ADMINISTRATOR, "RoleProjectmanagers");
-        ACCOUNT_MANAGER = new CmsRole("ACCOUNT_MANAGER", CmsRole.ADMINISTRATOR, "RoleAccountManagers");
-        VFS_MANAGER = new CmsRole("VFS_MANAGER", CmsRole.ADMINISTRATOR, "RoleVfsManagers");
-        DEVELOPER = new CmsRole("DEVELOPER", CmsRole.VFS_MANAGER, "RoleDevelopers");
-        WORKPLACE_USER = new CmsRole("WORKPLACE_USER", CmsRole.ADMINISTRATOR, "RoleWorkplaceUsers");
-        // DIRECT_EDIT_USER = new CmsRole("DIRECT_EDIT_USER", CmsRole.WORKPLACE_USER, "RoleDirectEditUsers");
-
-        // create a lookup list for the system roles
-        SYSTEM_ROLES = Collections.unmodifiableList(Arrays.asList(new CmsRole[] {
-            ROOT_ADMIN,
-            WORKPLACE_MANAGER,
-            DATABASE_MANAGER,
-            ADMINISTRATOR,
-            PROJECT_MANAGER,
-            ACCOUNT_MANAGER,
-            VFS_MANAGER,
-            DEVELOPER,
-            WORKPLACE_USER
-        // DIRECT_EDIT_USER
-        }));
-
-        // now initialize all system roles
-        for (int i = 0; i < SYSTEM_ROLES.size(); i++) {
-            (SYSTEM_ROLES.get(i)).initialize();
+        Map<String, CmsRole> ouRoles = new HashMap<String, CmsRole>();
+        for (CmsRole role : roles) {
+            ouRoles.put(role.getRoleName(), role);
+        }
+        roles.clear();
+        for (CmsRole sysRole : CmsRole.getSystemRoles()) {
+            if (ouRoles.containsKey(sysRole.getRoleName())) {
+                roles.add(ouRoles.get(sysRole.getRoleName()));
+            }
         }
     }
 
@@ -236,6 +284,52 @@ public final class CmsRole {
     public static List<CmsRole> getSystemRoles() {
 
         return SYSTEM_ROLES;
+    }
+
+    /**
+     * Checks if the given String starts with {@link #PRINCIPAL_ROLE} followed by a dot.<p>
+     * 
+     * <ul>
+     * <li>Works if the given String is <code>null</code>.
+     * <li>Removes white spaces around the String before the check.
+     * <li>Also works with prefixes not being in upper case.
+     * <li>Does not check if the role after the prefix actually exists.
+     * </ul>
+     * 
+     * @param principalName the potential role name to check
+     * 
+     * @return <code>true</code> in case the String starts with {@link #PRINCIPAL_ROLE}
+     */
+    public static boolean hasPrefix(String principalName) {
+
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(principalName)
+            && (principalName.trim().toUpperCase().startsWith(PRINCIPAL_ROLE + "."));
+    }
+
+    /**
+     * Removes the prefix if the given String starts with {@link #PRINCIPAL_ROLE} followed by a dot.<p>
+     * 
+     * <ul>
+     * <li>Works if the given String is <code>null</code>.
+     * <li>If the given String does not start with {@link #PRINCIPAL_ROLE} followed by a dot it is returned unchanged.
+     * <li>Removes white spaces around the role name.
+     * <li>Also works with prefixes not being in upper case.
+     * <li>Does not check if the role after the prefix actually exists.
+     * </ul>
+     * 
+     * @param principalName the role name to remove the prefix from
+     * 
+     * @return the given String with the prefix {@link #PRINCIPAL_ROLE} and the following dot removed
+     */
+    public static String removePrefix(String principalName) {
+
+        String result = principalName;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(principalName)) {
+            if (hasPrefix(principalName)) {
+                result = principalName.trim().substring(PRINCIPAL_ROLE.length() + 1);
+            }
+        }
+        return result;
     }
 
     /**
@@ -465,7 +559,11 @@ public final class CmsRole {
             }
             children.add(child);
             if (recursive) {
-                children.addAll(child.getChildren(true));
+                for (CmsRole grandChild : child.getChildren(true)) {
+                    if (!children.contains(grandChild)) {
+                        children.add(grandChild);
+                    }
+                }
             }
         }
         return children;

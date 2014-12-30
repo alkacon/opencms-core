@@ -62,6 +62,24 @@ import org.apache.solr.common.params.CommonParams;
 public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandler {
 
     /**
+     * Encapsulate each request with an inner class in order to make OpenCmsSolrHander thread-safe. 
+     */
+    private class Context {
+
+        /** The CMS object. */
+        public CmsObject m_cms;
+
+        /** The Solr index. */
+        public CmsSolrIndex m_index;
+
+        /** The request parameters. */
+        public Map<String, String[]> m_params;
+
+        /** The Solr query. */
+        public CmsSolrQuery m_query;
+    }
+
+    /**
      * An enum storing the handler names implemented by this class.<p>
      */
     private static enum HANDLER_NAMES {
@@ -93,21 +111,6 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
 
     /** The UID. */
     private static final long serialVersionUID = 2460644631508735724L;
-
-    /** The CMS object. */
-    private CmsObject m_cms;
-
-    /** The name of this handler. */
-    private HANDLER_NAMES m_handlerName;
-
-    /** The Solr index. */
-    private CmsSolrIndex m_index;
-
-    /** The request parameters. */
-    private Map<String, String[]> m_params;
-
-    /** The Solr query. */
-    private CmsSolrQuery m_query;
 
     /**
      * OpenCms servlet main request handling method.<p>
@@ -145,17 +148,17 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
      */
     public void handle(HttpServletRequest req, HttpServletResponse res, String name) throws IOException {
 
-        m_handlerName = HANDLER_NAMES.valueOf(name);
-        if (m_handlerName != null) {
+        final HANDLER_NAMES handlerName = HANDLER_NAMES.valueOf(name);
+        if (handlerName != null) {
             try {
-                initializeRequest(req, res);
-                if ((m_params.get(CommonParams.Q) != null) || (m_params.get(CommonParams.FQ) != null)) {
-                    switch (m_handlerName) {
+                Context context = initializeRequest(req, res);
+                if ((context.m_params.get(CommonParams.Q) != null) || (context.m_params.get(CommonParams.FQ) != null)) {
+                    switch (handlerName) {
                         case SolrSelect:
-                            m_index.select(res, m_cms, m_query, true);
+                            context.m_index.select(res, context.m_cms, context.m_query, true);
                             break;
                         case SolrSpell:
-                            m_index.spellCheck(res, m_cms, m_query);
+                            context.m_index.spellCheck(res, context.m_cms, context.m_query);
                             break;
                         default:
                             break;
@@ -208,22 +211,26 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
      * @throws IOException if something goes wrong
      */
     @SuppressWarnings("unchecked")
-    protected void initializeRequest(HttpServletRequest req, HttpServletResponse res)
+    protected Context initializeRequest(HttpServletRequest req, HttpServletResponse res)
     throws CmsException, Exception, CmsSearchException, IOException {
 
-        m_cms = getCmsObject(req);
-        m_params = CmsRequestUtil.createParameterMap(req.getParameterMap());
-        m_index = CmsSearchManager.getIndexSolr(m_cms, m_params);
-        if (m_index != null) {
-            m_query = new CmsSolrQuery(m_cms, m_params);
+        Context context = new Context();
+        context.m_cms = getCmsObject(req);
+        context.m_params = CmsRequestUtil.createParameterMap(req.getParameterMap());
+        context.m_index = CmsSearchManager.getIndexSolr(context.m_cms, context.m_params);
+
+        if (context.m_index != null) {
+            context.m_query = new CmsSolrQuery(context.m_cms, context.m_params);
         } else {
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            String indexName = m_params.get(PARAM_CORE) != null
-            ? m_params.get(PARAM_CORE)[0]
-            : (m_params.get(PARAM_INDEX) != null ? m_params.get(PARAM_INDEX)[0] : null);
+            String indexName = context.m_params.get(PARAM_CORE) != null
+            ? context.m_params.get(PARAM_CORE)[0]
+            : (context.m_params.get(PARAM_INDEX) != null ? context.m_params.get(PARAM_INDEX)[0] : null);
             String message = Messages.get().getBundle().key(Messages.GUI_SOLR_INDEX_NOT_FOUND_1, indexName);
             res.getWriter().println(Messages.get().getBundle().key(Messages.GUI_SOLR_ERROR_HTML_1, message));
         }
+
+        return context;
     }
 
     /**

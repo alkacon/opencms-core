@@ -71,6 +71,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
 
         enableRemoteExceptionHandler();
         I_CmsLayoutBundle bundle = I_CmsLayoutBundle.INSTANCE;
+        bundle.toolbarCss().ensureInjected();
         bundle.buttonCss().ensureInjected();
         bundle.contentEditorCss().ensureInjected();
         bundle.contextmenuCss().ensureInjected();
@@ -86,7 +87,6 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
         bundle.listTreeCss().ensureInjected();
         bundle.stateCss().ensureInjected();
         bundle.tabbedPanelCss().ensureInjected();
-        bundle.toolbarCss().ensureInjected();
         bundle.listItemCss().ensureInjected();
         bundle.availabilityCss().ensureInjected();
         bundle.fieldsetCss().ensureInjected();

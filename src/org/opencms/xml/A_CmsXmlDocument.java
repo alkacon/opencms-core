@@ -334,6 +334,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                     }
                 }
             }
+            initDocument();
         }
 
         // write the modified XML back to the VFS file 

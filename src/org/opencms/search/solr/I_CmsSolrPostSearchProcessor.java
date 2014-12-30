@@ -50,6 +50,11 @@ import org.apache.solr.common.SolrInputDocument;
 public interface I_CmsSolrPostSearchProcessor {
 
     /**
+     * (Re-)Initializes the post processor.<p> 
+     */
+    void init();
+
+    /**
      * Performs the post processing.<p>
      * 
      * @param searchCms the CMS object

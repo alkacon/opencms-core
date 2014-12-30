@@ -8,11 +8,11 @@
 		<Html>
 			<links>
 			</links>
-			<content><![CDATA[<img src="${TARGET}">]]></content>
+			<content><![CDATA[<img src="/shared/target-1.html">]]></content>
 		</Html>
 		<VfsLink>
 			<link>
-				<target><![CDATA[${TARGET2}]]></target>
+				<target><![CDATA[/shared/target-2.html]]></target>
 			</link>
 		</VfsLink>
 	</Test2Link>

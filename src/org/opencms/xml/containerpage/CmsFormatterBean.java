@@ -90,7 +90,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** Indicates if this formatter is to be used as preview in the ADE gallery GUI. */
     private boolean m_isPreviewFormatter;
 
-    /** Javascript head includes. */
+    /** JavaScript head includes. */
     private List<String> m_javascriptHeadIncludes = new ArrayList<String>();
 
     /** The formatter JSP. */
@@ -110,6 +110,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
     /** The formatter min width. */
     private int m_minWidth;
+
+    /** Indicating if this formatter has nested containers. */
+    private boolean m_nestedContainers;
 
     /** The nice name. */
     private String m_niceName;
@@ -137,19 +140,19 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param preview indicates if this formatter is to be used for the preview in the ADE gallery GUI
      * @param searchContent indicates if the content should be searchable in the online index when this formatter is used
      * @param location the location where this formatter was defined, should be an OpenCms VFS resource path
-     * 
-     * @param cssHeadIncludes
-     * @param inlineCss
-     * @param javascriptHeadIncludes
-     * @param inlineJavascript
-     * @param niceName
-     * @param resourceTypeName
-     * @param rank
-     * @param id
-     * @param settings 
-     * @param isFromConfigFile
-     * @param isAutoEnabled 
-     * @param isDetail 
+     * @param cssHeadIncludes the CSS head includes
+     * @param inlineCss the in-line CSS
+     * @param javascriptHeadIncludes the JavaScript headincludes
+     * @param inlineJavascript the in-line JavaScript
+     * @param niceName the configuration display name
+     * @param resourceTypeName the resource type name
+     * @param rank the configuration rank
+     * @param id the configuration id
+     * @param settings the settings configuration
+     * @param isFromConfigFile <code>true</code> if configuration file based
+     * @param isAutoEnabled <code>true</code> if auto enabled
+     * @param isDetail <code>true</code> if detail formatter
+     * @param nestedContainers <code>true</code> if this formatter has nested containers
      */
     public CmsFormatterBean(
         Set<String> containerTypes,
@@ -160,7 +163,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         boolean preview,
         boolean searchContent,
         String location,
-
         List<String> cssHeadIncludes,
         String inlineCss,
         List<String> javascriptHeadIncludes,
@@ -172,7 +174,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         Map<String, CmsXmlContentProperty> settings,
         boolean isFromConfigFile,
         boolean isAutoEnabled,
-        boolean isDetail) {
+        boolean isDetail,
+        boolean nestedContainers) {
 
         m_jspRootPath = jspRootPath;
         m_jspStructureId = jspStructureId;
@@ -197,6 +200,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_isFromFormatterConfigFile = isFromConfigFile;
         m_isAutoEnabled = isAutoEnabled;
         m_isDetail = isDetail;
+        m_nestedContainers = nestedContainers;
     }
 
     /**
@@ -210,8 +214,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param preview indicates if this formatter is to be used for the preview in the ADE gallery GUI
      * @param searchContent indicates if the content should be searchable in the online index when this formatter is used
      * @param location the location where this formatter was defined, should be an OpenCms VFS resource path
-     * 
-     *  
      */
     public CmsFormatterBean(
         String containerType,
@@ -243,9 +245,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             Collections.<String, CmsXmlContentProperty> emptyMap(),
             false,
             false,
-            true);
-
-        // TODO Auto-generated constructor stub
+            true,
+            false);
 
     }
 
@@ -333,7 +334,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             Collections.<String, CmsXmlContentProperty> emptyMap(),
             false,
             false,
-            true);
+            true,
+            false);
         m_matchAll = true;
     }
 
@@ -505,6 +507,14 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public int hashCode() {
 
         return getContainerTypes().hashCode() ^ ((m_minWidth * 33) ^ m_maxWidth);
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#hasNestedContainers()
+     */
+    public boolean hasNestedContainers() {
+
+        return m_nestedContainers;
     }
 
     /**

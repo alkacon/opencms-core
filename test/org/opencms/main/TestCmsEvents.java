@@ -103,7 +103,7 @@ public class TestCmsEvents extends OpenCmsTestCase {
                 projectName,
                 "Unit test project for publish events",
                 OpenCms.getDefaultUsers().getGroupUsers(),
-                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+                OpenCms.getDefaultUsers().getGroupAdministrators(),
                 CmsProject.PROJECT_TYPE_NORMAL);
             cms.getRequestContext().setCurrentProject(project);
             cms.copyResourceToProject("/sites/default/");

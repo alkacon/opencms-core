@@ -29,7 +29,6 @@ package org.opencms.ade.galleries.client.preview;
 
 import org.opencms.ade.galleries.client.preview.ui.CmsImagePreviewDialog;
 import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
-import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsImagePreviewProvider;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -151,7 +150,7 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
         m_previewDialog.init(m_handler);
         CmsPreviewUtil.exportFunctions(getPreviewName(), this);
         parentPanel.add(m_previewDialog);
-        parentPanel.removeStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
+        m_handler.getGalleryDialog().setPreviewVisible(true);
         //load preview data
         loadResourceInfo(resourcePath);
     }

@@ -37,6 +37,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
@@ -311,7 +312,7 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
     /**
      * @see org.opencms.workflow.I_CmsPublishResourceFormatter#initialize(org.opencms.ade.publish.shared.CmsPublishOptions, org.opencms.ade.publish.CmsPublishRelationFinder.ResourceMap)
      */
-    public void initialize(CmsPublishOptions options, ResourceMap resources) {
+    public void initialize(CmsPublishOptions options, ResourceMap resources) throws CmsException {
 
         m_options = options;
         for (CmsResource parentRes : resources.keySet()) {
@@ -377,16 +378,20 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
      * 
      * @param resource the resource 
      * @return the publish resource bean 
+     * 
+     * @throws CmsException if something goes wrong 
      */
-    protected CmsPublishResource createPublishResource(CmsResource resource) {
+    protected CmsPublishResource createPublishResource(CmsResource resource) throws CmsException {
 
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
+        CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(m_cms, resource, null);
         CmsPublishResource pubResource = new CmsPublishResource(
             resource.getStructureId(),
             resUtil.getFullPath(),
             resUtil.getTitle(),
             resUtil.getResourceTypeName(),
             resource.getState(),
+            permissionInfo,
             resource.getDateLastModified(),
             resUtil.getUserLastModified(),
             CmsVfsService.formatDateTime(m_cms, resource.getDateLastModified()),

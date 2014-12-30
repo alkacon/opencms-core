@@ -174,7 +174,7 @@ public abstract class A_CmsGroupEditor extends Composite {
             }
         }
         m_parentContainer = (CmsContainerPageContainer)m_groupContainer.getParentTarget();
-        m_groupContainerPosition = CmsPositionBean.getInnerDimensions(m_groupContainer.getElement());
+        m_groupContainerPosition = CmsPositionBean.getBoundingClientRect(m_groupContainer.getElement());
         m_editingPlaceholder = createPlaceholder(m_groupContainer.getElement());
         m_groupContainer.setEditingPlaceholder(m_editingPlaceholder);
         m_groupContainer.setEditingMarker(m_containerMarker);
@@ -246,6 +246,11 @@ public abstract class A_CmsGroupEditor extends Composite {
 
         m_editorDialog.getElement().getStyle().setDisplay(Display.NONE);
     }
+
+    /**
+     * Reinitializes the option bar buttons on the contained elements.<p>
+     */
+    public abstract void reinitializeButtons();
 
     /**
      * Shows the editor pop-up.<p>
@@ -409,7 +414,7 @@ public abstract class A_CmsGroupEditor extends Composite {
             }
         }
         clearInstance();
-        this.removeFromParent();
+        removeFromParent();
         if (!m_controller.getData().isUseClassicEditor()) {
             for (Widget element : m_groupContainer) {
                 if (element instanceof CmsContainerPageElementPanel) {
@@ -417,6 +422,8 @@ public abstract class A_CmsGroupEditor extends Composite {
                 }
             }
         }
+        m_controller.reinitializeButtons();
+        m_controller.reInitInlineEditing();
         m_controller.fireEvent(new CmsContainerpageEvent(EventType.elementEdited));
     }
 

@@ -1,0 +1,189 @@
+.button, .buttonBar, .hoverButton, .multiButtonBar{}
+
+
+
+div.attributeChoice{
+	border: 1px solid transparent;
+	border-radius: value("constants.css.borderRadius");
+	padding: 1px;
+	margin: -1px;
+	position: relative;
+}
+
+div.hovering.attributeChoice{
+	border-color:value("constants.css.borderColor") !important;
+	background: value("constants.css.backgroundColorDialog");
+	border-bottom-left-radius: 0px;
+	border-top-left-radius: 0px;
+	box-shadow: 2px 2px 2px #666666;
+}
+
+
+
+
+.multiButtonBar > div.hovering.attributeChoice{
+	border-bottom-right-radius: 0px;
+	border-top-left-radius: 4px;
+}
+
+.multiButtonBar div.hovering.displayAbove.attributeChoice{
+	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
+	border-bottom-right-radius: 4px;
+	border-bottom-left-radius: 4px;
+}
+
+.submenu {
+	border-radius: value("constants.css.borderRadius");
+	border: 1px solid value("constants.css.borderColor") !important; 
+	z-index: 999999;
+}
+
+@sprite span.buttonIcon{
+	gwt-image: "gwtImages.icons.addIconDeactivated";
+	display: block;
+	height: 20px;
+	width: 20px;
+	cursor: pointer;
+}
+@sprite span.buttonIcon:hover{
+	gwt-image: "gwtImages.icons.addIconActive";
+}
+
+div.frame{
+	display: none;
+	border: 1px solid value("constants.css.borderColor");
+	border-radius: value("constants.css.borderRadius");
+	border-top-right-radius: 0px;
+	padding: 0px;
+	position: absolute;
+	top: -1px;
+	right: 22px;
+	background: value("constants.css.backgroundColorDialog");
+	z-index: 10;
+	
+}
+
+.multiButtonBar div.frame{
+	top: 22px;
+	right: -1px;
+	box-shadow: 2px 2px 2px #666666;
+}
+
+.displayAbove div.frame{
+	border-bottom-right-radius: 0px;
+	border-top-right-radius: 4px;
+	top:auto;
+	bottom: -1px;
+}
+
+.multiButtonBar .displayAbove div.frame{
+	border-bottom-right-radius: 0px;
+	border-top-right-radius: 4px;
+	top:auto;
+	bottom: 22px;
+	box-shadow: 4px 0 2px -2px #666666;
+}
+
+.frame .shadow{
+	position: absolute;
+	bottom: -1px;
+	left: -1px;
+	right: -1px;
+	top: 20px;
+	border-radius: value("constants.css.borderRadius");
+	box-shadow: 2px 2px 2px #666666;
+	z-index:-1; 
+}
+
+.multiButtonBar .frame .shadow{
+	display: none;
+}
+
+.frame .bridge{
+	position: absolute;
+	width:3px;
+	height:22px;
+	top: 0px;
+	right:-2px;
+	background: value("constants.css.backgroundColorDialog");
+}
+
+.multiButtonBar .frame .bridge{
+	width:22px;
+	height:3px;
+	top:-1px;
+	right:0px;
+}
+
+.displayAbove .frame .bridge{
+	top: auto;
+	bottom: 0px;
+}
+
+.multiButtonBar .displayAbove .frame .bridge{
+	bottom: -1px;
+}
+
+.frame .shadowBottom{
+	display: none;
+}
+
+.displayAbove .frame .shadow{
+	bottom: 24px;
+	top: -1px;
+	border-radius: value("constants.css.borderRadius");
+	box-shadow: 2px 2px 2px #666666;
+}
+
+.displayAbove .frame .shadowBottom{
+	position: absolute;
+	display: block;
+	bottom: -1px;
+	left: 0px;
+	right: -1px;
+	height: 3px;
+	z-index: -1;	
+	box-shadow: 2px 2px 2px #666666;
+}
+.multiButtonBar .displayAbove .frame .shadowBottom{
+	right: 24px;	
+}
+
+.hovering div.frame{
+	display:block;
+}
+div.choices {
+	background: value("constants.css.backgroundColorDialog");
+}
+div.choice{
+	padding: 0 6px;
+	margin: 2px;
+	border: 1px solid #7788AA;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	border-radius: value("constants.css.borderRadius");
+	font-size: 12px;
+	line-height: 16px;
+	color: #7788AA;
+	background-color: value("constants.css.backgroundColorDialog");
+	max-width: 200px;
+	cursor: pointer;
+}
+
+
+/** joined vendor prefix style, for better fall back behavior */
+div.choice{
+	background-image: value("form.PARENT_GRADIENT_IE9");
+	background-image: literal("-moz-linear-gradient(")value("form.PARENT_GRADIENT") literal(")");
+	background-image: literal("-ms-linear-gradient(")value("form.PARENT_GRADIENT") literal(")");
+	background-image: literal("-webkit-linear-gradient(")value("form.PARENT_GRADIENT") literal(")");
+	background-image: literal("-o-linear-gradient(")value("form.PARENT_GRADIENT") literal(")");
+	background-image: literal("linear-gradient(")value("form.PARENT_GRADIENT") literal(")");
+}
+
+div.choice:hover{
+	color: #445577;
+	border-color: #445577;
+}

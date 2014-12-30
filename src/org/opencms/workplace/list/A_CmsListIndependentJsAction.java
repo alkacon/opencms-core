@@ -50,6 +50,7 @@ public abstract class A_CmsListIndependentJsAction extends CmsListIndependentAct
     /**
      * @see org.opencms.workplace.list.CmsListIndependentAction#resolveOnClic(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     protected String resolveOnClic(CmsWorkplace wp) {
 
         String confirmationMessage = getConfirmationMessage().key(wp.getLocale());

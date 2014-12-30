@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -81,14 +82,17 @@ public class CmsDeleteMenuEntry extends A_CmsSitemapMenuEntry {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
+     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow()
      */
     @Override
-    public void onShow(CmsHoverbarShowEvent event) {
+    public void onShow() {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !controller.isRoot(entry.getSitePath());
+        // gallery folders may only be deleted by gallery managers
+        boolean show = !controller.isRoot(entry.getSitePath())
+            && !CmsSitemapView.getInstance().isModelPageMode()
+            && (!CmsSitemapView.getInstance().isGalleryMode() || getHoverbar().getController().getData().isGalleryManager());
         setVisible(show);
         if (show && !entry.isEditable()) {
             setActive(false);

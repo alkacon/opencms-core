@@ -88,6 +88,13 @@ public final class CmsHelpNavigationListView {
         this(new CmsJspActionElement(context, request, response));
     }
 
+    /**
+     * Returns a String of spaces.<p>
+     * 
+     * @param n the count of spaces
+     * 
+     * @return a String of spaces
+     */
     private static String getSpaces(int n) {
 
         // avoid negative NegativeArraySizeException in case uri is missing
@@ -114,7 +121,7 @@ public final class CmsHelpNavigationListView {
         if (m_navRootPath != null) {
             buffer.append("\n").append(spaces).append("<p>\n");
             buffer.append(spaces).append("  <ul>\n");
-            List navElements = m_jsp.getNavigation().getSiteNavigation(m_navRootPath, endlevel);
+            List<CmsJspNavElement> navElements = m_jsp.getNavigation().getSiteNavigation(m_navRootPath, endlevel);
             if (navElements.size() > 0) {
                 createNavigationInternal(buffer, navElements);
             }
@@ -171,6 +178,11 @@ public final class CmsHelpNavigationListView {
         m_navRootPath = navRootPath;
     }
 
+    /**
+     * Calculates and returns the navigation end level.<p>
+     * 
+     * @return the navigation end level
+     */
     private int calculateEndLevel() {
 
         int result = 0;
@@ -192,10 +204,16 @@ public final class CmsHelpNavigationListView {
         return result;
     }
 
-    private void createNavigationInternal(StringBuffer buffer, List navElements) {
+    /**
+     * Creates the HTML for the internal help.<p>
+     * 
+     * @param buffer the StringBuffer to which the Navigation will be appended
+     * @param navElements the navigation elements to build the navigation for
+     */
+    private void createNavigationInternal(StringBuffer buffer, List<CmsJspNavElement> navElements) {
 
         // take the element to render.
-        CmsJspNavElement element = (CmsJspNavElement)navElements.remove(0);
+        CmsJspNavElement element = navElements.remove(0);
         int elementLevel = element.getNavTreeLevel();
         String spacing = getSpaces(elementLevel * 2);
         // render element:
@@ -214,7 +232,7 @@ public final class CmsHelpNavigationListView {
 
         // peek at the next (list is depth - first by contract)
         if (!navElements.isEmpty()) {
-            CmsJspNavElement child = (CmsJspNavElement)navElements.get(0);
+            CmsJspNavElement child = navElements.get(0);
             int childLevel = child.getNavTreeLevel();
             if (elementLevel < childLevel) {
                 // next one goes down a level: it is a child by tree means

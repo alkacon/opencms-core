@@ -34,7 +34,7 @@ import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.A_CmsListReport;
 import org.opencms.workplace.tools.CmsToolDialog;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -102,7 +102,7 @@ public class CmsSourceSearchReport extends A_CmsListReport {
         // close link parameter present
         try {
             HttpSession session = getJsp().getJspContext().getSession();
-            ArrayList resultList = (ArrayList)session.getAttribute(CmsSearchReplaceSettings.ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST);
+            Collection resultList = (Collection)session.getAttribute(CmsSearchReplaceSettings.ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST);
             if ((resultList != null) && !resultList.isEmpty()) {
                 getToolManager().jspForwardTool(this, "/searchindex/sourcesearch/fileslist", params);
             } else {

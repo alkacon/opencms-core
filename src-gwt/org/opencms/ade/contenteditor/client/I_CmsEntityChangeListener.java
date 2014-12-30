@@ -27,7 +27,7 @@
 
 package org.opencms.ade.contenteditor.client;
 
-import com.alkacon.vie.client.Entity;
+import org.opencms.acacia.shared.CmsEntity;
 
 /**
  * The entity change listener interface.<p>
@@ -39,6 +39,6 @@ public interface I_CmsEntityChangeListener {
      * 
      * @param entity the changed entity
      */
-    void onEntityChange(Entity entity);
+    void onEntityChange(CmsEntity entity);
 
 }

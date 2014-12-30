@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,10 +31,13 @@ import org.opencms.util.CmsUUID;
 
 /**
  * Bean holding data needed to open the xml content editor.<p>
- * 
+ *
  * @since 8.0.1
  */
 public class CmsEditableData implements I_CmsEditableData {
+
+    /** The context id, identifying the collector list  instance. */
+    private String m_contextId;
 
     /** The edit id. */
     private String m_editId;
@@ -54,6 +57,9 @@ public class CmsEditableData implements I_CmsEditableData {
     /** The no edit reason. */
     private String m_noEditReason;
 
+    /** The optional class name of a post-create handler. */
+    private String m_postCreateHandler;
+
     /** The site path. */
     private String m_sitePath;
 
@@ -62,6 +68,22 @@ public class CmsEditableData implements I_CmsEditableData {
 
     /** The unreleased or expired flag. */
     private boolean m_unreleaseOrExpired;
+
+    /**
+     * Default constructor.<p>
+     */
+    public CmsEditableData() {
+
+        // do nothing
+    }
+
+    /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#getContextId()
+     */
+    public String getContextId() {
+
+        return m_contextId;
+    }
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getEditId()
@@ -112,6 +134,14 @@ public class CmsEditableData implements I_CmsEditableData {
     }
 
     /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#getPostCreateHandler()
+     */
+    public String getPostCreateHandler() {
+
+        return m_postCreateHandler;
+    }
+
+    /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getSitePath()
      */
     public String getSitePath() {
@@ -133,6 +163,17 @@ public class CmsEditableData implements I_CmsEditableData {
     public boolean isUnreleasedOrExpired() {
 
         return m_unreleaseOrExpired;
+    }
+
+    /**
+     * Sets  the collector context id.<p>
+     *
+     * @param id the collector context id
+     */
+    public void setContextId(String id) {
+
+        m_contextId = id;
+
     }
 
     /**
@@ -216,7 +257,7 @@ public class CmsEditableData implements I_CmsEditableData {
 
     /**
      * Sets the unreleased or expired flag.<p>
-     * 
+     *
      * @param unreleaseOrExpired the unreleased or expired flag
      */
     public void setUnreleaseOrExpired(boolean unreleaseOrExpired) {

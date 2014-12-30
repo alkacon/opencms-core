@@ -43,23 +43,23 @@ public class CmsUrlNameMappingFilter {
     /** Base filter which matches all URL name mapping entries. */
     public static final CmsUrlNameMappingFilter ALL = new CmsUrlNameMappingFilter();
 
+    /** The locale which should be matched. */
+    private String m_locale;
+
     /** The name which should be matched. */
     private String m_name;
 
     /** The name pattern which should be matched. */
     private String m_namePattern;
 
-    /** The locale which should be matched. */
-    private String m_locale;
+    /** The structure id which should not be matched. */
+    private CmsUUID m_rejectStructureId;
 
-    /** The state which should be matched. */
-    private Integer m_state;
+    /** The states which should be matched. */
+    private int[] m_states;
 
     /** The structure id which should be matched. */
     private CmsUUID m_structureId;
-
-    /** The structure id which should not be matched. */
-    private CmsUUID m_rejectStructureId;
 
     /**
      * The default constructor.<p>
@@ -79,7 +79,7 @@ public class CmsUrlNameMappingFilter {
         this.m_name = filter.m_name;
         this.m_structureId = filter.m_structureId;
         this.m_rejectStructureId = filter.m_rejectStructureId;
-        this.m_state = filter.m_state;
+        this.m_states = filter.m_states;
         this.m_namePattern = filter.m_namePattern;
         this.m_locale = filter.m_locale;
     }
@@ -158,14 +158,14 @@ public class CmsUrlNameMappingFilter {
     /**
      * Creates a new filter from the current filter which also has to match a given state.<p>
      * 
-     * @param state the state to match 
+     * @param states the states to match 
      * 
      * @return the new filter 
      */
-    public CmsUrlNameMappingFilter filterState(int state) {
+    public CmsUrlNameMappingFilter filterStates(int... states) {
 
         CmsUrlNameMappingFilter result = new CmsUrlNameMappingFilter(this);
-        result.m_state = new Integer(state);
+        result.m_states = states;
         return result;
 
     }
@@ -233,9 +233,9 @@ public class CmsUrlNameMappingFilter {
      * 
      * @return the state which should be matched by the filter 
      */
-    public Integer getState() {
+    public int[] getStates() {
 
-        return m_state;
+        return m_states;
     }
 
     /**
@@ -258,7 +258,7 @@ public class CmsUrlNameMappingFilter {
         return (m_structureId != null)
             && (m_name == null)
             && (m_namePattern == null)
-            && (m_state == null)
+            && (m_states == null)
             && (m_rejectStructureId == null)
             && (m_locale == null);
     }
@@ -273,7 +273,7 @@ public class CmsUrlNameMappingFilter {
         return (m_structureId == null)
             && (m_name != null)
             && (m_namePattern == null)
-            && (m_state == null)
+            && (m_states == null)
             && (m_rejectStructureId == null)
             && (m_locale == null);
     }
@@ -292,8 +292,8 @@ public class CmsUrlNameMappingFilter {
         if (m_structureId != null) {
             resultParts.add("id=" + m_structureId);
         }
-        if (m_state != null) {
-            resultParts.add("state=" + m_state);
+        if (m_states != null) {
+            resultParts.add("states=" + m_states);
         }
         if (m_namePattern != null) {
             resultParts.add("pattern='" + m_namePattern + "'");

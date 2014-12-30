@@ -29,14 +29,16 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsTypesTabHandler;
 import org.opencms.ade.galleries.client.Messages;
+import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
+import org.opencms.ade.galleries.shared.CmsResourceTypeBean.TypeVisibility;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
-import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
+import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
@@ -49,6 +51,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides the widget for the types tab.<p>
@@ -112,9 +118,6 @@ public class CmsTypesTab extends A_CmsListTab {
         }
     }
 
-    /** Text metrics key. */
-    private static final String TM_TYPE_TAB = "TypeTab";
-
     /** The list of selection handlers. */
     List<SelectionHandler> m_selectionHandlers = Lists.newArrayList();
 
@@ -127,6 +130,12 @@ public class CmsTypesTab extends A_CmsListTab {
     /** Map of type beans to type name. */
     private Map<String, CmsResourceTypeBean> m_types;
 
+    /** Style variable to control whether the full type list should be shown. */
+    CmsStyleVariable m_typeListMode;
+
+    /** The switch to enable/disable the full type list. */
+    private Widget m_typeModeToggle;
+
     /**
      * Constructor.<p>
      * 
@@ -138,7 +147,6 @@ public class CmsTypesTab extends A_CmsListTab {
         super(GalleryTabId.cms_tab_types);
         m_tabHandler = tabHandler;
         m_dndHandler = dndHandler;
-        m_scrollList.truncate(TM_TYPE_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         init();
     }
 
@@ -163,21 +171,32 @@ public class CmsTypesTab extends A_CmsListTab {
             listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(typeBean.getType(), false));
             listItemWidget.setUnselectable();
             CmsCheckBox checkBox = new CmsCheckBox();
-            SelectionHandler selectionHandler = new SelectionHandler(typeBean.getType(), checkBox);
-            checkBox.addClickHandler(selectionHandler);
-            listItemWidget.addClickHandler(selectionHandler);
-            if ((selectedTypes != null) && selectedTypes.contains(typeBean.getType())) {
-                checkBox.setChecked(true);
-            }
-            listItemWidget.addButton(createSelectButton(selectionHandler));
             CmsListItem listItem = new CmsListItem(checkBox, listItemWidget);
+            if (typeBean.isDeactivated()) {
+                checkBox.disable("");
+                listItem.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().expired());
+            } else {
+                SelectionHandler selectionHandler = new SelectionHandler(typeBean.getType(), checkBox);
+                checkBox.addClickHandler(selectionHandler);
+                listItemWidget.addClickHandler(selectionHandler);
+                if ((selectedTypes != null) && selectedTypes.contains(typeBean.getType())) {
+                    checkBox.setChecked(true);
+                }
+                listItemWidget.addButton(createSelectButton(selectionHandler));
+
+                if (typeBean.isCreatableType() && (m_dndHandler != null)) {
+                    listItem.initMoveHandle(m_dndHandler, true);
+                    listItem.getMoveHandle().setTitle(Messages.get().key(Messages.GUI_TAB_TYPES_CREATE_NEW_0));
+                }
+            }
             listItem.setId(typeBean.getType());
-            if (typeBean.isCreatableType() && (m_dndHandler != null)) {
-                listItem.initMoveHandle(m_dndHandler, true);
-                listItem.getMoveHandle().setTitle(Messages.get().key(Messages.GUI_TAB_TYPES_CREATE_NEW_0));
+
+            if (typeBean.getVisibility() == TypeVisibility.showOptional) {
+                listItem.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().shouldOnlyShowInFullTypeList());
             }
             addWidgetToList(listItem);
         }
+        updateTypeModeToggle();
     }
 
     /**
@@ -235,11 +254,8 @@ public class CmsTypesTab extends A_CmsListTab {
     @Override
     protected LinkedHashMap<String, String> getSortList() {
 
-        LinkedHashMap<String, String> list = new LinkedHashMap<String, String>();
-        list.put(SortParams.title_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_ASC_0));
-        list.put(SortParams.title_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_DECS_0));
+        return null;
 
-        return list;
     }
 
     /**
@@ -259,5 +275,63 @@ public class CmsTypesTab extends A_CmsListTab {
 
         // quick filter not available for this tab
         return true;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#init()
+     */
+    @Override
+    protected void init() {
+
+        super.init();
+
+        m_typeListMode = new CmsStyleVariable(this);
+        m_typeListMode.setValue(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().typesImportant());
+        final CmsCheckBox typeToggle = new CmsCheckBox(Messages.get().key(Messages.GUI_SHOW_SYSTEM_TYPES_0));
+        FlowPanel toggleContainer = new FlowPanel();
+        toggleContainer.add(typeToggle);
+        toggleContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().typeModeSwitch());
+        m_options.add(toggleContainer);
+        typeToggle.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+
+                boolean value = event.getValue().booleanValue();
+                setShowAllTypes(value);
+                m_list.onResizeDescendant();
+            }
+        });
+        m_typeModeToggle = toggleContainer;
+        updateTypeModeToggle();
+    }
+
+    /**
+     * Enables/disables full type list mode.<p>
+     * 
+     * @param showAllTypes true if all types should be shown 
+     */
+    protected void setShowAllTypes(boolean showAllTypes) {
+
+        m_typeListMode.setValue(showAllTypes
+        ? I_CmsLayoutBundle.INSTANCE.galleryDialogCss().typesFull()
+        : I_CmsLayoutBundle.INSTANCE.galleryDialogCss().typesImportant());
+        m_tabHandler.updateSize();
+    }
+
+    /**
+     * Updates the type mode switch.<p>
+     */
+    protected void updateTypeModeToggle() {
+
+        m_typeModeToggle.setVisible(false);
+        if (m_types != null) {
+            for (CmsResourceTypeBean type : m_types.values()) {
+                if (type.getVisibility() == TypeVisibility.showOptional) {
+                    m_typeModeToggle.setVisible(true);
+                    return;
+
+                }
+            }
+        }
     }
 }

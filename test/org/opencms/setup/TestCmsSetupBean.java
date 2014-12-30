@@ -28,13 +28,12 @@
 package org.opencms.setup;
 
 import org.opencms.configuration.CmsParameterConfiguration;
-import org.opencms.configuration.TestParameterConfiguration;
 import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.List;
 
 /**
@@ -62,11 +61,16 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
         CmsSetupBean bean = new CmsSetupBean();
         bean.init("", null, null);
 
-        String testPropPath = "org/opencms/configuration/";
+        String testPropPath = "org/opencms/configuration/opencms-test.properties";
+        URL url = this.getClass().getClassLoader().getResource(testPropPath);
+        String decodedPath = URLDecoder.decode(url.getPath(), "UTF-8");
+        File input = new File(decodedPath);
+        System.out.println("URL: '" + url + "'");
+        System.out.println("URL path decoded: '" + decodedPath + "'");
+        System.out.println("File: '" + input + "'");
+        // make sure the test properties file is found
+        assertTrue("Test property file '" + input.getAbsolutePath() + "' not found", input.exists());
 
-        File input = new File(this.getClass().getClassLoader().getResource(
-            testPropPath + "opencms-test.properties").getPath());
-        assertTrue("Checking if test properties file is present", input.exists());
         String inputFile = input.getAbsolutePath();
         String outputFile = input.getParent() + "/output.properties";
 
@@ -75,18 +79,18 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
 
         System.out.println("Writing properties to " + outputFile);
         bean.copyFile(inputFile, outputFile);
-        if (!bean.getErrors().isEmpty()){
-        	for (String message : bean.getErrors()){
-        		System.out.println(message);
-        	}
-        	assertTrue("There shouldn't be any errors copying the properties files",!bean.getErrors().isEmpty());
+        if (!bean.getErrors().isEmpty()) {
+            for (String message : bean.getErrors()) {
+                System.out.println(message);
+            }
+            assertTrue("There shouldn't be any errors copying the properties files", !bean.getErrors().isEmpty());
         }
         bean.saveProperties(oldProperties, outputFile, false);
-        if (!bean.getErrors().isEmpty()){
-        	for (String message : bean.getErrors()){
-        		System.out.println(message);
-        	}
-        	assertTrue("There shouldn't be any errors saving the properties files",!bean.getErrors().isEmpty());
+        if (!bean.getErrors().isEmpty()) {
+            for (String message : bean.getErrors()) {
+                System.out.println(message);
+            }
+            assertTrue("There shouldn't be any errors saving the properties files", !bean.getErrors().isEmpty());
         }
         System.out.println("Checking properties from " + outputFile);
         CmsParameterConfiguration newProperties = new CmsParameterConfiguration(outputFile);
@@ -98,15 +102,17 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
             if (obj instanceof List) {
                 StringBuffer buf;
 
+                List<?> l1 = (List<?>)obj;
                 buf = new StringBuffer();
-                for (Iterator j = ((List)obj).iterator(); j.hasNext();) {
-                    buf.append("[" + (String)j.next() + "]");
+                for (Object o1 : l1) {
+                    buf.append("[" + o1 + "]");
                 }
                 oldValue = buf.toString();
 
                 buf = new StringBuffer();
-                for (Iterator j = ((List)newProperties.getObject(key)).iterator(); j.hasNext();) {
-                    buf.append("[" + (String)j.next() + "]");
+                List<?> l2 = (List<?>)newProperties.getObject(key);
+                for (Object o2 : l2) {
+                    buf.append("[" + o2 + "]");
                 }
                 newValue = buf.toString();
 
@@ -121,8 +127,10 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
             assertEquals(oldValue, newValue);
         }
 
+        /*
         // clean up - remove generated file
         File output = new File(outputFile);
-        // output.delete();
+        output.delete();
+        */
     }
 }

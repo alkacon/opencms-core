@@ -13,8 +13,9 @@
     <group>OpenCms ADE</group>
     <class/>
     <description><![CDATA[<p>Gwt based publish dialog for OpenCms 8<p>
+
 <p><i>&copy; 2014 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-    <version>9.0.1</version>
+    <version>9.5.0</version>
     <authorname/>
     <authoremail/>
     <datecreated/>
@@ -121,8 +122,7 @@
         </accessentry>
       </accesscontrol>
     </file>
-    
-        <file>
+    <file>
       <source>system/modules/org.opencms.ade.publish/direct_publish.jsp</source>
       <destination>system/modules/org.opencms.ade.publish/direct_publish.jsp</destination>
       <type>jsp</type>
@@ -151,10 +151,43 @@
         </accessentry>
       </accesscontrol>
     </file>
-    
-    
-    
-    
+
+
+     <file>
+      <source>system/modules/org.opencms.ade.publish/publish_project.jsp</source>
+      <destination>system/modules/org.opencms.ade.publish/publish_project.jsp</destination>
+      <type>jsp</type>
+      <uuidstructure>0c187fef-58cc-433f-ba7e-be97f5f3b480</uuidstructure>
+      <uuidresource>0665ab9d-2833-49d1-bed4-53f05d6d2e51</uuidresource>
+      <datelastmodified>Thu, 08 Dec 2011 08:18:04 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Thu, 08 Dec 2011 08:18:04 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties>
+        <property type="shared">
+          <name>export</name>
+          <value><![CDATA[false]]></value>
+        </property>
+      </properties>
+      <relations/>
+      <accesscontrol>
+        <accessentry>
+          <uuidprincipal>ALL_OTHERS</uuidprincipal>
+          <flags>132</flags>
+          <permissionset>
+            <allowed>0</allowed>
+            <denied>0</denied>
+          </permissionset>
+        </accessentry>
+      </accesscontrol>
+    </file>
+
+
+
+
+
+
     <file>
       <destination>system/modules/org.opencms.ade.publish/resources</destination>
       <type>folder</type>

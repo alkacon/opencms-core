@@ -3,25 +3,27 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-	<ui:style field="m_style" type="org.opencms.ade.galleries.client.preview.ui.CmsBinaryPreviewContent.I_CmsPreviewContentStyle">
+	<ui:style>
 		div.panel{
 			height: 100%;
 			overflow: hidden;
 			position: relative;
 		}
-		div.panel > div {
+		div.panel > ul {
 			margin:2px;
 		}
 		div.panel div.previewContent{
-			margin-top: 10px;
-			height: 310px;
-			position: relative;
+			top: 52px;
+			left: 2px;
+			bottom: 2px;
+			right: 2px;
+			position: absolute;
 			overflow: auto;
 		}
 		
 	</ui:style>
-	<g:HTMLPanel styleName="{m_style.panel}">
+	<g:HTMLPanel styleName="{style.panel}">
 		<cms:CmsList ui:field="m_list" />
-		<g:HTML ui:field="m_previewContent" styleName="{m_style.previewContent}" />
+		<g:HTML ui:field="m_previewContent" styleName="{style.previewContent}" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

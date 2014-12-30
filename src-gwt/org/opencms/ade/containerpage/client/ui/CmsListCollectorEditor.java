@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,31 +29,90 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.gwt.client.ui.A_CmsDirectEditButtons;
+import org.opencms.gwt.client.ui.CmsCreateModeSelectionDialog;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
+import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.util.CmsUUID;
 
+import java.util.Map;
+
+import com.google.common.base.Objects;
+import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Class to provide direct edit buttons within list collector elements.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
 
+    /** True if the parent element has offset height or width. */
+    private boolean m_parentHasDimensions;
+
     /**
      * Creates a new instance.<p>
-     * 
-     * @param editable the editable element 
-     * @param parentId the parent id 
+     *
+     * @param editable the editable element
+     * @param parentId the parent id
      */
     public CmsListCollectorEditor(Element editable, String parentId) {
 
         super(editable, parentId);
+    }
+
+    /**
+     * Creates the button to add an element to the user's favorites.<p>
+     * 
+     * @return the created button 
+     */
+    public CmsPushButton createFavButton() {
+
+        CmsPushButton favButton = new CmsPushButton();
+        favButton.setImageClass(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getIconClass());
+        favButton.addStyleName(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getIconClass());
+        favButton.setTitle(I_CmsButton.ButtonData.ADD_TO_FAVORITES.getTitle());
+        favButton.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
+        add(favButton);
+        favButton.addClickHandler(new ClickHandler() {
+
+            @SuppressWarnings("synthetic-access")
+            public void onClick(ClickEvent event) {
+
+                CmsContainerpageController.get().getHandler().addToFavorites("" + m_editableData.getStructureId());
+            }
+        });
+        return favButton;
+    }
+
+    /**
+     * Returns true if the element view of the element is compatible with the currently set element view in the container page editor.<p>
+     * 
+     * @return true if the element should be visible in the current mode 
+     */
+    public boolean isVisibleInCurrentView() {
+
+        return Objects.equal(m_editableData.getElementView(), CmsContainerpageController.get().getElementView());
+    }
+
+    /** 
+     * Sets the 'parentHasDimensions' flag.<p>
+     * 
+     * @param parentHasDimensions the new value of the flag 
+     */
+    public void setParentHasDimensions(boolean parentHasDimensions) {
+
+        m_parentHasDimensions = parentHasDimensions;
     }
 
     /**
@@ -87,11 +146,33 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     }
 
     /**
+     * Shows or hides the widget depending on the current view and whether the parent element has width or height.<p>
+     */
+    public void updateVisibility() {
+
+        boolean visible = m_parentHasDimensions && isVisibleInCurrentView();
+        setDisplayNone(!visible);
+
+    }
+
+    /**
      * Delete the editable element from page and VFS.<p>
      */
     protected void deleteElement() {
 
         CmsContainerpageController.get().deleteElement(m_editableData.getStructureId().toString(), m_parentResourceId);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#getAdditionalButtons()
+     */
+    @Override
+    protected Map<Integer, CmsPushButton> getAdditionalButtons() {
+
+        Map<Integer, CmsPushButton> result = Maps.newHashMap();
+        result.put(Integer.valueOf(130), createFavButton());
+        result.put(Integer.valueOf(160), createInfoButton());
+        return result;
     }
 
     /**
@@ -112,28 +193,53 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     @Override
     protected void onClickEdit() {
 
-        openEditDialog(false);
+        openEditDialog(false, null);
         removeHighlighting();
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#onClickNew()
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#onClickNew(boolean)
      */
     @Override
-    protected void onClickNew() {
+    protected void onClickNew(boolean askCreateMode) {
 
-        openEditDialog(true);
-        removeHighlighting();
+        if (!askCreateMode) {
+            openEditDialog(true, null);
+            removeHighlighting();
+        } else {
+
+            CmsUUID referenceId = m_editableData.getStructureId();
+            CmsCreateModeSelectionDialog.showDialog(referenceId, new AsyncCallback<String>() {
+
+                public void onFailure(Throwable caught) {
+
+                    // is never called
+
+                }
+
+                public void onSuccess(String result) {
+
+                    openEditDialog(true, result);
+                    removeHighlighting();
+                }
+            });
+        }
+
     }
 
     /**
      * Opens the content editor.<p>
-     * 
+     *
      * @param isNew <code>true</code> to create and edit a new resource
+     * @param mode the content creation mode
      */
-    protected void openEditDialog(boolean isNew) {
+    protected void openEditDialog(boolean isNew, String mode) {
 
-        CmsContainerpageController.get().getContentEditorHandler().openDialog(m_editableData, isNew, m_parentResourceId);
+        CmsContainerpageController.get().getContentEditorHandler().openDialog(
+            m_editableData,
+            isNew,
+            m_parentResourceId,
+            mode);
     }
 
     /**
@@ -153,6 +259,20 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
             }
         };
         dialog.loadAndShow(callback);
+    }
+
+    /**
+     * Sets the display CSS property to none, or clears it, depending on the given parameter.<p>
+     * 
+     * @param displayNone true if the widget should not be displayed 
+     */
+    void setDisplayNone(boolean displayNone) {
+
+        if (displayNone) {
+            getElement().getStyle().setDisplay(Display.NONE);
+        } else {
+            getElement().getStyle().clearDisplay();
+        }
     }
 
 }

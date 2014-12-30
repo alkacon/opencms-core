@@ -31,11 +31,13 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
+import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -139,47 +141,61 @@ public interface I_CmsContainerpageServiceAsync {
      *  
      * @param callback the callback
      */
+    void getContainerInfo(AsyncCallback<CmsContainer> callback);
+
+    /**
+     * This method is used for serialization purposes only.<p>
+     *  
+     * @param callback the callback
+     */
     void getElementInfo(AsyncCallback<CmsContainerElement> callback);
 
     /**
      * Requests container element data by client id.<p>
      * 
-     * @param pageStructureId the container page structure id 
+     * @param context the RPC context 
      * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters
      * @param clientIds the requested element id's
      * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
+     * @param dndSource in the DND case, the id of the origin container from which the element is dragged 
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
     void getElementsData(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
         CmsUUID detailContentId,
         String reqParams,
         Collection<String> clientIds,
         Collection<CmsContainer> containers,
+        boolean allowNested,
+        String dndSource,
         String locale,
         AsyncCallback<Map<String, CmsContainerElementData>> callback);
 
     /**
      * Gets the element data for an id and a map of settings.<p>
      * 
-     * @param pageStructureId the container page structure id 
+     * @param context the RPC context  
      * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters 
      * @param clientId the requested element ids 
      * @param settings the settings for which the element data should be loaded 
      * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * @param callback the callback for receiving the element data  
      */
     void getElementWithSettings(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
+
         CmsUUID detailContentId,
         String reqParams,
         String clientId,
         Map<String, String> settings,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale,
         AsyncCallback<CmsContainerElementData> callback);
 
@@ -189,6 +205,7 @@ public interface I_CmsContainerpageServiceAsync {
      * @param pageStructureId the container page structure id 
      * @param detailContentId the detail content structure id
      * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
@@ -196,26 +213,45 @@ public interface I_CmsContainerpageServiceAsync {
         CmsUUID pageStructureId,
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale,
         AsyncCallback<List<CmsContainerElementData>> callback);
 
     /**
+     * Returns the gallery configuration data according to the current page containers and the selected element view.<p>
+     * 
+     * @param containers the page containers
+     * @param elementView the element view
+     * @param uri the page URI
+     * @param locale the content locale
+     * @param callback the call-back executed on response
+     */
+    void getGalleryDataForPage(
+        List<CmsContainer> containers,
+        CmsUUID elementView,
+        String uri,
+        String locale,
+        AsyncCallback<CmsGalleryDataBean> callback);
+
+    /**
      * Returns new container element data for the given resource type name.<p>
      * 
-     * @param  pageStructureId the container page structure id
+     * @param context the RPC context 
      * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters
      * @param resourceType the requested element resource type name
      * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
     void getNewElementData(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
         CmsUUID detailContentId,
         String reqParams,
         String resourceType,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale,
         AsyncCallback<CmsContainerElementData> callback);
 
@@ -225,6 +261,7 @@ public interface I_CmsContainerpageServiceAsync {
      * @param pageStructureId the container page structure id 
      * @param detailContentId the detail content structure id
      * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
@@ -232,6 +269,7 @@ public interface I_CmsContainerpageServiceAsync {
         CmsUUID pageStructureId,
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale,
         AsyncCallback<List<CmsContainerElementData>> callback);
 
@@ -246,6 +284,13 @@ public interface I_CmsContainerpageServiceAsync {
     void getRemovedElementStatus(String id, CmsUUID containerpageId, AsyncCallback<CmsRemovedElementStatus> callback);
 
     /**
+     * Loads the clipboard tab to initially select.<p>
+     * 
+     * @param resultCallback the result callback 
+     */
+    void loadClipboardTab(AsyncCallback<Integer> resultCallback);
+
+    /**
      * Returns the initialization data.<p>
      * 
      * @param callback the async callback
@@ -253,32 +298,32 @@ public interface I_CmsContainerpageServiceAsync {
     void prefetch(AsyncCallback<CmsCntPageData> callback);
 
     /**
+     * Saves the selected clipboard tab.<p>
+     * 
+     * @param tabIndex the index of the selected clipboard tab
+     * @param callback the result callback
+     */
+    void saveClipboardTab(int tabIndex, AsyncCallback<Void> callback);
+
+    /**
      * Saves the container-page.<p> 
      * 
      * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
-     * @param locale the content locale
      * @param callback the call-back executed on response
      */
-    void saveContainerpage(
-        CmsUUID pageStructureId,
-        List<CmsContainer> containers,
-        String locale,
-        AsyncCallback<Void> callback);
+    void saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, AsyncCallback<Void> callback);
 
     /**
      * Saves the detail containers.<p>
      * 
      * @param detailContainerResource the detail container resource path
      * @param containers the container-page's containers
-     * @param locale the content locale
      * @param callback the call-back executed on response
      */
-    void saveDetailContainers(
-        String detailContainerResource,
-        List<CmsContainer> containers,
-        String locale,
-        AsyncCallback<Void> callback);
+    void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers,
+
+    AsyncCallback<Void> callback);
 
     /**
      * Saves the favorite list.<p>
@@ -291,7 +336,7 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Saves a group-container element.<p>
      * 
-     * @param pageStructureId the container page structure id
+     * @param context the RPC context 
      * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters
      * @param groupContainer the group-container to save
@@ -300,7 +345,7 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the call-back executed on response
      */
     void saveGroupContainer(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
         CmsUUID detailContentId,
         String reqParams,
         CmsGroupContainer groupContainer,
@@ -344,33 +389,36 @@ public interface I_CmsContainerpageServiceAsync {
     void setEditSmallElements(boolean editSmallElements, AsyncCallback<Void> callback);
 
     /**
+     * Sets the element view.<p>
+     * 
+     * @param elementView the element view
+     * @param callback the call-back executed on response
+     */
+    void setElementView(CmsUUID elementView, AsyncCallback<Void> callback);
+
+    /**
      * Generates request builder to make a synchronized RPC call saving the container-page.<p>
      * 
      * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
-     * @param locale the content locale
      * @param callback the call-back executed on response
      */
     @SynchronizedRpcRequest
-    void syncSaveContainerpage(
-        CmsUUID pageStructureId,
-        List<CmsContainer> containers,
-        String locale,
-        AsyncCallback<Void> callback);
+    void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers,
+
+    AsyncCallback<Void> callback);
 
     /**
      * Saves the detail containers.<p>
      * 
      * @param detailContainerResource the detail container resource path
      * @param containers the container-page's containers
-     * @param locale the content locale
      * @param callback the call-back executed on response
      */
     @SynchronizedRpcRequest
     void syncSaveDetailContainers(
         String detailContainerResource,
         List<CmsContainer> containers,
-        String locale,
         AsyncCallback<Void> callback);
 
 }

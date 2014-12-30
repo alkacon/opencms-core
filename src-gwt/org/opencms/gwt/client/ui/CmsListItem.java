@@ -522,7 +522,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      * In most cases, the widget will be a list item widget. If this is the case, then further calls to {@link CmsListItem#getListItemWidget()} will 
      * return the widget which was passed as a parameter to this method. Otherwise, the method will return null.<p>
      * 
-     * @param widget
+     * @param widget the main content widget
      */
     protected void addMainWidget(Widget widget) {
 

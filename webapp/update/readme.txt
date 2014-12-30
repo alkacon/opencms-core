@@ -40,7 +40,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms-upgrade-to-@OPENCMS_VERSION@.zip' to 
+2. Extract the OpenCms upgrade file 'opencms-upgrade-to-@OPENCMS_VERSION_NUMBER@.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
@@ -119,6 +119,9 @@ from the distribution, it is sufficient to copy the new configuration files to t
 WEB-INF/solr folder. Else if you have customized the Solr configuration you might 
 want to merge the 'schema.xml' and the 'solrconfig.xml' first. When you are done 
 set the attribute enabled to 'true' again (and restart the servelt container).
+
+If you are updating from an earlier version than 8.5.0, copy the solr-complete/ 
+folder to the solr folder instead. 
 
 
 7. Shutdown and restart your OpenCms servlet container

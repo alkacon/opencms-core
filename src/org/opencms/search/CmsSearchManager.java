@@ -32,11 +32,13 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -65,6 +67,7 @@ import org.opencms.search.solr.CmsSolrConfiguration;
 import org.opencms.search.solr.CmsSolrFieldConfiguration;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrIndexWriter;
+import org.opencms.search.solr.spellchecking.CmsSolrSpellchecker;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.A_CmsModeStringEnumeration;
@@ -174,7 +177,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          * 
          * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
          */
-        @SuppressWarnings("unchecked")
         public void cmsEvent(CmsEvent event) {
 
             switch (event.getType()) {
@@ -192,8 +194,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         I_CmsEventListener.KEY_RESOURCE));
                     reIndexResources(resources);
                     break;
-                case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
-                case I_CmsEventListener.EVENT_RESOURCE_MOVED:
                 case I_CmsEventListener.EVENT_RESOURCE_DELETED:
                     List<CmsResource> eventResources = (List<CmsResource>)event.getData().get(
                         I_CmsEventListener.KEY_RESOURCES);
@@ -207,6 +207,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     }
                     reIndexResources(resourcesToDelete);
                     break;
+                case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
+                case I_CmsEventListener.EVENT_RESOURCE_MOVED:
                 case I_CmsEventListener.EVENT_RESOURCE_COPIED:
                 case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
                     // a list of resources has been modified - offline indexes require (re)indexing
@@ -239,7 +241,18 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 result = m_resourcesToIndex;
                 m_resourcesToIndex = new ArrayList<CmsPublishedResource>();
             }
-            findRelatedContainerPages(m_adminCms, result);
+            try {
+                CmsObject cms = m_adminCms;
+                CmsProject offline = getOfflineIndexProject();
+                if (offline != null) {
+                    // switch to the offline project if available
+                    cms = OpenCms.initCmsObject(m_adminCms);
+                    cms.getRequestContext().setCurrentProject(offline);
+                }
+                findRelatedContainerPages(cms, result);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
             return result;
         }
 
@@ -1439,6 +1452,30 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Return singleton instance of the OpenCms spellchecker.<p>
+     * 
+     * @param cms the cms object.
+     *  
+     * @return instance of CmsSolrSpellchecker.
+     */
+    public CmsSolrSpellchecker getSolrDictionary(CmsObject cms) {
+
+        // get the core container that contains one core for each configured index
+        if (m_coreContainer == null) {
+            m_coreContainer = createCoreContainer();
+        }
+        SolrCore spellcheckCore = m_coreContainer.getCore(CmsSolrSpellchecker.SPELLCHECKER_INDEX_CORE);
+        if (spellcheckCore == null) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.ERR_SPELLCHECK_CORE_NOT_AVAILABLE_1,
+                CmsSolrSpellchecker.SPELLCHECKER_INDEX_CORE));
+            return null;
+        } else {
+            return CmsSolrSpellchecker.getInstance(m_coreContainer, spellcheckCore);
+        }
+    }
+
+    /**
      * Returns the Solr configuration.<p>
      * 
      * @return the Solr configuration
@@ -2248,11 +2285,20 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
                         if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
                             containerPages.add(res);
+                            if (CmsJspTagContainer.isDetailContainersPage(adminCms, adminCms.getSitePath(res))) {
+                                addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
+                            }
                         } else if (OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName().equals(
                             CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
                             elementGroups.add(res);
                         }
                     }
+                }
+                if (CmsResourceTypeXmlContainerPage.getContainerPageTypeId() == pubRes.getType()) {
+                    addDetailContent(
+                        adminCms,
+                        containerPages,
+                        adminCms.getRequestContext().removeSiteRoot(pubRes.getRootPath()));
                 }
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
@@ -2267,6 +2313,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
                     if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
                         containerPages.add(res);
+                        if (CmsJspTagContainer.isDetailContainersPage(adminCms, adminCms.getSitePath(res))) {
+                            addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
+                        }
                     }
                 }
             } catch (CmsException e) {
@@ -2298,6 +2347,28 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             names.add(factory.getName());
         }
         return names;
+    }
+
+    /**
+     * Returns the a offline project used for offline indexing.<p>
+     * 
+     * @return the offline project if available
+     */
+    protected CmsProject getOfflineIndexProject() {
+
+        CmsProject result = null;
+        for (CmsSearchIndex index : m_offlineIndexes) {
+            try {
+                result = m_adminCms.readProject(index.getProject());
+
+                if (!result.isOnlineProject()) {
+                    break;
+                }
+            } catch (Exception e) {
+                // may be a missconfigured index, ignore
+            }
+        }
+        return result;
     }
 
     /** 
@@ -2846,6 +2917,30 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Checks if the given containerpage is used as a detail containers and adds the related detail content to the resource set.<p>
+     * 
+     * @param adminCms the cms context
+     * @param containerPages the containerpages
+     * @param containerPage the container page site path
+     */
+    private void addDetailContent(CmsObject adminCms, Set<CmsResource> containerPages, String containerPage) {
+
+        if (CmsJspTagContainer.isDetailContainersPage(adminCms, containerPage)) {
+
+            try {
+                CmsResource detailRes = adminCms.readResource(
+                    CmsJspTagContainer.getDetailContentPath(containerPage),
+                    CmsResourceFilter.IGNORE_EXPIRATION);
+                containerPages.add(detailRes);
+            } catch (Throwable e) {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+    }
+
+    /**
      * Creates the Solr core container.<p>
      * 
      * @return the created core container
@@ -2943,4 +3038,5 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             m_coreContainer = null;
         }
     }
+
 }

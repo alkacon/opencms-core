@@ -30,12 +30,16 @@ package org.opencms.jsp.util;
 import org.opencms.ade.contenteditor.CmsContentService;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsConstantMap;
 import org.opencms.util.CmsUUID;
@@ -605,6 +609,67 @@ public class CmsJspContentAccessBean {
     public CmsUUID getId() {
 
         return getRawContent().getFile().getStructureId();
+    }
+
+    /**
+     * Returns <code>true</code> in case the current user is allowed to edit the XML content.<p>
+     * 
+     * If the check is performed from the online project, the user context is internally switched to an offline 
+     * project. So this may return <code>true</code> even if the user is currently in the online project. 
+     * 
+     * "Allowed to edit" here requires "read" and "write" permission for the VFS resource the XML content was created from.
+     * It also requires that the VFS resource is not locked by another user.
+     * Moreover, the user must be able to access at least one "offline" project.<p>
+     * 
+     * Intended for quick checks to for example show / hide edit buttons for user generated content.<p> 
+     * 
+     * @return <code>true</code> in case the current user is allowed to edit the XML content
+     */
+    public boolean getIsEditable() {
+
+        boolean result = false;
+        try {
+            CmsObject cms;
+            if (m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                // we are in the online project, which means we must first switch to an offline project
+                // otherwise write permission checks will always return false
+                cms = OpenCms.initCmsObject(m_cms);
+                List<CmsProject> projects = OpenCms.getOrgUnitManager().getAllAccessibleProjects(
+                    cms,
+                    cms.getRequestContext().getOuFqn(),
+                    false);
+                if ((projects != null) && (projects.size() > 0)) {
+                    // there is at least one project available
+                    for (CmsProject p : projects) {
+                        // need to iterate because the online project will be part of the result list
+                        if (!p.isOnlineProject()) {
+                            cms.getRequestContext().setCurrentProject(p);
+                            break;
+                        }
+                    }
+                }
+            } else {
+                // not in the online project, so just use the current project
+                cms = m_cms;
+            }
+
+            result = cms.hasPermissions(
+                m_resource,
+                CmsPermissionSet.ACCESS_WRITE,
+                false,
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            if (result) {
+                // still need to check the lock status
+                CmsLock lock = cms.getLock(m_resource);
+                if (!lock.isLockableBy(cms.getRequestContext().getCurrentUser())) {
+                    // resource is locked from a different user
+                    result = false;
+                }
+            }
+        } catch (CmsException e) {
+            // should not happen, in case it does just assume not editable
+        }
+        return result;
     }
 
     /**

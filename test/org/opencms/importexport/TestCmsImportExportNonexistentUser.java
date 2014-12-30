@@ -33,6 +33,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
+import org.opencms.security.CmsRole;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -117,8 +118,10 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
 
             // create a temporary user for this test case
             cms.createUser(username, password, "Temporary user for import/export test case", null);
-            // add this user to the project managers user group
-            cms.addUserToGroup(username, OpenCms.getDefaultUsers().getGroupProjectmanagers());
+            // add this user to the user group
+            cms.addUserToGroup(username, OpenCms.getDefaultUsers().getGroupUsers());
+            // give this user the project manager role so that he can publish anything
+            OpenCms.getRoleManager().addUserToRole(cms, CmsRole.PROJECT_MANAGER, username);
 
             // switch to the temporary user, offline project and default site
             cms.loginUser(username, password);

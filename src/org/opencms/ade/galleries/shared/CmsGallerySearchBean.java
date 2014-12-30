@@ -51,7 +51,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class CmsGallerySearchBean implements IsSerializable {
 
     /** The default matches per page. */
-    public static final int DEFAULT_MATCHES_PER_PAGE = 20;
+    public static final int DEFAULT_MATCHES_PER_PAGE = 40;
 
     /** The default tab id to use when the gallery is opened. */
     public static final int DEFAULT_TAB_ID = 0;
@@ -83,8 +83,14 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The list of selected galleries ids (path). */
     private List<String> m_galleries = new ArrayList<String>();
 
+    /** Flag to indicate whether the user changed the gallery selection. */
+    private boolean m_galleriesChanged;
+
     /** The gallery mode. */
     private GalleryMode m_galleryMode;
+
+    /** The prefix for the key used to store the last selected gallery. */
+    private String m_galleryStoragePrefix;
 
     /** Indicates the search exclude property should be ignored. */
     private boolean m_ignoreSearchExclude;
@@ -182,6 +188,20 @@ public class CmsGallerySearchBean implements IsSerializable {
         setIncludeExpired(searchObj.isIncludeExpired());
         setIgnoreSearchExclude(searchObj.isIgnoreSearchExclude());
         setGalleryMode(searchObj.getGalleryMode());
+        setGalleryStoragePrefix(searchObj.getGalleryStoragePrefix());
+    }
+
+    /**
+     * Creates the key used to store the last selected gallery.<p>
+     * 
+     * @param prefix the prefix for the key 
+     * @param referenceType the type name of the reference resource 
+     * 
+     * @return the key to store the last selected gallery 
+     */
+    public static String getGalleryStorageKey(String prefix, String referenceType) {
+
+        return prefix + "#" + referenceType;
     }
 
     /**
@@ -352,6 +372,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public GalleryMode getGalleryMode() {
 
         return m_galleryMode;
+    }
+
+    /**
+     * Gets the key used to store the last selected gallery.<p>
+     * 
+     * @return the key used to store the last selected gallery 
+     */
+    public String getGalleryStoragePrefix() {
+
+        return m_galleryStoragePrefix;
     }
 
     /**
@@ -538,6 +568,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Checks if the gallery selection was changed by the user.<p>
+     * 
+     * @return true if the gallery selection was changed 
+     */
+    public boolean haveGalleriesChanged() {
+
+        return m_galleriesChanged;
+    }
+
+    /**
      * Returns true if no preview should be shown for the search result.<p>
      * 
      * @return true if no preview should be shown 
@@ -718,6 +758,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
+     * Sets the "galleries changed" flag.<p>
+     * 
+     * @param changed the new flag value 
+     */
+    public void setGalleriesChanged(boolean changed) {
+
+        m_galleriesChanged = changed;
+    }
+
+    /**
      * Sets the gallery mode.<p>
      * 
      * @param galleryMode the gallery mode to set 
@@ -725,6 +775,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setGalleryMode(GalleryMode galleryMode) {
 
         m_galleryMode = galleryMode;
+    }
+
+    /**
+     * Sets the prefix of the key used to store the last selected gallery.<p>
+     * 
+     * @param prefix the prefix of the key used to store the last selected gallery 
+     */
+    public void setGalleryStoragePrefix(String prefix) {
+
+        m_galleryStoragePrefix = prefix;
     }
 
     /**

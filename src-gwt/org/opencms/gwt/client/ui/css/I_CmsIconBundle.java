@@ -59,7 +59,7 @@ public interface I_CmsIconBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/icons/arrowDownIconActive.png")
@@ -67,7 +67,7 @@ public interface I_CmsIconBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/icons/arrowDownIconDeactivated.png")
@@ -75,7 +75,7 @@ public interface I_CmsIconBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/icons/arrowUpIconActive.png")
@@ -83,7 +83,7 @@ public interface I_CmsIconBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/icons/arrowUpIconDeactivated.png")
@@ -176,14 +176,6 @@ public interface I_CmsIconBundle extends ClientBundle {
      */
     @Source("images/icons/gotoPageIcon.png")
     ImageResource gotoPageIcon();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/icons/showPageIcon.png")
-    ImageResource showPageIcon();
 
     /**
      * Access method.<p>
@@ -390,6 +382,14 @@ public interface I_CmsIconBundle extends ClientBundle {
      *
      * @return the image resource
      */
+    @Source("images/icons/replaceIconDeactivated.png")
+    ImageResource replaceIconDeactivated();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
     @Source("images/icons/searchIconActive.png")
     ImageResource searchIconActive();
 
@@ -424,6 +424,14 @@ public interface I_CmsIconBundle extends ClientBundle {
      */
     @Source("images/icons/seoIcon.png")
     ImageResource seoIcon();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
+    @Source("images/icons/showPageIcon.png")
+    ImageResource showPageIcon();
 
     /**
      * Access method.<p>

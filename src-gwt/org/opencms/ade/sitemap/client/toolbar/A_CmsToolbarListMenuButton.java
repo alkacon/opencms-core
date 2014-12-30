@@ -32,10 +32,15 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
+import org.opencms.gwt.client.ui.CmsToolbarPopup;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -60,7 +65,7 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
     private CmsSitemapController m_controller;
 
     /** The tab panel. */
-    private CmsTabbedPanel<FlowPanel> m_tabs;
+    protected CmsTabbedPanel<CmsListTab> m_tabs;
 
     /** The toolbar instance. */
     private CmsSitemapToolbar m_toolbar;
@@ -89,9 +94,26 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
             setEnabled(false);
         }
 
-        m_tabs = new CmsTabbedPanel<FlowPanel>();
+        m_tabs = new CmsTabbedPanel<CmsListTab>();
+        m_tabs.addSelectionHandler(new SelectionHandler<Integer>() {
+
+            public void onSelection(SelectionEvent<Integer> event) {
+
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+                    public void execute() {
+
+                        updateSize();
+                    }
+                });
+            }
+        });
         SimplePanel tabsContainer = new SimplePanel();
         tabsContainer.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.clipboardCss().menuTabContainer());
+        int dialogHeight = CmsToolbarPopup.getAvailableHeight();
+        int dialogWidth = CmsToolbarPopup.getAvailableWidth();
+        tabsContainer.setHeight(dialogHeight + "px");
+        getPopup().setWidth(dialogWidth);
         tabsContainer.add(m_tabs);
         FlowPanel content = new FlowPanel();
         content.add(tabsContainer);
@@ -107,11 +129,11 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
                     getToolbar().onButtonActivation(A_CmsToolbarListMenuButton.this);
                     if (!m_initialized) {
                         // lazy initialization
-                        initContent();
-                        m_initialized = true;
+                        m_initialized = initContent();
                     }
 
                     openMenu();
+                    updateSize();
                 } else {
                     closeMenu();
                 }
@@ -125,7 +147,7 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
      * @param tab the tab
      * @param title the tab title
      */
-    public void addTab(FlowPanel tab, String title) {
+    public void addTab(CmsListTab tab, String title) {
 
         m_tabs.add(tab, title);
     }
@@ -137,15 +159,9 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
      * 
      * @return the created tab widget
      */
-    public FlowPanel createTab(CmsList<? extends I_CmsListItem> list) {
+    public CmsListTab createTab(CmsList<? extends I_CmsListItem> list) {
 
-        FlowPanel tab = new FlowPanel();
-        tab.setStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabPanel());
-        list.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
-        list.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.clipboardCss().clipboardList());
-        tab.add(list);
-        list.truncate(TM_LITST_MENU, DIALOG_WIDTH);
-        return tab;
+        return new CmsListTab(list);
     }
 
     /**
@@ -154,6 +170,22 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
     public void onActivation(Widget widget) {
 
         closeMenu();
+    }
+
+    /**
+     * Updates the dialog size according to the current tab content.<p>
+     */
+    public void updateSize() {
+
+        int width = CmsToolbarPopup.getAvailableWidth();
+        getPopup().setWidth(width);
+        CmsListTab tab = m_tabs.getWidget(m_tabs.getSelectedIndex());
+        tab.truncate(TM_LITST_MENU, width);
+        int availableHeight = CmsToolbarPopup.getAvailableHeight();
+        int requiredHeight = tab.getRequiredHeight() + 36;
+        int height = (availableHeight > requiredHeight) && (requiredHeight > 50) ? requiredHeight : availableHeight;
+        m_tabs.getParent().setHeight(height + "px");
+        tab.getScrollPanel().onResizeDescendant();
     }
 
     /**
@@ -178,6 +210,8 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
 
     /**
      * Initializes the menu tabs.<p>
+     * 
+     * @return true if the content does not need to be initialized the next time the menu is opened 
      */
-    protected abstract void initContent();
+    protected abstract boolean initContent();
 }

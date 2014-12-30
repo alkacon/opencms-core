@@ -55,6 +55,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The group-container editor.<p>
@@ -154,6 +155,23 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
     private static void clear() {
 
         INSTANCE = null;
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.groupeditor.A_CmsGroupEditor#reinitializeButtons()
+     */
+    @Override
+    public void reinitializeButtons() {
+
+        for (Widget widget : getGroupContainerWidget()) {
+            CmsContainerPageElementPanel elemWidget = (CmsContainerPageElementPanel)widget;
+            if (getController().requiresOptionBar(elemWidget, elemWidget.getParentTarget())) {
+                getController().getContainerpageUtil().addOptionBar(elemWidget);
+            } else {
+                // otherwise remove any present option bar
+                elemWidget.setElementOptionBar(null);
+            }
+        }
     }
 
     /**

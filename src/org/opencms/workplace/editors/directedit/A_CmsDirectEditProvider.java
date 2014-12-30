@@ -34,6 +34,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsLog;
@@ -221,6 +222,16 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
                     Messages.GUI_CLICK_TO_ADD_ELEMENT_TO_EMPTY_LIST_0)
                 + "</div>");
         insertDirectEditEnd(context);
+    }
+
+    /**
+     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditListMetadata(javax.servlet.jsp.PageContext, org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo)
+     */
+    @SuppressWarnings("unused")
+    public void insertDirectEditListMetadata(PageContext context, I_CmsContentLoadCollectorInfo info)
+    throws JspException {
+
+        // do nothing by default 
     }
 
     /**

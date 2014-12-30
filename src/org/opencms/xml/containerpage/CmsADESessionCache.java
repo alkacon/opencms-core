@@ -27,10 +27,15 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.CmsElementView;
+import org.opencms.configuration.preferences.CmsElementViewPreference;
 import org.opencms.file.CmsObject;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,6 +59,9 @@ public final class CmsADESessionCache {
     /** The container elements. */
     private Map<String, CmsContainerElementBean> m_containerElements;
 
+    /** The current element view id. */
+    private CmsUUID m_elementView;
+
     /** Flag which controls whether small elements should be shown. */
     private boolean m_isEditSmallElements;
 
@@ -66,12 +74,16 @@ public final class CmsADESessionCache {
     /** The tool-bar visibility flag. */
     private boolean m_toolbarVisible;
 
+    /** The cached XML content documents by structure id. */
+    private Map<CmsUUID, CmsXmlContent> m_xmlContents;
+
     /**
      * Initializes the session cache.<p>
      * 
      * @param cms the cms context
+     * @param request the current request
      */
-    public CmsADESessionCache(CmsObject cms) {
+    protected CmsADESessionCache(CmsObject cms, HttpServletRequest request) {
 
         // container element cache
         Map<String, CmsContainerElementBean> lruMapCntElem = new HashMap<String, CmsContainerElementBean>();
@@ -83,6 +95,28 @@ public final class CmsADESessionCache {
         List<CmsContainerElementBean> adeRecentList = CmsCollectionsGenericWrapper.list(new NodeCachingLinkedList(
             maxElems));
         m_recentLists = Collections.synchronizedList(adeRecentList);
+
+        // XML content cache, used during XML content edit
+        m_xmlContents = Collections.synchronizedMap(new HashMap<CmsUUID, CmsXmlContent>());
+
+        String elementView = null;
+        // within the test cases the request will be null 
+        if (request != null) {
+            elementView = CmsWorkplace.getWorkplaceSettings(cms, request).getUserSettings().getAdditionalPreference(
+                CmsElementViewPreference.PREFERENCE_NAME,
+                false);
+        }
+        if (elementView == null) {
+            // use the default element view
+            m_elementView = CmsElementView.DEFAULT_ELEMENT_VIEW.getId();
+        } else {
+            try {
+                m_elementView = new CmsUUID(elementView);
+            } catch (NumberFormatException e) {
+                // use the default element view
+                m_elementView = CmsElementView.DEFAULT_ELEMENT_VIEW.getId();
+            }
+        }
     }
 
     /**
@@ -98,7 +132,7 @@ public final class CmsADESessionCache {
         CmsADESessionCache cache = (CmsADESessionCache)request.getSession().getAttribute(
             CmsADESessionCache.SESSION_ATTR_ADE_CACHE);
         if (cache == null) {
-            cache = new CmsADESessionCache(cms);
+            cache = new CmsADESessionCache(cms, request);
             request.getSession().setAttribute(CmsADESessionCache.SESSION_ATTR_ADE_CACHE, cache);
         }
         return cache;
@@ -114,6 +148,28 @@ public final class CmsADESessionCache {
     public CmsContainerElementBean getCacheContainerElement(String key) {
 
         return m_containerElements.get(key);
+    }
+
+    /**
+     * Returns the cached XML content document.<p>
+     * 
+     * @param structureId the structure id
+     * 
+     * @return the XML document
+     */
+    public CmsXmlContent getCacheXmlContent(CmsUUID structureId) {
+
+        return m_xmlContents.get(structureId);
+    }
+
+    /**
+     * Returns the current element view id.<p>
+     * 
+     * @return the current element view id
+     */
+    public CmsUUID getElementView() {
+
+        return m_elementView;
     }
 
     /**
@@ -189,6 +245,17 @@ public final class CmsADESessionCache {
         }
     }
 
+    /**
+     * Caches the given XML content document.<p>
+     * 
+     * @param structureId the structure id
+     * @param xmlContent the XML document
+     */
+    public void setCacheXmlContent(CmsUUID structureId, CmsXmlContent xmlContent) {
+
+        m_xmlContents.put(structureId, xmlContent);
+    }
+
     /** 
      * Sets the default initial setting for small element editability in this session.<p>
      * 
@@ -197,6 +264,16 @@ public final class CmsADESessionCache {
     public void setEditSmallElements(boolean editSmallElements) {
 
         m_isEditSmallElements = editSmallElements;
+    }
+
+    /**
+     * Sets the current element view id.<p>
+     * 
+     * @param elementView the current element view id
+     */
+    public void setElementView(CmsUUID elementView) {
+
+        m_elementView = elementView;
     }
 
     /**
@@ -218,5 +295,15 @@ public final class CmsADESessionCache {
     public void setToolbarVisible(boolean toolbarVisible) {
 
         m_toolbarVisible = toolbarVisible;
+    }
+
+    /**
+     * Purges the XML content document by the given id from the cache.<p>
+     * 
+     * @param structureId the structure id
+     */
+    public void uncacheXmlContent(CmsUUID structureId) {
+
+        m_xmlContents.remove(structureId);
     }
 }

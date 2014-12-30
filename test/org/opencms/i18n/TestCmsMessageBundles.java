@@ -28,6 +28,7 @@
 package org.opencms.i18n;
 
 import org.opencms.gwt.I_CmsClientMessageBundle;
+import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -46,14 +47,12 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import junit.framework.TestCase;
-
 /**
  * Tests for the CmsMessageBundles.<p>
  * 
  * @since 6.0.0
  */
-public abstract class TestCmsMessageBundles extends TestCase {
+public abstract class TestCmsMessageBundles extends OpenCmsTestCase {
 
     /** Prefix for the error messages in the bundles. */
     private static final String KEY_PREFIX_ERR = "ERR_";

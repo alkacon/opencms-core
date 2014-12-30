@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -60,21 +61,20 @@ public class CmsAddToNavMenuEntry extends A_CmsSitemapMenuEntry {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
+     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow()
      */
     @Override
-    public void onShow(CmsHoverbarShowEvent event) {
+    public void onShow() {
 
-        CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        String sitePath = entry.getSitePath();
-        CmsResource.getParentFolder(sitePath);
         CmsSitemapController controller = getHoverbar().getController();
-
-        boolean show = !controller.isRoot(sitePath) && !entry.isInNavigation();
+        CmsClientSitemapEntry entry = getHoverbar().getEntry();
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode()
+            && !controller.isRoot(entry.getSitePath())
+            && !entry.isInNavigation();
         if (show && entry.isFolderDefaultPage()) {
             // hide this option for all default pages that are not in the first level of the root sitemap
             if ((controller.getData().getParentSitemap() != null)
-                || !controller.isRoot(CmsResource.getParentFolder(sitePath))) {
+                || !controller.isRoot(CmsResource.getParentFolder(entry.getSitePath()))) {
                 show = false;
             }
         }

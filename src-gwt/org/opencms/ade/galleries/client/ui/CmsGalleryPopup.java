@@ -35,6 +35,7 @@ import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsToolbarPopup;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
 import com.google.gwt.user.client.ui.Panel;
@@ -60,7 +61,11 @@ public class CmsGalleryPopup extends CmsPopup implements I_CmsGalleryHandler {
     public CmsGalleryPopup(I_CmsGalleryWidgetHandler handler, I_CmsGalleryConfiguration conf) {
 
         this();
+        int dialogHeight = CmsToolbarPopup.getAvailableHeight();
+        int dialogWidth = CmsToolbarPopup.getAvailableWidth();
+        setWidth(dialogWidth);
         CmsGalleryDialog galleryDialog = new CmsGalleryDialog(this);
+        galleryDialog.setDialogSize(dialogWidth, dialogHeight);
         m_controller = new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog), conf);
         galleryDialog.setWidgetHandler(handler);
         m_container.setWidget(galleryDialog);

@@ -655,11 +655,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     I_CmsPrincipal.PRINCIPAL_GROUP,
                     OpenCms.getDefaultUsers().getGroupUsers(),
                     "-v");
-                cms.chacc(
-                    temporaryFilename,
-                    I_CmsPrincipal.PRINCIPAL_GROUP,
-                    OpenCms.getDefaultUsers().getGroupProjectmanagers(),
-                    "-v");
             }
         } finally {
             // switch back to current project
@@ -1440,6 +1435,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     }
                 }
             }
+
+            getDefaultUserSettings().initPreferences(this);
 
             // configures the tool manager
             getToolManager().configure(cms);

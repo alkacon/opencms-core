@@ -34,11 +34,16 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.collectors.I_CmsCollectorPublishListProvider;
+import org.opencms.file.collectors.I_CmsResourceCollector;
+import org.opencms.gwt.shared.I_CmsCollectorInfoFactory;
+import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +53,10 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.vm.AutoBeanFactorySource;
 
 /**
  * Virtual project which includes the currently edited resource and all its related resources.
@@ -104,6 +113,68 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
     }
 
     /**
+     * @see org.opencms.ade.publish.I_CmsVirtualProject#getRelatedResourceProvider(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsPublishOptions)
+     */
+    public I_CmsPublishRelatedResourceProvider getRelatedResourceProvider(
+        final CmsObject cmsObject,
+        final CmsPublishOptions options) {
+
+        return new I_CmsPublishRelatedResourceProvider() {
+
+            public Set<CmsResource> getAdditionalRelatedResources(CmsObject cms, CmsResource res) {
+
+                Map<String, String> params = options.getParameters();
+
+                String pageId = options.getParameters().get(CmsPublishOptions.PARAM_CONTAINERPAGE);
+                if (!res.getStructureId().toString().equals(pageId)) {
+                    return Collections.emptySet();
+                }
+                Set<CmsResource> result = Sets.newHashSet();
+
+                I_CmsCollectorInfoFactory collectorInfoFactory = AutoBeanFactorySource.create(I_CmsCollectorInfoFactory.class);
+                for (Map.Entry<String, String> entry : params.entrySet()) {
+                    if (entry.getKey().startsWith(CmsPublishOptions.PARAM_COLLECTOR_INFO)) {
+                        try {
+                            AutoBean<I_CmsContentLoadCollectorInfo> autoBean = AutoBeanCodex.decode(
+                                collectorInfoFactory,
+                                I_CmsContentLoadCollectorInfo.class,
+                                entry.getValue());
+                            I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(
+                                autoBean.as().getCollectorName());
+                            if (collector == null) {
+                                continue;
+                            }
+                            I_CmsCollectorPublishListProvider publishListProvider = getCollectorPublishListProvider(collector);
+                            result.addAll(publishListProvider.getPublishResources(cmsObject, autoBean.as()));
+                        } catch (Exception e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                }
+                return result;
+            }
+
+            /**
+             * Gets the  publish list provider for the given collector.<p>
+             * 
+             * @param collector the collector 
+             * 
+             * @return the publish list provider 
+             */
+            public I_CmsCollectorPublishListProvider getCollectorPublishListProvider(I_CmsResourceCollector collector) {
+
+                I_CmsCollectorPublishListProvider provider = null;
+                if (collector instanceof I_CmsCollectorPublishListProvider) {
+                    provider = (I_CmsCollectorPublishListProvider)collector;
+                } else {
+                    provider = new CmsDefaultCollectorPublishListProvider();
+                }
+                return provider;
+            }
+        };
+    }
+
+    /**
      * @see org.opencms.ade.publish.I_CmsVirtualProject#getResources(org.opencms.file.CmsObject, java.util.Map, java.lang.String)
      */
     public List<CmsResource> getResources(CmsObject cms, Map<String, String> params, String workflowId) {
@@ -117,6 +188,10 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                 try {
                     CmsResource resource = cms.readResource(new CmsUUID(id), CmsResourceFilter.ALL);
                     resources.add(resource);
+                    CmsResource parent = cms.readParentFolder(resource.getStructureId());
+                    if (!parent.getState().isUnchanged()) {
+                        resources.add(parent);
+                    }
                 } catch (CmsException e) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }

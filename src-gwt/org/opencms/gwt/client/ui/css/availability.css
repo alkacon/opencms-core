@@ -6,6 +6,7 @@
 	width: 200px;
 	float: left;
 	line-height: 16px;
+	margin-top: 2px; 
 }
 
 .inlineBlock {
@@ -20,6 +21,7 @@
 
 .checkBox {
 	margin-right: 5px;
+	margin-top: 2px; 
 	float: left;
 	line-height: 13px;
 }

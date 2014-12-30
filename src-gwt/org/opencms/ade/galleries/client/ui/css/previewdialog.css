@@ -48,11 +48,12 @@ div.previewDialog {
 .previewHolder {		
 	border:1px solid value("constants.css.borderColor");	
 	margin:1px;
+	overflow: auto;
 }
 
 .previewPanel {	
-	height:100%;	
 	line-height: inherit;
+	height:100%;
 }
 
 .imagePanel {

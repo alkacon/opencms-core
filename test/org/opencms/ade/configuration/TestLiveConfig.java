@@ -69,21 +69,81 @@ public class TestLiveConfig extends OpenCmsTestCase {
      */
     public static Test suite() {
 
+        CmsConfigurationCache.DEBUG = true;
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         return generateSetupTestWrapper(TestLiveConfig.class, "ade-config", "/");
     }
 
     /**
+     * Tests cross-site detail page links.<p>
+     * 
+     * @throws Exception -
+     */
+    public void testCrossSiteDetailPageLinks1() throws Exception {
+
+        // Link from site foo to site bar, where a detail page exists in foo 
+
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("/sites/foo");
+        String rootPath = "/sites/bar/.content/blogentries/be_00001.xml";
+        CmsResource res = rootCms().readResource(rootPath);
+        String link = OpenCms.getLinkManager().getOnlineLink(cms, rootPath);
+        assertEquals("http://foo.org/data/opencms/main/blog/" + res.getStructureId() + "/", link);
+        System.out.println(link);
+    }
+
+    /**
+     * Tests cross-site detail page links.<p>
+     * 
+     * @throws Exception -
+     */
+    public void testCrossSiteDetailPageLinks1a() throws Exception {
+
+        // Link from site foo to site bar, where a detail page exists in foo
+        // (using a site path that also exists in site foo) 
+
+        OpenCmsTestLogAppender.setBreakOnError(false);
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("/sites/foo");
+        String rootPath = "/sites/bar/.content/blogentries/be_00002.xml";
+        CmsResource res = rootCms().readResource(rootPath);
+        String link = OpenCms.getLinkManager().getOnlineLink(cms, rootPath);
+        assertEquals("http://foo.org/data/opencms/main/blog/" + res.getStructureId() + "/", link);
+        System.out.println(link);
+    }
+
+    /**
+     * Tests cross-site detail page links.<p>
+     * 
+     * @throws Exception -
+     */
+    public void testCrossSiteDetailPageLinks2() throws Exception {
+
+        // Link from site bar to site foo, where a detail page exists in foo 
+
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("/sites/bar");
+        String rootPath = "/sites/foo/.content/blogentries/be_00001.xml";
+        CmsResource res = rootCms().readResource(rootPath);
+        String link = OpenCms.getLinkManager().getOnlineLink(cms, rootPath);
+        assertEquals("http://foo.org/data/opencms/main/blog/" + res.getStructureId() + "/", link);
+        System.out.println(link);
+    }
+
+    /**
      * Tests deletion of configuration files.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testDeleted() throws Exception {
 
         try {
+
+            waitForUpdate(false);
             delete(getCmsObject().readResource("/.content/.config"));
             CmsObject offlineCms = getCmsObject();
-            checkResourceTypes(offlineCms, "/sites/default/today/events", "foldername", "d2");
+            waitForUpdate(false);
+            //checkResourceTypes(offlineCms, "/sites/default/today/events", "foldername", "d2");
             checkResourceTypes(offlineCms, "/sites/default/today/events/foo", "foldername", "d2");
             checkResourceTypes(offlineCms, "/sites/default/today/news", "foldername", "c3", "e3");
             checkResourceTypes(offlineCms, "/sites/default/today/news/foo", "foldername", "c3", "e3");
@@ -95,12 +155,12 @@ public class TestLiveConfig extends OpenCmsTestCase {
     /**
      * Tests finding detail pages.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testDetailPage1() throws Exception {
 
         // root site 
-
+        waitForUpdate(false);
         CmsObject cms = rootCms();
         String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
             cms,
@@ -120,7 +180,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests the configuration in top-level sitemaps.<p>
-     * @throws Exception
+     * @throws Exception -
      */
     public void testLevel1Configuration() throws Exception {
 
@@ -135,7 +195,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests the configuration in level 2 subsitemaps.<p>
-     * @throws Exception
+     * @throws Exception -
      */
     public void testLevel2Configuration() throws Exception {
 
@@ -156,7 +216,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
     /**
      * Tests that newly created module configurations are reflected in the configuration objects.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testModuleConfig1() throws Exception {
 
@@ -181,6 +241,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
                 OpenCms.getADEManager().getModuleConfigurationType().getTypeId(),
                 data.getBytes(),
                 Collections.<CmsProperty> emptyList());
+            waitForUpdate(false);
             checkResourceTypes(cms, "/sites/default", "foldername", "a1", "b1", "c1", "m0");
         } finally {
             cms.lockResource(filename);
@@ -191,7 +252,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
     /**
      * Tests that when moving a configuration file, the configuration will be correct.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testMove1() throws Exception {
 
@@ -199,6 +260,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
             CmsObject cms = rootCms();
             cms.lockResource("/sites/default/today/events");
             cms.moveResource("/sites/default/today/events", "/sites/default/today/news/events");
+            OpenCms.getADEManager().getOfflineCache().getWaitHandleForUpdateTask().enter(0);
             checkResourceTypes(cms, "/sites/default/today/news", "foldername", "c3", "e3", "a1", "b1");
             checkResourceTypes(cms, "/sites/default/today/news/events/", "foldername", "d2", "c3", "e3", "a1");
         } finally {
@@ -209,7 +271,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
     /**
      * Tests that when detail pages are moved, the configuration will still return the correct URIs.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testMoveDetailPages() throws Exception {
 
@@ -231,7 +293,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests that the configuration is empty at paths where no configuration is defined.<p>
-     * @throws Exception
+     * @throws Exception -
      */
     public void testNoConfiguration() throws Exception {
 
@@ -244,18 +306,23 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests that publishing a changed configuration file updates the online configuration object.<p>
-     * @throws Exception
+     * @throws Exception -
      */
     public void testPublish() throws Exception {
 
         CmsObject cms = rootCms();
         CmsObject onlineCms = onlineCms();
         try {
+            waitForUpdate(false);
             checkResourceTypes(cms, "/sites/default/today", "foldername", "a1", "b1", "c1");
             cms.copyResource("/sites/default/today/news/.content", "sites/default/today/.content");
+            waitForUpdate(true);
+            waitForUpdate(false);
             checkResourceTypes(cms, "/sites/default/today", "foldername", "c3", "e3", "a1", "b1");
             checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1");
             publish();
+            waitForUpdate(true);
+            waitForUpdate(false);
             checkResourceTypes(onlineCms, "/sites/default/today/", "foldername", "c3", "e3", "a1", "b1");
             checkResourceTypes(onlineCms, "/sites/default/today/events", "foldername", "d2", "c3", "e3", "a1");
         } finally {
@@ -266,19 +333,23 @@ public class TestLiveConfig extends OpenCmsTestCase {
     /**
      * Tests that publishing a deleted configuration file changes the online configuration.<p>
      * 
-     * @throws Exception
+     * @throws Exception -
      */
     public void testPublishDeleted() throws Exception {
 
         CmsObject cms = rootCms();
         CmsObject onlineCms = onlineCms();
         try {
+            waitForUpdate(false);
+            waitForUpdate(true);
             checkResourceTypes(cms, "/sites/default/today", "foldername", "a1", "b1", "c1");
             checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1");
             cms.lockResource("/sites/default/.content");
             cms.deleteResource("/sites/default/.content", CmsResource.DELETE_PRESERVE_SIBLINGS);
+            waitForUpdate(true);
             checkResourceTypes(onlineCms, "/sites/default/today", "foldername", "a1", "b1", "c1");
             publish();
+            waitForUpdate(true);
             checkResourceTypes(onlineCms, "/sites/default/today/", "foldername");
         } finally {
             restoreFiles();
@@ -287,7 +358,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests the saving of detail pages.<p>
-     * @throws Exception
+     * @throws Exception -
      */
     public void testSaveDetailPages() throws Exception {
 
@@ -301,7 +372,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
             CmsDetailPageInfo info2 = new CmsDetailPageInfo(page2.getStructureId(), page2.getRootPath(), "bar");
             cms.lockResource("/sites/default/.content/.config");
             manager.saveDetailPages(cms, "/sites/default/today", list(info1, info2), new CmsUUID());
-
+            waitForUpdate(false);
             CmsADEConfigData configData = manager.lookupConfiguration(cms, "/sites/default/today/");
             List<CmsDetailPageInfo> detailPages = configData.getAllDetailPages();
             assertEquals("/sites/default/today/", detailPages.get(0).getUri());
@@ -318,7 +389,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests that sitmeap folder types override module folder types.<p>
-     * @throws Exception
+     * @throws Exception -
      */
     public void testSitemapFolderTypesOverrideModuleFolderTypes() throws Exception {
 
@@ -343,7 +414,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
                 OpenCms.getADEManager().getModuleConfigurationType().getTypeId(),
                 data.getBytes(),
                 Collections.<CmsProperty> emptyList());
-            String parentFolderType = OpenCms.getADEManager().getOfflineCache().getParentFolderType(
+            String parentFolderType = OpenCms.getADEManager().getOfflineCache().getState().getParentFolderType(
                 "/sites/default/.content/a1/foo");
             assertEquals("a", parentFolderType);
         } finally {
@@ -353,12 +424,22 @@ public class TestLiveConfig extends OpenCmsTestCase {
     }
 
     /**
+     * Waits until the configuration update task has been run.<p>
+     * 
+     * @param online true if we should wait for the Online task, false for the Offline task 
+     */
+    public void waitForUpdate(boolean online) {
+
+        OpenCms.getADEManager().getCache(online).getWaitHandleForUpdateTask().enter(0);
+    }
+
+    /**
      * Helper method to compare attributes of configured resource types with a list of expected values.<p>
      * 
      * @param cms the CMS context 
      * @param path the path used to access the configuration 
      * @param attr the attribute which should be retrieved from the configured resource types
-     * @param expected
+     * @param expected the expected resource type names 
      */
     protected void checkResourceTypes(CmsObject cms, String path, String attr, String... expected) {
 
@@ -430,7 +511,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      * Helper method for creating a CMS context in the Online Project.<p>
      * 
      * @return the CMS context 
-     * @throws Exception
+     * @throws Exception -
      */
     protected CmsObject onlineCms() throws Exception {
 
@@ -442,7 +523,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Helper method for publishing the current project.<p>
-     * @throws Exception
+     * @throws Exception -
      */
     protected void publish() throws Exception {
 
@@ -452,7 +533,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Helper method to re-create the original test data in the VFS.<p>
-     * @throws Exception
+     * @throws Exception -
      */
     protected void restoreFiles() throws Exception {
 
@@ -478,7 +559,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      * 
      * @return a CMS context in the root site 
      * 
-     * @throws CmsException 
+     * @throws CmsException  -
      */
     protected CmsObject rootCms() throws CmsException {
 

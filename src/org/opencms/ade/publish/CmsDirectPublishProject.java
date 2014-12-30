@@ -91,6 +91,14 @@ public class CmsDirectPublishProject implements I_CmsVirtualProject {
     }
 
     /**
+     * @see org.opencms.ade.publish.I_CmsVirtualProject#getRelatedResourceProvider(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsPublishOptions)
+     */
+    public I_CmsPublishRelatedResourceProvider getRelatedResourceProvider(CmsObject cmsObject, CmsPublishOptions options) {
+
+        return CmsDummyRelatedResourceProvider.INSTANCE;
+    }
+
+    /**
      * @see org.opencms.ade.publish.I_CmsVirtualProject#getResources(org.opencms.file.CmsObject, java.util.Map, java.lang.String)
      */
     public List<CmsResource> getResources(CmsObject cms, Map<String, String> params, String workflowId)

@@ -166,7 +166,8 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         "remoteaddress", // 4
         "webapp", // 5
         "webbasepath", // 6 
-        "version" // 7
+        "version", // 7
+        "versionid" // 8
     };
 
     /** The "magic" commands wrapped in a List. */
@@ -192,6 +193,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** The resource name to use for resolving macros. */
     protected String m_resourceName;
+
+    /** The request parameter map, used for better compatibility with multi part requests. */
+    protected Map<String, String[]> m_parameterMap;
 
     /** A map from names of dynamic macros to the factories which generate their values. */
     private Map<String, Factory> m_factories;
@@ -513,7 +517,15 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 if (macro.startsWith(CmsMacroResolver.KEY_REQUEST_PARAM)) {
                     // the key is a request parameter  
                     macro = macro.substring(CmsMacroResolver.KEY_REQUEST_PARAM.length());
-                    String result = m_jspPageContext.getRequest().getParameter(macro);
+                    String result = null;
+                    if (m_parameterMap != null) {
+                        String[] param = m_parameterMap.get(macro);
+                        if ((param != null) && (param.length >= 1)) {
+                            result = param[0];
+                        }
+                    } else {
+                        result = m_jspPageContext.getRequest().getParameter(macro);
+                    }
                     if ((result == null) && macro.equals(KEY_PROJECT_ID)) {
                         result = m_cms.getRequestContext().getCurrentProject().getUuid().toString();
                     }
@@ -628,6 +640,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                     case 7:
                         // version
                         value = OpenCms.getSystemInfo().getVersionNumber();
+                        break;
+                    case 8:
+                        // versionid
+                        value = OpenCms.getSystemInfo().getVersionId();
                         break;
                     default:
                         // return the key "as is"
@@ -902,6 +918,16 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         m_messages = messages;
         return this;
+    }
+
+    /**
+     * Sets the parameter map.<p>
+     * 
+     * @param parameterMap the parameter map to set
+     */
+    public void setParameterMap(Map<String, String[]> parameterMap) {
+
+        m_parameterMap = parameterMap;
     }
 
     /**

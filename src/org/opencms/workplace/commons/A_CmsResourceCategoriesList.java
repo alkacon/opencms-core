@@ -86,7 +86,7 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
     private CmsCategoryService m_categoryService;
 
     /** The current resource categories. */
-    private List m_resCats;
+    private List<CmsCategory> m_resCats;
 
     /**
      * Public constructor.<p>
@@ -102,7 +102,8 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
         CmsMessageContainer listName,
         boolean searchable) {
 
-        super(jsp, listId, listName, LIST_COLUMN_PATH, CmsListOrderEnum.ORDER_ASCENDING, searchable ? LIST_COLUMN_NAME
+        super(jsp, listId, listName, LIST_COLUMN_PATH, CmsListOrderEnum.ORDER_ASCENDING, searchable
+        ? LIST_COLUMN_NAME
         : null);
         m_categoryService = CmsCategoryService.getInstance();
     }
@@ -110,6 +111,7 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -118,13 +120,14 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
-        List users = getList().getAllContent();
-        Iterator itCategories = users.iterator();
+        List<CmsListItem> items = getList().getAllContent();
+        Iterator<CmsListItem> itCategories = items.iterator();
         while (itCategories.hasNext()) {
-            CmsListItem item = (CmsListItem)itCategories.next();
+            CmsListItem item = itCategories.next();
             String categoryPath = item.getId();
             StringBuffer html = new StringBuffer(512);
             try {
@@ -151,7 +154,7 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected abstract List getCategories() throws CmsException;
+    protected abstract List<CmsCategory> getCategories() throws CmsException;
 
     /**
      * Returns the categoryService.<p>
@@ -166,19 +169,20 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    @Override
+    protected List<CmsListItem> getListItems() throws CmsException {
 
-        Map ret = new HashMap();
-        Map isLeaf = new HashMap();
-        List cats = getCategories();
-        Iterator itCategories = cats.iterator();
+        Map<String, CmsListItem> ret = new HashMap<String, CmsListItem>();
+        Map<String, Boolean> isLeaf = new HashMap<String, Boolean>();
+        List<CmsCategory> cats = getCategories();
+        Iterator<CmsCategory> itCategories = cats.iterator();
         while (itCategories.hasNext()) {
-            CmsCategory category = (CmsCategory)itCategories.next();
+            CmsCategory category = itCategories.next();
             isLeaf.put(category.getPath(), Boolean.TRUE);
         }
         itCategories = cats.iterator();
         while (itCategories.hasNext()) {
-            CmsCategory category = (CmsCategory)itCategories.next();
+            CmsCategory category = itCategories.next();
             String parentPath = CmsResource.getParentFolder(category.getPath());
             if (parentPath == null) {
                 continue;
@@ -189,7 +193,7 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
         }
         itCategories = cats.iterator();
         while (itCategories.hasNext()) {
-            CmsCategory category = (CmsCategory)itCategories.next();
+            CmsCategory category = itCategories.next();
             String categoryPath = category.getPath();
             if (ret.get(categoryPath) != null) {
                 continue;
@@ -216,7 +220,7 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
             ret.put(item.getId(), item);
         }
 
-        return new ArrayList(ret.values());
+        return new ArrayList<CmsListItem>(ret.values());
     }
 
     /**
@@ -226,7 +230,7 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
      * 
      * @throws CmsException if something goes wrong 
      */
-    protected List getResourceCategories() throws CmsException {
+    protected List<CmsCategory> getResourceCategories() throws CmsException {
 
         if (m_resCats == null) {
             m_resCats = m_categoryService.readResourceCategories(getJsp().getCmsObject(), getParamResource());
@@ -237,6 +241,7 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         setStateActionCol(metadata);
@@ -267,6 +272,7 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // show path
@@ -283,6 +289,7 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.I_CmsListFormatter#format(java.lang.Object, java.util.Locale)
              */
+            @Override
             public String format(Object data, Locale locale) {
 
                 StringBuffer html = new StringBuffer(512);
@@ -318,6 +325,7 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.I_CmsListFormatter#format(java.lang.Object, java.util.Locale)
              */
+            @Override
             public String format(Object data, Locale locale) {
 
                 StringBuffer html = new StringBuffer(512);
@@ -339,6 +347,7 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop

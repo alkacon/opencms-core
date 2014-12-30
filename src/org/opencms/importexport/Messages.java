@@ -376,6 +376,8 @@ public final class Messages extends A_CmsMessageBundle {
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
+    public static final String RPT_PARSE_LINKS_SECOND_PASS_0 = "RPT_PARSE_LINKS_SECOND_PASS_0";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */

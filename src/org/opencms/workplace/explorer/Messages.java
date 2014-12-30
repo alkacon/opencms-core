@@ -96,10 +96,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_ALTBELONGTO_0 = "GUI_EXPLORER_ALTBELONGTO_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_ABOUT_0 = "GUI_EXPLORER_CONTEXT_ABOUT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_ACCESS_0 = "GUI_EXPLORER_CONTEXT_ACCESS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0 = "GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_ADVANCED_0 = "GUI_EXPLORER_CONTEXT_ADVANCED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_ADVANCED_HISTORY_0 = "GUI_EXPLORER_CONTEXT_ADVANCED_HISTORY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0 = "GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0";
@@ -192,6 +201,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_CONTEXT_PAGEEDIT_0 = "GUI_EXPLORER_CONTEXT_PAGEEDIT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_PREVIEW_0 = "GUI_EXPLORER_CONTEXT_PREVIEW_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_PROPERTY_0 = "GUI_EXPLORER_CONTEXT_PROPERTY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -247,6 +259,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_UNLOCK_0 = "GUI_EXPLORER_CONTEXT_UNLOCK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_USERSETTINGS_0 = "GUI_EXPLORER_CONTEXT_USERSETTINGS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LOCKEDBY_0 = "GUI_EXPLORER_LOCKEDBY_0";

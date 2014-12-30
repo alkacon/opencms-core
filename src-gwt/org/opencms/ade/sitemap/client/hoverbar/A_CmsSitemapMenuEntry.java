@@ -38,7 +38,7 @@ import java.util.List;
  * 
  * @since 8.0.0
  */
-public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_CmsHoverbarShowHandler {
+public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry {
 
     /** The reason if the entry is de-activated. */
     private String m_disabledReason;
@@ -63,7 +63,6 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     public A_CmsSitemapMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         m_hoverbar = hoverbar;
-        hoverbar.addShowHandler(this);
     }
 
     /**
@@ -155,11 +154,9 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry, I_
     }
 
     /**
-     * Executed when the context-menu parent hoverbar is attached.<p>
-     * 
-     * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarShowHandler#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
+     * Executed when the context-menu is opened.<p>
      */
-    public abstract void onShow(CmsHoverbarShowEvent event);
+    public abstract void onShow();
 
     /** 
      * Sets if this menu entry is active.<p>

@@ -6,10 +6,10 @@
 <head>
 <title><cms:property name="Title" escapeHtml="true" /></title>
 
-<meta HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; CHARSET=<cms:property name="content-encoding" default="ISO-8859-1" />">
+<meta HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; CHARSET=UTF-8">
 <meta name="author" content="Alkacon Software GmbH">
-<meta name="description" content="<cms:property name="Description" default="OpenCms error page" />">
-<meta name="keywords" content="<cms:property name="Keywords" default="OpenCms, Application, Content Management, Open Source" />">
+<meta name="description" content="OpenCms error page">
+<meta name="keywords" content="OpenCms, Application, Content Management, Open Source">
 
 <link href="<cms:link>style.css</cms:link>" rel="stylesheet" type="text/css">
 </head>

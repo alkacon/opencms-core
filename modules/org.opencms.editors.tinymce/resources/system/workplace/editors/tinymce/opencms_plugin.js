@@ -11,8 +11,8 @@
 %><%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt" %><% 
     CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response); 
    pageContext.setAttribute("cms", cms);
-   CmsDialog dialog = new CmsDialog(pageContext, request, response);
-   pageContext.setAttribute("locale", dialog.getLocale().toString());
+   Locale locale=OpenCms.getWorkplaceManager().getWorkplaceLocale(cms.getCmsObject());
+   pageContext.setAttribute("locale", locale.toString());
     String itemResType = CmsResourceTypeImage.getStaticTypeName();
     CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
 Properties displayOptions = options.getDisplayOptions(cms);
@@ -30,8 +30,8 @@ var workplacePath="<%= cms.link("/system/workplace/") %>";
  * Opens the image gallery popup.
  */
 function doShowCmsGalleries(editor, url) {
-   var width = 685;
-   var height = 502;
+   var width = window.innerWidth;
+   var height = window.innerHeight;
    // HACK: check for IE8 and add some attributes to iframe to prevent layout issues
    if (typeof document.addEventListener =='undefined'){
        // let's call this iframe attribute injection
@@ -44,14 +44,6 @@ function doShowCmsGalleries(editor, url) {
        inline: "yes", 
        classes: "opencmsDialog"
    }, {});
-   var closeButton=window.document.createElement("div");
-   var currentEd=editor;
-   closeButton.onclick=function(){
-       currentEd.windowManager.close();
-   };
-   closeButton.setAttribute("class", "closeButton");
-   var windows= editor.windowManager.windows;
-   windows[windows.length-1].getEl().appendChild(closeButton);
 }
 
 /**
@@ -132,7 +124,7 @@ function getEditResource() {
  * 
  * @return <code>String</code> the dialog URL
  */ 
-function createGalleryDialogUrl(path, typesParam, integrator) {
+function createGalleryDialogUrl(path, typesParam, integrator, integratorArgs) {
    var resParam = "";
    var editFrame=window;
    if (typeof _editResource=='undefined'){
@@ -142,10 +134,8 @@ function createGalleryDialogUrl(path, typesParam, integrator) {
    if (editResource) {
       resParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH%>=" + getEditResource(); 
    }
-   if (!integrator) {
-      integrator = "/system/workplace/editors/tinymce/integrator.js";
-   }
-   var integratorParam = "&integrator="+integrator; 
+   var integratorParam = "&integrator="+integrator+"&integratorArgs="+integratorArgs; 
+   
    var debugParam = "";   
    // uncomment the next line for debugging GWT code 
    //debugParam="&gwt.codesvr=localhost:9997";
@@ -162,16 +152,33 @@ function createGalleryDialogUrl(path, typesParam, integrator) {
    }
    var searchParam;
    if (typesParam=="all"){
-       searchParam="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG%>=selectAll";
+       searchParam="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG%>=selectAll&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.PARAM_USE_LINK_DEFAULT_TYPES%>=true";
    }else{
        searchParam="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG%>=selectDoc&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES%>="+typesParam;
    }
    searchParam+="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT%>="+ ( path==null ? "" : path)+"&__locale="+elementLanguage;
-   return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE+"="+org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode.editor.name() %>" + searchParam + resParam + integratorParam + debugParam;
+   var galleryStoragePrefixParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_STORAGE_PREFIX%>=";
+   if (typesParam == "image") { 
+       galleryStoragePrefixParam += "image";
+   } else if (typesParam == "binary") {
+       galleryStoragePrefixParam += "binary"; 
+   } else {
+       galleryStoragePrefixParam += "linkselect";
+       // leave the parameter empty  
+   } 
+   
+   return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE+"="+org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode.editor.name() %>" + searchParam + resParam + galleryStoragePrefixParam + integratorParam + debugParam;
 }
 
+
+var DEFAULT_INTEGRATOR =  "/system/workplace/editors/tinymce/integrator.js";
 function imageGalleryDialogUrl() {
-   return createGalleryDialogUrl(getImageSelectionPath(), "image");
+    var editor = tinymce.activeEditor;
+   var result = createGalleryDialogUrl(getImageSelectionPath(), "image", DEFAULT_INTEGRATOR, "mode:imagegallery");
+   if (editor.settings.imageGalleryConfig) {
+       result += _paramsForEmbeddedOptions(editor.settings.imageGalleryConfig); 
+   }
+   return result;
 }
 
 
@@ -181,7 +188,25 @@ function imageGalleryDialogUrl() {
  * @return <code>String</code> the dialog URL
  */ 
 function downloadGalleryDialogUrl() {
-   return createGalleryDialogUrl(getDownloadSelectionPath(), "binary");
+    var editor = tinymce.activeEditor;
+   var result =createGalleryDialogUrl(getDownloadSelectionPath(), "binary", DEFAULT_INTEGRATOR, "mode:downloadgallery");
+   if (editor.settings.downloadGalleryConfig) {
+       result += _paramsForEmbeddedOptions(editor.settings.downloadGalleryConfig); 
+   }
+   return result; 
+}
+
+
+
+function _paramsForEmbeddedOptions(config) {
+    var result = ""; 
+    if (config.gallerytypes) {
+        result += "&gallerytypes=" + config.gallerytypes; 
+    }
+    if (config.gallerypath) {
+        result += "&gallerypath=" + config.gallerypath;
+    }
+    return result; 
 }
 
 function linkGalleryDialogUrl() {
@@ -439,25 +464,3 @@ initOpenCmsTinyMCEPlugin();
 
 
 </fmt:bundle>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

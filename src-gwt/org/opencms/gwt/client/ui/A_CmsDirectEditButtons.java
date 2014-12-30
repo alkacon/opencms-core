@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,11 +27,21 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableDataJSO;
+import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsNewLinkFunctionTable;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.gwt.client.util.I_CmsUniqueActiveItem;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
+
+import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
@@ -51,13 +61,14 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Class to provide direct edit buttons.<p>
- * 
+ *
  * @since 8.0.0
  */
-public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMouseOverHandlers, HasMouseOutHandlers {
+public abstract class A_CmsDirectEditButtons extends FlowPanel
+implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
-     * Button handler for this class.<p>
+     * Button handler for this  class.<p>
      */
     private class MouseHandler extends A_CmsHoverHandler implements ClickHandler {
 
@@ -82,7 +93,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
                 onClickEdit();
             }
             if (source == m_new) {
-                onClickNew();
+                onClickNew(true);
             }
         }
 
@@ -92,14 +103,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
         @Override
         public void onHoverIn(MouseOverEvent event) {
 
-            if (activeBar != null) {
-                try {
-                    activeBar.removeHighlightingAndBar();
-                } catch (Throwable t) {
-                    // ignore 
-                }
-            }
-            activeBar = null;
+            CmsCoreProvider.get().getFlyoutMenuContainer().setActiveItem(A_CmsDirectEditButtons.this);
             addHighlightingAndBar();
         }
 
@@ -124,9 +128,6 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
     }
 
-    /** The currently active option bar. */
-    /*default */static A_CmsDirectEditButtons activeBar;
-
     /** The timer used for hiding the option bar. */
     /*default */static Timer timer;
 
@@ -135,6 +136,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
     /** The edit button. */
     protected CmsPushButton m_edit;
+
     /** The editable data. */
     protected CmsEditableDataJSO m_editableData;
 
@@ -158,7 +160,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param editable the editable marker tag
      * @param parentId the parent element id
      */
@@ -173,10 +175,18 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
             String jsonText = editable.getAttribute("rel");
             m_editableData = CmsEditableDataJSO.parseEditableData(jsonText);
+            CmsNewLinkFunctionTable.INSTANCE.setHandler(m_editableData.getContextId(), new Runnable() {
+
+                public void run() {
+
+                    A_CmsDirectEditButtons.this.onClickNew(false);
+                }
+            });
 
             MouseHandler handler = new MouseHandler();
             addMouseOutHandler(handler);
             addMouseOverHandler(handler);
+            TreeMap<Integer, CmsPushButton> buttonMap = Maps.newTreeMap();
 
             if (m_editableData.hasDelete() && CmsStringUtil.isEmptyOrWhitespaceOnly(m_editableData.getNoEditReason())) {
                 m_delete = new CmsPushButton();
@@ -184,7 +194,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
                 m_delete.addStyleName(I_CmsButton.ButtonData.DELETE.getIconClass());
                 m_delete.setTitle(I_CmsButton.ButtonData.DELETE.getTitle());
                 m_delete.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
-                add(m_delete);
+                buttonMap.put(Integer.valueOf(100), m_delete);
                 m_delete.addClickHandler(handler);
             }
             if (m_editableData.hasNew()) {
@@ -193,15 +203,16 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
                 m_new.addStyleName(I_CmsButton.ButtonData.NEW.getIconClass());
                 m_new.setTitle(I_CmsButton.ButtonData.NEW.getTitle());
                 m_new.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
-                add(m_new);
+                buttonMap.put(Integer.valueOf(200), m_new);
                 m_new.addClickHandler(handler);
             }
-            if ((this.getWidgetCount() > 0) || m_editableData.hasEdit()) {
+            buttonMap.putAll(getAdditionalButtons());
+            if ((buttonMap.size() > 0) || m_editableData.hasEdit()) {
                 m_edit = new CmsPushButton();
                 m_edit.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
                 m_edit.addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
                 m_edit.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
-                add(m_edit);
+                buttonMap.put(Integer.valueOf(300), m_edit);
                 if (m_editableData.hasEdit()) {
                     m_edit.addStyleName(I_CmsButton.ButtonData.EDIT.getIconClass());
                     m_edit.setTitle(I_CmsButton.ButtonData.EDIT.getTitle());
@@ -211,6 +222,19 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
                     }
                 }
             }
+
+            for (CmsPushButton button : buttonMap.values()) {
+                add(button);
+                button.addClickHandler(new ClickHandler() {
+
+                    public void onClick(ClickEvent e) {
+
+                        CmsCoreProvider.get().getFlyoutMenuContainer().clearIfMatches(A_CmsDirectEditButtons.this);
+
+                    }
+                });
+            }
+
             if (m_editableData.isUnreleasedOrExpired()) {
                 m_expiredOverlay = DOM.createDiv();
                 m_expiredOverlay.setClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.directEditCss().expiredListElementOverlay());
@@ -240,6 +264,33 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
     }
 
     /**
+     * Creates the button for displaying element information.<p>
+     * 
+     * @return the created button 
+     */
+    public CmsPushButton createInfoButton() {
+
+        CmsPushButton favButton = new CmsPushButton();
+        favButton.setImageClass(I_CmsButton.ButtonData.INFO.getIconClass());
+        favButton.addStyleName(I_CmsButton.ButtonData.INFO.getIconClass());
+        favButton.setTitle(I_CmsButton.ButtonData.INFO.getTitle());
+        favButton.setButtonStyle(I_CmsButton.ButtonStyle.TRANSPARENT, null);
+        add(favButton);
+        favButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                CmsResourceInfoDialog.load(
+                    m_editableData.getStructureId(),
+                    true,
+                    Collections.<CmsUUID> emptyList(),
+                    null);
+            }
+        });
+        return favButton;
+    }
+
+    /**
      * Returns the marker tag.<p>
      *
      * @return the marker tag
@@ -258,18 +309,26 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
             m_highlighting = new CmsHighlightingBorder(m_position, CmsHighlightingBorder.BorderColor.red);
             RootPanel.get().add(m_highlighting);
         } else {
-            m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(getElement()));
+            m_highlighting.setPosition(CmsPositionBean.getBoundingClientRect(getElement()));
         }
     }
 
     /**
      * Returns if this edit button is still valid.<p>
-     * 
+     *
      * @return <code>true</code> if this edit button is valid
      */
     public boolean isValid() {
 
         return RootPanel.getBodyElement().isOrHasChild(m_markerTag);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.util.I_CmsUniqueActiveItem#onDeactivate()
+     */
+    public void onDeactivate() {
+
+        removeHighlightingAndBar();
     }
 
     /**
@@ -295,7 +354,7 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
     /**
      * Sets the position. Make sure the widget is attached to the DOM.<p>
-     * 
+     *
      * @param position the absolute position
      * @param containerElement the parent container element
      */
@@ -326,7 +385,17 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
         timer = null;
         highlightElement();
         getElement().addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
-        activeBar = this;
+    }
+
+    /**
+     * Returns a map of additional buttons in a map, with the button position as key (buttons will be ordered by their position).<p>
+     *  
+     * @return the map of additional buttons
+     */
+    protected Map<Integer, CmsPushButton> getAdditionalButtons() {
+
+        return Collections.emptyMap();
+
     }
 
     /**
@@ -341,25 +410,23 @@ public abstract class A_CmsDirectEditButtons extends FlowPanel implements HasMou
 
     /**
      * This method should be executed when the "new" direct edit button is clicked.<p>
+     *
+     * @param askCreateMode true if the user should be asked for the 'content create mode'
      */
-    protected abstract void onClickNew();
+    protected abstract void onClickNew(boolean askCreateMode);
 
     /**
      * Removes the highlighting and option bar.<p>
      */
     protected void removeHighlightingAndBar() {
 
-        timer = null;
-        if (activeBar == this) {
-            activeBar = null;
-        }
         removeHighlighting();
         getElement().removeClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.stateCss().cmsHovering());
     }
 
     /**
      * Updates the position of the expired resources overlay if present.<p>
-     * 
+     *
      * @param positioningParent the positioning parent element
      */
     protected void updateExpiredOverlayPosition(Element positioningParent) {

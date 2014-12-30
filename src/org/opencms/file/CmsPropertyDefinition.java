@@ -143,6 +143,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property to control the folders where template or default bodies should be available. */
     public static final String PROPERTY_FOLDERS_AVAILABLE = "folders.available";
 
+    /** Property stating where to create new gallery folders. */
+    public static final String PROPERTY_GALLERIES_FOLDER = "galleries.folder";
+
     /** Property constant for <code>"image.size"</code>. */
     public static final String PROPERTY_IMAGE_SIZE = "image.size";
 
@@ -202,6 +205,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /** Property for the resource title. */
     public static final String PROPERTY_TITLE = "Title";
+
+    /** Name of the property used to control whether mapped URL names should replace previous URL names. */
+    public static final String PROPERTY_URLNAME_REPLACE = "urlname.replace";
 
     /** Property for the visible method in the administration view. */
     public static final String PROPERTY_VISIBLE = "visiblemethod";

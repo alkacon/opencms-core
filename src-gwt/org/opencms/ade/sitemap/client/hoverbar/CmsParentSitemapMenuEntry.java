@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 
@@ -58,13 +59,14 @@ public class CmsParentSitemapMenuEntry extends A_CmsSitemapMenuEntry {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
+     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow()
      */
     @Override
-    public void onShow(CmsHoverbarShowEvent event) {
+    public void onShow() {
 
         CmsSitemapController controller = getHoverbar().getController();
-        boolean show = controller.isRoot(getHoverbar().getEntry().getSitePath())
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode()
+            && controller.isRoot(getHoverbar().getEntry().getSitePath())
             && (controller.getData().getParentSitemap() != null);
         setVisible(show);
     }

@@ -112,12 +112,10 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
             public void onClose(CloseEvent<PopupPanel> event) {
 
-                if (event.isAutoClosed()) {
-                    autoClose();
-                    if (m_resizeRegistration != null) {
-                        m_resizeRegistration.removeHandler();
-                        m_resizeRegistration = null;
-                    }
+                autoClose();
+                if (m_resizeRegistration != null) {
+                    m_resizeRegistration.removeHandler();
+                    m_resizeRegistration = null;
                 }
             }
         });
@@ -146,11 +144,6 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     public void closeMenu() {
 
         m_popup.hide();
-        setButtonUp();
-        if (m_resizeRegistration != null) {
-            m_resizeRegistration.removeHandler();
-            m_resizeRegistration = null;
-        }
     }
 
     /**

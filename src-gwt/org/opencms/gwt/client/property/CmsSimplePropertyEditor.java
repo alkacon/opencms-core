@@ -35,6 +35,7 @@ import org.opencms.gwt.client.ui.input.form.CmsSimpleFormFieldPanel;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsClientProperty.Mode;
 import org.opencms.gwt.shared.property.CmsPathValue;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -106,6 +107,7 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
         moveToTop(keys, CmsClientProperty.PROPERTY_NAVTEXT);
         moveToTop(keys, CmsClientProperty.PROPERTY_DESCRIPTION);
         moveToTop(keys, CmsClientProperty.PROPERTY_TITLE);
+        moveToTop(keys, CmsPropertyModification.FILE_NAME_PROPERTY);
         for (String propName : keys) {
             buildField(props, propName, Mode.effective, id);
         }

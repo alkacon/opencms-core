@@ -29,7 +29,7 @@ package org.opencms.ade.editprovider.client;
 
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.CmsPingTimer;
+import org.opencms.gwt.client.CmsBroadcastTimer;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
@@ -138,7 +138,7 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
 
             }
         });
-        CmsPingTimer.start();
+        CmsBroadcastTimer.start();
     }
 
     /**

@@ -31,25 +31,26 @@ import org.opencms.file.CmsObject;
 
 /**
  * Allows to configure customized link substitution behavior.<p>
- * 
+ *
+ * Using this handler, you can completely customize the behavior of the link substitution.<p>
+ *  
  * This handler is plugged into 
  * {@link CmsLinkManager#substituteLink(org.opencms.file.CmsObject, String, String, boolean)},
- * which is the central method to calculate links for the use on web pages. 
- * This method is also used by the <code>&lt;cms:link /&gt;</code> tag.<p> 
+ * which is the central method to calculate links from VFS paths,
+ * used by the <code>&lt;cms:link /&gt;</code> tag and the rest of the OpenCms core.<p> 
  *
  * Moreover, this handler is plugged into 
  * {@link CmsLinkManager#getRootPath(CmsObject, String, String)},
- * which basically is the revered method that gets a VFS root path from a link.<p>
+ * which is the reverse method to calculate a VFS root path from a link.<p>
  * 
- * For the implementation, you must implement the methods in this interface so that:<pre>
- * String path; // assume we have a valid VFS resource root path
- * CmsObject cms; // assume we have a valid OpenCms user context
- * CmsLinkManager lm = OpenCms.getLinkManager();
- * String link = lm.substituteLinkForRootPath(cms, path);
- * String rootPath = lm.getRootPath(cms, link);
- * link.equals(rootPath); // this must be true!</pre>
- *
- * Using this handler, you can completely customize the behavior of the link substitution.<p>
+ * For any implementation of this interface you must ensure the following:
+ * <pre>
+ *     // path: String that represents a valid VFS resource root path
+ *     // cms:  a valid OpenCms user context
+ *     String httpLink = OpenCms.getLinkManager().substituteLinkForRootPath(cms, path);
+ *     String vfsPath = OpenCms.getLinkManager().getRootPath(cms, httpLink);
+ *     path.equals(vfsPath); // this must be true!
+ * </pre>
  * 
  * The default implementation of this interface is {@link CmsDefaultLinkSubstitutionHandler}.<p>
  * 

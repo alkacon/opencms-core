@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema name="opencms_spellcheck" version="1.5">
+
+	<types>
+		<fieldType name="spell" class="solr.TextField"
+			positionIncrementGap="100">
+			<analyzer type="index">
+				<tokenizer class="solr.WhitespaceTokenizerFactory" />
+			</analyzer>
+			<analyzer type="query">
+				<tokenizer class="solr.WhitespaceTokenizerFactory" />
+			</analyzer>
+		</fieldType>
+	</types>
+
+	<fields>
+		<field name="entry_de" type="spell" indexed="true" stored="true" />
+		<field name="entry_en" type="spell" indexed="true" stored="true" />
+		<field name="entry_es" type="spell" indexed="true" stored="true" />
+		<field name="entry_fr" type="spell" indexed="true" stored="true" />
+		<field name="entry_ru" type="spell" indexed="true" stored="true" />
+	</fields>
+</schema>

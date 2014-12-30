@@ -43,7 +43,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/**
+/** 
  * A user principal in the OpenCms permission system.<p>
  *
  * A user in OpenCms is uniquely defined by its user named returned by
@@ -204,16 +204,49 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     }
 
     /**
-     * Returns the institution information of this user.<p>
+     * Checks if the given String starts with {@link I_CmsPrincipal#PRINCIPAL_USER} followed by a dot.<p>
      * 
-     * This information is stored in the "additional information" storage map
-     * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_INSTITUTION}</code>.<p>
+     * <ul>
+     * <li>Works if the given String is <code>null</code>.
+     * <li>Removes white spaces around the String before the check.
+     * <li>Also works with prefixes not being in upper case.
+     * <li>Does not check if the user after the prefix actually exists.
+     * </ul>
      * 
-     * @return the institution information of this user
+     * @param principalName the user name to check
+     * 
+     * @return <code>true</code> in case the String starts with {@link I_CmsPrincipal#PRINCIPAL_USER} followed by a dot 
      */
-    public String getInstitution() {
+    public static boolean hasPrefix(String principalName) {
 
-        return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_INSTITUTION);
+        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(principalName)
+            && (principalName.trim().toUpperCase().startsWith(I_CmsPrincipal.PRINCIPAL_USER + "."));
+    }
+
+    /**
+     * Removes the prefix if the given String starts with {@link I_CmsPrincipal#PRINCIPAL_USER} followed by a dot.<p>
+     * 
+     * <ul>
+     * <li>Works if the given String is <code>null</code>.
+     * <li>If the given String does not start with {@link I_CmsPrincipal#PRINCIPAL_USER} followed by a dot it is returned unchanged.
+     * <li>Removes white spaces around the user name.
+     * <li>Also works with prefixes not being in upper case.
+     * <li>Does not check if the user after the prefix actually exists.
+     * </ul>
+     * 
+     * @param principalName the user name to remove the prefix from
+     * 
+     * @return the given String with the prefix {@link I_CmsPrincipal#PRINCIPAL_USER} and the following dot removed
+     */
+    public static String removePrefix(String principalName) {
+
+        String result = principalName;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(principalName)) {
+            if (hasPrefix(principalName)) {
+                result = principalName.trim().substring(I_CmsPrincipal.PRINCIPAL_USER.length() + 1);
+            }
+        }
+        return result;
     }
 
     /**
@@ -417,6 +450,19 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
         buf.append(getSimpleName());
         buf.append(")");
         return buf.toString();
+    }
+
+    /**
+     * Returns the institution information of this user.<p>
+     * 
+     * This information is stored in the "additional information" storage map
+     * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_INSTITUTION}</code>.<p>
+     * 
+     * @return the institution information of this user
+     */
+    public String getInstitution() {
+
+        return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_INSTITUTION);
     }
 
     /**

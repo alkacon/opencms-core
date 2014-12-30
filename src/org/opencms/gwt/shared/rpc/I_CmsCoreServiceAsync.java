@@ -29,6 +29,7 @@ package org.opencms.gwt.shared.rpc;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
+import org.opencms.gwt.shared.CmsBroadcastMessage;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
@@ -36,12 +37,14 @@ import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
+import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
@@ -58,11 +61,33 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 public interface I_CmsCoreServiceAsync {
 
     /**
+     * Changes the password of the current user.<p>
+     * 
+     * @param oldPassword the old password 
+     * @param newPassword the value entered for the new password 
+     * @param newPasswordConfirm the value entered for the confirmation of the new password
+     *  
+     * @param callback the callback for the result 
+     */
+    void changePassword(
+        String oldPassword,
+        String newPassword,
+        String newPasswordConfirm,
+        AsyncCallback<String> callback);
+
+    /**
      * Creates a new UUID.<p>
      * 
      * @param callback the async callback
      */
     void createUUID(AsyncCallback<CmsUUID> callback);
+
+    /**
+     * Returns the latest messages for the current user.<p>
+     * 
+     * @param callback the async callback
+     */
+    void getBroadcast(AsyncCallback<List<CmsBroadcastMessage>> callback);
 
     /**
      * Returns the categories for the given search parameters.<p>
@@ -144,13 +169,11 @@ public interface I_CmsCoreServiceAsync {
     void getWorkplaceLink(CmsUUID structureId, AsyncCallback<String> callback);
 
     /**
-     * Locks the given resource with a temporary lock.<p>
+     * Loads the user settings for the current user.<p>
      * 
-     * @param structureId the resource structure id  
-     * @param callback the async callback
+     * @param callback the callback to call with the result 
      */
-    @SynchronizedRpcRequest
-    void lockTemp(CmsUUID structureId, AsyncCallback<String> callback);
+    void loadUserSettings(AsyncCallback<CmsUserSettingsBean> callback);
 
     /**
      * Locks the given resource with a temporary lock if it exists.<p>
@@ -160,6 +183,15 @@ public interface I_CmsCoreServiceAsync {
      * @param callback the async callback
      */
     void lockIfExists(String sitePath, AsyncCallback<String> callback);
+
+    /**
+     * Locks the given resource with a temporary lock.<p>
+     * 
+     * @param structureId the resource structure id  
+     * @param callback the async callback
+     */
+    @SynchronizedRpcRequest
+    void lockTemp(CmsUUID structureId, AsyncCallback<String> callback);
 
     /**
      * Locks the given resource with a temporary lock additionally checking that 
@@ -185,6 +217,15 @@ public interface I_CmsCoreServiceAsync {
      * @param callback the async callback
      */
     void prefetch(AsyncCallback<CmsCoreData> callback);
+
+    /**
+     * Saves the user settings for the current user.<p>
+     * 
+     * @param userSettings the new values for the user settings 
+     * @param edited the keys of the user settings which were actually edited
+     * @param resultCallback the callback to call when the operation has finished 
+     */
+    void saveUserSettings(Map<String, String> userSettings, Set<String> edited, AsyncCallback<Void> resultCallback);
 
     /**
      * Applies the changes stored in the info bean to the vfs of OpenCms.<p>

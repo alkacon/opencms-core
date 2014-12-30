@@ -27,7 +27,7 @@
 
 package org.opencms.ade.contenteditor.widgetregistry.client;
 
-import com.alkacon.acacia.client.widgets.I_EditWidget;
+import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Wrapper for a native widget.<p>
  */
-public final class WidgetWrapper extends Widget implements I_EditWidget {
+public final class WidgetWrapper extends Widget implements I_CmsEditWidget {
 
     /** The wrapped native widget. */
     private NativeEditWidget m_nativeWidget;
@@ -84,7 +84,7 @@ public final class WidgetWrapper extends Widget implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#isActive()
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#isActive()
      */
     public boolean isActive() {
 
@@ -92,7 +92,7 @@ public final class WidgetWrapper extends Widget implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#onAttachWidget()
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#onAttachWidget()
      */
     public void onAttachWidget() {
 
@@ -100,7 +100,7 @@ public final class WidgetWrapper extends Widget implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#owns(com.google.gwt.dom.client.Element)
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#owns(com.google.gwt.dom.client.Element)
      */
     public boolean owns(Element element) {
 
@@ -110,7 +110,7 @@ public final class WidgetWrapper extends Widget implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setActive(boolean)
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#setActive(boolean)
      */
     public void setActive(boolean active) {
 
@@ -118,7 +118,7 @@ public final class WidgetWrapper extends Widget implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setName(java.lang.String)
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#setName(java.lang.String)
      */
     public void setName(String name) {
 
@@ -135,7 +135,7 @@ public final class WidgetWrapper extends Widget implements I_EditWidget {
     }
 
     /**
-     * @see com.alkacon.acacia.client.widgets.I_EditWidget#setValue(java.lang.String, boolean)
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#setValue(java.lang.String, boolean)
      */
     public void setValue(String value, boolean fireEvents) {
 

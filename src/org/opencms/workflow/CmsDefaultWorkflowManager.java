@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -96,7 +96,7 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
     /** The number of resources in the initial publish list above which the resources are not being displayed to the user. */
     private int m_resourceLimit = DEFAULT_RESOURCE_LIMIT;
 
-    /** 
+    /**
      * Constructor.<p>
      */
     public CmsDefaultWorkflowManager() {
@@ -108,11 +108,11 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
 
     /**
      * Creates a project bean from a real project.<p>
-     * 
-     * @param cms the CMS context 
+     *
+     * @param cms the CMS context
      * @param project the project
-     *  
-     * @return the bean containing the project information 
+     *
+     * @return the bean containing the project information
      */
     public static CmsProjectBean createProjectBeanFromProject(CmsObject cms, CmsProject project) {
 
@@ -128,10 +128,10 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
 
     /**
      * Returns the simple name if the ou is the same as the current user's ou.<p>
-     * 
-     * @param cms the CMS context 
+     *
+     * @param cms the CMS context
      * @param name the fully qualified name to check
-     * 
+     *
      * @return the simple name if the ou is the same as the current user's ou
      */
     protected static String getOuAwareName(CmsObject cms, String name) {
@@ -159,16 +159,17 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
     throws CmsException {
 
         if (action.getAction().equals(CmsWorkflowAction.ACTION_CANCEL)) {
-            // Don't need to get the resource list for canceling 
+            // Don't need to get the resource list for canceling
             return new CmsWorkflowResponse(true, action.getAction(), null, null, null);
         }
-        List<CmsResource> resources = getWorkflowResources(cms, token.getWorkflow(), token.getOptions());
+        List<CmsResource> resources = getWorkflowResources(cms, token.getWorkflow(), token.getOptions(), false).getWorkflowResources();
         return executeAction(cms, action, token.getOptions(), resources);
     }
 
     /**
      * @see org.opencms.workflow.I_CmsWorkflowManager#executeAction(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflowAction, org.opencms.ade.publish.shared.CmsPublishOptions, java.util.List)
      */
+    @Override
     public CmsWorkflowResponse executeAction(
         CmsObject userCms,
         CmsWorkflowAction action,
@@ -188,11 +189,11 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
 
     /**
      * Gets the localized label for a given CMS context and key.<p>
-     *  
-     * @param cms the CMS context 
-     * @param key the localization key 
-     * 
-     * @return the localized label 
+     *
+     * @param cms the CMS context
+     * @param key the localization key
+     *
+     * @return the localized label
      */
     public String getLabel(CmsObject cms, String key) {
 
@@ -260,9 +261,22 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
     }
 
     /**
-     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
+     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflowForWorkflowProject(org.opencms.util.CmsUUID)
      */
-    public List<CmsResource> getWorkflowResources(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options) {
+    public String getWorkflowForWorkflowProject(CmsUUID projectId) {
+
+        return WORKFLOW_PUBLISH;
+    }
+
+    /**
+     * @see org.opencms.workflow.I_CmsWorkflowManager#getWorkflowResources(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions, boolean)
+     */
+    @Override
+    public CmsWorkflowResources getWorkflowResources(
+        CmsObject cms,
+        CmsWorkflow workflow,
+        CmsPublishOptions options,
+        boolean canOverride) {
 
         try {
             List<CmsResource> rawResourceList = new ArrayList<CmsResource>();
@@ -270,12 +284,12 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
             projectHandler = getRealOrVirtualProject(options.getProjectId());
             if (projectHandler != null) {
                 rawResourceList = projectHandler.getResources(cms, options.getParameters(), workflow.getId());
-                return rawResourceList;
+                return new CmsWorkflowResources(rawResourceList);
             }
-            return rawResourceList;
+            return new CmsWorkflowResources(rawResourceList);
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
-            return Collections.emptyList();
+            return new CmsWorkflowResources(Collections.<CmsResource> emptyList());
         }
     }
 
@@ -306,19 +320,19 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
         try {
             m_resourceLimit = Integer.parseInt(resourceLimitStr);
         } catch (NumberFormatException e) {
-            // ignore, resource limit will remain at the default setting  
+            // ignore, resource limit will remain at the default setting
         }
     }
 
     /**
      * The implementation of the "forcepublish" workflow action.<p>
-     * 
-     * @param userCms the user CMS context 
-     * @param resources the resources which the action should process 
-     * @param options the publish options to use 
+     *
+     * @param userCms the user CMS context
+     * @param resources the resources which the action should process
+     * @param options the publish options to use
      * @return the workflow response
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsWorkflowResponse actionForcePublish(
         CmsObject userCms,
@@ -338,13 +352,13 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
 
     /**
      * The implementation of the "publish" workflow action.<p>
-     * 
-     * @param userCms the user CMS context 
-     * @param options the publish options 
-     * @param resources the resources which the action should process 
-     * 
-     * @return the workflow response 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param userCms the user CMS context
+     * @param options the publish options
+     * @param resources the resources which the action should process
+     *
+     * @return the workflow response
+     * @throws CmsException if something goes wrong
      */
     protected CmsWorkflowResponse actionPublish(
         CmsObject userCms,
@@ -352,8 +366,7 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
         final List<CmsResource> resources) throws CmsException {
 
         final CmsPublish publish = new CmsPublish(userCms, options);
-
-        // use FutureTask to get the broken links, because we can then use a different thread if it takes too long 
+        // use FutureTask to get the broken links, because we can then use a different thread if it takes too long
         final FutureTask<List<CmsPublishResource>> brokenResourcesGetter = new FutureTask<List<CmsPublishResource>>(
             new Callable<List<CmsPublishResource>>() {
 
@@ -403,8 +416,8 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
 
                     LOG.info("Checking broken relations is taking too long, using a different thread for checking and publishing now.");
                     try {
-                        // Make sure the computation is finished by calling get() without a timeout parameter 
-                        // We don't need the actual result of the get(), though; we just get the set of resource paths from the validator object  
+                        // Make sure the computation is finished by calling get() without a timeout parameter
+                        // We don't need the actual result of the get(), though; we just get the set of resource paths from the validator object
                         brokenResourcesGetter.get();
                         List<CmsResource> resourcesToPublish = new ArrayList<CmsResource>(resources);
                         Iterator<CmsResource> resIter = resourcesToPublish.iterator();
@@ -431,11 +444,11 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
                 null);
             return response;
         } catch (InterruptedException e) {
-            // shouldn't happen; log exception 
+            // shouldn't happen; log exception
             LOG.error(e.getLocalizedMessage());
             return null;
         } catch (ExecutionException e) {
-            // shouldn't happen; log exception 
+            // shouldn't happen; log exception
             LOG.error(e.getLocalizedMessage());
             return null;
         }

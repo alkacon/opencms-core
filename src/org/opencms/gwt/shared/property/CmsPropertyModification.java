@@ -40,6 +40,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsPropertyModification implements IsSerializable {
 
+    /** The file name property name, use to edit the filename within a property dialog. */
+    public static final String FILE_NAME_PROPERTY = "~~~file_name_property~~~";
+
     /** The resource id for which the property changed. */
     private CmsUUID m_id;
 
@@ -135,6 +138,16 @@ public class CmsPropertyModification implements IsSerializable {
     public String getValue() {
 
         return m_value;
+    }
+
+    /**
+     * Checks if this is the file name property.<p>
+     * 
+     * @return <code>true</code> in case of the file name property
+     */
+    public boolean isFileNameProperty() {
+
+        return FILE_NAME_PROPERTY.equals(m_name);
     }
 
     /**

@@ -36,7 +36,7 @@
 
 div.hoverbar{
 	position: absolute;
-	top: 7px;
+	top: 6px;
 	right: 5px;
 	overflow: visible;
 }
@@ -54,26 +54,26 @@ div.hoverbar{
 	}	
 }
 @sprite .cmsState-up-hovering .hoverbarContext, .context .hoverbarContext, .cmsState-down .hoverbarContext, .cmsState-down-hovering .hoverbarContext{
-    gwt-image: "bigIcons.menuBigIconActive";
+    gwt-image: "icons.menuIconActive";
 }
 @sprite .cmsState-up .hoverbarContext, .cmsState-up-disabled .hoverbarContext, .cmsState-down-disabled .hoverbarContext{
-    gwt-image: "bigIcons.menuBigIconDeactivated";
+    gwt-image: "icons.menuIconDeactivated";
 }
 
 
 
 @sprite .cmsState-up-hovering .hoverbarParent, .cmsState-down-hovering .hoverbarParent, .cmsState-down .hoverbarParent, .context .hoverbarParent{
-    gwt-image: "bigIcons.gotoParentBigIconActive";
+    gwt-image: "icons.gotoParentIcon";
 }
 @sprite .cmsState-up .hoverbarParent, .cmsState-up-disabled .hoverbarParent, .cmsState-down-disabled .hoverbarParent{
-    gwt-image: "bigIcons.gotoParentBigIconActive";
+    gwt-image: "icons.gotoParentIcon";
 }
 
 @sprite .cmsState-up-hovering .hoverbarGotoSub, .cmsState-down-hovering .hoverbarGotoSub, .cmsState-down .hoverbarGotoSub, .context .hoverbarGotoSub {
-    gwt-image: "bigIcons.gotoSubSitemapBigIconActive";
+    gwt-image: "icons.subSitemapIcon";
 }
 @sprite .cmsState-up .hoverbarGotoSub, .cmsState-up-disabled .hoverbarGotoSub, .cmsState-down-disabled .hoverbarGotoSub {
-    gwt-image: "bigIcons.gotoBigIconDeactivated";
+    gwt-image: "icons.subSitemapIconDeactivated";
 }
 
 @sprite .cmsState-up-hovering .hoverbarGoto, .cmsState-down-hovering .hoverbarGoto, .cmsState-down .hoverbarGoto, .context .hoverbarGoto{
@@ -84,10 +84,10 @@ div.hoverbar{
 }
 
 @sprite .cmsState-up-hovering .hoverbarMove, .cmsState-down-hovering .hoverbarMove, .cmsState-down .hoverbarMove{
-    gwt-image: "bigIcons.moveBigIconActive";
+    gwt-image: "icons.moveIconActive";
 }
 @sprite .cmsState-up .hoverbarMove, .cmsState-up-disabled .hoverbarMove, .cmsState-down-disabled .hoverbarMove{
-    gwt-image: "bigIcons.moveBigIconDeactivated";
+    gwt-image: "icons.moveIconDeactivated";
 }
 
 

@@ -27,8 +27,7 @@
 
 package org.opencms.ade.contenteditor.client;
 
-import com.alkacon.vie.client.Entity;
-
+import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -45,7 +44,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 /**
  * Observer for content entities, used to notify listeners of entity changes.<p>
  */
-public class CmsEntityObserver implements ValueChangeHandler<Entity> {
+public class CmsEntityObserver implements ValueChangeHandler<CmsEntity> {
 
     /** The registered change listeners. */
     Map<String, List<I_CmsEntityChangeListener>> m_changeListeners;
@@ -57,14 +56,14 @@ public class CmsEntityObserver implements ValueChangeHandler<Entity> {
     private HandlerRegistration m_handlerRegistration;
 
     /** The observed entity. */
-    private Entity m_observerdEntity;
+    private CmsEntity m_observerdEntity;
 
     /**
      * Constructor.<p>
      * 
      * @param entity the entity to observe
      */
-    public CmsEntityObserver(Entity entity) {
+    public CmsEntityObserver(CmsEntity entity) {
 
         m_observerdEntity = entity;
         m_handlerRegistration = entity.addValueChangeHandler(this);
@@ -108,16 +107,18 @@ public class CmsEntityObserver implements ValueChangeHandler<Entity> {
     /**
      * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
      */
-    public void onValueChange(ValueChangeEvent<Entity> event) {
+    public void onValueChange(ValueChangeEvent<CmsEntity> event) {
 
-        Entity entity = event.getValue();
+        CmsEntity entity = event.getValue();
         for (String scope : m_scopeValues.keySet()) {
+            System.out.println("checking scope " + scope + " on change");
             String scopeValue = CmsContentDefinition.getValueForPath(entity, scope);
             String previousValue = m_scopeValues.get(scope);
             if (((scopeValue != null) && !scopeValue.equals(previousValue))
                 || ((scopeValue == null) && (previousValue != null))) {
                 // the value within this scope has changed, notify all listeners
                 if (m_changeListeners.containsKey(scope)) {
+                    System.out.println("calling listeners on changed scope " + scope);
                     for (I_CmsEntityChangeListener changeListener : m_changeListeners.get(scope)) {
                         try {
                             changeListener.onEntityChange(entity);

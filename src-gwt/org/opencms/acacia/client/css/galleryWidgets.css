@@ -1,0 +1,59 @@
+.attributeValue, .dragHelper, .emptyValue, .entity, .label, .widgetHolder, .singleLine, .compactView, .firstColumn, .secondColumn, .defaultView, .inActive{}
+
+.widget.galleryField .fieldBox, .widget.locationField div.displayBox{
+	border: 1px solid #7788AA;
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+	display: block;
+	width: auto;
+	padding: 0px;
+	height: 18px;
+	font-size: 12px;
+}
+
+div.locationFields div.locationField > div:first-child{
+	border-color: #7788AA;
+	background: #FFFFFF;
+}
+
+.hasError .widget.galleryField .fieldBox, .hasError .widget.locationField .displayBox{
+	border-color: value("constants.css.borderColorHighlight");
+}
+.hasWarning .widget.galleryField .fieldBox, .hasWarning .widget.locationField .displayBox{
+	border-color: #FFAA00;
+}
+
+.emptyValue .widget.galleryField .fieldBox, .emptyValue .widget.galleryField div.imagePreview,
+.emptyValue .widget.locationField .displayBox, .emptyValue .widget.locationField div.mapPreview{
+	border-color: value("constants.css.borderColor");
+}
+
+.emptyValue .widget.galleryField div.imagePreview *, .emptyValue .widget.locationField div.mapPreview *{
+	visibility: hidden;
+}
+.widget.galleryField input[type="text"], .widget.locationField input[type="text"], div.locationFields div input[type="text"]{
+	font-family: value("constants.css.fontFamily");
+	border-radius: value("constants.css.borderRadius");
+	color: value("constants.css.textColor");
+	height: 18px;
+	font-size: 12px;
+	outline:none;
+}
+	
+.widget .resourceInfo > div, .widget div.imagePreview, .widget div.locationInfo, .widget div.mapPreview{
+	border: 1px solid #7788AA;
+}
+.widget .hasError div.imagePreview{
+	display: none;
+}
+
+/** joined vendor prefix style, for better fall back behavior */
+.resourceInfo > div > div:first-child, div.locationInfo, div.locationMainPanel{
+	background-color: value("constants.css.gradientFormDialogColor");
+	background-image: value("constants.css.gradientFormDialogIE9");
+	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+}

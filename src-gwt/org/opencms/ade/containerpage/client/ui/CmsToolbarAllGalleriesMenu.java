@@ -43,6 +43,7 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.A_CmsToolbarMenu;
 import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsToolbarPopup;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
@@ -66,8 +67,8 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
     /** The main content widget. */
     private FlowPanel m_contentPanel;
 
-    /** Signals if the gallery was already opened. */
-    private boolean m_initialized;
+    /** The gallery dialog instance. */
+    private CmsGalleryDialog m_dialog;
 
     /**
      * Constructor.<p>
@@ -90,6 +91,7 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
      * 
      * @return the gallery dialog instance
      */
+    @SuppressWarnings("unused")
     protected static CmsGalleryDialog createDialog(
         I_CmsGalleryConfiguration configuration,
         I_CmsGalleryHandler galleryHandler) {
@@ -132,10 +134,12 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
     protected void openDialog(I_CmsGalleryConfiguration configuration) {
 
         Document.get().getBody().addClassName(I_CmsButton.ButtonData.ADD.getIconClass());
-        if (!m_initialized) {
+        if (m_dialog == null) {
             SimplePanel tabsContainer = new SimplePanel();
             tabsContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().menuTabContainer());
-            tabsContainer.add(createDialog(configuration, new I_CmsGalleryHandler() {
+            int dialogHeight = CmsToolbarPopup.getAvailableHeight();
+            int dialogWidth = CmsToolbarPopup.getAvailableWidth();
+            m_dialog = createDialog(configuration, new I_CmsGalleryHandler() {
 
                 public boolean filterDnd(CmsResultItemBean resultBean) {
 
@@ -157,9 +161,16 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
                     // do nothing
                 }
 
-            }));
+            });
+            m_dialog.setDialogSize(dialogWidth, dialogHeight);
+            getPopup().setWidth(dialogWidth);
+            tabsContainer.add(m_dialog);
             m_contentPanel.add(tabsContainer);
-            m_initialized = true;
+        } else {
+            int dialogWidth = CmsToolbarPopup.getAvailableWidth();
+            getPopup().setWidth(dialogWidth);
+            m_dialog.truncate("GALLERY_DIALOG_TM", dialogWidth);
+            m_dialog.updateSizes();
         }
     }
 
@@ -188,7 +199,7 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
 
             }
         };
-        if (m_initialized) {
+        if (m_dialog != null) {
             openDialog(null);
         } else {
             action.execute();

@@ -1,0 +1,63 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:with field="main" type="org.opencms.acacia.client.css.I_CmsLayoutBundle" />
+	<ui:style>
+		div.overlay{
+			position: absolute;
+			background: #000000;
+			
+		}
+		@if user.agent ie6 { 
+			div.overlay { 
+				filter: literal("alpha(opacity = 40)"); 
+			}
+		} @elif user.agent ie8 { 
+			div.overlay { 
+				-ms-filter: "alpha(opacity = 40)";
+			}
+		} @else {
+			div.overlay { 
+				opacity: 0.4;
+			}
+		}
+		div.buttonParent{
+			position: absolute;
+		}
+		div.borderHorizontal{
+			position: absolute;
+			height: 3px;
+			background-color:gray;
+		}
+		div.borderLeft, div.borderRight{
+			position: absolute;
+			border-color: gray;
+			height:3px;
+			border-top: 3px solid gray;
+			border-bottom: 3px solid gray;
+		}
+		div.borderLeft{
+			border-left: 3px solid gray;
+			border-radius: 6px 0px 0px 6px;
+		}
+		div.borderRight{
+			border-right: 3px solid gray;
+			border-radius: 0px 6px 6px 0px;
+		}
+			
+	</ui:style>
+	<g:HTMLPanel styleName="{main.form.inlineEditOverlay}">
+		<div ui:field="m_overlayTop" class="{style.overlay}" style="top: 0px; left: 0px;" />
+		<div ui:field="m_overlayRight" class="{style.overlay}" style="left: 0px; top: 0px;" />
+		<div ui:field="m_overlayBottom" class="{style.overlay}" style="top: 0px; left: 0px;" />
+		<div ui:field="m_overlayLeft" class="{style.overlay}" style="top: 0px; left: 0px;" />
+		<div ui:field="m_borderTop" class="{style.borderHorizontal}" />
+		<div ui:field="m_borderRight" class="{style.borderRight}" />
+		<div ui:field="m_borderBottom" class="{style.borderHorizontal}" />
+		<div ui:field="m_borderLeft" class="{style.borderLeft}" />
+		<div ui:field="m_buttonBar" class="{style.buttonParent}">
+			<div class="{main.form.overlayButtonBar}" /> 
+			<g:FlowPanel ui:field="m_buttonPanel" styleName="{main.form.overlayButtonPanel}"/>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

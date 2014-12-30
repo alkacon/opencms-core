@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,8 +27,8 @@
 
 package org.opencms.gwt.client.util;
 
-import com.alkacon.geranium.client.I_DescendantResizeHandler;
-
+import org.opencms.gwt.client.CmsEditableDataJSO;
+import org.opencms.gwt.client.I_DescendantResizeHandler;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -65,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Utility class to access the HTML DOM.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsDomUtil {
@@ -105,7 +106,7 @@ public final class CmsDomUtil {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param attr the attribute
          */
         public AttributeValue(Attribute attr) {
@@ -115,7 +116,7 @@ public final class CmsDomUtil {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param attr the attribute
          * @param value the value
          */
@@ -192,7 +193,7 @@ public final class CmsDomUtil {
 
         /**
          * Returns the HTML code for this entity.<p>
-         * 
+         *
          * @return the HTML code for this entity
          */
         public String html() {
@@ -461,7 +462,7 @@ public final class CmsDomUtil {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param representation the target representation
          */
         Target(String representation) {
@@ -495,7 +496,7 @@ public final class CmsDomUtil {
 
     /**
      * Adds an overlay div to the element.<p>
-     * 
+     *
      * @param element the element
      */
     public static void addDisablingOverlay(Element element) {
@@ -509,18 +510,18 @@ public final class CmsDomUtil {
     /**
      * Returns if the given client position is over the given element.<p>
      * Use <code>-1</code> for x or y to ignore one ordering orientation.<p>
-     * 
+     *
      * @param element the element
-     * @param x the client x position, use <code>-1</code> to ignore x position 
+     * @param x the client x position, use <code>-1</code> to ignore x position
      * @param y the client y position, use <code>-1</code> to ignore y position
-     * 
+     *
      * @return <code>true</code> if the given position is over the given element
      */
     public static boolean checkPositionInside(Element element, int x, int y) {
 
         // ignore x / left-right values for x == -1
         if (x != -1) {
-            // check if the mouse pointer is within the width of the target 
+            // check if the mouse pointer is within the width of the target
             int left = CmsDomUtil.getRelativeX(x, element);
             int offsetWidth = element.getOffsetWidth();
             if ((left <= 0) || (left >= offsetWidth)) {
@@ -529,7 +530,7 @@ public final class CmsDomUtil {
         }
         // ignore y / top-bottom values for y == -1
         if (y != -1) {
-            // check if the mouse pointer is within the height of the target 
+            // check if the mouse pointer is within the height of the target
             int top = CmsDomUtil.getRelativeY(y, element);
             int offsetHeight = element.getOffsetHeight();
             if ((top <= 0) || (top >= offsetHeight)) {
@@ -541,7 +542,7 @@ public final class CmsDomUtil {
 
     /**
      * Removes the opacity attribute from the element's inline-style.<p>
-     * 
+     *
      * @param element the DOM element to manipulate
      */
     public static void clearOpacity(Element element) {
@@ -551,12 +552,12 @@ public final class CmsDomUtil {
 
     /**
      * Clones the given element.<p>
-     * 
-     * It creates a new element with the same tag, and sets the class attribute, 
+     *
+     * It creates a new element with the same tag, and sets the class attribute,
      * and sets the innerHTML.<p>
-     * 
+     *
      * @param element the element to clone
-     * 
+     *
      * @return the cloned element
      */
     public static Element clone(Element element) {
@@ -569,9 +570,9 @@ public final class CmsDomUtil {
 
     /**
      * Generates a closing tag.<p>
-     * 
+     *
      * @param tag the tag to use
-     * 
+     *
      * @return HTML code
      */
     public static String close(Tag tag) {
@@ -580,15 +581,15 @@ public final class CmsDomUtil {
     }
 
     /**
-     * This method will create an {@link com.google.gwt.dom.client.Element} for the given HTML. 
+     * This method will create an {@link com.google.gwt.dom.client.Element} for the given HTML.
      * The HTML should have a single root tag, if not, the first tag will be used and all others discarded.<p>
      * Script-tags will be removed.<p>
-     * 
+     *
      * @param html the HTML to use for the element
-     * 
+     *
      * @return the created element
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public static Element createElement(String html) throws Exception {
 
@@ -612,11 +613,11 @@ public final class CmsDomUtil {
 
     /**
      * Convenience method to assemble the HTML to use for a button face.<p>
-     * 
+     *
      * @param text text the up face text to set, set to <code>null</code> to not show any
      * @param imageClass the up face image class to use, set to <code>null</code> to not show any
      * @param align the alignment of the text in reference to the image
-     * 
+     *
      * @return the HTML
      */
     public static String createFaceHtml(String text, String imageClass, HorizontalAlignmentConstant align) {
@@ -649,9 +650,9 @@ public final class CmsDomUtil {
 
     /**
      * Creates an iFrame element with the given name attribute.<p>
-     * 
+     *
      * @param name the name attribute value
-     * 
+     *
      * @return the iFrame element
      */
     public static com.google.gwt.dom.client.Element createIFrameElement(String name) {
@@ -661,11 +662,11 @@ public final class CmsDomUtil {
 
     /**
      * Encloses the given text with the given tag.<p>
-     * 
+     *
      * @param tag the tag to use
      * @param text the text to enclose
      * @param attrs the optional tag attributes
-     * 
+     *
      * @return HTML code
      */
     public static String enclose(Tag tag, String text, AttributeValue... attrs) {
@@ -675,7 +676,7 @@ public final class CmsDomUtil {
 
     /**
      * Ensures a script tag is present within the window document context.<p>
-     * 
+     *
      * @param javascriptLink the link to the java script resource
      */
     public static void ensureJavaScriptIncluded(String javascriptLink) {
@@ -687,9 +688,9 @@ public final class CmsDomUtil {
 
     /**
      * Triggers a mouse-out event for the given element.<p>
-     * 
+     *
      * Useful in case something is capturing all events.<p>
-     * 
+     *
      * @param element the element to use
      */
     public static void ensureMouseOut(Element element) {
@@ -700,9 +701,9 @@ public final class CmsDomUtil {
 
     /**
      * Triggers a mouse-out event for the given target.<p>
-     * 
+     *
      * Useful in case something is capturing all events.<p>
-     * 
+     *
      * @param target the target to use
      */
     public static void ensureMouseOut(HasHandlers target) {
@@ -713,9 +714,9 @@ public final class CmsDomUtil {
 
     /**
      * Triggers a mouse-over event for the given element.<p>
-     * 
+     *
      * Useful in case something is capturing all events.<p>
-     * 
+     *
      * @param element the element to use
      */
     public static void ensureMouseOver(Element element) {
@@ -737,7 +738,7 @@ public final class CmsDomUtil {
 
     /**
      * Checks the window.document for given style-sheet and includes it if required.<p>
-     * 
+     *
      * @param styleSheetLink the style-sheet link
      */
     public static native void ensureStyleSheetIncluded(String styleSheetLink)/*-{
@@ -760,9 +761,9 @@ public final class CmsDomUtil {
 
     /**
      * Ensures that the given element is visible.<p>
-     * 
+     *
      * Assuming the scrollbars are on the container element, and that the element is a child of the container element.<p>
-     * 
+     *
      * @param containerElement the container element, has to be parent of the element
      * @param element the element to be seen
      * @param animationTime the animation time for scrolling, use zero for no animation
@@ -798,7 +799,7 @@ public final class CmsDomUtil {
 
     /**
      * Fires a focus event for the given widget.<p>
-     * 
+     *
      * @param widget the widget
      */
     public static void fireFocusEvent(Widget widget) {
@@ -809,7 +810,7 @@ public final class CmsDomUtil {
 
     /**
      * Ensures any embedded flash players are set opaque so UI elements may be placed above them.<p>
-     * 
+     *
      * @param element the element to work on
      */
     public static native void fixFlashZindex(Element element)/*-{
@@ -890,12 +891,12 @@ public final class CmsDomUtil {
 
     /**
      * Generates a form element with hidden input fields.<p>
-     * 
+     *
      * @param action the form action
      * @param method the form method
      * @param target the form target
      * @param values the input values
-     * 
+     *
      * @return the generated form element
      */
     public static FormElement generateHiddenForm(String action, Method method, String target, Map<String, String> values) {
@@ -914,12 +915,12 @@ public final class CmsDomUtil {
 
     /**
      * Generates a form element with hidden input fields.<p>
-     * 
+     *
      * @param action the form action
      * @param method the form method
      * @param target the form target
      * @param values the input values
-     * 
+     *
      * @return the generated form element
      */
     public static FormElement generateHiddenForm(String action, Method method, Target target, Map<String, String> values) {
@@ -928,13 +929,30 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Gets the edit data for all cms-editable elements in the page.<p>
+     * 
+     * @return the list of edit data
+     */
+    public static List<CmsEditableDataJSO> getAllEditableDataForPage() {
+
+        List<Element> elems = CmsDomUtil.getElementsByClass("cms-editable", Tag.div);
+        List<CmsEditableDataJSO> result = Lists.newArrayList();
+        for (Element elem : elems) {
+            String jsonData = elem.getAttribute("rel");
+            CmsEditableDataJSO data = CmsEditableDataJSO.parseEditableData(jsonData);
+            result.add(data);
+        }
+        return result;
+    }
+
+    /**
      * Returns the given element or it's closest ancestor with the given class.<p>
-     * 
+     *
      * Returns <code>null</code> if no appropriate element was found.<p>
-     * 
+     *
      * @param element the element
      * @param className the class name
-     * 
+     *
      * @return the matching element
      */
     public static Element getAncestor(Element element, String className) {
@@ -950,12 +968,12 @@ public final class CmsDomUtil {
 
     /**
      * Returns the given element or it's closest ancestor with the given tag name.<p>
-     * 
+     *
      * Returns <code>null</code> if no appropriate element was found.<p>
-     * 
+     *
      * @param element the element
      * @param tag the tag name
-     * 
+     *
      * @return the matching element
      */
     public static Element getAncestor(Element element, Tag tag) {
@@ -974,13 +992,13 @@ public final class CmsDomUtil {
 
     /**
      * Returns the given element or it's closest ancestor with the given tag and class.<p>
-     * 
+     *
      * Returns <code>null</code> if no appropriate element was found.<p>
-     * 
+     *
      * @param element the element
      * @param tag the tag name
      * @param className the class name
-     * 
+     *
      * @return the matching element
      */
     public static Element getAncestor(Element element, Tag tag, String className) {
@@ -996,10 +1014,10 @@ public final class CmsDomUtil {
 
     /**
      * Returns the computed style of the given element.<p>
-     * 
+     *
      * @param element the element
-     * @param style the CSS property 
-     * 
+     * @param style the CSS property
+     *
      * @return the currently computed style
      */
     public static String getCurrentStyle(Element element, Style style) {
@@ -1009,10 +1027,10 @@ public final class CmsDomUtil {
 
     /**
      * Returns the computed style of the given element as floating point number.<p>
-     * 
+     *
      * @param element the element
-     * @param style the CSS property 
-     * 
+     * @param style the CSS property
+     *
      * @return the currently computed style
      */
     public static double getCurrentStyleFloat(Element element, Style style) {
@@ -1023,10 +1041,10 @@ public final class CmsDomUtil {
 
     /**
      * Returns the computed style of the given element as number.<p>
-     * 
+     *
      * @param element the element
-     * @param style the CSS property 
-     * 
+     * @param style the CSS property
+     *
      * @return the currently computed style
      */
     public static int getCurrentStyleInt(Element element, Style style) {
@@ -1036,10 +1054,10 @@ public final class CmsDomUtil {
     }
 
     /**
-     * Determines the position of the list collector editable content.<p> 
-     * 
+     * Determines the position of the list collector editable content.<p>
+     *
      * @param editable the editable marker tag
-     * 
+     *
      * @return the position
      */
     public static CmsPositionBean getEditablePosition(Element editable) {
@@ -1056,22 +1074,26 @@ public final class CmsDomUtil {
             && !CmsDomUtil.hasClass("cms-editable", sibling)
             && !CmsDomUtil.hasClass("cms-editable-end", sibling)) {
             // only consider element nodes
+
             if ((sibling.getNodeType() == Node.ELEMENT_NODE)
                 && !sibling.getTagName().equalsIgnoreCase(Tag.script.name())) {
-                CmsPositionBean siblingPos = CmsPositionBean.generatePositionInfo(sibling);
-                result.setLeft(((result.getLeft() == dummy) || (siblingPos.getLeft() < result.getLeft()))
-                ? siblingPos.getLeft()
-                : result.getLeft());
-                result.setTop(((result.getTop() == dummy) || (siblingPos.getTop() < result.getTop()))
-                ? siblingPos.getTop()
-                : result.getTop());
-                result.setHeight(((result.getTop() + result.getHeight()) > (siblingPos.getTop() + siblingPos.getHeight()))
-                ? result.getHeight()
-                : (siblingPos.getTop() + siblingPos.getHeight()) - result.getTop());
-                result.setWidth(((result.getLeft() + result.getWidth()) > (siblingPos.getLeft() + siblingPos.getWidth()))
-                ? result.getWidth()
-                : (siblingPos.getLeft() + siblingPos.getWidth()) - result.getLeft());
+                if (!CmsDomUtil.hasClass("cms-editable-skip", sibling)) {
+                    CmsPositionBean siblingPos = CmsPositionBean.generatePositionInfo(sibling);
+                    result.setLeft(((result.getLeft() == dummy) || (siblingPos.getLeft() < result.getLeft()))
+                    ? siblingPos.getLeft()
+                    : result.getLeft());
+                    result.setTop(((result.getTop() == dummy) || (siblingPos.getTop() < result.getTop()))
+                    ? siblingPos.getTop()
+                    : result.getTop());
+                    result.setHeight(((result.getTop() + result.getHeight()) > (siblingPos.getTop() + siblingPos.getHeight()))
+                    ? result.getHeight()
+                    : (siblingPos.getTop() + siblingPos.getHeight()) - result.getTop());
+                    result.setWidth(((result.getLeft() + result.getWidth()) > (siblingPos.getLeft() + siblingPos.getWidth()))
+                    ? result.getWidth()
+                    : (siblingPos.getLeft() + siblingPos.getWidth()) - result.getLeft());
+                }
             }
+
             sibling = sibling.getNextSiblingElement();
         }
         if ((result.getTop() == dummy) && (result.getLeft() == dummy)) {
@@ -1089,16 +1111,18 @@ public final class CmsDomUtil {
 
     /**
      * Utility method to determine the effective background color.<p>
-     * 
+     *
      * @param element the element
-     * 
+     *
      * @return the background color
      */
     public static String getEffectiveBackgroundColor(Element element) {
 
         String backgroundColor = CmsDomUtil.getCurrentStyle(element, Style.backgroundColor);
         if ((CmsStringUtil.isEmptyOrWhitespaceOnly(backgroundColor) || isTransparent(backgroundColor) || backgroundColor.equals(StyleValue.inherit.toString()))) {
-            if (Document.get().getBody() != element) {
+
+            if ((Document.get().getBody() != element) && (element.getParentElement() != null)) {
+
                 backgroundColor = getEffectiveBackgroundColor(element.getParentElement());
             } else {
                 // if body element has still no background color set default to white
@@ -1111,9 +1135,9 @@ public final class CmsDomUtil {
 
     /**
      * Returns all elements from the DOM with the given CSS class.<p>
-     * 
+     *
      * @param className the class name to look for
-     * 
+     *
      * @return the matching elements
      */
     public static List<Element> getElementsByClass(String className) {
@@ -1123,10 +1147,10 @@ public final class CmsDomUtil {
 
     /**
      * Returns all elements with the given CSS class including the root element.<p>
-     * 
+     *
      * @param className the class name to look for
      * @param rootElement the root element of the search
-     * 
+     *
      * @return the matching elements
      */
     public static List<Element> getElementsByClass(String className, Element rootElement) {
@@ -1137,10 +1161,10 @@ public final class CmsDomUtil {
 
     /**
      * Returns all elements from the DOM with the given CSS class and tag name.<p>
-     * 
+     *
      * @param className the class name to look for
      * @param tag the tag
-     * 
+     *
      * @return the matching elements
      */
     public static List<Element> getElementsByClass(String className, Tag tag) {
@@ -1150,11 +1174,11 @@ public final class CmsDomUtil {
 
     /**
      * Returns all elements with the given CSS class and tag name including the root element.<p>
-     * 
+     *
      * @param className the class name to look for
      * @param tag the tag
      * @param rootElement the root element of the search
-     * 
+     *
      * @return the matching elements
      */
     public static List<Element> getElementsByClass(String className, Tag tag, Element rootElement) {
@@ -1167,20 +1191,18 @@ public final class CmsDomUtil {
         if (internalHasClass(className, rootElement)) {
             result.add(rootElement);
         }
-        NodeList<Element> elements = rootElement.getElementsByTagName(tag.toString());
+        NodeList<Element> elements = querySelectorAll(tag + "." + className, rootElement);
         for (int i = 0; i < elements.getLength(); i++) {
-            if (internalHasClass(className, elements.getItem(i))) {
-                result.add(elements.getItem(i));
-            }
+            result.add(elements.getItem(i));
         }
         return result;
     }
 
     /**
      * Returns the element position relative to its siblings.<p>
-     * 
+     *
      * @param e the element to get the position for
-     * 
+     *
      * @return the position, or <code>-1</code> if not found
      */
     public static int getPosition(Element e) {
@@ -1196,9 +1218,9 @@ public final class CmsDomUtil {
 
     /**
      * Returns the next ancestor to the element with an absolute, fixed or relative position.<p>
-     * 
+     *
      * @param child the element
-     * 
+     *
      * @return the positioning parent element (may be <code>null</code>)
      */
     public static Element getPositioningParent(Element child) {
@@ -1218,12 +1240,12 @@ public final class CmsDomUtil {
 
     /**
      * Gets the horizontal position of the given x-coordinate relative to a given element.<p>
-     * 
-     * @param x the coordinate to use 
+     *
+     * @param x the coordinate to use
      * @param target the element whose coordinate system is to be used
-     * 
+     *
      * @return the relative horizontal position
-     * 
+     *
      * @see com.google.gwt.event.dom.client.MouseEvent#getRelativeX(com.google.gwt.dom.client.Element)
      */
     public static int getRelativeX(int x, Element target) {
@@ -1234,12 +1256,12 @@ public final class CmsDomUtil {
 
     /**
      * Gets the vertical position of the given y-coordinate relative to a given element.<p>
-     * 
-     * @param y the coordinate to use 
+     *
+     * @param y the coordinate to use
      * @param target the element whose coordinate system is to be used
-     * 
+     *
      * @return the relative vertical position
-     * 
+     *
      * @see com.google.gwt.event.dom.client.MouseEvent#getRelativeY(com.google.gwt.dom.client.Element)
      */
     public static int getRelativeY(int y, Element target) {
@@ -1249,8 +1271,8 @@ public final class CmsDomUtil {
 
     /**
      * Returns the DOM window object.<p>
-     * 
-     * @return the DOM window object 
+     *
+     * @return the DOM window object
      */
     public static native JavaScriptObject getWindow() /*-{
                                                       return $wnd;
@@ -1258,12 +1280,12 @@ public final class CmsDomUtil {
 
     /**
      * Returns the Z index from the given style.<p>
-     * 
-     * This is a workaround for a bug with {@link com.google.gwt.dom.client.Style#getZIndex()} which occurs with IE in 
+     *
+     * This is a workaround for a bug with {@link com.google.gwt.dom.client.Style#getZIndex()} which occurs with IE in
      * hosted mode.<p>
-     * 
-     * @param style the style object from which the Z index property should be fetched 
-     * 
+     *
+     * @param style the style object from which the Z index property should be fetched
+     *
      * @return the z index
      */
     public static native String getZIndex(com.google.gwt.dom.client.Style style)
@@ -1273,9 +1295,9 @@ public final class CmsDomUtil {
 
     /**
      * Utility method to determine if the given element has a set background.<p>
-     * 
+     *
      * @param element the element
-     * 
+     *
      * @return <code>true</code> if the element has a background set
      */
     public static boolean hasBackground(Element element) {
@@ -1291,9 +1313,9 @@ public final class CmsDomUtil {
 
     /**
      * Utility method to determine if the given element has a set background image.<p>
-     * 
+     *
      * @param element the element
-     * 
+     *
      * @return <code>true</code> if the element has a background image set
      */
     public static boolean hasBackgroundImage(Element element) {
@@ -1309,9 +1331,9 @@ public final class CmsDomUtil {
 
     /**
      * Utility method to determine if the given element has a set border.<p>
-     * 
+     *
      * @param element the element
-     * 
+     *
      * @return <code>true</code> if the element has a border
      */
     public static boolean hasBorder(Element element) {
@@ -1326,10 +1348,10 @@ public final class CmsDomUtil {
 
     /**
      * Indicates if the given element has a CSS class.<p>
-     * 
+     *
      * @param className the class name to look for
      * @param element the element
-     * 
+     *
      * @return <code>true</code> if the element has the given CSS class
      */
     public static boolean hasClass(String className, Element element) {
@@ -1340,9 +1362,9 @@ public final class CmsDomUtil {
     /**
      * Returns if the given element has any dimension.<p>
      * All visible elements should have a dimension.<p>
-     * 
+     *
      * @param element the element to test
-     * 
+     *
      * @return <code>true</code> if the given element has any dimension
      */
     public static boolean hasDimension(Element element) {
@@ -1352,9 +1374,9 @@ public final class CmsDomUtil {
 
     /**
      * Checks whether a given script resource is present within the window context.<p>
-     * 
+     *
      * @param javascriptLink the resource URL
-     * 
+     *
      * @return <code>true</code> if the script resource is present within the window context
      */
     public static native boolean isJavaScriptPresent(String javascriptLink)/*-{
@@ -1371,7 +1393,7 @@ public final class CmsDomUtil {
 
     /**
      * Gives an element the overflow:auto property.<p>
-     * 
+     *
      * @param elem a DOM element
      */
     public static void makeScrollable(Element elem) {
@@ -1381,7 +1403,7 @@ public final class CmsDomUtil {
 
     /**
      * Gives the element of a widget the overflow:auto property.<p>
-     * 
+     *
      * @param widget the widget to make scrollable
      */
     public static void makeScrollable(Widget widget) {
@@ -1391,8 +1413,8 @@ public final class CmsDomUtil {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messagePopupBlocked() {
 
@@ -1401,8 +1423,8 @@ public final class CmsDomUtil {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messagePopupBlockedTitle() {
 
@@ -1411,10 +1433,10 @@ public final class CmsDomUtil {
 
     /**
      * Generates an opening tag.<p>
-     * 
+     *
      * @param tag the tag to use
      * @param attrs the optional tag attributes
-     * 
+     *
      * @return HTML code
      */
     public static String open(Tag tag, AttributeValue... attrs) {
@@ -1432,7 +1454,7 @@ public final class CmsDomUtil {
      * Opens a new browser window. The "name" and "features" arguments are
      * specified <a href=
      * 'http://developer.mozilla.org/en/docs/DOM:window.open'>here</a>.
-     * 
+     *
      * @param url the URL that the new window will display
      * @param name the name of the window (e.g. "_blank")
      * @param features the features to be enabled/disabled on this window
@@ -1446,9 +1468,9 @@ public final class CmsDomUtil {
 
     /**
      * Parses the given string into a JSON object.<p>
-     *  
+     *
      * @param jsonString the string to parse
-     * 
+     *
      * @return the JSON object
      */
     public static native JavaScriptObject parseJSON(String jsonString)/*-{
@@ -1458,11 +1480,11 @@ public final class CmsDomUtil {
 
     /**
      * Positions an element in the DOM relative to another element.<p>
-     * 
+     *
      * @param elem the element to position
      * @param referenceElement the element relative to which the first element should be positioned
      * @param dx the x offset relative to the reference element
-     * @param dy the y offset relative to the reference element 
+     * @param dy the y offset relative to the reference element
      */
     public static void positionElement(Element elem, Element referenceElement, int dx, int dy) {
 
@@ -1483,13 +1505,13 @@ public final class CmsDomUtil {
      * Positions an element inside the given parent, reordering the content of the parent and returns the new position index.<p>
      * This is none absolute positioning. Use for drag and drop reordering of drop targets.<p>
      * Use <code>-1</code> for x or y to ignore one ordering orientation.<p>
-     * 
+     *
      * @param element the child element
      * @param parent the parent element
-     * @param currentIndex the current index position of the element, use -1 if element is not attached to the parent yet 
-     * @param x the client x position, use <code>-1</code> to ignore x position 
+     * @param currentIndex the current index position of the element, use -1 if element is not attached to the parent yet
+     * @param x the client x position, use <code>-1</code> to ignore x position
      * @param y the client y position, use <code>-1</code> to ignore y position
-     * 
+     *
      * @return the new index position
      */
     public static int positionElementInside(Element element, Element parent, int currentIndex, int x, int y) {
@@ -1512,7 +1534,7 @@ public final class CmsDomUtil {
             }
             String positioning = CmsDomUtil.getCurrentStyle(child, Style.position);
             if (Position.ABSOLUTE.getCssName().equals(positioning) || Position.FIXED.getCssName().equals(positioning)) {
-                // only not 'position:absolute' elements into account, 
+                // only not 'position:absolute' elements into account,
                 // not visible children will be excluded in the next condition
                 continue;
             }
@@ -1521,7 +1543,7 @@ public final class CmsDomUtil {
             int top = 0;
             int height = 0;
             if (y != -1) {
-                // check if the mouse pointer is within the height of the element 
+                // check if the mouse pointer is within the height of the element
                 top = CmsDomUtil.getRelativeY(y, child);
                 height = child.getOffsetHeight();
                 if ((top <= 0) || (top >= height)) {
@@ -1530,7 +1552,7 @@ public final class CmsDomUtil {
                 }
             }
             if (x != -1) {
-                // check if the mouse pointer is within the width of the element 
+                // check if the mouse pointer is within the width of the element
                 left = CmsDomUtil.getRelativeX(x, child);
                 width = child.getOffsetWidth();
                 if ((left <= 0) || (left >= width)) {
@@ -1602,8 +1624,40 @@ public final class CmsDomUtil {
     }
 
     /**
-     * Removes any present overlay from the element and it's children.<p>
+     * Returns the first element matching the given CSS selector.<p>
      * 
+     * @param selector the CSS selector
+     * @param context the context element, may be <code>null</code>
+     * 
+     * @return the matching element
+     */
+    public static native Element querySelector(String selector, Element context)/*-{
+                                                                                             if (context!=null){
+                                                                                             return context.querySelector(selector);
+                                                                                             }else{
+                                                                                             $doc.querySelector(selector);
+                                                                                             }
+                                                                                             }-*/;
+
+    /**
+     * Returns a list of elements matching the given CSS selector.<p>
+     * 
+     * @param selector the CSS selector
+     * @param context the context element, may be <code>null</code>
+     * 
+     * @return the list of matching elements
+     */
+    public static native NodeList<Element> querySelectorAll(String selector, Element context)/*-{
+                                                                                             if (context!=null){
+                                                                                             return context.querySelectorAll(selector);
+                                                                                             }else{
+                                                                                             $doc.querySelectorAll(selector);
+                                                                                             }
+                                                                                             }-*/;
+
+    /**
+     * Removes any present overlay from the element and it's children.<p>
+     *
      * @param element the element
      */
     public static void removeDisablingOverlay(Element element) {
@@ -1624,9 +1678,9 @@ public final class CmsDomUtil {
 
     /**
      * Removes all script tags from the given element.<p>
-     * 
+     *
      * @param element the element to remove the script tags from
-     * 
+     *
      * @return the resulting element
      */
     public static Element removeScriptTags(Element element) {
@@ -1641,9 +1695,9 @@ public final class CmsDomUtil {
 
     /**
      * Removes all script tags from the given string.<p>
-     * 
+     *
      * @param source the source string
-     * 
+     *
      * @return the resulting string
      */
     public static native String removeScriptTags(String source)/*-{
@@ -1653,8 +1707,8 @@ public final class CmsDomUtil {
                                                                }-*/;
 
     /**
-     * Calls {@link com.alkacon.geranium.client.I_DescendantResizeHandler#onResizeDescendant()} on the closest resizable ancestor.<p>
-     * 
+     * Calls {@link org.opencms.gwt.client.I_DescendantResizeHandler#onResizeDescendant()} on the closest resizable ancestor.<p>
+     *
      * @param parent the parent widget
      */
     public static void resizeAncestor(Widget parent) {
@@ -1671,9 +1725,9 @@ public final class CmsDomUtil {
 
     /**
      * Sets an attribute on a Javascript object.<p>
-     * 
-     * @param jso the Javascript object 
-     * @param key the attribute name 
+     *
+     * @param jso the Javascript object
+     * @param key the attribute name
      * @param value the new attribute value
      */
     public static native void setAttribute(JavaScriptObject jso, String key, JavaScriptObject value) /*-{
@@ -1682,10 +1736,10 @@ public final class CmsDomUtil {
 
     /**
      * Sets an attribute on a Javascript object.<p>
-     * 
-     * @param jso the Javascript object 
-     * @param key the attribute name 
-     * @param value the new attribute value 
+     *
+     * @param jso the Javascript object
+     * @param key the attribute name
+     * @param value the new attribute value
      */
     public static native void setAttribute(JavaScriptObject jso, String key, String value) /*-{
                                                                                            jso[key] = value;
@@ -1693,7 +1747,7 @@ public final class CmsDomUtil {
 
     /**
      * Sets a CSS class to show or hide a given overlay. Will not add an overlay to the element.<p>
-     * 
+     *
      * @param element the parent element of the overlay
      * @param show <code>true</code> to show the overlay
      */
@@ -1717,9 +1771,9 @@ public final class CmsDomUtil {
 
     /**
      * Returns the text content to any HTML.
-     * 
+     *
      * @param html the HTML
-     * 
+     *
      * @return the text content
      */
     public static String stripHtml(String html) {
@@ -1731,9 +1785,9 @@ public final class CmsDomUtil {
 
     /**
      * Wraps a widget in a scrollable FlowPanel.<p>
-     *  
-     * @param widget the original widget 
-     * @return the wrapped widget 
+     *
+     * @param widget the original widget
+     * @return the wrapped widget
      */
     public static FlowPanel wrapScrollable(Widget widget) {
 
@@ -1745,7 +1799,7 @@ public final class CmsDomUtil {
 
     /**
      * Creates a hidden input field with the given name and value.<p>
-     * 
+     *
      * @param name the field name
      * @param value the field value
      * @return the input element
@@ -1760,7 +1814,7 @@ public final class CmsDomUtil {
 
     /**
      * Returns the DOM implementation.<p>
-     * 
+     *
      * @return the DOM implementation
      */
     private static DOMImpl getDOMImpl() {
@@ -1773,7 +1827,7 @@ public final class CmsDomUtil {
 
     /**
      * Returns the document style implementation.<p>
-     * 
+     *
      * @return the document style implementation
      */
     private static DocumentStyleImpl getStyleImpl() {
@@ -1786,7 +1840,7 @@ public final class CmsDomUtil {
 
     /**
      * Injects a script tag into the page head.<p>
-     * 
+     *
      * @param scriptLink the link to the javascript resource
      */
     private static native void injectScript(String scriptLink)/*-{
@@ -1799,10 +1853,10 @@ public final class CmsDomUtil {
 
     /**
      * Internal method to indicate if the given element has a CSS class.<p>
-     * 
+     *
      * @param className the class name to look for
      * @param element the element
-     * 
+     *
      * @return <code>true</code> if the element has the given CSS class
      */
     private static boolean internalHasClass(String className, Element element) {
@@ -1822,9 +1876,9 @@ public final class CmsDomUtil {
 
     /**
      * Checks if the given color value is transparent.<p>
-     * 
+     *
      * @param backgroundColor the color value
-     * 
+     *
      * @return <code>true</code> if transparent
      */
     private static boolean isTransparent(String backgroundColor) {

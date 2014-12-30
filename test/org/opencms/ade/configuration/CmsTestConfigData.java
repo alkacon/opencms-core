@@ -47,6 +47,9 @@ public class CmsTestConfigData extends CmsADEConfigData {
     /** The parent configuration object. */
     public CmsADEConfigData m_parent;
 
+    /** CmsObject for testing. */
+    private CmsObject m_cms2;
+
     /** The formatter cache state can be set directly for the test configuration data. */
     private CmsFormatterConfigurationCacheState m_formatters;
 
@@ -69,7 +72,9 @@ public class CmsTestConfigData extends CmsADEConfigData {
         List<CmsDetailPageInfo> detailPageInfos,
         List<CmsModelPageConfig> modelPages) {
 
-        super(
+        super(new CmsADEConfigDataInternal(
+            null,
+            false,
             basePath,
             resourceTypeConfig,
             false,
@@ -80,7 +85,8 @@ public class CmsTestConfigData extends CmsADEConfigData {
             new ArrayList<CmsFunctionReference>(),
             false,
             false,
-            new CmsFormatterChangeSet());
+            false,
+            new CmsFormatterChangeSet()), null);
     }
 
     /**
@@ -94,6 +100,16 @@ public class CmsTestConfigData extends CmsADEConfigData {
         } else {
             return super.getCachedFormatters();
         }
+    }
+
+    /** 
+     * Sets the CmsObject for testing.<p>
+     * 
+     * @param cms the CmsObject for testing 
+     */
+    public void initialize(CmsObject cms) {
+
+        m_cms2 = cms;
     }
 
     /**
@@ -123,7 +139,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
      */
     public void setCreateContentsLocally(boolean createContentsLocally) {
 
-        m_createContentsLocally = createContentsLocally;
+        m_data.m_createContentsLocally = createContentsLocally;
     }
 
     /**
@@ -133,7 +149,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
     */
     public void setDiscardInheritedModelPages(boolean discardInheritedModelPages) {
 
-        m_discardInheritedModelPages = discardInheritedModelPages;
+        m_data.m_discardInheritedModelPages = discardInheritedModelPages;
     }
 
     /**
@@ -143,7 +159,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
      */
     public void setDiscardInheritedProperties(boolean discardInheritedProperties) {
 
-        m_discardInheritedProperties = discardInheritedProperties;
+        m_data.m_discardInheritedProperties = discardInheritedProperties;
     }
 
     /**
@@ -153,7 +169,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
      */
     public void setFormatterChangeSet(CmsFormatterChangeSet changeSet) {
 
-        m_formatterChangeSet = changeSet;
+        m_data.m_formatterChangeSet = changeSet;
     }
 
     /**
@@ -173,7 +189,17 @@ public class CmsTestConfigData extends CmsADEConfigData {
      */
     public void setIsDiscardInheritedTypes(boolean discardInheritedTypes) {
 
-        m_discardInheritedTypes = discardInheritedTypes;
+        m_data.m_discardInheritedTypes = discardInheritedTypes;
+    }
+
+    /**
+     * Marks this as a module configuration or normal sitemap configuration.<p>
+     * 
+     * @param isModuleConfig true if this is a module configuration 
+     */
+    public void setIsModuleConfig(boolean isModuleConfig) {
+
+        m_data.m_isModuleConfig = isModuleConfig;
     }
 
     /**
@@ -184,6 +210,15 @@ public class CmsTestConfigData extends CmsADEConfigData {
     public void setParent(CmsADEConfigData parent) {
 
         m_parent = parent;
+    }
+
+    /**
+     * @see org.opencms.ade.configuration.CmsADEConfigData#getCms()
+     */
+    @Override
+    protected CmsObject getCms() {
+
+        return m_cms2;
     }
 
     /**

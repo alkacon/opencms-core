@@ -242,7 +242,7 @@ public class CmsUpdateDBManager {
             setupDb.closeConnection();
         }
 
-        return (currentVersion > m_detectedVersion);
+        return true;
     }
 
     /**
@@ -270,6 +270,7 @@ public class CmsUpdateDBManager {
                 m_plugins.add(new org.opencms.setup.db.update6to7.CmsUpdateDBCreateIndexes7());
             } else {
                 m_plugins.add(new org.opencms.setup.db.update7to8.CmsUpdateDBNewTables());
+                m_plugins.add(new org.opencms.setup.db.update7to8.CmsUpdatePasswordColumn());
             }
         } catch (Throwable t) {
             t.printStackTrace();

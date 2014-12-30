@@ -29,6 +29,7 @@ package org.opencms.workplace.editors.directedit;
 
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
+import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -96,6 +97,16 @@ public interface I_CmsDirectEditProvider extends I_CmsConfigurationParameterHand
      * @throws JspException in case something goes wrong
      */
     void insertDirectEditIncludes(PageContext context, CmsDirectEditParams params) throws JspException;
+
+    /** 
+     * Inserts HTML used as metadata for a collector list in the current JSP context.<p>
+     * 
+     * @param context the current JSP context 
+     * @param info the collector lsit information 
+     * 
+     * @throws JspException if something goes wrong 
+     */
+    void insertDirectEditListMetadata(PageContext context, I_CmsContentLoadCollectorInfo info) throws JspException;
 
     /**
      * Inserts the "start direct edit" HTML in the provided JSP page context.<p>

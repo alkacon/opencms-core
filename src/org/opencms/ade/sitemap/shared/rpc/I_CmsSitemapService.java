@@ -28,6 +28,11 @@
 package org.opencms.ade.sitemap.shared.rpc;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
+import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
+import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
+import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.CmsRpcException;
@@ -41,6 +46,7 @@ import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationRequest;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
@@ -55,6 +61,57 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync
  */
 public interface I_CmsSitemapService extends RemoteService {
+
+    /** 
+     * Sets the name and title of the given category.<p>
+     * 
+     * @param entryPoint the current entry point 
+     * @param id the category id 
+     * @param title the new title 
+     * @param name the new name 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void changeCategory(String entryPoint, CmsUUID id, String title, String name) throws CmsRpcException;
+
+    /**
+     * Creates a new category.<p>
+     * 
+     * @param entryPoint the entry point 
+     * @param id the parent category id 
+     * @param title the title 
+     * @param name the category name
+     *  
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void createCategory(String entryPoint, CmsUUID id, String title, String name) throws CmsRpcException;
+
+    /**
+     * Creates a new gallery folder.<p>
+     * 
+     * @param parentFolder the parent folder path
+     * @param title the title property
+     * @param folderTypeId the resource type id
+     * 
+     * @return the new gallery folder data
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsGalleryFolderEntry createNewGalleryFolder(String parentFolder, String title, int folderTypeId)
+    throws CmsRpcException;
+
+    /**
+     * Creates a new model page.<p>
+     * 
+     * @param entryPointUri the uri of the entry point 
+     * @param title the title for the model page 
+     * @param description the description for the model page 
+     * @param copyId the structure id of the resource to copy to create a new model page; if null, the model page is created as an empty container page
+     *   
+     * @return a bean representing the created model page 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsModelPageEntry createNewModelPage(String entryPointUri, String title, String description, CmsUUID copyId)
+    throws CmsRpcException;
 
     /**
      * Creates a sub-sitemap of the given sitemap starting from the given entry.<p>
@@ -87,6 +144,16 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsAliasInitialFetchResult getAliasTable() throws CmsRpcException;
 
     /**
+     * Gets the category data for the given entry point.<p>
+     * 
+     * @param entryPoint the entry point 
+     * @return the category data 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     **/
+    CmsSitemapCategoryData getCategoryData(String entryPoint) throws CmsRpcException;
+
+    /**
      * Returns the sitemap children for the given path.<p>
      * 
      * @param entryPointUri the URI of the sitemap entry point
@@ -98,6 +165,37 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     CmsClientSitemapEntry getChildren(String entryPointUri, CmsUUID entryId, int levels) throws CmsRpcException;
+
+    /**
+     * Returns the gallery data to this sub site.<p>
+     * 
+     * @param entryPointUri the sub site folder
+     * 
+     * @return the gallery data to this sub site
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    Map<CmsGalleryType, List<CmsGalleryFolderEntry>> getGalleryData(String entryPointUri) throws CmsRpcException;
+
+    /** 
+     * Gets the model pages for the given structure id of the sitemap root folder.<p>
+     * 
+     * @param rootId structure id of a folder 
+     * @return the model pages available in the given folder 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    List<CmsModelPageEntry> getModelPages(CmsUUID rootId) throws CmsRpcException;
+
+    /** 
+     * Loads the model page data for the "add" menu.<p>
+     * 
+     * @param entryPointUri the entry point uri 
+     * @return the list of resource info beans for the model pages 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    List<CmsNewResourceInfo> getNewElementInfo(String entryPointUri) throws CmsRpcException;
 
     /**
      * Merges a sub-sitemap into it's parent sitemap.<p>
@@ -121,6 +219,16 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     CmsSitemapData prefetch(String sitemapUri) throws CmsRpcException;
+
+    /**
+     * Removes a model page from the current sitemap configuration.<p>
+     * 
+     * @param baseUri the base uri for the current sitemap 
+     * @param modelPageId structure id of the model page to remove
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void removeModelPage(String baseUri, CmsUUID modelPageId) throws CmsRpcException;
 
     /**
      * Saves the change to the given sitemap.<p>

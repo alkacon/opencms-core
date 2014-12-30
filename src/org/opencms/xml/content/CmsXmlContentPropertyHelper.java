@@ -30,6 +30,7 @@ package org.opencms.xml.content;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsMessages;
@@ -109,6 +110,9 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContentPropertyHelper.class);
+
+    /** The prefix for macros used to acess properties of the current container page. */
+    public static final String PAGE_PROPERTY_PREFIX = "page-property:";
 
     /**
      * Hidden constructor.<p>
@@ -191,12 +195,42 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * 
      * @param cms the CMS context 
      * @param contentHandler the content handler which contains the message bundle that should be available in the macro resolver
+     * @param containerPage the current container page 
      *  
      * @return a new macro resolver 
      */
-    public static CmsMacroResolver getMacroResolverForProperties(CmsObject cms, I_CmsXmlContentHandler contentHandler) {
+    public static CmsMacroResolver getMacroResolverForProperties(
+        final CmsObject cms,
+        final I_CmsXmlContentHandler contentHandler,
+        final CmsResource containerPage) {
 
-        CmsMacroResolver resolver = new CmsMacroResolver();
+        CmsMacroResolver resolver = new CmsMacroResolver() {
+
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public String getMacroValue(String macro) {
+
+                if (macro.startsWith(PAGE_PROPERTY_PREFIX)) {
+                    String propName = macro.substring(PAGE_PROPERTY_PREFIX.length());
+                    if (containerPage != null) {
+                        try {
+                            CmsProperty prop = cms.readPropertyObject(containerPage, propName, true);
+                            String propValue = prop.getValue();
+                            if (propValue == null) {
+                                propValue = "";
+                            }
+                            return propValue;
+                        } catch (CmsException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                            return "";
+                        }
+                    }
+
+                }
+                return super.getMacroValue(macro);
+            }
+
+        };
         resolver.setCmsObject(cms);
         CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().getCurrentUser());
         CmsMultiMessages multimessages = new CmsMultiMessages(settings.getLocale());
@@ -212,20 +246,23 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * Returns the property information for the given resource (type) AND the current user.<p>
      * 
      * @param cms the current CMS context 
+     * @param page the current container page 
      * @param resource the resource
      * 
      * @return the property information
      * 
      * @throws CmsException if something goes wrong
      */
-    public static Map<String, CmsXmlContentProperty> getPropertyInfo(CmsObject cms, CmsResource resource)
-    throws CmsException {
+    public static Map<String, CmsXmlContentProperty> getPropertyInfo(
+        CmsObject cms,
+        CmsResource page,
+        CmsResource resource) throws CmsException {
 
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
             Map<String, CmsXmlContentProperty> propertiesConf = contentHandler.getSettings(cms, resource);
 
-            CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler);
+            CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler, page);
             return resolveMacrosInProperties(propertiesConf, resolver);
         }
         return Collections.<String, CmsXmlContentProperty> emptyMap();
@@ -336,7 +373,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      */
     public static Map<String, String> mergeDefaults(CmsObject cms, CmsResource resource, Map<String, String> properties) {
 
-        Map<String, String> result = new HashMap<String, String>();
+        Map<String, CmsXmlContentProperty> propertyConfig = null;
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             I_CmsFormatterBean formatter = null;
             // check formatter configuration setting
@@ -352,7 +389,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             }
 
             try {
-                Map<String, CmsXmlContentProperty> propertyConfig;
+
                 if (formatter != null) {
                     propertyConfig = formatter.getSettings();
                 } else {
@@ -361,13 +398,34 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                         cms,
                         resource);
                 }
-                for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
-                    CmsXmlContentProperty prop = entry.getValue();
-                    result.put(entry.getKey(), getPropValueIds(cms, prop.getType(), prop.getDefault()));
-                }
             } catch (CmsException e) {
                 // should never happen
                 LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return mergeDefaults(cms, propertyConfig, properties);
+    }
+
+    /**
+     * Extends the given properties with the default values 
+     * from property configuration.<p>
+     * 
+     * @param cms the current CMS context
+     * @param propertyConfig the property configuration
+     * @param properties the properties to extend
+     *  
+     * @return a merged map of properties
+     */
+    public static Map<String, String> mergeDefaults(
+        CmsObject cms,
+        Map<String, CmsXmlContentProperty> propertyConfig,
+        Map<String, String> properties) {
+
+        Map<String, String> result = new HashMap<String, String>();
+        if (propertyConfig != null) {
+            for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
+                CmsXmlContentProperty prop = entry.getValue();
+                result.put(entry.getKey(), getPropValueIds(cms, prop.getType(), prop.getDefault()));
             }
         }
         result.putAll(properties);
@@ -529,7 +587,8 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     /**
      * Resolves macros in the given property information for the given resource (type) AND the current user.<p>
      * 
-     * @param cms the current CMS context 
+     * @param cms the current CMS context
+     * @param page the current container page  
      * @param resource the resource
      * @param propertiesConf the property information
      * 
@@ -539,12 +598,13 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      */
     public static Map<String, CmsXmlContentProperty> resolveMacrosForPropertyInfo(
         CmsObject cms,
+        CmsResource page,
         CmsResource resource,
         Map<String, CmsXmlContentProperty> propertiesConf) throws CmsException {
 
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
             I_CmsXmlContentHandler contentHandler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
-            CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler);
+            CmsMacroResolver resolver = getMacroResolverForProperties(cms, contentHandler, page);
             return resolveMacrosInProperties(propertiesConf, resolver);
         }
         return propertiesConf;

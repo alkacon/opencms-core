@@ -27,9 +27,6 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.ui.CmsNotification.Mode;
-import org.opencms.gwt.client.ui.CmsNotification.Type;
-
 /**
  * Notification widget, most of the work is done on the container element.<p>
  * 
@@ -38,21 +35,23 @@ import org.opencms.gwt.client.ui.CmsNotification.Type;
 public interface I_CmsNotificationWidget {
 
     /**
-     * Hides the widget.<p>
+     * Adds the given notification message.<p>
+     * Will also block the screen, if required.<p>
+     * 
+     * @param message the message
      */
-    void hide();
+    void addMessage(CmsNotificationMessage message);
 
     /**
-     * Sets the widget into blocking mode.<p>
+     * Removes all messages.<p>
      */
-    void setBlocking();
+    void clearMessages();
 
     /**
-     * Sets the notification.<p>
-     *
-     * @param mode the current notification mode
-     * @param type the notification type
-     * @param message the message to set
+     * Removes the given notification message.<p>
+     * Will also unblock the screen, if no longer required.<p>
+     * 
+     * @param message the message
      */
-    void show(Mode mode, Type type, String message);
+    void removeMessage(CmsNotificationMessage message);
 }

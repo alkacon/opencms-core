@@ -59,6 +59,7 @@ public final class AllTests {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(TestSelectWidgetOption.class));
+        suite.addTest(new TestSuite(TestHtmlWidgetOption.class));
         //$JUnit-END$
         return suite;
     }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,11 +31,14 @@ import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.CmsResourceInfoBean;
 import org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsGwtService;
@@ -76,7 +79,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Handles all RPC services related to the gallery preview dialog.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewService {
@@ -89,13 +92,13 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
 
     /**
      * Renders the preview content for the given resource and locale.<p>
-     * 
-     * @param request the current servlet request 
-     * @param response the current servlet response 
+     *
+     * @param request the current servlet request
+     * @param response the current servlet response
      * @param cms the cms context
      * @param resource the resource
      * @param locale the content locale
-     * 
+     *
      * @return the rendered HTML preview content
      */
     public static String getPreviewContent(
@@ -124,10 +127,14 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                         formatter.getJspStructureId(),
                         null,
                         false);
+                    if ((resource instanceof I_CmsHistoryResource) && (resource instanceof CmsFile)) {
+                        element.setHistoryFile((CmsFile)resource);
+                    }
                     element.initResource(tempCms);
                     CmsContainerBean containerBean = new CmsContainerBean(
                         "PREVIEW",
                         CmsFormatterBean.PREVIEW_TYPE,
+                        null,
                         1,
                         Collections.<CmsContainerElementBean> emptyList());
                     containerBean.setWidth(String.valueOf(CmsFormatterBean.PREVIEW_WIDTH));
@@ -136,7 +143,6 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                     standardContext.setElement(element);
                     standardContext.setEdited(true);
                     standardContext.setPage(new CmsContainerPageBean(
-                        locale,
                         Collections.<CmsContainerBean> singletonList(containerBean)));
                     String encoding = response.getCharacterEncoding();
                     CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(
@@ -222,12 +228,12 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
 
     /**
      * Retrieves the resource information and puts it into the provided resource info bean.<p>
-     * 
+     *
      * @param cms the initialized cms object
      * @param resource the resource
      * @param resInfo the resource info bean
      * @param locale the content locale
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void readResourceInfo(CmsObject cms, CmsResource resource, CmsResourceInfoBean resInfo, String locale)
@@ -310,11 +316,11 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
 
     /**
      * Renders the preview content for the given resource and locale.<p>
-     * 
+     *
      * @param cms the cms context
      * @param resource the resource
      * @param locale the content locale
-     * 
+     *
      * @return the rendered HTML preview content
      */
     private String getPreviewContent(CmsObject cms, CmsResource resource, Locale locale) {
@@ -324,23 +330,23 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
 
     /**
      * Tries to read a resource either from the current site or from the root site.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param name the resource path 
-     * 
-     * @return the resource which was read 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context to use
+     * @param name the resource path
+     *
+     * @return the resource which was read
+     * @throws CmsException if something goes wrong
      */
     private CmsResource readResourceFromCurrentOrRootSite(CmsObject cms, String name) throws CmsException {
 
         CmsResource resource = null;
         try {
-            resource = cms.readResource(name);
+            resource = cms.readResource(name, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsVfsResourceNotFoundException e) {
             String originalSiteRoot = cms.getRequestContext().getSiteRoot();
             try {
                 cms.getRequestContext().setSiteRoot("");
-                resource = cms.readResource(name);
+                resource = cms.readResource(name, CmsResourceFilter.IGNORE_EXPIRATION);
             } finally {
                 cms.getRequestContext().setSiteRoot(originalSiteRoot);
             }
@@ -351,10 +357,10 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
 
     /**
      * Saves the given properties to the resource.<p>
-     * 
+     *
      * @param resourcePath the resource path
      * @param properties the properties
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private void saveProperties(String resourcePath, Map<String, String> properties) throws CmsException {

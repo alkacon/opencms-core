@@ -28,6 +28,7 @@
 package org.opencms.file;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.file.types.I_CmsResourceType;
 
 /**
  * Provides filters for resource result sets obtained from requests to the OpenCms VFS.<p>
@@ -231,6 +232,23 @@ public final class CmsResourceFilter {
      * @param type the required resource type
      * @return a filter requiring the given type
      */
+    public static CmsResourceFilter requireType(I_CmsResourceType type) {
+
+        return new CmsResourceFilter().addRequireType(type);
+    }
+
+    /**
+     * Returns a new CmsResourceFilter requiring the given type.<p>
+     * 
+     * @param type the required resource type
+     * @return a filter requiring the given type
+     * 
+     * @deprecated
+     * Use {@link #requireType(I_CmsResourceType)} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
     public static CmsResourceFilter requireType(int type) {
 
         return new CmsResourceFilter().addRequireType(type);
@@ -293,6 +311,23 @@ public final class CmsResourceFilter {
      * @param type the resource type to exclude
      * @return a filter excluding the given resource type
      */
+    public CmsResourceFilter addExcludeType(I_CmsResourceType type) {
+
+        return addExcludeFlags(type.getTypeId());
+    }
+
+    /**
+     * Returns an extended filter in order to avoid the given type in the filtered resources.<p> 
+     *  
+     * @param type the resource type to exclude
+     * @return a filter excluding the given resource type
+     *
+     * @deprecated
+     * Use {@link #addExcludeType(I_CmsResourceType)} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
     public CmsResourceFilter addExcludeType(int type) {
 
         CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
@@ -493,6 +528,26 @@ public final class CmsResourceFilter {
      * @param type the required resource type
      * @return a filter requiring the given resource type
      */
+    public CmsResourceFilter addRequireType(I_CmsResourceType type) {
+
+        // TODO: Refactor driver layer to use resource type id classes (or names) instead of int
+        return addRequireType(type.getTypeId());
+    }
+
+    /**
+     * Returns an extended filter to guarantee a distinct resource type of the filtered resources.<p>
+     * 
+     * If <code>-1</code> is given as type, the filter will not be extended to require a resource type
+     * 
+     * @param type the required resource type
+     * @return a filter requiring the given resource type
+     *
+     * @deprecated
+     * Use {@link #addRequireType(I_CmsResourceType)} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
     public CmsResourceFilter addRequireType(int type) {
 
         if (type != -1) {

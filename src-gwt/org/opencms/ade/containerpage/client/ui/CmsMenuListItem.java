@@ -180,7 +180,7 @@ public class CmsMenuListItem extends CmsListItem {
     public void onStartDrag(I_CmsDropTarget target) {
 
         super.onStartDrag(target);
-        getElement().getStyle().setOpacity(0.5);
+        getElement().getStyle().setOpacity(0.7);
     }
 
     /**

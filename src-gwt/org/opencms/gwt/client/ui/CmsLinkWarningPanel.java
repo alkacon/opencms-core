@@ -28,6 +28,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
@@ -37,9 +38,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -103,7 +106,7 @@ public class CmsLinkWarningPanel extends Composite {
         if ((title == null) || title.equals("")) {
             title = Messages.get().key(Messages.GUI_BROKEN_LINK_NO_TITLE_0);
         }
-        info.setTitle(brokenLinkBean.getTitle());
+        info.setTitle(title);
         info.setSubTitle(brokenLinkBean.getSubTitle());
         String type = brokenLinkBean.getType();
         if (type != null) {
@@ -112,7 +115,16 @@ public class CmsLinkWarningPanel extends Composite {
         for (Map.Entry<String, String> entry : brokenLinkBean.getInfo().entrySet()) {
             info.addAdditionalInfo(entry.getKey(), entry.getValue());
         }
-        CmsListItemWidget widget = new CmsListItemWidget(info);
+        final CmsListItemWidget widget = new CmsListItemWidget(info);
+        widget.addAttachHandler(new AttachEvent.Handler() {
+
+            public void onAttachOrDetach(AttachEvent event) {
+
+                if (event.isAttached()) {
+                    widget.truncateAdditionalInfo("addinfo", widget.getOffsetWidth());
+                }
+            }
+        });
         return widget;
     }
 
@@ -126,15 +138,14 @@ public class CmsLinkWarningPanel extends Composite {
     protected CmsTreeItem createTreeItem(CmsBrokenLinkBean brokenLinkBean) {
 
         CmsListItemWidget itemWidget = createListItemWidget(brokenLinkBean);
-        CmsTreeItem item = new CmsTreeItem(true, itemWidget);
-        itemWidget.addTitleStyleName(I_CmsLayoutBundle.INSTANCE.linkWarningCss().deletedEntryLabel());
-        itemWidget.addSubtitleStyleName(I_CmsLayoutBundle.INSTANCE.linkWarningCss().deletedEntryLabel());
+        CmsTreeItem item = new CmsTreeItem(false, itemWidget);
         for (CmsBrokenLinkBean child : brokenLinkBean.getChildren()) {
             CmsListItemWidget childItemWidget = createListItemWidget(child);
-            CmsTreeItem childItem = new CmsTreeItem(
-                false,
-                childItemWidget,
-                I_CmsLayoutBundle.INSTANCE.linkWarningCss().brokenLink());
+            Image warningImage = new Image(I_CmsImageBundle.INSTANCE.warningSmallImage());
+            warningImage.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+            childItemWidget.addButton(warningImage);
+            childItemWidget.addTitleStyleName(I_CmsLayoutBundle.INSTANCE.linkWarningCss().deletedEntryLabel());
+            CmsTreeItem childItem = new CmsTreeItem(false, childItemWidget);
             item.addChild(childItem);
         }
         return item;

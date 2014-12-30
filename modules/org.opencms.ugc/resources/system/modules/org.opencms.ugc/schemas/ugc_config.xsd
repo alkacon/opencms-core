@@ -1,0 +1,64 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />  
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/type.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/model_page.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/field.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/detailpage.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/add_formatters_block.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/remove_formatters_block.xsd" />
+    <xsd:element name="UserGeneratedContentFormConfigurations" type="OpenCmsUserGeneratedContentFormConfigurations" />
+
+    <xsd:complexType name="OpenCmsUserGeneratedContentFormConfigurations">
+        <xsd:sequence>
+            <xsd:element name="UserGeneratedContentFormConfiguration" type="OpenCmsUserGeneratedContentFormConfiguration" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsUserGeneratedContentFormConfiguration">
+        <xsd:sequence>
+		   <xsd:element name="Title" type="OpenCmsString" />
+           <xsd:element name="ContentType" type="OpenCmsString" />
+           <xsd:element name="ContentPath" type="OpenCmsVfsFile" />
+           <xsd:element name="NamePattern" type="OpenCmsString" />
+           <xsd:element name="Locale" type="OpenCmsString" />
+           <xsd:element name="AutoPublish" type="OpenCmsBoolean" />
+           <xsd:element name="UserForGuest" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+           <xsd:element name="ProjectGroup" type="OpenCmsString" />
+           <xsd:element name="UploadPath" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
+           <xsd:element name="ValidExtensions" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+           <xsd:element name="MaxUploadSize" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+           <xsd:element name="MaxNumContents" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+           <xsd:element name="QueueWaitTime" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+           <xsd:element name="QueueMaxLength" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+    <xsd:annotation>
+        <xsd:appinfo>
+			<resourcebundle name="org.opencms.ugc.messages"/>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+			</mappings>
+			<layouts>
+				<layout element="ContentPath" widget="VfsFileWidget" configuration="excludefiles" />
+				<layout element="UploadPath" widget="VfsFileWidget" configuration="excludefiles" />
+				<layout element="ContentType" widget="TypeComboWidget" />
+				<layout element="ProjectGroup" widget="GroupWidget" />
+				<layout element="ValidExtensions" widget="ComboWidget" configuration=".png;.jpg;.jpeg;.gif|.txt;.doc;.docx;.pdf;.odt|.zip;.rar;.bz2" />
+			</layouts>
+			<validationrules>
+				<rule element="MaxUploadSize" regex="[0-9]*" type="error" message="%(key.validation.numeric)" />
+				<rule element="MaxNumContents" regex="[0-9]*" type="error" message="%(key.validation.numeric)" />
+				<rule element="QueueWaitTime" regex="[0-9]*" type="error" message="%(key.validation.numeric)" />
+				<rule element="QueueMaxLength" regex="[0-9]*" type="error" message="%(key.validation.numeric)" />
+			</validationrules>
+			<tabs>
+				<tab element="Title" collapse="false" name="General" />
+				<tab element="MaxUploadSize" collapse="false" name="Security" />
+			</tabs>
+            <formatters>
+               <formatter type="*" uri="/system/modules/org.opencms.ugc/formatters/usergenerated-default.jsp" />
+            </formatters>			
+        </xsd:appinfo>        
+    </xsd:annotation>
+</xsd:schema>

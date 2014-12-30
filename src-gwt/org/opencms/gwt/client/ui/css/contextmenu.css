@@ -37,7 +37,7 @@ div.cmsMenuBar { /* the outer menu bar */
 }
 .cmsMenuBar .cmsMenuItem .label, .cmsMenuBar .cmsMenuItem .html-face { /* menu item label */
 	padding: 4px;
-	margin: 0px 0px 0px 16px;
+	margin: 0px 0px 0px 20px;
 	font-size: value("constants.css.fontSizeBig");
 	text-align: left;
 }

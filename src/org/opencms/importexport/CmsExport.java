@@ -56,6 +56,7 @@ import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsXmlSaxWriter;
 import org.opencms.workplace.CmsWorkplace;
@@ -92,14 +93,23 @@ public class CmsExport {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExport.class);
 
+    /** The cms context. */
+    private CmsObject m_cms;
+
     /** Counter for the export. */
     private int m_exportCount;
 
     /** Set of all exported files, required for preventing redundant sibling export. */
     private Set<CmsUUID> m_exportedResources;
 
+    /** The export writer. */
+    private CmsExportHelper m_exportWriter;
+
     /** The export parameters. */
     private CmsExportParameters m_parameters;
+
+    /** The report. */
+    private I_CmsReport m_report;
 
     /** The top level file node where all resources are appended to. */
     private Element m_resourceNode;
@@ -110,9 +120,6 @@ public class CmsExport {
     /** Cache for previously added super folders. */
     private List<String> m_superFolders;
 
-    /** The export writer. */
-    private CmsExportHelper m_exportWriter;
-
     /**
      * Constructs a new uninitialized export, required for special subclass data export.<p>
      */
@@ -120,12 +127,6 @@ public class CmsExport {
 
         // empty constructor
     }
-
-    /** The cms context. */
-    private CmsObject m_cms;
-
-    /** The report. */
-    private I_CmsReport m_report;
 
     /**
      * Constructs a new export.<p>
@@ -624,23 +625,34 @@ public class CmsExport {
                     acePrincipalName = CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME;
                 } else if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_GROUP) > 0) {
                     // the principal is a group
-                    acePrincipalName = getCms().readGroup(acePrincipal).getPrefixedName();
+                    try {
+                        acePrincipalName = getCms().readGroup(acePrincipal).getPrefixedName();
+                    } catch (CmsException e) {
+                        // the group for this permissions does not exist anymore, so simply skip it
+                    }
                 } else if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_USER) > 0) {
                     // the principal is a user
-                    acePrincipalName = getCms().readUser(acePrincipal).getPrefixedName();
+                    try {
+                        acePrincipalName = getCms().readUser(acePrincipal).getPrefixedName();
+                    } catch (CmsException e) {
+                        // the user for this permissions does not exist anymore, so simply skip it
+                    }
                 } else {
                     // the principal is a role
                     acePrincipalName = CmsRole.PRINCIPAL_ROLE + "." + CmsRole.valueOfId(acePrincipal).getRoleName();
                 }
 
-                a.addElement(CmsImportVersion7.N_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
-                a.addElement(CmsImportVersion7.N_FLAGS).addText(Integer.toString(flags));
+                // only add the permission if a principal was set
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(acePrincipalName)) {
+                    a.addElement(CmsImportVersion7.N_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
+                    a.addElement(CmsImportVersion7.N_FLAGS).addText(Integer.toString(flags));
 
-                Element b = a.addElement(CmsImportVersion7.N_ACCESSCONTROL_PERMISSIONSET);
-                b.addElement(CmsImportVersion7.N_ACCESSCONTROL_ALLOWEDPERMISSIONS).addText(
-                    Integer.toString(ace.getAllowedPermissions()));
-                b.addElement(CmsImportVersion7.N_ACCESSCONTROL_DENIEDPERMISSIONS).addText(
-                    Integer.toString(ace.getDeniedPermissions()));
+                    Element b = a.addElement(CmsImportVersion7.N_ACCESSCONTROL_PERMISSIONSET);
+                    b.addElement(CmsImportVersion7.N_ACCESSCONTROL_ALLOWEDPERMISSIONS).addText(
+                        Integer.toString(ace.getAllowedPermissions()));
+                    b.addElement(CmsImportVersion7.N_ACCESSCONTROL_DENIEDPERMISSIONS).addText(
+                        Integer.toString(ace.getDeniedPermissions()));
+                }
             }
 
             // write the XML
@@ -1064,7 +1076,7 @@ public class CmsExport {
                 LOG.debug(message.key(), e);
             }
 
-            managers = defaultUsers.getGroupProjectmanagers();
+            managers = defaultUsers.getGroupAdministrators();
             report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             report.print(message, I_CmsReport.FORMAT_ERROR);
         }

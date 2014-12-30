@@ -39,8 +39,11 @@ import org.opencms.util.CmsStringUtil;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.PrintStream;
+import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
@@ -56,7 +59,7 @@ import java.util.TreeMap;
 
 /**
  * A command line interface to access OpenCms functions which 
- * is used for the initial setup and also can be used to directly access the OpenCms
+ * is used for the initial setup and also can be used for scripting access to the OpenCms
  * repository without the Workplace.<p>
  * 
  * The CmsShell has direct access to all methods in the "command objects".
@@ -64,6 +67,9 @@ import java.util.TreeMap;
  * <code>{@link org.opencms.main.CmsShellCommands}</code>,
  * <code>{@link org.opencms.file.CmsRequestContext}</code> and
  * <code>{@link org.opencms.file.CmsObject}</code>.<p>
+ * 
+ * It is also possible to add a custom command object when calling the script API,
+ * like in {@link CmsShell#CmsShell(String, String, String, String, I_CmsShellCommands, PrintStream, PrintStream, boolean)}.<p>
  * 
  * Only public methods in the command objects that use supported data types 
  * as parameters can be called from the shell. Supported data types are:
@@ -195,35 +201,35 @@ public class CmsShell {
                 if (result != null) {
                     if (result instanceof Collection<?>) {
                         Collection<?> c = (Collection<?>)result;
-                        System.out.println(c.getClass().getName() + " (size: " + c.size() + ")");
+                        m_out.println(c.getClass().getName() + " (size: " + c.size() + ")");
                         int count = 0;
                         if (result instanceof Map<?, ?>) {
                             Map<?, ?> m = (Map<?, ?>)result;
                             Iterator<?> j = m.entrySet().iterator();
                             while (j.hasNext()) {
                                 Map.Entry<?, ?> entry = (Map.Entry<?, ?>)j.next();
-                                System.out.println(count++ + ": " + entry.getKey() + "= " + entry.getValue());
+                                m_out.println(count++ + ": " + entry.getKey() + "= " + entry.getValue());
                             }
                         } else {
                             Iterator<?> j = c.iterator();
                             while (j.hasNext()) {
-                                System.out.println(count++ + ": " + j.next());
+                                m_out.println(count++ + ": " + j.next());
                             }
                         }
                     } else {
-                        System.out.println(result.toString());
+                        m_out.println(result.toString());
                     }
                 }
             } catch (InvocationTargetException ite) {
-                System.out.println(Messages.get().getBundle(getLocale()).key(
+                m_out.println(Messages.get().getBundle(getLocale()).key(
                     Messages.GUI_SHELL_EXEC_METHOD_1,
                     new Object[] {foundMethod.getName()}));
-                ite.getTargetException().printStackTrace(System.out);
+                ite.getTargetException().printStackTrace(m_out);
             } catch (Throwable t) {
-                System.out.println(Messages.get().getBundle(getLocale()).key(
+                m_out.println(Messages.get().getBundle(getLocale()).key(
                     Messages.GUI_SHELL_EXEC_METHOD_1,
                     new Object[] {foundMethod.getName()}));
-                t.printStackTrace(System.out);
+                t.printStackTrace(m_out);
             }
 
             return true;
@@ -383,8 +389,48 @@ public class CmsShell {
     /** Internal shell command object. */
     private I_CmsShellCommands m_shellCommands;
 
+    /** Stream to write the regular output messages to. */
+    protected PrintStream m_out;
+
+    /** Stream to write the error messages output to. */
+    protected PrintStream m_err;
+
+    /** Indicates if this is an interactive session with a user sitting on a console. */
+    private boolean m_interactive;
+
     /**
      * Creates a new CmsShell.<p>
+     * 
+     * @param cms the user context to run the shell from
+     * @param prompt the prompt format to set
+     * @param additionalShellCommands optional object for additional shell commands, or null
+     * @param out stream to write the regular output messages to
+     * @param err stream to write the error messages output to
+     */
+    public CmsShell(
+        CmsObject cms,
+        String prompt,
+        I_CmsShellCommands additionalShellCommands,
+        PrintStream out,
+        PrintStream err) {
+
+        setPrompt(prompt);
+        try {
+            // has to be initialized already if this constructor is used
+            m_opencms = null;
+            Locale locale = getLocale();
+            m_messages = Messages.get().getBundle(locale);
+            m_cms = cms;
+
+            // initialize the shell
+            initShell(additionalShellCommands, out, err);
+        } catch (Throwable t) {
+            t.printStackTrace(m_err);
+        }
+    }
+
+    /**
+     * Creates a new CmsShell using System.out and System.err for output of the messages.<p>
      * 
      * @param webInfPath the path to the 'WEB-INF' folder of the OpenCms installation
      * @param servletMapping the mapping of the servlet (or <code>null</code> to use the default <code>"/opencms/*"</code>)
@@ -398,6 +444,39 @@ public class CmsShell {
         String defaultWebAppName,
         String prompt,
         I_CmsShellCommands additionalShellCommands) {
+
+        this(
+            webInfPath,
+            servletMapping,
+            defaultWebAppName,
+            prompt,
+            additionalShellCommands,
+            System.out,
+            System.err,
+            false);
+    }
+
+    /**
+     * Creates a new CmsShell.<p>
+     * 
+     * @param webInfPath the path to the 'WEB-INF' folder of the OpenCms installation
+     * @param servletMapping the mapping of the servlet (or <code>null</code> to use the default <code>"/opencms/*"</code>)
+     * @param defaultWebAppName the name of the default web application (or <code>null</code> to use the default <code>"ROOT"</code>)
+     * @param prompt the prompt format to set
+     * @param additionalShellCommands optional object for additional shell commands, or null
+     * @param out stream to write the regular output messages to
+     * @param err stream to write the error messages output to
+     * @param interactive if <code>true</code> this is an interactive session with a user sitting on a console
+     */
+    public CmsShell(
+        String webInfPath,
+        String servletMapping,
+        String defaultWebAppName,
+        String prompt,
+        I_CmsShellCommands additionalShellCommands,
+        PrintStream out,
+        PrintStream err,
+        boolean interactive) {
 
         setPrompt(prompt);
         if (CmsStringUtil.isEmpty(servletMapping)) {
@@ -415,20 +494,20 @@ public class CmsShell {
             m_messages = Messages.get().getBundle(locale);
             // search for the WEB-INF folder
             if (CmsStringUtil.isEmpty(webInfPath)) {
-                System.out.println(m_messages.key(Messages.GUI_SHELL_NO_HOME_FOLDER_SPECIFIED_0));
-                System.out.println();
+                out.println(m_messages.key(Messages.GUI_SHELL_NO_HOME_FOLDER_SPECIFIED_0));
+                out.println();
                 webInfPath = CmsFileUtil.searchWebInfFolder(System.getProperty("user.dir"));
                 if (CmsStringUtil.isEmpty(webInfPath)) {
-                    System.err.println(m_messages.key(Messages.GUI_SHELL_HR_0));
-                    System.err.println(m_messages.key(Messages.GUI_SHELL_NO_HOME_FOLDER_FOUND_0));
-                    System.err.println();
-                    System.err.println(m_messages.key(Messages.GUI_SHELL_START_DIR_LINE1_0));
-                    System.err.println(m_messages.key(Messages.GUI_SHELL_START_DIR_LINE2_0));
-                    System.err.println(m_messages.key(Messages.GUI_SHELL_HR_0));
+                    err.println(m_messages.key(Messages.GUI_SHELL_HR_0));
+                    err.println(m_messages.key(Messages.GUI_SHELL_NO_HOME_FOLDER_FOUND_0));
+                    err.println();
+                    err.println(m_messages.key(Messages.GUI_SHELL_START_DIR_LINE1_0));
+                    err.println(m_messages.key(Messages.GUI_SHELL_START_DIR_LINE2_0));
+                    err.println(m_messages.key(Messages.GUI_SHELL_HR_0));
                     return;
                 }
             }
-            System.out.println(Messages.get().getBundle(locale).key(Messages.GUI_SHELL_WEB_INF_PATH_1, webInfPath));
+            out.println(Messages.get().getBundle(locale).key(Messages.GUI_SHELL_WEB_INF_PATH_1, webInfPath));
             // set the path to the WEB-INF folder (the 2nd and 3rd parameters are just reasonable dummies)
             CmsServletContainerSettings settings = new CmsServletContainerSettings(
                 webInfPath,
@@ -439,8 +518,8 @@ public class CmsShell {
             m_opencms.getSystemInfo().init(settings);
             // now read the configuration properties
             String propertyPath = m_opencms.getSystemInfo().getConfigurationFileRfsPath();
-            System.out.println(m_messages.key(Messages.GUI_SHELL_CONFIG_FILE_1, propertyPath));
-            System.out.println();
+            out.println(m_messages.key(Messages.GUI_SHELL_CONFIG_FILE_1, propertyPath));
+            out.println();
             CmsParameterConfiguration configuration = new CmsParameterConfiguration(propertyPath);
 
             // now upgrade to runlevel 2
@@ -449,35 +528,10 @@ public class CmsShell {
             // create a context object with 'Guest' permissions
             m_cms = m_opencms.initCmsObject(m_opencms.getDefaultUsers().getUserGuest());
 
-            // initialize the settings of the user
-            m_settings = initSettings();
-
-            // initialize shell command object
-            m_shellCommands = new CmsShellCommands();
-            m_shellCommands.initShellCmsObject(m_cms, this);
-
-            // initialize additional shell command object
-            if (additionalShellCommands != null) {
-                m_additionaShellCommands = additionalShellCommands;
-                m_additionaShellCommands.initShellCmsObject(m_cms, this);
-                m_additionaShellCommands.shellStart();
-            } else {
-                m_shellCommands.shellStart();
-            }
-
-            m_commandObjects = new ArrayList<CmsCommandObject>();
-            if (m_additionaShellCommands != null) {
-                // get all shell callable methods from the additional shell command object
-                m_commandObjects.add(new CmsCommandObject(m_additionaShellCommands));
-            }
-            // get all shell callable methods from the CmsShellCommands
-            m_commandObjects.add(new CmsCommandObject(m_shellCommands));
-            // get all shell callable methods from the CmsRequestContext
-            m_commandObjects.add(new CmsCommandObject(m_cms.getRequestContext()));
-            // get all shell callable methods from the CmsObject
-            m_commandObjects.add(new CmsCommandObject(m_cms));
+            // initialize the shell
+            initShell(additionalShellCommands, out, err);
         } catch (Throwable t) {
-            t.printStackTrace(System.err);
+            t.printStackTrace(err);
         }
     }
 
@@ -533,6 +587,7 @@ public class CmsShell {
                     return;
                 }
             }
+            boolean interactive = true;
             FileInputStream stream = null;
             if (script != null) {
                 try {
@@ -544,15 +599,127 @@ public class CmsShell {
             if (stream == null) {
                 // no script-file, use standard input stream
                 stream = new FileInputStream(FileDescriptor.in);
+                interactive = true;
             }
             CmsShell shell = new CmsShell(
                 webInfPath,
                 servletMapping,
                 defaultWebApp,
                 "${user}@${project}:${siteroot}|${uri}>",
-                additionalCommands);
-            shell.start(stream);
+                additionalCommands,
+                System.out,
+                System.err,
+                interactive);
+            shell.execute(stream);
+            try {
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    /**
+     * Executes the commands from the given input stream in this shell.<p>
+     * 
+     * <ul>
+     * <li>Commands in the must be separated with a line break '\n'.
+     * <li>Only one command per line is allowed.
+     * <li>String parameters must be quoted like this: <code>'string value'</code>.
+     * </ul> 
+     * 
+     * @param inputStream the input stream from which the commands are read
+     */
+    public void execute(InputStream inputStream) {
+
+        execute(new InputStreamReader(inputStream));
+    }
+
+    /**
+     * Executes the commands from the given reader in this shell.<p>
+     * 
+     * <ul>
+     * <li>Commands in the must be separated with a line break '\n'.
+     * <li>Only one command per line is allowed.
+     * <li>String parameters must be quoted like this: <code>'string value'</code>.
+     * </ul> 
+     * 
+     * @param reader the reader from which the commands are read
+     */
+    public void execute(Reader reader) {
+
+        try {
+            LineNumberReader lnr = new LineNumberReader(reader);
+            while (!m_exitCalled) {
+                String line = lnr.readLine();
+                if (line != null) {
+                    if (m_interactive || m_echo) {
+                        // print the prompt in front of the commands to process only when 'interactive'
+                        printPrompt();
+                    }
+                } else {
+                    // if null the file has been read to the end
+                    try {
+                        Thread.sleep(500);
+                    } catch (Throwable t) {
+                        // noop
+                    }
+                    // end the while loop
+                    break;
+                }
+                if (line.trim().startsWith("#")) {
+                    m_out.println(line);
+                    continue;
+                }
+                StringReader lineReader = new StringReader(line);
+                StreamTokenizer st = new StreamTokenizer(lineReader);
+                st.eolIsSignificant(true);
+                st.wordChars('*', '*');
+                // put all tokens into a List
+                List<String> parameters = new ArrayList<String>();
+                while (st.nextToken() != StreamTokenizer.TT_EOF) {
+                    if (st.ttype == StreamTokenizer.TT_NUMBER) {
+                        parameters.add(Integer.toString(new Double(st.nval).intValue()));
+                    } else {
+                        parameters.add(st.sval);
+                    }
+                }
+                lineReader.close();
+
+                if (parameters.size() == 0) {
+                    // empty line, just need to check if echo is on
+                    if (m_echo) {
+                        m_out.println();
+                    }
+                    continue;
+                }
+
+                // extract command and arguments
+                String command = parameters.get(0);
+                List<String> arguments = parameters.subList(1, parameters.size());
+
+                // execute the command with the given arguments
+                executeCommand(command, arguments);
+            }
+        } catch (Throwable t) {
+            t.printStackTrace(m_err);
+        }
+    }
+
+    /**
+     * Executes the commands from the given string in this shell.<p>
+     * 
+     * <ul>
+     * <li>Commands in the must be separated with a line break '\n'.
+     * <li>Only one command per line is allowed.
+     * <li>String parameters must be quoted like this: <code>'string value'</code>.
+     * </ul> 
+     * 
+     * @param commands the string from which the commands are read
+     */
+    public void execute(String commands) {
+
+        execute(new StringReader(commands));
     }
 
     /**
@@ -573,11 +740,24 @@ public class CmsShell {
         } catch (Throwable t) {
             t.printStackTrace();
         }
-        try {
-            m_opencms.shutDown();
-        } catch (Throwable t) {
-            t.printStackTrace();
+        if (m_opencms != null) {
+            // if called by an in line script we don't want to kill the whole instance
+            try {
+                m_opencms.shutDown();
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
         }
+    }
+
+    /**
+     * Returns the stream this shell writes its error messages to.<p>
+     * 
+     * @return the stream this shell writes its error messages to
+     */
+    public PrintStream getErr() {
+
+        return m_err;
     }
 
     /**
@@ -605,6 +785,16 @@ public class CmsShell {
     }
 
     /**
+     * Returns the stream this shell writes its regular messages to.<p>
+     * 
+     * @return the stream this shell writes its regular messages to
+     */
+    public PrintStream getOut() {
+
+        return m_out;
+    }
+
+    /**
      * Obtain the additional settings related to the current user.
      * 
      * @return the additional settings related to the current user.
@@ -612,6 +802,58 @@ public class CmsShell {
     public CmsUserSettings getSettings() {
 
         return m_settings;
+    }
+
+    /**
+     * Initializes the CmsShell.<p>
+     * 
+     * @param additionalShellCommands optional object for additional shell commands, or null
+     * @param out stream to write the regular output messages to
+     * @param err stream to write the error messages output to
+     */
+    public void initShell(I_CmsShellCommands additionalShellCommands, PrintStream out, PrintStream err) {
+
+        // set the output streams
+        m_out = out;
+        m_err = err;
+
+        // initialize the settings of the user
+        m_settings = initSettings();
+
+        // initialize shell command object
+        m_shellCommands = new CmsShellCommands();
+        m_shellCommands.initShellCmsObject(m_cms, this);
+
+        // initialize additional shell command object
+        if (additionalShellCommands != null) {
+            m_additionaShellCommands = additionalShellCommands;
+            m_additionaShellCommands.initShellCmsObject(m_cms, this);
+            m_additionaShellCommands.shellStart();
+        } else {
+            m_shellCommands.shellStart();
+        }
+
+        m_commandObjects = new ArrayList<CmsCommandObject>();
+        if (m_additionaShellCommands != null) {
+            // get all shell callable methods from the additional shell command object
+            m_commandObjects.add(new CmsCommandObject(m_additionaShellCommands));
+        }
+        // get all shell callable methods from the CmsShellCommands
+        m_commandObjects.add(new CmsCommandObject(m_shellCommands));
+        // get all shell callable methods from the CmsRequestContext
+        m_commandObjects.add(new CmsCommandObject(m_cms.getRequestContext()));
+        // get all shell callable methods from the CmsObject
+        m_commandObjects.add(new CmsCommandObject(m_cms));
+    }
+
+    /**
+     * If <code>true</code> this is an interactive session with a user sitting on a console.<p>
+     * 
+     * @return <code>true</code> if this is an interactive session with a user sitting on a console
+     */
+    public boolean isInteractive() {
+
+        return m_interactive;
     }
 
     /**
@@ -631,7 +873,20 @@ public class CmsShell {
         } catch (Throwable t) {
             // ignore
         }
-        System.out.print(prompt);
+        m_out.print(prompt);
+    }
+
+    /**
+     * Set <code>true</code> if this is an interactive session with a user sitting on a console.<p>
+     * 
+     * This controls the output of the prompt and some other info that is valuable 
+     * on the console, but not required in an automatic session.<p>
+     * 
+     * @param interactive if <code>true</code> this is an interactive session with a user sitting on a console
+     */
+    public void setInteractive(boolean interactive) {
+
+        m_interactive = interactive;
     }
 
     /**
@@ -652,18 +907,17 @@ public class CmsShell {
     }
 
     /**
-     * Starts this CmsShell.<p>
+     * Reads the given stream and executes the commands in this shell.<p>
      * 
-     * @param fileInputStream a (file) input stream from which commands are read
+     * @param inputStream an input stream from which commands are read
+     * @deprecated use {@link #execute(InputStream)} instead
      */
-    public void start(FileInputStream fileInputStream) {
+    @Deprecated
+    public void start(FileInputStream inputStream) {
 
-        try {
-            // execute the commands from the input stream
-            executeCommands(fileInputStream);
-        } catch (Throwable t) {
-            t.printStackTrace(System.err);
-        }
+        // in the old behavior 'interactive' was always true
+        setInteractive(true);
+        execute(inputStream);
     }
 
     /**
@@ -675,23 +929,23 @@ public class CmsShell {
 
         String commandList;
         boolean foundSomething = false;
-        System.out.println();
+        m_out.println();
 
         Iterator<CmsCommandObject> i = m_commandObjects.iterator();
         while (i.hasNext()) {
             CmsCommandObject cmdObj = i.next();
             commandList = cmdObj.getMethodHelp(searchString);
             if (!CmsStringUtil.isEmpty(commandList)) {
-                System.out.println(m_messages.key(
+                m_out.println(m_messages.key(
                     Messages.GUI_SHELL_AVAILABLE_METHODS_1,
                     cmdObj.getObject().getClass().getName()));
-                System.out.println(commandList);
+                m_out.println(commandList);
                 foundSomething = true;
             }
         }
 
         if (!foundSomething) {
-            System.out.println(m_messages.key(Messages.GUI_SHELL_MATCH_SEARCHSTRING_1, searchString));
+            m_out.println(m_messages.key(Messages.GUI_SHELL_MATCH_SEARCHSTRING_1, searchString));
         }
     }
 
@@ -739,6 +993,12 @@ public class CmsShell {
     }
 
     /**
+     * Executes all commands read from the given reader.<p>
+     * 
+     * @param reader a Reader from which the commands are read
+     */
+
+    /**
      * Executes a shell command with a list of parameters.<p>
      *
      * @param command the command to execute
@@ -748,11 +1008,13 @@ public class CmsShell {
 
         if (m_echo) {
             // echo the command to STDOUT
-            System.out.print(command);
+            m_out.print(command);
             for (int i = 0; i < parameters.size(); i++) {
-                System.out.print(" " + parameters.get(i));
+                m_out.print(" '");
+                m_out.print(parameters.get(i));
+                m_out.print("'");
             }
-            System.out.println();
+            m_out.println();
         }
 
         // prepare to lookup a method in CmsObject or CmsShellCommands
@@ -765,7 +1027,7 @@ public class CmsShell {
 
         if (!executed) {
             // method not found
-            System.out.println();
+            m_out.println();
             StringBuffer commandMsg = new StringBuffer(command).append("(");
             for (int j = 0; j < parameters.size(); j++) {
                 commandMsg.append("value");
@@ -775,67 +1037,9 @@ public class CmsShell {
             }
             commandMsg.append(")");
 
-            System.out.println(m_messages.key(Messages.GUI_SHELL_METHOD_NOT_FOUND_1, commandMsg.toString()));
-            System.out.println(m_messages.key(Messages.GUI_SHELL_HR_0));
+            m_out.println(m_messages.key(Messages.GUI_SHELL_METHOD_NOT_FOUND_1, commandMsg.toString()));
+            m_out.println(m_messages.key(Messages.GUI_SHELL_HR_0));
             ((CmsShellCommands)m_shellCommands).help();
-        }
-    }
-
-    /**
-     * Executes all commands read from the given input stream.<p>
-     * 
-     * @param fileInputStream a file input stream from which the commands are read
-     */
-    private void executeCommands(FileInputStream fileInputStream) {
-
-        try {
-            LineNumberReader lnr = new LineNumberReader(new InputStreamReader(fileInputStream));
-            while (!m_exitCalled) {
-                printPrompt();
-                String line = lnr.readLine();
-                if (line == null) {
-                    // if null the file has been read to the end
-                    try {
-                        Thread.sleep(500);
-                    } catch (Throwable t) {
-                        // noop
-                    }
-                    break;
-                }
-                if (line.trim().startsWith("#")) {
-                    System.out.println(line);
-                    continue;
-                }
-                StringReader reader = new StringReader(line);
-                StreamTokenizer st = new StreamTokenizer(reader);
-                st.eolIsSignificant(true);
-                st.wordChars('*', '*');
-                // put all tokens into a List
-                List<String> parameters = new ArrayList<String>();
-                while (st.nextToken() != StreamTokenizer.TT_EOF) {
-                    if (st.ttype == StreamTokenizer.TT_NUMBER) {
-                        parameters.add(Integer.toString(new Double(st.nval).intValue()));
-                    } else {
-                        parameters.add(st.sval);
-                    }
-                }
-                reader.close();
-
-                // extract command and arguments
-                if (parameters.size() == 0) {
-                    if (m_echo) {
-                        System.out.println();
-                    }
-                    continue;
-                }
-                String command = parameters.get(0);
-                parameters = parameters.subList(1, parameters.size());
-
-                // execute the command
-                executeCommand(command, parameters);
-            }
-        } catch (Throwable t) {
-            t.printStackTrace(System.err);
         }
     }
 }

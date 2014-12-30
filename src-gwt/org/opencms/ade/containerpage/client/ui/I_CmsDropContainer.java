@@ -28,13 +28,17 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
+import org.opencms.gwt.client.dnd.I_CmsNestedDropTarget;
+import org.opencms.gwt.client.util.CmsPositionBean;
+
+import java.util.List;
 
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Interface for container page drop targets like containers and group-containers.<p>
  */
-public interface I_CmsDropContainer extends I_CmsDropTarget {
+public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
 
     /**
      * Adds a new child widget.<p>
@@ -44,6 +48,13 @@ public interface I_CmsDropContainer extends I_CmsDropTarget {
      * @see com.google.gwt.user.client.ui.HasWidgets#add(com.google.gwt.user.client.ui.Widget)
      */
     void add(Widget w);
+
+    /**
+     * Registers a child drop target.<p>
+     * 
+     * @param child the child
+     */
+    void addDndChild(I_CmsDropTarget child);
 
     /**
      * Adopts a container-page element registering it as a child of this container. 
@@ -64,11 +75,23 @@ public interface I_CmsDropContainer extends I_CmsDropTarget {
     void checkMaxElementsOnLeave();
 
     /**
+     * Clears the list of child drop targets.<p>
+     */
+    void clearDnDChildren();
+
+    /**
      * Returns the container id.<p>
      *
      * @return the container id
      */
     String getContainerId();
+
+    /**
+     * Returns the current position info.<p>
+     * 
+     * @return the position info
+     */
+    CmsPositionBean getPositionInfo();
 
     /**
      * Gets the number of child widgets in this panel.<p>
@@ -97,6 +120,13 @@ public interface I_CmsDropContainer extends I_CmsDropTarget {
     void highlightContainer();
 
     /**
+     * Puts a highlighting border around the container content using the given dimensions.<p>
+     * 
+     * @param positionInfo the highlighting position to use
+     */
+    void highlightContainer(CmsPositionBean positionInfo);
+
+    /**
      * Inserts a child widget before the specified index.
      * If the widget is already a child of this panel, it will be moved to the specified index.<p>
      * 
@@ -120,9 +150,30 @@ public interface I_CmsDropContainer extends I_CmsDropTarget {
     boolean isDetailView();
 
     /**
+     * Returns if the container is editable by the current user.<p>
+     * 
+     * @return <code>true</code> if the container is editable by the current user
+     */
+    boolean isEditable();
+
+    /** 
+     * This is called when the elements of this container/group have been processed into CmsContainerPageElementPanels.<p>
+     * 
+     * @param children the processed children 
+     */
+    void onConsumeChildren(List<CmsContainerPageElementPanel> children);
+
+    /**
      * Refreshes position and dimension of the highlighting border. Call when anything changed during the drag process.<p>
      */
     void refreshHighlighting();
+
+    /**
+     * Refreshes position and dimension of the highlighting border. Call when anything changed during the drag process.<p>
+     * 
+     * @param positionInfo the position info to use
+     */
+    void refreshHighlighting(CmsPositionBean positionInfo);
 
     /**
      * Removes the highlighting border.<p>
@@ -130,8 +181,20 @@ public interface I_CmsDropContainer extends I_CmsDropTarget {
     void removeHighlighting();
 
     /**
+     * Sets the placeholder visibility.<p>
+     * 
+     * @param visible <code>true</code> to set the place holder visible 
+     */
+    void setPlaceholderVisibility(boolean visible);
+
+    /**
      * Shows list collector direct edit buttons (old direct edit style), if present.<p>
      */
     void showEditableListButtons();
+
+    /**
+     * Updates the cached position info.<p>
+     */
+    void updatePositionInfo();
 
 }

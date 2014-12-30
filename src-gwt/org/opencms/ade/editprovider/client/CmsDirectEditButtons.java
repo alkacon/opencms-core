@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,36 +27,42 @@
 
 package org.opencms.ade.editprovider.client;
 
+import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.A_CmsDirectEditButtons;
+import org.opencms.gwt.client.ui.CmsCreateModeSelectionDialog;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
+import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Method;
 import org.opencms.gwt.client.util.CmsDomUtil.Target;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Direct edit buttons for the Toolbar direct edit provider.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_CmsContentEditorHandler {
 
-    /** 
+    /**
      * Creates a new instance.<p>
-     * 
-     * @param editable the editable element 
-     * @param parentId the parent id 
+     *
+     * @param editable the editable element
+     * @param parentId the parent id
      */
     public CmsDirectEditButtons(Element editable, String parentId) {
 
@@ -65,19 +71,19 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, boolean)
+     * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, org.opencms.util.CmsUUID, boolean)
      */
-    public void onClose(String sitePath, boolean isNew) {
+    public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
 
         Window.Location.reload();
     }
 
     /**
      * Sets the position. Make sure the widget is attached to the DOM.<p>
-     * 
+     *
      * @param position the absolute position
-     * @param buttonsPosition the corrected position for the buttons 
-     * 
+     * @param buttonsPosition the corrected position for the buttons
+     *
      * @param containerElement the parent container element
      */
     public void setPosition(CmsPositionBean position, CmsPositionBean buttonsPosition, Element containerElement) {
@@ -105,6 +111,17 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#getAdditionalButtons()
+     */
+    @Override
+    protected Map<Integer, CmsPushButton> getAdditionalButtons() {
+
+        Map<Integer, CmsPushButton> result = Maps.newHashMap();
+        result.put(Integer.valueOf(130), createInfoButton());
+        return result;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#onClickDelete()
      */
     @Override
@@ -127,26 +144,46 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
     @Override
     protected void onClickEdit() {
 
-        openEditDialog(false);
+        openEditDialog(false, null);
         removeHighlighting();
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#onClickNew()
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#onClickNew(boolean)
      */
     @Override
-    protected void onClickNew() {
+    protected void onClickNew(boolean askCreateMode) {
 
-        openEditDialog(true);
-        removeHighlighting();
+        if (!askCreateMode) {
+            openEditDialog(true, null);
+            removeHighlighting();
+        } else {
+
+            CmsUUID referenceId = m_editableData.getStructureId();
+            CmsCreateModeSelectionDialog.showDialog(referenceId, new AsyncCallback<String>() {
+
+                public void onFailure(Throwable caught) {
+
+                    // this is never called
+
+                }
+
+                public void onSuccess(String result) {
+
+                    openEditDialog(true, result);
+                    removeHighlighting();
+                }
+            });
+        }
     }
 
     /**
      * Opens the content editor.<p>
-     * 
+     *
      * @param isNew <code>true</code> to create and edit a new resource
+     * @param mode the content creation mode
      */
-    protected void openEditDialog(boolean isNew) {
+    protected void openEditDialog(boolean isNew, String mode) {
 
         // create a form to submit a post request to the editor JSP
         Map<String, String> formValues = new HashMap<String, String>();
@@ -162,14 +199,22 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
         String backlink = CmsCoreProvider.get().getUri();
         if (Window.Location.getPath().endsWith(backlink)) {
             // CmsCoreProvider.get().getUri() is the request context uri from the time the direct edit provider
-            // includes are generated. In case the template has changed the request context uri before that point, 
-            // we don't append the request parameters, as they may be inappropriate for the new URI. 
+            // includes are generated. In case the template has changed the request context uri before that point,
+            // we don't append the request parameters, as they may be inappropriate for the new URI.
             backlink += Window.Location.getQueryString();
         }
         formValues.put("backlink", backlink);
         formValues.put("redirect", "true");
         formValues.put("directedit", "true");
         formValues.put("editcontext", CmsCoreProvider.get().getUri());
+        String postCreateHandler = m_editableData.getPostCreateHandler();
+        if (postCreateHandler != null) {
+            formValues.put(CmsEditorConstants.PARAM_POST_CREATE_HANDLER, postCreateHandler);
+        }
+        if (mode != null) {
+            formValues.put(CmsEditorConstants.PARAM_MODE, mode);
+        }
+
         if (isNew) {
             formValues.put("newlink", m_editableData.getNewLink());
             formValues.put("editortitle", m_editableData.getNewTitle());

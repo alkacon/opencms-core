@@ -30,6 +30,7 @@ package org.opencms.gwt.shared.rpc;
 import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
+import org.opencms.gwt.shared.CmsBroadcastMessage;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
@@ -37,12 +38,14 @@ import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
+import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 
@@ -58,6 +61,19 @@ import com.google.gwt.user.client.rpc.RemoteService;
 public interface I_CmsCoreService extends RemoteService {
 
     /**
+     * Changes the password of the current user.<p>
+     * 
+     * @param oldPassword the old password 
+     * @param newPassword the value entered for the new password 
+     * @param newPasswordConfirm the value entered for the confirmation of the new password 
+     * 
+     * @return an error message if an error occurred, or null if the password was successfully changed 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    String changePassword(String oldPassword, String newPassword, String newPasswordConfirm) throws CmsRpcException;
+
+    /**
     * Creates a new UUID.<p>
     * 
     * @return the created UUID
@@ -65,6 +81,15 @@ public interface I_CmsCoreService extends RemoteService {
     * @throws CmsRpcException if something goes wrong 
     */
     CmsUUID createUUID() throws CmsRpcException;
+
+    /**
+     * Returns the latest messages for the current user.<p>
+     * 
+     * @return the messages
+     * 
+     * @throws CmsRpcException if anything goes wrong
+     */
+    List<CmsBroadcastMessage> getBroadcast() throws CmsRpcException;
 
     /**
      * Returns the categories for the given search parameters.<p>
@@ -162,6 +187,15 @@ public interface I_CmsCoreService extends RemoteService {
     String getWorkplaceLink(CmsUUID structureId) throws CmsRpcException;
 
     /**
+     * Loads the user settings for the current user.<p>
+     * 
+     * @return the user settings for the current user 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    CmsUserSettingsBean loadUserSettings() throws CmsRpcException;
+
+    /**
      * Locks the given resource with a temporary lock if it exists.<p>
      * If the resource does not exist yet, the closest existing ancestor folder will check if it is lockable.<p>
      * 
@@ -210,6 +244,16 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong 
      */
     CmsCoreData prefetch() throws CmsRpcException;
+
+    /**
+     * Saves the user settings for the current user.<p>
+     * 
+     * @param userSettings the new values for the user settings 
+     * @param edited the keys of the user settings which were actually edited 
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void saveUserSettings(Map<String, String> userSettings, Set<String> edited) throws CmsRpcException;
 
     /**
      * Applies the changes stored in the info bean to the vfs of OpenCms.<p>

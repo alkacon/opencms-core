@@ -29,6 +29,7 @@ package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.util.CmsStringUtil;
@@ -47,6 +48,9 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
 
     /** The available context menu commands. */
     private static Map<String, I_CmsContextMenuCommand> m_contextMenuCommands;
+
+    /** the content editor handler. */
+    private I_CmsContentEditorHandler m_editorHandler;
 
     /**
      * Constructor.<p>
@@ -73,6 +77,23 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
             m_contextMenuCommands = initializer.initCommands();
         }
         return m_contextMenuCommands;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getEditorHandler()
+     */
+    public I_CmsContentEditorHandler getEditorHandler() {
+
+        if (m_editorHandler == null) {
+            m_editorHandler = new I_CmsContentEditorHandler() {
+
+                public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
+
+                    // do nothing
+                }
+            };
+        }
+        return m_editorHandler;
     }
 
     /**
@@ -118,6 +139,16 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
     public void refreshResource(CmsUUID structureId) {
 
         // do nothing 
+    }
+
+    /**
+     * Sets the editor handler.<p>
+     * 
+     * @param editorHandler the editor handler
+     */
+    public void setEditorHandler(I_CmsContentEditorHandler editorHandler) {
+
+        m_editorHandler = editorHandler;
     }
 
     /**
@@ -172,5 +203,4 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
         }
         return entry;
     }
-
 }

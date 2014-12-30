@@ -28,25 +28,14 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
-
-import junit.framework.TestCase;
+import org.opencms.test.OpenCmsTestCase;
 
 /** 
  * Test case for <code>{@link org.opencms.util.CmsHtmlStripper}</code>.<p>
  * 
  * @since 6.9.2
  */
-public class TestCmsHtmlStripper extends TestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsHtmlStripper(String arg0) {
-
-        super(arg0);
-    }
+public class TestCmsHtmlStripper extends OpenCmsTestCase {
 
     /**
      * Tests <code>{@link CmsHtmlStripper#stripHtml(String)}</code> 
@@ -116,7 +105,6 @@ public class TestCmsHtmlStripper extends TestCase {
         stripper.addPreserveTag("img");
         stripper.addPreserveTag("tbody");
         stripper.addPreserveTag("b");
-        
 
         String content1 = CmsFileUtil.readFile("org/opencms/util/testHtml_01.html", CmsEncoder.ENCODING_ISO_8859_1);
         String result1 = stripper.stripHtml(content1);

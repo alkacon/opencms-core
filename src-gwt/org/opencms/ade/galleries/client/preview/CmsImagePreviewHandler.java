@@ -173,18 +173,14 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
      */
     public String getPreviewScaleParam(int imageHeight, int imageWidth) {
 
+        int maxHeight = m_previewDialog.getPreviewHeight() - 4;
+        int maxWidth = m_previewDialog.getDialogWidth() - 10;
         if (m_croppingParam != null) {
-            return m_croppingParam.getRestrictedSizeScaleParam(
-                CmsImagePreviewDialog.IMAGE_HEIGHT_MAX,
-                CmsImagePreviewDialog.IMAGE_WIDTH_MAX);
+            return m_croppingParam.getRestrictedSizeScaleParam(maxHeight, maxWidth);
         }
         CmsCroppingParamBean restricted = new CmsCroppingParamBean();
-        restricted.setTargetHeight(imageHeight > CmsImagePreviewDialog.IMAGE_HEIGHT_MAX
-        ? CmsImagePreviewDialog.IMAGE_HEIGHT_MAX
-        : imageHeight);
-        restricted.setTargetWidth(imageWidth > CmsImagePreviewDialog.IMAGE_WIDTH_MAX
-        ? CmsImagePreviewDialog.IMAGE_WIDTH_MAX
-        : imageWidth);
+        restricted.setTargetHeight(imageHeight > maxHeight ? maxHeight : imageHeight);
+        restricted.setTargetWidth(imageWidth > maxWidth ? maxWidth : imageWidth);
         return restricted.toString();
     }
 

@@ -277,8 +277,24 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#chtype(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
+     * @see org.opencms.file.types.I_CmsResourceType#chtype(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.types.I_CmsResourceType)
      */
+    public void chtype(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, I_CmsResourceType type)
+    throws CmsException {
+
+        // TODO: Refactor driver layer to use resource type id classes (or names) instead of int
+        chtype(cms, securityManager, resource, type.getTypeId());
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#chtype(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
+     * 
+     * @deprecated 
+     * Use {@link #chtype(CmsObject, CmsSecurityManager, CmsResource, I_CmsResourceType)} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
     public void chtype(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int type)
     throws CmsException {
 
@@ -409,10 +425,10 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         }
         if (obj instanceof I_CmsResourceType) {
             I_CmsResourceType other = (I_CmsResourceType)obj;
-            if (getTypeId() == other.getTypeId()) {
+            if ((getTypeName() != null) && (getTypeName().equals(other.getTypeName()))) {
                 return true;
             }
-            if ((getTypeName() != null) && (getTypeName().equals(other.getTypeName()))) {
+            if (getTypeId() == other.getTypeId()) {
                 return true;
             }
         }
@@ -548,7 +564,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
+     * 
+     * @deprecated 
+     * Use this class or {@link #getTypeName()} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
      */
+    @Deprecated
     public int getTypeId() {
 
         return m_typeId;
@@ -563,7 +585,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * The hash code implementation simply returns the unique type id of this resource type.
+     * The hash code implementation uses the type name to generate a hash code.<p>
      * 
      * @see #getTypeId()
      * @see java.lang.Object#hashCode()
@@ -571,7 +593,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     @Override
     public int hashCode() {
 
-        return getTypeId();
+        return getTypeName().hashCode();
     }
 
     /**
@@ -754,8 +776,29 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int, byte[], List)
+     * @see org.opencms.file.types.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.types.I_CmsResourceType, byte[], java.util.List)
      */
+    public void replaceResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        I_CmsResourceType type,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException {
+
+        // TODO: Refactor driver layer to use resource type id classes (or names) instead of int    
+        replaceResource(cms, securityManager, resource, type.getTypeId(), content, properties);
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int, byte[], List)
+     * 
+     * @deprecated 
+     * Use {@link #replaceResource(CmsObject, CmsSecurityManager, CmsResource, I_CmsResourceType, byte[], List)} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
     public void replaceResource(
         CmsObject cms,
         CmsSecurityManager securityManager,

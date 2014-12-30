@@ -82,6 +82,9 @@ public class CmsTemplateContextManager {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateContextManager.class);
 
+    /** Request attribute used to set the template context during RPC calls. */
+    public static final String ATTR_RPC_CONTEXT_OVERRIDE = "ATTR_RPC_CONTEXT_OVERRIDE";
+
     /** The CMS context. */
     private CmsObject m_cms;
 
@@ -342,19 +345,19 @@ public class CmsTemplateContextManager {
     /**
      * Helper method to check whether a given type should not be shown in a context.<p>
      * 
-     * @param context the template context 
+     * @param contextKey the key of the template context 
      * @param typeName the type name 
      * 
      * @return true if the context does not prohibit showing the type 
      */
-    public boolean shouldShowType(CmsTemplateContext context, String typeName) {
+    public boolean shouldShowType(String contextKey, String typeName) {
 
         Map<String, CmsDefaultSet<String>> allowedContextMap = safeGetAllowedContextMap();
         CmsDefaultSet<String> allowedContexts = allowedContextMap.get(typeName);
         if (allowedContexts == null) {
             return true;
         }
-        return allowedContexts.contains(context.getKey());
+        return allowedContexts.contains(contextKey);
     }
 
     /**

@@ -45,7 +45,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ALIAS_DUPLICATE_PATH_0 = "ERR_ALIAS_DUPLICATE_PATH_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ALIAS_INVALID_PATH_0 = "ERR_ALIAS_INVALID_PATH_0";
 
@@ -111,6 +110,8 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NO_PREVIEW_WRONG_MIME_TYPE_0 = "GUI_NO_PREVIEW_WRONG_MIME_TYPE_0";
+
+  
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_STATUS_TAB_FROM_CP_0 = "GUI_STATUS_TAB_FROM_CP_0";

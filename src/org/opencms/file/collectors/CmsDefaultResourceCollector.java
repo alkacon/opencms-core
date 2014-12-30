@@ -168,6 +168,15 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
     public List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
     throws CmsDataAccessException, CmsException {
 
+        return getResults(cms, collectorName, param, -1);
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public List<CmsResource> getResults(CmsObject cms, String collectorName, String param, int numResults)
+    throws CmsDataAccessException, CmsException {
+
         // if action is not set use default
         if (collectorName == null) {
             collectorName = COLLECTORS[0];
@@ -179,22 +188,22 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 return getSingleFile(cms, param);
             case 1:
                 // "allInFolder"
-                return getAllInFolder(cms, param, false);
+                return getAllInFolder(cms, param, false, numResults);
             case 2:
                 // "allInFolderDateReleasedDesc"
-                return allInFolderDateReleasedDesc(cms, param, false);
+                return allInFolderDateReleasedDesc(cms, param, false, numResults);
             case 3:
                 // allInFolderNavPos"
-                return allInFolderNavPos(cms, param, false);
+                return allInFolderNavPos(cms, param, false, numResults);
             case 4:
                 // "allInSubTree"
-                return getAllInFolder(cms, param, true);
+                return getAllInFolder(cms, param, true, numResults);
             case 5:
                 // "allInSubTreeDateReleasedDesc"
-                return allInFolderDateReleasedDesc(cms, param, true);
+                return allInFolderDateReleasedDesc(cms, param, true, numResults);
             case 6:
                 // "allInSubTreeNavPos"
-                return allInFolderNavPos(cms, param, true);
+                return allInFolderNavPos(cms, param, true, numResults);
             default:
                 throw new CmsDataAccessException(Messages.get().container(
                     Messages.ERR_COLLECTOR_NAME_INVALID_1,
@@ -209,13 +218,14 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
      * @param cms the current CmsObject
      * @param param the folder name to use
      * @param tree if true, look in folder and all child folders, if false, look only in given folder
+     * @param numResults the number of results  
      * 
      * @return a List of all resources in the folder pointed to by the parameter 
      *      sorted by the release date, descending
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List<CmsResource> allInFolderDateReleasedDesc(CmsObject cms, String param, boolean tree)
+    protected List<CmsResource> allInFolderDateReleasedDesc(CmsObject cms, String param, boolean tree, int numResults)
     throws CmsException {
 
         CmsCollectorData data = new CmsCollectorData(param);
@@ -231,7 +241,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         Collections.sort(result, I_CmsResource.COMPARE_DATE_RELEASED);
 
-        return shrinkToFit(result, data.getCount());
+        return shrinkToFit(result, data.getCount(), numResults);
     }
 
     /**
@@ -240,11 +250,13 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
      * @param cms the current user's Cms object
      * @param param the collector's parameter(s)
      * @param readSubTree if true, collects all resources in the subtree
+     * @param numResults the number of results 
      * @return a List of Cms resources found by the collector
      * @throws CmsException if something goes wrong
      * 
      */
-    protected List<CmsResource> allInFolderNavPos(CmsObject cms, String param, boolean readSubTree) throws CmsException {
+    protected List<CmsResource> allInFolderNavPos(CmsObject cms, String param, boolean readSubTree, int numResults)
+    throws CmsException {
 
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
@@ -292,7 +304,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
             result.add(navElementMap.get(navElement));
         }
 
-        return shrinkToFit(result, data.getCount());
+        return shrinkToFit(result, data.getCount(), numResults);
     }
 
     /**
@@ -301,6 +313,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
      * @param cms the current OpenCms user context
      * @param param the folder name to use
      * @param tree if true, look in folder and all child folders, if false, look only in given folder
+     * @param numResults the number of results 
      * 
      * @return all resources in the folder matching the given criteria
      * 
@@ -308,7 +321,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
      * @throws CmsIllegalArgumentException if the given param argument is not a link to a single file
      * 
      */
-    protected List<CmsResource> getAllInFolder(CmsObject cms, String param, boolean tree)
+    protected List<CmsResource> getAllInFolder(CmsObject cms, String param, boolean tree, int numResults)
     throws CmsException, CmsIllegalArgumentException {
 
         CmsCollectorData data = new CmsCollectorData(param);
@@ -325,7 +338,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         Collections.sort(result, I_CmsResource.COMPARE_ROOT_PATH);
         Collections.reverse(result);
 
-        return shrinkToFit(result, data.getCount());
+        return shrinkToFit(result, data.getCount(), numResults);
     }
 
     /**

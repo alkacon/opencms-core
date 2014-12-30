@@ -341,6 +341,15 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
     public List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
     throws CmsDataAccessException, CmsException {
 
+        return getResults(cms, collectorName, param, -1);
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public List<CmsResource> getResults(CmsObject cms, String collectorName, String param, int numResults)
+    throws CmsDataAccessException, CmsException {
+
         // if action is not set use default
         if (collectorName == null) {
             collectorName = COLLECTORS[0];
@@ -350,7 +359,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
 
             case 0:
                 // "allKeyValuePairFiltered"
-                return allKeyValuePairFiltered(cms, param);
+                return allKeyValuePairFiltered(cms, param, numResults);
             default:
                 throw new CmsDataAccessException(Messages.get().container(
                     Messages.ERR_COLLECTOR_NAME_INVALID_1,
@@ -363,12 +372,14 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
      * 
      * @param cms the current OpenCms user context
      * @param param value parameter to filter the resources
+     * @param numResults number of results 
      * 
      * @return a list of resources filtered and sorted by the given collector parameter
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List<CmsResource> allKeyValuePairFiltered(CmsObject cms, String param) throws CmsException {
+    protected List<CmsResource> allKeyValuePairFiltered(CmsObject cms, String param, int numResults)
+    throws CmsException {
 
         CmsCategoryCollectorData data = new CmsCategoryCollectorData(param);
 
@@ -445,7 +456,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                 Collections.sort(result, comp);
             }
 
-            return shrinkToFit(result, data.getCount());
+            return shrinkToFit(result, data.getCount(), numResults);
         }
         return null;
     }

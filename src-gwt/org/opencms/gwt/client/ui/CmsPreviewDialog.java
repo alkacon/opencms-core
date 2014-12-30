@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,6 +44,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -51,6 +52,20 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Resource preview dialog.<p>
  */
 public final class CmsPreviewDialog extends CmsPopup {
+
+    /**
+     * Preview provider interface.<p>
+     */
+    public interface I_PreviewInfoProvider {
+
+        /**
+         * Loads the preview information for the given locale.<p>
+         * 
+         * @param locale the locale for which to load the preview 
+         * @param resultCallback the callback to call with the result
+         */
+        void loadPreviewForLocale(String locale, AsyncCallback<CmsPreviewInfo> resultCallback);
+    }
 
     /** The dialog height. */
     private static final int DIALOG_HEIGHT = 900;
@@ -70,13 +85,16 @@ public final class CmsPreviewDialog extends CmsPopup {
     /** The locale select box. */
     private CmsSelectBox m_localeSelect;
 
+    /** The preview info provider. */
+    private I_PreviewInfoProvider m_previewInfoProvider;
+
     /** The site path of the preview resource. */
     private String m_sitePath;
 
     /**
      * Constructor.<p>
-     * 
-     * @param caption the dialog caption 
+     *
+     * @param caption the dialog caption
      * @param width the dialog width
      */
     private CmsPreviewDialog(String caption, int width) {
@@ -99,9 +117,25 @@ public final class CmsPreviewDialog extends CmsPopup {
         addDialogClose(null);
     }
 
+    /** 
+     * Creates a new preview dialog instance.<p>
+     * 
+     * @param previewInfo the preview information
+     * 
+     * @return the new preview dialog instance 
+     */
+    public static CmsPreviewDialog createPreviewDialog(CmsPreviewInfo previewInfo) {
+
+        String caption = generateCaption(previewInfo);
+        CmsPreviewDialog dialog = new CmsPreviewDialog(caption, DIALOG_WIDTH + 12);
+        dialog.initContent(previewInfo);
+        dialog.initLocales(previewInfo);
+        return dialog;
+    }
+
     /**
      * Shows the preview for the given resource.<p>
-     * 
+     *
      * @param previewInfo the resource preview info
      */
     public static void showPreviewForResource(CmsPreviewInfo previewInfo) {
@@ -110,17 +144,14 @@ public final class CmsPreviewDialog extends CmsPopup {
             CmsDomUtil.openWindow(previewInfo.getPreviewUrl(), CmsDomUtil.Target.BLANK.getRepresentation(), "");
         } else {
 
-            String caption = generateCaption(previewInfo);
-            CmsPreviewDialog dialog = new CmsPreviewDialog(caption, DIALOG_WIDTH + 12);
-            dialog.initContent(previewInfo);
-            dialog.initLocales(previewInfo);
+            CmsPreviewDialog dialog = createPreviewDialog(previewInfo);
             dialog.center();
         }
     }
 
     /**
      * Shows the preview for the given resource.<p>
-     * 
+     *
      * @param structureId the resource structure id
      */
     public static void showPreviewForResource(final CmsUUID structureId) {
@@ -146,7 +177,7 @@ public final class CmsPreviewDialog extends CmsPopup {
 
     /**
      * Shows the preview for the given resource.<p>
-     * 
+     *
      * @param sitePath the resource site path
      */
     public static void showPreviewForResource(final String sitePath) {
@@ -172,15 +203,25 @@ public final class CmsPreviewDialog extends CmsPopup {
 
     /**
      * Generates the dialog caption.<p>
-     * 
+     *
      * @param previewInfo the preview info
-     * 
+     *
      * @return the caption
      */
     private static String generateCaption(CmsPreviewInfo previewInfo) {
 
         return (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previewInfo.getTitle()) ? previewInfo.getTitle() + " / " : "")
             + previewInfo.getSitePath();
+    }
+
+    /**
+     * Sets the preview info provider.<p>
+     * 
+     * @param provider the preview info provider instance 
+     */
+    public void setPreviewInfoProvider(I_PreviewInfoProvider provider) {
+
+        m_previewInfoProvider = provider;
     }
 
     /**
@@ -195,17 +236,22 @@ public final class CmsPreviewDialog extends CmsPopup {
 
     /**
      * Loads preview for another locale.<p>
-     * 
+     *
      * @param locale the locale to load
      */
     protected void loadOtherLocale(final String locale) {
 
         CmsRpcAction<CmsPreviewInfo> previewAction = new CmsRpcAction<CmsPreviewInfo>() {
 
+            @SuppressWarnings("synthetic-access")
             @Override
             public void execute() {
 
-                CmsCoreProvider.getVfsService().getPreviewInfo(getSitePath(), locale, this);
+                if (m_previewInfoProvider != null) {
+                    m_previewInfoProvider.loadPreviewForLocale(locale, this);
+                } else {
+                    CmsCoreProvider.getVfsService().getPreviewInfo(getSitePath(), locale, this);
+                }
                 this.start(0, true);
             }
 
@@ -221,7 +267,7 @@ public final class CmsPreviewDialog extends CmsPopup {
 
     /**
      * Updates the preview content of the dialog.<p>
-     * 
+     *
      * @param previewInfo the preview info
      */
     protected void updatePreviewContent(CmsPreviewInfo previewInfo) {
@@ -234,7 +280,7 @@ public final class CmsPreviewDialog extends CmsPopup {
 
     /**
      * Initializes the preview content.<p>
-     * 
+     *
      * @param previewInfo the preview info
      */
     private void initContent(CmsPreviewInfo previewInfo) {
@@ -276,7 +322,7 @@ public final class CmsPreviewDialog extends CmsPopup {
 
     /**
      * Initializes the locale selector if needed.<p>
-     * 
+     *
      * @param previewInfo the preview info
      */
     private void initLocales(CmsPreviewInfo previewInfo) {

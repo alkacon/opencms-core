@@ -36,6 +36,7 @@ import org.opencms.gwt.client.property.CmsVfsModePropertyEditor;
 import org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton;
 import org.opencms.gwt.client.property.definition.CmsPropertyDefinitionDialog;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
@@ -45,9 +46,9 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 
@@ -223,16 +224,20 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
      */
     void closeDelayed() {
 
-        Timer timer = new Timer() {
+        Scheduler.RepeatingCommand command = new Scheduler.RepeatingCommand() {
 
-            @Override
-            public void run() {
+            public boolean execute() {
 
-                Window.Location.assign(m_closeLink);
+                if (CmsErrorDialog.isShowingErrorDialogs()) {
+                    return true;
+                } else {
+                    Window.Location.assign(m_closeLink);
+                    return false;
+                }
 
             }
         };
-        timer.schedule(300);
+        Scheduler.get().scheduleFixedDelay(command, 300);
     }
 
 }

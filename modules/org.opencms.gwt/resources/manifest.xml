@@ -15,7 +15,7 @@
 		<class />
 		<description><![CDATA[<p>Provides an OpenCms GWT framework.</p>
 <p><i>&copy; 2014 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>9.0.0</version>
+		<version>9.5.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated />
@@ -92,6 +92,21 @@
 		      <type>plain</type>
 		      <uuidstructure>387d8625-4607-11df-941d-2393f34d19cc</uuidstructure>
 		      <uuidresource>387d8626-4607-11df-941d-2393f34d19cc</uuidresource>
+		      <datelastmodified>Mon, 12 Apr 2010 07:44:36 GMT</datelastmodified>
+		      <userlastmodified>Admin</userlastmodified>
+		      <datecreated>Mon, 12 Apr 2010 07:44:27 GMT</datecreated>
+		      <usercreated>Admin</usercreated>
+		      <flags>0</flags>
+		      <properties/>
+		      <relations/>
+		      <accesscontrol/>
+    	</file>
+   		<file>
+		      <source>system/modules/org.opencms.gwt/about.jsp</source>
+		      <destination>system/modules/org.opencms.gwt/about.jsp</destination>
+		      <type>jsp</type>
+		      <uuidstructure>1761c0f6-b2be-4d21-892f-0cfe75f67779</uuidstructure>
+		      <uuidresource>9d8e5c90-9bad-4209-b71f-88a618eaef69</uuidresource>
 		      <datelastmodified>Mon, 12 Apr 2010 07:44:36 GMT</datelastmodified>
 		      <userlastmodified>Admin</userlastmodified>
 		      <datecreated>Mon, 12 Apr 2010 07:44:27 GMT</datecreated>

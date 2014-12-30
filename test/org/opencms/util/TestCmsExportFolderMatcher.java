@@ -28,27 +28,16 @@
 package org.opencms.util;
 
 import org.opencms.staticexport.CmsExportFolderMatcher;
+import org.opencms.test.OpenCmsTestCase;
 
 import java.util.ArrayList;
-
-import junit.framework.TestCase;
 
 /**
  * @since 6.0.0
  */
-public class TestCmsExportFolderMatcher extends TestCase {
+public class TestCmsExportFolderMatcher extends OpenCmsTestCase {
 
     private static String checkRes = "/system/opencms.ini";
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsExportFolderMatcher(String arg0) {
-
-        super(arg0);
-    }
 
     /**
      * Tests for the resource name translation.<p>

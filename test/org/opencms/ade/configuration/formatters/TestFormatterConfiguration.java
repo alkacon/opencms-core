@@ -161,10 +161,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         CmsTestConfigData config = createConfig("/", f1, f2, f3);
         CmsTestConfigData config2 = createConfig("/invalid-name", f1, f2, f3);
         config2.setParent(config);
-        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet();
-        changeSet.initialize(
-            Collections.<String> emptyList(),
-            Arrays.asList("" + CmsUUID.getConstantUUID("f2"), "" + CmsUUID.getConstantUUID("f3")));
+        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(Collections.<String> emptyList(), Arrays.asList(""
+            + CmsUUID.getConstantUUID("f2"), "" + CmsUUID.getConstantUUID("f3")));
         config2.setFormatterChangeSet(changeSet);
 
         CmsFormatterConfiguration formatterConfig = config2.getFormatters(getCmsObject(), m_exampleResourceA);
@@ -219,11 +217,11 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         assertEquals(
             "Widest formtter with width < 250 should have matched",
             "f2",
-            formatterConfig.getDefaultFormatter("foo", 250).getNiceName());
+            formatterConfig.getDefaultFormatter("foo", 250, false).getNiceName());
         assertEquals(
             "Widest formatter with width < 350 and maxWidth >= 350 should have matched",
             "f3",
-            formatterConfig.getDefaultFormatter("foo", 350).getNiceName());
+            formatterConfig.getDefaultFormatter("foo", 350, false).getNiceName());
 
         I_CmsFormatterBean f5 = createTypeBasedFormatter("f5", 100, "foo");
         config = createConfig("/", f1, f2, f3, f4, f5);
@@ -231,7 +229,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         assertEquals(
             "Type based formatter should have matched",
             "f5",
-            formatterConfig.getDefaultFormatter("foo", 350).getNiceName());
+            formatterConfig.getDefaultFormatter("foo", 350, false).getNiceName());
 
         I_CmsFormatterBean f6 = createWidthBasedFormatter("f6", 200, 200, 999);
         config = createConfig("/", f1, f2, f3, f4, f5, f6);
@@ -239,7 +237,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         assertEquals(
             "Formatter with higher ranking should have matched",
             "f6",
-            formatterConfig.getDefaultFormatter("foo", 350).getNiceName());
+            formatterConfig.getDefaultFormatter("foo", 350, false).getNiceName());
 
     }
 
@@ -338,8 +336,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         I_CmsFormatterBean s3 = createFormatter(TYPE_B, "s3", 1000, false);
 
         CmsTestConfigData config = createConfig("/", f1);
-        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet();
-        changeSet.initialize(Arrays.asList("type_" + TYPE_A), Collections.EMPTY_LIST);
+        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(
+            Arrays.asList("type_" + TYPE_A),
+            Collections.EMPTY_LIST);
         config.setFormatterChangeSet(changeSet);
         CmsTestConfigData config2 = createConfig("/", f1);
         config2.setParent(config);
@@ -348,8 +347,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             currentConfig.registerSchemaFormatters(typeB, CmsFormatterConfiguration.create(cms, Arrays.asList(s3)));
         }
 
-        CmsFormatterChangeSet changeSet2 = new CmsFormatterChangeSet();
-        changeSet2.initialize(Collections.EMPTY_LIST, Arrays.asList("type_" + TYPE_A));
+        CmsFormatterChangeSet changeSet2 = new CmsFormatterChangeSet(Collections.EMPTY_LIST, Arrays.asList("type_"
+            + TYPE_A));
         config2.setFormatterChangeSet(changeSet2);
 
         CmsFormatterConfiguration formatterConfig = config.getFormatters(cms, m_exampleResourceA);
@@ -391,10 +390,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         CmsTestConfigData config = createConfig("/", f1, f2, f3);
         CmsTestConfigData config2 = createConfig("/invalid-name", f1, f2, f3);
         config2.setParent(config);
-        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet();
-        changeSet.initialize(
-            Arrays.asList("" + CmsUUID.getConstantUUID("f2"), "" + CmsUUID.getConstantUUID("f3")),
-            Collections.<String> emptyList());
+        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(Arrays.asList(
+            "" + CmsUUID.getConstantUUID("f2"),
+            "" + CmsUUID.getConstantUUID("f3")), Collections.<String> emptyList());
         config2.setFormatterChangeSet(changeSet);
 
         CmsFormatterConfiguration formatterConfig = config2.getFormatters(getCmsObject(), m_exampleResourceA);
@@ -491,6 +489,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         boolean isFromConfigFile = true;
         boolean isAutoEnabled = enabled;
         boolean isDetail = true;
+        boolean hasNestedContainers = false;
         CmsFormatterBean result = new CmsFormatterBean(
             containerTypes,
             jspRootPath,
@@ -512,7 +511,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             settings,
             isFromConfigFile,
             isAutoEnabled,
-            isDetail);
+            isDetail,
+            hasNestedContainers);
 
         return result;
 
@@ -558,6 +558,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             + enabled
             + "</AutoEnabled>\n"
             + "    <Detail>true</Detail>\n"
+            + "    <NestedContainers>false</NestedContainers>\n"
             + "  </NewFormatter>\n"
             + "</NewFormatters>\n"
             + "";
@@ -599,6 +600,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         boolean isFromConfigFile = true;
         boolean isAutoEnabled = true;
         boolean isDetail = true;
+        boolean hasNestedContainers = false;
         CmsFormatterBean result = new CmsFormatterBean(
             containerTypes,
             jspRootPath,
@@ -620,7 +622,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             settings,
             isFromConfigFile,
             isAutoEnabled,
-            isDetail);
+            isDetail,
+            hasNestedContainers);
 
         return result;
     }
@@ -656,6 +659,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         boolean isFromConfigFile = true;
         boolean isAutoEnabled = true;
         boolean isDetail = true;
+        boolean hasNestedContainers = false;
         CmsFormatterBean result = new CmsFormatterBean(
             containerTypes,
             jspRootPath,
@@ -677,7 +681,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             settings,
             isFromConfigFile,
             isAutoEnabled,
-            isDetail);
+            isDetail,
+            hasNestedContainers);
         return result;
     }
 

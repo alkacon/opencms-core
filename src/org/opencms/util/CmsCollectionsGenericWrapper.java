@@ -60,7 +60,6 @@ public final class CmsCollectionsGenericWrapper {
      * 
      * @return a {@link LazyMap} of the required generic type
      */
-    @SuppressWarnings("unchecked")
     public static <K, V> Map<K, V> createLazyMap(Transformer T) {
 
         return LazyMap.decorate(new HashMap<K, V>(), T);

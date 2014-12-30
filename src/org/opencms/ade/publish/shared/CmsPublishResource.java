@@ -28,6 +28,7 @@
 package org.opencms.ade.publish.shared;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -57,6 +58,9 @@ public class CmsPublishResource implements IsSerializable {
     /** The resource name.*/
     private String m_name;
 
+    /** The permission info. */
+    private CmsPermissionInfo m_permissionInfo;
+
     /** The related resources.*/
     private List<CmsPublishResource> m_related;
 
@@ -83,6 +87,7 @@ public class CmsPublishResource implements IsSerializable {
      * @param title the resource title
      * @param resourceType the resource type name
      * @param state the resource state
+     * @param permissionInfo the permission info
      * @param dateLastModified the last modification date
      * @param userLastModified name of the user who last modified the resource
      * @param dateLastModifiedStr the last modification date as a formatted string 
@@ -96,6 +101,7 @@ public class CmsPublishResource implements IsSerializable {
         String title,
         String resourceType,
         CmsResourceState state,
+        CmsPermissionInfo permissionInfo,
         long dateLastModified,
         String userLastModified,
         String dateLastModifiedStr,
@@ -108,6 +114,7 @@ public class CmsPublishResource implements IsSerializable {
         m_name = name;
         m_related = ((related == null) ? new ArrayList<CmsPublishResource>() : related);
         m_state = state;
+        m_permissionInfo = permissionInfo;
         m_title = title;
         m_removable = removable;
         m_info = info;
@@ -172,6 +179,16 @@ public class CmsPublishResource implements IsSerializable {
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * Returns the permission info.<p>
+     * 
+     * @return the permission info
+     */
+    public CmsPermissionInfo getPermissionInfo() {
+
+        return m_permissionInfo;
     }
 
     /**

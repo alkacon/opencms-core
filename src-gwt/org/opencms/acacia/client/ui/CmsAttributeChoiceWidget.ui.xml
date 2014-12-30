@@ -1,0 +1,15 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:aui="urn:import:org.opencms.gwt.client.ui">
+	<ui:with field="style" type="org.opencms.acacia.client.css.I_CmsLayoutBundle" />
+	<g:HTMLPanel styleName="{style.attributeChoice.attributeChoice}">
+		<span class="{style.attributeChoice.buttonIcon}" ui:field="m_buttonIcon"></span>
+		<div class="{style.attributeChoice.frame}">
+			<div class="{style.attributeChoice.bridge}"></div>
+			<div class="{style.attributeChoice.shadow}"></div>
+			<div class="{style.attributeChoice.shadowBottom}"></div>
+			<g:FlowPanel styleName="{style.attributeChoice.choices}" ui:field="m_choices"></g:FlowPanel>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder>

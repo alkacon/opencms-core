@@ -125,6 +125,9 @@ public class CmsPublishRelationFinder {
     /** The original set of resources passed in the constructor. */
     private Set<CmsResource> m_originalResources;
 
+    /** The provider for additional related resources. */
+    private I_CmsPublishRelatedResourceProvider m_relatedResourceProvider;
+
     /** Cache for resources. */
     private Map<CmsUUID, CmsResource> m_resources = Maps.newHashMap();
 
@@ -133,12 +136,14 @@ public class CmsPublishRelationFinder {
      * 
      * @param cms the CMS context to use 
      * @param resources the resources for which the related resources should be found
-     * @param keepOriginalUnchangedResources true if unchanged resources from the original resource list should be kept  
+     * @param keepOriginalUnchangedResources true if unchanged resources from the original resource list should be kept
+     * @param relProvider provider for additional related resources   
      */
     public CmsPublishRelationFinder(
         CmsObject cms,
         Collection<CmsResource> resources,
-        boolean keepOriginalUnchangedResources) {
+        boolean keepOriginalUnchangedResources,
+        I_CmsPublishRelatedResourceProvider relProvider) {
 
         m_cms = cms;
         // put resources in a map with the structure id as a key
@@ -147,6 +152,7 @@ public class CmsPublishRelationFinder {
             m_resources.put(res.getStructureId(), res);
         }
         m_keepOriginalUnchangedResources = keepOriginalUnchangedResources;
+        m_relatedResourceProvider = relProvider;
     }
 
     /**
@@ -302,7 +308,20 @@ public class CmsPublishRelationFinder {
                 directlyRelatedResources.add(parentFolder);
             }
         } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
+            LOG.error(
+                "Error processing parent folder for " + currentResource.getRootPath() + ": " + e.getLocalizedMessage(),
+                e);
+        }
+
+        try {
+            directlyRelatedResources.addAll(m_relatedResourceProvider.getAdditionalRelatedResources(m_cms, currentResource));
+        } catch (Exception e) {
+            LOG.error(
+                "Error processing additional related resource for "
+                    + currentResource.getRootPath()
+                    + ": "
+                    + e.getLocalizedMessage(),
+                e);
         }
         return directlyRelatedResources;
     }

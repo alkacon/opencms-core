@@ -1,4 +1,4 @@
-<!-- 
+<!--
 # The root configuration node is called <opencms> for all OpenCms configurations.
 -->
 <!ELEMENT opencms (system)>
@@ -40,22 +40,24 @@
 	subscriptionmanager?,
 	workflow?,
 	user-session-mode?,
-	credentials-resolver?
+	credentials-resolver?,
+	publish-list-remove-mode?,
+	restrict-detail-contents?
 	)>
 
 <!--
 # Version history settings.
 # The OpenCms VFS keeps a version history for old versions of files.
 # This is done as a binary 1:1 copy of the original file (i.e. no "diff").
-# 
-# The version history is enabled by default. You can enable / disable it with 
-# the "enabled" attribute. 
+#
+# The version history is enabled by default. You can enable / disable it with
+# the "enabled" attribute.
 #
 # Because of this the database would grow very large if unlimited versions
-# would be stored. The "count" attribute controls the number of binary copies 
-# that are kept in the database per individual file. 
-# If a file has more versions, the oldest binary content is deleted (you can not 
-# re-create this version anymore). However, the basic information about the old 
+# would be stored. The "count" attribute controls the number of binary copies
+# that are kept in the database per individual file.
+# If a file has more versions, the oldest binary content is deleted (you can not
+# re-create this version anymore). However, the basic information about the old
 # version (i.e. who did the publish etc.) is still kept in the database.
 #
 # You can also set the optional "deleted" attribute to control the number of
@@ -85,10 +87,10 @@
 <!ELEMENT mail (mailfrom, mailhost+)>
 <!ELEMENT mailfrom (#PCDATA)>
 <!ELEMENT mailhost EMPTY>
-<!ATTLIST mailhost 
+<!ATTLIST mailhost
 	name CDATA #REQUIRED
 	order CDATA #IMPLIED
-	port CDATA #IMPLIED 
+	port CDATA #IMPLIED
 	protocol CDATA #IMPLIED
 	user CDATA  #IMPLIED
 	password CDATA #IMPLIED>
@@ -154,12 +156,12 @@
 
 <!--
 # Scheduler settings:
-# The scheduler settings provide information for the OpenCms scheduler. 
+# The scheduler settings provide information for the OpenCms scheduler.
 # The OpenCms scheduler is comparable with the CRON facility in Unix systems.
-# 
+#
 # The scheduler has a list of <job> subnodes.
 # Most important for a job is the <class> name to be executed,
-# and the <cronexpression> that controls the excution time. 
+# and the <cronexpression> that controls the excution time.
 -->
 
 <!ELEMENT scheduler (job*)>
@@ -179,9 +181,9 @@
 <!ELEMENT class (#PCDATA)>
 
 <!--
-# Optional configuration that controls if a new instance of the job class is created 
+# Optional configuration that controls if a new instance of the job class is created
 # every time the job is run, or if an instance is created only for the first time and
-# re-used for every later job execution. 
+# re-used for every later job execution.
 #
 # The #PCDATA value will be evaluated with Boolean.valueOf(#PCDATA).booleanValue().
 # If the result is "true", the class instance will be re-used.
@@ -190,9 +192,9 @@
 
 <!--
 # Optional configuration that controls if the job is active or not. If a job is not
-# active, it is still kept in the job list, but not executed. This is intended for 
+# active, it is still kept in the job list, but not executed. This is intended for
 # jobs that are frequently but not always used.
-# 
+#
 # The #PCDATA value will be evaluated with Boolean.valueOf(#PCDATA).booleanValue().
 # If the result is "true", the class instance will be re-used.
 -->
@@ -208,7 +210,7 @@
 <!--
 # Each job will be provided with an initialized instance of a CmsObject.
 # The settings in the <context> node control the request context settings of this object.
-# 
+#
 # The defaults for the optional elements are:
 # siteroot:   /
 # requesturi: /
@@ -225,7 +227,7 @@
 <!ELEMENT encoding (#PCDATA)>
 <!ELEMENT remoteaddr (#PCDATA)>
 
-<!-- 
+<!--
 Each job can have an optional list of parameters.
 -->
 
@@ -236,7 +238,7 @@ Each job can have an optional list of parameters.
 
 <!--
 # Event settings:
-# It is possible to replace the default event manager with a custom implementation 
+# It is possible to replace the default event manager with a custom implementation
 # by configuring the name of the event manager class. The event manager class must
 # always be extended from org.opencms.main.CmsEventManager.
 -->
@@ -264,12 +266,12 @@ Each job can have an optional list of parameters.
 # secure:           an optional secure server for the site:
 #     server:       the server address used for this site
 #     exclusive:    if set to true, secure resources will only be available using the given secure url
-#                   do not forget to configure an additional tomcat connector using 
+#                   do not forget to configure an additional tomcat connector using
 #                   proxyPort="443" scheme="https" secure="false"
 #     error:        if exclusive, and set to true will generate a 404 error, if set to false will redirect to secure url
 # alias:            alias servers for the site
 #     server:       the server address used for this site
-#     offset:       time in seconds added to the current time written as attribute 
+#     offset:       time in seconds added to the current time written as attribute
 #                   into the session when accessing the site over this alias
 -->
 <!ELEMENT sites ((workplace-server, default-uri, shared-folder?, site+) | (workplace-server, default-uri, site+, shared-folder?))>
@@ -288,11 +290,23 @@ Each job can have an optional list of parameters.
 <!ATTLIST secure
 	server CDATA #REQUIRED
 	exclusive (true|false|TRUE|FALSE) "false"
-	error (true|false|TRUE|FALSE) "false">
-<!ELEMENT alias EMPTY>
+	error (true|false|TRUE|FALSE) "false"
+	usePermanentRedirects (true|false|TRUE|FALSE) "false" 
+	>
+<!ELEMENT alias EMPTY>	
 <!ATTLIST alias
 	server CDATA #REQUIRED
 	offset CDATA #IMPLIED>
+
+<!--
+# Publish list remove mode.
+# This setting controls what happens to user publish lists when resources are published.
+# With the value "currentUser", the resource's user publish list entry for the current user is removed.
+# With the value "allUsers", the resource's user publish list entries for all users are removed.
+-->
+<!ELEMENT publish-list-remove-mode EMPTY>
+<!ATTLIST publish-list-remove-mode
+	mode (allUsers|currentUser) #REQUIRED>
 
 <!--
 # Optional configuration that controls some additional information as key/value param pairs
@@ -310,10 +324,10 @@ Each job can have an optional list of parameters.
 <!--
 # Default user/group names:
 # These names can not be changed after the initial OpenCms setup
-# Provides access to the names of the OpenCms default users and groups. 
+# Provides access to the names of the OpenCms default users and groups.
 -->
 
-<!ELEMENT defaultusers (user-admin, user-guest, user-export, user-deletedresource?, group-administrators, group-projectmanagers, group-users, group-guests)>
+<!ELEMENT defaultusers (user-admin, user-guest, user-export, user-deletedresource?, group-administrators, group-projectmanagers?, group-users, group-guests)>
 
 <!ELEMENT user-admin (#PCDATA)>
 <!ELEMENT user-guest (#PCDATA)>
@@ -358,23 +372,23 @@ Each job can have an optional list of parameters.
 
 <!--
 # Enable or disable the FlexCache here with the "cache-enabled" node.
-# In case you disable the FlexCache, you do not need to bother 
+# In case you disable the FlexCache, you do not need to bother
 # about the settings of the other Flex cache values.
 -->
 <!ELEMENT cache-enabled (#PCDATA)>
 
 <!--
-# In a development environment, we recommend to set the value of 
+# In a development environment, we recommend to set the value of
 # the "cache-offline" node to "true" so that you can test out the caching
 # behaviour of the application without publishing.
-# In a production environment you should set "cache-offline" node 
+# In a production environment you should set "cache-offline" node
 # to "false".
 -->
 <!ELEMENT cache-offline (#PCDATA)>
 
 <!--
-# Sizing parameters for the cached "entries" (ie. pages) in the FlexCache. 
-# The amount of server memory available obviously is the 
+# Sizing parameters for the cached "entries" (ie. pages) in the FlexCache.
+# The amount of server memory available obviously is the
 # critical factor here. The values below are set in byte size.
 # The default is 2mb memory for the cached pages _or_ a maximum of 4000
 # cached page variations in total.
@@ -408,7 +422,7 @@ Each job can have an optional list of parameters.
 
 <!--
 # If bowser-based HTTP basic authentication is disabled, the user gets
-# redirected to the OpenCms URI specified in this node for a form-based 
+# redirected to the OpenCms URI specified in this node for a form-based
 # HTTP basic authentication.
 # Since this is a system wide setting, users are able to specify different
 # authentication forms by setting the property "login-form" on resources.
@@ -421,7 +435,7 @@ Each job can have an optional list of parameters.
 # These settings control the size of various internal caches in the OpenCms database layer.
 -->
 <!ELEMENT resultcache (
-	keygenerator,	
+	keygenerator,
 	size-users,
 	size-groups,
 	size-orgunits?,
@@ -537,7 +551,12 @@ Each job can have an optional list of parameters.
 # Provides the configuration parameters for the publish history and queue.
 # See the package org.opencms.publish for more details.
 -->
-<!ELEMENT publishmanager (history-size, queue-persistance?, queue-shutdowntime?)>
+<!ELEMENT publishmanager (history-size, queue-persistance?, queue-shutdowntime?, publish-list-delete-mode?)>
+
+
+<!ELEMENT publish-list-delete-mode (#PCDATA)>
+
+
 
 <!--
 # The size of the publish queue
@@ -549,12 +568,12 @@ Each job can have an optional list of parameters.
 # The value is optional, the default is "false" if no value is provided.
 #
 # The #PCDATA value will be evaluated with Boolean.valueOf(#PCDATA).booleanValue().
-# If the result is "true", the class instance will be re-used. 
+# If the result is "true", the class instance will be re-used.
 -->
 <!ELEMENT queue-persistance (#PCDATA)>
 
 <!--
-# The amount of time in seconds the system waits for a publish job 
+# The amount of time in seconds the system waits for a publish job
 # to be finished during shutdown.
 # The value is optional, the default is 1 second if no value is provided.
 -->
@@ -590,47 +609,47 @@ Each job can have an optional list of parameters.
 <!ELEMENT request-error-page-attribute (#PCDATA)>
 
 <!--
-# The advanced direct edit settings. 
--->		
+# The advanced direct edit settings.
+-->
 <!ELEMENT ade (configuration?, parameters?,
 			   ade-cache)>
 
 <!--
-# Configuration class for ADE. 
+# Configuration class for ADE.
 -->
 <!ELEMENT configuration EMPTY >
 <!ATTLIST configuration class CDATA #REQUIRED>
 
 <!--
-# Cache sizes for ADE. 
+# Cache sizes for ADE.
 -->
 <!ELEMENT ade-cache (containerpages, groupcontainers) >
 
 <!--
-# Container page caches. 
+# Container page caches.
 -->
 <!ELEMENT containerpages EMPTY >
 <!ATTLIST containerpages offline CDATA #REQUIRED>
 <!ATTLIST containerpages online CDATA #REQUIRED>
 <!--
-# Groupcontainer caches. 
+# Groupcontainer caches.
 -->
 <!ELEMENT groupcontainers EMPTY >
 <!ATTLIST groupcontainers offline CDATA #REQUIRED>
 <!ATTLIST groupcontainers online CDATA #REQUIRED>
 
 <!--
-# The sitemap settings. 
--->		
-<!ELEMENT sitemap (sitemap-cache)>								   
+# The sitemap settings.
+-->
+<!ELEMENT sitemap (sitemap-cache)>
 
 <!--
-# Cache sizes for the sitemap. 
+# Cache sizes for the sitemap.
 -->
 <!ELEMENT sitemap-cache (documents) >
 
 <!--
-# Document caches. 
+# Document caches.
 -->
 <!ELEMENT documents EMPTY >
 <!ATTLIST documents offline CDATA #REQUIRED>
@@ -649,10 +668,13 @@ Each job can have an optional list of parameters.
 <!ATTLIST workflow class CDATA #REQUIRED>
 
 
+
 <!ELEMENT user-session-mode (#PCDATA)>
 <!ELEMENT credentials-resolver (#PCDATA)>
 
-
-
-
-
+<!--
+# Restrict detail contents: If set to 'true', will not allow detail contents
+# from one proper site to be rendered in a detail page from another proper site.
+# If this is not set explicitly, defaults to 'true'. 
+-->
+<!ELEMENT restrict-detail-contents (#PCDATA) >

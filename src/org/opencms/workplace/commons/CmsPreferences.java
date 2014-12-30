@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.db.CmsUserSettings.CmsSearchResultStyle;
 import org.opencms.db.CmsUserSettings.UploadVariant;
@@ -95,6 +96,86 @@ import org.apache.commons.logging.Log;
  * @since 6.0.0
  */
 public class CmsPreferences extends CmsTabDialog {
+
+    /**
+     * A bean representing a set of select options.<p>
+     */
+    public static class SelectOptions {
+
+        /** The list of user-readable option labels. */
+        private List<String> m_options;
+
+        /** The currently selected index. */
+        private int m_selectedIndex;
+
+        /** The list of option values. */
+        private List<String> m_values;
+
+        /**
+         * Creates a new instance.<p>
+         * 
+         * @param options the option labels
+         * @param values the option values
+         * @param selectedIndex the currently selected index 
+         */
+        public SelectOptions(List<String> options, List<String> values, int selectedIndex) {
+
+            m_options = options;
+            m_values = values;
+            m_selectedIndex = selectedIndex;
+        }
+
+        /**
+         * Gets the select option labels.<p>
+         * 
+         * @return the select option labels 
+         */
+        public List<String> getOptions() {
+
+            return m_options;
+        }
+
+        /**
+         * Gets the selected index.<p>
+         * 
+         * @return the selected index 
+         */
+        public int getSelectedIndex() {
+
+            return m_selectedIndex;
+        }
+
+        /**
+         * Gets the select widget values.<p>
+         * 
+         * @return the select widget values 
+         */
+        public List<String> getValues() {
+
+            return m_values;
+        }
+
+        /** 
+         * Creates a configuration string for client-side select widgets from the options.<p>
+         * 
+         * @return the widget configuration string 
+         */
+        public String toClientSelectWidgetConfiguration() {
+
+            StringBuffer resultBuffer = new StringBuffer();
+            for (int i = 0; i < m_values.size(); i++) {
+                String value = m_values.get(i);
+                String option = i < m_options.size() ? m_options.get(i) : value;
+                if (i != 0) {
+                    resultBuffer.append("|");
+                }
+                resultBuffer.append(value);
+                resultBuffer.append(":");
+                resultBuffer.append(option);
+            }
+            return resultBuffer.toString();
+        }
+    }
 
     /** Value for the action: change the password. */
     public static final int ACTION_CHPWD = 202;
@@ -284,6 +365,181 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
+     * Gets the options for the language selector.<p>
+     * 
+     * @param setLocale the locale for the select options
+     * @param prevLocale the locale currently set 
+     * 
+     * @return the options for the language selector 
+     */
+    public static SelectOptions getOptionsForLanguageStatic(Locale setLocale, Locale prevLocale) {
+
+        // get available locales from the workplace manager
+        List<Locale> locales = OpenCms.getWorkplaceManager().getLocales();
+        List<String> options = new ArrayList<String>(locales.size());
+        List<String> values = new ArrayList<String>(locales.size());
+        int checkedIndex = 0;
+        int counter = 0;
+        Iterator<Locale> i = locales.iterator();
+        while (i.hasNext()) {
+            Locale currentLocale = i.next();
+            // add all locales to the select box
+            String language = currentLocale.getDisplayLanguage(setLocale);
+            if (CmsStringUtil.isNotEmpty(currentLocale.getCountry())) {
+                language = language + " (" + currentLocale.getDisplayCountry(setLocale) + ")";
+            }
+            if (CmsStringUtil.isNotEmpty(currentLocale.getVariant())) {
+                language = language + " (" + currentLocale.getDisplayVariant(setLocale) + ")";
+            }
+            options.add(language);
+            values.add(currentLocale.toString());
+            if (prevLocale.toString().equals(currentLocale.toString())) {
+                // mark the currently active locale
+                checkedIndex = counter;
+            }
+            counter++;
+        }
+        SelectOptions selectOptions = new SelectOptions(options, values, checkedIndex);
+        return selectOptions;
+    }
+
+    /**
+     * Gets the options for the project selector.<p>
+     * 
+     * @param cms  the CMS context 
+     * @param startProject the start project 
+     * @param  locale the locale 
+     * 
+     * @return the options for the project selector 
+     */
+    public static SelectOptions getProjectSelectOptionsStatic(CmsObject cms, String startProject, Locale locale) {
+
+        List<CmsProject> allProjects;
+        try {
+            String ouFqn = "";
+            CmsUserSettings settings = new CmsUserSettings(cms);
+            if (!settings.getListAllProjects()) {
+                ouFqn = cms.getRequestContext().getCurrentUser().getOuFqn();
+            }
+            allProjects = OpenCms.getOrgUnitManager().getAllAccessibleProjects(
+                cms,
+                ouFqn,
+                settings.getListAllProjects());
+        } catch (CmsException e) {
+            // should usually never happen
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            allProjects = Collections.emptyList();
+        }
+
+        boolean singleOu = true;
+        String ouFqn = null;
+        Iterator<CmsProject> itProjects = allProjects.iterator();
+        while (itProjects.hasNext()) {
+            CmsProject prj = itProjects.next();
+            if (prj.isOnlineProject()) {
+                // skip the online project
+                continue;
+            }
+            if (ouFqn == null) {
+                // set the first ou
+                ouFqn = prj.getOuFqn();
+            }
+            if (!ouFqn.equals(prj.getOuFqn())) {
+                // break if one different ou is found
+                singleOu = false;
+                break;
+            }
+        }
+
+        List<String> options = new ArrayList<String>(allProjects.size());
+        List<String> values = new ArrayList<String>(allProjects.size());
+        int checkedIndex = 0;
+
+        for (int i = 0, n = allProjects.size(); i < n; i++) {
+            CmsProject project = allProjects.get(i);
+            String projectName = project.getSimpleName();
+            if (!singleOu && !project.isOnlineProject()) {
+                try {
+                    projectName = projectName
+                        + " - "
+                        + OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, project.getOuFqn()).getDisplayName(
+                            locale);
+                } catch (CmsException e) {
+                    projectName = projectName + " - " + project.getOuFqn();
+                }
+            }
+            options.add(projectName);
+            values.add(project.getName());
+            if (startProject.equals(project.getName())) {
+                checkedIndex = i;
+            }
+        }
+        SelectOptions selectOptions = new SelectOptions(options, values, checkedIndex);
+        return selectOptions;
+    }
+
+    /**
+     * Gets the options for the site selector.<p>
+     * 
+     * @param cms the CMS context 
+     * @param wpSite the selected site 
+     * @param locale the locale for the select options 
+     * 
+     * @return the options for the site selector 
+     */
+    public static SelectOptions getSiteSelectOptionsStatic(CmsObject cms, String wpSite, Locale locale) {
+
+        List<String> options = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
+        int selectedIndex = 0;
+
+        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(
+            cms,
+            true,
+            false,
+            cms.getRequestContext().getOuFqn());
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(wpSite) && !wpSite.endsWith("/")) {
+            wpSite += "/";
+        }
+
+        Iterator<CmsSite> i = sites.iterator();
+        int pos = 0;
+        while (i.hasNext()) {
+            CmsSite site = i.next();
+            String siteRoot = site.getSiteRoot();
+            if (!siteRoot.endsWith("/")) {
+                siteRoot += "/";
+            }
+            values.add(siteRoot);
+            options.add(CmsWorkplace.substituteSiteTitleStatic(site.getTitle(), locale));
+            if (siteRoot.equals(wpSite)) {
+                // this is the user's currently chosen site
+                selectedIndex = pos;
+            }
+            pos++;
+        }
+
+        if (sites.size() < 1) {
+            // no site found, assure that at least the current site is shown in the selector
+            String siteRoot = cms.getRequestContext().getSiteRoot();
+            CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
+            if (!siteRoot.endsWith("/")) {
+                siteRoot += "/";
+            }
+            String title = "";
+            if (site != null) {
+                title = site.getTitle();
+            }
+            values.add(siteRoot);
+            options.add(title);
+        }
+        SelectOptions selectOptions = new SelectOptions(options, values, selectedIndex);
+        return selectOptions;
+    }
+
+    /**
      * Performs the change password action.<p>
      * 
      * @throws JspException if inclusion of error element fails
@@ -329,7 +585,6 @@ public class CmsPreferences extends CmsTabDialog {
         m_userSettings.setStartGalleriesSetting(userSettings.getStartGalleriesSettings());
         // then set the old synchronization settings
         m_userSettings.setSynchronizeSettings(userSettings.getSynchronizeSettings());
-        @SuppressWarnings("unchecked")
         Enumeration<String> en = request.getParameterNames();
         while (en.hasMoreElements()) {
             // search all request parameters for the presence of the preferred editor parameters
@@ -508,9 +763,9 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectExplorerFileEntries(String htmlAttributes) {
 
-        String emptyOption = OpenCms.getWorkplaceManager().getDefaultUserSettings().getExporerFileEntryOptions();
+        String emptyOption = OpenCms.getWorkplaceManager().getDefaultUserSettings().getExplorerFileEntryOptions();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(emptyOption)) {
-            emptyOption = "10,25,50,100";
+            emptyOption = "50,100,200,300,400,500";
         }
         // remove all non digits without ',' 
         emptyOption = emptyOption.replaceAll("[^0-9|^,]", "");
@@ -540,33 +795,8 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectLanguage(String htmlAttributes) {
 
-        // get available locales from the workplace manager
-        List<Locale> locales = OpenCms.getWorkplaceManager().getLocales();
-        List<String> options = new ArrayList<String>(locales.size());
-        List<String> values = new ArrayList<String>(locales.size());
-        int checkedIndex = 0;
-        int counter = 0;
-        Iterator<Locale> i = locales.iterator();
-        Locale setLocale = getSettings().getUserSettings().getLocale();
-        while (i.hasNext()) {
-            Locale currentLocale = i.next();
-            // add all locales to the select box
-            String language = currentLocale.getDisplayLanguage(setLocale);
-            if (CmsStringUtil.isNotEmpty(currentLocale.getCountry())) {
-                language = language + " (" + currentLocale.getDisplayCountry(setLocale) + ")";
-            }
-            if (CmsStringUtil.isNotEmpty(currentLocale.getVariant())) {
-                language = language + " (" + currentLocale.getDisplayVariant(setLocale) + ")";
-            }
-            options.add(language);
-            values.add(currentLocale.toString());
-            if (getParamTabWpLanguage().equals(currentLocale.toString())) {
-                // mark the currently active locale
-                checkedIndex = counter;
-            }
-            counter++;
-        }
-        return buildSelect(htmlAttributes, options, values, checkedIndex);
+        SelectOptions selectOptions = getOptionsForLanguage();
+        return buildSelect(htmlAttributes, selectOptions);
     }
 
     /**
@@ -651,72 +881,8 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectProject(String htmlAttributes) {
 
-        List<CmsProject> allProjects;
-        try {
-            String ouFqn = "";
-            CmsUserSettings settings = new CmsUserSettings(getCms());
-            if (!settings.getListAllProjects()) {
-                ouFqn = getCms().getRequestContext().getCurrentUser().getOuFqn();
-            }
-            allProjects = OpenCms.getOrgUnitManager().getAllAccessibleProjects(
-                getCms(),
-                ouFqn,
-                settings.getListAllProjects());
-        } catch (CmsException e) {
-            // should usually never happen
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-            allProjects = Collections.emptyList();
-        }
-
-        boolean singleOu = true;
-        String ouFqn = null;
-        Iterator<CmsProject> itProjects = allProjects.iterator();
-        while (itProjects.hasNext()) {
-            CmsProject prj = itProjects.next();
-            if (prj.isOnlineProject()) {
-                // skip the online project
-                continue;
-            }
-            if (ouFqn == null) {
-                // set the first ou
-                ouFqn = prj.getOuFqn();
-            }
-            if (!ouFqn.equals(prj.getOuFqn())) {
-                // break if one different ou is found
-                singleOu = false;
-                break;
-            }
-        }
-
-        List<String> options = new ArrayList<String>(allProjects.size());
-        List<String> values = new ArrayList<String>(allProjects.size());
-        int checkedIndex = 0;
-        String startProject = "";
-
-        startProject = getParamTabWpProject();
-
-        for (int i = 0, n = allProjects.size(); i < n; i++) {
-            CmsProject project = allProjects.get(i);
-            String projectName = project.getSimpleName();
-            if (!singleOu && !project.isOnlineProject()) {
-                try {
-                    projectName = projectName
-                        + " - "
-                        + OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), project.getOuFqn()).getDisplayName(
-                            getLocale());
-                } catch (CmsException e) {
-                    projectName = projectName + " - " + project.getOuFqn();
-                }
-            }
-            options.add(projectName);
-            values.add(project.getName());
-            if (startProject.equals(project.getName())) {
-                checkedIndex = i;
-            }
-        }
-        return buildSelect(htmlAttributes, options, values, checkedIndex);
+        SelectOptions selectOptions = getProjectSelectOptions();
+        return buildSelect(htmlAttributes, selectOptions);
 
     }
 
@@ -766,53 +932,9 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectSite(String htmlAttributes) {
 
-        List<String> options = new ArrayList<String>();
-        List<String> values = new ArrayList<String>();
-        int selectedIndex = 0;
+        SelectOptions selectOptions = getSiteSelectOptions();
 
-        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(
-            getCms(),
-            true,
-            false,
-            getCms().getRequestContext().getOuFqn());
-        String wpSite = getParamTabWpSite();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(wpSite) && !wpSite.endsWith("/")) {
-            wpSite += "/";
-        }
-
-        Iterator<CmsSite> i = sites.iterator();
-        int pos = 0;
-        while (i.hasNext()) {
-            CmsSite site = i.next();
-            String siteRoot = site.getSiteRoot();
-            if (!siteRoot.endsWith("/")) {
-                siteRoot += "/";
-            }
-            values.add(siteRoot);
-            options.add(substituteSiteTitle(site.getTitle()));
-            if (siteRoot.equals(wpSite)) {
-                // this is the user's currently chosen site
-                selectedIndex = pos;
-            }
-            pos++;
-        }
-
-        if (sites.size() < 1) {
-            // no site found, assure that at least the current site is shown in the selector
-            String siteRoot = getCms().getRequestContext().getSiteRoot();
-            CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
-            if (!siteRoot.endsWith("/")) {
-                siteRoot += "/";
-            }
-            String title = "";
-            if (site != null) {
-                title = site.getTitle();
-            }
-            values.add(siteRoot);
-            options.add(title);
-        }
-
-        return buildSelect(htmlAttributes, options, values, selectedIndex);
+        return buildSelect(htmlAttributes, selectOptions);
     }
 
     /**
@@ -829,21 +951,21 @@ public class CmsPreferences extends CmsTabDialog {
         if (htmlAttributes != null) {
             htmlAttributes += " name=\"" + PARAM_STARTGALLERY_PREFIX;
         }
-        Map galleriesTypes = OpenCms.getWorkplaceManager().getGalleries();
+        Map<String, A_CmsAjaxGallery> galleriesTypes = OpenCms.getWorkplaceManager().getGalleries();
         if (galleriesTypes != null) {
 
             // sort the galleries by localized name
-            Map localizedGalleries = new TreeMap();
-            for (Iterator i = galleriesTypes.keySet().iterator(); i.hasNext();) {
-                String currentGalleryType = (String)i.next();
+            Map<String, String> localizedGalleries = new TreeMap<String, String>();
+            for (Iterator<String> i = galleriesTypes.keySet().iterator(); i.hasNext();) {
+                String currentGalleryType = i.next();
                 String localizedName = CmsWorkplaceMessages.getResourceTypeName(this, currentGalleryType);
                 localizedGalleries.put(localizedName, currentGalleryType);
             }
 
-            for (Iterator i = localizedGalleries.entrySet().iterator(); i.hasNext();) {
-                Map.Entry entry = (Map.Entry)i.next();
+            for (Iterator<Map.Entry<String, String>> i = localizedGalleries.entrySet().iterator(); i.hasNext();) {
+                Map.Entry<String, String> entry = i.next();
                 // first: retrieve the gallery type
-                String currentGalleryType = (String)entry.getValue();
+                String currentGalleryType = entry.getValue();
                 // second: retrieve the gallery type id
                 int currentGalleryTypeId = 0;
                 try {
@@ -856,11 +978,11 @@ public class CmsPreferences extends CmsTabDialog {
                     continue;
                 }
                 // third: get the available galleries for this gallery type id
-                List availableGalleries = A_CmsAjaxGallery.getGalleries(currentGalleryTypeId, getCms());
+                List<CmsResource> availableGalleries = A_CmsAjaxGallery.getGalleries(currentGalleryTypeId, getCms());
 
                 // forth: fill the select box 
-                List options = new ArrayList(availableGalleries.size() + 2);
-                List values = new ArrayList(availableGalleries.size() + 2);
+                List<String> options = new ArrayList<String>(availableGalleries.size() + 2);
+                List<String> values = new ArrayList<String>(availableGalleries.size() + 2);
                 options.add(key(Messages.GUI_PREF_STARTGALLERY_PRESELECT_0));
                 values.add(INPUT_DEFAULT);
                 options.add(key(Messages.GUI_PREF_STARTGALLERY_NONE_0));
@@ -869,9 +991,9 @@ public class CmsPreferences extends CmsTabDialog {
                 String savedValue = computeStartGalleryPreselection(request, currentGalleryType);
                 int counter = 2;
                 int selectedIndex = 0;
-                Iterator iGalleries = availableGalleries.iterator();
+                Iterator<CmsResource> iGalleries = availableGalleries.iterator();
                 while (iGalleries.hasNext()) {
-                    CmsResource res = (CmsResource)iGalleries.next();
+                    CmsResource res = iGalleries.next();
                     String rootPath = res.getRootPath();
                     String sitePath = getCms().getSitePath(res);
                     // select the value
@@ -949,8 +1071,8 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectView(String htmlAttributes) {
 
-        List options = new ArrayList();
-        List values = new ArrayList();
+        List<String> options = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
         int selectedIndex = 0;
 
         // loop through the vectors and fill the result vectors
@@ -959,11 +1081,11 @@ public class CmsPreferences extends CmsTabDialog {
             Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0), CmsWorkplace.VIEW_DIRECT_EDIT, Float.valueOf(100));
         list.add(directEditView);
 
-        Iterator i = list.iterator();
+        Iterator<CmsWorkplaceView> i = list.iterator();
         int count = -1;
         while (i.hasNext()) {
             count++;
-            CmsWorkplaceView view = (CmsWorkplaceView)i.next();
+            CmsWorkplaceView view = i.next();
 
             boolean visible = true;
             try {
@@ -1007,8 +1129,8 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectWorkplaceSearchResult(String htmlAttributes) {
 
-        List options = new ArrayList(3);
-        List values = new ArrayList(3);
+        List<String> options = new ArrayList<String>(3);
+        List<String> values = new ArrayList<String>(3);
         int checkedIndex = 0;
 
         // add all styles to the select box
@@ -1107,6 +1229,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @deprecated use {@link CmsCalendarWidget#calendarIncludes(java.util.Locale)}, this is just here so that old JSP still work
      */
+    @Deprecated
     public String calendarIncludes() {
 
         return CmsCalendarWidget.calendarIncludes(getLocale());
@@ -1127,6 +1250,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @deprecated use {@link CmsCalendarWidget#calendarInit(org.opencms.i18n.CmsMessages, String, String, String, boolean, boolean, boolean, String, boolean)}, this is just here so that old JSP still work
      */
+    @Deprecated
     public String calendarInit(
         String inputFieldId,
         String triggerButtonId,
@@ -1147,6 +1271,16 @@ public class CmsPreferences extends CmsTabDialog {
             mondayFirst,
             dateStatusFunc,
             showTime);
+    }
+
+    /**
+     * Gets the select options for the language selector.<p>
+     * 
+     * @return the select options 
+     */
+    public SelectOptions getOptionsForLanguage() {
+
+        return getOptionsForLanguageStatic(getSettings().getUserSettings().getLocale(), m_userSettings.getLocale());
     }
 
     /**
@@ -1526,7 +1660,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return the "user timewarp" setting in form of a formatted date string
      */
-    public String getParamTabWpTimewarp() {
+    public String getParamTabWpTimeWarp() {
 
         String result;
         if (m_userSettings.getTimeWarp() == CmsContextInfo.CURRENT_TIME) {
@@ -1561,11 +1695,35 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
+     * Gets the project select options.<p>
+     * 
+     * @return the project select options 
+     */
+    public SelectOptions getProjectSelectOptions() {
+
+        return getProjectSelectOptionsStatic(getCms(), m_userSettings.getStartProject(), getLocale());
+    }
+
+    /**
+     * Gets the site select options.<p>
+     *  
+     * @return the site select options  
+     */
+    public SelectOptions getSiteSelectOptions() {
+
+        return getSiteSelectOptionsStatic(
+            getCms(),
+            m_userSettings.getStartSite(),
+            getSettings().getUserSettings().getLocale());
+    }
+
+    /**
      * @see org.opencms.workplace.CmsTabDialog#getTabParameterOrder()
      */
-    public List getTabParameterOrder() {
+    @Override
+    public List<String> getTabParameterOrder() {
 
-        ArrayList orderList = new ArrayList(5);
+        ArrayList<String> orderList = new ArrayList<String>(5);
         orderList.add("tabwp");
         orderList.add("tabex");
         orderList.add("tabdi");
@@ -1578,9 +1736,10 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * @see org.opencms.workplace.CmsTabDialog#getTabs()
      */
-    public List getTabs() {
+    @Override
+    public List<String> getTabs() {
 
-        ArrayList tabList = new ArrayList(6);
+        ArrayList<String> tabList = new ArrayList<String>(6);
         tabList.add(key(Messages.GUI_PREF_PANEL_WORKPLACE_0));
         tabList.add(key(Messages.GUI_PREF_PANEL_EXPLORER_0));
         tabList.add(key(Messages.GUI_PREF_PANEL_DIALOGS_0));
@@ -1588,6 +1747,26 @@ public class CmsPreferences extends CmsTabDialog {
         tabList.add(key(Messages.GUI_PREF_PANEL_GALLERIES_0));
         tabList.add(key(Messages.GUI_PREF_PANEL_USER_0));
         return tabList;
+    }
+
+    /**
+     * Gets the timewarp parameter as a simple numeric string.<p>
+     * 
+     * @return the timewarp parameter as a simple numeric string 
+     */
+    public String getTimeWarpInt() {
+
+        return "" + m_userSettings.getTimeWarp();
+    }
+
+    /**
+     * Gets the internal user settings object.<p>
+     * 
+     * @return the user settings object 
+     */
+    public CmsUserSettings getUserSettings() {
+
+        return m_userSettings;
     }
 
     /**
@@ -2043,7 +2222,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * Sets the upload variant setting.<p>
      * 
-     * @param <code>"applet"</code>, <code>"basic"</code>, 
+     * @param value <code>"applet"</code>, <code>"basic"</code>, 
      * <code>"gwt"</code>, <code>"true"</code> or <code>"false"</code>
      */
     public void setParamTabWpUploadVariant(String value) {
@@ -2062,8 +2241,64 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
+     * Sets the timewarp setting from a numeric string 
+     * 
+     * @param timewarp a numeric string containing the number of milliseconds since the epoch 
+     */
+    public void setTimewarpInt(String timewarp) {
+
+        try {
+            m_userSettings.setTimeWarp(Long.valueOf(timewarp).longValue());
+        } catch (Exception e) {
+            m_userSettings.setTimeWarp(-1);
+        }
+    }
+
+    /**
+     * Sets the  user settings.<p>
+     * 
+     * @param userSettings the user settings 
+     */
+    public void setUserSettings(CmsDefaultUserSettings userSettings) {
+
+        m_userSettings = userSettings;
+    }
+
+    /**
+     * Updates the user preferences after changes have been made.<p>
+     * 
+     * @param cms the current cms context
+     * @param req the current http request
+     */
+    public void updatePreferences(CmsObject cms, HttpServletRequest req) {
+
+        HttpSession session = req.getSession(false);
+        if (session == null) {
+            return;
+        }
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+        if (settings == null) {
+            return;
+        }
+        // keep old synchronize settings
+        CmsSynchronizeSettings synchronizeSettings = settings.getUserSettings().getSynchronizeSettings();
+        settings = CmsWorkplace.initWorkplaceSettings(cms, settings, true);
+        settings.getUserSettings().setSynchronizeSettings(synchronizeSettings);
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#checkRole()
+     */
+    @Override
+    protected void checkRole() {
+
+        // this class is used internally for the new preferences dialog, which can also be used by non-workplace users. 
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // create an empty user settings object
@@ -2106,12 +2341,15 @@ public class CmsPreferences extends CmsTabDialog {
      * This overwrites the super method because of the possible dynamic editor selection entries.<p> 
      * 
      * @return the values of all parameter methods of this workplace class instance
+     * 
+     * @see org.opencms.workplace.CmsWorkplace#paramValues()
      */
-    protected Map paramValues() {
+    @Override
+    protected Map<String, Object> paramValues() {
 
-        Map map = super.paramValues();
+        Map<String, Object> map = super.paramValues();
         HttpServletRequest request = getJsp().getRequest();
-        Enumeration en = request.getParameterNames();
+        Enumeration<?> en = request.getParameterNames();
         while (en.hasMoreElements()) {
             String paramName = (String)en.nextElement();
             if (paramName.startsWith(PARAM_PREFERREDEDITOR_PREFIX) || paramName.startsWith(PARAM_STARTGALLERY_PREFIX)) {
@@ -2125,25 +2363,16 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
-     * Updates the user preferences after changes have been made.<p>
-     * 
-     * @param cms the current cms context
-     * @param req the current http request
+     * Builds the HTML code for a select widget given a bean containing the select options 
+     *
+     * @param htmlAttributes html attributes for the select widget 
+     * @param options the bean containing the select options
+     *  
+     * @return the HTML for the select box 
      */
-    protected void updatePreferences(CmsObject cms, HttpServletRequest req) {
+    String buildSelect(String htmlAttributes, SelectOptions options) {
 
-        HttpSession session = req.getSession(false);
-        if (session == null) {
-            return;
-        }
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
-        if (settings == null) {
-            return;
-        }
-        // keep old synchronize settings
-        CmsSynchronizeSettings synchronizeSettings = settings.getUserSettings().getSynchronizeSettings();
-        settings = CmsWorkplace.initWorkplaceSettings(cms, settings, true);
-        settings.getUserSettings().setSynchronizeSettings(synchronizeSettings);
+        return buildSelect(htmlAttributes, options.getOptions(), options.getValues(), options.getSelectedIndex());
     }
 
     /**
@@ -2155,12 +2384,12 @@ public class CmsPreferences extends CmsTabDialog {
      */
     private String buildSelectButtonStyle(String htmlAttributes, int selectedIndex) {
 
-        List options = new ArrayList(3);
+        List<String> options = new ArrayList<String>(3);
         options.add(key(Messages.GUI_PREF_BUTTONSTYLE_IMG_0));
         options.add(key(Messages.GUI_PREF_BUTTONSTYLE_IMGTXT_0));
         options.add(key(Messages.GUI_PREF_BUTTONSTYLE_TXT_0));
         String[] vals = new String[] {"0", "1", "2"};
-        List values = new ArrayList(java.util.Arrays.asList(vals));
+        List<String> values = new ArrayList<String>(java.util.Arrays.asList(vals));
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
 
@@ -2189,7 +2418,7 @@ public class CmsPreferences extends CmsTabDialog {
      * Returns the preferred editor preselection value either from the request, if not present, from the user settings.<p>
      * 
      * @param request the current http servlet request
-     * @param resourceType the preferred editors resource type
+     * @param galleryType the preferred gallery type
      * @return the preferred editor preselection value or null, if none found
      */
     private String computeStartGalleryPreselection(HttpServletRequest request, String galleryType) {

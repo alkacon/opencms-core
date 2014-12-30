@@ -2,27 +2,26 @@
 
 .showButtons, .hideButtons{}
 
-.menuTabContainer{
-	height: 486px;
-}
-
 .menuTabContainer > div >.gwt-TabLayoutPanel, .menuTabContainer > div{
 	border: none;
 }
 
-.menuTabContainer ul.clipboardList {
-	overflow: auto;
-	/* position relative is required to hide overflowing content caused by layout bug in IE7 */
-	position: relative;
+.menuTabContainer div.clipboardList {
 	border: 1px solid value("constants.css.borderColor");
-	padding: 0 2px;
 	background: value("constants.css.backgroundColorDialog");
-}
-ul.clipboardList{
-	height: 441px;
+	position: absolute;
+	top: 6px;
+	bottom:	6px;
+	left: 6px;
+	right: 6px;
 }
 
-.clipboardList > div  {
+.menuTabContainer div.clipboardList ul{
+	min-height: 82px;
+	padding: 0 2px;
+}
+
+.clipboardList ul > div  {
 	margin: 2px;
 }
 
@@ -89,15 +88,10 @@ div.expired{
 	z-index: 1;
 }
 
-@if user.agent ie8 {
-	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay, div.expiredListElementOverlay {
-		-ms-filter: "alpha(opacity = 60)";
-	}
-} @else {
-	.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay, div.expiredListElementOverlay {
+.expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay, div.expiredListElementOverlay {
         opacity: 0.6;
-	}
 }
+
 
 div.toolbarToggle{
 	position: fixed;

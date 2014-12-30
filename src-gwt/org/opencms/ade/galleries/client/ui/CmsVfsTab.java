@@ -139,9 +139,6 @@ public class CmsVfsTab extends A_CmsListTab {
         }
     }
 
-    /** Text metrics key. */
-    private static final String TM_VFS_TAB = "VfsTab";
-
     /** The tab handler. */
     protected CmsVfsTabHandler m_tabHandler;
 
@@ -169,7 +166,6 @@ public class CmsVfsTab extends A_CmsListTab {
     public CmsVfsTab(CmsVfsTabHandler tabHandler, boolean includeFiles) {
 
         super(GalleryTabId.cms_tab_vfstree);
-        m_scrollList.truncate(TM_VFS_TAB, CmsGalleryDialog.DIALOG_WIDTH);
         m_tabHandler = tabHandler;
         m_includeFiles = includeFiles;
         init();
@@ -362,6 +358,8 @@ public class CmsVfsTab extends A_CmsListTab {
                                 target.addChild(item);
                             }
                             target.onFinishLoading();
+                            target.setOpen(true, false);
+                            onContentChange();
                         }
                     };
 
@@ -377,6 +375,7 @@ public class CmsVfsTab extends A_CmsListTab {
                 CmsVfsEntryBean entry = event.getTarget().getData();
                 ids.add(entry.getStructureId());
                 getTabHandler().onChangeTreeState(ids);
+                onContentChange();
             }
 
         });

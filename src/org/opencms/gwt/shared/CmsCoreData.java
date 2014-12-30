@@ -61,6 +61,9 @@ public class CmsCoreData implements IsSerializable {
         /** True if the user is an administrator. */
         private boolean m_isAdmin;
 
+        /** True if the user is a category manager. */
+        private boolean m_isCategoryManager;
+
         /** True if the user is a template developer. */
         private boolean m_isDeveloper;
 
@@ -72,11 +75,13 @@ public class CmsCoreData implements IsSerializable {
          * 
          * @param name the user name 
          * @param isAdmin true if the user is an administrator 
-         * @param isDeveloper true if the user is a template developer 
+         * @param isDeveloper true if the user is a template developer
+         * @param isCategoryManager true if the user is a category manager  
          */
-        public UserInfo(String name, boolean isAdmin, boolean isDeveloper) {
+        public UserInfo(String name, boolean isAdmin, boolean isDeveloper, boolean isCategoryManager) {
 
             m_isDeveloper = isDeveloper;
+            m_isCategoryManager = isCategoryManager;
             m_isAdmin = isAdmin;
             m_name = name;
         }
@@ -110,6 +115,16 @@ public class CmsCoreData implements IsSerializable {
         }
 
         /**
+         * Returns true if the user is a category manager.<p>
+         * 
+         * @return true if the user is a category manager 
+         */
+        public boolean isCategoryManager() {
+
+            return m_isCategoryManager;
+        }
+
+        /**
          * Returns true if the user is a template developer.<p>
          * 
          * @return true if the user is a template developer 
@@ -137,6 +152,9 @@ public class CmsCoreData implements IsSerializable {
 
     /** A bean with information about the current user. */
     protected UserInfo m_userInfo;
+
+    /** The link to the page displayed in the "about" dialog. */
+    private String m_aboutLink;
 
     /** ADE parameters. */
     private Map<String, String> m_adeParameters;
@@ -224,6 +242,7 @@ public class CmsCoreData implements IsSerializable {
             clone.isShowEditorHelp(),
             clone.isToolbarVisible(),
             clone.getDefaultWorkplaceLink(),
+            clone.getAboutLink(),
             clone.getUserInfo(),
             clone.getUploadFileSizeLimit(),
             clone.isKeepAlive(),
@@ -248,7 +267,8 @@ public class CmsCoreData implements IsSerializable {
      * @param serverTime the current time  
      * @param isShowEditorHelp the show editor help flag
      * @param toolbarVisible a flag to indicate whether the toolbar should be visible initially
-     * @param defaultWorkplaceLink the default link to use for opening the workplace  
+     * @param defaultWorkplaceLink the default link to use for opening the workplace
+     * @param aboutLink the link to the "About" page   
      * @param userInfo information about the current user 
      * @param uploadFileSizeLimit the file upload size limit
      * @param isKeepAlive the keep-alive mode 
@@ -271,6 +291,7 @@ public class CmsCoreData implements IsSerializable {
         boolean isShowEditorHelp,
         boolean toolbarVisible,
         String defaultWorkplaceLink,
+        String aboutLink,
         UserInfo userInfo,
         long uploadFileSizeLimit,
         boolean isKeepAlive,
@@ -292,10 +313,21 @@ public class CmsCoreData implements IsSerializable {
         m_toolbarVisible = toolbarVisible;
         m_structureId = structureId;
         m_defaultWorkplaceLink = defaultWorkplaceLink;
+        m_aboutLink = aboutLink;
         m_userInfo = userInfo;
         m_uploadFileSizeLimit = uploadFileSizeLimit;
         m_keepAlive = isKeepAlive;
         m_adeParameters = adeParameters;
+    }
+
+    /**
+     * Gets the "About" link.<p>
+     * 
+     * @return the "about" link 
+     */
+    public String getAboutLink() {
+
+        return m_aboutLink;
     }
 
     /** 
@@ -496,5 +528,15 @@ public class CmsCoreData implements IsSerializable {
     public boolean isToolbarVisible() {
 
         return m_toolbarVisible;
+    }
+
+    /**
+     * Sets the show editor help flag.<p>
+     * 
+     * @param show <code>true</code> to show editor help
+     */
+    protected void setShowEditorHelp(boolean show) {
+
+        m_isShowEditorHelp = show;
     }
 }

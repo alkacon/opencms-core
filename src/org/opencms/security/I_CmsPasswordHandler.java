@@ -62,6 +62,28 @@ public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler
     String DIGEST_TYPE_SSHA = "ssha";
 
     /**
+     * String to identify the key value for SCrypt password hashes.<p>
+     */
+    String DIGEST_TYPE_SCRYPT = "scrypt";
+
+    /**
+     * This method checks if the given plain text password is equal to the given 
+     * digested password.<p>
+     * 
+     * Use this to check salted passwords. If the password is salted, it needs to be checked with 
+     * the salt (and possible other parameters) stored in the digested password.
+     * Just digesting the password again and comparing the result to a previous digest won't 
+     * work because the salt will usually be different.<p> 
+     *
+     * @param plainPassword the plain text password to check
+     * @param digestedPassword the digested password to compare with the plain password
+     * @param useFallback if <code>true</code>, then use a fall back hashing algorithm in case first validation fails
+     * 
+     * @return <code>false</code> if the validation of the password failed
+     */
+    boolean checkPassword(String plainPassword, String digestedPassword, boolean useFallback);
+
+    /**
      * Creates an OpenCms password digest according to the default setting for method/encodings.<p>
      * 
      * @param password the password to encrypt

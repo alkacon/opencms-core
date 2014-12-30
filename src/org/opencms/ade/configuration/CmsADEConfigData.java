@@ -29,6 +29,7 @@ package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -43,15 +44,16 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +61,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -72,121 +73,23 @@ public class CmsADEConfigData {
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEConfigData.class);
 
-    /** The "create contents locally" flag. */
-    protected boolean m_createContentsLocally;
+    /** The wrapped configuration bean containing the actual data. */
+    protected CmsADEConfigDataInternal m_data;
 
-    /** Should inherited model pages be discarded? */
-    protected boolean m_discardInheritedModelPages;
-
-    /** Should inherited properties be discard? */
-    protected boolean m_discardInheritedProperties;
-
-    /** Should inherited types be discarded? */
-    protected boolean m_discardInheritedTypes;
-
-    /** The configured formatter changes. */
-    protected CmsFormatterChangeSet m_formatterChangeSet;
-
-    /** The base path of this configuration. */
-    private String m_basePath;
-
-    /** The cms context used for reading the configuration data. */
-    private CmsObject m_cms;
-
-    /** The list of configured function references. */
-    private List<CmsFunctionReference> m_functionReferences = new ArrayList<CmsFunctionReference>();
-
-    /** A flag which keeps track of whether this instance has already been initialized. */
-    private boolean m_initialized;
-
-    /** True if this is a module configuration, not a normal sitemap configuration. */
-    private boolean m_isModuleConfig;
-
-    /** The internal detail page configuration. */
-    private List<CmsDetailPageInfo> m_ownDetailPages = new ArrayList<CmsDetailPageInfo>();
-
-    /** The internal model page entries. */
-    private List<CmsModelPageConfig> m_ownModelPageConfig = new ArrayList<CmsModelPageConfig>();
-
-    /** The internal property configuration. */
-    private List<CmsPropertyConfig> m_ownPropertyConfigurations = new ArrayList<CmsPropertyConfig>();
-
-    /** The internal resource type entries. */
-    private List<CmsResourceTypeConfig> m_ownResourceTypes = new ArrayList<CmsResourceTypeConfig>();
-
-    /** The resource from which the configuration data was read. */
-    private CmsResource m_resource;
+    /** The cache state to which the wrapped configuration bean belongs. */
+    private CmsADEConfigCacheState m_cache;
 
     /** 
-     * Default constructor to create an empty configuration.<p> 
-     */
-    public CmsADEConfigData() {
-
-        // do nothing 
-    }
-
-    /**
-     * Creates an empty configuration data object with a given base path.<p>
+     * Creates a new configuration data object, based on an internal configuration data bean and a 
+     * configuration cache state.<p>
      * 
-     * @param basePath the base path 
+     * @param data the internal configuration data bean 
+     * @param cache the configuration cache state 
      */
-    public CmsADEConfigData(String basePath) {
+    public CmsADEConfigData(CmsADEConfigDataInternal data, CmsADEConfigCacheState cache) {
 
-        m_basePath = basePath;
-    }
-
-    /**
-     * Creates a new configuration data instance.<p>
-     * 
-     * @param basePath the base path 
-     * @param resourceTypeConfig the resource type configuration
-     * @param discardInheritedTypes the "discard inherited types" flag  
-     * @param propertyConfig the property configuration
-     * @param discardInheritedProperties the "discard inherited properties" flag  
-     * @param detailPageInfos the detail page configuration
-     * @param modelPages the model page configuration
-     * @param functionReferences the function reference configuration 
-     * @param discardInheritedModelPages the "discard  inherited model pages" flag 
-     * @param createContentsLocally the "create contents locally" flag 
-     * @param formatterChangeSet the formatter changes 
-     */
-    public CmsADEConfigData(
-        String basePath,
-        List<CmsResourceTypeConfig> resourceTypeConfig,
-        boolean discardInheritedTypes,
-        List<CmsPropertyConfig> propertyConfig,
-        boolean discardInheritedProperties,
-        List<CmsDetailPageInfo> detailPageInfos,
-        List<CmsModelPageConfig> modelPages,
-        List<CmsFunctionReference> functionReferences,
-        boolean discardInheritedModelPages,
-        boolean createContentsLocally,
-        CmsFormatterChangeSet formatterChangeSet) {
-
-        m_basePath = basePath;
-        m_ownResourceTypes = resourceTypeConfig;
-        m_ownPropertyConfigurations = propertyConfig;
-        m_ownModelPageConfig = modelPages;
-        m_ownDetailPages = detailPageInfos;
-        m_functionReferences = functionReferences;
-
-        m_discardInheritedTypes = discardInheritedTypes;
-        m_discardInheritedProperties = discardInheritedProperties;
-        m_discardInheritedModelPages = discardInheritedModelPages;
-        m_createContentsLocally = createContentsLocally;
-        m_formatterChangeSet = formatterChangeSet;
-    }
-
-    /**
-     * Creates an empty configuration for a given base path.<p>
-     * 
-     * @param basePath the base path 
-     * 
-     * @return the empty configuration object 
-     */
-    public static CmsADEConfigData emptyConfiguration(String basePath) {
-
-        return new CmsADEConfigData(basePath);
+        m_data = data;
+        m_cache = cache;
     }
 
     /**
@@ -209,11 +112,14 @@ public class CmsADEConfigData {
      * @param <C> the type of configuration object 
      * @param parentConfigs the parent configurations 
      * @param childConfigs the child configurations 
+     * @param preserveDisabled if true, try to merge parents with disabled children instead of discarding them 
+     * 
      * @return the merged configuration object list 
      */
-    protected static <C extends I_CmsConfigurationObject<C>> List<C> combineConfigurationElements(
+    public static <C extends I_CmsConfigurationObject<C>> List<C> combineConfigurationElements(
         List<C> parentConfigs,
-        List<C> childConfigs) {
+        List<C> childConfigs,
+        boolean preserveDisabled) {
 
         List<C> result = new ArrayList<C>();
         Map<String, C> map = new LinkedHashMap<String, C>();
@@ -227,7 +133,7 @@ public class CmsADEConfigData {
         }
         for (C child : Lists.reverse(childConfigs)) {
             String childKey = child.getKey();
-            if (child.isDisabled()) {
+            if (child.isDisabled() && !preserveDisabled) {
                 map.remove(childKey);
             } else {
                 C parent = map.get(childKey);
@@ -302,7 +208,6 @@ public class CmsADEConfigData {
      */
     public List<CmsDetailPageInfo> getAllDetailPages(boolean update) {
 
-        checkInitialized();
         CmsADEConfigData parentData = parent();
         List<CmsDetailPageInfo> parentDetailPages;
         if (parentData != null) {
@@ -310,7 +215,7 @@ public class CmsADEConfigData {
         } else {
             parentDetailPages = Collections.emptyList();
         }
-        List<CmsDetailPageInfo> result = mergeDetailPages(parentDetailPages, m_ownDetailPages);
+        List<CmsDetailPageInfo> result = mergeDetailPages(parentDetailPages, m_data.getOwnDetailPages());
         if (update) {
             result = updateUris(result);
         }
@@ -326,8 +231,7 @@ public class CmsADEConfigData {
      */
     public String getBasePath() {
 
-        checkInitialized();
-        return m_basePath;
+        return m_data.getBasePath();
     }
 
     /**
@@ -338,7 +242,7 @@ public class CmsADEConfigData {
     public CmsFormatterConfigurationCacheState getCachedFormatters() {
 
         return OpenCms.getADEManager().getCachedFormatters(
-            m_cms.getRequestContext().getCurrentProject().isOnlineProject());
+            getCms().getRequestContext().getCurrentProject().isOnlineProject());
     }
 
     /**
@@ -350,7 +254,7 @@ public class CmsADEConfigData {
      */
     public String getContentFolderPath() {
 
-        return CmsStringUtil.joinPaths(m_basePath, CmsADEManager.CONTENT_FOLDER_NAME);
+        return CmsStringUtil.joinPaths(m_data.getBasePath(), CmsADEManager.CONTENT_FOLDER_NAME);
 
     }
 
@@ -364,7 +268,6 @@ public class CmsADEConfigData {
      */
     public List<CmsResourceTypeConfig> getCreatableTypes(CmsObject cms) throws CmsException {
 
-        checkInitialized();
         List<CmsResourceTypeConfig> result = new ArrayList<CmsResourceTypeConfig>();
         for (CmsResourceTypeConfig typeConfig : getResourceTypes()) {
             if (typeConfig.checkCreatable(cms)) {
@@ -381,7 +284,6 @@ public class CmsADEConfigData {
      */
     public CmsModelPageConfig getDefaultModelPage() {
 
-        checkInitialized();
         List<CmsModelPageConfig> modelPages = getModelPages();
         for (CmsModelPageConfig modelPageConfig : getModelPages()) {
             if (modelPageConfig.isDefault()) {
@@ -423,7 +325,9 @@ public class CmsADEConfigData {
         List<CmsFormatterChangeSet> result = Lists.newArrayList();
         while (currentConfig != null) {
             CmsFormatterChangeSet changes = currentConfig.getOwnFormatterChangeSet();
-            result.add(changes);
+            if (changes != null) {
+                result.add(changes);
+            }
             currentConfig = currentConfig.parent();
         }
         Collections.reverse(result);
@@ -440,34 +344,12 @@ public class CmsADEConfigData {
      */
     public CmsFormatterConfiguration getFormatters(CmsObject cms, CmsResource res) {
 
-        int resTypeId = res.getTypeId();
         try {
-            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resTypeId);
-            String typeName = resType.getTypeName();
-            CmsFormatterConfigurationCacheState formatterCacheState = getCachedFormatters();
-            CmsFormatterConfiguration schemaFormatters = getFormattersFromSchema(cms, res);
-            List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
-            Set<String> types = new HashSet<String>();
-            types.add(typeName);
-            for (CmsFormatterChangeSet changeSet : getFormatterChangeSets()) {
-                changeSet.applyToTypes(types);
-            }
-            if (types.contains(typeName)) {
-                for (I_CmsFormatterBean formatter : schemaFormatters.getAllFormatters()) {
-                    formatters.add(formatter);
-                }
-            }
-            Map<CmsUUID, I_CmsFormatterBean> externalFormattersById = Maps.newHashMap();
-            for (I_CmsFormatterBean formatter : formatterCacheState.getFormattersForType(typeName, true)) {
-                externalFormattersById.put(new CmsUUID(formatter.getId()), formatter);
-            }
-            applyAllFormatterChanges(externalFormattersById, formatterCacheState);
-            for (I_CmsFormatterBean formatter : externalFormattersById.values()) {
-                if (typeName.equals(formatter.getResourceTypeName())) {
-                    formatters.add(formatter);
-                }
-            }
-            return CmsFormatterConfiguration.create(cms, formatters);
+            int resTypeId = res.getTypeId();
+            return getFormatters(
+                cms,
+                OpenCms.getResourceManager().getResourceType(resTypeId),
+                getFormattersFromSchema(cms, res));
         } catch (CmsLoaderException e) {
             LOG.warn(e.getLocalizedMessage(), e);
             return null;
@@ -540,13 +422,16 @@ public class CmsADEConfigData {
 
         CmsADEConfigData parentData = parent();
         List<CmsModelPageConfig> parentModelPages;
-        if ((parentData != null) && !m_discardInheritedModelPages) {
+        if ((parentData != null) && !m_data.isDiscardInheritedModelPages()) {
             parentModelPages = parentData.getModelPages();
         } else {
             parentModelPages = Collections.emptyList();
         }
 
-        List<CmsModelPageConfig> result = combineConfigurationElements(parentModelPages, m_ownModelPageConfig);
+        List<CmsModelPageConfig> result = combineConfigurationElements(
+            parentModelPages,
+            m_data.getOwnModelPageConfig(),
+            false);
         return result;
     }
 
@@ -557,7 +442,7 @@ public class CmsADEConfigData {
      */
     public CmsFormatterChangeSet getOwnFormatterChangeSet() {
 
-        return m_formatterChangeSet;
+        return m_data.getFormatterChangeSet();
     }
 
     /**
@@ -569,12 +454,15 @@ public class CmsADEConfigData {
 
         CmsADEConfigData parentData = parent();
         List<CmsPropertyConfig> parentProperties;
-        if ((parentData != null) && !m_discardInheritedProperties) {
+        if ((parentData != null) && !m_data.isDiscardInheritedProperties()) {
             parentProperties = parentData.getPropertyConfiguration();
         } else {
             parentProperties = Collections.emptyList();
         }
-        List<CmsPropertyConfig> result = combineConfigurationElements(parentProperties, m_ownPropertyConfigurations);
+        List<CmsPropertyConfig> result = combineConfigurationElements(
+            parentProperties,
+            m_data.getOwnPropertyConfigurations(),
+            false);
         return result;
     }
 
@@ -599,7 +487,7 @@ public class CmsADEConfigData {
      */
     public CmsResource getResource() {
 
-        return m_resource;
+        return m_data.getResource();
     }
 
     /** 
@@ -611,7 +499,6 @@ public class CmsADEConfigData {
      */
     public CmsResourceTypeConfig getResourceType(String typeName) {
 
-        checkInitialized();
         for (CmsResourceTypeConfig type : getResourceTypes()) {
             if (typeName.equals(type.getTypeName())) {
                 return type;
@@ -627,9 +514,9 @@ public class CmsADEConfigData {
      */
     public List<CmsResourceTypeConfig> getResourceTypes() {
 
-        List<CmsResourceTypeConfig> result = internalGetResourceTypes();
+        List<CmsResourceTypeConfig> result = internalGetResourceTypes(true);
         for (CmsResourceTypeConfig config : result) {
-            config.initialize(m_cms);
+            config.initialize(getCms());
         }
         return result;
     }
@@ -671,7 +558,7 @@ public class CmsADEConfigData {
             if (type instanceof CmsResourceTypeXmlContent) {
                 CmsXmlContentDefinition contentDef = null;
                 try {
-                    contentDef = CmsXmlContentDefinition.getContentDefinitionForType(m_cms, type.getTypeName());
+                    contentDef = CmsXmlContentDefinition.getContentDefinitionForType(getCms(), type.getTypeName());
                     if ((contentDef != null) && contentDef.getContentHandler().hasModifiableFormatters()) {
                         result.add(type.getTypeName());
                     }
@@ -685,14 +572,37 @@ public class CmsADEConfigData {
     }
 
     /**
-     * Initializes the configuration object.<p>
+     * Checks if there are any matching formatters for the given set of containers.<p>
+     *
+     * @param cms the current CMS context 
+     * @param resType the resource type for which the formatter configuration should be retrieved  
+     * @param containers the page containers
      * 
-     * @param cms the CMS context to be used for VFS operations  
+     * @return if there are any matching formatters
      */
-    public void initialize(CmsObject cms) {
+    public boolean hasFormatters(CmsObject cms, I_CmsResourceType resType, Collection<CmsContainer> containers) {
 
-        m_cms = cms;
-        m_initialized = true;
+        try {
+            if (CmsXmlDynamicFunctionHandler.TYPE_FUNCTION.equals(resType.getTypeName())) {
+                // dynamic function may match any container
+                return true;
+            }
+            CmsXmlContentDefinition def = CmsXmlContentDefinition.getContentDefinitionForType(
+                cms,
+                resType.getTypeName());
+            CmsFormatterConfiguration schemaFormatters = def.getContentHandler().getFormatterConfiguration(cms, null);
+            CmsFormatterConfiguration formatters = getFormatters(cms, resType, schemaFormatters);
+            for (CmsContainer cont : containers) {
+                if (cont.isEditable()
+                    && (formatters.getAllMatchingFormatters(cont.getType(), cont.getWidth(), true).size() > 0)) {
+                    return true;
+                }
+            }
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+
+        }
+        return false;
     }
 
     /**
@@ -705,7 +615,7 @@ public class CmsADEConfigData {
      */
     public boolean isCreateContentsLocally() {
 
-        return m_createContentsLocally;
+        return m_data.isCreateContentsLocally();
     }
 
     /**
@@ -717,7 +627,7 @@ public class CmsADEConfigData {
      */
     public boolean isDiscardInheritedModelPages() {
 
-        return m_discardInheritedModelPages;
+        return m_data.isDiscardInheritedModelPages();
     }
 
     /**
@@ -729,7 +639,7 @@ public class CmsADEConfigData {
      */
     public boolean isDiscardInheritedProperties() {
 
-        return m_discardInheritedProperties;
+        return m_data.isDiscardInheritedProperties();
     }
 
     /**
@@ -741,7 +651,7 @@ public class CmsADEConfigData {
      */
     public boolean isDiscardInheritedTypes() {
 
-        return m_discardInheritedTypes;
+        return m_data.isDiscardInheritedTypes();
     }
 
     /**
@@ -751,7 +661,17 @@ public class CmsADEConfigData {
      */
     public boolean isModuleConfiguration() {
 
-        return m_isModuleConfig;
+        return m_data.isModuleConfig();
+    }
+
+    /**
+     * Returns true if detail pages from this sitemap should be preferred for links to contents in this sitemap.<p>
+     * 
+     * @return true if detail pages from this sitemap should be preferred for links to contents in this sitemap
+     */
+    public boolean isPreferDetailPagesForLocalContents() {
+
+        return m_data.isPreferDetailPagesForLocalContents();
     }
 
     /**
@@ -765,57 +685,11 @@ public class CmsADEConfigData {
      */
     public CmsADEConfigData parent() {
 
-        if (m_basePath == null) {
+        if (m_data.getBasePath() == null) {
             return null;
         }
-        String parentPath = CmsResource.getParentFolder(m_basePath);
-        if (OpenCms.getADEManager() == null) {
-            return null;
-        }
-        CmsADEConfigData result = OpenCms.getADEManager().internalLookupConfiguration(m_cms, parentPath);
-        return result;
-    }
-
-    /**
-     * Sets the "module configuration" flag.<p>
-     * 
-     * @param isModuleConfig true if this configuration should be marked as a module configuration 
-     */
-    public void setIsModuleConfig(boolean isModuleConfig) {
-
-        checkNotInitialized();
-        m_isModuleConfig = isModuleConfig;
-    }
-
-    /**
-     * Sets the configuration file resource.<p>
-     * 
-     * @param resource the configuration file resource 
-     */
-    public void setResource(CmsResource resource) {
-
-        checkNotInitialized();
-        m_resource = resource;
-    }
-
-    /**
-     * Checks whether the configuration is initialized and throws an error otherwise.<p>
-     */
-    protected void checkInitialized() {
-
-        if (!m_initialized) {
-            throw new IllegalStateException();
-        }
-    }
-
-    /**
-     * Checks whether the configuration is *NOT* initialized and throws an error otherwise.<p>
-     */
-    protected void checkNotInitialized() {
-
-        if (m_initialized) {
-            throw new IllegalStateException();
-        }
+        String parentPath = CmsResource.getParentFolder(m_data.getBasePath());
+        return m_cache.lookupConfiguration(parentPath);
     }
 
     /**
@@ -827,12 +701,22 @@ public class CmsADEConfigData {
 
         if (!isModuleConfiguration()) {
             String contentFolder = getContentFolderPath();
-            if (!m_cms.existsResource(contentFolder)) {
-                m_cms.createResource(
+            if (!getCms().existsResource(contentFolder)) {
+                getCms().createResource(
                     contentFolder,
                     OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId());
             }
         }
+    }
+
+    /** 
+     * Gets the CMS object used for VFS operations.<p>
+     * 
+     * @return the CMS object used for VFS operations 
+     */
+    protected CmsObject getCms() {
+
+        return m_cache.getCms();
     }
 
     /**
@@ -842,7 +726,7 @@ public class CmsADEConfigData {
      */
     protected CmsObject getCmsObject() {
 
-        return m_cms;
+        return getCms();
     }
 
     /**
@@ -875,8 +759,8 @@ public class CmsADEConfigData {
     protected Map<String, String> getFolderTypes() throws CmsException {
 
         Map<String, String> result = new HashMap<String, String>();
-        CmsObject cms = OpenCms.initCmsObject(m_cms);
-        if (m_isModuleConfig) {
+        CmsObject cms = OpenCms.initCmsObject(getCms());
+        if (m_data.isModuleConfig()) {
             Set<String> siteRoots = OpenCms.getSiteManager().getSiteRoots();
             for (String siteRoot : siteRoots) {
                 cms.getRequestContext().setSiteRoot(siteRoot);
@@ -889,11 +773,53 @@ public class CmsADEConfigData {
         } else {
             for (CmsResourceTypeConfig config : getResourceTypes()) {
                 String typeName = config.getTypeName();
-                String folderPath = config.getFolderPath(m_cms);
+                String folderPath = config.getFolderPath(getCms());
                 result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
             }
         }
         return result;
+    }
+
+    /**
+     * Gets the formatter configuration for a resource type.<p>
+     *
+     * @param cms the current CMS context 
+     * @param resType the resource type
+     * @param schemaFormatters the resource schema formatters
+     * 
+     * @return the configuration of formatters for the resource type
+     */
+    protected CmsFormatterConfiguration getFormatters(
+        CmsObject cms,
+        I_CmsResourceType resType,
+        CmsFormatterConfiguration schemaFormatters) {
+
+        String typeName = resType.getTypeName();
+        CmsFormatterConfigurationCacheState formatterCacheState = getCachedFormatters();
+        List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
+        Set<String> types = new HashSet<String>();
+        types.add(typeName);
+        for (CmsFormatterChangeSet changeSet : getFormatterChangeSets()) {
+            if (changeSet != null) {
+                changeSet.applyToTypes(types);
+            }
+        }
+        if (types.contains(typeName)) {
+            for (I_CmsFormatterBean formatter : schemaFormatters.getAllFormatters()) {
+                formatters.add(formatter);
+            }
+        }
+        Map<CmsUUID, I_CmsFormatterBean> externalFormattersById = Maps.newHashMap();
+        for (I_CmsFormatterBean formatter : formatterCacheState.getFormattersForType(typeName, true)) {
+            externalFormattersById.put(new CmsUUID(formatter.getId()), formatter);
+        }
+        applyAllFormatterChanges(externalFormattersById, formatterCacheState);
+        for (I_CmsFormatterBean formatter : externalFormattersById.values()) {
+            if (typeName.equals(formatter.getResourceTypeName())) {
+                formatters.add(formatter);
+            }
+        }
+        return CmsFormatterConfiguration.create(cms, formatters);
     }
 
     /**
@@ -921,11 +847,10 @@ public class CmsADEConfigData {
      */
     protected List<CmsFunctionReference> internalGetFunctionReferences() {
 
-        checkInitialized();
         CmsADEConfigData parentData = parent();
         if ((parentData == null)) {
-            if (m_isModuleConfig) {
-                return Collections.unmodifiableList(m_functionReferences);
+            if (m_data.isModuleConfig()) {
+                return Collections.unmodifiableList(m_data.getFunctionReferences());
             } else {
                 return Lists.newArrayList();
             }
@@ -938,25 +863,41 @@ public class CmsADEConfigData {
     /**
      * Helper method for getting the list of resource types.<p>
      * 
+     * @param filterDisabled true if disabled types should be filtered from the result
+     * 
      * @return the list of resource types 
      */
-    protected List<CmsResourceTypeConfig> internalGetResourceTypes() {
+    protected List<CmsResourceTypeConfig> internalGetResourceTypes(boolean filterDisabled) {
 
-        checkInitialized();
         CmsADEConfigData parentData = parent();
         List<CmsResourceTypeConfig> parentResourceTypes = null;
-        if ((parentData == null) || m_discardInheritedTypes) {
+        if (parentData == null) {
             parentResourceTypes = Lists.newArrayList();
         } else {
             parentResourceTypes = Lists.newArrayList();
-            for (CmsResourceTypeConfig typeConfig : parentData.internalGetResourceTypes()) {
-                parentResourceTypes.add(typeConfig.copy());
+            for (CmsResourceTypeConfig typeConfig : parentData.internalGetResourceTypes(false)) {
+                CmsResourceTypeConfig copiedType = typeConfig.copy(m_data.isDiscardInheritedTypes());
+                parentResourceTypes.add(copiedType);
             }
         }
-        List<CmsResourceTypeConfig> result = combineConfigurationElements(parentResourceTypes, m_ownResourceTypes);
-        if (m_createContentsLocally) {
+        List<CmsResourceTypeConfig> result = combineConfigurationElements(
+            parentResourceTypes,
+            m_data.getOwnResourceTypes(),
+            true);
+        if (m_data.isCreateContentsLocally()) {
             for (CmsResourceTypeConfig typeConfig : result) {
-                typeConfig.updateBasePath(CmsStringUtil.joinPaths(m_basePath, CmsADEManager.CONTENT_FOLDER_NAME));
+                typeConfig.updateBasePath(CmsStringUtil.joinPaths(
+                    m_data.getBasePath(),
+                    CmsADEManager.CONTENT_FOLDER_NAME));
+            }
+        }
+        if (filterDisabled) {
+            Iterator<CmsResourceTypeConfig> iter = result.iterator();
+            while (iter.hasNext()) {
+                CmsResourceTypeConfig typeConfig = iter.next();
+                if (typeConfig.isDisabled()) {
+                    iter.remove();
+                }
             }
         }
         return result;
@@ -985,79 +926,6 @@ public class CmsADEConfigData {
         return result;
     }
 
-    /** 
-     * Merges the parent's data into this object.<p>
-     * 
-     * @param parent the parent configuration data 
-     */
-    protected void mergeParent(CmsADEConfigData parent) {
-
-        List<CmsResourceTypeConfig> parentTypes = null;
-        if (parent != null) {
-            parentTypes = parent.m_ownResourceTypes;
-        } else {
-            parentTypes = Collections.emptyList();
-        }
-
-        List<CmsPropertyConfig> parentProperties = null;
-        if (parent != null) {
-            parentProperties = parent.m_ownPropertyConfigurations;
-        } else {
-            parentProperties = Collections.emptyList();
-        }
-
-        List<CmsModelPageConfig> parentModelPages = null;
-        if (parent != null) {
-            parentModelPages = parent.m_ownModelPageConfig;
-        } else {
-            parentModelPages = Collections.emptyList();
-        }
-
-        List<CmsFunctionReference> parentFunctionRefs = null;
-        if (parent != null) {
-            parentFunctionRefs = parent.m_functionReferences;
-        } else {
-            parentFunctionRefs = Collections.emptyList();
-        }
-
-        m_ownResourceTypes = combineConfigurationElements(parentTypes, m_ownResourceTypes);
-        m_ownPropertyConfigurations = combineConfigurationElements(parentProperties, m_ownPropertyConfigurations);
-        m_ownModelPageConfig = combineConfigurationElements(parentModelPages, m_ownModelPageConfig);
-        m_functionReferences = combineConfigurationElements(parentFunctionRefs, m_functionReferences);
-    }
-
-    /**
-     * Handle the ordering from the module configurations.<p>
-     */
-    protected void processModuleOrdering() {
-
-        Collections.sort(m_ownResourceTypes, new Comparator<CmsResourceTypeConfig>() {
-
-            public int compare(CmsResourceTypeConfig a, CmsResourceTypeConfig b) {
-
-                return ComparisonChain.start().compare(a.getOrder(), b.getOrder()).compare(
-                    a.getTypeName(),
-                    b.getTypeName()).result();
-            }
-        });
-
-        Collections.sort(m_ownPropertyConfigurations, new Comparator<CmsPropertyConfig>() {
-
-            public int compare(CmsPropertyConfig a, CmsPropertyConfig b) {
-
-                return ComparisonChain.start().compare(a.getOrder(), b.getOrder()).compare(a.getName(), b.getName()).result();
-            }
-        });
-
-        Collections.sort(m_functionReferences, new Comparator<CmsFunctionReference>() {
-
-            public int compare(CmsFunctionReference a, CmsFunctionReference b) {
-
-                return ComparisonChain.start().compare(a.getOrder(), b.getOrder()).compare(a.getName(), b.getName()).result();
-            }
-        });
-    }
-
     /**
      * Helper method to correct paths in detail page beans if the corresponding resources have been moved.<p>
      * 
@@ -1073,7 +941,7 @@ public class CmsADEConfigData {
             try {
                 String rootPath = OpenCms.getADEManager().getRootPath(
                     structureId,
-                    m_cms.getRequestContext().getCurrentProject().isOnlineProject());
+                    getCms().getRequestContext().getCurrentProject().isOnlineProject());
                 CmsDetailPageInfo correctedPage = new CmsDetailPageInfo(structureId, rootPath, page.getType());
                 result.add(correctedPage);
             } catch (CmsException e) {

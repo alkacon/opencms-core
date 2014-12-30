@@ -60,7 +60,8 @@ public class CmsCopyLocaleDialog extends CmsPopup {
 
         /**
          * The copy locale checkbox change handler.<p>
-         * @param locale
+         * 
+         * @param locale the locale to copy
          */
         CopyLocaleChangeHandler(String locale) {
 
@@ -84,11 +85,14 @@ public class CmsCopyLocaleDialog extends CmsPopup {
         }
     }
 
-    /** The locales to copy the current locale values to. */
-    Set<String> m_targetLocales;
-
     /** The ok button. */
     CmsPushButton m_okButton;
+
+    /** The synchronize locale independent fields button. */
+    CmsPushButton m_synchronizeLocaleButton;
+
+    /** The locales to copy the current locale values to. */
+    Set<String> m_targetLocales;
 
     /**
      * Constructor.<p>
@@ -96,12 +100,14 @@ public class CmsCopyLocaleDialog extends CmsPopup {
      * @param availableLocales the available locales
      * @param contentLocales the present content locales
      * @param currentLocale the current content locale
+     * @param hasSync indicates the dialog requires the synchronize locale independent fields button
      * @param editor the editor instance
      */
     public CmsCopyLocaleDialog(
         Map<String, String> availableLocales,
         Set<String> contentLocales,
         String currentLocale,
+        boolean hasSync,
         final CmsContentEditor editor) {
 
         super(Messages.get().key(Messages.GUI_LOCALE_DIALOG_TITLE_0), CmsAlertDialog.DEFAULT_DIALOG_WIDTH);
@@ -151,6 +157,22 @@ public class CmsCopyLocaleDialog extends CmsPopup {
         setMainContent(main);
         addButton(cancelButton);
         addButton(m_okButton);
+        if (hasSync) {
+            m_synchronizeLocaleButton = new CmsPushButton();
+            m_synchronizeLocaleButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.GREEN);
+            m_synchronizeLocaleButton.setUseMinWidth(true);
+            m_synchronizeLocaleButton.setText(Messages.get().key(Messages.GUI_LOCALE_DIALOG_SYNCHRONIZE_0));
+            m_synchronizeLocaleButton.setTitle(Messages.get().key(Messages.GUI_LOCALE_DIALOG_SYNCHRONIZE_TITLE_0));
+            m_synchronizeLocaleButton.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    hide();
+                    editor.synchronizeCurrentLocale();
+                }
+            });
+            addButton(m_synchronizeLocaleButton);
+        }
         setGlassEnabled(true);
     }
 }

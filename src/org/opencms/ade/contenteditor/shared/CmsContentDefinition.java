@@ -27,14 +27,11 @@
 
 package org.opencms.ade.contenteditor.shared;
 
-import com.alkacon.acacia.shared.AttributeConfiguration;
-import com.alkacon.acacia.shared.ContentDefinition;
-import com.alkacon.acacia.shared.Entity;
-import com.alkacon.acacia.shared.TabInfo;
-import com.alkacon.vie.shared.I_Entity;
-import com.alkacon.vie.shared.I_EntityAttribute;
-import com.alkacon.vie.shared.I_Type;
-
+import org.opencms.acacia.shared.CmsAttributeConfiguration;
+import org.opencms.acacia.shared.CmsEntity;
+import org.opencms.acacia.shared.CmsEntityAttribute;
+import org.opencms.acacia.shared.CmsTabInfo;
+import org.opencms.acacia.shared.CmsType;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.util.CmsUUID;
 
@@ -42,11 +39,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Contains all information needed for editing an XMLContent.<p>
  */
-public class CmsContentDefinition extends ContentDefinition {
+public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDefinition {
 
     /** The entity id prefix. */
     private static final String ENTITY_ID_PREFIX = "http://opencms.org/resources/";
@@ -90,54 +88,20 @@ public class CmsContentDefinition extends ContentDefinition {
     /** The site path. */
     private String m_sitePath;
 
+    /** The paths to skip during locale synchronization. */
+    private Collection<String> m_skipPaths;
+
+    /** The elements that require a synchronization across all locales. */
+    private List<String> m_synchronizations;
+
+    /** The locale synchronization values. */
+    private Map<String, String> m_syncValues;
+
     /** The content title. */
     private String m_title;
 
-    /**
-     * Constructor.<p>
-     * 
-     * @param entity the entity
-     * @param configurations the attribute configurations
-     * @param externalWidgetConfigurations the external widget configurations
-     * @param complexWidgetData the complex widget configurations 
-     * @param types the types
-     * @param tabInfos the tab information
-     * @param locale the content locale
-     * @param contentLocales the content locales
-     * @param availableLocales the available locales
-     * @param title the content title
-     * @param sitePath the site path
-     * @param resourceType the resource type name
-     * @param performedAutocorrection flag indicating the current content has an invalid XML structure and was auto corrected
-     * @param autoUnlock false if the editor should not unlock resources automatically in standalone mode 
-     */
-    public CmsContentDefinition(
-        Entity entity,
-        Map<String, AttributeConfiguration> configurations,
-        Collection<CmsExternalWidgetConfiguration> externalWidgetConfigurations,
-        Map<String, CmsComplexWidgetData> complexWidgetData,
-        Map<String, I_Type> types,
-        List<TabInfo> tabInfos,
-        String locale,
-        List<String> contentLocales,
-        Map<String, String> availableLocales,
-        String title,
-        String sitePath,
-        String resourceType,
-        boolean performedAutocorrection,
-        boolean autoUnlock) {
-
-        super(entity, configurations, types, tabInfos, true, locale);
-        m_contentLocales = contentLocales;
-        m_availableLocales = availableLocales;
-        m_complexWidgetData = complexWidgetData;
-        m_title = title;
-        m_sitePath = sitePath;
-        m_resourceType = resourceType;
-        m_externalWidgetConfigurations = new ArrayList<CmsExternalWidgetConfiguration>(externalWidgetConfigurations);
-        m_performedAutocorrection = performedAutocorrection;
-        m_autoUnlock = autoUnlock;
-    }
+    /** Indicates that editor change handlers are configured. */
+    private Set<String> m_editorChangeScopes;
 
     /**
      * Constructor for model file informations object.<p>
@@ -153,10 +117,70 @@ public class CmsContentDefinition extends ContentDefinition {
         CmsUUID referenceId,
         String locale) {
 
-        super(null, null, null, null, true, locale);
+        super(null, null, null, null, null, true, locale);
         m_modelInfos = modelInfos;
         m_newLink = newLink;
         m_referenceResourceId = referenceId;
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param entityId the entity id
+     * @param entities the locale specific entities of the content
+     * @param configurations the attribute configurations
+     * @param externalWidgetConfigurations the external widget configurations
+     * @param complexWidgetData the complex widget configurations 
+     * @param types the types
+     * @param tabInfos the tab information
+     * @param locale the content locale
+     * @param contentLocales the content locales
+     * @param availableLocales the available locales
+     * @param synchronizations the elements that require a synchronization across all locales
+     * @param syncValues the locale synchronization values
+     * @param skipPaths the paths to skip during locale synchronization
+     * @param title the content title
+     * @param sitePath the site path
+     * @param resourceType the resource type name
+     * @param performedAutocorrection flag indicating the current content has an invalid XML structure and was auto corrected
+     * @param autoUnlock false if the editor should not unlock resources automatically in standalone mode 
+     * @param editorChangeScopes the editor change handler scopes
+     */
+    public CmsContentDefinition(
+        String entityId,
+        Map<String, CmsEntity> entities,
+        Map<String, CmsAttributeConfiguration> configurations,
+        Collection<CmsExternalWidgetConfiguration> externalWidgetConfigurations,
+        Map<String, CmsComplexWidgetData> complexWidgetData,
+        Map<String, CmsType> types,
+        List<CmsTabInfo> tabInfos,
+        String locale,
+        List<String> contentLocales,
+        Map<String, String> availableLocales,
+        List<String> synchronizations,
+        Map<String, String> syncValues,
+        Collection<String> skipPaths,
+        String title,
+        String sitePath,
+        String resourceType,
+        boolean performedAutocorrection,
+        boolean autoUnlock,
+        Set<String> editorChangeScopes) {
+
+        super(entityId, entities, configurations, types, tabInfos, true, locale);
+        m_contentLocales = contentLocales;
+        m_availableLocales = availableLocales;
+        m_synchronizations = synchronizations;
+        m_syncValues = syncValues;
+        m_skipPaths = skipPaths;
+        m_complexWidgetData = complexWidgetData;
+        m_title = title;
+        m_sitePath = sitePath;
+        m_resourceType = resourceType;
+        m_externalWidgetConfigurations = new ArrayList<CmsExternalWidgetConfiguration>(externalWidgetConfigurations);
+        m_performedAutocorrection = performedAutocorrection;
+        m_autoUnlock = autoUnlock;
+        m_editorChangeScopes = editorChangeScopes;
     }
 
     /**
@@ -205,7 +229,7 @@ public class CmsContentDefinition extends ContentDefinition {
      * 
      * @return the value
      */
-    public static String getValueForPath(I_Entity entity, String path) {
+    public static String getValueForPath(CmsEntity entity, String path) {
 
         String result = null;
         if (path.startsWith("/")) {
@@ -219,12 +243,14 @@ public class CmsContentDefinition extends ContentDefinition {
             attributeName = path;
             path = null;
         }
-        int index = ContentDefinition.extractIndex(attributeName);
+        int index = org.opencms.acacia.shared.CmsContentDefinition.extractIndex(attributeName);
         if (index > 0) {
             index--;
         }
-        attributeName = entity.getTypeName() + "/" + ContentDefinition.removeIndex(attributeName);
-        I_EntityAttribute attribute = entity.getAttribute(attributeName);
+        attributeName = entity.getTypeName()
+            + "/"
+            + org.opencms.acacia.shared.CmsContentDefinition.removeIndex(attributeName);
+        CmsEntityAttribute attribute = entity.getAttribute(attributeName);
         if (!((attribute == null) || (attribute.isComplexValue() && (path == null)))) {
             if (attribute.isSimpleValue()) {
                 if ((path == null) && (attribute.getValueCount() > 0)) {
@@ -232,11 +258,100 @@ public class CmsContentDefinition extends ContentDefinition {
                     result = values.get(index);
                 }
             } else if (attribute.getValueCount() > (index)) {
-                List<I_Entity> values = attribute.getComplexValues();
+                List<CmsEntity> values = attribute.getComplexValues();
                 result = getValueForPath(values.get(index), path);
             }
         }
         return result;
+    }
+
+    /**
+     * Transfers values from the original entity to the given target entity.<p>
+     * 
+     * @param original the original entity
+     * @param target the target entity
+     * @param transferAttributes the attributes to consider for the value transfer
+     * @param entityTypes the entity types
+     * @param attributeConfigurations the attribute configurations
+     * @param considerDefaults if default values should be added according to minimum occurrence settings
+     */
+    public static void transferValues(
+        CmsEntity original,
+        CmsEntity target,
+        List<String> transferAttributes,
+        Map<String, CmsType> entityTypes,
+        Map<String, CmsAttributeConfiguration> attributeConfigurations,
+        boolean considerDefaults) {
+
+        CmsType entityType = entityTypes.get(target.getTypeName());
+        for (String attributeName : entityType.getAttributeNames()) {
+            CmsType attributeType = entityTypes.get(entityType.getAttributeTypeName(attributeName));
+            if (transferAttributes.contains(attributeName)) {
+
+                target.removeAttribute(attributeName);
+                CmsEntityAttribute attribute = original != null ? original.getAttribute(attributeName) : null;
+                if (attribute != null) {
+                    if (attributeType.isSimpleType()) {
+                        for (String value : attribute.getSimpleValues()) {
+                            target.addAttributeValue(attributeName, value);
+                        }
+                        if (considerDefaults) {
+                            for (int i = attribute.getValueCount(); i < entityType.getAttributeMinOccurrence(attributeName); i++) {
+                                target.addAttributeValue(
+                                    attributeName,
+                                    attributeConfigurations.get(attributeName).getDefaultValue());
+                            }
+                        }
+                    } else {
+                        for (CmsEntity value : attribute.getComplexValues()) {
+                            target.addAttributeValue(attributeName, value);
+                        }
+                        if (considerDefaults) {
+                            for (int i = attribute.getValueCount(); i < entityType.getAttributeMinOccurrence(attributeName); i++) {
+                                target.addAttributeValue(
+                                    attributeName,
+                                    createDefaultValueEntity(attributeType, entityTypes, attributeConfigurations));
+                            }
+                        }
+                    }
+                } else if (considerDefaults) {
+                    for (int i = 0; i < entityType.getAttributeMinOccurrence(attributeName); i++) {
+                        if (attributeType.isSimpleType()) {
+                            target.addAttributeValue(
+                                attributeName,
+                                attributeConfigurations.get(attributeName).getDefaultValue());
+                        } else {
+                            target.addAttributeValue(
+                                attributeName,
+                                createDefaultValueEntity(attributeType, entityTypes, attributeConfigurations));
+                        }
+                    }
+                }
+            } else {
+                if (!attributeType.isSimpleType()) {
+                    CmsEntityAttribute targetAttribute = target.getAttribute(attributeName);
+                    CmsEntityAttribute originalAttribute = original != null
+                    ? original.getAttribute(attributeName)
+                    : null;
+                    if (targetAttribute != null) {
+                        for (int i = 0; i < targetAttribute.getComplexValues().size(); i++) {
+                            CmsEntity subTarget = targetAttribute.getComplexValues().get(i);
+                            CmsEntity subOriginal = (originalAttribute != null)
+                                && (originalAttribute.getComplexValues().size() > i)
+                            ? originalAttribute.getComplexValues().get(i)
+                            : null;
+                            transferValues(
+                                subOriginal,
+                                subTarget,
+                                transferAttributes,
+                                entityTypes,
+                                attributeConfigurations,
+                                considerDefaults);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -250,6 +365,38 @@ public class CmsContentDefinition extends ContentDefinition {
     public static String uuidToEntityId(CmsUUID uuid, String locale) {
 
         return ENTITY_ID_PREFIX + locale + "/" + uuid.toString();
+    }
+
+    /**
+     * Creates an entity object containing the default values configured for it's type.<p>
+     * 
+     * @param entityType the entity type
+     * @param entityTypes the entity types
+     * @param attributeConfigurations the attribute configurations
+     * 
+     * @return the created entity
+     */
+    protected static CmsEntity createDefaultValueEntity(
+        CmsType entityType,
+        Map<String, CmsType> entityTypes,
+        Map<String, CmsAttributeConfiguration> attributeConfigurations) {
+
+        CmsEntity result = new CmsEntity(null, entityType.getId());
+        for (String attributeName : entityType.getAttributeNames()) {
+            CmsType attributeType = entityTypes.get(entityType.getAttributeTypeName(attributeName));
+            for (int i = 0; i < entityType.getAttributeMinOccurrence(attributeName); i++) {
+                if (attributeType.isSimpleType()) {
+                    result.addAttributeValue(
+                        attributeName,
+                        attributeConfigurations.get(attributeName).getDefaultValue());
+                } else {
+                    result.addAttributeValue(
+                        attributeName,
+                        createDefaultValueEntity(attributeType, entityTypes, attributeConfigurations));
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -280,6 +427,16 @@ public class CmsContentDefinition extends ContentDefinition {
     public List<String> getContentLocales() {
 
         return m_contentLocales;
+    }
+
+    /**
+     * Returns the editor change handler scopes.<p>
+     * 
+     * @return the editor change handler scopes
+     */
+    public Set<String> getEditorChangeScopes() {
+
+        return m_editorChangeScopes;
     }
 
     /**
@@ -343,6 +500,36 @@ public class CmsContentDefinition extends ContentDefinition {
     }
 
     /**
+     * Returns the paths to skip during locale synchronization.<p>
+     * 
+     * @return the paths to skip during locale synchronization
+     */
+    public Collection<String> getSkipPaths() {
+
+        return m_skipPaths;
+    }
+
+    /**
+     * Returns the elements that require a synchronization across all locales.<p>
+     * 
+     * @return the element paths
+     */
+    public List<String> getSynchronizations() {
+
+        return m_synchronizations;
+    }
+
+    /**
+     * Returns the locale synchronization values.<p>
+     * 
+     * @return the locale synchronization values
+     */
+    public Map<String, String> getSyncValues() {
+
+        return m_syncValues;
+    }
+
+    /**
      * Returns the title.<p>
      *
      * @return the title
@@ -350,6 +537,26 @@ public class CmsContentDefinition extends ContentDefinition {
     public String getTitle() {
 
         return m_title;
+    }
+
+    /**
+     * Returns <code>true</code> if any editor change handlers have been configured for this content type.<p>
+     * 
+     * @return <code>true</code> if any editor change handlers have been configured for this content type.<p>
+     */
+    public boolean hasEditorChangeHandlers() {
+
+        return (m_editorChangeScopes != null) && !m_editorChangeScopes.isEmpty();
+    }
+
+    /**
+     * Returns if there are locale synchronized elements configured.<p>
+     * 
+     * @return <code>true</code> if there are locale synchronized elements configured
+     */
+    public boolean hasSynchronizedElements() {
+
+        return !m_synchronizations.isEmpty();
     }
 
     /**

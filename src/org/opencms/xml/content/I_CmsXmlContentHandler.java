@@ -77,6 +77,17 @@ public interface I_CmsXmlContentHandler {
         wide
     }
 
+    /**
+     * The available mapping types. Currently only available for searchsettings (using the "addto" attribute in the node &lt;solrfield&gt;).
+     */
+    public static enum MappingType {
+        /** map for the content's resource */
+        ELEMENT,
+
+        /** map for all container pages the content is placed on */
+        PAGE
+    }
+    
     /** Mapping name for the 'date expired' mapping. */
     String ATTRIBUTE_DATEEXPIRED = "dateexpired";
 
@@ -224,6 +235,13 @@ public interface I_CmsXmlContentHandler {
     DisplayType getDisplayType(I_CmsXmlSchemaType type);
 
     /**
+     * Returns the editor change handlers.<p>
+     * 
+     * @return the editor change handlers
+     */
+    List<I_CmsXmlContentEditorChangeHandler> getEditorChangeHandlers();
+
+    /**
      * Returns the container page element formatter configuration for a given resource.<p>
      * 
      * @param cms the current users OpenCms context, used for selecting the right project
@@ -334,6 +352,13 @@ public interface I_CmsXmlContentHandler {
     Set<CmsSearchField> getSearchFields();
 
     /**
+     * Returns all configured Search fields for this XML content that should be attached to container pages the content is placed on.<p>
+     *
+     * @return the Search fields for this XMl content
+     */
+    Set<CmsSearchField> getSearchFieldsForPage();
+
+    /**
      * Returns the search content settings defined in the annotation node of this XML content.<p>
      * 
      * A search setting defined within the xsd:annotaion node of an XML schema definition can look like:<p>
@@ -355,6 +380,13 @@ public interface I_CmsXmlContentHandler {
      * @return the element settings defined for the container page formatters
      */
     Map<String, CmsXmlContentProperty> getSettings(CmsObject cms, CmsResource resource);
+
+    /**
+     * Returns the elements that require a synchronization across all locales.<p>
+     * 
+     * @return the element paths
+     */
+    List<String> getSynchronizations();
 
     /**
      * Returns the tabs to be displayed in the editor.<p>
@@ -394,6 +426,20 @@ public interface I_CmsXmlContentHandler {
      * @return true if the contents for this content handler have schema-based formatters which can be disabled or enabled
      */
     boolean hasModifiableFormatters();
+
+    /**
+     * Returns if there are locale synchronized elements configured.<p>
+     * 
+     * @return <code>true</code> if there are locale synchronized elements configured
+     */
+    boolean hasSynchronizedElements();
+
+    /**
+     * Returns if there are visibility handlers configured for this content type.<p>
+     * 
+     * @return <code>true</code> if there are visibility handlers configured for this content type
+     */
+    boolean hasVisibilityHandlers();
 
     /**
      * Initializes this content handler for the given XML content definition by
@@ -453,6 +499,24 @@ public interface I_CmsXmlContentHandler {
      * @return <code>true</code> in case the given value should be searchable
      */
     boolean isSearchable(I_CmsXmlContentValue value);
+
+    /**
+     * Returns if the given content field should be visible to the current user.<p>
+     * 
+     * @param cms the cms context
+     * @param schemaType the content value type
+     * @param valuePath the value path
+     * @param resource the edited resource
+     * @param contentLocale the content locale
+     * 
+     * @return <code>true</code> if the given content field should be visible to the current user
+     */
+    boolean isVisible(
+        CmsObject cms,
+        I_CmsXmlSchemaType schemaType,
+        String valuePath,
+        CmsResource resource,
+        Locale contentLocale);
 
     /**
      * Prepares the given XML content to be used after it was read from the OpenCms VFS.<p>

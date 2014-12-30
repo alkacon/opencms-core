@@ -28,10 +28,12 @@
 package org.opencms.gwt.client.ui.css;
 
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.CssResource.ImportedWithPrefix;
 
 /**
  * Property editor CSS.<p>
  */
+@ImportedWithPrefix("properties")
 public interface I_CmsPropertiesCss extends CssResource {
 
     /** Access method.<p>

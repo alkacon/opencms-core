@@ -42,6 +42,7 @@ import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -225,7 +226,20 @@ public class CmsRolesList extends A_CmsRolesList {
     @Override
     protected List<CmsRole> getRoles() throws CmsException {
 
-        return OpenCms.getRoleManager().getRoles(getCms(), getParamOufqn(), false);
+        List<CmsRole> roles = new ArrayList<CmsRole>(
+            OpenCms.getRoleManager().getRoles(getCms(), getParamOufqn(), false));
+        // ensure the role sorting matches the system roles order
+        CmsRole.applySystemRoleOrder(roles);
+        return roles;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#includeOuDetails()
+     */
+    @Override
+    protected boolean includeOuDetails() {
+
+        return false;
     }
 
     /**
@@ -246,15 +260,6 @@ public class CmsRolesList extends A_CmsRolesList {
         metadata.getColumnDefinition(LIST_COLUMN_ICON).getDirectAction(LIST_ACTION_ICON).setEnabled(true);
         metadata.getColumnDefinition(LIST_COLUMN_ICON).setHelpText(
             Messages.get().container(Messages.GUI_ROLEEDIT_LIST_COLS_EDIT_HELP_0));
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#includeOuDetails()
-     */
-    @Override
-    protected boolean includeOuDetails() {
-
-        return false;
     }
 
     /**

@@ -55,14 +55,14 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
     static class CmsXmlContentElementPathExtractor implements I_CmsXmlContentValueVisitor {
 
         /** The paths to the elements in the xml content. */
-        private List m_elementPaths;
+        private List<CmsElementComparison> m_elementPaths;
 
         /**
          * Creates a CmsXmlContentElementPathExtractor.<p>
          */
         CmsXmlContentElementPathExtractor() {
 
-            m_elementPaths = new ArrayList();
+            m_elementPaths = new ArrayList<CmsElementComparison>();
         }
 
         /**
@@ -85,14 +85,14 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
          *
          * @return the elementPaths
          */
-        List getElementPaths() {
+        List<CmsElementComparison> getElementPaths() {
 
             return m_elementPaths;
         }
     }
 
     /** The compared elements.<p> */
-    private List m_elements;
+    private List<CmsElementComparison> m_elements;
 
     /**
      * Creates a new xml document comparison.<p>
@@ -109,8 +109,8 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         I_CmsXmlDocument resource1;
         I_CmsXmlDocument resource2;
 
-        List elements1 = null;
-        List elements2 = null;
+        List<CmsElementComparison> elements1 = null;
+        List<CmsElementComparison> elements2 = null;
 
         if (CmsResourceTypeXmlPage.isXmlPage(res1) && CmsResourceTypeXmlPage.isXmlPage(res2)) {
             resource1 = CmsXmlPageFactory.unmarshal(cms, res1);
@@ -128,34 +128,34 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
             elements2 = visitor.getElementPaths();
         }
 
-        List removed = new ArrayList(elements1);
+        List<CmsElementComparison> removed = new ArrayList<CmsElementComparison>(elements1);
         removed.removeAll(elements2);
-        Iterator i = removed.iterator();
+        Iterator<CmsElementComparison> i = removed.iterator();
         while (i.hasNext()) {
-            CmsElementComparison elem = (CmsElementComparison)i.next();
+            CmsElementComparison elem = i.next();
             elem.setStatus(CmsResourceComparison.TYPE_REMOVED);
             String value = resource1.getValue(elem.getName(), elem.getLocale()).getStringValue(cms);
             elem.setVersion1(value);
             elem.setVersion2("");
         }
-        List added = new ArrayList(elements2);
+        List<CmsElementComparison> added = new ArrayList<CmsElementComparison>(elements2);
         added.removeAll(elements1);
         i = added.iterator();
         while (i.hasNext()) {
-            CmsElementComparison elem = (CmsElementComparison)i.next();
+            CmsElementComparison elem = i.next();
             elem.setStatus(CmsResourceComparison.TYPE_ADDED);
             elem.setVersion1("");
             I_CmsXmlContentValue contentValue = resource2.getValue(elem.getName(), elem.getLocale());
             String value = contentValue.getStringValue(cms);
             elem.setVersion2(value);
         }
-        List union = new ArrayList(elements1);
+        List<CmsElementComparison> union = new ArrayList<CmsElementComparison>(elements1);
         union.retainAll(elements2);
 
         // find out, which elements were changed
-        i = new ArrayList(union).iterator();
+        i = new ArrayList<CmsElementComparison>(union).iterator();
         while (i.hasNext()) {
-            CmsElementComparison elem = (CmsElementComparison)i.next();
+            CmsElementComparison elem = i.next();
             String value1 = resource1.getValue(elem.getName(), elem.getLocale()).getStringValue(cms);
             String value2 = resource2.getValue(elem.getName(), elem.getLocale()).getStringValue(cms);
             if (value1 == null) {
@@ -172,7 +172,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
                 elem.setStatus(CmsResourceComparison.TYPE_UNCHANGED);
             }
         }
-        m_elements = new ArrayList(removed);
+        m_elements = new ArrayList<CmsElementComparison>(removed);
         m_elements.addAll(added);
         m_elements.addAll(union);
         Collections.sort(m_elements);
@@ -183,10 +183,10 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
      *
      * @return the elements
      */
-    public List getElements() {
+    public List<CmsElementComparison> getElements() {
 
         if (m_elements == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return Collections.unmodifiableList(m_elements);
     }
@@ -196,15 +196,15 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
      * @param xmlPage the xml page to read the element names from
      * @return a list of all element names of a xml page
      */
-    private List getElements(I_CmsXmlDocument xmlPage) {
+    private List<CmsElementComparison> getElements(I_CmsXmlDocument xmlPage) {
 
-        List elements = new ArrayList();
-        Iterator locales = xmlPage.getLocales().iterator();
+        List<CmsElementComparison> elements = new ArrayList<CmsElementComparison>();
+        Iterator<Locale> locales = xmlPage.getLocales().iterator();
         while (locales.hasNext()) {
-            Locale locale = (Locale)locales.next();
-            Iterator elementNames = xmlPage.getNames(locale).iterator();
+            Locale locale = locales.next();
+            Iterator<String> elementNames = xmlPage.getNames(locale).iterator();
             while (elementNames.hasNext()) {
-                String elementName = (String)elementNames.next();
+                String elementName = elementNames.next();
                 elements.add(new CmsElementComparison(locale, elementName));
             }
         }

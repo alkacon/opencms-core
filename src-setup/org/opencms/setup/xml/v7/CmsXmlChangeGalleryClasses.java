@@ -58,6 +58,22 @@ public class CmsXmlChangeGalleryClasses extends A_CmsXmlVfs {
     }
 
     /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
+     */
+    @Override
+    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
+
+        Node node = document.selectSingleNode(xpath);
+        String oldClass = node.getText();
+        if ((oldClass != null) && !oldClass.contains(".CmsAjax") && oldClass.contains(".Cms")) {
+            oldClass = oldClass.replace(".Cms", ".CmsAjax");
+            CmsSetupXmlHelper.setValue(document, xpath, oldClass);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
      */
     @Override
@@ -91,26 +107,8 @@ public class CmsXmlChangeGalleryClasses extends A_CmsXmlVfs {
             m_xpaths = new ArrayList<String>();
             m_xpaths.add(xp.toString() + "imagegallery']/param[@name='folder.class']");
             m_xpaths.add(xp.toString() + "downloadgallery']/param[@name='folder.class']");
-            m_xpaths.add(xp.toString() + "htmlgallery']/param[@name='folder.class']");
-            m_xpaths.add(xp.toString() + "tablegallery']/param[@name='folder.class']");
             m_xpaths.add(xp.toString() + "linkgallery']/param[@name='folder.class']");
         }
         return m_xpaths;
-    }
-
-    /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String, boolean)
-     */
-    @Override
-    protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
-
-        Node node = document.selectSingleNode(xpath);
-        String oldClass = node.getText();
-        if ((oldClass != null) && !oldClass.contains(".CmsAjax") && oldClass.contains(".Cms")) {
-            oldClass = oldClass.replace(".Cms", ".CmsAjax");
-            CmsSetupXmlHelper.setValue(document, xpath, oldClass);
-            return true;
-        }
-        return false;
     }
 }

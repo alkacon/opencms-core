@@ -28,6 +28,11 @@
 package org.opencms.ade.sitemap.shared.rpc;
 
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
+import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
+import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
+import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
@@ -40,11 +45,12 @@ import org.opencms.gwt.shared.alias.CmsRewriteAliasValidationRequest;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 
-/**
+/** 
  * Handles all RPC services related to the sitemap.<p>
  * 
  * @since 8.0.0
@@ -54,6 +60,58 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
  * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync
  */
 public interface I_CmsSitemapServiceAsync {
+
+    /** 
+     * Sets the name and title of the given category.<p>
+     * 
+     * @param entryPoint the current entry point 
+     * @param id the category id 
+     * @param title the new title 
+     * @param name the new name
+     * @param callback the callback to call when done  
+     */
+    void changeCategory(String entryPoint, CmsUUID id, String title, String name, AsyncCallback<Void> callback);
+
+    /**
+     * Creates a new category.<p>
+     * 
+     * @param entryPoint the entry point 
+     * @param id the parent category id 
+     * @param title the title 
+     * @param name the category name
+     * @param callback the result callback 
+     */
+    void createCategory(String entryPoint, CmsUUID id, String title, String name, AsyncCallback<Void> callback);
+
+    /**
+     * Creates a new gallery folder.<p>
+     * 
+     * @param parentFolder the parent folder path
+     * @param title the title property
+     * @param folderTypeId the resource type id
+     * @param callback the async callback
+     */
+    void createNewGalleryFolder(
+        String parentFolder,
+        String title,
+        int folderTypeId,
+        AsyncCallback<CmsGalleryFolderEntry> callback);
+
+    /**
+     * Creates a new model page.<p>
+     * 
+     * @param entryPointUri the uri of the entry point 
+     * @param title the title for the model page 
+     * @param description the description for the model page 
+     * @param copyId the structure id of the resource to copy to create a new model page; if null, the model page is created as an empty container page
+     * @param resultCallback the callback for the result 
+     */
+    void createNewModelPage(
+        String entryPointUri,
+        String title,
+        String description,
+        CmsUUID copyId,
+        AsyncCallback<CmsModelPageEntry> resultCallback);
 
     /**
      * Creates a sub-sitemap of the given sitemap starting from the given entry.<p>
@@ -79,6 +137,14 @@ public interface I_CmsSitemapServiceAsync {
     void getAliasTable(AsyncCallback<CmsAliasInitialFetchResult> callback);
 
     /**
+     * Gets the category data for the given entry point.<p>
+     * 
+     * @param entryPoint the entry point
+     * @param resultCallback the callback for the result  
+     **/
+    void getCategoryData(String entryPoint, AsyncCallback<CmsSitemapCategoryData> resultCallback);
+
+    /**
      * Returns the sitemap children for the given path.<p>
      * 
      * @param entryPointUri the URI of the sitemap entry point
@@ -87,6 +153,30 @@ public interface I_CmsSitemapServiceAsync {
      * @param callback the async callback
      */
     void getChildren(String entryPointUri, CmsUUID entryId, int levels, AsyncCallback<CmsClientSitemapEntry> callback);
+
+    /**
+     * Returns the gallery data to this sub site.<p>
+     * 
+     * @param entryPointUri the sub site folder
+     * @param callback the async callback
+     */
+    void getGalleryData(String entryPointUri, AsyncCallback<Map<CmsGalleryType, List<CmsGalleryFolderEntry>>> callback);
+
+    /** 
+     * Gets the model pages for the given structure id of the sitemap root folder.<p>
+     * 
+     * @param id structure id of a folder
+     * @param callback the callback for the result  
+     */
+    void getModelPages(CmsUUID id, AsyncCallback<List<CmsModelPageEntry>> callback);
+
+    /** 
+     * Loads the model page data for the "add" menu.<p>
+     * 
+     * @param entryPointUri the entry point uri
+     * @param resultCallback the callback for the result  
+     */
+    void getNewElementInfo(String entryPointUri, AsyncCallback<List<CmsNewResourceInfo>> resultCallback);
 
     /**
      * Merges a sub-sitemap into it's parent sitemap.<p>
@@ -105,6 +195,15 @@ public interface I_CmsSitemapServiceAsync {
      * @param callback the async callback
      */
     void prefetch(String sitemapUri, AsyncCallback<CmsSitemapData> callback);
+
+    /**
+     * Removes a model page from the current sitemap configuration.<p>
+     * 
+     * @param baseUri the base uri for the current sitemap 
+     * @param modelPageId structure id of the model page to remove
+     * @param callback the callback
+     */
+    void removeModelPage(String baseUri, CmsUUID modelPageId, AsyncCallback<Void> callback);
 
     /**
      * Saves the change to the given sitemap.<p>
@@ -154,12 +253,12 @@ public interface I_CmsSitemapServiceAsync {
         AsyncCallback<CmsAliasEditValidationReply> callback);
 
     /**
-     * Validates rewrite aliases.<p>
-     * 
-     * @param validationRequest the rewrite alias data to validate
-     *  
-     * @param callback the callback for the result 
-     */
+    * Validates rewrite aliases.<p>
+    * 
+    * @param validationRequest the rewrite alias data to validate
+    *  
+    * @param callback the callback for the result 
+    */
     void validateRewriteAliases(
         CmsRewriteAliasValidationRequest validationRequest,
         AsyncCallback<CmsRewriteAliasValidationReply> callback);

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,44 +42,55 @@ import com.google.gwt.user.client.rpc.RemoteService;
 
 /**
  * The synchronous publish list interface.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsPublishService extends RemoteService {
 
     /**
      * Tries to publish a list of resources.<p>
-     * 
+     *
      * @param action the work flow action
-     * @param params the data on which to perform the workflow action 
-     *  
+     * @param params the data on which to perform the workflow action
+     *
      * @return the workflow response
-     * 
+     *
      * @throws CmsRpcException  if something goes wrong
      */
     CmsWorkflowResponse executeAction(CmsWorkflowAction action, CmsWorkflowActionParams params) throws CmsRpcException;
 
     /**
      * Returns the initial publish data.<p>
-     * 
-     * @param params a map of additional publish parameters 
-     * 
+     *
+     * @param params a map of additional publish parameters
+     *
      * @return the initial publish data
-     *  
+     *
      * @throws CmsRpcException if something goes wrong
      */
     CmsPublishData getInitData(HashMap<String, String> params) throws CmsRpcException;
 
     /**
      * Retrieves the publish list, subdivided into groups based on the time of their last change.<p>
-     * 
-     * @param workflow the selected workflow 
+     *
+     * @param workflow the selected workflow
      * @param options the publish options for which the publish list should be fetched
-     * 
-     * @return the publish list groups 
-     *  
+     * @param projectChanged indicates whether the reason we get the resource groups is because the user changed the project
+     *
+     * @return the publish list groups
+     *
      * @throws CmsRpcException if something goes wrong
      */
-    CmsPublishGroupList getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options) throws CmsRpcException;
+    CmsPublishGroupList getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options, boolean projectChanged)
+    throws CmsRpcException;
+
+    /**
+     * Retrieves the publish options.<p>
+     *
+     * @return the publish options last used
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsPublishOptions getResourceOptions() throws CmsRpcException;
 
 }

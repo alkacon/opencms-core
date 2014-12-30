@@ -28,9 +28,7 @@
 package org.opencms.site;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -48,7 +46,7 @@ import org.apache.commons.logging.Log;
  */
 public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
-    /** The log object for this class. */
+    /** Log instance. */
     private static final Log LOG = CmsLog.getLog(CmsSite.class);
 
     /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
@@ -83,6 +81,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /** Indicates whether this site should be considered when writing the web server configuration. */
     private boolean m_webserver = true;
+
+    /** True if permanent redirects should be used when redirecting to the secure URL of this site. */
+    private boolean m_usesPermanentRedirects;
 
     /**
      * Constructs a new site object without title and id information,
@@ -183,6 +184,20 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
+     * Constructs a new site object without title and id information,
+     * with a site matcher generated from the provided URL.<p>
+     * 
+     * This is to be used for test purposes only.<p>
+     * 
+     * @param siteRoot root directory of this site in the OpenCms VFS
+     * @param siteURL the URL to create the site matcher for this site from
+     */
+    public CmsSite(String siteRoot, String siteURL) {
+
+        this(siteRoot, new CmsSiteMatcher(siteURL));
+    }
+
+    /**
      * Returns a clone of this Objects instance.<p>
      * 
      * @return a clone of this instance
@@ -234,7 +249,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
             return true;
         }
         if (obj instanceof CmsSite) {
-            ((CmsSite)obj).m_siteMatcher.equals(m_siteMatcher);
+            return (m_siteMatcher != null) && m_siteMatcher.equals(((CmsSite)obj).m_siteMatcher);
         }
         return false;
     }
@@ -286,7 +301,12 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      */
     public String getSecureUrl() {
 
-        return m_secureServer.getUrl();
+        if (m_secureServer != null) {
+            return m_secureServer.getUrl();
+        } else {
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_SECURESERVER_MISSING_1, this.toString()));
+            return getUrl();
+        }
     }
 
     /**
@@ -294,7 +314,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      * secure (https) and non-secure (http) sites.<p>
      * 
      * This is required since a resource may have an individual "secure" setting using the property
-     * {@link CmsPropertyDefinition#PROPERTY_SECURE}, which means this resource
+     * {@link org.opencms.file.CmsPropertyDefinition#PROPERTY_SECURE}, which means this resource
      * must be delivered only using a secure protocol.<p>
      * 
      * The result will look like <code>http://site.enterprise.com:8080/</code> or <code>https://site.enterprise.com/</code>.<p> 
@@ -304,26 +324,11 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      * 
      * @return the server prefix for the given resource in this site
      * 
-     * @see #getSecureUrl()
-     * @see #getUrl()
+     * @see #getServerPrefix(CmsObject, String)
      */
     public String getServerPrefix(CmsObject cms, CmsResource resource) {
 
-        if (equals(OpenCms.getSiteManager().getDefaultSite())) {
-            return OpenCms.getSiteManager().getWorkplaceServer();
-        }
-        boolean secure = false;
-        if (hasSecureServer()) {
-            try {
-                secure = Boolean.valueOf(
-                    cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
-            } catch (CmsException e) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
-        }
-        return (secure ? getSecureUrl() : getUrl());
+        return getServerPrefix(cms, resource.getRootPath());
     }
 
     /**
@@ -331,7 +336,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      * secure (https) and non-secure (http) sites.<p>
      * 
      * This is required since a resource may have an individual "secure" setting using the property
-     * {@link CmsPropertyDefinition#PROPERTY_SECURE}, which means this resource
+     * {@link org.opencms.file.CmsPropertyDefinition#PROPERTY_SECURE}, which means this resource
      * must be delivered only using a secure protocol.<p>
      * 
      * The result will look like <code>http://site.enterprise.com:8080/</code> or <code>https://site.enterprise.com/</code>.<p> 
@@ -346,14 +351,15 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
      */
     public String getServerPrefix(CmsObject cms, String resourceName) {
 
-        if (equals(OpenCms.getSiteManager().getDefaultSite())) {
-            return OpenCms.getSiteManager().getWorkplaceServer();
-        }
         if (resourceName.startsWith(cms.getRequestContext().getSiteRoot())) {
             // make sure this can also be used with a resource root path
             resourceName = resourceName.substring(cms.getRequestContext().getSiteRoot().length());
         }
-        boolean secure = OpenCms.getStaticExportManager().isSecureLink(cms, resourceName);
+        boolean secure = OpenCms.getStaticExportManager().isSecureLink(
+            cms,
+            resourceName,
+            cms.getRequestContext().isSecureRequest());
+
         return (secure ? getSecureUrl() : getUrl());
     }
 
@@ -512,6 +518,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
+     * Enables use of permanent redirects instead of temporary redirects to the secure site.<p>
+     * 
+     * @param usePermanentRedirects true if permanent redirects should be used  
+     */
+    public void setUsePermanentRedirects(boolean usePermanentRedirects) {
+
+        m_usesPermanentRedirects = usePermanentRedirects;
+    }
+
+    /**
      * Sets the web server.<p>
      *
      * @param webserver the web server to set
@@ -530,11 +546,30 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
         StringBuffer result = new StringBuffer(128);
         result.append("server: ");
         result.append(m_siteMatcher != null ? m_siteMatcher.toString() : "null");
-        result.append(" uri: ");
-        result.append(m_siteRoot);
-        result.append(" title: ");
-        result.append(m_title);
+        // some extra effort to make debugging easier
+        if (m_siteRoot != null) {
+            result.append(" siteRoot: ");
+            result.append(m_siteRoot);
+        } else {
+            result.append(" (no siteRoot)");
+        }
+        if (m_title != null) {
+            result.append(" title: ");
+            result.append(m_title);
+        } else {
+            result.append(" (no title)");
+        }
         return result.toString();
+    }
+
+    /** 
+     * Returns true if permanent redirects should be used for redirecting to the secure URL for this site.<p>
+     * 
+     * @return true if permanent redirects should be used 
+     */
+    public boolean usesPermanentRedirects() {
+
+        return m_usesPermanentRedirects;
     }
 
     /**
@@ -545,6 +580,16 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     protected void addAlias(CmsSiteMatcher aliasServer) {
 
         m_aliases.add(aliasServer);
+    }
+
+    /**
+     * Returns the site matcher for the secure site, or null if no secure site is defined.<p>
+     * 
+     * @return the site matcher for the secure site 
+     */
+    protected CmsSiteMatcher getSecureServerMatcher() {
+
+        return m_secureServer;
     }
 
     /**

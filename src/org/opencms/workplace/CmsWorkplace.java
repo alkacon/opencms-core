@@ -367,6 +367,50 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Returns the start site from the given workplace settings.<p>
+     * 
+     * @param cms the cms context
+     * @param settings the workplace settings
+     * 
+     * @return the start site root
+     */
+    public static String getStartSiteRoot(CmsObject cms, CmsWorkplaceSettings settings) {
+
+        String currentSite = cms.getRequestContext().getSiteRoot();
+        String startSiteRoot = settings.getUserSettings().getStartSite();
+        if (startSiteRoot.endsWith("/")) {
+            // remove trailing slash
+            startSiteRoot = startSiteRoot.substring(0, startSiteRoot.length() - 1);
+        }
+        if (CmsStringUtil.isNotEmpty(startSiteRoot)
+            && (OpenCms.getSiteManager().getSiteForSiteRoot(startSiteRoot) == null)) {
+            // this is not the root site and the site is not in the list
+            startSiteRoot = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
+            if (startSiteRoot.endsWith("/")) {
+                // remove trailing slash
+                startSiteRoot = startSiteRoot.substring(0, startSiteRoot.length() - 1);
+            }
+        }
+        boolean access = false;
+
+        cms.getRequestContext().setSiteRoot(startSiteRoot);
+        try {
+            // check access to the site
+            access = cms.existsResource("/", CmsResourceFilter.ONLY_VISIBLE);
+
+            if (!access) {
+                List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(cms, true);
+                if (sites.size() > 0) {
+                    startSiteRoot = sites.get(0).getSiteRoot();
+                }
+            }
+        } finally {
+            cms.getRequestContext().setSiteRoot(currentSite);
+        }
+        return startSiteRoot;
+    }
+
+    /**
      * Returns the path to the cascading stylesheets.<p>
      * 
      * @param jsp the JSP context
@@ -439,6 +483,31 @@ public abstract class CmsWorkplace {
         result.append(CmsResource.TEMP_FILE_PREFIX);
         result.append(CmsResource.getName(resourceName));
         return result.toString();
+    }
+
+    /**
+     * Returns the workplace settings of the current user.<p>
+     * 
+     * @param cms the cms context
+     * @param req the request
+     * 
+     * @return the workplace settings or <code>null</code> if the user is not logged in
+     */
+    public static CmsWorkplaceSettings getWorkplaceSettings(CmsObject cms, HttpServletRequest req) {
+
+        HttpSession session = req.getSession(false);
+        CmsWorkplaceSettings workplaceSettings = null;
+        if (session != null) {
+            // all logged in user will have a session
+            workplaceSettings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+            // ensure workplace settings attribute is set
+            if (workplaceSettings == null) {
+                // creating any instance of {@link org.opencms.workplace.CmsWorkplaceSettings} and store it
+                workplaceSettings = initWorkplaceSettings(cms, null, false);
+                storeSettings(session, workplaceSettings);
+            }
+        }
+        return workplaceSettings;
     }
 
     /**
@@ -544,50 +613,6 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns the start site from the given workplace settings.<p>
-     * 
-     * @param cms the cms context
-     * @param settings the workplace settings
-     * 
-     * @return the start site root
-     */
-    public static String getStartSiteRoot(CmsObject cms, CmsWorkplaceSettings settings) {
-
-        String currentSite = cms.getRequestContext().getSiteRoot();
-        String startSiteRoot = settings.getUserSettings().getStartSite();
-        if (startSiteRoot.endsWith("/")) {
-            // remove trailing slash
-            startSiteRoot = startSiteRoot.substring(0, startSiteRoot.length() - 1);
-        }
-        if (CmsStringUtil.isNotEmpty(startSiteRoot)
-            && (OpenCms.getSiteManager().getSiteForSiteRoot(startSiteRoot) == null)) {
-            // this is not the root site and the site is not in the list
-            startSiteRoot = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
-            if (startSiteRoot.endsWith("/")) {
-                // remove trailing slash
-                startSiteRoot = startSiteRoot.substring(0, startSiteRoot.length() - 1);
-            }
-        }
-        boolean access = false;
-
-        cms.getRequestContext().setSiteRoot(startSiteRoot);
-        try {
-            // check access to the site
-            access = cms.existsResource("/", CmsResourceFilter.ONLY_VISIBLE);
-
-            if (!access) {
-                List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(cms, true);
-                if (sites.size() > 0) {
-                    startSiteRoot = sites.get(0).getSiteRoot();
-                }
-            }
-        } finally {
-            cms.getRequestContext().setSiteRoot(currentSite);
-        }
-        return startSiteRoot;
-    }
-
-    /**
      * Returns <code>true</code> if the given resource is a temporary file.<p>
      * 
      * A resource is considered a temporary file it is a file where the
@@ -605,6 +630,23 @@ public abstract class CmsWorkplace {
 
         return (resource != null)
             && ((resource.isFile() && (((resource.getFlags() & CmsResource.FLAG_TEMPFILE) > 0) || (CmsResource.isTemporaryFileName(resource.getName())))));
+    }
+
+    /**
+     * Substitutes the site title.<p>
+     * 
+     * @param title the raw site title 
+     * @param locale the localel 
+     * 
+     * @return the locale specific site title 
+     */
+    public static String substituteSiteTitleStatic(String title, Locale locale) {
+
+        if (title.equals(CmsSiteManagerImpl.SHARED_FOLDER_TITLE)) {
+            return Messages.get().getBundle(locale).key(Messages.GUI_SHARED_TITLE_0);
+        }
+        return title;
+
     }
 
     /**
@@ -654,7 +696,6 @@ public abstract class CmsWorkplace {
 
         StringBuffer retValue = new StringBuffer(512);
         HttpServletRequest request = getJsp().getRequest();
-        @SuppressWarnings("unchecked")
         Iterator<String> paramNames = request.getParameterMap().keySet().iterator();
         while (paramNames.hasNext()) {
             String paramName = paramNames.next();
@@ -1092,7 +1133,6 @@ public abstract class CmsWorkplace {
      * 
      * @param request the current JSP request
      */
-    @SuppressWarnings("unchecked")
     public void fillParamValues(HttpServletRequest request) {
 
         m_parameterMap = null;
@@ -1281,6 +1321,7 @@ public abstract class CmsWorkplace {
             // initialize resolver with the objects available
             .setCmsObject(m_cms).setMessages(getMessages()).setJspPageContext(
                 (m_jsp == null) ? null : m_jsp.getJspContext());
+            m_macroResolver.setParameterMap(m_parameterMap);
         }
         return m_macroResolver;
     }
@@ -2019,11 +2060,7 @@ public abstract class CmsWorkplace {
      */
     protected String substituteSiteTitle(String title) {
 
-        if (title.equals(CmsSiteManagerImpl.SHARED_FOLDER_TITLE)) {
-            return Messages.get().getBundle(getSettings().getUserSettings().getLocale()).key(
-                Messages.GUI_SHARED_TITLE_0);
-        }
-        return title;
+        return substituteSiteTitleStatic(title, getSettings().getUserSettings().getLocale());
     }
 
     /**

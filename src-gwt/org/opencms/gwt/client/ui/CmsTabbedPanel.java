@@ -27,8 +27,7 @@
 
 package org.opencms.gwt.client.ui;
 
-import com.alkacon.geranium.client.I_DescendantResizeHandler;
-
+import org.opencms.gwt.client.I_DescendantResizeHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
@@ -319,9 +318,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
     /**
      * Adds a tab with a user-defined id.<p>
      * 
-     * @param tabContent
-     * @param tabName
-     * @param tabId
+     * @param tabContent the tab content
+     * @param tabName the tab name
+     * @param tabId the tab id
      */
     public void addNamed(E tabContent, String tabName, String tabId) {
 
@@ -440,6 +439,25 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
     }
 
     /**
+     * Returns the index of the tab to the given child element.<p>
+     * 
+     * @param child the tab child
+     * 
+     * @return the tab index
+     */
+    public int getTabIndex(Element child) {
+
+        int index = 0;
+        for (Widget tab : m_tabPanel) {
+            if (tab.getElement().isOrHasChild(child)) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
+    }
+
+    /**
      * Returns the tab text for a given tab.<p>
      * 
      * @param pos the index of the tab 
@@ -452,6 +470,19 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
     }
 
     /**
+     * Returns the tab widget.<p>
+     * This will not be the tab content but the tab itself.<p>
+     * 
+     * @param index the tab index
+     * 
+     * @return the tab widget
+     */
+    public Widget getTabWidget(int index) {
+
+        return m_tabPanel.getTabWidget(index);
+    }
+
+    /**
      * Gets the child widget at the specified index.<p>
      * 
      * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#getWidget(int)}
@@ -459,7 +490,6 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
      * @param tabIndex the child widget's index
      * @return the child widget
      */
-    @SuppressWarnings("unchecked")
     public E getWidget(int tabIndex) {
 
         return (E)m_tabPanel.getWidget(tabIndex);
@@ -497,14 +527,13 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
      * 
      * @return the iterator
      */
-    @SuppressWarnings("unchecked")
     public Iterator<E> iterator() {
 
         return (Iterator<E>)m_tabPanel.iterator();
     }
 
     /**
-     * @see com.alkacon.geranium.client.I_DescendantResizeHandler#onResizeDescendant()
+     * @see org.opencms.gwt.client.I_DescendantResizeHandler#onResizeDescendant()
      */
     public void onResizeDescendant() {
 

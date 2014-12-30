@@ -1,15 +1,9 @@
 @external html-face, cmsState;
 
 .editorGallery {}
-@if user.agent ie8 {
-	div.editorGallery{
-		-ms-filter: none;
-	}
-} @else  {
-	div.editorGallery{
-		box-shadow: none;
-		border-radius: 0;
-	}
+div.editorGallery{
+	box-shadow: none;
+	border-radius: 0;
 }
 body.galleryBody, div.galleryBody {
 	margin:0px;

@@ -1,15 +1,9 @@
 @external html-face, cmsState;
 
 .editorGallery {}
-@if user.agent ie8 {
-	div.editorGallery{
-		-ms-filter: none;
-	}
-} @else  {
-	div.editorGallery{
-		box-shadow: none;
-		border-radius: 0;
-	}
+div.editorGallery{
+	box-shadow: none;
+	border-radius: 0;
 }
 body.galleryBody, div.galleryBody {
 	margin:0px;
@@ -17,14 +11,6 @@ body.galleryBody, div.galleryBody {
 	overflow: hidden;
 }
 
-@if user.agent ie6 {
-body.galleryBody *{
-	zoom: 1;
-}
-body.galleryBody{
-	height: 499px;
-}
-}
 div.resultTabUpload{
 	float: right;
 	margin: 1px 1px 0 0;
@@ -41,19 +27,21 @@ div.showPreview{
 	right: 0px;
 }
 
-div.criteriaList {
+div.parentPanel div.criteriaList {
 	border:1px solid value("constants.css.borderColor");
-	height:414px;
 	background-color: value("constants.css.backgroundColorDialog");
-	padding:0 2px;
-}
-
-.listOnlyTab .criteriaList{
-	height: 441px;
+	bottom: 6px;
+    left: 6px;
+    padding: 0 2px;
+    position: absolute;
+    right: 6px;
+    top: 35px;
 }
 
 div.selectboxWidth {
 	width: 200px;
+	display: inline-block;
+	margin-right: 3px;
 }
 
 div.listIcon {
@@ -65,8 +53,8 @@ div.listIcon {
 	background-position: 50% 50%;
 	height: auto;
 	border:1px solid value("constants.css.borderColor");
-	margin-right:1px;
-	margin-bottom:1px;
+	margin-right:3px;
+	margin-bottom:3px;
 	padding:2px;
 	background-color: value("constants.css.backgroundColorStateStandard");
 }
@@ -79,10 +67,6 @@ div.tabParamsPanel {
 div.tabOptions {
 	clear: both;
 	margin-bottom: 5px;
-}
-
-.listOnlyTab .tabOptions{
-	display: none;
 }
 
 .showParams div, .showParams div span{
@@ -207,4 +191,21 @@ div.noParamsMessage > table {
 .noParamsMessage > table > tbody > tr > td {
 	vertical-align: middle;
 	padding: 15px 15px 15px 0px;
+}
+
+.typesFull {} 
+
+.typesImportant .shouldOnlyShowInFullTypeList {
+	display: none; 
+} 
+
+.shouldOnlyShowInFullTypeList {}
+
+.typeModeSwitch * {
+	font-weight: normal !important; 
+} 
+
+.typeModeSwitch { 
+	margin-top: 3px; 
+	float: left; 
 }

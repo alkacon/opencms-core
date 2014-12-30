@@ -272,7 +272,9 @@ public final class CmsXmlContainerPageFactory {
         CmsXmlContainerPage xmlCntPage = (CmsXmlContainerPage)content.getHandler().prepareForUse(cms, content);
 
         // set the cache
-        setCache(cms, xmlCntPage, keepEncoding);
+        if (!noCache) {
+            setCache(cms, xmlCntPage, keepEncoding);
+        }
 
         return xmlCntPage;
     }

@@ -61,9 +61,7 @@
       <property name="scope" value="anoninner"/>
       <property name="checkHtml" value="false"/>
     </module>
-    <module name="JavadocType">
-      <property name="tokens" value="CLASS_DEF, INTERFACE_DEF"/>
-    </module>
+    <module name="JavadocType"/>
     <module name="JavadocVariable">
       <property name="scope" value="package"/>
     </module>
@@ -111,4 +109,10 @@
     <module name="ExplicitInitialization"/>
   </module>
   <module name="FileTabCharacter"/>
+  <module name="JavadocPackage">
+    <property name="allowLegacy" value="true"/>
+  </module>
+  <module name="SuppressionFilter">
+    <property name="file" value="${project_loc}/CheckStyle_OpenCms_Suppression.xml"/>
+  </module>
 </module>

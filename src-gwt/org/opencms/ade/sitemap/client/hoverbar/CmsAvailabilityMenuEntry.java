@@ -77,14 +77,14 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
     }
 
     /**
-     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
+     * @see org.opencms.ade.sitemap.client.hoverbar.A_CmsSitemapMenuEntry#onShow()
      */
     @Override
-    public void onShow(CmsHoverbarShowEvent event) {
+    public void onShow() {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = (entry != null);
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode() && (entry != null);
         setVisible(show);
         if (show && (entry != null) && !entry.isEditable()) {
             setActive(false);
@@ -93,6 +93,7 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
             setActive(true);
             setDisabledReason(null);
         }
+
     }
 
     /**

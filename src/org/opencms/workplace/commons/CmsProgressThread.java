@@ -206,6 +206,7 @@ public class CmsProgressThread extends Thread {
     /**
      * @see java.lang.Thread#run()
      */
+    @Override
     public void run() {
 
         try {

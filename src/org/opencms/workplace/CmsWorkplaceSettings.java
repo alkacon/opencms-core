@@ -36,6 +36,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorer;
@@ -44,6 +45,8 @@ import org.opencms.workplace.tools.CmsToolUserData;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Object to conveniently access and modify the state of the workplace for a user,
  * will be stored in the session of a user.<p>
@@ -51,6 +54,9 @@ import java.util.Map;
  * @since 6.0.0 
  */
 public class CmsWorkplaceSettings {
+
+    /** Log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWorkplaceSettings.class);
 
     /** The resource collector. */
     private I_CmsResourceCollector m_collector;
@@ -295,14 +301,16 @@ public class CmsWorkplaceSettings {
     }
 
     /**
-     * Returns the last saved gallery for the given gallery type id.<p>
+     * Returns the last saved gallery for the given gallery key.<p>
      * 
-     * @param galleryTypeId the type id of the gallery
-     * @return the last saved gallery for the given gallery type id
-     */
-    public String getLastUsedGallery(String galleryTypeId) {
+     * @param galleryKey the key for which to look up the gallery
+     * @return the last saved gallery for the given gallery key 
+     **/
+    public String getLastUsedGallery(String galleryKey) {
 
-        return m_lastUsedGalleries.get(galleryTypeId);
+        String result = m_lastUsedGalleries.get(galleryKey);
+        LOG.info("user=" + m_user.getName() + ": getLastUsedGallery " + galleryKey + " : returning " + result);
+        return result;
     }
 
     /**
@@ -627,14 +635,15 @@ public class CmsWorkplaceSettings {
     }
 
     /**
-     * Saves the last gallery.<p>
+     * Saves the last gallery for a given key.<p>
      * 
-     * @param galleryTypeId the type id of the gallery as key
+     * @param galleryKey the gallery key
      * @param gallerypath the resourcepath of the gallery
      */
-    public void setLastUsedGallery(String galleryTypeId, String gallerypath) {
+    public void setLastUsedGallery(String galleryKey, String gallerypath) {
 
-        m_lastUsedGalleries.put(galleryTypeId, gallerypath);
+        m_lastUsedGalleries.put(galleryKey, gallerypath);
+        LOG.info("user=" + m_user.getName() + ": setLastUsedGallery " + galleryKey + " -> " + gallerypath);
     }
 
     /**
@@ -791,4 +800,5 @@ public class CmsWorkplaceSettings {
 
         m_viewUri = string;
     }
+
 }

@@ -38,6 +38,7 @@ import java.util.Iterator;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -259,6 +260,20 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
             m_image.setResource(I_CmsImageBundle.INSTANCE.arrowRightImage());
         }
         CmsDomUtil.resizeAncestor(getParent());
+    }
+
+    /**
+     * Sets the opener visible.<p>
+     * 
+     * @param visible <code>true</code> to set the opener visible
+     */
+    public void setOpenerVisible(boolean visible) {
+
+        if (visible) {
+            m_image.getElement().getStyle().clearDisplay();
+        } else {
+            m_image.getElement().getStyle().setDisplay(Display.NONE);
+        }
     }
 
     /**

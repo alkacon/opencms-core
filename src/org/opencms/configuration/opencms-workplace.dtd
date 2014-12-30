@@ -490,12 +490,27 @@
 # representing the different tabs in the preferences screen in the workplace. 
 # The knot for start setting of the galleries is optional.
 -->
-<!ELEMENT default-preferences (workplace-preferences,
-				explorer-preferences,
-				dialogs-preferences,
-				editors-preferences,
+<!ELEMENT default-preferences (workplace-preferences?,
+				explorer-preferences?,
+				dialogs-preferences?,
+				editors-preferences?,
 				galleries-preferences?,
-				workflow-preferences?)>
+				workflow-preferences?, preference-tab*)>
+				
+				
+<!ELEMENT preference-tab (preference*)>
+<!ATTLIST preference-tab name (basic|extended|hidden) #REQUIRED>
+				
+<!ELEMENT preference EMPTY>
+<!ATTLIST preference 	name CDATA #REQUIRED
+						value CDATA #IMPLIED
+						widget CDATA #IMPLIED
+						widget-config CDATA #IMPLIED
+						nice-name CDATA #IMPLIED
+						description CDATA #IMPLIED
+						rule-regex CDATA #IMPLIED
+						error CDATA #IMPLIED
+>
 
 <!--
 # The workplace preferences define the preferences of the workplace itself.

@@ -5,34 +5,12 @@
 	xmlns:cmsInput="urn:import:org.opencms.gwt.client.ui.input">
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:style>
-		@if user.agent ie6 {
-		.brk {
-			height: 0px;
-		}
-		} @else {
-			.brk {
-			
-			}
-		}
-		
-		
-		@if user.agent ie6 ie8 ie9 {
-			.titleBox {
-				overflow: hidden;
-				text-overflow: ellipsis; 	
-				white-space: nowrap; 
-				word-wrap: normal; 
-			} 
-	    } @else {
-			.titleBox {
-				overflow: hidden;
-				text-overflow: ellipsis; 	
-				white-space: nowrap; 
-				word-wrap: break-word; 
-			} 
+		.titleBox {
+			overflow: hidden;
+			text-overflow: ellipsis; 	
+			white-space: nowrap; 
+			word-wrap: break-word; 
 		}  
-	    
-		
 	</ui:style>
 	<cms:CmsHoverPanel styleName="{resources.listItemWidgetCss.itemContainer}" addStyleNames="{resources.generalCss.cornerAll} {resources.generalCss.textMedium}">
 			<g:FlowPanel ui:field="m_contentPanel" styleName="{resources.listItemWidgetCss.itemContent}" addStyleNames="{resources.generalCss.cornerAll}">
@@ -42,7 +20,7 @@
 		    	  <g:FlowPanel ui:field="m_titleBox" addStyleNames="{style.titleBox}">
 		    	  	<cmsInput:CmsLabel ui:field="m_title" addStyleNames="{resources.listItemWidgetCss.itemTitle}"/>
 		    	  </g:FlowPanel>
-		    	  <g:Label styleName="{style.brk}" /><!-- Abuse label to force a newline. -->
+		    	  <g:Label /><!-- Abuse label to force a newline. -->
 		    	  <cmsInput:CmsLabel ui:field="m_subtitle" addStyleNames="{resources.generalCss.inlineBlock}" />
 		    	</g:FlowPanel>
 			</g:FlowPanel>

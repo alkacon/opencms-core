@@ -56,19 +56,26 @@ public interface I_CmsImageBundle extends ClientBundle {
          */
         String addIcon();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String arrowDownIcon();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String arrowUpIcon();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String bullsEyeIcon();
 
         /** Access method.<p>
         *
@@ -93,6 +100,12 @@ public interface I_CmsImageBundle extends ClientBundle {
          * @return the CSS class name
          */
         String deleteIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String dialogCloseIcon();
 
         /** Access method.<p>
         *
@@ -125,7 +138,7 @@ public interface I_CmsImageBundle extends ClientBundle {
         String imageSearchIcon();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String infoBigIcon();
@@ -214,6 +227,18 @@ public interface I_CmsImageBundle extends ClientBundle {
         * @return the CSS class name
         */
         String tableGalleryIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String tablePreviewIcon();
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String tableReplaceIcon();
 
         /** Access method.<p>
          *
@@ -356,17 +381,17 @@ public interface I_CmsImageBundle extends ClientBundle {
     @Source("images/icons/downloadGallery.png")
     ImageResource downloadGalleryIcon();
 
-    /** 
+    /**
      * Returns the edit cursor icon resource.<p>
-     * 
+     *
      * @return the edit cursor icon
      */
     @Source("images/editCursor.gif")
     DataResource editCursorGif();
 
-    /** 
+    /**
      * Returns the edit cursor icon resource.<p>
-     * 
+     *
      * @return the edit cursor icon
      */
     @Source("images/editCursor.ico")

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,11 +28,14 @@
 package org.opencms.jsp;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.collectors.CmsSolrCollector;
+import org.opencms.file.collectors.CmsSolrCollector.CmsSolrCollectorResult;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspContentLoadBean;
+import org.opencms.loader.CmsDefaultFileNameGenerator;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
@@ -52,17 +55,17 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 
 /**
- * Implementation of the <code>&lt;cms:contentload/&gt;</code> tag, 
+ * Implementation of the <code>&lt;cms:contentload/&gt;</code> tag,
  * used to access and display XML content item information from the VFS.<p>
- * 
+ *
  * Since version 7.0.2 it is also possible to store the results of the content load in the JSP context
  * using a {@link CmsJspContentLoadBean}. Using this bean the loaded XML content objects can be accessed
  * directly using the JSP EL and the JSTL. To use this feature, you need to add the <code>var</code> (and optionally
- * the <code>scope</code>) parameter to the content load tag. For example, if a parameter like 
- * <code>var="myVarName"</code> is provided, then the result of the content load is stored in the JSP 
+ * the <code>scope</code>) parameter to the content load tag. For example, if a parameter like
+ * <code>var="myVarName"</code> is provided, then the result of the content load is stored in the JSP
  * context variable <code>myVarName</code> with an instance of a {@link CmsJspContentLoadBean}.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_CmsXmlContentContainer {
 
@@ -74,10 +77,10 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
 
     /**
      * The locale to use for displaying the current content.<p>
-     * 
-     * Initially, this is equal to the locale set using <code>{@link #setLocale(String)}</code>. 
+     *
+     * Initially, this is equal to the locale set using <code>{@link #setLocale(String)}</code>.
      * However, the content locale may change in case a loaded XML content does not have the selected locale available.
-     * In this case the next default locale that is available in the content will be used as content locale.<p> 
+     * In this case the next default locale that is available in the content will be used as content locale.<p>
      */
     private Locale m_contentLocale;
 
@@ -102,8 +105,11 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     /** Reference to the currently selected locale. */
     private Locale m_locale;
 
+    /** Post-create handler class. */
+    private String m_postCreateHandler;
+
     /**
-     * Empty constructor, required for JSP tags.<p> 
+     * Empty constructor, required for JSP tags.<p>
      */
     public CmsJspTagContentLoad() {
 
@@ -111,15 +117,15 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     }
 
     /**
-     * Constructor used when using <code>contentload</code> from scriptlet code.<p> 
-     * 
+     * Constructor used when using <code>contentload</code> from scriptlet code.<p>
+     *
      * @param container the parent content container (could be a preloader)
      * @param context the JSP page context
      * @param collectorName the collector name to use
      * @param collectorParam the collector param to use
-     * @param locale the locale to use 
+     * @param locale the locale to use
      * @param editable indicates if "direct edit" support is wanted
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     public CmsJspTagContentLoad(
@@ -135,17 +141,17 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     }
 
     /**
-     * Constructor used when using <code>contentload</code> from scriptlet code.<p> 
-     * 
+     * Constructor used when using <code>contentload</code> from scriptlet code.<p>
+     *
      * @param container the parent content container (could be a preloader)
      * @param context the JSP page context
      * @param collectorName the collector name to use
      * @param collectorParam the collector param to use
      * @param pageIndex the display page index (may contain macros)
      * @param pageSize the display page size (may contain macros)
-     * @param locale the locale to use 
+     * @param locale the locale to use
      * @param editable indicates if "direct edit" support is wanted
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     public CmsJspTagContentLoad(
@@ -171,17 +177,17 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     }
 
     /**
-     * Constructor used when using <code>contentload</code> from scriptlet code.<p> 
-     * 
+     * Constructor used when using <code>contentload</code> from scriptlet code.<p>
+     *
      * @param container the parent content container (could be a preloader)
      * @param context the JSP page context
      * @param collectorName the collector name to use
      * @param collectorParam the collector param to use
      * @param pageIndex the display page index (may contain macros)
      * @param pageSize the display page size (may contain macros)
-     * @param locale the locale to use 
+     * @param locale the locale to use
      * @param editMode indicates which "direct edit" mode is wanted
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     public CmsJspTagContentLoad(
@@ -237,7 +243,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
 
     /**
      * Returns the editable flag.<p>
-     * 
+     *
      * @return the editable flag
      */
     public String getEditable() {
@@ -289,10 +295,20 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         // check if there are more files to iterate
         boolean hasMoreContent = m_collectorResult.size() > 0;
         if (m_isFirstLoop) {
+
+            if (!m_cms.getRequestContext().getCurrentProject().isOnlineProject() && (m_collector != null)) {
+                CmsContentLoadCollectorInfo info = new CmsContentLoadCollectorInfo();
+                info.setCollectorName(m_collectorName);
+                info.setCollectorParams(m_collectorParam);
+                info.setId(m_contentInfoBean.getId());
+                if (CmsJspTagEditable.getDirectEditProvider(pageContext) != null) {
+                    CmsJspTagEditable.getDirectEditProvider(pageContext).insertDirectEditListMetadata(pageContext, info);
+                }
+            }
             m_isFirstLoop = false;
             if (!hasMoreContent && m_editEmpty && (m_directEditLinkForNew != null)) {
                 try {
-                    CmsJspTagEditable.insertEditEmpty(pageContext, this, m_directEditMode);
+                    CmsJspTagEditable.insertEditEmpty(pageContext, this, m_directEditMode, m_contentInfoBean.getId());
                 } catch (CmsException e) {
                     throw new JspException(e);
                 }
@@ -306,7 +322,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         }
 
         if (isPreloader()) {
-            // if in preload mode, no result is required            
+            // if in preload mode, no result is required
             return false;
         }
 
@@ -327,14 +343,12 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
                 if (m_directEditFollowButtons == null) {
                     // this is the first call, calculate the options
                     if (m_directEditLinkForNew == null) {
-                        // if create link is null, show only "edit" button for first element
-                        directEditButtons = CmsDirectEditButtonSelection.EDIT;
-                        // also show only the "edit" button for 2nd to last element
+                        // if create link is null, show only "edit" and "delete" button for first element
+                        directEditButtons = CmsDirectEditButtonSelection.EDIT_DELETE;
                         m_directEditFollowButtons = directEditButtons;
                     } else {
-                        // if create link is not null, show "edit", "delete" and "new" button for first element
+                        // if create link is not null, show "edit", "delete" and "new" buttons
                         directEditButtons = CmsDirectEditButtonSelection.EDIT_DELETE_NEW;
-                        // show "edit" and "delete" button for 2nd to last element
                         m_directEditFollowButtons = CmsDirectEditButtonSelection.EDIT_DELETE_NEW;
                     }
                 } else {
@@ -342,11 +356,16 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
                     directEditButtons = m_directEditFollowButtons;
                 }
 
-                m_directEditOpen = CmsJspTagEditable.startDirectEdit(pageContext, new CmsDirectEditParams(
+                CmsDirectEditParams params = new CmsDirectEditParams(
                     m_resourceName,
                     directEditButtons,
                     m_directEditMode,
-                    m_directEditLinkForNew));
+                    m_directEditLinkForNew);
+                params.setPostCreateHandler(m_postCreateHandler);
+                params.setId(m_contentInfoBean.getId());
+                params.setCollectorName(m_collectorName);
+                params.setCollectorParams(m_param);
+                m_directEditOpen = CmsJspTagEditable.startDirectEdit(pageContext, params);
             }
 
         } else {
@@ -387,7 +406,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
 
     /**
      * Sets the editable mode.<p>
-     * 
+     *
      * @param mode the mode to set
      */
     public void setEditable(String mode) {
@@ -422,8 +441,18 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     }
 
     /**
+     * Sets the post-create handler class name.<p>
+     *
+     * @param postCreateHandler the post-create handler class name
+     */
+    public void setPostCreateHandler(String postCreateHandler) {
+
+        m_postCreateHandler = postCreateHandler;
+    }
+
+    /**
      * Load the next file name from the initialized list of file names.<p>
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected void doLoadNextFile() throws CmsException {
@@ -436,8 +465,8 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         // upgrade the resource to a file
         CmsFile file = m_cms.readFile(m_resource);
 
-        // unmarshal the XML content from the resource, don't use unmarshal(CmsObject, CmsResource) 
-        // as no support for getting the historic version that has been cached by a CmsHistoryResourceHandler 
+        // unmarshal the XML content from the resource, don't use unmarshal(CmsObject, CmsResource)
+        // as no support for getting the historic version that has been cached by a CmsHistoryResourceHandler
         // will come from there!
         m_content = CmsXmlContentFactory.unmarshal(m_cms, file, pageContext.getRequest());
 
@@ -457,10 +486,10 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
     }
 
     /**
-     * Initializes this content load tag.<p> 
-     * 
+     * Initializes this content load tag.<p>
+     *
      * @param container the parent container (could be a preloader)
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     protected void init(I_CmsXmlContentContainer container) throws JspException {
@@ -541,12 +570,29 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
             if (collector == null) {
                 throw new CmsException(Messages.get().container(Messages.ERR_COLLECTOR_NOT_FOUND_1, m_collectorName));
             }
-            // execute the collector if not already done in parent tag
-            if (m_collectorResult == null) {
-                m_collectorResult = collector.getResults(m_cms, m_collectorName, m_collectorParam);
-            }
+
+            //            if (collector instanceof CmsSolrCollector) {
+            //                collector = ((CmsSolrCollector)collector).getCopy();
+            //            }
 
             m_contentInfoBean = new CmsContentInfoBean();
+
+            // execute the collector if not already done in parent tag
+            if ((m_collectorResult == null)) {
+                // If we're using an instance of the Solr collector make sure to collect all (potential) facets, too.
+                if (collector instanceof CmsSolrCollector) {
+                    CmsSolrCollectorResult result = ((CmsSolrCollector)collector).getResultsWithFacets(
+                        m_cms,
+                        m_collectorName,
+                        m_collectorParam,
+                        pageAttribCount);
+                    m_contentInfoBean.setFacets(result.getFacets());
+                    m_collectorResult = result.getResources();
+                } else {
+                    m_collectorResult = collector.getResults(m_cms, m_collectorName, m_collectorParam);
+                }
+            }
+
             m_contentInfoBean.setPageSizeAsString(resolver.resolveMacros(m_pageSize));
             m_contentInfoBean.setPageIndexAsString(resolver.resolveMacros(m_pageIndex));
             m_contentInfoBean.setPageNavLengthAsString(resolver.resolveMacros(m_pageNavLength));
@@ -555,13 +601,13 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
             m_contentInfoBean.initResultIndex();
 
             if (!isPreloader()) {
-                // not required when only preloading 
+                // not required when only preloading
                 m_collectorResult = CmsJspTagResourceLoad.limitCollectorResult(m_contentInfoBean, m_collectorResult);
                 m_contentInfoBean.initPageNavIndexes();
 
                 String createParam = collector.getCreateParam(m_cms, m_collectorName, m_collectorParam);
-                if (createParam != null) {
-                    // use "create link" only if collector supports it
+                if ((createParam != null) && CmsDefaultFileNameGenerator.hasNumberMacro(createParam)) {
+                    // use "create link" only if collector supports it and it contains the number macro for new file names
                     m_directEditLinkForNew = CmsEncoder.encode(m_collectorName + "|" + createParam);
                 }
             } else if (isScopeVarSet()) {

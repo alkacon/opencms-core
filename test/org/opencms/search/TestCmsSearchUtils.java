@@ -28,27 +28,31 @@
 package org.opencms.search;
 
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.test.OpenCmsTestCase;
 
 import java.util.Iterator;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.apache.lucene.document.DateTools;
 
 /**
  * Tests some search utilities that don't require an OpenCms context.<p>
  */
-public class TestCmsSearchUtils extends TestCase {
+public class TestCmsSearchUtils extends OpenCmsTestCase {
 
     /**
-     * Default JUnit constructor.<p>
+     * Prints a list of String to System.out.<p>
      * 
-     * @param arg0 JUnit parameters
+     * @param strings the String to print
      */
-    public TestCmsSearchUtils(String arg0) {
+    protected static void printStringList(List<String> strings) {
 
-        super(arg0);
+        Iterator<String> i = strings.iterator();
+        System.out.println("\nSize: " + strings.size() + "\n");
+        while (i.hasNext()) {
+            System.out.println(i.next());
+        }
+        System.out.println("\n--------------------------------");
     }
 
     /**
@@ -102,21 +106,6 @@ public class TestCmsSearchUtils extends TestCase {
     }
 
     /**
-     * Prints a list of String to System.out.<p>
-     * 
-     * @param strings the String to print
-     */
-    protected static void printStringList(List<String> strings) {
-
-        Iterator<String> i = strings.iterator();
-        System.out.println("\nSize: " + strings.size() + "\n");
-        while (i.hasNext()) {
-            System.out.println(i.next());
-        }
-        System.out.println("\n--------------------------------");
-    }
-
-    /**
      * Test parent folder path term splitting.<p>
      *
      * @throws Exception if the test fails
@@ -128,9 +117,7 @@ public class TestCmsSearchUtils extends TestCase {
         assertEquals("/", CmsSearchFieldConfiguration.getParentFolderTokens("/"));
         assertEquals("/ /sites/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites/"));
         assertEquals("/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites"));
-        assertEquals(
-            "/ /sites/ /sites/default/",
-            CmsSearchFieldConfiguration.getParentFolderTokens("/sites/default/"));
+        assertEquals("/ /sites/ /sites/default/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites/default/"));
         assertEquals("/ /sites/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites/default"));
     }
 }

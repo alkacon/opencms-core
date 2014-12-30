@@ -1,0 +1,117 @@
+div.locationMainPanel div.mapCanvas {
+	float: left;
+	height: 400px;
+	width: 600px;
+}
+
+div.locationMainPanel div.locationFields {
+	float: left;
+	height: 400px;
+	width: 400px;
+}
+
+div.locationMainPanel div.buttonBar {
+	position: absolute;
+	bottom:5px;
+	right: 5px;
+	text-align: right;
+}
+
+div.locationMainPanel div.buttonBar > div{
+	margin-left:6px;
+}
+
+div.locationFields>div {
+	margin: 5px;
+}
+
+div.locationFields div.inlineField {
+	display: inline-block;
+	width: 60px;
+	vertical-align: middle;
+}
+
+div>div.fader{
+	right: 20px;
+	cursor: text;
+	top: 0px;
+}
+
+div.displayBox{
+	border: 1px solid #bbbbbb;
+	background: white;
+	position:relative;
+}
+div.locationField input[type="text"]{
+	border: none;
+    box-shadow: none;
+    outline: none;
+    color: #222222;
+    height: 18px;
+    padding: 0;
+    width:100%;
+    margin:0px;
+}
+div.locationField.hasPreview{
+	height: 112px;
+	position: relative;
+}
+div.inputContainer{
+	margin: 0px 21px 0px 4px;
+	padding: 0px;
+}
+
+div.locationField input[type="text"]:focus{
+	box-shadow: none;
+    outline: none;
+}
+div.opener{
+	position: absolute;
+	right: 3px;
+	top: 1px;
+}
+
+div.locationInfo{
+	min-height: 40px;
+	border: 1px solid #bbbbbb;
+	padding: 2px;
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+}
+
+div.hasPreview .displayBox {
+	margin-left: 170px;
+}
+div.hasPreview .locationInfo{
+	left: 170px;
+}
+div.locationInfo p{
+	padding: 1px;
+}
+div.locationInfo span{
+	width: 20%;
+	display: inline-block;
+}
+
+div.mapPreview {
+	border: 1px solid #bbbbbb;
+	width: auto;
+	text-align: center;
+	float: left;
+	display: none;
+	overflow: hidden;
+	position: relative;
+}
+
+div.mapPreview > div{
+	height: 110px;
+	width: 165px;
+	background: white;
+	text-align: center;
+}
+
+.hasPreview div.mapPreview {
+	display: block;	
+}

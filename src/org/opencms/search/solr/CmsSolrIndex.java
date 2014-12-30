@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -106,8 +106,8 @@ import org.apache.solr.util.FastWriter;
 
 /**
  * Implements the search within an Solr index.<p>
- * 
- * @since 8.5.0 
+ *
+ * @since 8.5.0
  */
 public class CmsSolrIndex extends CmsSearchIndex {
 
@@ -181,9 +181,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Public constructor to create a Solr index.<p>
-     * 
+     *
      * @param name the name for this index.<p>
-     * 
+     *
      * @throws CmsIllegalArgumentException if something goes wrong
      */
     public CmsSolrIndex(String name)
@@ -194,10 +194,10 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Returns the resource type for the given root path.<p>
-     * 
+     *
      * @param cms the current CMS context
      * @param rootPath the root path of the resource to get the type for
-     * 
+     *
      * @return the resource type for the given root path
      */
     public static final String getType(CmsObject cms, String rootPath) {
@@ -319,11 +319,11 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Returns the language locale for the given resource in this index.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param resource the resource to check
      * @param availableLocales a list of locales supported by the resource
-     * 
+     *
      * @return the language locale for the given resource in this index
      */
     @Override
@@ -373,13 +373,13 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Not yet implemented for Solr.<p>
-     * 
+     *
      * <code>
      * #################<br>
      * ### DON'T USE ###<br>
      * #################<br>
      * </code>
-     * 
+     *
      * @Deprecated Use {@link #search(CmsObject, SolrQuery)} or {@link #search(CmsObject, String)} instead
      */
     @Override
@@ -391,14 +391,14 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Default search method.<p>
-     * 
-     * @param cms the current CMS object 
+     *
+     * @param cms the current CMS object
      * @param query the query
-     * 
+     *
      * @return the results
-     * 
+     *
      * @throws CmsSearchException if something goes wrong
-     * 
+     *
      * @see #search(CmsObject, String)
      */
     public CmsSolrResultList search(CmsObject cms, CmsSolrQuery query) throws CmsSearchException {
@@ -407,51 +407,15 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
-     * <h4>Performs a search on the Solr index</h4>
-     * 
-     * Returns a list of 'OpenCms resource documents' 
-     * ({@link CmsSearchResource}) encapsulated within the class  {@link CmsSolrResultList}.
-     * This list can be accessed exactly like an {@link List} which entries are 
-     * {@link CmsSearchResource} that extend {@link CmsResource} and holds the Solr 
-     * implementation of {@link I_CmsSearchDocument} as member. <b>This enables you to deal 
-     * with the resulting list as you do with well known {@link List} and work on it's entries
-     * like you do on {@link CmsResource}.</b>
-     * 
-     * <h4>What will be done with the Solr search result?</h4>
-     * <ul>
-     * <li>Although it can happen, that there are less results returned than rows were requested
-     * (imagine an index containing less documents than requested rows) we try to guarantee
-     * the requested amount of search results and to provide a working pagination with
-     * security check.</li>
-     * 
-     * <li>To be sure we get enough documents left even the permission check reduces the amount
-     * of found documents, the rows are multiplied by <code>'5'</code> and the current page 
-     * additionally the offset is added. The count of documents we don't have enough 
-     * permissions for grows with increasing page number, that's why we also multiply 
-     * the rows by the current page count.</li>
-     * 
-     * <li>Also make sure we perform the permission check for all found documents, so start with
-     * the first found doc.</li>
-     * </ul>
-     * 
-     * <b>NOTE:</b> If latter pages than the current one are containing protected documents the
-     * total hit count will be incorrect, because the permission check ends if we have 
-     * enough results found for the page to display. With other words latter pages than 
-     * the current can contain documents that will first be checked if those pages are 
-     * requested to be displayed, what causes a incorrect hit count.<p>
-     * 
+     * Performs a search.<p>
+     *
      * @param cms the current OpenCms context
      * @param ignoreMaxRows <code>true</code> to return all all requested rows, <code>false</code> to use max rows
      * @param query the OpenCms Solr query
-     * 
-     * @return the list of found documents
-     * 
+     *
+     * @return the found documents
+     *
      * @throws CmsSearchException if something goes wrong
-     * 
-     * @see org.opencms.search.solr.CmsSolrResultList
-     * @see org.opencms.search.CmsSearchResource
-     * @see org.opencms.search.I_CmsSearchDocument
-     * @see org.opencms.search.solr.CmsSolrQuery
      */
     public CmsSolrResultList search(CmsObject cms, final CmsSolrQuery query, boolean ignoreMaxRows)
     throws CmsSearchException {
@@ -461,14 +425,14 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Default search method.<p>
-     * 
-     * @param cms the current CMS object 
+     *
+     * @param cms the current CMS object
      * @param query the query
-     * 
+     *
      * @return the results
-     * 
+     *
      * @throws CmsSearchException if something goes wrong
-     * 
+     *
      * @see #search(CmsObject, String)
      */
     public CmsSolrResultList search(CmsObject cms, SolrQuery query) throws CmsSearchException {
@@ -478,14 +442,14 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Performs a search.<p>
-     * 
+     *
      * @param cms the cms object
      * @param solrQuery the Solr query
-     * 
+     *
      * @return a list of documents
-     * 
+     *
      * @throws CmsSearchException if something goes wrong
-     * 
+     *
      * @see #search(CmsObject, CmsSolrQuery, boolean)
      */
     public CmsSolrResultList search(CmsObject cms, String solrQuery) throws CmsSearchException {
@@ -495,14 +459,14 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Writes the response into the writer.<p>
-     * 
+     *
      * NOTE: Currently not available for HTTP server.<p>
-     * 
+     *
      * @param response the servlet response
      * @param cms the CMS object to use for search
      * @param query the Solr query
      * @param ignoreMaxRows if to return unlimited results
-     * 
+     *
      * @throws Exception if there is no embedded server
      */
     public void select(ServletResponse response, CmsObject cms, CmsSolrQuery query, boolean ignoreMaxRows)
@@ -523,7 +487,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Sets the Solr server used by this index.<p>
-     * 
+     *
      * @param server the server to set
      */
     public void setSolrServer(SolrServer server) {
@@ -542,11 +506,11 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Executes a spell checking Solr query and returns the Solr query response.<p>
-     * 
+     *
      * @param res the servlet response
      * @param cms the CMS object
      * @param q the query
-     * 
+     *
      * @throws CmsSearchException if something goes wrong
      */
     public void spellCheck(ServletResponse res, CmsObject cms, CmsSolrQuery q) throws CmsSearchException {
@@ -581,7 +545,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                             }
                         }
                     } catch (Exception e) {
-                        // should not happen, but if it does we want to go on with the next result nevertheless                        
+                        // should not happen, but if it does we want to go on with the next result nevertheless
                         LOG.warn(Messages.get().getBundle().key(Messages.LOG_SOLR_ERR_RESULT_ITERATION_FAILED_0), e);
                     }
                 }
@@ -701,9 +665,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Checks if the given resource should be indexed by this index or not.<p>
-     * 
+     *
      * @param res the resource candidate
-     * 
+     *
      * @return <code>true</code> if the given resource should be indexed or <code>false</code> if not
      */
     protected boolean isIndexing(CmsResource res) {
@@ -723,11 +687,11 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Checks if the current user is allowed to access non-online indexes.<p>
-     * 
+     *
      * To access non-online indexes the current user must be a workplace user at least.<p>
-     * 
+     *
      * @param cms the CMS object initialized with the current request context / user
-     * 
+     *
      * @throws CmsSearchException thrown if the access is not permitted
      */
     private void checkOfflineAccess(CmsObject cms) throws CmsSearchException {
@@ -736,7 +700,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
         if (!CmsProject.ONLINE_PROJECT_NAME.equals(getProject())) {
             // only if the user has the role Workplace user, he is allowed to access the Offline index
             try {
-                OpenCms.getRoleManager().checkRole(cms, CmsRole.WORKPLACE_USER);
+                OpenCms.getRoleManager().checkRole(cms, CmsRole.ELEMENT_AUTHOR);
             } catch (CmsRoleViolationException e) {
                 throw new CmsSearchException(Messages.get().container(
                     Messages.LOG_SOLR_ERR_SEARCH_PERMISSION_VIOLATION_2,
@@ -747,16 +711,52 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
-     * Performs the actual search.<p>
-     * 
+     * <h4>Performs a search on the Solr index</h4>
+     *
+     * Returns a list of 'OpenCms resource documents'
+     * ({@link CmsSearchResource}) encapsulated within the class  {@link CmsSolrResultList}.
+     * This list can be accessed exactly like an {@link List} which entries are
+     * {@link CmsSearchResource} that extend {@link CmsResource} and holds the Solr
+     * implementation of {@link I_CmsSearchDocument} as member. <b>This enables you to deal
+     * with the resulting list as you do with well known {@link List} and work on it's entries
+     * like you do on {@link CmsResource}.</b>
+     *
+     * <h4>What will be done with the Solr search result?</h4>
+     * <ul>
+     * <li>Although it can happen, that there are less results returned than rows were requested
+     * (imagine an index containing less documents than requested rows) we try to guarantee
+     * the requested amount of search results and to provide a working pagination with
+     * security check.</li>
+     *
+     * <li>To be sure we get enough documents left even the permission check reduces the amount
+     * of found documents, the rows are multiplied by <code>'5'</code> and the current page
+     * additionally the offset is added. The count of documents we don't have enough
+     * permissions for grows with increasing page number, that's why we also multiply
+     * the rows by the current page count.</li>
+     *
+     * <li>Also make sure we perform the permission check for all found documents, so start with
+     * the first found doc.</li>
+     * </ul>
+     *
+     * <b>NOTE:</b> If latter pages than the current one are containing protected documents the
+     * total hit count will be incorrect, because the permission check ends if we have
+     * enough results found for the page to display. With other words latter pages than
+     * the current can contain documents that will first be checked if those pages are
+     * requested to be displayed, what causes a incorrect hit count.<p>
+     *
      * @param cms the current OpenCms context
      * @param ignoreMaxRows <code>true</code> to return all all requested rows, <code>false</code> to use max rows
      * @param query the OpenCms Solr query
      * @param response the servlet response to write the query result to, may also be <code>null</code>
-     * 
-     * @return the found documents
-     * 
+     *
+     * @return the list of found documents
+     *
      * @throws CmsSearchException if something goes wrong
+     *
+     * @see org.opencms.search.solr.CmsSolrResultList
+     * @see org.opencms.search.CmsSearchResource
+     * @see org.opencms.search.I_CmsSearchDocument
+     * @see org.opencms.search.solr.CmsSolrQuery
      */
     @SuppressWarnings("unchecked")
     private CmsSolrResultList search(
@@ -765,6 +765,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
         boolean ignoreMaxRows,
         ServletResponse response) throws CmsSearchException {
 
+        // check if the user is allowed to access this index
         checkOfflineAccess(cms);
 
         int previousPriority = Thread.currentThread().getPriority();
@@ -828,6 +829,11 @@ public class CmsSolrIndex extends CmsSearchIndex {
             long visibleHitCount = hitCount;
             float maxScore = 0;
 
+            // If we're using a postprocessor, (re-)initialize it before using it 
+            if (m_postProcessor != null) {
+                m_postProcessor.init();
+            }
+
             // process found documents
             List<CmsSearchResource> allDocs = new ArrayList<CmsSearchResource>();
             int cnt = 0;
@@ -848,7 +854,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
                                         (SolrInputDocument)searchDoc.getDocument());
                                 }
                                 resourceDocumentList.add(new CmsSearchResource(resource, searchDoc));
-                                solrDocumentList.add(doc);
+                                if (null != doc) {
+                                    solrDocumentList.add(doc);
+                                }
                                 maxScore = maxScore < searchDoc.getScore() ? searchDoc.getScore() : maxScore;
                             }
                             allDocs.add(new CmsSearchResource(resource, searchDoc));
@@ -864,7 +872,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                         maxScore = maxScore < searchDoc.getScore() ? searchDoc.getScore() : maxScore;
                     }
                 } catch (Exception e) {
-                    // should not happen, but if it does we want to go on with the next result nevertheless                        
+                    // should not happen, but if it does we want to go on with the next result nevertheless
                     LOG.warn(Messages.get().getBundle().key(Messages.LOG_SOLR_ERR_RESULT_ITERATION_FAILED_0), e);
                 }
             }
@@ -1037,11 +1045,11 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Writes the Solr response.<p>
-     * 
+     *
      * @param response the servlet response
      * @param queryRequest the Solr request
      * @param queryResponse the Solr response to write
-     * 
+     *
      * @throws IOException if sth. goes wrong
      * @throws UnsupportedEncodingException if sth. goes wrong
      */

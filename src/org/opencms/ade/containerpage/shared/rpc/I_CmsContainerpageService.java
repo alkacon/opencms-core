@@ -31,11 +31,13 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
+import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
 
@@ -145,6 +147,13 @@ public interface I_CmsContainerpageService extends RemoteService {
     /**
      * This method is used for serialization purposes only.<p>
      * 
+     * @return container info
+     */
+    CmsContainer getContainerInfo();
+
+    /**
+     * This method is used for serialization purposes only.<p>
+     * 
      * @return element info
      */
     CmsContainerElement getElementInfo();
@@ -152,11 +161,13 @@ public interface I_CmsContainerpageService extends RemoteService {
     /**
      * Returns container element data by client id.<p>
      * 
-     * @param  pageStructureId the container page structure id
+     * @param  context the rpc context
      * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters
      * @param clientIds the requested element id's
      * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
+     * @param dndSource the drag and drop source container (if we are getting the data for the drag and drop case) 
      * @param locale the content locale
      * 
      * @return the element data
@@ -164,22 +175,25 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     Map<String, CmsContainerElementData> getElementsData(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
         CmsUUID detailContentId,
         String reqParams,
         Collection<String> clientIds,
         Collection<CmsContainer> containers,
+        boolean allowNested,
+        String dndSource,
         String locale) throws CmsRpcException;
 
     /**
      * Gets the element data for an id and a map of settings.<p>
      * 
-     * @param pageStructureId the container page structure id 
+     * @param context the RPC context 
      * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters 
      * @param clientId the requested element ids 
      * @param settings the settings for which the element data should be loaded 
      * @param containers the containers of the current page 
+     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * 
      * @return the element data 
@@ -187,12 +201,13 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request 
      */
     CmsContainerElementData getElementWithSettings(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
         CmsUUID detailContentId,
         String reqParams,
         String clientId,
         Map<String, String> settings,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale) throws CmsRpcException;
 
     /**
@@ -201,6 +216,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param pageStructureId the container page structure id
      * @param detailContentId the detail content structure id
      * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * 
      * @return the favorite list element data
@@ -211,16 +227,36 @@ public interface I_CmsContainerpageService extends RemoteService {
         CmsUUID pageStructureId,
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
+        boolean allowNested,
+        String locale) throws CmsRpcException;
+
+    /**
+     * Returns the gallery configuration data according to the current page containers and the selected element view.<p>
+     * 
+     * @param containers the page containers
+     * @param elementView the element view
+     * @param uri the page URI
+     * @param locale the content locale
+     * 
+     * @return the gallery data
+     * 
+     * @throws CmsRpcException in case something goes wrong
+     */
+    CmsGalleryDataBean getGalleryDataForPage(
+        List<CmsContainer> containers,
+        CmsUUID elementView,
+        String uri,
         String locale) throws CmsRpcException;
 
     /**
      * Returns new container element data for the given resource type name.<p>
      * 
-     * @param pageStructureId the container page structure id
+     * @param context the RPC context 
      * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters
      * @param resourceType the requested element resource type name
      * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * 
      * @return the element data
@@ -228,11 +264,12 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     CmsContainerElementData getNewElementData(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
         CmsUUID detailContentId,
         String reqParams,
         String resourceType,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale) throws CmsRpcException;
 
     /**
@@ -241,6 +278,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param pageStructureId the container page structure id
      * @param detailContentId the detail content structure id
      * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
      * @param locale the content locale
      * 
      * @return the recent list element data
@@ -251,6 +289,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         CmsUUID pageStructureId,
         CmsUUID detailContentId,
         Collection<CmsContainer> containers,
+        boolean allowNested,
         String locale) throws CmsRpcException;
 
     /**
@@ -261,9 +300,16 @@ public interface I_CmsContainerpageService extends RemoteService {
      *  
      * @return the status of the removed element 
      * 
-     * @throws CmsRpcException
+     * @throws CmsRpcException if something goes wrong 
      */
     CmsRemovedElementStatus getRemovedElementStatus(String id, CmsUUID containerpageId) throws CmsRpcException;
+
+    /**
+     * Loads the index of the clipboard tab last selected by the user.<p>
+     * 
+     * @return the clipboard tab index 
+     */
+    int loadClipboardTab();
 
     /**
      * Returns the initialization data.<p>
@@ -275,28 +321,31 @@ public interface I_CmsContainerpageService extends RemoteService {
     CmsCntPageData prefetch() throws CmsRpcException;
 
     /**
+     * Saves the index of the clipboard tab selected by the user.<p>
+     * 
+     * @param tabIndex the index of the selected clipboard tab 
+     */
+    void saveClipboardTab(int tabIndex);
+
+    /**
      * Saves the container-page.<p>
      * 
      * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
-     * @param locale the content locale
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, String locale)
-    throws CmsRpcException;
+    void saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException;
 
     /**
      * Saves the detail containers.<p>
      * 
      * @param detailContainerResource the detail container resource path
      * @param containers the container-page's containers
-     * @param locale the content locale
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers, String locale)
-    throws CmsRpcException;
+    void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers) throws CmsRpcException;
 
     /**
      * Saves the favorite list.<p>
@@ -310,7 +359,7 @@ public interface I_CmsContainerpageService extends RemoteService {
     /**
      * Saves a group-container element.<p>
      * 
-     * @param pageStructureId the container page structure id
+     * @param context the RPC context 
      * @param detailContentId the detail content structure id
      * @param reqParams optional request parameters
      * @param groupContainer the group-container to save
@@ -322,7 +371,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong processing the request
      */
     CmsGroupContainerSaveResult saveGroupContainer(
-        CmsUUID pageStructureId,
+        CmsContainerPageRpcContext context,
         CmsUUID detailContentId,
         String reqParams,
         CmsGroupContainer groupContainer,
@@ -368,27 +417,32 @@ public interface I_CmsContainerpageService extends RemoteService {
     void setEditSmallElements(boolean editSmallElements) throws CmsRpcException;
 
     /**
+     * Sets the element view.<p>
+     * 
+     * @param elementView the element view
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    void setElementView(CmsUUID elementView) throws CmsRpcException;
+
+    /**
      * Saves the container-page in a synchronized RPC call.<p>
      * 
      * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
-     * @param locale the content locale
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, String locale)
-    throws CmsRpcException;
+    void syncSaveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException;
 
     /**
      * Saves the detail containers.<p>
      * 
      * @param detailContainerResource the detail container resource path
      * @param containers the container-page's containers
-     * @param locale the content locale
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void syncSaveDetailContainers(String detailContainerResource, List<CmsContainer> containers, String locale)
-    throws CmsRpcException;
+    void syncSaveDetailContainers(String detailContainerResource, List<CmsContainer> containers) throws CmsRpcException;
 
 }

@@ -41,6 +41,7 @@ import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
+import com.google.common.base.Function;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -227,8 +228,8 @@ public class CmsTreeItem extends CmsListItem {
      * @return the path level
      */
     protected static native int getPathLevel(String path)/*-{
-      return path.match(/\//g).length - 1;
-    }-*/;
+                                                         return path.match(/\//g).length - 1;
+                                                         }-*/;
 
     /**
      * Unsupported operation.<p>
@@ -748,6 +749,19 @@ public class CmsTreeItem extends CmsListItem {
     public void showOpeners() {
 
         removeStyleName(CSS.listTreeItemNoOpeners());
+    }
+
+    /** 
+     * Visits all nested tree items with the given visitor function.<p>
+     * 
+     * @param visitor the visitor 
+     */
+    public void visit(Function<CmsTreeItem, Boolean> visitor) {
+
+        visitor.apply(this);
+        for (Widget child : m_children) {
+            ((CmsTreeItem)child).visit(visitor);
+        }
     }
 
     /**

@@ -5,7 +5,6 @@
 	<inherits name="org.opencms.ade.galleries.GalleryHeadless" />
 	<inherits name="org.opencms.ade.publish.PublishDialogHeadless" />
 	<inherits name="org.opencms.ade.contenteditor.WidgetRegistry" />
-	<script src="../org.opencms.ade.contenteditor.scripts.js" />
 	<script src="../../editors/tinymce/jscripts/tinymce/tinymce.min.js" />
 	<source path="client" />
 	<source path="shared" />

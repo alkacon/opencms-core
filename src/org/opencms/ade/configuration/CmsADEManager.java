@@ -43,9 +43,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -59,9 +62,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADECache;
 import org.opencms.xml.containerpage.CmsADECacheSettings;
@@ -73,6 +79,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -152,6 +159,9 @@ public class CmsADEManager {
     /** Default recent list size constant. */
     public static final int DEFAULT_RECENT_LIST_SIZE = 10;
 
+    /** The name of the element view configuration file type. */
+    public static final String ELEMENT_VIEW_TYPE = "elementview";
+
     /** The name of the module configuration file type. */
     public static final String MODULE_CONFIG_TYPE = "module_config";
 
@@ -184,6 +194,9 @@ public class CmsADEManager {
 
     /** The detail page finder. */
     private I_CmsDetailPageFinder m_detailPageFinder = new CmsSitemapDetailPageFinder();
+
+    /** The element view configuration file type. */
+    private I_CmsResourceType m_elementViewType;
 
     /** The initialization status. */
     private Status m_initStatus = Status.notInitialized;
@@ -272,10 +285,7 @@ public class CmsADEManager {
      */
     public List<CmsDetailPageInfo> getAllDetailPages(CmsObject cms) {
 
-        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
-        ? m_onlineCache
-        : m_offlineCache;
-        return cache.getAllDetailPages();
+        return getCacheState(isOnline(cms)).getAllDetailPages();
     }
 
     /**
@@ -352,24 +362,25 @@ public class CmsADEManager {
      */
     public String getDetailPage(CmsObject cms, String pageRootPath, String originPath) {
 
-        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
-        CmsConfigurationCache cache = online ? m_onlineCache : m_offlineCache;
-        String resType = cache.getParentFolderType(pageRootPath);
+        boolean online = isOnline(cms);
+        String resType = getCacheState(online).getParentFolderType(pageRootPath);
         if (resType == null) {
             return null;
         }
         String originRootPath = cms.getRequestContext().addSiteRoot(originPath);
         CmsADEConfigData configData = lookupConfiguration(cms, originRootPath);
-        List<CmsDetailPageInfo> pageInfo = configData.getDetailPagesForType(resType);
-        if ((pageInfo == null) || pageInfo.isEmpty()) {
-            // in case no detail page is found for the base URI try to fetch it for the page root path
-            configData = lookupConfiguration(cms, pageRootPath);
-            pageInfo = configData.getDetailPagesForType(resType);
-            if ((pageInfo == null) || pageInfo.isEmpty()) {
-                return null;
+        CmsADEConfigData targetConfigData = lookupConfiguration(cms, pageRootPath);
+        boolean targetFirst = targetConfigData.isPreferDetailPagesForLocalContents();
+        List<CmsADEConfigData> configs = targetFirst ? Arrays.asList(targetConfigData, configData) : Arrays.asList(
+            configData,
+            targetConfigData);
+        for (CmsADEConfigData config : configs) {
+            List<CmsDetailPageInfo> pageInfo = config.getDetailPagesForType(resType);
+            if ((pageInfo != null) && !pageInfo.isEmpty()) {
+                return pageInfo.get(0).getUri();
             }
         }
-        return pageInfo.get(0).getUri();
+        return null;
     }
 
     /**
@@ -391,10 +402,8 @@ public class CmsADEManager {
      */
     public List<String> getDetailPages(CmsObject cms, String type) {
 
-        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
-        ? m_onlineCache
-        : m_offlineCache;
-        return cache.getDetailPages(type);
+        CmsConfigurationCache cache = isOnline(cms) ? m_onlineCache : m_offlineCache;
+        return cache.getState().getDetailPages(type);
     }
 
     /**
@@ -406,10 +415,7 @@ public class CmsADEManager {
      */
     public Set<String> getDetailPageTypes(CmsObject cms) {
 
-        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
-        ? m_onlineCache
-        : m_offlineCache;
-        return cache.getDetailPageTypes();
+        return getCacheState(isOnline(cms)).getDetailPageTypes();
     }
 
     /**
@@ -434,6 +440,29 @@ public class CmsADEManager {
             return CmsXmlContentPropertyHelper.copyPropertyConfiguration(result);
         }
         return Collections.<String, CmsXmlContentProperty> emptyMap();
+    }
+
+    /**
+     * Returns the available element views.<p>
+     * 
+     * @param cms the cms context
+     * 
+     * @return the element views
+     */
+    public Map<CmsUUID, CmsElementView> getElementViews(CmsObject cms) {
+
+        CmsConfigurationCache cache = getCache(isOnline(cms));
+        return cache.getState().getElementViews();
+    }
+
+    /**
+     * Gets the element view configuration resource type.<p>
+     * 
+     * @return the element view configuration resource type 
+     */
+    public I_CmsResourceType getElementViewType() {
+
+        return m_elementViewType;
     }
 
     /**
@@ -490,11 +519,11 @@ public class CmsADEManager {
             rootPath = CmsResource.getParentFolder(rootPath);
         }
         CmsInheritedContainerState result = new CmsInheritedContainerState();
-        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
+        boolean online = isOnline(cms);
         CmsContainerConfigurationCache cache = online
         ? m_onlineContainerConfigurationCache
         : m_offlineContainerConfigurationCache;
-        result.addConfigurations(cache, rootPath, name, cms.getRequestContext().getLocale());
+        result.addConfigurations(cache, rootPath, name);
         return result;
 
     }
@@ -563,6 +592,60 @@ public class CmsADEManager {
     }
 
     /**
+     * Returns the permission info for the given resource.<p>
+     * 
+     * @param cms the cms context
+     * @param resource the resource
+     * @param contextPath the context path
+     * 
+     * @return the permission info
+     * 
+     * @throws CmsException if checking the permissions fails
+     */
+    public CmsPermissionInfo getPermissionInfo(CmsObject cms, CmsResource resource, String contextPath)
+    throws CmsException {
+
+        boolean hasView = cms.hasPermissions(
+            resource,
+            CmsPermissionSet.ACCESS_VIEW,
+            false,
+            CmsResourceFilter.ALL.addRequireVisible());
+        boolean hasWrite = false;
+        if (hasView) {
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+            hasView = (settings == null) || settings.getAccess().getPermissions(cms, resource).requiresViewPermission();
+            if (hasView
+                && CmsResourceTypeXmlContent.isXmlContent(resource)
+                && !CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+                if (contextPath == null) {
+                    contextPath = resource.getRootPath();
+                }
+                CmsResourceTypeConfig localConfigData = lookupConfiguration(cms, contextPath).getResourceType(
+                    type.getTypeName());
+                if (localConfigData != null) {
+                    Map<CmsUUID, CmsElementView> elmenetViews = getElementViews(cms);
+                    hasView = elmenetViews.containsKey(localConfigData.getElementView())
+                        && elmenetViews.get(localConfigData.getElementView()).hasPermission(cms);
+                }
+            }
+            // the user may only have write permissions if he is allowed to view the resource
+            hasWrite = hasView
+                && cms.hasPermissions(
+                    resource,
+                    CmsPermissionSet.ACCESS_WRITE,
+                    false,
+                    CmsResourceFilter.IGNORE_EXPIRATION)
+                && ((settings == null) || settings.getAccess().getPermissions(cms, resource).requiresWritePermission());
+        }
+
+        String noEdit = new CmsResourceUtil(cms, resource).getNoEditReason(
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms),
+            true);
+        return new CmsPermissionInfo(hasView, hasWrite, noEdit);
+    }
+
+    /**
      * Returns the favorite list, or creates it if not available.<p>
      *
      * @param cms the cms context
@@ -614,6 +697,28 @@ public class CmsADEManager {
             maxElems = new Integer(DEFAULT_RECENT_LIST_SIZE);
         }
         return maxElems.intValue();
+    }
+
+    /**
+     * Returns all sub sites below the given path.<p>
+     * 
+     * @param cms the cms context
+     * @param subSiteRoot the sub site root path
+     * 
+     * @return the sub site root paths
+     */
+    public List<String> getSubSitePaths(CmsObject cms, String subSiteRoot) {
+
+        List<String> result = new ArrayList<String>();
+        String normalizedRootPath = CmsStringUtil.joinPaths("/", subSiteRoot, "/");
+        CmsADEConfigCacheState state = getCacheState(isOnline(cms));
+        Set<String> siteConfigurationPaths = state.getSiteConfigurationPaths();
+        for (String path : siteConfigurationPaths) {
+            if ((path.length() > normalizedRootPath.length()) && path.startsWith(normalizedRootPath)) {
+                result.add(path);
+            }
+        }
+        return result;
     }
 
     /**
@@ -716,11 +821,20 @@ public class CmsADEManager {
                 m_initStatus = Status.initializing;
                 m_configType = OpenCms.getResourceManager().getResourceType(CONFIG_TYPE);
                 m_moduleConfigType = OpenCms.getResourceManager().getResourceType(MODULE_CONFIG_TYPE);
+                m_elementViewType = OpenCms.getResourceManager().getResourceType(ELEMENT_VIEW_TYPE);
                 CmsProject temp = getTempfileProject(m_onlineCms);
                 m_offlineCms = OpenCms.initCmsObject(m_onlineCms);
                 m_offlineCms.getRequestContext().setCurrentProject(temp);
-                m_onlineCache = new CmsConfigurationCache(m_onlineCms, m_configType, m_moduleConfigType);
-                m_offlineCache = new CmsConfigurationCache(m_offlineCms, m_configType, m_moduleConfigType);
+                m_onlineCache = new CmsConfigurationCache(
+                    m_onlineCms,
+                    m_configType,
+                    m_moduleConfigType,
+                    m_elementViewType);
+                m_offlineCache = new CmsConfigurationCache(
+                    m_offlineCms,
+                    m_configType,
+                    m_moduleConfigType,
+                    m_elementViewType);
                 m_onlineCache.initialize();
                 m_offlineCache.initialize();
                 m_onlineContainerConfigurationCache = new CmsContainerConfigurationCache(m_onlineCms, "online");
@@ -763,10 +877,7 @@ public class CmsADEManager {
      */
     public boolean isDetailPage(CmsObject cms, CmsResource resource) {
 
-        CmsConfigurationCache cache = cms.getRequestContext().getCurrentProject().isOnlineProject()
-        ? m_onlineCache
-        : m_offlineCache;
-        return cache.isDetailPage(cms, resource);
+        return getCache(isOnline(cms)).isDetailPage(cms, resource);
     }
 
     /**
@@ -804,12 +915,6 @@ public class CmsADEManager {
     public CmsADEConfigData lookupConfiguration(CmsObject cms, String rootPath) {
 
         CmsADEConfigData configData = internalLookupConfiguration(cms, rootPath);
-        if (configData == null) {
-            configData = new CmsADEConfigData();
-            configData.initialize(cms.getRequestContext().getCurrentProject().isOnlineProject()
-            ? m_onlineCms
-            : m_offlineCms);
-        }
         return configData;
     }
 
@@ -945,6 +1050,16 @@ public class CmsADEManager {
         // do nothing 
     }
 
+    /** 
+     * Waits until the next time the cache is updated.<p>
+     * 
+     * @param online true if we want to wait for the online cache, false for the offline cache 
+     */
+    public void waitForCacheUpdate(boolean online) {
+
+        getCache(online).getWaitHandleForUpdateTask().enter(2 * CmsConfigurationCache.TASK_DELAY_MILLIS);
+    }
+
     /**
      * Waits until the formatter cache has finished updating itself.<p>
      * 
@@ -1023,6 +1138,30 @@ public class CmsADEManager {
     }
 
     /** 
+     * Gets the configuration cache instance.<p>
+     * 
+     * @param online true if you want the online cache, false for the offline cache 
+     * 
+     * @return the ADE configuration cache instance 
+     */
+    protected CmsConfigurationCache getCache(boolean online) {
+
+        return online ? m_onlineCache : m_offlineCache;
+    }
+
+    /**
+     * Gets the current ADE configuration cache state.<p>
+     * 
+     * @param online true if you want the online state, false for the offline state 
+     * 
+     * @return the configuration cache state 
+     */
+    protected CmsADEConfigCacheState getCacheState(boolean online) {
+
+        return (online ? m_onlineCache : m_offlineCache).getState();
+    }
+
+    /** 
      * Gets the offline cache.<p>
      * 
      * @return the offline configuration cache 
@@ -1085,13 +1224,21 @@ public class CmsADEManager {
      */
     protected CmsADEConfigData internalLookupConfiguration(CmsObject cms, String rootPath) {
 
-        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
-        CmsConfigurationCache cache = online ? m_onlineCache : m_offlineCache;
-        CmsADEConfigData result = cache.getSiteConfigData(rootPath);
-        if (result == null) {
-            result = cache.getModuleConfiguration();
-        }
-        return result;
+        boolean online = isOnline(cms);
+        CmsADEConfigCacheState state = getCacheState(online);
+        return state.lookupConfiguration(rootPath);
+    }
+
+    /** 
+     * Returns true if the project set in the CmsObject is the Online project.<p>
+     * 
+     * @param cms the CMS context to check 
+     * 
+     * @return true if the project set in the CMS context is the Online project 
+     */
+    private boolean isOnline(CmsObject cms) {
+
+        return cms.getRequestContext().getCurrentProject().isOnlineProject();
     }
 
     /**

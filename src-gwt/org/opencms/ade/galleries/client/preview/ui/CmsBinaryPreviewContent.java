@@ -53,7 +53,6 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -74,27 +73,6 @@ public class CmsBinaryPreviewContent extends Composite {
         // GWT interface, nothing to do
     }
 
-    /**
-     * The style interface.<p>
-     */
-    interface I_CmsPreviewContentStyle extends CssResource {
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String panel();
-
-        /** Access method.<p>
-         * 
-         * @return the CSS class name
-         */
-        String previewContent();
-    }
-
-    /** The preview panel height. */
-    protected static final int PREVIEW_PANEL_HEIGHT = 348;
-
     /** The ui binder instance for this widget class. */
     private static I_CmsPreviewContentUiBinder uiBinder = GWT.create(I_CmsPreviewContentUiBinder.class);
 
@@ -108,10 +86,6 @@ public class CmsBinaryPreviewContent extends Composite {
     /** The preview content HTML. */
     @UiField
     protected HTML m_previewContent;
-
-    /** The css for this widget. */
-    @UiField
-    protected I_CmsPreviewContentStyle m_style;
 
     /**
      * Constructor.<p>
@@ -170,15 +144,14 @@ public class CmsBinaryPreviewContent extends Composite {
             public void onOpen(OpenEvent<CmsListItemWidget> event) {
 
                 int widgetHeight = event.getTarget().getOffsetHeight();
-                m_previewContent.getElement().getStyle().setHeight(PREVIEW_PANEL_HEIGHT - widgetHeight, Unit.PX);
+                m_previewContent.getElement().getStyle().setTop(12 + widgetHeight, Unit.PX);
             }
         });
         itemWidget.addCloseHandler(new CloseHandler<CmsListItemWidget>() {
 
             public void onClose(CloseEvent<CmsListItemWidget> event) {
 
-                int widgetHeight = event.getTarget().getOffsetHeight();
-                m_previewContent.getElement().getStyle().setHeight(PREVIEW_PANEL_HEIGHT - widgetHeight, Unit.PX);
+                m_previewContent.getElement().getStyle().clearTop();
             }
         });
         CmsListItem result = new CmsListItem(itemWidget);

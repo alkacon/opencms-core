@@ -32,6 +32,7 @@ import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.wrapper.CmsObjectWrapper;
+import org.opencms.file.wrapper.CmsSilentWrapperException;
 import org.opencms.file.wrapper.I_CmsResourceWrapper;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
@@ -161,7 +162,13 @@ public class CmsJlanRepository implements I_CmsRepository {
                         }
                         return result;
                     } catch (InvocationTargetException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
+                        Throwable cause = e.getCause();
+                        if ((cause != null) && (cause instanceof CmsSilentWrapperException)) {
+                            // not really an error
+                            LOG.info(cause.getCause().getLocalizedMessage(), cause.getCause());
+                        } else {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
                         throw e.getCause();
                     }
                 }

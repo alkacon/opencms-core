@@ -154,6 +154,16 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
     public List<CmsResource> getResults(CmsObject cms, String collectorName, String param)
     throws CmsDataAccessException, CmsException {
 
+        return getResults(cms, collectorName, param, -1);
+
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public List<CmsResource> getResults(CmsObject cms, String collectorName, String param, int numResults)
+    throws CmsDataAccessException, CmsException {
+
         // if action is not set use default
         if (collectorName == null) {
             collectorName = COLLECTORS[0];
@@ -162,13 +172,13 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
         switch (COLLECTORS_LIST.indexOf(collectorName)) {
             case 0:
                 // "allVisited"
-                return getVisitedResources(cms, param);
+                return getVisitedResources(cms, param, numResults);
             case 1:
                 // "allSubscribed"
-                return getSubscribedResources(cms, param);
+                return getSubscribedResources(cms, param, numResults);
             case 2:
                 // "allSubscribedDeleted"
-                return getSubscribedDeletedResources(cms, param);
+                return getSubscribedDeletedResources(cms, param, numResults);
             default:
                 throw new CmsDataAccessException(Messages.get().container(
                     Messages.ERR_COLLECTOR_NAME_INVALID_1,
@@ -181,12 +191,14 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
      * 
      * @param cms the current users context
      * @param param an optional collector parameter
+     * @param numResults the number of results 
      * 
      * @return the subscribed deleted resources according to the collector parameter
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List<CmsResource> getSubscribedDeletedResources(CmsObject cms, String param) throws CmsException {
+    protected List<CmsResource> getSubscribedDeletedResources(CmsObject cms, String param, int numResults)
+    throws CmsException {
 
         Map<String, String> params = getParameters(param);
         CmsSubscriptionFilter filter = getSubscriptionFilter(cms, params);
@@ -209,6 +221,9 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
             I_CmsHistoryResource deletedResource = i.next();
             result.add((CmsResource)deletedResource);
         }
+        if (numResults > 0) {
+            result = shrinkToFit(result, numResults);
+        }
         return result;
     }
 
@@ -217,17 +232,21 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
      * 
      * @param cms the current users context
      * @param param an optional collector parameter
+     * @param numResults the number of results 
      * 
      * @return the subscribed resources according to the collector parameter
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List<CmsResource> getSubscribedResources(CmsObject cms, String param) throws CmsException {
+    protected List<CmsResource> getSubscribedResources(CmsObject cms, String param, int numResults) throws CmsException {
 
         List<CmsResource> result = OpenCms.getSubscriptionManager().readSubscribedResources(
             cms,
             getSubscriptionFilter(cms, param));
         Collections.sort(result, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
+        if (numResults > 0) {
+            result = shrinkToFit(result, numResults);
+        }
         return result;
     }
 
@@ -330,17 +349,21 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
      * 
      * @param cms the current users context
      * @param param an optional collector parameter
+     * @param numResults the number of results 
      * 
      * @return the visited resources according to the collector parameter
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List<CmsResource> getVisitedResources(CmsObject cms, String param) throws CmsException {
+    protected List<CmsResource> getVisitedResources(CmsObject cms, String param, int numResults) throws CmsException {
 
         List<CmsResource> result = OpenCms.getSubscriptionManager().readResourcesVisitedBy(
             cms,
             getVisitedByFilter(cms, param));
         Collections.sort(result, I_CmsResource.COMPARE_DATE_LAST_MODIFIED);
+        if (numResults > 0) {
+            result = shrinkToFit(result, numResults);
+        }
         return result;
     }
 

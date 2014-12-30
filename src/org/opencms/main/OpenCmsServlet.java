@@ -81,6 +81,9 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     /** GWT RPC services suffix. */
     public static final String HANDLE_GWT = ".gwt";
 
+    /** Handler prefix. */
+    public static final String HANDLE_PATH = "/handle";
+
     /** Name of the <code>DefaultWebApplication</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
     public static final String SERVLET_PARAM_DEFAULT_WEB_APPLICATION = "DefaultWebApplication";
 
@@ -92,9 +95,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
     /** Name of the <code>WebApplicationContext</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
     public static final String SERVLET_PARAM_WEB_APPLICATION_CONTEXT = "WebApplicationContext";
-
-    /** Handler prefix. */
-    private static final String HANDLE_PATH = "/handle";
 
     /** Path to handler "error page" files in the VFS. */
     private static final String HANDLE_VFS_PATH = "/system/handler" + HANDLE_PATH;

@@ -210,6 +210,12 @@ div.itemAdditionalValue{
 	height:16px;
 }
 
+li.expired div.itemContent{
+	background-image:  repeating-linear-gradient(45deg, transparent, transparent 15px, rgba(252,255,255,.5) 15px, rgba(255,255,255,.5) 30px);
+	background-position: 50% 50%;
+	height: auto;
+}
+
 /** These styles are for dragging. */
 li.dragging, div.dragging{
 	list-style-type: none !important;

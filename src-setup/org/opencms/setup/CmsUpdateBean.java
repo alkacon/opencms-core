@@ -71,6 +71,7 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 
 /**
@@ -842,7 +843,11 @@ public class CmsUpdateBean extends CmsSetupBean {
         for (int i = copy.length - 1; i >= 0; i--) {
             System.out.println(copy[i]);
         }
-        System.out.println("This is OpenCms " + OpenCms.getSystemInfo().getVersionNumber());
+        System.out.println("This is OpenCms "
+            + OpenCms.getSystemInfo().getVersionNumber()
+            + " ["
+            + OpenCms.getSystemInfo().getVersionId()
+            + "]");
         System.out.println();
         System.out.println();
     }
@@ -872,7 +877,15 @@ public class CmsUpdateBean extends CmsSetupBean {
             for (String moduleToRemove : getModulesToDelete()) {
                 removeModule(moduleToRemove, report);
             }
-            for (String name : m_installModules) {
+
+            List<String> installList = Lists.newArrayList(m_installModules);
+
+            // HACK: Some resources were moved from org.opencms.ade.sitemap to org.opencms.ade.config, but they are located
+            // under /system/workplace/resources, so if org.opencms.ade.config is updated before org.opencms.ade.sitemap, these
+            // resources will be deleted. So just update org.opencms.ade.config again at the end. 
+            installList.add("org.opencms.ade.config");
+
+            for (String name : installList) {
                 if (!utdModules.contains(name)) {
                     String filename = m_moduleFilenames.get(name);
                     try {
@@ -1042,7 +1055,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      * @param moduleName the name of the module to remove 
      * @param report the report to write to
      *
-     * @throws CmsException   
+     * @throws CmsException in case something goes wrong
      */
     protected void removeModule(String moduleName, I_CmsReport report) throws CmsException {
 

@@ -31,9 +31,11 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
@@ -51,6 +53,10 @@ import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.containerpage.CmsContainerPageBean;
+import org.opencms.xml.containerpage.CmsXmlContainerPage;
+import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 
 import java.util.ArrayList;
@@ -304,6 +310,12 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             }
         }
 
+        // add field mappings from elements of a container page
+        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+            document = appendFieldMappingsFromElementsOnThePage(document, cms, resource);
+
+        }
+
         for (CmsSolrField field : m_solrFields.values()) {
             document = appendFieldMapping(
                 document,
@@ -313,6 +325,48 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                 extractionResult,
                 properties,
                 propertiesSearched);
+        }
+        return document;
+    }
+
+    /**
+     * Adds search fields from elements on a container page to a container page's document.
+     * @param document The document for the container page
+     * @param cms The current CmsObject
+     * @param resource The resource of the container page
+     * @return the manipulated document
+     */
+    protected I_CmsSearchDocument appendFieldMappingsFromElementsOnThePage(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource) {
+
+        try {
+            CmsFile file = cms.readFile(resource);
+            CmsXmlContainerPage containerPage = CmsXmlContainerPageFactory.unmarshal(cms, file);
+            CmsContainerPageBean containerBean = containerPage.getContainerPage(cms);
+            if (containerBean != null) {
+                for (CmsContainerElementBean element : containerBean.getElements()) {
+                    element.initResource(cms);
+                    CmsResource elemResource = element.getResource();
+                    Set<CmsSearchField> mappedFields = getXSDMappingsForPage(cms, elemResource);
+                    if (mappedFields != null) {
+
+                        for (CmsSearchField field : mappedFields) {
+                            document = appendFieldMapping(
+                                document,
+                                field,
+                                cms,
+                                elemResource,
+                                CmsSolrDocumentXmlContent.extractXmlContent(cms, elemResource, getIndex()),
+                                cms.readPropertyObjects(resource, false),
+                                cms.readPropertyObjects(resource, true));
+                        }
+                    }
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return document;
     }
@@ -386,6 +440,12 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                     null,
                     null,
                     CmsSearchField.BOOST_DEFAULT), prop.getValue());
+
+                // Also write the property using the dynamic field '_s' in order to prevent tokenization 
+                // of the property. The resulting field is named '<property>_prop_s'. 
+                document.addSearchField(new CmsSolrField(prop.getName()
+                    + CmsSearchField.FIELD_DYNAMIC_PROPERTIES
+                    + "_s", null, null, null, CmsSearchField.BOOST_DEFAULT), prop.getValue());
             }
         }
         return document;
@@ -446,6 +506,29 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                 I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
                 if ((handler != null) && !handler.getSearchFields().isEmpty()) {
                     return handler.getSearchFields();
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the search field mappings declared within the XSD that should be applied to the container page.<p>
+     *
+     * @param cms the CmsObject
+     * @param resource the resource
+     *
+     * @return the fields to map
+     */
+    protected Set<CmsSearchField> getXSDMappingsForPage(CmsObject cms, CmsResource resource) {
+
+        try {
+            if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
+                if ((handler != null) && !handler.getSearchFieldsForPage().isEmpty()) {
+                    return handler.getSearchFieldsForPage();
                 }
             }
         } catch (CmsException e) {

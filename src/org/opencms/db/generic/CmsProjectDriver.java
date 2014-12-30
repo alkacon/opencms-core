@@ -636,11 +636,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            String sql = m_sqlManager.readQuery("C_USER_PUBLISH_LIST_DELETE_2");
+            String sql = m_sqlManager.readQuery("C_USER_PUBLISH_LIST_DELETE_3");
             stmt = m_sqlManager.getPreparedStatementForSql(conn, sql);
             for (CmsUserPublishListEntry entry : publishListDeletions) {
-                stmt.setString(1, entry.getUserId().toString());
-                stmt.setString(2, entry.getStructureId().toString());
+                stmt.setString(1, entry.getStructureId().toString());
+                stmt.setString(2, entry.getUserId() != null ? entry.getUserId().toString() : null);
+                stmt.setInt(3, entry.getUserId() == null ? 1 : 0);
                 stmt.addBatch();
             }
             stmt.executeBatch();
@@ -694,9 +695,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         String usersGroup = OpenCms.getDefaultUsers().getGroupUsers();
         CmsGroup users = m_driverManager.readGroup(dbc, usersGroup);
 
-        String projectmanagersGroup = OpenCms.getDefaultUsers().getGroupProjectmanagers();
-        CmsGroup projectmanager = m_driverManager.readGroup(dbc, projectmanagersGroup);
-
         ////////////////////////////////////////////////////////////////////////////////////////////
         // online project stuff
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -707,7 +705,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             CmsProject.ONLINE_PROJECT_ID,
             admin,
             users,
-            projectmanager,
+            administrators,
             CmsProject.ONLINE_PROJECT_NAME,
             "The Online project",
             I_CmsPrincipal.FLAG_ENABLED,
@@ -994,7 +992,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         dbc.currentProject().getUuid(),
                         delFile.getStructureId(),
                         true);
-                    CmsFile offlineFile = new CmsFile(offlineResource); 
+                    CmsFile offlineFile = new CmsFile(offlineResource);
                     offlineFile.setContents(vfsDriver.readContent(
                         dbc,
                         dbc.currentProject().getUuid(),
@@ -2995,15 +2993,15 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Implementation of reading the user publish list which uses the log table.<p>
-     * 
+     *
      * This is the old implementation of the user publish list and can get pretty slow.<p>
-     * 
-     * @param dbc the current database context 
-     * @param userId the id of the user for which we want the user publish list 
-     * 
+     *
+     * @param dbc the current database context
+     * @param userId the id of the user for which we want the user publish list
+     *
      * @return the publish list for the given user
-     * 
-     * @throws CmsDataAccessException if something goes wrong 
+     *
+     * @throws CmsDataAccessException if something goes wrong
      */
     protected List<CmsResource> getUsersPubListFromLog(CmsDbContext dbc, CmsUUID userId) throws CmsDataAccessException {
 

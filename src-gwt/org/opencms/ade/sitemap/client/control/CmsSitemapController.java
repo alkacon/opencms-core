@@ -33,6 +33,11 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
+import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
+import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
+import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
+import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
@@ -45,6 +50,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.property.CmsReloadMode;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -102,11 +108,17 @@ public class CmsSitemapController implements I_CmsSitemapController {
     /** The event bus. */
     protected SimpleEventBus m_eventBus;
 
+    /** The category data. */
+    CmsSitemapCategoryData m_categoryData;
+
     /** The entry data model. */
     private Map<CmsUUID, CmsClientSitemapEntry> m_entriesById;
 
     /** The sitemap entries by path. */
     private Map<String, CmsClientSitemapEntry> m_entriesByPath;
+
+    /** The gallery type names by id. */
+    private Map<Integer, CmsGalleryType> m_galleryTypes;
 
     /** The set of names of hidden properties. */
     private Set<String> m_hiddenProperties;
@@ -130,6 +142,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         m_entriesById = new HashMap<CmsUUID, CmsClientSitemapEntry>();
         m_entriesByPath = new HashMap<String, CmsClientSitemapEntry>();
+        m_galleryTypes = new HashMap<Integer, CmsGalleryType>();
         try {
             m_data = (CmsSitemapData)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
                 getService(),
@@ -247,6 +260,35 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
+     * Changes the given category.<p>
+     * 
+     * @param id the category id 
+     * @param title the new category title 
+     * @param name the new category name 
+     */
+    public void changeCategory(final CmsUUID id, final String title, final String name) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                start(200, true);
+                getService().changeCategory(getEntryPoint(), id, title, name, this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                stop(false);
+                loadCategories(true);
+            }
+
+        };
+        action.execute();
+    }
+
+    /**
      * Clears the deleted clip-board list and commits the change.<p>
      */
     public void clearDeletedList() {
@@ -319,6 +361,114 @@ public class CmsSitemapController implements I_CmsSitemapController {
         data.addModified(newEntry);
         change.setClipBoardData(data);
         commitChange(change, null);
+    }
+
+    /**
+     * Creates a new category.<p>
+     * 
+     * @param id the parent category id, or the null uuid for a new top-level category 
+     * @param title the title of the category 
+     * @param name the name of the category 
+     */
+    public void createCategory(final CmsUUID id, final String title, final String name) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                start(200, true);
+                getService().createCategory(getEntryPoint(), id, title, name, this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                stop(false);
+                loadCategories(true);
+
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Creates a new gallery folder of the given type.<p>
+     * 
+     * @param parentId the parent folder id
+     * @param galleryTypeId the folder type id
+     * @param title the folder title
+     */
+    public void createNewGallery(final CmsUUID parentId, final int galleryTypeId, final String title) {
+
+        final String parentFolder = parentId != null ? getEntryById(parentId).getSitePath() : CmsStringUtil.joinPaths(
+            m_data.getRoot().getSitePath(),
+            m_data.getDefaultGalleryFolder());
+
+        CmsRpcAction<CmsGalleryFolderEntry> action = new CmsRpcAction<CmsGalleryFolderEntry>() {
+
+            @Override
+            public void execute() {
+
+                getService().createNewGalleryFolder(parentFolder, title, galleryTypeId, this);
+            }
+
+            @Override
+            protected void onResponse(CmsGalleryFolderEntry result) {
+
+                CmsSitemapView.getInstance().displayNewGallery(result);
+
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Creates a new model page.<p>
+     * 
+     * @param title the title of the model page 
+     * @param description the description of the model page 
+     * @param copyId the structure id of the resource which should be used as a copy model for the new page
+     */
+    public void createNewModelPage(final String title, final String description, final CmsUUID copyId) {
+
+        CmsRpcAction<CmsModelPageEntry> action = new CmsRpcAction<CmsModelPageEntry>() {
+
+            @Override
+            public void execute() {
+
+                start(200, true);
+
+                getService().createNewModelPage(getEntryPoint(), title, description, copyId, this);
+
+            }
+
+            @Override
+            @SuppressWarnings("synthetic-access")
+            protected void onResponse(final CmsModelPageEntry result) {
+
+                stop(false);
+                loadNewElementInfo(new AsyncCallback<Void>() {
+
+                    public void onFailure(Throwable caught) {
+
+                        // TODO Auto-generated method stub
+
+                    }
+
+                    public void onSuccess(Void v) {
+
+                        CmsSitemapView.getInstance().displayNewModelPage(result);
+                    }
+                });
+
+            }
+
+        };
+        action.execute();
+
+        // TODO Auto-generated method stub
+
     }
 
     /**
@@ -482,6 +632,24 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
+     * Deletes a category.<p>
+     * 
+     * @param id the id of the category 
+     */
+    public void deleteCategory(final CmsUUID id) {
+
+        CmsDeleteWarningDialog deleteWarningDialog = new CmsDeleteWarningDialog(id) {
+
+            @Override
+            protected void onAfterDeletion() {
+
+                CmsSitemapView.getInstance().getController().loadCategories(true);
+            }
+        };
+        deleteWarningDialog.loadAndShow(null);
+    }
+
+    /**
      * Edits the given sitemap entry.<p>
      * 
      * @param entry the sitemap entry to update
@@ -618,15 +786,45 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
+     * Gets the category data.<p>
+     * 
+     * @return the category data 
+     */
+    public CmsSitemapCategoryData getCategoryData() {
+
+        return m_categoryData;
+    }
+
+    /**
      * Retrieves the child entries of the given node from the server.<p>
      * 
      * @param entryId the entry id
      * @param setOpen if the entry should be opened
+     * 
      * @param callback the callback to execute after the children have been loaded 
      */
     public void getChildren(
         final CmsUUID entryId,
         final boolean setOpen,
+        final AsyncCallback<CmsClientSitemapEntry> callback) {
+
+        getChildren(entryId, setOpen, false, callback);
+
+    }
+
+    /**
+     * Retrieves the child entries of the given node from the server.<p>
+     * 
+     * @param entryId the entry id
+     * @param setOpen if the entry should be opened
+     * @param continueIfParentNotLoaded if false, and the entry identified by the id has not been loaded, stop; else store the entry in memory
+     * 
+     * @param callback the callback to execute after the children have been loaded 
+     */
+    public void getChildren(
+        final CmsUUID entryId,
+        final boolean setOpen,
+        final boolean continueIfParentNotLoaded,
         final AsyncCallback<CmsClientSitemapEntry> callback) {
 
         CmsRpcAction<CmsClientSitemapEntry> getChildrenAction = new CmsRpcAction<CmsClientSitemapEntry>() {
@@ -650,16 +848,25 @@ public class CmsSitemapController implements I_CmsSitemapController {
             public void onResponse(CmsClientSitemapEntry result) {
 
                 CmsClientSitemapEntry target = getEntryById(entryId);
-                if (target == null) {
+                if ((target == null) && !continueIfParentNotLoaded) {
                     // this might happen after an automated deletion
                     stop(false);
                     return;
                 }
-                target.setSubEntries(result.getSubEntries(), CmsSitemapController.this);
-                CmsSitemapTreeItem item = CmsSitemapTreeItem.getItemById(target.getId());
-                target.update(result);
+                CmsSitemapTreeItem item = null;
+                if (target != null) {
+                    target.setSubEntries(result.getSubEntries(), CmsSitemapController.this);
+                    item = CmsSitemapTreeItem.getItemById(target.getId());
+                    target.update(result);
+                } else {
+                    target = result;
+                }
+
                 target.initializeAll(CmsSitemapController.this);
-                item.updateEntry(target);
+                if (item != null) {
+
+                    item.updateEntry(target);
+                }
                 m_eventBus.fireEventFromSource(new CmsSitemapLoadEvent(target, setOpen), CmsSitemapController.this);
                 stop(false);
                 if (callback != null) {
@@ -789,6 +996,18 @@ public class CmsSitemapController implements I_CmsSitemapController {
     public CmsClientSitemapEntry getEntryById(CmsUUID id) {
 
         return m_entriesById.get(id);
+    }
+
+    /**
+     * Returns the gallery type with the given id.<p>
+     * 
+     * @param typeId the type id
+     * 
+     * @return the gallery type
+     */
+    public CmsGalleryType getGalleryType(Integer typeId) {
+
+        return m_galleryTypes.get(typeId);
     }
 
     /**
@@ -1038,6 +1257,167 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
+     * Loads and displays the category data.<p>
+     * 
+     * @param openLocalCategories true if the local category tree should be opened 
+     */
+    public void loadCategories(final boolean openLocalCategories) {
+
+        CmsRpcAction<CmsSitemapCategoryData> action = new CmsRpcAction<CmsSitemapCategoryData>() {
+
+            @Override
+            public void execute() {
+
+                start(200, false);
+                getService().getCategoryData(getEntryPoint(), this);
+            }
+
+            @Override
+            protected void onResponse(CmsSitemapCategoryData result) {
+
+                stop(false);
+                m_categoryData = result;
+                CmsSitemapView.getInstance().displayCategoryData(result, openLocalCategories);
+            }
+        };
+        action.execute();
+
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * Loads all available galleries for the current sub site.<p>
+     */
+    public void loadGalleries() {
+
+        CmsRpcAction<Map<CmsGalleryType, List<CmsGalleryFolderEntry>>> action = new CmsRpcAction<Map<CmsGalleryType, List<CmsGalleryFolderEntry>>>() {
+
+            @Override
+            public void execute() {
+
+                start(500, false);
+                getService().getGalleryData(m_data.getRoot().getSitePath(), this);
+            }
+
+            @Override
+            protected void onResponse(Map<CmsGalleryType, List<CmsGalleryFolderEntry>> result) {
+
+                storeGalleryTypes(result.keySet());
+                CmsSitemapView.getInstance().displayGalleries(result);
+                stop(false);
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Loads the model pages.<p>
+     */
+    public void loadModelPages() {
+
+        CmsRpcAction<List<CmsModelPageEntry>> action = new CmsRpcAction<List<CmsModelPageEntry>>() {
+
+            @Override
+            public void execute() {
+
+                start(500, false);
+                getService().getModelPages(m_data.getRoot().getId(), this);
+
+            }
+
+            @Override
+            protected void onResponse(List<CmsModelPageEntry> result) {
+
+                stop(false);
+                CmsSitemapView.getInstance().displayModelPages(result);
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Loads all entries on the given path.<p>
+     * 
+     * @param sitePath the site path
+     */
+    public void loadPath(final String sitePath) {
+
+        loadPath(sitePath, null);
+    }
+
+    /** 
+     * Loads the sitemap entry for the given site path.<p>
+     * 
+     * @param sitePath the site path 
+     * @param callback the callback 
+     */
+    public void loadPath(final String sitePath, final AsyncCallback<CmsClientSitemapEntry> callback) {
+
+        loadPath(sitePath, false, callback);
+    }
+
+    /**
+     * Loads all entries on the given path.<p>
+     * 
+     * @param sitePath the site path
+     * @param continueIfNotLoaded parameter passed to getChildren 
+     * @param callback the callback to execute when done
+     */
+    public void loadPath(
+        final String sitePath,
+        final boolean continueIfNotLoaded,
+        final AsyncCallback<CmsClientSitemapEntry> callback) {
+
+        if (getEntry(sitePath) != null) {
+            CmsClientSitemapEntry entry = getEntry(sitePath);
+            getChildren(entry.getId(), CmsSitemapTreeItem.getItemById(entry.getId()).isOpen(), callback);
+        } else {
+            String parentPath = CmsResource.getParentFolder(sitePath);
+            CmsUUID idToLoad = null;
+            CmsClientSitemapEntry entry = getEntry(parentPath);
+            while (entry == null) {
+                parentPath = CmsResource.getParentFolder(parentPath);
+                if (parentPath == null) {
+                    break;
+                } else {
+                    entry = getEntry(parentPath);
+                }
+            }
+            if (entry != null) {
+                idToLoad = entry.getId();
+            } else {
+                idToLoad = m_data.getSiteRootId();
+            }
+            CmsSitemapTreeItem treeItem = CmsSitemapTreeItem.getItemById(idToLoad);
+            boolean open = true;
+            if (treeItem != null) {
+                open = treeItem.isOpen();
+            }
+            getChildren(idToLoad, open, continueIfNotLoaded, new AsyncCallback<CmsClientSitemapEntry>() {
+
+                public void onFailure(Throwable caught) {
+
+                    // nothing to do
+                }
+
+                public void onSuccess(CmsClientSitemapEntry result) {
+
+                    // check if target entry is loaded
+                    CmsClientSitemapEntry target = getEntry(sitePath);
+                    if (target == null) {
+                        loadPath(sitePath, continueIfNotLoaded, callback);
+                    } else {
+                        if (callback != null) {
+                            callback.onSuccess(target);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    /**
     * Merges a subsitemap at the given id back into this sitemap.<p>
     * 
     * @param entryId the id of the sub sitemap entry 
@@ -1116,6 +1496,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
         Map<String, String> parameter = new HashMap<String, String>();
         parameter.put(CmsCoreData.PARAM_PATH, sitePath);
         parameter.put(CmsCoreData.PARAM_RETURNCODE, getData().getReturnCode());
+        parameter.put(CmsSitemapData.PARAM_EDITOR_MODE, CmsSitemapView.getInstance().getEditorMode().toString());
         FormElement form = CmsDomUtil.generateHiddenForm(
             CmsCoreProvider.get().link(CmsCoreProvider.get().getUri()),
             Method.post,
@@ -1132,6 +1513,16 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         CmsClientSitemapEntry root = getData().getRoot();
         recomputeProperties(root);
+    }
+
+    /** 
+     * Refreshes the root entry.<p>
+     * 
+     * @param callback the callback to call after the entry has been refreshed 
+     */
+    public void refreshRoot(AsyncCallback<Void> callback) {
+
+        updateEntry(getData().getRoot().getId(), callback);
     }
 
     /**
@@ -1180,6 +1571,39 @@ public class CmsSitemapController implements I_CmsSitemapController {
         //TODO: handle detail page delete
 
         commitChange(change, null);
+    }
+
+    /**
+     * Removes a model page from the sitemap's configuration.<p>
+     * 
+     * @param id the structure id of the model page
+     *  
+     * @param asyncCallback the callback to call when done  
+     */
+    public void removeModelPage(final CmsUUID id, final AsyncCallback<Void> asyncCallback) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                start(200, true);
+                getService().removeModelPage(getEntryPoint(), id, this);
+
+            }
+
+            @SuppressWarnings("synthetic-access")
+            @Override
+            protected void onResponse(Void result) {
+
+                stop(false);
+                loadNewElementInfo(null);
+                asyncCallback.onSuccess(null);
+
+            }
+        };
+        action.execute();
+
     }
 
     /**
@@ -1248,6 +1672,32 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
+     * Updates the given entry.<p>
+     * 
+     * @param entryId the entry id
+     * @param callback the callback to call after the entry has been updated 
+      */
+    public void updateEntry(CmsUUID entryId, final AsyncCallback<Void> callback) {
+
+        getChildren(
+            entryId,
+            CmsSitemapTreeItem.getItemById(entryId).isOpen(),
+            new AsyncCallback<CmsClientSitemapEntry>() {
+
+                public void onFailure(Throwable caught) {
+
+                    // TODO Auto-generated method stub
+
+                }
+
+                public void onSuccess(CmsClientSitemapEntry result) {
+
+                    callback.onSuccess(null);
+                }
+            });
+    }
+
+    /**
     * Updates the given entry.<p>
     * 
     * @param sitePath the entry sitepath
@@ -1255,7 +1705,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
     public void updateEntry(String sitePath) {
 
         CmsClientSitemapEntry entry = getEntry(sitePath);
-        getChildren(entry.getId(), CmsSitemapTreeItem.getItemById(entry.getId()).isOpen(), null);
+        if ((entry != null) && (CmsSitemapTreeItem.getItemById(entry.getId()) != null)) {
+            getChildren(entry.getId(), CmsSitemapTreeItem.getItemById(entry.getId()).isOpen(), null);
+        }
     }
 
     /**
@@ -1332,6 +1784,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 entry.normalizeProperties();
                 break;
             case undelete:
+                updateEntry(change.getParentId());
+                break;
             case create:
                 CmsClientSitemapEntry newEntry = change.getUpdatedEntry();
                 getEntryById(change.getParentId()).insertSubEntry(newEntry, change.getPosition(), this);
@@ -1560,6 +2014,19 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
+     * Store the gallery type information.<p>
+     * 
+     * @param galleryTypes the gallery types
+     */
+    void storeGalleryTypes(Collection<CmsGalleryType> galleryTypes) {
+
+        m_galleryTypes.clear();
+        for (CmsGalleryType type : galleryTypes) {
+            m_galleryTypes.put(new Integer(type.getTypeId()), type);
+        }
+    }
+
+    /**
      * Cleans up wrong path references.<p>
      * 
      * @param oldSitepath the old sitepath
@@ -1618,6 +2085,38 @@ public class CmsSitemapController implements I_CmsSitemapController {
             && (CmsResource.getParentFolder(toPath) != null)
             && (entry != null)
             && (getEntry(CmsResource.getParentFolder(toPath)) != null) && (getEntry(entry.getSitePath()) != null));
+    }
+
+    /** 
+     * Loads the new element info.<p>
+     * 
+     * @param callback the callback to call when done 
+     */
+    private void loadNewElementInfo(final AsyncCallback<Void> callback) {
+
+        CmsRpcAction<List<CmsNewResourceInfo>> newResourceInfoAction = new CmsRpcAction<List<CmsNewResourceInfo>>() {
+
+            @Override
+            public void execute() {
+
+                start(200, true);
+
+                getService().getNewElementInfo(m_data.getRoot().getSitePath(), this);
+            }
+
+            @Override
+            protected void onResponse(List<CmsNewResourceInfo> result) {
+
+                stop(false);
+
+                m_data.setNewElementInfos(result);
+                if (callback != null) {
+                    callback.onSuccess(null);
+                }
+            }
+
+        };
+        newResourceInfoAction.execute();
     }
 
     /**

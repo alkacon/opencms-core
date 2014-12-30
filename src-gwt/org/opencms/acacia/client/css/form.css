@@ -1,0 +1,616 @@
+@external mce-tinymce, mce-widget, mce-tooltip, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-panel, mce-tinymce-inline, mce-flow-layout, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering;
+
+@def PARENT_GRADIENT literal("left, #FFFFFF 0%, #F4F7F9 80%, #E1E4E8 100%");  
+@def PARENT_GRADIENT_IE9 literal("url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2Y0ZjdmOSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlMWU0ZTgiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+)");
+@def FOCUS_GRADIENT literal("left, #E1E4E8 0%, #EAEDEF 80%, #F4F7F9 100%");  
+@def FOCUS_GRADIENT_IE9 literal("url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2UxZTRlOCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2VhZWRlZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmNGY3ZjkiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+)");
+
+@def SECOND_COLUMN_WIDTH 448;
+ 
+.attribute, .defaultView{}
+
+div.formParent{
+	padding: 2px 2px 0px;
+	position: relative;
+	width: value("constants.css.toolbarWidth");
+	margin: 10px auto;
+	border: 2px solid value("constants.css.borderColor");
+	border-radius: value("constants.css.borderRadius");
+}
+
+div.gwt-TabLayoutPanel div.formParent{
+	padding: 0px;
+	width: auto;
+	margin: 0;
+	background-color: transparent;
+	border: none;
+	border-radius: 0;
+}
+
+div.formParent div.gwt-TabLayoutPanel, div.formParent div.gwt-TabLayoutPanel div.gwt-TabLayoutPanelTabBar{
+	background: transparent;
+}
+
+.formParent *, .formParent table tr td, .formParent input[type="text"], .inlineEditOverlay, .inlineEditOverlay *{
+	margin: 0;
+	padding: 0;
+	border: none;
+	color: value("constants.css.textColor");
+	font-family: value("constants.css.fontFamily");
+	font-size: value("constants.css.fontSize");
+	line-height: value("constants.css.lineHeight");
+	background: transparent;
+	text-align: left;
+	height: auto;
+	width: auto;
+	min-height: 0;
+	max-height: none;
+	min-width: 0;
+	max-width: none;
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
+}
+.formParent input[type="text"]:focus, .formParent input[type="text"]:hover, .formParent input[type="text"]{
+	outline: none;
+}
+
+.entity{
+	margin: 5px;
+}
+
+.entity .entity{
+	margin: 0px 0px 0px 20px;
+}
+
+/** Attribute value view styles. */
+.attributeValue .label{
+	margin:0px 25px 0px 3px;
+	padding: 4px 0px;
+	color: #7788aa;
+	cursor: default;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.attributeValue.compactView .label{
+	padding-bottom: 2px;
+	padding-top: 2px;
+}
+
+.entity .attributeValue{
+	padding-bottom:2px;
+	position: relative;
+	clear: both;
+}
+
+div.attributeValue.firstColumn{
+	float: left;
+}
+div.attributeValue.secondColumn{
+	width: value('form.SECOND_COLUMN_WIDTH','px');
+	float: right;
+	clear: none;
+}
+
+.entity .attributeValue .label, .dragHelper.attributeValue .label{
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.attributeValue.singleLine > .widgetHolder > div > .label{
+	position:absolute;
+	text-align: left;
+	right: 765px;
+	margin:0px;
+	left: 7px;
+	top: 4px;
+}
+
+.attributeValue.singleLine > .widgetHolder > div > .widget {
+	float: right;
+	margin: 4px 25px 4px 0px;
+	width: 730px;
+}
+
+/* clear both after the widget holder */
+.attributeValue > div.widgetHolder:after{
+	content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.attributeValue.simpleValue.singleLine .buttonBar{
+	top:4px;
+}
+.attributeValue.simpleValue.shallowWidget div.buttonBar{
+	top:1px;
+}
+
+.attributeValue.emptyValue .label{
+	color: #B1B4B8;
+	font-style: italic;
+}
+
+.entity .attributeValue.uncollapsed .entity .attributeValue.uncollapsed .label{
+	font-weight: normal;
+}
+
+.entity .attributeValue.uncollapsed .entity .attributeValue.uncollapsed .entity .attributeValue.uncollapsed .label{
+	font-size: 12px;
+}
+.entity .attributeValue.uncollapsed > div.widgetHolder{
+	position: relative;
+	padding: 2px 0px 2px 4px;
+	border-radius: value("constants.css.borderRadius");
+}
+
+.attributeValue .label{
+	font-weight:bold;
+}
+
+.attributeValue .buttonBar{
+	top: 2px;
+	right: 2px;
+}
+.attributeValue div.buttonBar, div.buttonBar{
+	position: absolute;
+	border-radius: value("constants.css.borderRadius");
+	white-space: nowrap;
+	border: 1px solid transparent;
+	width: auto;
+}
+
+.attributeValue.simpleValue .buttonBar{
+	top: 23px;
+}
+
+.attributeValue.compactView .buttonBar{
+	top: 0px;
+}
+
+.multiButtonBar.buttonBar.hoverButton{
+	display: block;
+	box-shadow: 2px 2px 2px #666666;
+	background: value("constants.css.backgroundColorDialog");
+	border: 1px solid value("constants.css.borderColor");
+}
+
+.buttonBar .button{
+	cursor: pointer;
+	float: right;
+}
+
+.buttonBar.multiButtonBar > .button:first-child{
+	display: block;
+}
+
+.buttonBar.multiButtonBar > .button{
+	border: 1px solid transparent;
+	border-radius: value("constants.css.borderRadius");
+	padding: 1px;
+	margin: -1px;
+	display: none;
+	position: relative;
+}
+
+.buttonBar.multiButtonBar.hoverButton > .button{
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	display: block;
+}
+
+
+/** Editing widget styles. */
+.widgetHolder .widget{
+	margin: 0 25px 4px 2px;
+}
+
+
+
+.collapsed  > .widgetHolder > * > .label { 
+	display: none; 
+}
+
+.collapsed  > .widgetHolder > .entity {
+	margin-left: 0px !important; 
+}
+
+.collapsed > .buttonBar { 
+	display: none;
+}
+ 
+
+.compactView .widgetHolder .widget{
+	margin-bottom: 0px;
+}
+
+.widgetHolder .widget.input{
+	margin: 0px 2px;
+	padding: 2px 5px;
+	min-height: 14px;
+}
+
+.input:focus{
+	outline:none;
+}
+
+.widgetHolder > div > .widget.input{
+	border: 1px solid #7788AA;
+	background: value("constants.css.backgroundColorDialog");
+}
+
+.attributeValue.hasError .label{
+	color: value("constants.css.borderColorHighlight") !important;
+}
+
+.attributeValue.hasWarning .label{
+	color: #FFAA00 !important; 
+}
+
+.hasError .widgetHolder > div > .widget.input, .attributeValue.hasError .widgetHolder  .mce-tinymce, .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTab.hasError{
+	border-color: value("constants.css.borderColorHighlight");
+}
+
+.hasWarning .widgetHolder > div > .widget.input, .attributeValue.hasWarning .widgetHolder  .mce-tinymce, .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTab.hasWarning{
+	border-color: #FFAA00;
+}
+.widgetHolder > div > .widget.input{
+	cursor: text;
+}
+
+.attributeValue .widgetHolder  .mce-tinymce{
+	border: 1px solid #7788AA;
+	background: value("constants.css.backgroundColorDialog");
+	border-radius: value("constants.css.borderRadius");
+	width: auto !important;
+}
+
+.attributeValue .widgetHolder .widget.inActive .mce-tinymce{
+	overflow: hidden;
+}
+
+.attributeValue.focused > .widgetHolder > div > .widget .mce-tinymce {
+	border-radius: value("constants.css.borderRadius") 0 0 0;
+}
+
+.widgetHolder > div > .widget.input.inActive, .attributeValue .widgetHolder .widget.inActive  .mce-tinymce{
+	color: transparent;
+	border-color: value("constants.css.borderColor");
+}
+.attributeValue > .widgetHolder > .widget .mce-tinymce.inActive{
+	height: 18px;	
+	border-radius: value("constants.css.borderRadius");
+}
+
+/* tinymce in line edit toolbar styles */
+div.tinymceToolbarContainer{
+	position: absolute;
+	z-index: value("constants.css.zIndexPopup");
+}
+
+div.tinymceToolbarContainer > div{
+	position: absolute;
+	bottom: 0px;
+}
+.tinymceToolbarContainer .mce-tinymce-inline .mce-flow-layout{
+	white-space: normal;
+}
+
+/* this styles the tinymce toolbar */
+.attributeValue .mce-tinymce > .mce-container-body > .mce-panel:first-child{
+	position: absolute;
+    right: -1px;
+    top: -2px;
+    width :90%;
+    display: none;
+}
+
+.attributeValue .mce-tinymce > .mce-container-body > .mce-panel:first-child > .mce-container-body{
+	background: inherit;
+    bottom: 0;
+    max-width: 100%;
+    position: absolute;
+    right: 0;
+    border-top: 1px solid #7788AA;
+    border-right: 1px solid #7788AA;
+    border-left: 1px solid #7788AA;
+    border-radius: value("constants.css.borderRadius") value("constants.css.borderRadius") 0px 0px;
+}
+
+div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
+	border: none;
+	position:fixed; 
+	top:0; 
+	left:0; 
+	right:0; 
+	bottom:0;
+}
+
+.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body .mce-toolbar-grp {
+	height:auto; 
+	position:static; 
+	width: 100%;
+}
+
+.attributeValue .mce-tinymce.mce-fullscreen > .mce-container-body .mce-toolbar-grp > .mce-container-body{
+	position: static; border:none
+}
+
+.attributeValue .mce-tinymce .mce-edit-area{
+	border-top: none;
+	background: transparent;
+}
+
+.attributeValue.focused > .widgetHolder > div > div.widget .mce-tinymce > .mce-container-body > .mce-panel:first-child, 
+.attributeValue.focused > .widgetHolder > div > div.widget .mce-tinymce .mce-statusbar{
+	display: block;	
+}
+
+.attributeValue > .widgetHolder > div > div.widget .mce-tinymce .mce-statusbar{
+	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
+    border-bottom: 1px solid #7788AA !important;
+    border-right: 1px solid #7788AA !important;
+    border-left: 1px solid #7788AA !important;
+    box-shadow: 2px 2px 2px #666666;
+    border-radius: 0 0 value("constants.css.borderRadius") value("constants.css.borderRadius");
+    display: none;
+    left: -1px;
+    position: absolute;
+    right: -1px;
+    z-index: 2;
+}
+
+.mce-statusbar .mce-wordcount, .mce-statusbar .mce-path{
+	padding: 2px;
+	margin-right: 8px;
+} 
+
+.attributeValue > .widgetHolder > div > div.widget .mce-tinymce iframe{
+	border-radius: value("constants.css.borderRadius");
+	width: 100% !important;
+}
+
+/* fixing tinymce tool-tip z-index problem */
+div.mce-widget.mce-tooltip{
+	z-index: value("constants.css.zIndexPopup") !important;
+}
+
+/** Help bubble styles. */
+div.helpBubble{
+	position: absolute;
+	background: #FFFFCC;
+	color: #222222;
+	top: 100%;
+	left: 2px;
+	display: none;
+	padding: 7px 19px 3px 5px;
+	border-radius:value("constants.css.borderRadius");
+	z-index: 10;
+	box-shadow: 2px 2px 2px #666666;
+}
+
+.hasError .helpMessage, .hasWarning .helpMessage{
+	display: block;
+	margin-top: 3px;
+}
+.hasError div.helpBubble, .gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTab.hasError{
+	background-color: #ffcccc;
+}
+
+.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar .gwt-TabLayoutPanelTab.hasWarning{
+	background: #FFFFCC;
+}
+
+@sprite .hasError .helpMessage .helpMessageIcon{
+	gwt-image: "errorImageSmall";
+	height: 20px;
+	width: 20px;
+	margin: 0px 3px 3px 0px;
+	display: inline-block;
+	vertical-align: middle;
+}
+.helpMessage{
+	display:none;
+}
+
+.displayAbove > .helpBubble{
+	top: auto;
+	bottom: 100%;
+}
+@sprite .displayAbove > .helpBubble > .helpBubbleArrow{
+	gwt-image: "bottomLeftCorner";
+	height: 10px;
+	width: 10px;
+	position: absolute;
+	top: auto;
+	bottom: -5px;
+	left: 10px;
+}
+
+@sprite .hasError.displayAbove > .helpBubble > .helpBubbleArrow{
+	gwt-image: "bottomLeftCornerError";
+	height: 10px;
+	width: 10px;
+}
+
+.helpBubble div{
+	color: #222222;
+}
+
+.attributeValue.focused > .helpBubble, div.attributeValue.focused.hasError > .helpBubble, div.attributeValue.focused.hasWarning > .helpBubble{
+	display: block;
+}
+
+.attributeValue.focused.closedBubble > .helpBubble, .hideHelpBubbles .attributeValue.focused > .helpBubble{
+	display: none;
+}
+
+.helpBubble .helpBubbleClose{
+	position: absolute;
+	top: 2px;
+	right: 2px;
+}
+
+.hasError .helpBubble .helpBubbleClose{
+	display: none;
+}
+
+@sprite .helpBubbleArrow{
+	gwt-image: "topLeftCorner";
+	height: 10px;
+	width: 10px;
+	position: absolute;
+	top: -5px;
+	left: 10px;
+}
+
+@sprite .hasError .helpBubbleArrow{
+	gwt-image: "topLeftCornerError";
+	height: 10px;
+	width: 10px;
+}
+
+.entity .attributeValue > div, .dragHelper.attributeValue > div{
+	border-radius: value("constants.css.borderRadius");
+}
+.widgetHolder .widget.input, .attributeValue .widgetHolder  .mce-tinymce{
+	border-radius: value("constants.css.borderRadius");
+}
+
+/** joined vendor prefix style, for better fall back behavior */
+.formParent{
+	background: #EEEEEE !important;
+	background-image: PARENT_GRADIENT_IE9 !important;
+	background-image: literal("-moz-linear-gradient(")PARENT_GRADIENT literal(")") !important;
+	background-image: literal("-ms-linear-gradient(")PARENT_GRADIENT literal(")") !important;
+	background-image: literal("-webkit-linear-gradient(")PARENT_GRADIENT literal(")") !important;
+	background-image: literal("-o-linear-gradient(")PARENT_GRADIENT literal(")") !important;
+	background-image: literal("linear-gradient(")PARENT_GRADIENT literal(")") !important;
+}
+.entity .attributeValue.focused > .widgetHolder, .dragHelper.attributeValue > .widgetHolder{
+	background: #F4F7F9;
+	background-image: FOCUS_GRADIENT_IE9;
+	background-image: literal("-moz-linear-gradient(")FOCUS_GRADIENT literal(")");
+	background-image: literal("-ms-linear-gradient(")FOCUS_GRADIENT literal(")");
+	background-image: literal("-webkit-linear-gradient(")FOCUS_GRADIENT literal(")");
+	background-image: literal("-o-linear-gradient(")FOCUS_GRADIENT literal(")");
+	background-image: literal("linear-gradient(")FOCUS_GRADIENT literal(")");
+}
+
+/** Drag and drop styles. */
+@sprite div.entity div.attributeValue.dragPlaceholder > div, div.entity div.attributeValue.dragPlaceholder.focused > div {
+	gwt-image: "baseImages.placeholderImage";
+	background-color: value("constants.css.backgroundColorDialog");
+	opacity: 0.8;
+}
+
+.dragPlaceholder > div *{
+	visibility:hidden !important;
+}
+
+.dragElement {
+	display: none;
+}
+
+@if user.agent ie8 {
+	.dragPlaceholder {
+		-ms-filter: "alpha(opacity = 50)";
+	}
+} @else {
+	.dragPlaceholder {
+        opacity: 0.5;
+	}
+}
+
+.dragStarted .entity .attributeValue .buttonBar > div{
+	display: none;
+}
+
+.dragStarted .entity .dragHelper.attributeValue > .buttonBar > div.moveHandle{
+	display: inline-block;
+	border-color: transparent;
+	background: transparent;
+}
+
+@sprite .dragHelper.attributeValue > .buttonBar > div.moveHandle .html-face > span, div.moveHandle.cmsState-down .html-face > span, div.moveHandle.cmsState-up-hovering .html-face > span, div.moveHandle.cmsState-down-hovering .html-face > span{
+    gwt-image: "icons.moveIconActive";
+}
+
+/* Spreading the button bar to cover the hole attribute view element to avoid any iframe issues. */
+.dragStarted .entity .dragHelper.attributeValue > .buttonBar{
+	left: 0px;
+	bottom: 0px;
+	text-align: right;
+	background: transparent;
+	border-color: transparent;
+	box-shadow: none;
+}
+
+.dragHelper.attributeValue{
+	position: absolute;
+	z-index: value("constants.css.zIndexDND");
+	opacity: 0.8;
+	box-shadow: 2px 2px 2px #666666;
+	border-radius: value("constants.css.borderRadius");
+}
+
+.dragHelper.attributeValue > .widgetHolder{
+	padding: 2px 0px 2px 4px;
+}
+
+.dragOverlay{
+	position: fixed;
+	z-index: value("constants.css.zIndexPopup");
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	background: transparent;
+}
+
+div.inlineEditOverlay {
+	position:absolute;
+	top:0px;
+	left:0px;
+	z-index: 160000;
+}
+
+div.overlayButtonBar{
+	position: absolute;
+	background: #E1E4E8;
+	width: 27px;
+	border-radius: 0px value("constants.css.borderRadius") value("constants.css.borderRadius") 0px;
+	top: 0px;
+	left: 0px;
+	bottom:0px;
+}
+
+div.overlayButtonPanel{
+	position:absolute;
+	top:0px;
+	right: -25px;
+	width: 110px;
+}
+div.overlayButtonPanel, div.overlayButtonPanel * {
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
+}
+
+div.overlayButtonPanel > div{
+	height: 22px;
+	position: absolute;
+	right: 0px;
+}
+
+@sprite .overlayButtonPanel .multiButtonBar .cmsState:first-child.cmsState-down span, .overlayButtonPanel .multiButtonBar .cmsState:first-child.cmsState-up-hovering span, .overlayButtonPanel .multiButtonBar .cmsState:first-child.cmsState-down-hovering span{
+    gwt-image: "icons.editIconActive";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@sprite .overlayButtonPanel .multiButtonBar.hoverButton .cmsState:first-child.cmsState-up span {
+    gwt-image: "coreImages.icons.editIconDeactivated";
+}

@@ -85,7 +85,7 @@ public class CmsHighlightingBorder extends Composite {
         // GWT interface, nothing to do here
     }
 
-    /** The border offset to the given position. */
+    /** The default border offset to the given position. */
     private static final int BORDER_OFFSET = 4;
 
     /** The border width. */
@@ -113,6 +113,9 @@ public class CmsHighlightingBorder extends Composite {
     /** The positioning parent element. */
     private Element m_positioningParent;
 
+    /** The border offset. */
+    private int m_borderOffset;
+
     /**
      * Constructor.<p>
      * 
@@ -121,7 +124,19 @@ public class CmsHighlightingBorder extends Composite {
      */
     public CmsHighlightingBorder(CmsPositionBean position, BorderColor color) {
 
-        this(position.getHeight(), position.getWidth(), position.getLeft(), position.getTop(), color);
+        this(position.getHeight(), position.getWidth(), position.getLeft(), position.getTop(), color, BORDER_OFFSET);
+    }
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param position the position data
+     * @param color the border color
+     * @param borderOffset the border offset
+     */
+    public CmsHighlightingBorder(CmsPositionBean position, BorderColor color, int borderOffset) {
+
+        this(position.getHeight(), position.getWidth(), position.getLeft(), position.getTop(), color, borderOffset);
     }
 
     /**
@@ -132,6 +147,7 @@ public class CmsHighlightingBorder extends Composite {
      */
     public CmsHighlightingBorder(Element positioningParent, BorderColor color) {
 
+        m_borderOffset = BORDER_OFFSET;
         initWidget(uiBinder.createAndBindUi(this));
         getWidget().addStyleName(color.getCssClass());
         m_positioningParent = positioningParent;
@@ -146,11 +162,18 @@ public class CmsHighlightingBorder extends Composite {
      * @param positionLeft the absolute left position
      * @param positionTop the absolute top position
      * @param color the border color
+     * @param borderOffset the border offset
      */
-    public CmsHighlightingBorder(int height, int width, int positionLeft, int positionTop, BorderColor color) {
+    public CmsHighlightingBorder(
+        int height,
+        int width,
+        int positionLeft,
+        int positionTop,
+        BorderColor color,
+        int borderOffset) {
 
+        m_borderOffset = borderOffset;
         initWidget(uiBinder.createAndBindUi(this));
-
         getWidget().addStyleName(color.getCssClass());
         setPosition(height, width, positionLeft, positionTop);
     }
@@ -195,7 +218,7 @@ public class CmsHighlightingBorder extends Composite {
      */
     public void setPosition(int height, int width, int positionLeft, int positionTop) {
 
-        positionLeft -= BORDER_OFFSET;
+        positionLeft -= m_borderOffset;
 
         // make sure highlighting does not introduce additional horizontal scroll-bars
         if ((m_positioningParent == null) && (positionLeft < 0)) {
@@ -203,7 +226,7 @@ public class CmsHighlightingBorder extends Composite {
             width += positionLeft;
             positionLeft = 0;
         }
-        width += (2 * BORDER_OFFSET) - BORDER_WIDTH;
+        width += (2 * m_borderOffset) - BORDER_WIDTH;
         if ((m_positioningParent == null)
             && (Window.getClientWidth() < (width + positionLeft))
             && (Window.getScrollLeft() == 0)) {
@@ -212,8 +235,8 @@ public class CmsHighlightingBorder extends Composite {
         }
         Style style = getElement().getStyle();
         style.setLeft(positionLeft, Unit.PX);
-        style.setTop(positionTop - BORDER_OFFSET, Unit.PX);
-        setHeight((height + (2 * BORDER_OFFSET)) - BORDER_WIDTH);
+        style.setTop(positionTop - m_borderOffset, Unit.PX);
+        setHeight((height + (2 * m_borderOffset)) - BORDER_WIDTH);
         setWidth(width);
     }
 

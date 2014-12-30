@@ -163,7 +163,6 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
      * 
      * @see #getWidget(int)
      */
-    @SuppressWarnings("unchecked")
     public I getItem(int index) {
 
         return (I)getWidget(index);

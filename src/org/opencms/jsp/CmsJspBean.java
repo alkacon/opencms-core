@@ -161,10 +161,7 @@ public class CmsJspBean {
 
         m_controller = CmsFlexController.getController(req);
         if (m_controller == null) {
-            // controller not found - this request was not initialized properly
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_MISSING_CMS_CONTROLLER_1,
-                CmsJspBean.class.getName()));
+            handleMissingFlexController();
         }
         m_context = context;
         m_request = req;
@@ -307,6 +304,19 @@ public class CmsJspBean {
                 Messages.ERR_RUNTIME_1,
                 (uri != null) ? uri : getClass().getName()), t);
         }
+    }
+
+    /**
+     * This method is called when the flex controller can not be found during initialization.<p>
+     * 
+     * Override this if you are reusing old workplace classes in a context where no flex controller is available. 
+     */
+    protected void handleMissingFlexController() {
+
+        // controller not found - this request was not initialized properly
+        throw new CmsRuntimeException(Messages.get().container(
+            Messages.ERR_MISSING_CMS_CONTROLLER_1,
+            CmsJspBean.class.getName()));
     }
 
     /**

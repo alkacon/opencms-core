@@ -127,7 +127,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
         if ("template".equals(key)) {
             result = createTemplateSelector();
         } else if (CmsTextBox.WIDGET_TYPE.equals(key)) {
-            CmsTextBox textBox = new CmsTextBox();
+            CmsTextBox textBox = new CmsTextBox().colorWhite();
             textBox.setErrorMessageWidth("345px");
             textBox.setTriggerChangeOnKeyPress(true);
             // we need this because the tab containing the text box may not be visible 

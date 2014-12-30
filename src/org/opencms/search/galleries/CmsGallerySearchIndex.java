@@ -432,6 +432,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                                         getAnalyzer());
                                 }
                                 searchResult = new CmsGallerySearchResult(
+                                    searchCms,
                                     Math.round((hits.scoreDocs[i].score / hits.getMaxScore()) * 100f),
                                     doc,
                                     excerpt,

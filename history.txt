@@ -15,6 +15,66 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 9.5.0 - November 3, 2014
+! Drag & drop template and layout creation with nested containers.
+! User generated content for website visitors.
+! Editors don't need to access the workplace anymore.
+! Managing of galleries, categories and templates in the sitemap editor.
+! Greatly enhanced documentation.
+! Generate PDF documents on the fly.
+! Grid based responsive demo website build with Bootstrap.
+! Integrated Spell Checker for the WYSIWYG editor component.
+! New roles for fine grained access to the content management functions.
+! Element views allow easy grouping and permission setting for content types.
+! Create, copy or reuse options when using existing contents.
+! Updated user preferences dialog accessible in the page editor.
+! Added broadcast messages to be shown in the page editor.
+! Added feature to generate thumbnail images of PDF documents.
+! Added option to show historic versions of elements, available in element info dialog.
+! Added editor visibility handler for content fields in the XSD.
+! Added locale synchronization for content fields in the XSD.
+! Added dynamic field handlers for content fields in the XSD.
+! Added new mappings to generate gallery descriptions in the XSD.
+! Added "generic locale" for container pages so that elements are valid for all languages.
+! Added support for CMYK .jpg images.
+! Added thumbnail size display options for images galleries.
+! Added option to run a script with CmsShell commands on module import.
+- Updated to latest version of TinyMCE.
+- Improved password encryption with strong scrypt algorithm.
+- Improved screen usage, dialog adjusts to available screen size.
+- Improved publishing dialog, especially for thousands of resources.
+- Improved user preferences definition to be flexible instead of hard coded.
+- Improved status information for new or changed elements in the gallery lists.
+- Improved collector list edit points to have a full set of options.
+- Improved result lists displayed in ADE to show more infos and options.
+- Removed default group "Projectmanagers", use the PROJECT_MANAGER role instead if required.
+* Fixed issue with checking "secure" property for resources in some cases.
+* Fixed issues with duplicate elements in inheritance groups.
+* Fixed several issues in the default link substitution handler.
+* Fixed issue with wrong resource filter usage during the relation check before deleting sitemap entries.
+* Fixed issue with 'subsite' search scope in the gallery dialog not working correctly.
+* Fixed issue with order of settings from formatter configuration not being used.
+* Fixed issue with detail containers if detail contents and detail page are located in different sites.
+* Fixed issue with detail links where the detail content was located in a different site.
+* Fixed issue with redirection to secure site for detail pages.
+* Fixed issue with incorrect wildcard handling on SMB network shares.
+* Fixed issue with file copying on SMB network shares.
+* Fixed issue with scrollbar not appearing for text area widget if very long lines without spaces were entered.
+* Fixed issue with creating files in expired folders.
+* Fixed issue with head includes not working correctly for container elements in some cases.
+* Fixed issue with editor CSS handler related to changed template provider configuration syntax.
+* Fixed issue with handling of locale-available property in the editor.
+* Fixed issue with the editor calendar display in some environments.
+* Fixed issue with the editor VFS file widget configuration.
+* Fixed caching issue with XML message bundles.
+* Fixed caching issue with default template context provider.
+* Fixed search filtering for the search scope "Everything".
+* Fixed issue with link handling for detail contents in HTML fields.
+* Fixed issue with container page search indexing.
+* Fixed issue #192 where the HTML cleanup inserted invalid characters.
+* Fixed issue #203 where source search was referring to a non existing constant.
+* Fixed issue #205 where message bundles were accessed without locale.
+
 OpenCms 9.0.1 - February 6, 2014
 ! New 'Add resource type' dialog added to the module management.
 ! New 'Clone Module' dialog added to the module management.

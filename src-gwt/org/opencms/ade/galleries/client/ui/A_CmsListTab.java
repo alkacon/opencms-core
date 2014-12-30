@@ -31,6 +31,7 @@ import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDialogCss;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
@@ -39,7 +40,9 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
+import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextBox;
@@ -64,6 +67,8 @@ import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -73,6 +78,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -80,7 +86,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @since 8.0.
  */
-public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandler<String> {
+public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandler<String>, I_CmsTruncable {
 
     /** Selection handler to handle check box click events and double clicks on the list items. */
     protected abstract class A_SelectionHandler implements ClickHandler {
@@ -226,6 +232,9 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     /** Text metrics key. */
     private static final String TM_GALLERY_SORT = "gallerySort";
 
+    /** Text metrics key. */
+    private static final String TM_LIST_TAB = "ListTab";
+
     /** The ui-binder instance for this class. */
     private static I_CmsListTabUiBinder uiBinder = GWT.create(I_CmsListTabUiBinder.class);
 
@@ -297,6 +306,17 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getRequiredHeight()
+     */
+    @Override
+    public int getRequiredHeight() {
+
+        int list = m_scrollList.getOffsetHeight();
+        list = list > 82 ? list : 82;
+        return list + 40;
+    }
+
+    /**
      * Call on content change to update the layout.<p>
      */
     public void onContentChange() {
@@ -305,9 +325,26 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
             public void execute() {
 
-                m_list.onResizeDescendant();
+                Widget parent = getParent();
+                while (parent != null) {
+                    if (parent instanceof CmsGalleryDialog) {
+                        ((CmsGalleryDialog)parent).updateSizes();
+                        parent = null;
+                    } else {
+                        parent = parent.getParent();
+                    }
+                }
             }
         });
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onResize()
+     */
+    @Override
+    public void onResize() {
+
+        m_list.onResizeDescendant();
     }
 
     /**
@@ -356,6 +393,14 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsKey, int clientWidth) {
+
+        m_scrollList.truncate(TM_LIST_TAB, clientWidth);
+    }
+
+    /**
      * Adds a widget to the front of the list.<p>
      * 
      * @param listItem the list item to add 
@@ -363,8 +408,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     protected void addWidgetToFrontOfList(Widget listItem) {
 
         m_scrollList.insert(listItem, 0);
-        onContentChange();
-
     }
 
     /**
@@ -375,7 +418,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     protected void addWidgetToList(Widget listItem) {
 
         m_scrollList.add(listItem);
-        onContentChange();
     }
 
     /**
@@ -421,6 +463,45 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         m_scrollList.clearList();
         onContentChange();
+    }
+
+    /**
+     * Generates a button to create new external link resources.<p>
+     * 
+     * @param parentPath the parent folder site path
+     * 
+     * @return the button widget
+     */
+    protected CmsPushButton createNewExternalLinkButton(final String parentPath) {
+
+        CmsResourceTypeBean typeInfo = getTabHandler().getTypeInfo(CmsEditExternalLinkDialog.POINTER_RESOURCE_TYPE_NAME);
+        CmsPushButton createNewButton = null;
+        if (typeInfo != null) {
+            final String niceName = typeInfo.getTitle();
+            final String description = typeInfo.getDescription();
+            createNewButton = new CmsPushButton(I_CmsImageBundle.INSTANCE.style().addIcon());
+            createNewButton.setTitle(org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_CREATE_NEW_LINK_DIALOG_TITLE_0));
+            createNewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
+            createNewButton.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    CmsEditExternalLinkDialog dialog = CmsEditExternalLinkDialog.showNewLinkDialog(
+                        niceName,
+                        description,
+                        parentPath);
+                    dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+                        public void onClose(CloseEvent<PopupPanel> closeEvent) {
+
+                            getTabHandler().updateIndex();
+                        }
+                    });
+                }
+            });
+        }
+        return createNewButton;
     }
 
     /**
@@ -558,8 +639,8 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             infoLabel.setStyleName(DIALOG_CSS.infoLabel());
             m_infoLabel = infoLabel;
             m_options.insert(infoLabel, 0);
-            createQuickBox();
         }
+        createQuickBox();
 
     }
 
@@ -640,7 +721,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
                         getTabHandler().onSort(
                             m_sortSelectBox.getFormValueAsString(),
                             m_quickSearch.getFormValueAsString());
-
+                        onContentChange();
                     }
                 };
                 m_searchButton.setTitle(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0));

@@ -28,6 +28,7 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -62,7 +63,7 @@ public class CmsPublishBrokenRelationsCollector extends A_CmsListResourceCollect
      * @param wp the workplace object
      * @param resources list of locked resources
      */
-    public CmsPublishBrokenRelationsCollector(A_CmsListExplorerDialog wp, List resources) {
+    public CmsPublishBrokenRelationsCollector(A_CmsListExplorerDialog wp, List<String> resources) {
 
         super(wp);
         setResourcesParam(resources);
@@ -71,9 +72,9 @@ public class CmsPublishBrokenRelationsCollector extends A_CmsListResourceCollect
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
      */
-    public List getCollectorNames() {
+    public List<String> getCollectorNames() {
 
-        List names = new ArrayList();
+        List<String> names = new ArrayList<String>();
         names.add(COLLECTOR_NAME);
         return names;
     }
@@ -81,18 +82,19 @@ public class CmsPublishBrokenRelationsCollector extends A_CmsListResourceCollect
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
-    public List getResources(CmsObject cms, Map params) {
+    @Override
+    public List<CmsResource> getResources(CmsObject cms, Map<String, String> params) {
 
         String siteRoot = cms.getRequestContext().getSiteRoot();
         if (siteRoot == null) {
             siteRoot = "";
         }
-        List resources = new ArrayList();
+        List<CmsResource> resources = new ArrayList<CmsResource>();
         try {
             cms.getRequestContext().setSiteRoot("");
-            Iterator itResourceNames = getResourceNamesFromParam(params).iterator();
+            Iterator<String> itResourceNames = getResourceNamesFromParam(params).iterator();
             while (itResourceNames.hasNext()) {
-                String resName = (String)itResourceNames.next();
+                String resName = itResourceNames.next();
                 try {
                     resources.add(cms.readResource(resName, CmsResourceFilter.ALL));
                 } catch (CmsException e) {
@@ -110,6 +112,7 @@ public class CmsPublishBrokenRelationsCollector extends A_CmsListResourceCollect
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
+    @Override
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
         // no-op

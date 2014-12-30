@@ -31,6 +31,8 @@
 
 package org.opencms.ade.containerpage.inherited;
 
+import org.opencms.i18n.CmsLocaleManager;
+
 import java.util.Locale;
 import java.util.Map;
 
@@ -58,27 +60,19 @@ public class CmsContainerConfigurationGroup {
      * Gets the configuration for a given name and locale.<p>
      * 
      * @param name the configuration name 
-     * @param locale the configuration locale 
      * 
      * @return the configuration for the name and locale 
      */
-    public CmsContainerConfiguration getConfiguration(String name, Locale locale) {
+    public CmsContainerConfiguration getConfiguration(String name) {
 
-        Map<String, CmsContainerConfiguration> configurationsForLocale = m_configurations.get(locale);
-        if (configurationsForLocale == null) {
+        Map<String, CmsContainerConfiguration> configurationsForLocale = null;
+        if (m_configurations.containsKey(CmsLocaleManager.MASTER_LOCALE)) {
+            configurationsForLocale = m_configurations.get(CmsLocaleManager.MASTER_LOCALE);
+        } else if (!m_configurations.isEmpty()) {
+            configurationsForLocale = m_configurations.values().iterator().next();
+        } else {
             return null;
         }
         return configurationsForLocale.get(name);
     }
-
-    /**
-     * Gets the raw map containing the configurations.<p>
-     * 
-     * @return the map containing the configurations 
-     */
-    public Map<Locale, Map<String, CmsContainerConfiguration>> getMap() {
-
-        return m_configurations;
-    }
-
 }

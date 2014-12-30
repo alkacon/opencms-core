@@ -35,6 +35,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.LinkedHashMap;
@@ -133,15 +134,17 @@ public class CmsImageGalleryField extends CmsGalleryField {
     @Override
     public String getFormValueAsString() {
 
-        String result = m_textbox.getValue();
-        result += "?__" + PARAMETER_SCALE + m_scaleValue;
-        if (m_configuration.isUseFormats()) {
-            result += "&" + PARAMETER_FORMAT + m_formatSelection.getFormValueAsString();
-            m_selectedFormat = m_formatSelection.getFormValueAsString();
+        String result = m_textbox.getValue().trim();
+        // only append the other field values if a link is set
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
+            result += "?__" + PARAMETER_SCALE + m_scaleValue;
+            if (m_configuration.isUseFormats()) {
+                result += "&" + PARAMETER_FORMAT + m_formatSelection.getFormValueAsString();
+                m_selectedFormat = m_formatSelection.getFormValueAsString();
+            }
+            result += "&" + PARAMETER_DESC + URL.encode(m_descriptionArea.getFormValueAsString());
+            m_description = m_descriptionArea.getFormValueAsString();
         }
-        result += "&" + PARAMETER_DESC + URL.encode(m_descriptionArea.getFormValueAsString());
-        m_description = m_descriptionArea.getFormValueAsString();
-
         return result;
     }
 
@@ -210,7 +213,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
     /**
      * Handles the focus event on the opener.<p>
      * 
-     * @param event  
+     * @param event the focus event
      */
     @UiHandler("m_descriptionArea")
     protected void onFocusDescription(FocusEvent event) {
@@ -221,7 +224,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
     /**
      * Handles the focus event on the opener.<p>
      * 
-     * @param event  
+     * @param event the focus event 
      */
     @UiHandler("m_formatSelection")
     protected void onFocusSelect(FocusEvent event) {

@@ -56,6 +56,13 @@ public interface I_CmsSitemapItemCss extends CssResource {
      * 
      * @return a CSS class
      **/
+    String galleriesMode();
+
+    /**
+     * CSS class accessor.<p>
+     * 
+     * @return a CSS class
+     **/
     String hasChildren();
 
     /**
@@ -106,6 +113,13 @@ public interface I_CmsSitemapItemCss extends CssResource {
      * @return a CSS class
      **/
     String markUnchanged();
+
+    /**
+     * CSS class accessor.<p>
+     * 
+     * @return a CSS class
+     **/
+    String modelPageMode();
 
     /**
      * CSS class accessor.<p>

@@ -79,6 +79,7 @@ public class TestCmsXmlContentResourceBundlesGerman extends OpenCmsTestCase {
                     "/",
                     getTestDataPath("WEB-INF/config." + getDbProduct() + "/"),
                     getTestDataPath("WEB-INF/config.de/"),
+                    TestCmsXmlContentResourceBundlesGerman.class.getName(),
                     true);
             }
 

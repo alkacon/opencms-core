@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,7 +28,6 @@
 package org.opencms.jsp;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
-import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
@@ -54,6 +53,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -73,10 +73,10 @@ import com.google.common.collect.Lists;
 
 /**
  * This tag includes required CSS or JavaScript resources that are to be places in the HTML head.<p>
- * 
+ *
  * Required resources can be configured in the resource type schema.
  * Set attribute type to 'css' to include css resources or to 'javascript' to include JavaScript resources.<p>
- * 
+ *
  * @since 8.0
  */
 public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTagParamParent {
@@ -113,12 +113,12 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Adds parameters to a parameter Map that can be used for a http request.<p>
-     * 
+     *
      * @param parameters the Map to add the parameters to
      * @param name the name to add
      * @param value the value to add
      * @param overwrite if <code>true</code>, a parameter in the map will be overwritten by
-     *      a parameter with the same name, otherwise the request will have multiple parameters 
+     *      a parameter with the same name, otherwise the request will have multiple parameters
      *      with the same name (which is possible in http requests)
      */
     public static void addParameter(Map<String, String[]> parameters, String name, String value, boolean overwrite) {
@@ -145,11 +145,11 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Gets the head includes for the given formatter bean.<p>
-     * 
-     * @param formatter the formatter bean 
-     * @param type the head include type 
-     * 
-     * @return the list of head includes 
+     *
+     * @param formatter the formatter bean
+     * @param type the head include type
+     *
+     * @return the list of head includes
      */
     protected static List<String> getHeadIncludes(I_CmsFormatterBean formatter, String type) {
 
@@ -163,11 +163,11 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Gets the inline CSS/Javascrip for the given formatter bean.<p>
-     * 
-     * @param formatter the formatter bean 
-     * @param type the type (CSS or Javascript) 
-     * 
-     * @return the inline data for the given formatter bean 
+     *
+     * @param formatter the formatter bean
+     * @param type the type (CSS or Javascript)
+     *
+     * @return the inline data for the given formatter bean
      */
     protected static String getInlineData(I_CmsFormatterBean formatter, String type) {
 
@@ -200,9 +200,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * @return <code>EVAL_PAGE</code>
-     * 
+     *
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
-     * 
+     *
      * @throws JspException by interface default
      */
     @Override
@@ -229,9 +229,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Returns <code>{@link #EVAL_BODY_BUFFERED}</code>.<p>
-     * 
+     *
      * @return <code>{@link #EVAL_BODY_BUFFERED}</code>
-     * 
+     *
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
@@ -282,8 +282,8 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Sets the value of the closetags attribute.<p>
-     * 
-     * @param closeTags the value of the closetags attribute 
+     *
+     * @param closeTags the value of the closetags attribute
      */
     public void setClosetags(String closeTags) {
 
@@ -332,8 +332,8 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Returns true if the headincludes tag should be closed.<p>
-     * 
-     * @return true if the headincludes tag should be closed 
+     *
+     * @return true if the headincludes tag should be closed
      */
     public boolean shouldCloseTags() {
 
@@ -345,10 +345,10 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Action to include the CSS resources.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param req the current request
-     * 
+     *
      * @throws CmsException if something goes wrong reading the resources
      * @throws IOException if something goes wrong writing to the response out
      */
@@ -365,9 +365,10 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_defaults)) {
             String[] defaults = m_defaults.split("\\|");
             for (int i = 0; i < defaults.length; i++) {
-                cssIncludes.add(defaults[i]);
+                cssIncludes.add(defaults[i].trim());
             }
         }
+
         collectHeadIncludesForContainerElement(
             cms,
             req,
@@ -446,10 +447,10 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Action to include the java-script resources.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param req the current request
-     * 
+     *
      * @throws CmsException if something goes wrong reading the resources
      * @throws IOException if something goes wrong writing to the response out
      */
@@ -464,7 +465,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_defaults)) {
             String[] defaults = m_defaults.split("\\|");
             for (int i = 0; i < defaults.length; i++) {
-                jsIncludes.add(defaults[i]);
+                jsIncludes.add(defaults[i].trim());
             }
         }
         collectHeadIncludesForContainerElement(
@@ -524,14 +525,14 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Collects the head includes for a given container element.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param req the current request 
-     * @param standardContext the current standard context 
-     * @param containerPage the current container page 
-     * @param includeType the type of head includes (CSS or Javascript) 
-     * @param headincludes the set to which normal head includes should be added  
-     * @param inline the map to which inline head includes should be added 
+     *
+     * @param cms the current CMS context
+     * @param req the current request
+     * @param standardContext the current standard context
+     * @param containerPage the current container page
+     * @param includeType the type of head includes (CSS or Javascript)
+     * @param headincludes the set to which normal head includes should be added
+     * @param inline the map to which inline head includes should be added
      */
     protected void collectHeadIncludesForContainerElement(
         CmsObject cms,
@@ -546,9 +547,16 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         if ((containerPage != null) && (containerPage.getElements() != null)) {
             Map<CmsUUID, I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
                 standardContext.getIsOnlineProject()).getFormatters();
-            for (CmsContainerBean container : containerPage.getContainers().values()) {
+            List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>(containerPage.getContainers().values());
+            // add detail only containers if available
+            if (standardContext.isDetailRequest()) {
+                CmsContainerPageBean detailOnly = CmsJspTagContainer.getDetailOnlyPage(cms, req);
+                if (detailOnly != null) {
+                    containers.addAll(detailOnly.getContainers().values());
+                }
+            }
+            for (CmsContainerBean container : containers) {
                 for (CmsContainerElementBean element : container.getElements()) {
-
                     try {
                         element.initResource(cms);
                         if (!standardContext.getIsOnlineProject()
@@ -574,6 +582,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                                             config,
                                             subElement,
                                             container,
+                                            false,
                                             formatters);
                                         if (formatter != null) {
                                             headincludes.addAll(getHeadIncludes(formatter, includeType));
@@ -596,6 +605,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                                     config,
                                     element,
                                     container,
+                                    true,
                                     formatters);
                                 if (formatter != null) {
                                     headincludes.addAll(getHeadIncludes(formatter, includeType));
@@ -623,9 +633,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Generates the request parameter string.<p>
-     * 
+     *
      * @return the request parameter string
-     * 
+     *
      * @throws UnsupportedEncodingException if something goes wrong encoding the request parameters
      */
     private String generateReqParams() throws UnsupportedEncodingException {
@@ -649,10 +659,10 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Returns the schema configured CSS head include resources.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param resource the resource
-     * 
+     *
      * @return the configured CSS head include resources
      */
     private Set<String> getCSSHeadIncludes(CmsObject cms, CmsResource resource) {
@@ -673,13 +683,14 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Returns the formatter configuration for the given element, will return <code>null</code> for schema formatters.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param config the current sitemap configuration 
+     *
+     * @param cms the current CMS context
+     * @param config the current sitemap configuration
      * @param element the element bean
      * @param container the container bean
+     * @param allowNested if nested containers are allowed
      * @param formatters the formatter map
-     * 
+     *
      * @return the formatter configuration bean
      */
     private I_CmsFormatterBean getFormatterBeanForElement(
@@ -687,40 +698,40 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         CmsADEConfigData config,
         CmsContainerElementBean element,
         CmsContainerBean container,
+        boolean allowNested,
         Map<CmsUUID, I_CmsFormatterBean> formatters) {
 
         int containerWidth = -1;
-        try {
-            containerWidth = Integer.parseInt(container.getWidth());
-        } catch (NumberFormatException e) {
-            // do nothing, set width to -1 
+        if (container.getWidth() == null) {
+            // the container width has not been set yet
+            containerWidth = CmsFormatterConfiguration.MATCH_ALL_CONTAINER_WIDTH;
+        } else {
+            try {
+
+                containerWidth = Integer.parseInt(container.getWidth());
+            } catch (NumberFormatException e) {
+                // do nothing, set width to -1
+            }
         }
-        CmsJspTagContainer.ensureValidFormatterSettings(
+        I_CmsFormatterBean result = CmsJspTagContainer.getFormatterConfigurationForElement(
             cms,
             element,
             config,
             container.getName(),
             container.getType(),
-            containerWidth);
-
-        I_CmsFormatterBean result = null;
-        String formatterConfigId = element.getSettings() != null ? element.getSettings().get(
-            CmsFormatterConfig.getSettingsKeyForContainer(container.getName())) : null;
-        if (CmsUUID.isValidUUID(formatterConfigId)) {
-            result = formatters.get(new CmsUUID(formatterConfigId));
-        }
-
+            containerWidth,
+            allowNested);
         return result;
     }
 
     /**
      * Returns the schema configured JavaScript head include resources.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param resource the resource
-     * 
+     *
      * @return the configured JavaScript head include resources
-     * 
+     *
      * @throws CmsLoaderException if something goes wrong reading the resource type
      */
     private Set<String> getJSHeadIncludes(CmsObject cms, CmsResource resource) throws CmsLoaderException {
@@ -742,14 +753,14 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Gets the head includes of a resource from the content definition.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param res the resource for which the head includes should be fetched  
+     *
+     * @param cms the current CMS context
+     * @param res the resource for which the head includes should be fetched
      * @param type the head include type (CSS or Javascript)
-     *  
+     *
      * @return the set of schema head includes
-     *  
-     * @throws CmsLoaderException if something goes wrong 
+     *
+     * @throws CmsLoaderException if something goes wrong
      */
     private Set<String> getSchemaHeadIncludes(CmsObject cms, CmsResource res, String type) throws CmsLoaderException {
 
@@ -763,12 +774,12 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
 
     /**
      * Returns the standard context bean.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param req the current request
-     * 
+     *
      * @return the standard context bean
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private CmsJspStandardContextBean getStandardContext(CmsObject cms, ServletRequest req) throws CmsException {
@@ -783,7 +794,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                 pageResource = cms.readResource(requestUri);
             }
             CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource, req);
-            containerPage = xmlContainerPage.getContainerPage(cms, cms.getRequestContext().getLocale());
+            containerPage = xmlContainerPage.getContainerPage(cms);
             standardContext.setPage(containerPage);
         }
         return standardContext;

@@ -264,13 +264,6 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
             result.append(createDialogRowsHtml(0, n));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            if (isOverview()) {
-                result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_FLAGS_BLOCK_0)));
-                result.append(createWidgetTableStart());
-                result.append(createDialogRowsHtml(5, 6));
-                result.append(createWidgetTableEnd());
-                result.append(dialogBlockEnd());
-            }
         }
 
         // close widget table
@@ -310,8 +303,6 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "enabled", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "projectManager", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "projectCoWorker", PAGES[0], new CmsDisplayWidget()));
         }
     }
 
