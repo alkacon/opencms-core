@@ -147,7 +147,7 @@ public final class CmsDateUtil {
      * @param time the time value to format as date
      * @return the formatted date 
      */
-    public static String getHeaderDate(long time) {
+    synchronized public static String getHeaderDate(long time) {
 
         if (HEADER_DEFAULT.getTimeZone() != GMT_TIMEZONE) {
             // ensure GMT is used as time zone for the header generation
@@ -164,7 +164,7 @@ public final class CmsDateUtil {
      * @param time the time value to format as date
      * @return the formatted date 
      */
-    public static String getOldCookieDate(long time) {
+    synchronized public static String getOldCookieDate(long time) {
 
         if (OLD_COOKIE.getTimeZone() != GMT_TIMEZONE) {
             // ensure GMT is used as time zone for the header generation
@@ -202,7 +202,7 @@ public final class CmsDateUtil {
      * @return time value as long
      * @throws ParseException if parsing fails
      */
-    public static long parseHeaderDate(String timestamp) throws ParseException {
+    synchronized public static long parseHeaderDate(String timestamp) throws ParseException {
 
         return HEADER_DEFAULT.parse(timestamp).getTime();
     }
