@@ -135,8 +135,10 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_HISTORY_MAXVER");
             stmt.setString(1, resource.getStructureId().toString());
             res = stmt.executeQuery();
+            boolean noHistoryStructure = false;
             if (res.next()) {
                 maxVersion = res.getInt(1);
+                noHistoryStructure |= res.wasNull();
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -172,54 +174,58 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                     }
                 }
             }
+            int structureVersions = 0;
 
-            if ((maxVersion - versionsToKeep) <= 0) {
-                // nothing to delete
-                internalCleanup(dbc, resource);
-                return 0;
-            }
-
-            // get the minimal structure publish tag to keep for this sibling
-            int minStrPublishTagToKeep = -1;
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_READ_MAXTAG_FOR_VERSION");
-            stmt.setString(1, resource.getStructureId().toString());
-            stmt.setInt(2, (1 + maxVersion) - versionsToKeep);
-            res = stmt.executeQuery();
-            if (res.next()) {
-                minStrPublishTagToKeep = res.getInt(1);
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
+            if (!noHistoryStructure) {
+                if (((maxVersion - versionsToKeep) <= 0)) {
+                    // nothing to delete
+                    internalCleanup(dbc, resource);
+                    return 0;
                 }
-            } else {
-                // make sure the statement and the result is closed
+
+                // get the minimal structure publish tag to keep for this sibling
+                int minStrPublishTagToKeep = -1;
+
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_READ_MAXTAG_FOR_VERSION");
+                stmt.setString(1, resource.getStructureId().toString());
+                stmt.setInt(2, (1 + maxVersion) - versionsToKeep);
+                res = stmt.executeQuery();
+                if (res.next()) {
+                    minStrPublishTagToKeep = res.getInt(1);
+                    while (res.next()) {
+                        // do nothing only move through all rows because of mssql odbc driver
+                    }
+                } else {
+                    // make sure the statement and the result is closed
+                    m_sqlManager.closeAll(dbc, conn, stmt, res);
+                    // nothing to delete
+                    internalCleanup(dbc, resource);
+                    return 0;
+                }
                 m_sqlManager.closeAll(dbc, conn, stmt, res);
-                // nothing to delete
-                internalCleanup(dbc, resource);
-                return 0;
-            }
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-            if (minStrPublishTagToKeep < 1) {
-                // nothing to delete
-                internalCleanup(dbc, resource);
-                return 0;
-            }
-            minStrPublishTagToKeep++;
+                if (minStrPublishTagToKeep < 1) {
+                    // nothing to delete
+                    internalCleanup(dbc, resource);
+                    return 0;
+                }
+                minStrPublishTagToKeep++;
 
-            // delete the properties
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_HISTORY_DELETE");
-            stmt.setString(1, resource.getStructureId().toString());
-            stmt.setInt(2, minStrPublishTagToKeep);
-            stmt.executeUpdate();
-            m_sqlManager.closeAll(dbc, null, stmt, null);
+                // delete the properties
+                conn = m_sqlManager.getConnection(dbc);
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_HISTORY_DELETE");
+                stmt.setString(1, resource.getStructureId().toString());
+                stmt.setInt(2, minStrPublishTagToKeep);
+                stmt.executeUpdate();
+                m_sqlManager.closeAll(dbc, null, stmt, null);
 
-            // delete the structure entries
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_HISTORY_DELETE");
-            stmt.setString(1, resource.getStructureId().toString());
-            stmt.setInt(2, minStrPublishTagToKeep);
-            int structureVersions = stmt.executeUpdate();
-            m_sqlManager.closeAll(dbc, null, stmt, null);
+                // delete the structure entries
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_STRUCTURE_HISTORY_DELETE");
+                stmt.setString(1, resource.getStructureId().toString());
+                stmt.setInt(2, minStrPublishTagToKeep);
+                structureVersions = stmt.executeUpdate();
+                m_sqlManager.closeAll(dbc, null, stmt, null);
+            }
 
             // get the minimal resource publish tag to keep, 
             // all entries with publish tag less than this will be deleted
@@ -238,12 +244,6 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
-            } else {
-                // make sure the statement and the result is closed
-                m_sqlManager.closeAll(dbc, conn, stmt, res);
-                // nothing to delete
-                internalCleanup(dbc, resource);
-                return structureVersions;
             }
             m_sqlManager.closeAll(dbc, conn, stmt, res);
 
