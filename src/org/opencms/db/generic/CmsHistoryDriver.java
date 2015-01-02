@@ -175,10 +175,10 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 }
             }
             int structureVersions = 0;
-
+            // get the minimal structure publish tag to keep for this sibling
             conn = m_sqlManager.getConnection(dbc);
             if (!noHistoryStructure) {
-                if (((maxVersion - versionsToKeep) <= 0)) {
+                if ((versionsToKeep == -1) || ((maxVersion - versionsToKeep) <= 0)) {
                     // nothing to delete
                     internalCleanup(dbc, resource);
                     return 0;
