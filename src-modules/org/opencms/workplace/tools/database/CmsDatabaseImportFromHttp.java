@@ -95,7 +95,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
         }
         Map params = new HashMap();
         params.put(PARAM_FILE, getParamImportfile());
-        params.put(PARAM_KEEPPERMISSIONS, getParamKeeppermissions());
+        params.put(PARAM_KEEPPERMISSIONS.toLowerCase(), getParamKeepPermissions());
         // set style to display report in correct layout
         params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
         // set close link to get back to overview after finishing the import
@@ -125,7 +125,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
      *
      * @return the keepPermissions parameter
      */
-    public String getParamKeeppermissions() {
+    public String getParamKeepPermissions() {
 
         return m_keepPermissions;
     }
@@ -143,7 +143,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
      *
      * @param keepPermissions the keepPermissions parameter
      */
-    public void setParamKeeppermissions(String keepPermissions) {
+    public void setParamKeepPermissions(String keepPermissions) {
 
         m_keepPermissions = keepPermissions;
     }

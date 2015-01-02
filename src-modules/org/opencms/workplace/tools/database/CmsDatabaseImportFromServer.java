@@ -150,7 +150,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
 
         Map params = new HashMap();
         params.put(PARAM_FILE, getImportFile());
-        params.put(PARAM_KEEPPERMISSIONS, getKeepPermissions());
+        params.put(PARAM_KEEPPERMISSIONS.toLowerCase(), getKeepPermissions());
         // set style to display report in correct layout
         params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
         // set close link to get back to overview after finishing the import
