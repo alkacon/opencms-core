@@ -58,7 +58,7 @@ tinymce.addI18n('cs',{
 "Circle": "Kole\u010dko",
 "Disc": "Punt\u00edk",
 "Upper Alpha": "Velk\u00e1 p\u00edsmena",
-"Upper Roman": "\u0158\u00edmsk\u00e9 \u010d\u00edslice",
+"Upper Roman": "Velk\u00e9 \u0159\u00edmsk\u00e9 \u010d\u00edslice",
 "Lower Roman": "Mal\u00e9 \u0159\u00edmsk\u00e9 \u010d\u00edslice",
 "Name": "N\u00e1zev",
 "Anchor": "Kotva",
