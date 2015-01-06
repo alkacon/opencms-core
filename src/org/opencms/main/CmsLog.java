@@ -28,6 +28,7 @@
 package org.opencms.main;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -90,7 +91,7 @@ public final class CmsLog {
             URL url = Loader.getResource("log4j.properties");
             if (url != null) {
                 // found some log4j properties, let's see if these are the ones used by OpenCms
-                File log4jProps = new File(url.getPath());
+                File log4jProps = getFileForURL(url);
                 String path = log4jProps.getAbsolutePath();
                 // in a default OpenCms configuration, the following path would point to the OpenCms "WEB-INF" folder
                 String webInfPath = log4jProps.getParent();
@@ -161,6 +162,25 @@ public final class CmsLog {
     protected static String getLogFileRfsPath() {
 
         return m_logFileRfsPath;
+    }
+
+    /** 
+     * Helper method to get the java.io.File corresponding to the given URL.<p>
+     * 
+     * This is needed to deal with escaped spaces in URLs.
+     * 
+     * @param url the URL 
+     * @return the file 
+     */
+    private static File getFileForURL(URL url) {
+
+        File result;
+        try {
+            result = new File(url.toURI());
+        } catch (URISyntaxException e) {
+            result = new File(url.getPath());
+        }
+        return result;
     }
 
 }
