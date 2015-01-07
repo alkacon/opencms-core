@@ -38,11 +38,15 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Adds a folder in every existing folder with the name "__properties" which
@@ -64,6 +68,9 @@ import java.util.List;
  * @since 6.5.6
  */
 public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsResourceWrapperPropertyFile.class);
 
     /** The prefix for folders to keep correct sorting. */
     private static final String FOLDER_PREFIX = "__";
@@ -213,13 +220,10 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
     @Override
     public CmsLock getLock(CmsObject cms, CmsResource resource) throws CmsException {
 
-        CmsResource org = cms.readResource(resource.getStructureId());
-        //CmsResource org = getResource(cms, resource.getRootPath(), CmsResourceFilter.DEFAULT);
+        CmsResource org = getResource(cms, resource.getStructureId());
         if (org != null) {
-
             return cms.getLock(org);
         }
-
         return null;
     }
 
@@ -365,11 +369,7 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
     @Override
     public CmsFile writeFile(CmsObject cms, CmsFile resource) throws CmsException {
 
-        CmsResource res = cms.readResource(resource.getStructureId());
-        //        CmsResource res = getResource(
-        //            cms,
-        //            cms.getRequestContext().removeSiteRoot(resource.getRootPath()),
-        //            CmsResourceFilter.ALL);
+        CmsResource res = getResource(cms, resource.getStructureId());
         if (res != null) {
             CmsResourceWrapperUtils.writePropertyFile(
                 cms,
@@ -379,6 +379,26 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
         }
 
         return null;
+    }
+
+    /**
+     * Tries to the read the resource with the given structure id using the given CmsObject and returns it, or null if the resource can not be read.<p>
+     * 
+     * @param cms the CmsObject to use 
+     * @param structureId the structure id of the resource 
+     * @return the resource which has been read
+     */
+    CmsResource getResource(CmsObject cms, CmsUUID structureId) {
+
+        try {
+            CmsResource result = cms.readResource(structureId);
+            return result;
+        } catch (CmsVfsResourceNotFoundException e) {
+            return null;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
     /**

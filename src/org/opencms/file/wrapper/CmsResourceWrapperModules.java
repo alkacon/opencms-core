@@ -38,6 +38,7 @@ import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.jlan.CmsJlanDiskInterface;
 import org.opencms.loader.CmsLoaderException;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -150,6 +151,19 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
     }
 
     /**
+     * @see org.opencms.file.wrapper.A_CmsResourceWrapper#getLock(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
+     */
+    @Override
+    public CmsLock getLock(CmsObject cms, CmsResource resource) throws CmsException {
+
+        if (isFakePath(resource.getRootPath())) {
+            return CmsLock.getNullLock();
+        } else {
+            return super.getLock(cms, resource);
+        }
+    }
+
+    /**
      * @see org.opencms.file.wrapper.I_CmsResourceWrapper#isWrappedResource(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     public boolean isWrappedResource(CmsObject cms, CmsResource res) {
@@ -203,7 +217,8 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
         if (matchParentPath(EXPORT_PATH, resourcepath)) {
             CmsFile resultFile = new CmsFile(createFakeBinaryFile(resourcepath));
             if (cms.getRequestContext().getAttribute(CmsJlanDiskInterface.NO_FILESIZE_REQUIRED) == null) {
-                // we *do* require the file size, so we need to get the module data 
+                // we *do* require the file size, so we need to get the module data
+                LOG.info("Getting data for " + resourcepath);
                 byte[] data = OpenCms.getModuleManager().getImportExportRepository().getExportedModuleData(
                     CmsResource.getName(resourcepath),
                     cms.getRequestContext().getCurrentProject());
