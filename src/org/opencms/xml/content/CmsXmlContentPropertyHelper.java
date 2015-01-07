@@ -114,6 +114,9 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     /** The prefix for macros used to acess properties of the current container page. */
     public static final String PAGE_PROPERTY_PREFIX = "page-property:";
 
+    /** If a property has this value, the page-property macro for this property will expand to the empty string instead. */
+    protected static final Object PROPERTY_EMPTY_MARKER = "-";
+
     /**
      * Hidden constructor.<p>
      */
@@ -216,7 +219,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                         try {
                             CmsProperty prop = cms.readPropertyObject(containerPage, propName, true);
                             String propValue = prop.getValue();
-                            if (propValue == null) {
+                            if ((propValue == null) || PROPERTY_EMPTY_MARKER.equals(propValue)) {
                                 propValue = "";
                             }
                             return propValue;
