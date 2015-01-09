@@ -233,7 +233,8 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
                 && !getHtmlWidgetOption().isButtonHidden(CmsHtmlWidgetOption.OPTION_FORMATSELECT)) {
                 result.put("block_formats", CmsHtmlWidget.getTinyMceBlockFormats(formatSelectOptions));
             }
-            result.put("entity_encoding", "raw");
+            result.put("entity_encoding", "named");
+            result.put("entities", "160,nbsp");
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }

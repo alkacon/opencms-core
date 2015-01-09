@@ -132,6 +132,8 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
                                                                                 try {
                                                                                 var config = @org.opencms.gwt.client.util.CmsDomUtil::parseJSON(Ljava/lang/String;)(configuration);
                                                                                 options = {
+                                                                                entity_encoding: 'named',
+                                                                                entities: '160,nbsp',
                                                                                 // the browser call back function is defined in /system/workplace/editors/tinymce/opencms_plugin.js
                                                                                 file_browser_callback : $wnd.cmsTinyMceFileBrowser
                                                                                 };
