@@ -216,7 +216,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRole()) && !getRole().equals(NO_ROLE)) {
                     OpenCms.getRoleManager().addUserToRole(
                         getCms(),
-                        CmsRole.valueOfRoleName(getRole()),
+                        CmsRole.valueOfRoleName(getRole()).forOrgUnit(m_paramOufqn),
                         m_user.getName());
                 }
             }
