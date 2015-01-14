@@ -65,6 +65,13 @@
       </analyzer>
     </fieldType>
 
+	<!-- A text field only tokenizing words. -->
+    <fieldType name="text_cs" class="solr.TextField" positionIncrementGap="100">
+      <analyzer>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+      </analyzer>
+    </fieldType>
+    
     <!-- A general text field -->
     <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
       <analyzer type="index">
@@ -309,6 +316,7 @@
    <dynamicField name="random_*"     type="random" />
    <dynamicField name="text_*"       type="text_general" indexed="true"  stored="true" termVectors="true" termPositions="true" termOffsets="true"/>
    <dynamicField name="dep_*"        type="string"       indexed="false" stored="true" multiValued="true"/>
+   <dynamicField name="*_cs"         type="text_cs"      indexed="true" stored="false" multiValued="true"/>
  </fields>
 
  <copyField source="*_en"      dest="text_en"/>
