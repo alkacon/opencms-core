@@ -511,7 +511,7 @@ public class CmsShell {
             // set the path to the WEB-INF folder (the 2nd and 3rd parameters are just reasonable dummies)
             CmsServletContainerSettings settings = new CmsServletContainerSettings(
                 webInfPath,
-                "ROOT",
+                defaultWebAppName,
                 servletMapping,
                 null,
                 null);
