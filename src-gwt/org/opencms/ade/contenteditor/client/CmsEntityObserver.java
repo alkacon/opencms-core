@@ -84,8 +84,11 @@ public class CmsEntityObserver implements ValueChangeHandler<CmsEntity> {
         }
         if (!m_changeListeners.containsKey(changeScope)) {
             m_changeListeners.put(changeScope, new ArrayList<I_CmsEntityChangeListener>());
-            // save the current change scope value
-            m_scopeValues.put(changeScope, CmsContentDefinition.getValueForPath(m_observerdEntity, changeScope));
+            // if changeScope==null, it is a global change listener, and we don't need a scope value 
+            if (changeScope != null) {
+                // save the current change scope value
+                m_scopeValues.put(changeScope, CmsContentDefinition.getValueForPath(m_observerdEntity, changeScope));
+            }
         }
         m_changeListeners.get(changeScope).add(changeListener);
     }
@@ -110,6 +113,11 @@ public class CmsEntityObserver implements ValueChangeHandler<CmsEntity> {
     public void onValueChange(ValueChangeEvent<CmsEntity> event) {
 
         CmsEntity entity = event.getValue();
+        if (m_changeListeners.containsKey(null)) {
+            for (I_CmsEntityChangeListener listener : m_changeListeners.get(null)) {
+                safeExecuteChangeListener(entity, listener);
+            }
+        }
         for (String scope : m_scopeValues.keySet()) {
             System.out.println("checking scope " + scope + " on change");
             String scopeValue = CmsContentDefinition.getValueForPath(entity, scope);
@@ -120,17 +128,27 @@ public class CmsEntityObserver implements ValueChangeHandler<CmsEntity> {
                 if (m_changeListeners.containsKey(scope)) {
                     System.out.println("calling listeners on changed scope " + scope);
                     for (I_CmsEntityChangeListener changeListener : m_changeListeners.get(scope)) {
-                        try {
-                            changeListener.onEntityChange(entity);
-                        } catch (Exception e) {
-                            String stack = CmsClientStringUtil.getStackTrace(e, "<br />");
-                            CmsDebugLog.getInstance().printLine("<br />" + e.getMessage() + "<br />" + stack);
-                        }
+                        safeExecuteChangeListener(entity, changeListener);
                     }
                 }
-
                 m_scopeValues.put(scope, scopeValue);
             }
+        }
+    }
+
+    /**
+     * Calls an entity change listener, catching any errors.<p>
+     * 
+     * @param entity the entity with  which the change listener should be called  
+     * @param listener the change listener 
+     */
+    protected void safeExecuteChangeListener(CmsEntity entity, I_CmsEntityChangeListener listener) {
+
+        try {
+            listener.onEntityChange(entity);
+        } catch (Exception e) {
+            String stack = CmsClientStringUtil.getStackTrace(e, "<br />");
+            CmsDebugLog.getInstance().printLine("<br />" + e.getMessage() + "<br />" + stack);
         }
     }
 }
