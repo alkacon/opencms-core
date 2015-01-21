@@ -61,9 +61,6 @@
 			<int name="rows">10</int>
 			<str name="df">text</str>
 		</lst>
-		<arr name="last-components">
-			<str>highlight</str>
-		</arr>
 	</requestHandler>
 	<requestHandler name="/update" class="solr.XmlUpdateRequestHandler">
 	</requestHandler>
