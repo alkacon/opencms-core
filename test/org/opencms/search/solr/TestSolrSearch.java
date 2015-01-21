@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,14 +67,14 @@ import org.apache.solr.common.util.DateUtil;
 
 /**
  * Tests if Solr search queries are able to do what was earlier done with Lucene.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class TestSolrSearch extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestSolrSearch(String arg0) {
@@ -84,7 +84,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -109,8 +109,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
         suite.addTest(new TestSolrSearch("testXmlContent"));
         suite.addTest(new TestSolrSearch("testDocumentBoost"));
         suite.addTest(new TestSolrSearch("testAdvancedFacetting"));
+        suite.addTest(new TestSolrSearch("testAdvancedHighlighting"));
 
-        // suite.addTest(new TestSolrSearch("testAdvancedHighlighting"));
         // suite.addTest(new TestSolrSearch("testAdvancedMoreLikeThis"));
         // suite.addTest(new TestSolrSearch("testAdvancedPaging"));
         // suite.addTest(new TestSolrSearch("testAdvancedRangingDates"));
@@ -193,7 +193,21 @@ public class TestSolrSearch extends OpenCmsTestCase {
      */
     public void testAdvancedHighlighting() throws Throwable {
 
-        // TODO: implement
+        // TODO: improve
+        echo("Testing highlighting");
+
+        // creating the query: facet=true&facet.field=Title_exact&facet.mincount=1&facet.query=text:OpenCms&rows=0
+        SolrQuery query = new CmsSolrQuery(getCmsObject(), null);
+        // hl=true
+        query.setHighlight(true);
+        // add df to the query - otherwise highlighting will fail
+        query.set("df", "text");
+
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrResultList results = index.search(getCmsObject(), query);
+
+        assertNotNull(results.getHighLighting());
+        echo("Highlighting works fine!");
     }
 
     /**
@@ -371,7 +385,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
     /**
      * Tests searching in various document types.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testDocumentTypes() throws Throwable {
@@ -391,7 +405,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
     /**
      * Tests the CmsSearch with folder names with upper case letters.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testFolderName() throws Exception {
@@ -414,7 +428,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
     /**
      * Test the cms search indexer.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testIndexer() throws Throwable {
@@ -424,10 +438,10 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
     /**
      * Tests index generation with different analyzers.<p>
-     * 
+     *
      * This test was added in order to verify proper generation of resource "root path" information
      * in the index.
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testIndexGeneration() throws Throwable {
@@ -460,7 +474,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         query = "q=+text:\"SearchEgg1\"";
         results = index.search(getCmsObject(), query);
 
-        // assert one file is found in the default site     
+        // assert one file is found in the default site
         assertEquals(1, results.size());
         assertEquals("/sites/default/xmlcontent/article_0001.html", results.get(0).getRootPath());
 
@@ -475,7 +489,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
     /**
      * Tests an issue where no results are found in folders that have names
      * like <code>/basisdienstleistungen_-_zka/</code>.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testIssueWithSpecialFoldernames() throws Exception {
@@ -511,7 +525,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
     /**
      * Tests searching with limiting the time ranges.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testLimitTimeRanges() throws Exception {
@@ -589,7 +603,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
     /**
      * Tests searching with optimized limiting the time ranges.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testLimitTimeRangesOptimized() throws Exception {
@@ -773,7 +787,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
     /**
      * Tests searching with multiple search roots.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testMultipleSearchRoots() throws Exception {
@@ -887,7 +901,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
     /**
      * Tests sorting of search results.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testSortResults() throws Exception {
@@ -958,7 +972,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
     /**
      * Test the cms search indexer.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testXmlContent() throws Throwable {
@@ -986,7 +1000,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         assertEquals(1, results.size());
         assertEquals("/sites/default/xmlcontent/article_0003.html", results.get(0).getRootPath());
 
-        // check (on console) that the file does contain a link to the /xmlcontent/ folder 
+        // check (on console) that the file does contain a link to the /xmlcontent/ folder
         CmsFile article4 = cms.readFile("/xmlcontent/article_0004.html");
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, article4, true);
         echo(content.toString());
@@ -1001,11 +1015,11 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
     /**
      * Internal helper for test with same name.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param folderName the folder name to perform the test in
      * @param expected the expected result size of the search
-     * 
+     *
      * @throws Exception in case the test fails
      */
     private void testUppercaseFolderNameUtil(CmsObject cms, String folderName, int expected) throws Exception {

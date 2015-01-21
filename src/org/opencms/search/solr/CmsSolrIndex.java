@@ -991,6 +991,10 @@ public class CmsSolrIndex extends CmsSearchIndex {
                         } catch (Exception e) {
                             LOG.error(e);
                         }
+
+                        // Make highlighting also available via the CmsSolrResultList
+                        queryResponse.setResponse(solrQueryResponse.getValues());
+
                         highlightEndTime = System.currentTimeMillis();
                     }
                 }
