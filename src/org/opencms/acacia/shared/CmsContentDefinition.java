@@ -118,7 +118,7 @@ public class CmsContentDefinition implements IsSerializable {
 
         int index = 0;
         // check if the value index is appended to the attribute name
-        if (attributeName.endsWith("]") && attributeName.contains("[")) {
+        if (hasIndex(attributeName)) {
             try {
                 String temp = attributeName.substring(attributeName.lastIndexOf("[") + 1, attributeName.length() - 1);
 
@@ -130,6 +130,18 @@ public class CmsContentDefinition implements IsSerializable {
         return index;
     }
 
+    /** 
+     * Checks if the given XPATH component has an index.<p>
+     * 
+     * @param pathComponent the path component 
+     * 
+     * @return true if the argument contains an index 
+     */
+    public static boolean hasIndex(String pathComponent) {
+
+        return pathComponent.endsWith("]") && pathComponent.contains("[");
+    }
+
     /**
      * Removes an attribute index suffix from the given attribute name.<p>
      * 
@@ -139,7 +151,7 @@ public class CmsContentDefinition implements IsSerializable {
      */
     public static String removeIndex(String attributeName) {
 
-        if (attributeName.endsWith("]") && attributeName.contains("[")) {
+        if (hasIndex(attributeName)) {
             attributeName = attributeName.substring(0, attributeName.lastIndexOf("["));
         }
         return attributeName;

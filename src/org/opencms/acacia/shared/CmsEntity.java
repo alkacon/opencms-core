@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -140,6 +141,76 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
                     }
                     List<CmsEntity> values = attribute.getComplexValues();
                     result = getValueForPath(values.get(index), childPathElements);
+                }
+            }
+        }
+        return result;
+    }
+
+    /** 
+     * Gets the list of values reachable from the given base object with the given path.<p>
+     * 
+     * @param baseObject the base object (a CmsEntity or a string)
+     * @param pathComponents the path components 
+     * @return the list of values for the given path (either of type String or CmsEntity) 
+     */
+    public static List<Object> getValuesForPath(Object baseObject, String[] pathComponents) {
+
+        List<Object> currentList = Lists.newArrayList();
+        currentList.add(baseObject);
+        for (String pathComponent : pathComponents) {
+            List<Object> newList = Lists.newArrayList();
+            for (Object element : currentList) {
+                newList.addAll(getValuesForPathComponent(element, pathComponent));
+            }
+            currentList = newList;
+        }
+        return currentList;
+    }
+
+    /**
+     * Gets the values reachable from a given object (an entity or a string) with a single XPath component.<p>
+     * 
+     * If entityOrString is a string, and pathComponent is "VALUE", a list containing only entityOrString is returned.
+     * Otherwise, entityOrString is assumed to be an entity, and the pathComponent is interpreted as a field of the entity
+     * (possibly with an index). 
+     *  
+     * @param entityOrString the entity or string from which to get the values for the given path component 
+     * @param pathComponent the path component 
+     * @return the list of reachable values 
+     */
+    public static List<Object> getValuesForPathComponent(Object entityOrString, String pathComponent) {
+
+        List<Object> result = Lists.newArrayList();
+        if (pathComponent.equals("VALUE")) {
+            result.add(entityOrString);
+        } else {
+            if (entityOrString instanceof CmsEntity) {
+                CmsEntity entity = (CmsEntity)entityOrString;
+                boolean hasIndex = CmsContentDefinition.hasIndex(pathComponent);
+                int index = CmsContentDefinition.extractIndex(pathComponent);
+                if (index > 0) {
+                    index--;
+                }
+                String attributeName = entity.getTypeName() + "/" + CmsContentDefinition.removeIndex(pathComponent);
+                CmsEntityAttribute attribute = entity.getAttribute(attributeName);
+
+                if (attribute != null) {
+                    if (hasIndex) {
+                        if (index < attribute.getValueCount()) {
+                            if (attribute.isSimpleValue()) {
+                                result.add(attribute.getSimpleValues().get(index));
+                            } else {
+                                result.add(attribute.getComplexValues().get(index));
+                            }
+                        }
+                    } else {
+                        if (attribute.isSimpleValue()) {
+                            result.addAll(attribute.getSimpleValues());
+                        } else {
+                            result.addAll(attribute.getComplexValues());
+                        }
+                    }
                 }
             }
         }
