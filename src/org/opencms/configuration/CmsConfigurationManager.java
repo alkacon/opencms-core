@@ -30,9 +30,12 @@ package org.opencms.configuration;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlErrorHandler;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -44,6 +47,18 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.Log;
 
@@ -53,7 +68,9 @@ import org.dom4j.Element;
 import org.dom4j.dom.DOMDocumentType;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 /**
  * Configuration manager for digesting the OpenCms XML configuration.<p>
@@ -67,6 +84,9 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /** The location of the OpenCms configuration DTD if the default prefix is the system ID. */
     public static final String DEFAULT_DTD_LOCATION = "org/opencms/configuration/";
+
+    /** Location of the optional XSLT file used to transform the configuration. */
+    public static final String DEFAULT_XSLT_FILENAME = "opencms-configuration.xslt";
 
     /** The default prefix for the OpenCms configuration DTD. */
     public static final String DEFAULT_DTD_PREFIX = "http://www.opencms.org/dtd/6.0/";
@@ -403,6 +423,83 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     }
 
     /**
+     * Gets the path to the XSLT transformation file that should be used for the configuration.<p>
+     *  
+     * @return the path to the XSLT transformation 
+     */
+    String getTransformationPath() {
+
+        String path = System.getProperty("opencms.config.transform");
+        if (path == null) {
+            path = CmsStringUtil.joinPaths(m_baseFolder.getAbsolutePath(), DEFAULT_XSLT_FILENAME);
+        }
+        return path;
+    }
+
+    /** 
+     * Checks if an XSLT transformation file is available.<p>
+     * 
+     * @return true if an XSLT transformation file is available 
+     */
+    boolean hasTransformation() {
+
+        String transformationPath = getTransformationPath();
+        boolean result = (transformationPath != null) && new File(transformationPath).exists();
+        return result;
+    }
+
+    /**
+     * Transforms the given configuration using an XSLT transformation.<p>
+     * 
+     * @param url the URL of the base folder 
+     * @param config the configuration object
+     *  
+     * @return the InputSource to feed the configuration digester 
+     * 
+     * @throws TransformerException if the transformation fails 
+     * @throws IOException if an error occurs while reading the configuration or transformation 
+     * @throws SAXException if parsing the configuration file fails 
+     * @throws ParserConfigurationException if something goes wrong with configuring the parser 
+     */
+    InputSource transformConfiguration(URL url, I_CmsXmlConfiguration config)
+    throws TransformerException, IOException, SAXException, ParserConfigurationException {
+
+        String configPath = CmsStringUtil.joinPaths(url.getFile(), config.getXmlFileName());
+        String transformPath = getTransformationPath();
+        TransformerFactory factory = TransformerFactory.newInstance();
+        LOG.info("Transforming '" + configPath + "' with transformation '" + transformPath + "'");
+        Transformer transformer = factory.newTransformer(new StreamSource(new File(transformPath)));
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.setParameter("file", config.getXmlFileName());
+
+        // use a SAXSource here because we need to set the correct entity resolver to prevent errors   
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setNamespaceAware(true);
+        parserFactory.setValidating(false); // Turn off validation
+        XMLReader reader = parserFactory.newSAXParser().getXMLReader();
+        reader.setEntityResolver(new CmsXmlEntityResolver(null));
+        Source source = new SAXSource(reader, new InputSource(configPath));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Result target = new StreamResult(baos);
+
+        transformer.transform(source, target);
+        byte[] transformedConfig = baos.toByteArray();
+        // We can't set the doctype dynamically from inside the XSLT transform using XSLT 1.0, and XSLT 2.0 
+        // isn't supported by the standard implementation in the JDK. So we do some macro replacement after the 
+        // transformation.
+        String transformedConfigStr = new String(transformedConfig, "UTF-8").replaceFirst(
+            "@dtd@",
+            config.getDtdUrlPrefix() + config.getDtdFilename());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("");
+            LOG.debug("=================== Transformation result for config file '" + config.getXmlFileName() + "':");
+            LOG.debug(transformedConfigStr);
+        }
+        return new InputSource(new ByteArrayInputStream(transformedConfigStr.getBytes()));
+    }
+
+    /**
      * Creates a backup of the given XML configurations input file.<p>
      * 
      * @param configuration the configuration for which the input file should be backed up
@@ -483,6 +580,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         // instantiate Digester and enable XML validation
         m_digester = new Digester();
         m_digester.setUseContextClassLoader(true);
+        //TODO: For this to work with transformed configurations, we need to add the correct DOCTYPE declarations to the transformed files 
         m_digester.setValidating(true);
         m_digester.setEntityResolver(new CmsXmlEntityResolver(null));
         m_digester.setRuleNamespaceURI(null);
@@ -493,8 +591,19 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
         configuration.addXmlDigesterRules(m_digester);
 
+        InputSource inputSource = null;
+        if (hasTransformation()) {
+            try {
+                inputSource = transformConfiguration(url, configuration);
+            } catch (Exception e) {
+                LOG.error("Error transforming " + configuration.getXmlFileName() + ": " + e.getLocalizedMessage(), e);
+            }
+        }
+        if (inputSource == null) {
+            inputSource = new InputSource(fileUrl.openStream());
+        }
         // start the parsing process        
-        m_digester.parse(fileUrl.openStream());
+        m_digester.parse(inputSource);
     }
 
     /**
