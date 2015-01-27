@@ -97,6 +97,9 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  */
 public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySearchBean> {
 
+    /** The gallery service instance. */
+    private static I_CmsGalleryServiceAsync m_gallerySvc;
+
     /** The preview factory registration. */
     private static Map<String, I_CmsPreviewFactory> m_previewFactoryRegistration = new HashMap<String, I_CmsPreviewFactory>();
 
@@ -130,11 +133,14 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     /** Flag to record whether the user changed the gallery selection. */
     private boolean m_galleriesChanged;
 
-    /** The gallery service instance. */
-    private static I_CmsGalleryServiceAsync m_gallerySvc;
+    /** Flag which controls whether the galleries in the gallery tab should be selectable. */
+    private boolean m_galleriesSelectable;
 
     /** Flag which indicates whether the site selector should be shown. */
     private boolean m_isShowSiteSelector = true;
+
+    /** Flag which controls whether the results should be selectable. If this is false, the results will not be selectable, but if it is true, the results may still be unselectable for a different reason. */
+    private boolean m_resultsSelectable = true;
 
     /** If <code>true</code> the search object is changed <code>false</code> otherwise.  */
     private boolean m_searchObjectChanged = true;
@@ -204,6 +210,8 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public CmsGalleryController(CmsGalleryControllerHandler handler, final I_CmsGalleryConfiguration conf) {
 
         m_configuration = conf;
+        m_resultsSelectable = conf.hasResultsSelectable();
+        m_galleriesSelectable = conf.hasGalleriesSelectable();
         m_handler = handler;
         m_handler.m_galleryDialog.setUseFormats(m_configuration.isUseFormats());
         m_handler.m_galleryDialog.setImageFormats(m_configuration.getImageFormats());
@@ -812,6 +820,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Returns true if the galleries in the gallery tab should be selectable.<p>
+     * 
+     * @return true if the galleries should be selectable 
+     */
+    public boolean hasGalleriesSelectable() {
+
+        return m_galleriesSelectable;
+    }
+
+    /**
      * Returns if a preview is available for the given resource type.<p>
      * 
      * @param resourceType the requested resource type
@@ -821,6 +839,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public boolean hasPreview(String resourceType) {
 
         return getProviderName(resourceType) != null;
+    }
+
+    /**
+     * Returns false if the results in the result tab should not be selectable.<p>
+     * 
+     * @return false if the results in the result tab should not be selectable 
+     */
+    public boolean hasResultsSelectable() {
+
+        return m_resultsSelectable;
     }
 
     /**
@@ -961,7 +989,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         if (m_previewFactoryRegistration.containsKey(provider)) {
             m_handler.m_galleryDialog.useMaxDimensions();
             m_currentPreview = m_previewFactoryRegistration.get(provider).getPreview(m_handler.m_galleryDialog);
-            m_currentPreview.openPreview(resourcePath);
+            m_currentPreview.openPreview(resourcePath, !m_resultsSelectable);
             m_handler.hideShowPreviewButton(false);
         } else {
             CmsDebugLog.getInstance().printLine(
