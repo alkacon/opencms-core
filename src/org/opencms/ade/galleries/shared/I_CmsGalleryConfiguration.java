@@ -160,6 +160,20 @@ public interface I_CmsGalleryConfiguration {
     String getUploadFolder();
 
     /**
+     * Returns true if the galleries should be selectable.<p>
+     * 
+     * @return true if the galleries should be selectable 
+     */
+    boolean hasGalleriesSelectable();
+
+    /** 
+     * Returns false if the results should not be selectable.<p>
+     * 
+     * @return false if the results should not be selectable 
+     */
+    boolean hasResultsSelectable();
+
+    /**
      * Returns if files are selectable.<p>
      * 
      * @return <code>true</code> if files are selectable

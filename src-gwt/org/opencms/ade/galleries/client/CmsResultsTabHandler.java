@@ -88,7 +88,7 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
      */
     public boolean hasSelectResource() {
 
-        return m_controller.hasSelectResource();
+        return m_controller.hasSelectResource() && m_controller.hasResultsSelectable();
     }
 
     /**

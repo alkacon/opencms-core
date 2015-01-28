@@ -29,6 +29,7 @@ package org.opencms.widgets;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
+import org.opencms.ade.galleries.shared.CmsGalleryTabConfiguration;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.file.CmsObject;
@@ -97,6 +98,9 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
     /** Configuration parameter to set the flag to include files in popup resource tree. */
     public static final String CONFIGURATION_EXCLUDEFILES = "excludefiles";
 
+    /** Configuration parameter to restrict the widget to gallery selection only. */
+    public static final String CONFIGURATION_GALLERYSELECT = "galleryselect";
+
     /** Configuration parameter to set the flag to show the site selector in popup resource tree. */
     public static final String CONFIGURATION_HIDESITESELECTOR = "hidesiteselector";
 
@@ -129,6 +133,9 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsVfsFileWidget.class);
+
+    /** Flag which, when set, restricts the user to select only galleries or folders. */
+    private boolean m_gallerySelect;
 
     /** Flag to determine if files should be shown in popup window. */
     private boolean m_includeFiles;
@@ -270,6 +277,11 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
             result.append(CONFIGURATION_INCLUDEFILES);
         } else {
             result.append(CONFIGURATION_EXCLUDEFILES);
+        }
+
+        if (m_gallerySelect) {
+            result.append("|");
+            result.append(CONFIGURATION_GALLERYSELECT);
         }
 
         // append flag for project awareness
@@ -519,6 +531,10 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
                 // files should not be included
                 m_includeFiles = false;
             }
+            if (configuration.contains(CONFIGURATION_GALLERYSELECT)) {
+                m_gallerySelect = true;
+            }
+
             if (configuration.contains(CONFIGURATION_NOTPROJECTAWARE)) {
                 // resources outside of the current project should not be disabled
                 m_projectAware = false;
@@ -606,6 +622,13 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
             String treeToken = ""
                 + Objects.hashCode(m_startSite, cms.getRequestContext().getSiteRoot(), "" + m_selectableTypes);
             config.put(I_CmsGalleryProviderConstants.CONFIG_TREE_TOKEN, treeToken);
+
+            if (m_gallerySelect) {
+                config.put(I_CmsGalleryProviderConstants.CONFIG_GALLERIES_SELECTABLE, "true");
+                config.put(I_CmsGalleryProviderConstants.CONFIG_RESULTS_SELECTABLE, "false");
+                config.put(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG, CmsGalleryTabConfiguration.TC_GALLERIES);
+            }
+
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }

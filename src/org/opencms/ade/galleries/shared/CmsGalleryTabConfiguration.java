@@ -54,6 +54,9 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
     public static final String TC_FOLDERS = "folders";
 
     /** Gallery configuration id. */
+    public static final String TC_GALLERIES = "galleries";
+
+    /** Gallery configuration id. */
     public static final String TC_SELECT_ALL = "selectAll";
 
     /** Gallery configuration id. */
@@ -89,6 +92,7 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
         defaultConfigs.put(TC_SELECT_DOC, parse("types,*galleries,categories,vfstree,search,results"));
         defaultConfigs.put(TC_ADE_ADD, parse("*types,galleries,categories,vfstree,search,results"));
         defaultConfigs.put(TC_FOLDERS, parse("*vfstree"));
+        defaultConfigs.put(TC_GALLERIES, parse("*galleries,vfstree,results"));
         DEFAULT_CONFIGURATIONS = Collections.unmodifiableMap(defaultConfigs);
     }
 

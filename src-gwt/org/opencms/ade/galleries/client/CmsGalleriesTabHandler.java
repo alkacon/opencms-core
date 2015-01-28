@@ -57,6 +57,16 @@ public class CmsGalleriesTabHandler extends A_CmsTabHandler {
     }
 
     /**
+     * Returns true if the galleries should be selectable.<p>
+     * 
+     * @return true if the galleries should be selectable 
+     */
+    public boolean hasGalleriesSelectable() {
+
+        return m_controller.hasGalleriesSelectable();
+    }
+
+    /**
      * Will be triggered when the user unchecks the checkbox to deselect a gallery.<p>
      * 
      * @param galleryPath the category path as id

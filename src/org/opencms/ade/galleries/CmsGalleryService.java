@@ -1923,8 +1923,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         }
                     }
                     // check if the gallery is available in this site and still exists
-
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(startGallery)) {
+                    if (!conf.hasResultsSelectable()) {
+                        // if selecting results is explicitly disabled, opening the start gallery does not make much sense 
+                        data.setStartGallery(null);
+                    } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(startGallery)) {
                         boolean galleryExists = getCmsObject().existsResource(startGallery);
                         if (galleryExists) {
                             data.setStartGallery(startGallery);
