@@ -40,12 +40,15 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorer;
+import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.tools.CmsToolUserData;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Maps;
 
 /**
  * Object to conveniently access and modify the state of the workplace for a user,
@@ -135,6 +138,9 @@ public class CmsWorkplaceSettings {
 
     /** The view URI. */
     private String m_viewUri;
+
+    /** Cache for workplace list metadata. */
+    private Map<String, CmsListMetadata> m_listMetadataCache = Maps.newHashMap();
 
     /**
      * Constructor, only package visible.<p>
@@ -311,6 +317,16 @@ public class CmsWorkplaceSettings {
         String result = m_lastUsedGalleries.get(galleryKey);
         LOG.info("user=" + m_user.getName() + ": getLastUsedGallery " + galleryKey + " : returning " + result);
         return result;
+    }
+
+    /** 
+     * Gets the cache for workplace list metadata.<p>
+     * 
+     * @return the cache for workplace list metadata 
+     */
+    public Map<String, CmsListMetadata> getListMetadataCache() {
+
+        return m_listMetadataCache;
     }
 
     /**

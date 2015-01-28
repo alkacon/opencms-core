@@ -517,7 +517,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public CmsListMetadata getMetadata(String listDialogName) {
 
-        return m_metadatas.get(listDialogName);
+        return getMetadataCache().get(listDialogName);
     }
 
     /**
@@ -947,7 +947,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected synchronized CmsListMetadata getMetadata(String listDialogName, String listId) {
 
-        if ((m_metadatas.get(listDialogName) == null) || m_metadatas.get(listDialogName).isVolatile()) {
+        getSettings();
+
+        if ((getMetadataCache().get(listDialogName) == null) || getMetadataCache().get(listDialogName).isVolatile()) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_METADATA_LIST_1, getListId()));
             }
@@ -960,12 +962,26 @@ public abstract class A_CmsListDialog extends CmsDialog {
             metadata.addIndependentAction(new CmsListPrintIAction());
             setMultiActions(metadata);
             metadata.checkIds();
-            m_metadatas.put(listDialogName, metadata);
+            getMetadataCache().put(listDialogName, metadata);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_METADATA_LIST_1, getListId()));
             }
         }
         return getMetadata(listDialogName);
+    }
+
+    /**
+     * Gets the list metadata cache.<p>
+     * 
+     * @return the list metadata cache 
+     */
+    protected Map<String, CmsListMetadata> getMetadataCache() {
+
+        CmsWorkplaceSettings settings = getSettings();
+        if (settings != null) {
+            return settings.getListMetadataCache();
+        }
+        return m_metadatas;
     }
 
     /**
