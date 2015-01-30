@@ -99,6 +99,8 @@ import org.apache.commons.logging.Log;
 
 import org.dom4j.Element;
 
+import com.google.common.collect.Sets;
+
 /**
  * Service to provide entity persistence within OpenCms. <p>
  */
@@ -675,6 +677,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         structureId = CmsContentDefinition.entityIdToUuid(changedEntities.get(0).getId());
         if (structureId != null) {
             CmsObject cms = getCmsObject();
+            Set<String> setFieldNames = Sets.newHashSet();
             try {
                 CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
                 CmsFile file = cms.readFile(resource);
@@ -686,9 +689,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         content.removeLocale(contentLocale);
                     }
                     content.addLocale(cms, contentLocale);
-                    addEntityAttributes(cms, content, "", entity, contentLocale);
+                    setFieldNames.addAll(addEntityAttributes(cms, content, "", entity, contentLocale));
                 }
-                return validateContent(cms, structureId, content);
+                return validateContent(cms, structureId, content, setFieldNames);
             } catch (Exception e) {
                 error(e);
             }
@@ -944,13 +947,38 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param parentPath the parent path
      * @param entity the entity
      * @param contentLocale the content locale
+     * 
+     * @return the set of xpaths of simple fields in the XML content which were set by this method 
+     */
+    private Set<String> addEntityAttributes(
+        CmsObject cms,
+        CmsXmlContent content,
+        String parentPath,
+        CmsEntity entity,
+        Locale contentLocale) {
+
+        Set<String> fieldsSet = Sets.newHashSet();
+        addEntityAttributes(cms, content, parentPath, entity, contentLocale, fieldsSet);
+        return fieldsSet;
+    }
+
+    /**
+     * Adds the attribute values of the entity to the given XML content.<p>
+     *
+     * @param cms the current cms context
+     * @param content the XML content
+     * @param parentPath the parent path
+     * @param entity the entity
+     * @param contentLocale the content locale
+     * @param fieldsSet set to store which fields were set in the XML content 
      */
     private void addEntityAttributes(
         CmsObject cms,
         CmsXmlContent content,
         String parentPath,
         CmsEntity entity,
-        Locale contentLocale) {
+        Locale contentLocale,
+        Set<String> fieldsSet) {
 
         for (CmsEntityAttribute attribute : entity.getAttributes()) {
             if (CmsType.CHOICE_ATTRIBUTE_NAME.equals(attribute.getAttributeName())) {
@@ -968,13 +996,14 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             field = content.addValue(cms, elementPath, contentLocale, i);
                         }
                         field.setStringValue(cms, value);
+                        fieldsSet.add(field.getPath());
                     } else {
                         CmsEntity child = choiceAttribute.getComplexValue();
                         I_CmsXmlContentValue field = content.getValue(elementPath, contentLocale, i);
                         if (field == null) {
                             field = content.addValue(cms, elementPath, contentLocale, i);
                         }
-                        addEntityAttributes(cms, content, field.getPath() + "/", child, contentLocale);
+                        addEntityAttributes(cms, content, field.getPath() + "/", child, contentLocale, fieldsSet);
                     }
                 }
             } else {
@@ -988,7 +1017,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             field = content.addValue(cms, elementPath, contentLocale, i);
                         }
                         field.setStringValue(cms, value);
-
+                        fieldsSet.add(field.getPath());
                     }
                 } else {
                     List<CmsEntity> entities = attribute.getComplexValues();
@@ -998,7 +1027,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         if (field == null) {
                             field = content.addValue(cms, elementPath, contentLocale, i);
                         }
-                        addEntityAttributes(cms, content, field.getPath() + "/", child, contentLocale);
+                        addEntityAttributes(cms, content, field.getPath() + "/", child, contentLocale, fieldsSet);
                     }
                 }
             }
@@ -1544,32 +1573,64 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      */
     private CmsValidationResult validateContent(CmsObject cms, CmsUUID structureId, CmsXmlContent content) {
 
+        return validateContent(cms, structureId, content, null);
+    }
+
+    /**
+     * Validates the given XML content.<p>
+     *
+     * @param cms the cms context
+     * @param structureId the structure id
+     * @param content the XML content
+     * @param fieldNames if not null, only validation errors in paths from this set will be added to the validation result 
+     *
+     * @return the validation result
+     */
+    private CmsValidationResult validateContent(
+        CmsObject cms,
+        CmsUUID structureId,
+        CmsXmlContent content,
+        Set<String> fieldNames) {
+
         CmsXmlContentErrorHandler errorHandler = content.validate(cms);
         Map<String, Map<String[], String>> errorsByEntity = new HashMap<String, Map<String[], String>>();
-        if (errorHandler.hasErrors()) {
 
+        if (errorHandler.hasErrors()) {
+            boolean reallyHasErrors = false;
             for (Entry<Locale, Map<String, String>> localeEntry : errorHandler.getErrors().entrySet()) {
                 Map<String[], String> errors = new HashMap<String[], String>();
                 for (Entry<String, String> error : localeEntry.getValue().entrySet()) {
                     I_CmsXmlContentValue value = content.getValue(error.getKey(), localeEntry.getKey());
-                    errors.put(getPathElements(content, value), error.getValue());
+                    if ((fieldNames == null) || fieldNames.contains(value.getPath())) {
+                        errors.put(getPathElements(content, value), error.getValue());
+                        reallyHasErrors = true;
+                    }
+
                 }
-                errorsByEntity.put(
-                    CmsContentDefinition.uuidToEntityId(structureId, localeEntry.getKey().toString()),
-                    errors);
+                if (reallyHasErrors) {
+                    errorsByEntity.put(
+                        CmsContentDefinition.uuidToEntityId(structureId, localeEntry.getKey().toString()),
+                        errors);
+                }
             }
         }
         Map<String, Map<String[], String>> warningsByEntity = new HashMap<String, Map<String[], String>>();
         if (errorHandler.hasWarnings()) {
+            boolean reallyHasErrors = false;
             for (Entry<Locale, Map<String, String>> localeEntry : errorHandler.getWarnings().entrySet()) {
                 Map<String[], String> warnings = new HashMap<String[], String>();
                 for (Entry<String, String> warning : localeEntry.getValue().entrySet()) {
                     I_CmsXmlContentValue value = content.getValue(warning.getKey(), localeEntry.getKey());
-                    warnings.put(getPathElements(content, value), warning.getValue());
+                    if ((fieldNames == null) || fieldNames.contains(value.getPath())) {
+                        warnings.put(getPathElements(content, value), warning.getValue());
+                        reallyHasErrors = true;
+                    }
                 }
-                warningsByEntity.put(
-                    CmsContentDefinition.uuidToEntityId(structureId, localeEntry.getKey().toString()),
-                    warnings);
+                if (reallyHasErrors) {
+                    warningsByEntity.put(
+                        CmsContentDefinition.uuidToEntityId(structureId, localeEntry.getKey().toString()),
+                        warnings);
+                }
             }
         }
         return new CmsValidationResult(errorsByEntity, warningsByEntity);
