@@ -1,0 +1,33 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+
+	<xsd:element name="FieldFacetConfigs" type="OpenCmsFieldFacetConfigs"/>
+
+	<xsd:complexType name="OpenCmsFieldFacetConfigs">
+		<xsd:sequence>
+			<xsd:element name="FieldFacetConfig" type="OpenCmsFieldFacetConfig" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsFieldFacetConfig">
+		<xsd:sequence>
+			<xsd:element name="Field" type="OpenCmsString" />
+			<xsd:element name="Name" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Label" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="MinCount" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Limit" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Prefix" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Order" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="FieldQueryModifier" type="OpenCmsString" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+	
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.jsp.search.jsp-search-form-schema" />
+		</xsd:appinfo>
+	</xsd:annotation>
+
+</xsd:schema>

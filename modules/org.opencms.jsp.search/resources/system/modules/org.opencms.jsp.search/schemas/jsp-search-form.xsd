@@ -1,0 +1,58 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/sortoption.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/fieldfacet.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/highlighting.xsd"/>
+
+	<xsd:element name="JspSearchFormConfigs" type="OpenCmsJspSearchFormConfigs"/>
+
+	<xsd:complexType name="OpenCmsJspSearchFormConfigs">
+		<xsd:sequence>
+			<xsd:element name="JspSearchFormConfig" type="OpenCmsJspSearchFormConfig" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsJspSearchFormConfig">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Core" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Index" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="QueryParam" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="LastQueryParam" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="ExtraSolrParams" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="PageParam" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="PageSize" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="PageNavLength" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="SortParam" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="SortOption" type="OpenCmsSortOptionConfig" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="FieldFacet" type="OpenCmsFieldFacetConfig" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="Highlighting" type="OpenCmsHighlightingConfig" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.jsp.search.jsp-search-form-schema" />
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+			</mappings>
+			<defaults>
+				<default element="Title" value="%(key.default.JspSearchFormConfig.Title)" />
+			</defaults>
+			<layouts/>
+			<validationrules/>
+			<relations/>
+			<searchsettings containerPageOnly="true"/>
+			<tabs>
+				<tab element="Title" name="Common"/>
+				<tab element="PageParam" name="Pagination"/>
+				<tab element="SortParam" name="SortOptions"/>
+				<tab element="FieldFacet" name="FieldFacets"/>
+				<tab element="Highlighting" name="Highlighting"/>
+			</tabs>
+		</xsd:appinfo>
+	</xsd:annotation>
+
+</xsd:schema>

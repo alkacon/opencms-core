@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<XmlVfsBundles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/xmlvfsbundle.xsd">
+  <Bundle language="en">
+    <Message>
+      <Key><![CDATA[content.inMemoryOnly]]></Key>
+      <Value><![CDATA[Please edit the content.]]></Value>
+    </Message>  
+    <Message>
+      <Key><![CDATA[content.edited]]></Key>
+      <Value><![CDATA[The content was edited.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[content.autoReload]]></Key>
+      <Value><![CDATA[The page will automatically be reloaded.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[button.submit]]></Key>
+      <Value><![CDATA[Go]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[button.sort]]></Key>
+      <Value><![CDATA[Sort]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[results.noResult]]></Key>
+      <Value><![CDATA[No results found. Please enter another search query.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[result.heading]]></Key>
+      <Value><![CDATA[Search results]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[result.info]]></Key>
+      <Value><![CDATA[Results {0} to {1} from {2} (max. score: {3})]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.first]]></Key>
+      <Value><![CDATA[First]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.first.title]]></Key>
+      <Value><![CDATA[First]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.previous]]></Key>
+      <Value><![CDATA[&laquo;]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.previous.title]]></Key>
+      <Value><![CDATA[Previous]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.next]]></Key>
+      <Value><![CDATA[&raquo;]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.next.title]]></Key>
+      <Value><![CDATA[Next]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.last]]></Key>
+      <Value><![CDATA[Last]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.last.title]]></Key>
+      <Value><![CDATA[Last]]></Value>
+    </Message>
+  </Bundle>
+  <Bundle language="de">
+    <Message>
+      <Key><![CDATA[content.inMemoryOnly]]></Key>
+      <Value><![CDATA[Bitte editieren Sie den Inhalt.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[content.edited]]></Key>
+      <Value><![CDATA[Der Inhalt wurde bearbeitet]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[content.autoReload]]></Key>
+      <Value><![CDATA[Die Seite wird automatisch neu geladen.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[button.submit]]></Key>
+      <Value><![CDATA[Los]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[button.sort]]></Key>
+      <Value><![CDATA[Sortieren]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[results.noResult]]></Key>
+      <Value><![CDATA[Keine Ergebnisse gefunden. Bitte geben Sie einen anderen Suchbegriff ein.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[result.heading]]></Key>
+      <Value><![CDATA[Suchergebnisse]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[result.info]]></Key>
+      <Value><![CDATA[Resultate {0} bis {1} von {2} (max. Score: {3})]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.first]]></Key>
+      <Value><![CDATA[Erste Seite]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.first.title]]></Key>
+      <Value><![CDATA[Erste Seite]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.previous]]></Key>
+      <Value><![CDATA[&laquo;]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.previous.title]]></Key>
+      <Value><![CDATA[Zurück]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.next]]></Key>
+      <Value><![CDATA[&raquo;]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.next.title]]></Key>
+      <Value><![CDATA[Vor]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.last]]></Key>
+      <Value><![CDATA[Letzte Seite]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[pagination.last.title]]></Key>
+      <Value><![CDATA[Letzte Seite]]></Value>
+    </Message>
+  </Bundle>
+</XmlVfsBundles>

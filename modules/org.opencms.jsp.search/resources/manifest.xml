@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>9.7.x</opencms_version>
+		<createdate>Mon, 02 Feb 2015 16:08:05 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<module>
+		<name>org.opencms.jsp.search</name>
+		<nicename><![CDATA[Solr search form support for JSPs]]></nicename>
+		<class/>
+		<description><![CDATA[Exposes a configuration content that can be used to configure search forms]]></description>
+		<version>0.1</version>
+		<authorname/>
+		<authoremail/>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/modules/org.opencms.jsp.search/"/>
+			<resource uri="/system/workplace/resources/filetypes/jsp-search-form.png"/>
+			<resource uri="/system/workplace/resources/filetypes/jsp-search-form_big.png"/>
+		</resources>
+		<parameters/>
+		<resourcetypes>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="jsp-search-form" id="311">
+				<param name="schema">/system/modules/org.opencms.jsp.search/schemas/jsp-search-form.xsd</param>
+			</type>
+		</resourcetypes>
+		<explorertypes>
+			<explorertype name="jsp-search-form" key="fileicon.jsp-search-form" icon="jsp-search-form.png" bigicon="jsp-search-form_big.png" reference="xmlcontent">
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=jsp-search-form" order="10" autosetnavigation="false" autosettitle="false" info="desc.jsp-search-form" key="title.jsp-search-form"/>
+			</explorertype>
+		</explorertypes>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>18ca2482-a6f0-11e4-89b4-a3a444a42754</uuidstructure>
+			<datelastmodified>Wed, 28 Jan 2015 13:18:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 28 Jan 2015 13:18:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>1a9b142e-a6f0-11e4-89b4-a3a444a42754</uuidstructure>
+			<datelastmodified>Wed, 28 Jan 2015 13:18:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 28 Jan 2015 13:18:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.jsp.search</destination>
+			<type>folder</type>
+			<uuidstructure>7c3f1c02-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<datelastmodified>Tue, 27 Jan 2015 13:57:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 13:57:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.jsp.search/.config</source>
+			<destination>system/modules/org.opencms.jsp.search/.config</destination>
+			<type>module_config</type>
+			<uuidstructure>e67bc3e3-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<uuidresource>e67bc3e4-a62c-11e4-9ae0-bfc0090a1084</uuidresource>
+			<datelastmodified>Tue, 27 Jan 2015 14:00:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 14:00:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.jsp.search/formatters</destination>
+			<type>folder</type>
+			<uuidstructure>e65920a8-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<datelastmodified>Tue, 27 Jan 2015 14:00:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 14:00:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.jsp.search/formatters/jsp-search-form-formatter-config.xml</source>
+			<destination>system/modules/org.opencms.jsp.search/formatters/jsp-search-form-formatter-config.xml</destination>
+			<type>formatter_config</type>
+			<uuidstructure>e65eed0d-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<uuidresource>e65eed0e-a62c-11e4-9ae0-bfc0090a1084</uuidresource>
+			<datelastmodified>Tue, 27 Jan 2015 14:00:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 14:00:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample formatter for Search Form]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.jsp.search/formatters/jsp-search-form-formatter.jsp</source>
+			<destination>system/modules/org.opencms.jsp.search/formatters/jsp-search-form-formatter.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>e65af56a-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<uuidresource>e65af56b-a62c-11e4-9ae0-bfc0090a1084</uuidresource>
+			<datelastmodified>Mon, 02 Feb 2015 15:51:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 14:00:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.jsp.search/i18n</destination>
+			<type>folder</type>
+			<uuidstructure>e64a0573-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<datelastmodified>Tue, 27 Jan 2015 14:00:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 14:00:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.jsp.search/i18n/org.opencms.jsp.search.jsp-search-form-formatter</source>
+			<destination>system/modules/org.opencms.jsp.search/i18n/org.opencms.jsp.search.jsp-search-form-formatter</destination>
+			<type>xmlvfsbundle</type>
+			<uuidstructure>6e0df6fd-aaec-11e4-baec-a3a444a42754</uuidstructure>
+			<uuidresource>6e0df6fe-aaec-11e4-baec-a3a444a42754</uuidresource>
+			<datelastmodified>Mon, 02 Feb 2015 15:59:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Feb 2015 15:01:56 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Message bundle used in the default formatter for the search form.]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.jsp.search/i18n/org.opencms.jsp.search.jsp-search-form-schema</source>
+			<destination>system/modules/org.opencms.jsp.search/i18n/org.opencms.jsp.search.jsp-search-form-schema</destination>
+			<type>xmlvfsbundle</type>
+			<uuidstructure>7e8c9c7b-aac9-11e4-b3de-a3a444a42754</uuidstructure>
+			<uuidresource>7e8c9c7c-aac9-11e4-b3de-a3a444a42754</uuidresource>
+			<datelastmodified>Mon, 02 Feb 2015 15:56:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Feb 2015 10:51:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Localization for the Search form configuration]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.jsp.search/i18n/org.opencms.jsp.search.workplace</source>
+			<destination>system/modules/org.opencms.jsp.search/i18n/org.opencms.jsp.search.workplace</destination>
+			<type>xmlvfsbundle</type>
+			<uuidstructure>e64f0e85-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<uuidresource>e64f0e86-a62c-11e4-9ae0-bfc0090a1084</uuidresource>
+			<datelastmodified>Mon, 02 Feb 2015 10:51:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 14:00:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.jsp.search/schemas</destination>
+			<type>folder</type>
+			<uuidstructure>e62936f6-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<datelastmodified>Tue, 27 Jan 2015 14:00:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 14:00:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.jsp.search/schemas/jsp-search-form.xsd</source>
+			<destination>system/modules/org.opencms.jsp.search/schemas/jsp-search-form.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>e6332208-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<uuidresource>e6332209-a62c-11e4-9ae0-bfc0090a1084</uuidresource>
+			<datelastmodified>Mon, 02 Feb 2015 15:57:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 14:00:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample resource type schema]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.jsp.search/schemas/nested</destination>
+			<type>folder</type>
+			<uuidstructure>cfe67213-a62e-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<datelastmodified>Tue, 27 Jan 2015 14:14:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 14:14:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.jsp.search/schemas/nested/fieldfacet.xsd</source>
+			<destination>system/modules/org.opencms.jsp.search/schemas/nested/fieldfacet.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>ff3383fb-a62e-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<uuidresource>ff3383fc-a62e-11e4-9ae0-bfc0090a1084</uuidresource>
+			<datelastmodified>Mon, 02 Feb 2015 14:22:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 14:15:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested content to store the options for a field facet]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.jsp.search/schemas/nested/highlighting.xsd</source>
+			<destination>system/modules/org.opencms.jsp.search/schemas/nested/highlighting.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>f06e8a48-a62e-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<uuidresource>f06e8a49-a62e-11e4-9ae0-bfc0090a1084</uuidresource>
+			<datelastmodified>Wed, 28 Jan 2015 07:31:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 14:15:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested content to store highlighting options]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.jsp.search/schemas/nested/sortoption.xsd</source>
+			<destination>system/modules/org.opencms.jsp.search/schemas/nested/sortoption.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>e0f0a0d5-a62e-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<uuidresource>e0f0a0d6-a62e-11e4-9ae0-bfc0090a1084</uuidresource>
+			<datelastmodified>Tue, 27 Jan 2015 14:29:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 14:15:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested content to store a search option]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/filetypes</destination>
+			<type>folder</type>
+			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/jsp-search-form.png</source>
+			<destination>system/workplace/resources/filetypes/jsp-search-form.png</destination>
+			<type>image</type>
+			<uuidstructure>e642d97b-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<uuidresource>e642d97c-a62c-11e4-9ae0-bfc0090a1084</uuidresource>
+			<datelastmodified>Mon, 02 Feb 2015 16:07:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 14:00:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nomal-sized icon for the JSP search form configuration]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/jsp-search-form_big.png</source>
+			<destination>system/workplace/resources/filetypes/jsp-search-form_big.png</destination>
+			<type>image</type>
+			<uuidstructure>e64634df-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
+			<uuidresource>e64634e0-a62c-11e4-9ae0-bfc0090a1084</uuidresource>
+			<datelastmodified>Mon, 02 Feb 2015 16:07:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 27 Jan 2015 14:00:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Big icon for the JSP search form configuration]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
