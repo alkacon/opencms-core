@@ -619,7 +619,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
                     // maintain the default project synchronized
                     m_driverManager.deleteProject(
                         dbc,
-                        m_driverManager.readProject(dbc, organizationalUnit.getProjectId()));
+                        m_driverManager.readProject(dbc, organizationalUnit.getProjectId()),
+                        false);
                 } catch (CmsDbEntryNotFoundException e) {
                     // ignore
                 }
