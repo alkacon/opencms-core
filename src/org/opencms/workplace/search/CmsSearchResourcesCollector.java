@@ -93,6 +93,9 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
     /** Cached search results. */
     private List<CmsSearchResult> m_searchResults;
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSearchResourcesCollector.class);
+
     /**
      * Constructor, creates a new instance.<p>
      * 
@@ -175,9 +178,6 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
         return Arrays.asList(COLLECTOR_NAME);
     }
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSearchResourcesCollector.class);
 
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
@@ -276,6 +276,9 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
             List<String> resources = getResourceNamesFromParam(params);
             String[] searchRoots = new String[resources.size()];
             resources.toArray(searchRoots);
+            for (int i = 0; i < searchRoots.length; i++) {
+                searchRoots[i] = getWp().getCms().addSiteRoot(searchRoots[i]);
+            }
             m_searchBean.setSearchRoots(searchRoots);
         } else {
             int page = Integer.parseInt(params.get(I_CmsListResourceCollector.PARAM_PAGE));
