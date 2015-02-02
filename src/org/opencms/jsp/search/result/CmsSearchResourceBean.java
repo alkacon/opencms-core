@@ -1,0 +1,125 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.jsp.search.result;
+
+import org.opencms.search.CmsSearchResource;
+import org.opencms.util.CmsCollectionsGenericWrapper;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.Transformer;
+
+/** JSP EL friendly wrapper class for a single search result (document). */
+public class CmsSearchResourceBean implements I_CmsSearchResourceBean {
+
+    /** The result as returned normally. */
+    private final CmsSearchResource m_searchResource;
+    /** Lazy map to access the String fields of the document. */
+    private Map<String, String> m_stringfields;
+    /** Lazy map to access the Date fields of the document. */
+    private Map<String, Date> m_datefields;
+    /** Lazy map to access the multi-valued String fields of the document. */
+    private Map<String, List<String>> m_multivaluedfields;
+
+    /** Constructor taking the search resource to wrap.
+     * @param searchResource The search resource to wrap.
+     */
+    public CmsSearchResourceBean(final CmsSearchResource searchResource) {
+
+        m_searchResource = searchResource;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchResourceBean#getDateFields()
+     */
+    @Override
+    public Map<String, Date> getDateFields() {
+
+        if (m_datefields == null) {
+            m_datefields = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                @Override
+                public Object transform(final Object fieldName) {
+
+                    return getSearchResource().getDateField(fieldName.toString());
+                }
+            });
+        }
+        return m_datefields;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchResourceBean#getFields()
+     */
+    @Override
+    public Map<String, String> getFields() {
+
+        if (m_stringfields == null) {
+            m_stringfields = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                @Override
+                public Object transform(final Object fieldName) {
+
+                    return getSearchResource().getField(fieldName.toString());
+                }
+            });
+        }
+        return m_stringfields;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchResourceBean#getMultiValuedFields()
+     */
+    @Override
+    public Map<String, List<String>> getMultiValuedFields() {
+
+        if (m_multivaluedfields == null) {
+            m_multivaluedfields = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                @Override
+                public Object transform(final Object fieldName) {
+
+                    return getSearchResource().getMultivaluedField(fieldName.toString());
+                }
+            });
+
+        }
+        return m_multivaluedfields;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchResourceBean#getSearchResource()
+     */
+    @Override
+    public CmsSearchResource getSearchResource() {
+
+        return m_searchResource;
+    }
+}

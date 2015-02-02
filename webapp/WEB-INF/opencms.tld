@@ -2027,8 +2027,44 @@
             <name>default</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute> 
-    </tag>     
+    </tag>    
     
+    <tag>
+      	<description><![CDATA[
+            This tag provides support to generate search forms for a server-side handled Solr search.
+            It takes an (XML or JSON) configuration file and essentially exposes an object with the search results
+            and also the necessary information to suitably build up your search form. 
+            It supports facets and highlighting.
+       	]]></description>
+        <name>searchform</name>
+        <tag-class>org.opencms.jsp.CmsJspTagSearchForm</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+          	<description><![CDATA[The name of the variable that exposes an object of type <code>org.opencms.jsp.search.result.I_SearchResultWrapper</code>, 
+          	which gives you access to the search results and to a search form controller.        	  
+           	]]></description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>            
+        </attribute>
+        <attribute>
+          	<description><![CDATA[VFS-URI of the search form configuration file (either a JSON file or an XML content of type <code>jsp-search-form</code>.
+           	]]></description>
+            <name>configFile</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>            
+        </attribute>
+	<attribute>
+          	<description><![CDATA[The format of the configuration file. Valid values are "xml" (default) and "json".          	  
+           	]]></description>
+            <name>fileFormat</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>            
+        </attribute>
+    </tag>   
+     
      <tag>
     	<description>
     		Enables automatic parameter escaping for a Flex Request. 
