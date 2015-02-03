@@ -30,8 +30,8 @@ package org.opencms.jsp.search.controller;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /** Search controller as aggregation of all single field facet controllers. */
@@ -45,7 +45,7 @@ public class CmsSearchControllerFacetsField implements I_CmsSearchControllerFace
      */
     public CmsSearchControllerFacetsField(final Map<String, I_CmsSearchConfigurationFacetField> configs) {
 
-        m_fieldFacets = new HashMap<String, I_CmsSearchControllerFacetField>();
+        m_fieldFacets = new LinkedHashMap<String, I_CmsSearchControllerFacetField>();
         for (final String name : configs.keySet()) {
             m_fieldFacets.put(name, new CmsSearchControllerFacetField(configs.get(name)));
         }

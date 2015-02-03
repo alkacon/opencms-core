@@ -46,7 +46,7 @@ import org.opencms.xml.content.CmsXmlContentValueSequence;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -163,12 +163,26 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     }
 
     /**
+     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseCommon()
+     */
+    @Override
+    public I_CmsSearchConfigurationCommon parseCommon() {
+
+        return new CmsSearchConfigurationCommon(
+            getQueryParam(),
+            getLastQueryParam(),
+            getIndex(),
+            getCore(),
+            getExtraSolrParams());
+    }
+
+    /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseFieldFacets()
      */
     @Override
     public Map<String, I_CmsSearchConfigurationFacetField> parseFieldFacets() {
 
-        final Map<String, I_CmsSearchConfigurationFacetField> facetConfigs = new HashMap<String, I_CmsSearchConfigurationFacetField>();
+        final Map<String, I_CmsSearchConfigurationFacetField> facetConfigs = new LinkedHashMap<String, I_CmsSearchConfigurationFacetField>();
         final CmsXmlContentValueSequence fieldFacets = m_xml.getValueSequence(XML_ELEMENT_FIELD_FACETS, m_locale);
         if (fieldFacets == null) {
             return null;
@@ -183,20 +197,6 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             }
             return facetConfigs;
         }
-    }
-
-    /**
-     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseCommon()
-     */
-    @Override
-    public I_CmsSearchConfigurationCommon parseCommon() {
-
-        return new CmsSearchConfigurationCommon(
-            getQueryParam(),
-            getLastQueryParam(),
-            getIndex(),
-            getCore(),
-            getExtraSolrParams());
     }
 
     /**
