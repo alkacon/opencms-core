@@ -65,13 +65,13 @@
       </analyzer>
     </fieldType>
 
-	<!-- A text field only tokenizing words. -->
-    <fieldType name="text_cs" class="solr.TextField" positionIncrementGap="100">
+    <!-- A field type that splits at commas -->
+    <fieldType name="text_cs" class="solr.TextField" positionIncrementGap="2">
       <analyzer>
-        <tokenizer class="solr.StandardTokenizerFactory"/>
+          <tokenizer class="solr.PatternTokenizerFactory" pattern=",\s*" />
       </analyzer>
     </fieldType>
-    
+
     <!-- A general text field -->
     <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
       <analyzer type="index">
