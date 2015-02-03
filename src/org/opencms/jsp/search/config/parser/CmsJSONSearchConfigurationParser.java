@@ -96,6 +96,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     private static final String JSON_KEY_FACET_ORDER = "order";
     /** A JSON key. */
     private static final String JSON_KEY_FACET_FILTERQUERYMODIFIER = "filterquerymodifier";
+    /** A JSON key. */
+    private static final String JSON_KEY_FACET_ISANDFACET = "isAndFacet";
 
     /** JSON keys for sort options. */
     /** A JSON key. */
@@ -161,6 +163,20 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     }
 
     /**
+     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseCommon()
+     */
+    @Override
+    public I_CmsSearchConfigurationCommon parseCommon() {
+
+        return new CmsSearchConfigurationCommon(
+            getQueryParam(),
+            getLastQueryParam(),
+            getIndex(),
+            getCore(),
+            getExtraSolrParams());
+    }
+
+    /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseFieldFacets()
      */
     @Override
@@ -180,20 +196,6 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             LOG.info("No facet configuration given.", e);
         }
         return facetConfigs;
-    }
-
-    /**
-     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseCommon()
-     */
-    @Override
-    public I_CmsSearchConfigurationCommon parseCommon() {
-
-        return new CmsSearchConfigurationCommon(
-            getQueryParam(),
-            getLastQueryParam(),
-            getIndex(),
-            getCore(),
-            getExtraSolrParams());
     }
 
     /**
@@ -282,6 +284,10 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             } catch (final Exception e) {
                 order = null;
             }
+            final String filterQueryModifier = parseOptionalStringValue(
+                fieldFacetObject,
+                JSON_KEY_FACET_FILTERQUERYMODIFIER);
+            final Boolean isAndFacet = parseOptionalBooleanValue(fieldFacetObject, JSON_KEY_FACET_ISANDFACET);
             return new CmsSearchConfigurationFacetField(
                 field,
                 minCount,
@@ -290,7 +296,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 name,
                 label,
                 order,
-                parseOptionalStringValue(fieldFacetObject, JSON_KEY_FACET_FILTERQUERYMODIFIER));
+                filterQueryModifier,
+                isAndFacet);
         } catch (final JSONException e) {
             LOG.error("For a field facet the mandatory key \""
                 + JSON_KEY_FACET_FIELD

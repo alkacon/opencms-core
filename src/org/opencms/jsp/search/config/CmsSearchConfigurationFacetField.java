@@ -48,6 +48,7 @@ implements I_CmsSearchConfigurationFacetField {
      * @param label The label that can be shown over the facet entries in your search form.
      * @param order The sorting of the facet entries (either "count", which is default, or "index", which causes alphabetical sorting).
      * @param filterQueryModifier Modifier for the filter queries when a facet entry is checked. Can contain "%(value)" - what is replaced by the facet entry's value.
+     * @param isAndFacet If set to true, the facets filters for results containing all checked entries. Otherwise it filters for results containing at least one checked entry.
      */
     public CmsSearchConfigurationFacetField(
         final String field,
@@ -57,9 +58,10 @@ implements I_CmsSearchConfigurationFacetField {
         final String name,
         final String label,
         final SortOrder order,
-        final String filterQueryModifier) {
+        final String filterQueryModifier,
+        final Boolean isAndFacet) {
 
-        super(minCount, limit, prefix, name, label, order);
+        super(minCount, limit, prefix, name, label, order, isAndFacet);
         if (m_name == null) {
             m_name = field;
         }

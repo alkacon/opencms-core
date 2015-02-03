@@ -163,12 +163,20 @@
       <Value><![CDATA[The order the, facet entries should be listed in. It's either "count" (default) or "index", which means alphabetical sorting.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.FieldFacetConfig.FieldQueryModifier]]></Key>
+      <Key><![CDATA[label.FieldFacetConfig.FilterQueryModifier]]></Key>
       <Value><![CDATA[Filter Query Modifier]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.FieldFacetConfig.FieldQueryModifier.help]]></Key>
+      <Key><![CDATA[label.FieldFacetConfig.FilterQueryModifier.help]]></Key>
       <Value><![CDATA[Typically, when a facet entry is checked, the filterquery "fq=facetfield:checkedEntry" is appended to the Solr query. The modifier substitutes the checkedEntry. The modifier can contain the macro %(value) that is replaced by the checked entry. Example: The modifier "[* TO %(value)]" will yield the filter query "fq=facetField:[* TO checkedEntry]".]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.IsAndFacet]]></Key>
+      <Value><![CDATA[Filter for all checked entries]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.IsAndFacet.help]]></Key>
+      <Value><![CDATA[By default, if more than one facet entry is checked, it is search for results meeting at least one of the conditions imposed by the checked entries. Checking this option, each result must match all imposed conditions.]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.HighlightingConfig.Field]]></Key>
@@ -461,12 +469,20 @@
       <Value><![CDATA[Die Sortierreihenfolge der Facetten-Einträge. Sie kann entweder "count" (default) sein, oder "index", was einer alphabetischen Sortierung entspricht.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.FieldFacetConfig.FieldQueryModifier]]></Key>
+      <Key><![CDATA[label.FieldFacetConfig.FilterQueryModifier]]></Key>
       <Value><![CDATA[Filteranfragen-Modifizierer]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.FieldFacetConfig.FieldQueryModifier.help]]></Key>
+      <Key><![CDATA[label.FieldFacetConfig.FilterQueryModifier.help]]></Key>
       <Value><![CDATA[Normalerweise wird, wenn ein Facetten-Eintrag angeklickt ist der Filter-Query "fq=facettenFeld:geklickterEintrag" an den Solr-Query angehängt. Durch den Modifizierer, kann "geklickterEintrag" ersetzt werden. Der Modifizierer kann das Makro %(value) enthalten, welches durch "geklickterEintrag" ersetzt wird. Beispiel: Der Modifizierer "[* TO %(value)]" liefert den Filter-Query "fq=facettenFeld:[* TO geklickterEintrag]".]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.IsAndFacet]]></Key>
+      <Value><![CDATA[Nach allen Bedingungen filtern]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.IsAndFacet.help]]></Key>
+      <Value><![CDATA[Standardmäßig wird, falls mehr als ein Facetteneintrag angeklickt ist, nach Resultaten gesucht, die mindestens eine der durch die Facetteneinträge entstehenden Bedingungen erfüllen. Wählen Sie die Konfigurationsoption aus, muss jedes Resultat alle Bedingungen erfüllen.]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.HighlightingConfig.Field]]></Key>

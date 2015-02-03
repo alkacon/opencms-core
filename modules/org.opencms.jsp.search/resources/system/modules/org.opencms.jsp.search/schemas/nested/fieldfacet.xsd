@@ -19,7 +19,8 @@
 			<xsd:element name="Limit" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Prefix" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Order" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="FieldQueryModifier" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="FilterQueryModifier" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="IsAndFacet" type="OpenCmsBoolean" minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>

@@ -42,6 +42,11 @@ public interface I_CmsSearchConfigurationFacet {
         index
     }
 
+    /** Returns true if the facet filters, such that only documents with all checked facet entries appear, otherwise false.
+     * @return A flag, indicating if the facet's filters are concatenated by AND (or OR).
+     */
+    boolean getIsAndFacet();
+
     /** Returns the label that is intended to be displayed over the facet's entries.
      * @return The label that is intended to be displayed over the facet's entries.
      */

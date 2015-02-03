@@ -135,8 +135,9 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
             query.append(":(");
             final Iterator<String> fieldIterator = m_state.getCheckedEntries().iterator();
             query.append(m_config.modifyFilterQuery(fieldIterator.next()));
+            final String concater = m_config.getIsAndFacet() ? " AND " : " OR ";
             while (fieldIterator.hasNext()) {
-                query.append(" OR ");
+                query.append(concater);
                 query.append(m_config.modifyFilterQuery(fieldIterator.next()));
             }
             query.append(')');

@@ -44,6 +44,8 @@ public class CmsSearchConfigurationFacet implements I_CmsSearchConfigurationFace
     protected String m_label;
     /** The sorting of facet entries. */
     protected SortOrder m_sort;
+    /** A flag, indicating if facet filter queries should be concatenated by AND. */
+    protected boolean m_isAndFacet;
 
     /** The constructor setting all configuration options.
      * @param minCount The minimal number of hits required to add an entry to a facet.
@@ -52,6 +54,7 @@ public class CmsSearchConfigurationFacet implements I_CmsSearchConfigurationFace
      * @param name A label that can be displayed in the form, e.g., at top of the facet.
      * @param label A label that can be displayed in the form, e.g., at top of the facet.
      * @param order The sorting of facet entries. (Either "count" or "index")
+     * @param isAndFacet If set to true, the facets filters for results containing all checked entries. Otherwise it filters for results containing at least one checked entry.
      */
     public CmsSearchConfigurationFacet(
         final Integer minCount,
@@ -59,7 +62,8 @@ public class CmsSearchConfigurationFacet implements I_CmsSearchConfigurationFace
         final String prefix,
         final String name,
         final String label,
-        final SortOrder order) {
+        final SortOrder order,
+        final Boolean isAndFacet) {
 
         m_minCount = minCount;
         m_limit = limit;
@@ -68,6 +72,17 @@ public class CmsSearchConfigurationFacet implements I_CmsSearchConfigurationFace
         }
         m_label = label;
         m_sort = order;
+        if (isAndFacet != null) {
+            m_isAndFacet = isAndFacet.booleanValue();
+        }
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationFacet#getIsAndFacet()
+     */
+    public boolean getIsAndFacet() {
+
+        return m_isAndFacet;
     }
 
     /**

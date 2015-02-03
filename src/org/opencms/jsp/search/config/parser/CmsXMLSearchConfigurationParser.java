@@ -98,6 +98,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     private static final String XML_ELEMENT_FACET_ORDER = "Order";
     /** XML element name. */
     private static final String XML_ELEMENT_FACET_FILTERQUERYMODIFIER = "FilterQueryModifier";
+    /** XML element name. */
+    private static final String XML_ELEMENT_FACET_ISANDFACET = "IsAndFacet";
 
     /** XML element names for sort options. */
     /** XML element name. */
@@ -282,6 +284,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             }
             final String filterQueryModifier = parseOptionalStringValue(pathPrefix
                 + XML_ELEMENT_FACET_FILTERQUERYMODIFIER);
+            final Boolean isAndFacet = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_FACET_ISANDFACET);
             return new CmsSearchConfigurationFacetField(
                 field,
                 minCount,
@@ -290,7 +293,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 name,
                 label,
                 order,
-                filterQueryModifier);
+                filterQueryModifier,
+                isAndFacet);
         } catch (final Exception e) {
             LOG.error("For a field facet the mandatory key \""
                 + XML_ELEMENT_FACET_FIELD
