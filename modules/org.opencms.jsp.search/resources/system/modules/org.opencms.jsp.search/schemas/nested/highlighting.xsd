@@ -25,5 +25,23 @@
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
+	
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.jsp.search.jsp-search-form-schema" />
+			<searchsettings>
+				<searchsetting element="Field" searchcontent="false" />
+				<searchsetting element="Snippets" searchcontent="false" />
+				<searchsetting element="FragSize" searchcontent="false" />
+				<searchsetting element="AlternateField" searchcontent="false" />
+				<searchsetting element="MaxAlternateFieldLength" searchcontent="false" />
+				<searchsetting element="SimplePre" searchcontent="false" />
+				<searchsetting element="SimplePost" searchcontent="false" />
+				<searchsetting element="Formatter" searchcontent="false" />
+				<searchsetting element="Fragmenter" searchcontent="false" />
+				<searchsetting element="UseFastVectorHighlighting" searchcontent="false" />
+			</searchsettings>
+		</xsd:appinfo>
+	</xsd:annotation>
 
 </xsd:schema>

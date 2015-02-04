@@ -44,7 +44,21 @@
 			<layouts/>
 			<validationrules/>
 			<relations/>
-			<searchsettings containerPageOnly="true"/>
+			<searchsettings>
+				<searchsetting element="Title" searchcontent="false" />
+				<searchsetting element="Core" searchcontent="false" />
+				<searchsetting element="Index" searchcontent="false" />
+				<searchsetting element="QueryParam" searchcontent="false" />
+				<searchsetting element="LastQueryParam" searchcontent="false" />
+				<searchsetting element="ExtraSolrParams" searchcontent="false" />
+				<searchsetting element="PageParam" searchcontent="false" />
+				<searchsetting element="PageSize" searchcontent="false" />
+				<searchsetting element="PageNavLength" searchcontent="false" />
+				<searchsetting element="SortParam" searchcontent="false" />
+				<searchsetting element="SortOption" searchcontent="false" />
+				<searchsetting element="FieldFacet" searchcontent="false" />
+				<searchsetting element="Highlighting" searchcontent="false" />
+			</searchsettings>
 			<tabs>
 				<tab element="Title" name="Common"/>
 				<tab element="PageParam" name="Pagination"/>

@@ -28,6 +28,17 @@
 	<xsd:annotation>
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.jsp.search.jsp-search-form-schema" />
+			<searchsettings>
+				<searchsetting element="Field" searchcontent="false" />
+				<searchsetting element="Name" searchcontent="false" />
+				<searchsetting element="Label" searchcontent="false" />
+				<searchsetting element="MinCount" searchcontent="false" />
+				<searchsetting element="Limit" searchcontent="false" />
+				<searchsetting element="Prefix" searchcontent="false" />
+				<searchsetting element="Order" searchcontent="false" />
+				<searchsetting element="FilterQueryModifier" searchcontent="false" />
+				<searchsetting element="IsAndFacet" searchcontent="false" />
+			</searchsettings>
 		</xsd:appinfo>
 	</xsd:annotation>
 
