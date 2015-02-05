@@ -50,6 +50,7 @@ import org.opencms.util.CmsUUID;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
@@ -66,6 +67,8 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
 
     /** The base folder under which the virtual resources from this resource wrapper are available. */
     public static final String BASE_PATH = "/modules";
+
+    private Map<String, CmsFile> m_importDataCache = new ConcurrentHashMap<String, CmsFile>();
 
     /** The virtual folder which can be used to import modules. */
     public static final String IMPORT_PATH = BASE_PATH + "/import";
@@ -188,7 +191,9 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
 
         // this method isn't actually called when using the JLAN repository, because readResource already returns a CmsFile when needed 
         cms.getRequestContext().removeAttribute(CmsJlanDiskInterface.NO_FILESIZE_REQUIRED);
-        return (CmsFile)readResource(cms, resourcename, filter);
+
+        CmsResource res = readResource(cms, resourcename, filter);
+        return (CmsFile)res;
 
     }
 
@@ -210,7 +215,11 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
 
         if (matchParentPath(IMPORT_PATH, resourcepath)) {
             if (hasImportFile(resourcepath)) {
-                return createFakeBinaryFile(resourcepath);
+                CmsFile importData = m_importDataCache.get(resourcepath);
+                if (importData != null) {
+                    return importData;
+                }
+                return new CmsFile(createFakeBinaryFile(resourcepath));
             }
         }
 
@@ -249,6 +258,7 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
                 CmsResource.getName(resource.getRootPath()),
                 resource.getContents());
             m_importFileUpdateCache.put(resource.getRootPath(), Long.valueOf(System.currentTimeMillis()));
+            m_importDataCache.put(resource.getRootPath(), resource);
             return resource;
         } else {
             return super.writeFile(cms, resource);
@@ -353,7 +363,6 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
         long dateExpired = Integer.MAX_VALUE;
         int linkCount = 0;
         int size = -1;
-
         CmsResource resource = new CmsResource(
             structureId,
             resourceId,

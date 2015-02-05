@@ -112,7 +112,9 @@ public class CmsJlanNetworkFile extends NetworkFile {
     }
 
     /**
-     * @throws IOException
+     * Deletes the file.<p>
+     * 
+     * @throws IOException if something goes wrong 
      */
     public void delete() throws IOException {
 
@@ -379,7 +381,7 @@ public class CmsJlanNetworkFile extends NetworkFile {
     /**
      * Make sure that this resource is locked.<p>
      * 
-     * @throws CmsException
+     * @throws CmsException if something goes wrong 
      */
     protected void ensureLock() throws CmsException {
 

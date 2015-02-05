@@ -150,7 +150,7 @@ public class CmsModule implements Comparable<CmsModule> {
     private String m_niceName;
 
     /** A timestamp from the time this object was created. */
-    private long m_objectCreateTime;
+    private long m_objectCreateTime = System.currentTimeMillis();
 
     /** The additional configuration parameters of this module. */
     private SortedMap<String, String> m_parameters;
@@ -176,7 +176,6 @@ public class CmsModule implements Comparable<CmsModule> {
         m_resources = Collections.emptyList();
         m_exportPoints = Collections.emptyList();
         m_dependencies = Collections.emptyList();
-        m_objectCreateTime = System.currentTimeMillis();
     }
 
     /**

@@ -29,6 +29,8 @@ package org.opencms.module;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.importexport.CmsImportExportException;
 import org.opencms.importexport.CmsImportParameters;
 import org.opencms.main.CmsException;
@@ -44,12 +46,18 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Objects;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 
 /** 
@@ -72,12 +80,18 @@ public class CmsModuleImportExportRepository {
     /** The admin CMS context. */
     private CmsObject m_adminCms;
 
+    /** Cache for module hashes, used to detect changes in modules. */
+    private Map<CmsModule, String> m_moduleHashCache = new ConcurrentHashMap<CmsModule, String>();
+
+    /** Timed cache for newly calculated module hashes, used to avoid very frequent recalculation. */
+    private Map<CmsModule, String> m_newModuleHashCache = CacheBuilder.newBuilder().expireAfterWrite(
+        3,
+        TimeUnit.SECONDS).<CmsModule, String> build().asMap();
+
     /**
      * Creates a new instance.<p>
      */
     public CmsModuleImportExportRepository() {
-
-        // nop
 
     }
 
@@ -128,17 +142,13 @@ public class CmsModuleImportExportRepository {
                 CmsStringUtil.joinPaths(EXPORT_FOLDER_PATH, moduleName + ".zip"));
             File moduleFile = new File(moduleFilePath);
 
-            boolean needToRunExport = false;
-            if (!moduleFile.exists()) {
-                needToRunExport = true;
-            } else if (moduleFile.lastModified() < module.getObjectCreateTime()) {
-                needToRunExport = true;
-                moduleFile.delete();
-            }
+            boolean needToRunExport = needToExportModule(module, moduleFile, project);
             if (needToRunExport) {
+                LOG.info("Module export is needed for " + module.getName());
+                moduleFile.delete();
                 CmsModuleImportExportHandler handler = new CmsModuleImportExportHandler();
                 handler.setAdditionalResources(module.getResources().toArray(new String[] {}));
-                // the import/export handler adds the zip extension if it is not there, so we append it here  
+                // the import/export handler adds the zip extension if it is not there, so we append it here
                 String tempFileName = RandomStringUtils.randomAlphanumeric(8) + ".zip";
                 String tempFilePath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
                     CmsStringUtil.joinPaths(EXPORT_FOLDER_PATH, tempFileName));
@@ -157,6 +167,7 @@ public class CmsModuleImportExportRepository {
                     throw exportException;
                 }
                 new File(tempFilePath).renameTo(new File(moduleFilePath));
+                LOG.info("Created module export " + moduleFilePath);
             }
             byte[] result = CmsFileUtil.readFully(new FileInputStream(moduleFilePath));
             return result;
@@ -226,14 +237,43 @@ public class CmsModuleImportExportRepository {
         m_adminCms = adminCms;
     }
 
-    /** 
-     * Creates a new report for an export/import.<p>
+    /**
+     * Computes a module hash, which should change when a module changes and stay the same when the module doesn't change.<p>
      * 
-     * @return the new report  
+     * We only use the modification time of the module resources and their descendants and the modification time of the metadata 
+     * for computing it. 
+     * 
+     * @param module the module for which to compute the module signature
+     * @param project the project in which to compute the module hash  
+     * @return the module signature 
+     * @throws CmsException if something goes wrong 
      */
-    protected I_CmsReport createReport() {
+    private String computeModuleHash(CmsModule module, CmsProject project) throws CmsException {
 
-        return new CmsLogReport(Locale.ENGLISH, CmsModuleImportExportRepository.class);
+        LOG.info("Getting module hash for " + module.getName());
+        // This method may be called very frequently during a short time, but it is unlikely
+        // that a module changes multiple times in a few seconds, so we use a timed cache here   
+        String cachedValue = m_newModuleHashCache.get(module);
+        if (cachedValue != null) {
+            LOG.info("Using cached value for module hash of " + module.getName());
+            return cachedValue;
+        }
+
+        CmsObject cms = OpenCms.initCmsObject(m_adminCms);
+        cms.getRequestContext().setCurrentProject(project);
+
+        // We compute a hash code from the paths of all resources belonging to the module and their respective modification dates. 
+        List<String> entries = Lists.newArrayList();
+        for (String path : module.getResources()) {
+            List<CmsResource> resources = cms.readResources(path, CmsResourceFilter.IGNORE_EXPIRATION, true);
+            for (CmsResource res : resources) {
+                entries.add(res.getRootPath() + ":" + res.getDateLastModified());
+            }
+        }
+        Collections.sort(entries);
+        String inputString = CmsStringUtil.listAsString(entries, "\n") + "\nMETA:" + module.getObjectCreateTime();
+        LOG.debug("Computing module hash from base string:\n" + inputString);
+        return "" + inputString.hashCode();
     }
 
     /** 
@@ -252,6 +292,16 @@ public class CmsModuleImportExportRepository {
                 CmsStringUtil.joinPaths(IMPORT_FOLDER_PATH, prefix + name));
         } while (new File(path).exists());
         return path;
+    }
+
+    /** 
+     * Creates a new report for an export/import.<p>
+     * 
+     * @return the new report  
+     */
+    private I_CmsReport createReport() {
+
+        return new CmsLogReport(Locale.ENGLISH, CmsModuleImportExportRepository.class);
     }
 
     /**
@@ -295,6 +345,51 @@ public class CmsModuleImportExportRepository {
         }
         CmsModule result = OpenCms.getModuleManager().getModule(moduleName);
         return result;
+    }
+
+    /**
+     * Checks if a given module needs to be re-exported.<p>
+     * 
+     * @param module the module to check 
+     * @param moduleFile the file representing the exported module (doesn't necessarily exist) 
+     * @param project the project in which to check 
+     * 
+     * @return true if the module needs to be exported 
+     */
+    private boolean needToExportModule(CmsModule module, File moduleFile, CmsProject project) {
+
+        if (!moduleFile.exists()) {
+            LOG.info("Module export file doesn't exist, export is needed.");
+            return true;
+        } else {
+            if (moduleFile.lastModified() < module.getObjectCreateTime()) {
+                return true;
+            }
+
+            String oldModuleSignature = m_moduleHashCache.get(module);
+            String newModuleSignature = null;
+            try {
+                newModuleSignature = computeModuleHash(module, project);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+
+            LOG.info("Comparing module hashes for "
+                + module.getName()
+                + " to check if export is needed: old = "
+                + oldModuleSignature
+                + ",  new="
+                + newModuleSignature);
+            if ((newModuleSignature == null) || !Objects.equal(oldModuleSignature, newModuleSignature)) {
+                if (newModuleSignature != null) {
+                    m_moduleHashCache.put(module, newModuleSignature);
+                }
+                // if an error occurs or the module signatures don't match
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
 }
