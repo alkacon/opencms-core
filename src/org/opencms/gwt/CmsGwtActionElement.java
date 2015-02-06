@@ -96,7 +96,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
         String result = "<script type=\"text/javascript\" src=\""
             + CmsWorkplace.getResourceUri("ade/" + moduleName + "/" + moduleName + ".nocache.js");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(moduleVersion)) {
-            result += "?version=" + moduleVersion;
+            result += "?version=" + moduleVersion + "_" + OpenCms.getSystemInfo().getVersionNumber().hashCode();
         }
         result += "\"></script>";
         return result;
