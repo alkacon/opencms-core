@@ -49,7 +49,9 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -866,9 +868,22 @@ public final class CmsFileUtil {
 
         String webInfFolder = null;
         File[] subFiles = f.listFiles();
-        for (int i = 0; i < subFiles.length; i++) {
-            if (subFiles[i].isDirectory()) {
-                webInfFolder = searchWebInfFolder(subFiles[i].getAbsolutePath());
+        List<File> fileList = new ArrayList<File>(Arrays.asList(subFiles));
+        Collections.sort(fileList, new Comparator<File>() {
+
+            public int compare(File arg0, File arg1) {
+
+                // make sure that the WEB-INF folder, if it has that name, comes earlier  
+                boolean a = arg0.getPath().contains("WEB-INF");
+                boolean b = arg1.getPath().contains("WEB-INF");
+                return Boolean.valueOf(b).compareTo(Boolean.valueOf(a));
+
+            }
+        });
+
+        for (File file : fileList) {
+            if (file.isDirectory()) {
+                webInfFolder = searchWebInfFolder(file.getAbsolutePath());
                 if (webInfFolder != null) {
                     break;
                 }
