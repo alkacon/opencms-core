@@ -312,7 +312,9 @@ public final class CmsResourceBundleLoader {
 
         Object obj = m_bundleCache.get(m_lookupKey);
 
-        if (obj instanceof ResourceBundle) {
+        if (obj == NULL_ENTRY) {
+
+        } else if (obj instanceof ResourceBundle) {
             return (ResourceBundle)obj;
         } else if (obj == NULL_ENTRY) {
             // Lookup has failed previously. Fall through.
@@ -328,10 +330,7 @@ public final class CmsResourceBundleLoader {
             }
 
             BundleKey key = new BundleKey(baseName, locale);
-            if (bundle == null) {
-                // Cache the fact that this lookup has previously failed.
-                m_bundleCache.put(key, NULL_ENTRY);
-            } else {
+            if (bundle != null) {
                 // Cache the result and return it.
                 m_bundleCache.put(key, bundle);
                 return bundle;
