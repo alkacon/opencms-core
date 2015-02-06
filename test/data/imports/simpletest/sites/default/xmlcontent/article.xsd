@@ -27,7 +27,7 @@
 		<xsd:appinfo>
 			<resourcebundles>
 				<xmlbundle name="org.opencms.xml.content.test.article">			
-					<bundle locale="DE_de">
+					<bundle locale="de_DE">
 						<resource key="from.xml">Lokalisierung im XML Schema</resource>
 					</bundle>
 				</xmlbundle>			
