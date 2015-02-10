@@ -1378,8 +1378,10 @@ tasks.withType(Javadoc) {
     options.addStringOption("sourcepath", "")
 }
 
-
-        
-
-
-
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            failOnError = false
+       }
+    }
+}
