@@ -289,9 +289,17 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                         // if it's a multiple choice element, the child elements must not be sorted into their types,
                         // but must keep their original order
                         if (isMultipleChoice) {
+	                        List<Element> nodeList = new ArrayList<Element>();
                             List<Element> elements = CmsXmlGenericWrapper.elements(root);
-                            checkMaxOccurs(elements, cd.getChoiceMaxOccurs(), cd.getTypeName());
-                            nodeLists.add(elements);
+	                        Set<String> typeNames = cd.getSchemaTypes();
+	                        for (Element element : elements) {
+		                        // check if the node type is still in the definition
+		                        if (typeNames.contains(element.getName())) {
+			                        nodeList.add(element);
+		                        }
+	                        }
+                            checkMaxOccurs(nodeList, cd.getChoiceMaxOccurs(), cd.getTypeName());
+	                        nodeLists.add(nodeList);
                         }
                         // if it's a sequence, the children are sorted according to the sequence type definition
                         else {
