@@ -193,7 +193,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 }
             }
         } catch (final JSONException e) {
-            LOG.info("No facet configuration given.", e);
+            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_FACET_CONFIG_0), e);
         }
         return facetConfigs;
     }
@@ -232,7 +232,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 fragmenter,
                 useFastVectorHighlighting);
         } catch (final JSONException e) {
-            LOG.info("No highlighter configuration could be read.");
+            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_HIGHLIGHTING_CONFIG_0));
             return null;
         }
     }
@@ -299,9 +299,9 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 filterQueryModifier,
                 isAndFacet);
         } catch (final JSONException e) {
-            LOG.error("For a field facet the mandatory key \""
-                + JSON_KEY_FACET_FIELD
-                + "\" is missing in a facet configuration. The facet is skipped.", e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.ERR_FIELD_FACET_MANDATORY_KEY_MISSING_1, JSON_KEY_FACET_FIELD),
+                e);
             return null;
         }
     }
@@ -316,7 +316,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return Boolean.valueOf(json.getBoolean(key));
         } catch (final JSONException e) {
-            LOG.info("Optional key " + key + " could not be read.", e);
+            LOG.info(Messages.get().getBundle().key(Messages.INFO_OPTIONAL_BOOLEAN_MISSING_1, key), e);
             return null;
         }
     }
@@ -331,7 +331,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return Integer.valueOf(json.getInt(key));
         } catch (final JSONException e) {
-            LOG.info("Optional key " + key + " could not be read.", e);
+            LOG.info(Messages.get().getBundle().key(Messages.INFO_OPTIONAL_INTEGER_MISSING_1, key), e);
             return null;
         }
     }
@@ -346,7 +346,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return json.getString(key);
         } catch (final JSONException e) {
-            LOG.info("Optional key " + key + " could not be read.", e);
+            LOG.info(Messages.get().getBundle().key(Messages.INFO_OPTIONAL_STRING_MISSING_1, key), e);
             return null;
         }
     }
@@ -359,7 +359,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return m_configObject.getString(JSON_KEY_CORE);
         } catch (final JSONException e) {
-            LOG.info("Configuration did not specify a core (or had wrong format).", e);
+            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_CORE_SPECIFIED_0), e);
             return null;
         }
     }
@@ -372,7 +372,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return m_configObject.getString(JSON_KEY_EXTRASOLRPARAMS);
         } catch (final JSONException e) {
-            LOG.info("Configuration did not provide extra parameters (or had wrong format)", e);
+            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_EXTRA_PARAMETERS_0), e);
             return "";
         }
     }
@@ -385,7 +385,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return m_configObject.getString(JSON_KEY_INDEX);
         } catch (final JSONException e) {
-            LOG.info("Configuration did not specify an index (or had wrong format).", e);
+            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_INDEX_SPECIFIED_0), e);
             return null;
         }
     }
@@ -437,7 +437,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return Integer.valueOf(m_configObject.getInt(JSON_KEY_PAGESIZE));
         } catch (final JSONException e) {
-            LOG.info("Configuration did not specify a page size (or had wrong format).", e);
+            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_PAGESIZE_SPECIFIED_0), e);
             return DEFAULT_PAGE_SIZE;
         }
     }
@@ -470,7 +470,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 }
             }
         } catch (final JSONException e) {
-            LOG.info("No sort configuration given.", e);
+            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_SORT_CONFIG_0), e);
         }
         return options;
     }
@@ -502,9 +502,9 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             label = (label == null) ? paramValue : label;
             return new CmsSearchConfigurationSortOption(label, paramValue, solrValue);
         } catch (final JSONException e) {
-            LOG.error("Parsing the sort options failed. The mandatory key \""
-                + JSON_KEY_SORTOPTION_SOLRVALUE
-                + "\" is missing. Skipped option.", e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.ERR_SORT_OPTION_NOT_PARSABLE_1, JSON_KEY_SORTOPTION_SOLRVALUE),
+                e);
             return null;
         }
     }

@@ -238,7 +238,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                     fragmenter,
                     useFastVectorHighlighting);
             } catch (final Exception e) {
-                LOG.error("Mandatory highlighting field not given. Highlighting does not work.", e);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_MANDATORY_HIGHLIGHTING_FIELD_MISSING_0), e);
                 return null;
             }
         }
@@ -296,9 +296,11 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 filterQueryModifier,
                 isAndFacet);
         } catch (final Exception e) {
-            LOG.error("For a field facet the mandatory key \""
-                + XML_ELEMENT_FACET_FIELD
-                + "\" is missing in a facet configuration. The facet is skipped.", e);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.ERR_FIELD_FACET_MANDATORY_KEY_MISSING_1,
+                    XML_ELEMENT_FACET_FIELD),
+                e);
             return null;
         }
     }
@@ -318,7 +320,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 final Boolean boolValue = Boolean.valueOf(stringValue);
                 return boolValue;
             } catch (final NumberFormatException e) {
-                LOG.info("Optional Boolean value at " + path + " is not a Boolean.", e);
+                LOG.info(Messages.get().getBundle().key(Messages.INFO_OPTIONAL_BOOLEAN_MISSING_1, path), e);
                 return null;
             }
         }
@@ -339,7 +341,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 final Integer intValue = Integer.valueOf(stringValue);
                 return intValue;
             } catch (final NumberFormatException e) {
-                LOG.info("Optional integer value at " + path + " is not an integer.", e);
+                LOG.info(Messages.get().getBundle().key(Messages.INFO_OPTIONAL_INTEGER_MISSING_1, path), e);
                 return null;
             }
         }
@@ -367,7 +369,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         try {
             return parseMandatoryStringValue(XML_ELEMENT_CORE);
         } catch (final Exception e) {
-            LOG.info("Configuration did not specify a core (or had wrong format).", e);
+            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_CORE_SPECIFIED_0), e);
             return null;
         }
     }
@@ -388,7 +390,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         try {
             return parseMandatoryStringValue(XML_ELEMENT_INDEX);
         } catch (final Exception e) {
-            LOG.info("Configuration did not specify an index (or had wrong format).", e);
+            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_INDEX_SPECIFIED_0), e);
             return null;
         }
     }
@@ -501,7 +503,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
 
         final String value = parseOptionalStringValue(path);
         if (value == null) {
-            throw new Exception("Mandatory value not given.");
+            throw new Exception();
         }
         return value;
     }
@@ -520,9 +522,11 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             label = (label == null) ? paramValue : label;
             return new CmsSearchConfigurationSortOption(label, paramValue, solrValue);
         } catch (final Exception e) {
-            LOG.error("Parsing the sort options failed. The mandatory key \""
-                + XML_ELEMENT_SORTOPTION_SOLRVALUE
-                + "\" is missing. Skipped option.", e);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.ERR_SORT_OPTION_NOT_PARSABLE_1,
+                    XML_ELEMENT_SORTOPTION_SOLRVALUE),
+                e);
             return null;
         }
     }
