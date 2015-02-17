@@ -86,6 +86,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     /** The container page controller. */
     private CmsContainerpageController m_controller;
 
+    /** Checkbox to set the 'createNew' status. */
+    private CmsCheckBox m_createNewCheckBox;
+
     /** The element data bean. */
     private CmsContainerElementData m_elementBean;
 
@@ -97,9 +100,6 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /** The element setting values. */
     private Map<String, String> m_settings;
-
-    /** Checkbox to set the 'createNew' status. */
-    private CmsCheckBox m_createNewCheckBox;
 
     /**
      * Constructor.<p>
@@ -345,7 +345,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             }
         }
         if (m_createNewCheckBox != null) {
-            m_elementWidget.setIsNew(m_createNewCheckBox.isChecked());
+            m_elementWidget.setCreateNew(m_createNewCheckBox.isChecked());
         }
         m_controller.reloadElementWithSettings(
             m_elementWidget,
