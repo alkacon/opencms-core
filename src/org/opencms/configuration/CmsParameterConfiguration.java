@@ -43,6 +43,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
@@ -827,5 +828,47 @@ public class CmsParameterConfiguration extends AbstractMap<String, String> {
             m_configurationObjects.put(key, value);
             m_configurationStrings.put(key, value);
         }
+    }
+    
+    /**
+     * Creates a new <tt>Properties</tt> object from the existing configuration
+     * extracting all key-value pars whose key are prefixed
+     * with <tt>keyPrefix</tt>. <p>
+     * 
+     * For this example config:
+     * 
+     * <pre>
+     *      # lines starting with # are comments
+     *      db.pool.default.jdbcDriver=net.bull.javamelody.JdbcDriver
+     *      db.pool.default.connectionProperties.driver=org.gjt.mm.mysql.Driver
+     * </pre>
+     * 
+     * <tt>getPrefixedProperties("db.pool.default.connectionProperties")</tt>
+     * will return a <tt>Properties</tt> object with one single entry:
+     * <pre>
+     *      key:"driver", value:"org.gjt.mm.mysql.Driver"
+     * </pre>
+     * 
+     * @param keyPrefix prefix to match. If it isn't already, it will be
+     *           terminated with a dot.  If <tt>null</tt>, it will return
+     *           an empty <tt>Properties</tt> instance
+     * @return a new <tt>Properties</tt> object with all the entries from this
+     *          configuration whose keys math the prefix
+     */
+    public Properties getPrefixedProperties(String keyPrefix) {
+        Properties props = new Properties();
+        if (null == keyPrefix) {
+            return props;
+        }
+        
+        String dotTerminatedKeyPrefix = keyPrefix + (keyPrefix.endsWith(".")?"":".");
+        for (Map.Entry<String,String> e: entrySet()) {
+            String key = e.getKey();
+            if (null != key && key.startsWith(dotTerminatedKeyPrefix)) {
+                String subKey = key.substring(dotTerminatedKeyPrefix.length());
+                props.put(subKey, e.getValue());
+            }
+        }
+        return props;
     }
 }
