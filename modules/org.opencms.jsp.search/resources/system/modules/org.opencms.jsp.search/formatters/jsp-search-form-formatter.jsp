@@ -33,7 +33,7 @@
 	<div>
 		<!-- The search form -->
 		<!-- search action: link to the current page -->
-		<form role="form" class="form-horizontal"
+		<form id="default-formatter-search-form" role="form" class="form-horizontal"
 			action="<cms:link>${cms.requestContext.uri}</cms:link>">
 			<!-- important: send this hidden field to have proper resetting of checked facet values and pagination -->
 			<input type="hidden" name="${common.config.lastQueryParam}"
@@ -88,6 +88,7 @@
 												<label> <input type="checkbox"
 													name="${facetController.config.paramKey}"
 													value="${facetItem.name}"
+													onclick="submitSearchForm()"
 													${facetController.state.isChecked[facetItem.name]?"checked":""} />
 													${facetItem.name} (${facetItem.count})
 												</label>
@@ -187,6 +188,12 @@
 				</div>
 			</div>
 		</form>
+		<script type="text/javascript">
+			var searchForm = document.forms["default-formatter-search-form"];
+			function submitSearchForm() {
+				searchForm.submit();
+			}
+		</script>
 	</div>
 </cms:formatter>
 </c:otherwise>
