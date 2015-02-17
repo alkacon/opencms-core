@@ -44,37 +44,37 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_FIELD_FACET_MANDATORY_KEY_MISSING_1 = "ERR_FIELD_FACET_MANDATORY_KEY_MISSING_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_OPTIONAL_BOOLEAN_MISSING_1 = "INFO_OPTIONAL_BOOLEAN_MISSING_1";
+    public static final String LOG_OPTIONAL_BOOLEAN_MISSING_1 = "LOG_OPTIONAL_BOOLEAN_MISSING_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_OPTIONAL_INTEGER_MISSING_1 = "INFO_OPTIONAL_INTEGER_MISSING_1";
+    public static final String LOG_OPTIONAL_INTEGER_MISSING_1 = "LOG_OPTIONAL_INTEGER_MISSING_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_NO_CORE_SPECIFIED_0 = "INFO_NO_CORE_SPECIFIED_0";
+    public static final String LOG_NO_CORE_SPECIFIED_0 = "LOG_NO_CORE_SPECIFIED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_NO_INDEX_SPECIFIED_0 = "INFO_NO_INDEX_SPECIFIED_0";
+    public static final String LOG_NO_INDEX_SPECIFIED_0 = "LOG_NO_INDEX_SPECIFIED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SORT_OPTION_NOT_PARSABLE_1 = "ERR_SORT_OPTION_NOT_PARSABLE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_NO_FACET_CONFIG_0 = "INFO_NO_FACET_CONFIG_0";
+    public static final String LOG_NO_FACET_CONFIG_0 = "LOG_NO_FACET_CONFIG_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_NO_HIGHLIGHTING_CONFIG_0 = "INFO_NO_HIGHLIGHTING_CONFIG_0";
+    public static final String LOG_NO_HIGHLIGHTING_CONFIG_0 = "LOG_NO_HIGHLIGHTING_CONFIG_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_OPTIONAL_STRING_MISSING_1 = "INFO_OPTIONAL_STRING_MISSING_1";
+    public static final String LOG_OPTIONAL_STRING_MISSING_1 = "LOG_OPTIONAL_STRING_MISSING_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_NO_EXTRA_PARAMETERS_0 = "INFO_NO_EXTRA_PARAMETERS_0";
+    public static final String LOG_NO_EXTRA_PARAMETERS_0 = "LOG_NO_EXTRA_PARAMETERS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_NO_PAGESIZE_SPECIFIED_0 = "INFO_NO_PAGESIZE_SPECIFIED_0";
+    public static final String LOG_NO_PAGESIZE_SPECIFIED_0 = "LOG_NO_PAGESIZE_SPECIFIED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INFO_NO_SORT_CONFIG_0 = "INFO_NO_SORT_CONFIG_0";
+    public static final String LOG_NO_SORT_CONFIG_0 = "LOG_NO_SORT_CONFIG_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.jsp.search.config.parser";

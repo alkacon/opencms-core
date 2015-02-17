@@ -193,7 +193,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 }
             }
         } catch (final JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_FACET_CONFIG_0), e);
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_FACET_CONFIG_0), e);
         }
         return facetConfigs;
     }
@@ -232,7 +232,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 fragmenter,
                 useFastVectorHighlighting);
         } catch (final JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_HIGHLIGHTING_CONFIG_0));
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_HIGHLIGHTING_CONFIG_0));
             return null;
         }
     }
@@ -316,7 +316,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return Boolean.valueOf(json.getBoolean(key));
         } catch (final JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.INFO_OPTIONAL_BOOLEAN_MISSING_1, key), e);
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_OPTIONAL_BOOLEAN_MISSING_1, key), e);
             return null;
         }
     }
@@ -331,7 +331,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return Integer.valueOf(json.getInt(key));
         } catch (final JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.INFO_OPTIONAL_INTEGER_MISSING_1, key), e);
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_OPTIONAL_INTEGER_MISSING_1, key), e);
             return null;
         }
     }
@@ -346,7 +346,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return json.getString(key);
         } catch (final JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.INFO_OPTIONAL_STRING_MISSING_1, key), e);
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_OPTIONAL_STRING_MISSING_1, key), e);
             return null;
         }
     }
@@ -359,7 +359,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return m_configObject.getString(JSON_KEY_CORE);
         } catch (final JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_CORE_SPECIFIED_0), e);
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_CORE_SPECIFIED_0), e);
             return null;
         }
     }
@@ -372,7 +372,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return m_configObject.getString(JSON_KEY_EXTRASOLRPARAMS);
         } catch (final JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_EXTRA_PARAMETERS_0), e);
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_EXTRA_PARAMETERS_0), e);
             return "";
         }
     }
@@ -385,7 +385,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return m_configObject.getString(JSON_KEY_INDEX);
         } catch (final JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_INDEX_SPECIFIED_0), e);
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_INDEX_SPECIFIED_0), e);
             return null;
         }
     }
@@ -437,7 +437,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         try {
             return Integer.valueOf(m_configObject.getInt(JSON_KEY_PAGESIZE));
         } catch (final JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_PAGESIZE_SPECIFIED_0), e);
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_PAGESIZE_SPECIFIED_0), e);
             return DEFAULT_PAGE_SIZE;
         }
     }
@@ -470,7 +470,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 }
             }
         } catch (final JSONException e) {
-            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_SORT_CONFIG_0), e);
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_SORT_CONFIG_0), e);
         }
         return options;
     }

@@ -320,7 +320,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 final Boolean boolValue = Boolean.valueOf(stringValue);
                 return boolValue;
             } catch (final NumberFormatException e) {
-                LOG.info(Messages.get().getBundle().key(Messages.INFO_OPTIONAL_BOOLEAN_MISSING_1, path), e);
+                LOG.info(Messages.get().getBundle().key(Messages.LOG_OPTIONAL_BOOLEAN_MISSING_1, path), e);
                 return null;
             }
         }
@@ -341,7 +341,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 final Integer intValue = Integer.valueOf(stringValue);
                 return intValue;
             } catch (final NumberFormatException e) {
-                LOG.info(Messages.get().getBundle().key(Messages.INFO_OPTIONAL_INTEGER_MISSING_1, path), e);
+                LOG.info(Messages.get().getBundle().key(Messages.LOG_OPTIONAL_INTEGER_MISSING_1, path), e);
                 return null;
             }
         }
@@ -369,7 +369,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         try {
             return parseMandatoryStringValue(XML_ELEMENT_CORE);
         } catch (final Exception e) {
-            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_CORE_SPECIFIED_0), e);
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_CORE_SPECIFIED_0), e);
             return null;
         }
     }
@@ -390,7 +390,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         try {
             return parseMandatoryStringValue(XML_ELEMENT_INDEX);
         } catch (final Exception e) {
-            LOG.info(Messages.get().getBundle().key(Messages.INFO_NO_INDEX_SPECIFIED_0), e);
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_INDEX_SPECIFIED_0), e);
             return null;
         }
     }

@@ -134,9 +134,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_XSD_NO_TEMPLATE_FORMATTER_3 = "ERR_XSD_NO_TEMPLATE_FORMATTER_3";
 
     /** Message constant for key in the resource bundle. */
-    public static final String WARN_TAG_SEARCHFORM_SEARCH_FAILED_0 = "WARN_TAG_SEARCHFORM_SEARCH_FAILED_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_ERR_ACTIONELEM_NOT_INIT_0 = "GUI_ERR_ACTIONELEM_NOT_INIT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -228,6 +225,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRONG_DEVICE_TYPE_2 = "LOG_WRONG_DEVICE_TYPE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_TAG_SEARCHFORM_SEARCH_FAILED_0 = "LOG_TAG_SEARCHFORM_SEARCH_FAILED_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.jsp.messages";
