@@ -85,6 +85,9 @@ public final class CmsDbPool {
     public static final String KEY_ENTITY_MANAGER_POOL_SIZE = "entityMangerPoolSize";
 
     /** Key for jdbc driver. */
+    public static final String KEY_CONNECTION_PROPERTIES = "connectionProperties";
+
+    /** Key for jdbc driver. */
     public static final String KEY_JDBC_DRIVER = "jdbcDriver";
 
     /** Key for jdbc url. */
