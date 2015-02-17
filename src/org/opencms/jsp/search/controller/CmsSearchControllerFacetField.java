@@ -197,7 +197,7 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
 
         final StringBuffer query = new StringBuffer();
         query.append("&facet.field=");
-        if (!m_state.getCheckedEntries().isEmpty()) {
+        if (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet()) {
             query.append("{!ex=").append(m_config.getField()).append('}');
         }
         query.append(m_config.getField());
