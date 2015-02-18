@@ -317,6 +317,7 @@
    <dynamicField name="text_*"       type="text_general" indexed="true"  stored="true" termVectors="true" termPositions="true" termOffsets="true"/>
    <dynamicField name="dep_*"        type="string"       indexed="false" stored="true" multiValued="true"/>
    <dynamicField name="*_cs"         type="text_cs"      indexed="true" stored="false" multiValued="true"/>
+   <dynamicField name="*_sort"       type="alphaOnlySort" indexed="true" stored="false" required="false" multiValued="false"/>
  </fields>
 
  <copyField source="*_en"      dest="text_en"/>
