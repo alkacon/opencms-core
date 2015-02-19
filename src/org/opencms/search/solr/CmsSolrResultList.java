@@ -11,6 +11,7 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.RangeFacet;
+import org.apache.solr.client.solrj.response.SpellCheckResponse;
 import org.apache.solr.common.SolrDocumentList;
 
 /**
@@ -254,6 +255,16 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
     public Integer getRows() {
 
         return m_rows;
+    }
+
+    /**
+     * Delegator.<p>
+     *
+     * @return the spellcheck response
+     */
+    public SpellCheckResponse getSpellCheckResponse() {
+
+        return m_queryResponse.getSpellCheckResponse();
     }
 
     /**
