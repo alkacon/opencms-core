@@ -91,6 +91,32 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
+     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getDidYouMean()
+     */
+    public String getDidYouMean() {
+
+        String suggestion = null;
+        if (getController().getDidYouMean().getConfig().getIsEnabled()) {
+            if (m_solrResultList.getSpellCheckResponse() != null) {
+                suggestion = m_solrResultList.getSpellCheckResponse().getCollatedResult();
+            }
+
+        }
+        return suggestion;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getDidYouMeanLinkParameters()
+     */
+    public String getDidYouMeanLinkParameters() {
+
+        final Map<String, String[]> parameters = new HashMap<String, String[]>();
+        m_controller.addParametersForCurrentState(parameters);
+        parameters.put(m_controller.getCommon().getConfig().getQueryParam(), new String[] {getDidYouMean()});
+        return paramMapToString(parameters);
+    }
+
+    /**
      * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getEnd()
      */
     @Override
@@ -200,22 +226,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
                     final Map<String, String[]> parameters = new HashMap<String, String[]>();
                     m_controller.addParametersForCurrentState(parameters);
                     parameters.put(m_controller.getPagination().getConfig().getPageParam(), new String[] {(String)page});
-                    return paramListToString(parameters);
-                }
-
-                private String paramListToString(final Map<String, String[]> parameters) {
-
-                    final StringBuffer result = new StringBuffer();
-                    for (final String key : parameters.keySet()) {
-                        for (final String value : parameters.get(key)) {
-                            result.append(key).append('=').append(value).append('&');
-                        }
-                    }
-                    // remove last '&'
-                    if (result.length() > 0) {
-                        result.setLength(result.length() - 1);
-                    }
-                    return result.toString();
+                    return paramMapToString(parameters);
                 }
             });
         }
@@ -248,22 +259,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
                     parameters.put(
                         m_controller.getSorting().getConfig().getSortParam(),
                         new String[] {(String)sortOption});
-                    return paramListToString(parameters);
-                }
-
-                private String paramListToString(final Map<String, String[]> parameters) {
-
-                    final StringBuffer result = new StringBuffer();
-                    for (final String key : parameters.keySet()) {
-                        for (final String value : parameters.get(key)) {
-                            result.append(key).append('=').append(value).append('&');
-                        }
-                    }
-                    // remove last '&'
-                    if (result.length() > 0) {
-                        result.setLength(result.length() - 1);
-                    }
-                    return result.toString();
+                    return paramMapToString(parameters);
                 }
             });
         }
@@ -288,5 +284,24 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
         for (final CmsSearchResource searchResult : searchResults) {
             m_foundResources.add(new CmsSearchResourceBean(searchResult));
         }
+    }
+
+    /** Converts a parameter map to the parameter string.
+     * @param parameters the parameter map.
+     * @return the parameter string.
+     */
+    String paramMapToString(final Map<String, String[]> parameters) {
+
+        final StringBuffer result = new StringBuffer();
+        for (final String key : parameters.keySet()) {
+            for (final String value : parameters.get(key)) {
+                result.append(key).append('=').append(value).append('&');
+            }
+        }
+        // remove last '&'
+        if (result.length() > 0) {
+            result.setLength(result.length() - 1);
+        }
+        return result.toString();
     }
 }

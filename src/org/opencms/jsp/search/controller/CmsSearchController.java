@@ -49,6 +49,8 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
     I_CmsSearchControllerFacetsField m_fieldFacets;
     /** The controller for the highlighting. */
     I_CmsSearchControllerHighlighting m_highlighting;
+    /** The controller for the "Did you mean ...?" feature. */
+    I_CmsSearchControllerDidYouMean m_didyoumean;
 
     /** Constructor that sets up the controller with a given configuration.
      * @param config The search configuration handled by the controller.
@@ -74,7 +76,10 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
             m_highlighting = new CmsSearchControllerHighlighting(config.getHighlighterConfig());
             m_controllers.add(m_highlighting);
         }
-
+        m_didyoumean = new CmsSearchControllerDidYouMean(
+            config.getDidYouMeanConfig(),
+            m_common.getConfig().getQueryParam());
+        m_controllers.add(m_didyoumean);
     }
 
     /**
@@ -123,6 +128,14 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
     public I_CmsSearchControllerCommon getCommon() {
 
         return m_common;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.controller.I_CmsSearchControllerMain#getDidYouMean()
+     */
+    public I_CmsSearchControllerDidYouMean getDidYouMean() {
+
+        return m_didyoumean;
     }
 
     /**

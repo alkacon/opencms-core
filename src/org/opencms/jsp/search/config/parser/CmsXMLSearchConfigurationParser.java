@@ -28,12 +28,14 @@
 package org.opencms.jsp.search.config.parser;
 
 import org.opencms.jsp.search.config.CmsSearchConfigurationCommon;
+import org.opencms.jsp.search.config.CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.CmsSearchConfigurationSortOption;
 import org.opencms.jsp.search.config.CmsSearchConfigurationSorting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacet;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
@@ -136,6 +138,10 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** XML element name. */
     private static final String XML_ELEMENT_HIGHLIGHTER_FASTVECTORHIGHLIGHTING = "UseFastVectorHighlighting";
 
+    /** XML element names for "Did you mean ...?". */
+    /** XML element name. */
+    private static final String XML_ELEMENT_DIDYOUMEAN_ENABLED = "DidYouMeanEnabled";
+
     /** Default value. */
     private static final String DEFAULT_QUERY_PARAM = "q";
     /** Default value. */
@@ -176,6 +182,14 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             getIndex(),
             getCore(),
             getExtraSolrParams());
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseDidYouMean()
+     */
+    public I_CmsSearchConfigurationDidYouMean parseDidYouMean() {
+
+        return new CmsSearchConfigurationDidYouMean(parseOptionalBooleanValue(XML_ELEMENT_DIDYOUMEAN_ENABLED));
     }
 
     /**

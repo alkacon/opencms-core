@@ -31,12 +31,14 @@ import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.search.config.CmsSearchConfigurationCommon;
+import org.opencms.jsp.search.config.CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.CmsSearchConfigurationSortOption;
 import org.opencms.jsp.search.config.CmsSearchConfigurationSorting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacet;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
@@ -135,6 +137,10 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** A JSON key. */
     private static final String JSON_KEY_HIGHLIGHTER_FASTVECTORHIGHLIGHTING = "useFastVectorHighlighting";
 
+    /** JSON keys for "Did you mean ...?" */
+    /** A JSON key. */
+    private static final String JSON_KEY_DIDYOUMEAN_ENABLED = "enableDidYouMean";
+
     /** The default values. */
     /** A JSON key. */
     private static final String DEFAULT_QUERY_PARAM = "q";
@@ -174,6 +180,14 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             getIndex(),
             getCore(),
             getExtraSolrParams());
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseDidYouMean()
+     */
+    public I_CmsSearchConfigurationDidYouMean parseDidYouMean() {
+
+        return new CmsSearchConfigurationDidYouMean(getDidYouMeanEnabled());
     }
 
     /**
@@ -362,6 +376,14 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_CORE_SPECIFIED_0), e);
             return null;
         }
+    }
+
+    /** Returns the configured setting, indicating if the "Did you mean ...?" feature should be activated, default is disabled.
+     * @return The configured setting, indicating if the "Did you mean ...?" feature should be activated, default is disabled.
+     */
+    private Boolean getDidYouMeanEnabled() {
+
+        return parseOptionalBooleanValue(m_configObject, JSON_KEY_DIDYOUMEAN_ENABLED);
     }
 
     /** Returns the configured extra parameters that should be given to Solr, or the empty string if no parameters are configured.

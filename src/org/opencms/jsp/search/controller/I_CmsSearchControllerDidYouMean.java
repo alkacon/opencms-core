@@ -27,38 +27,14 @@
 
 package org.opencms.jsp.search.controller;
 
-/** Interface for the main search controller. Allows access to the various sub-controllers. */
-public interface I_CmsSearchControllerMain extends I_CmsSearchController {
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
 
-    /** Returns the controller for common search (form) configurations.
-     *
-     * @return The controller for common search (form) configurations.
-     */
-    I_CmsSearchControllerCommon getCommon();
+/** Interface the "Did you mean ...?" controller must implement. */
+public interface I_CmsSearchControllerDidYouMean extends I_CmsSearchController {
 
-    /** Returns the controller for "Did you mean ...?".
-     * @return The controller for "Did you mean ...?".
+    /** Returns the configuration.
+     * @return The configuration.
      */
-    I_CmsSearchControllerDidYouMean getDidYouMean();
+    I_CmsSearchConfigurationDidYouMean getConfig();
 
-    /** Returns the controller for field facets.
-     *
-     * @return The controller for field facets.
-     */
-    I_CmsSearchControllerFacetsField getFieldFacets();
-
-    /** Returns the controller for highlighting.
-     * @return The controller for highlighting.
-     */
-    I_CmsSearchControllerHighlighting getHighlighting();
-
-    /** Returns the controller for pagination.
-     * @return The controller for highlighting.
-     */
-    I_CmsSearchControllerPagination getPagination();
-
-    /** Returns the controller for sorting.
-     * @return The controller for sorting.
-     */
-    I_CmsSearchControllerSorting getSorting();
 }

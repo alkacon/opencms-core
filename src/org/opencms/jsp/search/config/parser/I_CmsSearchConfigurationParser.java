@@ -28,6 +28,7 @@
 package org.opencms.jsp.search.config.parser;
 
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
@@ -42,6 +43,11 @@ public interface I_CmsSearchConfigurationParser {
      * @return The common search configuration.
      */
     I_CmsSearchConfigurationCommon parseCommon();
+
+    /** Returns the configuration for the "Did you mean ...?" feature.
+     * @return The configuration for the "Did you mean ...?" feature.
+     */
+    I_CmsSearchConfigurationDidYouMean parseDidYouMean();
 
     /** Returns the configuration for the field facets.
      * @return The configuration for the field facets.

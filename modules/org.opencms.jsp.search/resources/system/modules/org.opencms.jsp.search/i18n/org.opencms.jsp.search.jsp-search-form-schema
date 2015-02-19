@@ -306,6 +306,18 @@
       <Key><![CDATA[default.JspSearchFormConfig.Title]]></Key>
       <Value><![CDATA[Default Search Configuration]]></Value>
     </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMean]]></Key>
+      <Value><![CDATA[Did you mean]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanEnabled]]></Key>
+      <Value><![CDATA[Enable the "Did you mean ...?" feature]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanEnabled.help]]></Key>
+      <Value><![CDATA[Did you mean provides alternative search queries in the case that your search fails.]]></Value>
+    </Message>
   </Bundle>
   <Bundle language="de">
     <Message>
@@ -612,5 +624,17 @@
       <Key><![CDATA[default.JspSearchFormConfig.Title]]></Key>
       <Value><![CDATA[Standard Suchkonfiguration]]></Value>
     </Message>
-  </Bundle>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMean]]></Key>
+      <Value><![CDATA[Meinten Sie]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanEnabled]]></Key>
+      <Value><![CDATA[Aktivieren der "Meinten Sie ...?" Funktion]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanEnabled.help]]></Key>
+      <Value><![CDATA["Meinten Sie ...?" bietet eine alternative Suchanfrage an, falls für die aktuelle Anfrage keine Ergebnisse gefunden werden.]]></Value>
+    </Message>
+  </Bundle>  
 </XmlVfsBundles>

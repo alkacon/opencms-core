@@ -28,6 +28,7 @@
 			<xsd:element name="SortOption" type="OpenCmsSortOptionConfig" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="FieldFacet" type="OpenCmsFieldFacetConfig" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="Highlighting" type="OpenCmsHighlightingConfig" minOccurs="0" />
+			<xsd:element name="DidYouMeanEnabled" type="OpenCmsBoolean" minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>
@@ -65,6 +66,7 @@
 				<tab element="SortParam" name="SortOptions"/>
 				<tab element="FieldFacet" name="FieldFacets"/>
 				<tab element="Highlighting" name="Highlighting"/>
+				<tab element="DidYouMeanEnabled" name="DidYouMean"/>
 			</tabs>
 		</xsd:appinfo>
 	</xsd:annotation>

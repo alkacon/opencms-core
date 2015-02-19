@@ -34,6 +34,11 @@ import java.util.Map;
  */
 public interface I_CmsSearchConfiguration {
 
+    /** Returns the configuration for "Did you mean ...?".
+     * @return The configuration for "Did you mean ...?".
+     */
+    I_CmsSearchConfigurationDidYouMean getDidYouMeanConfig();
+
     /** Returns the configuration for field facets.
      * @return The configuration for field facets.
      */

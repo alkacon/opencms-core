@@ -51,6 +51,9 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
     /** The highlighting configuration. */
     private final I_CmsSearchConfigurationHighlighting m_highlighting;
 
+    /** The "Did you mean ...?" configuration. */
+    private final I_CmsSearchConfigurationDidYouMean m_didYouMean;
+
     /** Constructor to initialize the configuration object via a configuration parser.
      * @param parser The configuration parser that's used to read the configuration.
      */
@@ -61,7 +64,16 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
         m_sorting = parser.parseSorting();
         m_fieldFacets = parser.parseFieldFacets();
         m_highlighting = parser.parseHighlighter();
+        m_didYouMean = parser.parseDidYouMean();
 
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfiguration#getDidYouMeanConfig()
+     */
+    public I_CmsSearchConfigurationDidYouMean getDidYouMeanConfig() {
+
+        return m_didYouMean;
     }
 
     /**

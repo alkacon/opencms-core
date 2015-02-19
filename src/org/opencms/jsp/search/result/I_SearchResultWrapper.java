@@ -43,6 +43,17 @@ public interface I_SearchResultWrapper {
      */
     I_CmsSearchControllerMain getController();
 
+    /** Returns the "Did you mean ...?" suggestion - if did you mean is enabled.
+     * @return The "Did you mean ...?" suggestion - if did you mean is enabled.
+     */
+    String getDidYouMean();
+
+    /** Returns the correct link parameters for clicking on the "Did you mean?" suggestion.
+     *
+     * @return The correct link parameters for clicking on the "Did you mean?" suggestion.
+     */
+    String getDidYouMeanLinkParameters();
+
     /** Returns the last index of the documents displayed.
      * @return The last index of the documents displayed.
      */
@@ -107,5 +118,4 @@ public interface I_SearchResultWrapper {
      * @return The index (starting at 1) of the first result that is returned for displaying.
      */
     Long getStart();
-
 }

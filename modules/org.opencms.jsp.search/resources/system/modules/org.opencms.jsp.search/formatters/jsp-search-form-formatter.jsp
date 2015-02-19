@@ -45,7 +45,7 @@
 				<div class="col-lg-${colWidthInput} col-md-${colWidthInput} col-sm-${colWidthInput} col-xs-12">
 					<div class="input-group">
 						<input name="${common.config.queryParam}" class="form-control"
-							type="text" autocomplete="off" placeholder="Enter query"
+							type="text" autocomplete="off" placeholder='<fmt:message key="form.enterquery" />'
 							value="${common.state.query}" /> <span class="input-group-btn">
 							<button class="btn btn-primary" type="submit"><fmt:message key="button.submit" /></button>
 						</span>
@@ -106,7 +106,16 @@
 					<c:choose>
 						<c:when test="${empty searchform.searchResults}">
 							<h3>
-								<fmt:message key="results.noResult" />
+							<c:choose>
+							<c:when test="${controllers.didYouMean.config.isEnabled && not empty searchform.didYouMean}" >
+								<fmt:message key="results.didyoumean_1">
+									<fmt:param><a href='<cms:link>${cms.requestContext.uri}?${searchform.didYouMeanLinkParameters}</cms:link>'>${searchform.didYouMean}</a></fmt:param>
+								</fmt:message>
+							</c:when>
+							<c:otherwise>
+								<fmt:message key="results.noResult" />														
+							</c:otherwise>
+							</c:choose>
 							</h3>
 						</c:when>
 						<c:otherwise>
