@@ -39,8 +39,8 @@ import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
+import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -68,9 +68,9 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -96,6 +96,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /** The elements client id. */
     private String m_clientId;
 
+    /** The 'create new' flag. */
+    private boolean m_createNew;
+
     /**
      * Flag which indicates whether the new editor is disabled for this element.<p>
      */
@@ -104,14 +107,14 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /** The direct edit bar instances. */
     private Map<Element, CmsListCollectorEditor> m_editables;
 
-    /** The element element view. */
-    private CmsUUID m_elementView;
-
     /** The editor click handler registration. */
     private HandlerRegistration m_editorClickHandlerRegistration;
 
     /** The option bar, holding optional function buttons. */
     private CmsElementOptionBar m_elementOptionBar;
+
+    /** The element element view. */
+    private CmsUUID m_elementView;
 
     /** The overlay for expired elements. */
     private Element m_expiredOverlay;
@@ -163,9 +166,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * Without write permissions, the element can not be edited. 
      **/
     private boolean m_writePermission;
-
-    /** Boolean object which, if it is set, overrides the 'new' status when saving. */
-    private Boolean m_overrideNew;
 
     /**
      * Constructor.<p>
@@ -449,8 +449,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
         if (m_highlighting == null) {
             m_highlighting = new CmsHighlightingBorder(CmsPositionBean.getBoundingClientRect(getElement()), isNew()
-            ? CmsHighlightingBorder.BorderColor.blue
-            : CmsHighlightingBorder.BorderColor.red);
+                || isCreateNew() ? CmsHighlightingBorder.BorderColor.blue : CmsHighlightingBorder.BorderColor.red);
             RootPanel.get().add(m_highlighting);
         } else {
             m_highlighting.setPosition(CmsPositionBean.getBoundingClientRect(getElement()));
@@ -518,7 +517,10 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      */
     public boolean isCreateNew() {
 
-        return isNew() && m_clientId.matches("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*$");
+        return m_createNew;
+
+        //        return isNewOrCopyAsNew()
+        //            && m_clientId.matches("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*$");
     }
 
     /**
@@ -528,9 +530,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      */
     public boolean isNew() {
 
-        if (m_overrideNew != null) {
-            return m_overrideNew.booleanValue();
-        }
         return m_newType != null;
     }
 
@@ -542,16 +541,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public boolean isNewEditorDisabled() {
 
         return m_disableNewEditor;
-    }
-
-    /**
-     * Returns true if the 'new' status is overridden and forced to be true.<p>
-     * 
-     * @return true if the 'new' status is overridden and forced to be true 
-     */
-    public boolean isOverrideNew() {
-
-        return (m_overrideNew != null) && m_overrideNew.booleanValue();
     }
 
     /**
@@ -626,6 +615,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     }
 
     /**
+     * Sets the 'create new' status of the element.<p>
+     * 
+     * @param createNew the new value for the 'create new' status 
+     */
+    public void setCreateNew(boolean createNew) {
+
+        m_createNew = createNew;
+    }
+
+    /**
      * Sets the element option bar.<p>
      *
      * @param elementOptionBar the element option bar to set
@@ -660,17 +659,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
 
         m_inheritanceInfo = inheritanceInfo;
-    }
-
-    /** 
-     * Forces the 'new' status of the element to a specific value.<p>
-     * 
-     * @param isNew true if the element should be set to 'new' status 
-     */
-    public void setIsNew(boolean isNew) {
-
-        m_overrideNew = Boolean.valueOf(isNew);
-
     }
 
     /**

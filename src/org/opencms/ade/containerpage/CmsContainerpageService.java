@@ -1332,7 +1332,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         String elementClientId = elementData.getClientId();
         boolean hasUuidPrefix = (elementClientId != null) && elementClientId.matches(CmsUUID.UUID_REGEX + ".*$");
-        boolean isCreateNew = elementData.isNew() && hasUuidPrefix;
+        boolean isCreateNew = elementData.isCreateNew();
         if (elementData.isNew() && !hasUuidPrefix) {
 
             // Due to the changed save system without the save button, we need to make sure that new elements 
@@ -1697,7 +1697,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         List<CmsContainerElementData> result = new ArrayList<CmsContainerElementData>();
         for (CmsContainerElementBean element : listElements) {
             // checking if resource exists
-            if (cms.existsResource(element.getId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+            if (cms.existsResource(element.getId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFile())) {
                 cache.setCacheContainerElement(element.editorHash(), element);
                 CmsContainerElementData elementData = elemUtil.getElementData(
                     elemUtil.getPage(),

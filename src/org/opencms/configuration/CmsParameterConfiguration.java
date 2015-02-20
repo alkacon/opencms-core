@@ -793,6 +793,8 @@ public class CmsParameterConfiguration extends AbstractMap<String, String> {
                 String token = tokenizer.nextToken();
                 addInternal(key, unescape(token));
             }
+        } else if (tokenize) {
+            addInternal(key, unescape(value));
         } else {
             // token contains no commas, so can be simply added
             addInternal(key, value);

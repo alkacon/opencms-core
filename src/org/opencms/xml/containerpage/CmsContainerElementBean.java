@@ -235,7 +235,7 @@ public class CmsContainerElementBean implements Cloneable {
             CmsUUID.getNullUUID(),
             null,
             individualSettings,
-            true);
+            false);
         elementBean.m_inMemoryOnly = true;
         elementBean.m_editorHash = resourceType.getTypeName() + elementBean.getSettingsHash();
         byte[] content = new byte[0];
@@ -326,17 +326,6 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
-     * Returns the element settings including default values for settings not set.<p>
-     * Will return <code>null</code> if the element bean has not been initialized with {@link #initResource(org.opencms.file.CmsObject)}.<p>
-     *
-     * @return the element settings
-     */
-    public Map<String, String> getSettings() {
-
-        return m_settings;
-    }
-
-    /**
      * Returns the structure id of the formatter of this element.<p>
      *
      * @return the structure id of the formatter of this element
@@ -398,6 +387,17 @@ public class CmsContainerElementBean implements Cloneable {
     public CmsResource getResource() {
 
         return m_resource;
+    }
+
+    /**
+     * Returns the element settings including default values for settings not set.<p>
+     * Will return <code>null</code> if the element bean has not been initialized with {@link #initResource(org.opencms.file.CmsObject)}.<p>
+     *
+     * @return the element settings
+     */
+    public Map<String, String> getSettings() {
+
+        return m_settings;
     }
 
     /**
