@@ -1697,7 +1697,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         List<CmsContainerElementData> result = new ArrayList<CmsContainerElementData>();
         for (CmsContainerElementBean element : listElements) {
             // checking if resource exists
-            if (cms.existsResource(element.getId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+            if (cms.existsResource(element.getId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFile())) {
                 cache.setCacheContainerElement(element.editorHash(), element);
                 CmsContainerElementData elementData = elemUtil.getElementData(
                     elemUtil.getPage(),
