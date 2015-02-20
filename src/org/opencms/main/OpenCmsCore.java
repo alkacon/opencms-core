@@ -2125,7 +2125,9 @@ public final class OpenCmsCore {
             if (s.getRootCause() != null) {
                 t = s.getRootCause();
             }
+            LOG.error(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
         } else if (t instanceof CmsSecurityException) {
+            LOG.warn(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
             // access error - display login dialog
             if (canWrite) {
                 try {
@@ -2136,17 +2138,19 @@ public final class OpenCmsCore {
                 return;
             }
         } else if (t instanceof CmsDbEntryNotFoundException) {
+            LOG.warn(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
             // user or group does not exist
             status = HttpServletResponse.SC_SERVICE_UNAVAILABLE;
             isGuest = false;
         } else if (t instanceof CmsVfsResourceNotFoundException) {
+            LOG.warn(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
             // file not found - display 404 error.
             status = HttpServletResponse.SC_NOT_FOUND;
         } else if (t instanceof CmsException) {
+            LOG.error(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
             if (t.getCause() != null) {
                 t = t.getCause();
             }
-            LOG.error(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
         } else if (t.getClass().getName().equals("org.apache.catalina.connector.ClientAbortException")) {
             // only log to debug channel any exceptions caused by a client abort - this is tomcat specific
             LOG.debug(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
