@@ -160,10 +160,8 @@ command line.</p>
 <p>
 
 <code>use mysql;
-<br /> insert into user values ('localhost', 'opencmsuser', password('XXXXX'),\
-<br /> &nbsp;&nbsp;&nbsp;'N','N','N','N','N','N','N','N','N','N','N','N','N','N');
-<br /> insert into db values ('localhost', 'opencms', 'opencmsuser',\
-<br /> &nbsp;&nbsp;&nbsp;'Y','Y','Y','Y','Y','Y','Y','Y','Y','Y');
+<br /> create user 'opencmsuser'@'localhost' identified by 'XXXXX';
+<br /> grant all privileges on opencms.* to 'opencmsuser'@localhost' identified by 'XXXXX';
 <br /> flush privileges;</code>
 </p>
 </blockquote>
