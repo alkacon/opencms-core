@@ -39,6 +39,31 @@ import com.google.common.base.Joiner;
  */
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
+    /** Records whether this driver class has been instantiated. */
+    private static boolean m_isInstantiated;
+
+    /**
+     * Creates a new driver instance.<p>
+     */
+    public CmsUserDriver() {
+
+        m_isInstantiated = true;
+    }
+
+    /**
+     * Returns true if the user driver has been instantiated.<p>
+     * 
+     * We use this to check whether the used database is MSSQL.
+     * 
+     * TODO: Make lazy user lists work with MSSQL, too. 
+     *  
+     * @return true if the user driver has been instantiated 
+     */
+    public static boolean isInstantiated() {
+
+        return m_isInstantiated;
+    }
+
     /**
      * @see org.opencms.db.generic.CmsUserDriver#createUserQueryBuilder()
      */
