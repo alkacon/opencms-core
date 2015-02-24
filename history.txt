@@ -25,7 +25,7 @@ OpenCms 9.5.1 - February 25, 2015
 ! Added option to search for expired resources to all variants of the gallery dialog
 * Fixed exception when editing settings for the "content check" tool (github issue #292)
 * Fixed error in external link validation when the external link resources were expired (github issue #287)
-* Fixed error that occurred when trying to use the "Assign categories" context menu option in the non container page based direct edit provider
+* Fixed error that occurred when trying to use the "Assign categories" context menu option in the non container page based direct edit provider (#291) 
 * Fixed bug with URL name mappings not working correctly with locales of the form language_COUNTRY (github issue #258)
 * Fixed error with opening the gallery tab in the workplace preferences dialog (github issue #289)
 * Fixed wrong escape character handling in CmsParameterConfiguration (github issue #285)
