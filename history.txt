@@ -31,6 +31,7 @@ OpenCms 9.5.1 - February 25, 2015
 * Fixed wrong escape character handling in CmsParameterConfiguration (github issue #285)
 * Improved visibility of invalid dates in date select widget (github issue #240)
 * Fixed bug with static export links being generated even if static export was disabled (github issue #197)
+* Fixed bug in admin user lists when using MS SQL Server (github issue #295)
 * Fixed a bug where detail page URLs with fragments were not processed correctly in the editor
 * Fixed bug where the workplace search dialog 'forgets' the current directory  
 * Fixed problem where new roles were not created for existing OUs other than the root OU 
