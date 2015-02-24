@@ -36,8 +36,9 @@
 		<form id="default-formatter-search-form" role="form" class="form-horizontal"
 			action="<cms:link>${cms.requestContext.uri}</cms:link>">
 			<!-- important: send this hidden field to have proper resetting of checked facet values and pagination -->
+			<c:set var="escapedQuery">${fn:replace(common.state.query,'"','&quot;')}</c:set>
 			<input type="hidden" name="${common.config.lastQueryParam}"
-				value="${common.state.query}" />
+				value="${escapedQuery}" />
 			<%-- choose layout dependent on the presence of search options --%>
 			<c:set var="hasSortOptions" value="${cms:getListSize(controllers.sorting.config.sortOptions) > 0}" />
 			<c:set var="colWidthInput" value="${hasSortOptions?4:12}" />
@@ -46,7 +47,7 @@
 					<div class="input-group">
 						<input name="${common.config.queryParam}" class="form-control"
 							type="text" autocomplete="off" placeholder='<fmt:message key="form.enterquery" />'
-							value="${fn:replace(common.state.query,'"','&quot;')}" /> <span class="input-group-btn">
+							value="${escapedQuery}" /> <span class="input-group-btn">
 							<button class="btn btn-primary" type="submit"><fmt:message key="button.submit" /></button>
 						</span>
 					</div>
