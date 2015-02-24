@@ -183,10 +183,10 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
                     List<CmsProperty> pagePropertiesList = m_cms.readPropertyObjects(source, true);
                     Map<String, CmsProperty> pageProperties = CmsProperty.toObjectMap(pagePropertiesList);
                     Locale pageLocale = OpenCms.getLocaleManager().getDefaultLocale(m_cms, source);
-                    String pagePropCandidate = pageProperties.get(propName).getValue();
+                    CmsProperty pagePropCandidate = pageProperties.get(propName);
                     if (pagePropCandidate != null) {
                         if (pagePropsByLocale.get(pageLocale) == null) {
-                            pagePropsByLocale.put(pageLocale, pagePropCandidate);
+                            pagePropsByLocale.put(pageLocale, pagePropCandidate.getValue());
                         } else {
                             return ""; // more than one container page per locale is referencing this content. 
                         }
