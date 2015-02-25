@@ -15,50 +15,47 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 9.5.1 - February 25, 2015
-
-! enabled Solr rows param in workplace's source search
-! Added mode for gallery selection ('galleryselect') to VfsFileWidget
-! Added widget for selecting values from values of other content fields    
-! Added option to use permanent instead of temporary redirects when redirecting from a non-secure to a secure server 
-! Implemented alternative login handler to authorize users with a cookie.
-! Added option to search for expired resources to all variants of the gallery dialog
-* Fixed exception when editing settings for the "content check" tool (github issue #292)
-* Fixed error in external link validation when the external link resources were expired (github issue #287)
-* Fixed error that occurred when trying to use the "Assign categories" context menu option in the non container page based direct edit provider (#291) 
-* Fixed bug with URL name mappings not working correctly with locales of the form language_COUNTRY (github issue #258)
-* Fixed error with opening the gallery tab in the workplace preferences dialog (github issue #289)
-* Fixed wrong escape character handling in CmsParameterConfiguration (github issue #285)
-* Improved visibility of invalid dates in date select widget (github issue #240)
-* Fixed bug with static export links being generated even if static export was disabled (github issue #197)
-* Fixed bug in admin user lists when using MS SQL Server (github issue #295)
-* Fixed a bug where detail page URLs with fragments were not processed correctly in the editor
-* Fixed a problem where model page elements on which the 'create new' option was set were treated as new elements  
-* Fixed bug where the workplace search dialog 'forgets' the current directory  
-* Fixed problem where new roles were not created for existing OUs other than the root OU 
-* Fixed bad performance of role lookup for systems with many web user OUs 
-* Fixed bug where new resources were sometimes removed from offline search indexes if the user modified them again 
-* Fixed problem where JSPs would not be updated in the Online project if they were requested between the time they were modified and the time they were published   
-* Fixed problem with the "Create new" option not always appearing in the settings dialog when it should
-* Fixed bug where entries were not deleted from the content table if versioning was disabled and a deleted file was published     
-* Fixed bug where the "Keep permissions" option was ignored during database imports
-* Fixed a bug in the file history function in which an unlimited setting would prevent all but the latest version from being saved.
-* Fixed problem where the detail buttons in workplace lists enabled or disabled the details for all users 
-* Fixed problem where the initial role given to a new user was always in the root OU 
-* Fixed bug with link substitution which occured with folders which have the same name as the OpenCms servlet name when OpenCms is installed as ROOT web application   
-* Fixed bug with editor change handler not updating optional fields in the content editor
-* Fixed validation bug with hidden fields in the content editor
-* Fixed some XSS issues 
-* Fixed problem with <cms:bundle> tag not using the default locale as a fallback 
-* Updated codemirror editor configuration to work with IE11.
-* Fixed error with editableby attribute of <cms:container> not working correctly for users from different OUs when checking for a role 
-* Fixed several bugs with secure site handling 
-- Changed OU deletion behavior so that resources belonging to any project of the deleted OU are no longer reset to their online state
-- Added more configuration options to auto-setup
-- Preventing Solr from returning expired documents by default
-- Changed container page editor drag-and-drop mechanism so that if a formatter is explicitly set for the origin container, it will also be used for target containers if it is compatible
-
-
+OpenCms 9.5.1 - February 26, 2015
+! Added "DependentSelectWidget" that obtains values depending on other content fields.    
+! Added alternative login handler to authorize users with a cookie.
+! Added option to search for expired resources to all gallery dialogs.
+! Added option "galleryselect" to select a gallery to file selector widget.
+! Added further configuration options for OpenCms auto-setup.
+! Added option to use permanent instead of temporary redirects from a non-secure to a secure server. 
+! Added Solr "rows" parameter in workplace's source search.
+* Fixed issue #197 with static export links being generated even if the static export was disabled.
+* Fixed issue #240 with malfunctioning "invalid date" error message in date select widget.
+* Fixed issue #258 with URL name mappings not working correctly with locales of the form "language_COUNTRY".
+* Fixed issue #285 with encoding problems / wrong escape character handling in CmsParameterConfiguration.
+* Fixed issue #287 with external link validation failing for expired resources.
+* Fixed issue #289 with opening the gallery tab in the workplace preferences dialog.
+* Fixed issue #291 that occurred when using "Assign categories" in the legacy xmlpage direct edit provider. 
+* Fixed issue #292 that an exception was thrown when editing settings for the "content check" tool.
+* Fixed issue #295 with user administration when using MS SQL Server.
+* Fixed XSS security issues affecting the request parameter based locale handler.
+* Fixed several issues with secure site handling. 
+* Fixed issue in page editor where a selected formatter was reset to the default when content was dragged to a different container.
+* Fixed an issue where detail page URLs with fragments were not processed correctly in the editor.
+* Fixed issue that the "Keep permissions" option was ignored during database imports.
+* Fixed issue where database entries were not removed after a deleted file was published if versioning was disabled.     
+* Fixed issue where only the latest historic version was actually saved when the file history was set to "unlimited".
+* Fixed issue where OU deletion caused server timeouts with large VFS repositories.
+* Fixed issue where new roles were not created for existing sub OUs of the root OU. 
+* Fixed performance issue for systems using many web user OUs. 
+* Fixed issue where the initial role given to a new user was always in the root OU. 
+* Fixed issue with "editableby" attribute of <cms:container> not working correctly for roles of users outside the root OUs. 
+* Fixed issue where modified JSPs were infrequently not updated after publishing.
+* Fixed issue where new resources were removed from offline search indexes if a user modified them.
+* Fixed issue with Solr returning expired documents by default.
+* Fixed issue where the workplace search dialog lost the current directory.  
+* Fixed issue with the "Create new" option not always appearing in the settings dialog.
+* Fixed issue where model page elements on which the "Create new" option was set were treated as new elements. 
+* Fixed issue where enabling detail views in traditional workplace lists affected all other users. 
+* Fixed issue in link substitution with folders using the OpenCms servlet name when OpenCms is installed as ROOT application.   
+* Fixed issue with editor change handler not updating optional fields in the content editor.
+* Fixed validation issue with hidden fields in the content editor.
+* Fixed issue with <cms:bundle> tag not using the default locale as a fallback. 
+* Fixed issue with CodeMirror editor configuration not working for Internet Explorer 11.
 
 OpenCms 9.5.0 - November 3, 2014
 ! Drag & drop template and layout creation with nested containers.
