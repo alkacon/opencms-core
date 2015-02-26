@@ -23,6 +23,7 @@ OpenCms 9.5.1 - ?????
 ! Added further configuration options for OpenCms auto-setup.
 ! Added option to use permanent instead of temporary redirects from a non-secure to a secure server. 
 ! Added Solr "rows" parameter in workplace's source search.
+- Demo template updated to Bootstrap 3.3.2.
 * Fixed issue #197 with static export links being generated even if the static export was disabled.
 * Fixed issue #240 with malfunctioning "invalid date" error message in date select widget.
 * Fixed issue #258 with URL name mappings not working correctly with locales of the form "language_COUNTRY".
