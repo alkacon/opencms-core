@@ -186,7 +186,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     @Override
     public int getNumPages() {
 
-        return (int)(m_solrResultList.getNumFound() / m_controller.getPagination().getConfig().getPageSize()) + 1;
+        return (int)((m_solrResultList.getNumFound() - 1) / m_controller.getPagination().getConfig().getPageSize()) + 1;
     }
 
     /**
