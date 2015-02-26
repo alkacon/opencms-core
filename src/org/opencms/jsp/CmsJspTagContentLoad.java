@@ -28,8 +28,6 @@
 package org.opencms.jsp;
 
 import org.opencms.file.CmsFile;
-import org.opencms.file.collectors.CmsSolrCollector;
-import org.opencms.file.collectors.CmsSolrCollector.CmsSolrCollectorResult;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
@@ -570,29 +568,12 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
             if (collector == null) {
                 throw new CmsException(Messages.get().container(Messages.ERR_COLLECTOR_NOT_FOUND_1, m_collectorName));
             }
-
-            //            if (collector instanceof CmsSolrCollector) {
-            //                collector = ((CmsSolrCollector)collector).getCopy();
-            //            }
-
-            m_contentInfoBean = new CmsContentInfoBean();
-
             // execute the collector if not already done in parent tag
-            if ((m_collectorResult == null)) {
-                // If we're using an instance of the Solr collector make sure to collect all (potential) facets, too.
-                if (collector instanceof CmsSolrCollector) {
-                    CmsSolrCollectorResult result = ((CmsSolrCollector)collector).getResultsWithFacets(
-                        m_cms,
-                        m_collectorName,
-                        m_collectorParam,
-                        pageAttribCount);
-                    m_contentInfoBean.setFacets(result.getFacets());
-                    m_collectorResult = result.getResources();
-                } else {
-                    m_collectorResult = collector.getResults(m_cms, m_collectorName, m_collectorParam);
-                }
+            if (m_collectorResult == null) {
+                m_collectorResult = collector.getResults(m_cms, m_collectorName, m_collectorParam);
             }
 
+            m_contentInfoBean = new CmsContentInfoBean();
             m_contentInfoBean.setPageSizeAsString(resolver.resolveMacros(m_pageSize));
             m_contentInfoBean.setPageIndexAsString(resolver.resolveMacros(m_pageIndex));
             m_contentInfoBean.setPageNavLengthAsString(resolver.resolveMacros(m_pageNavLength));
