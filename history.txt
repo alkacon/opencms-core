@@ -18,7 +18,7 @@ Legend:
 OpenCms 9.5.1 - February 26, 2015
 ! Added "DependentSelectWidget" that obtains values depending on other content fields.    
 ! Added alternative login handler to authorize users with a cookie.
-! Added option to search for expired resources to all gallery dialogs.
+! Added option to search for expired/unreleased resources to all gallery dialogs.
 ! Added option "galleryselect" to select a gallery to file selector widget.
 ! Added further configuration options for OpenCms auto-setup.
 ! Added option to use permanent instead of temporary redirects from a non-secure to a secure server. 
