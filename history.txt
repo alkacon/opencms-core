@@ -15,7 +15,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 9.5.1 - February 26, 2015
+OpenCms 9.5.1 - ?????
 ! Added "DependentSelectWidget" that obtains values depending on other content fields.    
 ! Added alternative login handler to authorize users with a cookie.
 ! Added option to search for expired/unreleased resources to all gallery dialogs.
