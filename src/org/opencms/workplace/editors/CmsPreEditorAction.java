@@ -34,6 +34,8 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
@@ -177,6 +179,17 @@ public class CmsPreEditorAction extends CmsDialog {
             m_originalParams = CmsEncoder.decode(CmsRequestUtil.encodeParams(getJsp().getRequest()));
         }
         return m_originalParams;
+    }
+
+    /**
+     * Checks that the current user is a workplace user.<p>
+     * 
+     * @throws CmsRoleViolationException if the user does not have the required role 
+     */
+    @Override
+    protected void checkRole() throws CmsRoleViolationException {
+
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.EDITOR);
     }
 
 }
