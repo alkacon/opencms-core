@@ -60,6 +60,7 @@ OPENCMS_BUILD_DATE=$(date +"%Y-%m-%d %H:%M")
 GIT_COMMIT="${GIT_COMMIT:-Unknown}"
 OPENCMS_GIT_ID="${GIT_COMMIT:0:7}"
 OPENCMS_GIT_BRANCH="${GIT_BRANCH:-Unknown}"
+OPENCMS_GIT_BRANCH_SHOWN="${GIT_BRANCH_SHOWN:$OPENCMS_GIT_BRANCH}"
 
 #
 # The OpenCms version ID.
@@ -67,7 +68,7 @@ OPENCMS_GIT_BRANCH="${GIT_BRANCH:-Unknown}"
 # This is a condensed String from the variables set above.
 # It can be accessed in OpenCms by OpenCms.getSystemInfo().getVersionId().
 #
-OPENCMS_VERSION_ID="$OPENCMS_BUILD_TYPE $OPENCMS_BUILD_NUMBER ($OPENCMS_GIT_BRANCH - $OPENCMS_GIT_ID) $OPENCMS_BUILD_DATE"
+OPENCMS_VERSION_ID="$OPENCMS_BUILD_TYPE $OPENCMS_BUILD_NUMBER ($GIT_BRANCH_SHOWN - $OPENCMS_GIT_ID) $OPENCMS_BUILD_DATE"
 
 
 #
@@ -76,14 +77,15 @@ OPENCMS_VERSION_ID="$OPENCMS_BUILD_TYPE $OPENCMS_BUILD_NUMBER ($OPENCMS_GIT_BRAN
 echo "# "
 echo "# OpenCms Version Information:"
 echo "# "
-echo "# Build Type    : $OPENCMS_BUILD_TYPE"
-echo "# Build System  : $OPENCMS_BUILD_SYSTEM"
-echo "# Build Number  : $OPENCMS_BUILD_NUMBER"
-echo "# Version Number: $OPENCMS_VERSION_NUMBER"
-echo "# Version ID    : $OPENCMS_VERSION_ID"
-echo "# Version File  : $OUTPUT_FILE"
-echo "# Git commit    : $OPENCMS_GIT_ID"
-echo "# Git branch    : $OPENCMS_GIT_BRANCH"
+echo "# Build Type      : $OPENCMS_BUILD_TYPE"
+echo "# Build System    : $OPENCMS_BUILD_SYSTEM"
+echo "# Build Number    : $OPENCMS_BUILD_NUMBER"
+echo "# Version Number  : $OPENCMS_VERSION_NUMBER"
+echo "# Version ID      : $OPENCMS_VERSION_ID"
+echo "# Version File    : $OUTPUT_FILE"
+echo "# Git commit      : $OPENCMS_GIT_ID"
+echo "# Git branch      : $OPENCMS_GIT_BRANCH"
+echo "# Git branch shown: $OPENCMS_GIT_BRANCH_SHOWN"
 echo "# "
 
 #
@@ -103,7 +105,7 @@ echo "build.date=$OPENCMS_BUILD_DATE" >> "$OUTPUT_FILE"
 echo "build.type=$OPENCMS_BUILD_TYPE" >> "$OUTPUT_FILE"
 echo "build.system=$OPENCMS_BUILD_SYSTEM" >> "$OUTPUT_FILE"
 echo "build.gitid=$OPENCMS_GIT_ID" >> "$OUTPUT_FILE"
-echo "build.gitbranch=$OPENCMS_GIT_BRANCH" >> "$OUTPUT_FILE"
+echo "build.gitbranch=$OPENCMS_GIT_BRANCH_SHOWN" >> "$OUTPUT_FILE"
 #
 # Nice names for the build information (optional).
 #

@@ -289,17 +289,17 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                         // if it's a multiple choice element, the child elements must not be sorted into their types,
                         // but must keep their original order
                         if (isMultipleChoice) {
-	                        List<Element> nodeList = new ArrayList<Element>();
+                            List<Element> nodeList = new ArrayList<Element>();
                             List<Element> elements = CmsXmlGenericWrapper.elements(root);
-	                        Set<String> typeNames = cd.getSchemaTypes();
-	                        for (Element element : elements) {
-		                        // check if the node type is still in the definition
-		                        if (typeNames.contains(element.getName())) {
-			                        nodeList.add(element);
-		                        }
-	                        }
+                            Set<String> typeNames = cd.getSchemaTypes();
+                            for (Element element : elements) {
+                                // check if the node type is still in the definition
+                                if (typeNames.contains(element.getName())) {
+                                    nodeList.add(element);
+                                }
+                            }
                             checkMaxOccurs(nodeList, cd.getChoiceMaxOccurs(), cd.getTypeName());
-	                        nodeLists.add(nodeList);
+                            nodeLists.add(nodeList);
                         }
                         // if it's a sequence, the children are sorted according to the sequence type definition
                         else {
@@ -334,40 +334,6 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             m_file.setContents(marshal());
         }
         return m_file;
-    }
-
-    /**
-     * Removes all nodes that exceed newly defined maxOccurs rules from the list of elements
-     * @param cd the content type definition
-     * @param maxOccurs maximum number of elements allowed
-     * @param typeName name of the element type
-     */
-    private void checkMaxOccurs(List<Element> elements, int maxOccurs, String typeName) {
-        if (elements.size() > maxOccurs) {
-            if (typeName.equals(CmsXmlCategoryValue.TYPE_NAME)) {
-                if (maxOccurs == 1) {
-                    Element category = elements.get(0);
-                    List<Element> categories = new ArrayList<Element>();
-                    for (Element value : elements) {
-                        @SuppressWarnings("unchecked")
-                        Iterator<Element> itLink = value.elementIterator();
-                        while (itLink.hasNext()) {
-                            Element link = itLink.next();
-                            categories.add((Element)link.clone());
-                        }
-                    }
-                    category.clearContent();
-                    for (Element value : categories) {
-                        category.add(value);
-                    }
-                }
-            }
-        
-            // too many nodes of this type appear according to the current schema definition
-            for (int lo = (elements.size() - 1); lo >= maxOccurs; lo--) {
-                elements.remove(lo);
-            }
-        }
     }
 
     /**
@@ -919,6 +885,41 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         }
         // remove the bookmark and return the removed element
         return m_bookmarks.remove(getBookmarkName(path, locale));
+    }
+
+    /**
+     * Removes all nodes that exceed newly defined maxOccurs rules from the list of elements.<p>
+     * 
+     * @param elements the list of elements to check
+     * @param maxOccurs maximum number of elements allowed
+     * @param typeName name of the element type
+     */
+    private void checkMaxOccurs(List<Element> elements, int maxOccurs, String typeName) {
+
+        if (elements.size() > maxOccurs) {
+            if (typeName.equals(CmsXmlCategoryValue.TYPE_NAME)) {
+                if (maxOccurs == 1) {
+                    Element category = elements.get(0);
+                    List<Element> categories = new ArrayList<Element>();
+                    for (Element value : elements) {
+                        Iterator<Element> itLink = value.elementIterator();
+                        while (itLink.hasNext()) {
+                            Element link = itLink.next();
+                            categories.add((Element)link.clone());
+                        }
+                    }
+                    category.clearContent();
+                    for (Element value : categories) {
+                        category.add(value);
+                    }
+                }
+            }
+
+            // too many nodes of this type appear according to the current schema definition
+            for (int lo = (elements.size() - 1); lo >= maxOccurs; lo--) {
+                elements.remove(lo);
+            }
+        }
     }
 
     /**

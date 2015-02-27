@@ -23,6 +23,7 @@ OpenCms 9.5.1 - ?????
 ! Added further configuration options for OpenCms auto-setup.
 ! Added option to use permanent instead of temporary redirects from a non-secure to a secure server. 
 ! Added Solr "rows" parameter in workplace's source search.
+! Added support for configuring a JDBC connection in the OpenCms db properties.
 - Demo template updated to Bootstrap 3.3.2.
 * Fixed issue #197 with static export links being generated even if the static export was disabled.
 * Fixed issue #240 with malfunctioning "invalid date" error message in date select widget.
@@ -33,16 +34,17 @@ OpenCms 9.5.1 - ?????
 * Fixed issue #291 that occurred when using "Assign categories" in the legacy xmlpage direct edit provider. 
 * Fixed issue #292 that an exception was thrown when editing settings for the "content check" tool.
 * Fixed issue #295 with user administration when using MS SQL Server.
+* Fixed issue #296 with XML content correction saving a wrong order of choice elements after a schema change.
 * Fixed XSS security issues affecting the request parameter based locale handler.
 * Fixed several issues with secure site handling. 
 * Fixed issue in page editor where a selected formatter was reset to the default when content was dragged to a different container.
-* Fixed an issue where detail page URLs with fragments were not processed correctly in the editor.
+* Fixed issue where detail page URLs with fragments were not processed correctly in the editor.
 * Fixed issue that the "Keep permissions" option was ignored during database imports.
 * Fixed issue where database entries were not removed after a deleted file was published if versioning was disabled.     
 * Fixed issue where only the latest historic version was actually saved when the file history was set to "unlimited".
 * Fixed issue where OU deletion caused server timeouts with large VFS repositories.
 * Fixed issue where new roles were not created for existing sub OUs of the root OU. 
-* Fixed performance issue for systems using many web user OUs. 
+* Fixed issue with slow performance for systems using many web user OUs. 
 * Fixed issue where the initial role given to a new user was always in the root OU. 
 * Fixed issue with "editableby" attribute of <cms:container> not working correctly for roles of users outside the root OUs. 
 * Fixed issue where modified JSPs were infrequently not updated after publishing.
@@ -54,8 +56,9 @@ OpenCms 9.5.1 - ?????
 * Fixed issue where enabling detail views in traditional workplace lists affected all other users. 
 * Fixed issue in link substitution with folders using the OpenCms servlet name when OpenCms is installed as ROOT application.   
 * Fixed issue with editor change handler not updating optional fields in the content editor.
-* Fixed validation issue with hidden fields in the content editor.
+* Fixed issue with validation of hidden fields in the content editor.
 * Fixed issue with <cms:bundle> tag not using the default locale as a fallback. 
+* Fixed issue in cmsshell.sh and setup.sh so that running the scripts outside of WEB-INF is now possible.
 * Fixed issue with CodeMirror editor configuration not working for Internet Explorer 11.
 
 OpenCms 9.5.0 - November 3, 2014
