@@ -502,7 +502,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
         for (Map.Entry<String, String> entry : iconPaths.entrySet()) {
             String source = ICON_PATH + entry.getKey();
             String target = ICON_PATH + entry.getValue();
-            if (!getCms().existsResource(target)) {
+            if (getCms().existsResource(source) && !getCms().existsResource(target)) {
                 getCms().copyResource(source, target);
             }
         }
