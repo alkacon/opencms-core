@@ -352,7 +352,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
             List<CmsResource> resources = cms.readResources(
                 modPath,
                 CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(
-                    CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG).getTypeId()));
+                    CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG)));
             String source = "<Type><!\\[CDATA\\[" + m_cloneInfo.getSourceNamePrefix();
             String target = "<Type><!\\[CDATA\\[" + m_cloneInfo.getTargetNamePrefix();
             Function<String, String> replaceType = new ReplaceAll(source, target);
@@ -368,7 +368,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
             CmsResource config = cms.readResource(
                 modPath + CmsADEManager.CONFIG_FILE_NAME,
                 CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(
-                    CmsADEManager.MODULE_CONFIG_TYPE).getTypeId()));
+                    CmsADEManager.MODULE_CONFIG_TYPE)));
             Function<String, String> substitution = Functions.identity();
             // compose the substitution functions from simple substitution functions for each type
 
@@ -462,7 +462,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
         }
 
         for (Map.Entry<I_CmsResourceType, I_CmsResourceType> mapping : resTypeMap.entrySet()) {
-            CmsResourceFilter filter = CmsResourceFilter.requireType(mapping.getKey().getTypeId());
+            CmsResourceFilter filter = CmsResourceFilter.requireType(mapping.getKey());
             List<CmsResource> resources = cloneCms.readResources("/", filter);
             String sourceSchemaPath = mapping.getKey().getConfiguration().get("schema");
             String targetSchemaPath = mapping.getValue().getConfiguration().get("schema");
