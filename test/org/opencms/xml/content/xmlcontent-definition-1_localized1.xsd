@@ -26,7 +26,7 @@
 			<resourcebundles>
 				<propertybundle name="org.opencms.xml.content.testmessages" />
 				<xmlbundle name="org.opencms.xml.content.testmessages">			
-					<bundle locale="DE_de">
+					<bundle locale="de_DE">
 						<resource key="editor.xmlcontent.validation.warning">Warnung aus dem XML</resource>
 					</bundle>
 				</xmlbundle>			

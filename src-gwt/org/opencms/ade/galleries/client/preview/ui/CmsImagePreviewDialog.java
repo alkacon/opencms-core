@@ -85,11 +85,12 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
      * 
      * @param dialogMode the dialog mode
      * @param dialogHeight the dialog height to set
-     * @param dialogWidth the dialog width to set     
+     * @param dialogWidth the dialog width to set
+     * @param disableSelection true if selection from the preview should be disabled      
      */
-    public CmsImagePreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
+    public CmsImagePreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth, boolean disableSelection) {
 
-        super(dialogMode, dialogHeight, dialogWidth);
+        super(dialogMode, dialogHeight, dialogWidth, disableSelection);
         // set the line-height to the height of the preview panel to be able to center the image vertically
         m_previewHolder.getElement().getStyle().setProperty("lineHeight", m_previewHeight, Unit.PX);
     }

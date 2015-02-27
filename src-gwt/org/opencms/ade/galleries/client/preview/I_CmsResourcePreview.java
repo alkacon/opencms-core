@@ -113,8 +113,9 @@ public interface I_CmsResourcePreview<T extends CmsResourceInfoBean> {
      * Opens the preview for the given resource in the given gallery mode.<p>
      * 
      * @param resourcePath the resource path
+     * @param disableSelection if the selection from the preview should be disabled 
      */
-    void openPreview(String resourcePath);
+    void openPreview(String resourcePath, boolean disableSelection);
 
     /**
      * Removes the preview widget.<p>

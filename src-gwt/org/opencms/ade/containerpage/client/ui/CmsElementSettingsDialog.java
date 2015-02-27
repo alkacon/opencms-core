@@ -86,6 +86,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     /** The container page controller. */
     private CmsContainerpageController m_controller;
 
+    /** Checkbox to set the 'createNew' status. */
+    private CmsCheckBox m_createNewCheckBox;
+
     /** The element data bean. */
     private CmsContainerElementData m_elementBean;
 
@@ -97,9 +100,6 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /** The element setting values. */
     private Map<String, String> m_settings;
-
-    /** Checkbox to set the 'createNew' status. */
-    private CmsCheckBox m_createNewCheckBox;
 
     /**
      * Constructor.<p>
@@ -125,7 +125,10 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         infoBean.setResourceType(elementBean.getResourceType());
         m_settings = elementBean.getSettings();
         A_CmsFormFieldPanel formFieldPanel = null;
+        boolean isEditableModelPage = CmsCoreProvider.get().getUserInfo().isDeveloper()
+            && CmsContainerpageController.get().getData().isModelPage();
         if (m_contextInfo.shouldShowElementTemplateContextSelection()
+            || isEditableModelPage
             || m_elementBean.hasAlternativeFormatters(m_containerId)) {
             CmsFieldsetFormFieldPanel fieldSetPanel = new CmsFieldsetFormFieldPanel(
                 infoBean,
@@ -156,8 +159,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 });
                 formatterFieldset.add(m_formatterSelect);
             }
-            if (CmsCoreProvider.get().getUserInfo().isDeveloper()
-                && CmsContainerpageController.get().getData().isModelPage()) {
+            if (isEditableModelPage) {
                 CmsFieldSet createNewFieldSet = new CmsFieldSet();
                 createNewFieldSet.setLegend(org.opencms.ade.containerpage.client.Messages.get().key(
                     org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LEGEND_0
@@ -343,7 +345,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             }
         }
         if (m_createNewCheckBox != null) {
-            m_elementWidget.setIsNew(m_createNewCheckBox.isChecked());
+            m_elementWidget.setCreateNew(m_createNewCheckBox.isChecked());
         }
         m_controller.reloadElementWithSettings(
             m_elementWidget,

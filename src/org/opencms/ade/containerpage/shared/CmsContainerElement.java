@@ -63,6 +63,9 @@ public class CmsContainerElement implements IsSerializable {
     /** The element client id. */
     private String m_clientId;
 
+    /** The 'create new' status of the element. */
+    private boolean m_createNew;
+
     /** The element view this element belongs to by it's type. */
     private CmsUUID m_elementView;
 
@@ -78,6 +81,9 @@ public class CmsContainerElement implements IsSerializable {
     /** Flag which controls whether the new editor is disabled for this element. */
     private boolean m_newEditorDisabled;
 
+    /** The permission info for the element resource. */
+    private CmsPermissionInfo m_permissionInfo;
+
     /** Flag indicating if the given resource is released and not expired. */
     private boolean m_releasedAndNotExpired = true;
 
@@ -92,9 +98,6 @@ public class CmsContainerElement implements IsSerializable {
 
     /** The title. */
     private String m_title;
-
-    /** The permission info for the element resource. */
-    private CmsPermissionInfo m_permissionInfo;
 
     /**
      * Default constructor.<p>
@@ -244,6 +247,19 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
+     * Reads the 'create new' status of the element.<p>
+     * 
+     * When the page containing the element is used a model page, this flag determines whether a copy of the element 
+     * is created when creating a new page from that model page.<p>
+     * 
+     * @return the 'create new' status of the element 
+     */
+    public boolean isCreateNew() {
+
+        return m_createNew;
+    }
+
+    /**
      * Returns if the given element is of the type group container.<p>
      * 
      * @return <code>true</code> if the given element is of the type group container
@@ -301,6 +317,16 @@ public class CmsContainerElement implements IsSerializable {
     public void setClientId(String clientId) {
 
         m_clientId = clientId;
+    }
+
+    /**
+     * Sets the 'create new' status of the element.<p>
+     * 
+     * @param createNew the new 'create new' status 
+     */
+    public void setCreateNew(boolean createNew) {
+
+        m_createNew = createNew;
     }
 
     /**

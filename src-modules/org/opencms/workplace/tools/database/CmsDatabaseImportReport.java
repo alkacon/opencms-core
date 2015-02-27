@@ -126,4 +126,14 @@ public class CmsDatabaseImportReport extends A_CmsListReport {
         m_paramFile = file;
     }
 
+    /**
+     * Sets the keepPermissions parameter.<p>
+     *
+     * @param keepPermissions the keepPermissions parameter
+     */
+    public void setParamKeepPermissions(String keepPermissions) {
+
+        setKeepPermissions(keepPermissions);
+    }
+
 }

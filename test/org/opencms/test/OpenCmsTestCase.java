@@ -902,13 +902,7 @@ public class OpenCmsTestCase extends TestCase {
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder) {
 
-        return setupOpenCms(
-            importFolder,
-            targetFolder,
-            getTestDataPath("WEB-INF/config." + m_dbProduct + "/"),
-            null,
-            getCurrentTestClass(),
-            true);
+        return setupOpenCms(importFolder, targetFolder, null, null, null, true);
     }
 
     /**
@@ -923,13 +917,7 @@ public class OpenCmsTestCase extends TestCase {
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, boolean publish) {
 
-        return setupOpenCms(
-            importFolder,
-            targetFolder,
-            getTestDataPath("WEB-INF/config." + m_dbProduct + "/"),
-            null,
-            getCurrentTestClass(),
-            publish);
+        return setupOpenCms(importFolder, targetFolder, null, null, null, publish);
     }
 
     /**
@@ -944,13 +932,7 @@ public class OpenCmsTestCase extends TestCase {
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, String specialConfigFolder) {
 
-        return setupOpenCms(
-            importFolder,
-            targetFolder,
-            getTestDataPath("WEB-INF/config." + m_dbProduct + "/"),
-            getTestDataPath(specialConfigFolder),
-            getCurrentTestClass(),
-            true);
+        return setupOpenCms(importFolder, targetFolder, null, specialConfigFolder, null, true);
     }
 
     /**
@@ -966,7 +948,7 @@ public class OpenCmsTestCase extends TestCase {
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, String configFolder, boolean publish) {
 
-        return setupOpenCms(importFolder, targetFolder, configFolder, null, getCurrentTestClass(), publish);
+        return setupOpenCms(importFolder, targetFolder, configFolder, null, null, publish);
     }
 
     /**
@@ -987,13 +969,7 @@ public class OpenCmsTestCase extends TestCase {
         String specialConfigFolder,
         String testName) {
 
-        return setupOpenCms(
-            importFolder,
-            targetFolder,
-            getTestDataPath("WEB-INF/config." + m_dbProduct + "/"),
-            specialConfigFolder != null ? getTestDataPath(specialConfigFolder) : null,
-            testName,
-            true);
+        return setupOpenCms(importFolder, targetFolder, null, null, testName, true);
     }
 
     /**
@@ -1017,6 +993,42 @@ public class OpenCmsTestCase extends TestCase {
         String testName,
         boolean publish) {
 
+        return setupOpenCms(
+            importFolder,
+            targetFolder,
+            configFolder,
+            specialConfigFolder,
+            testName,
+            null,
+            null,
+            publish);
+    }
+
+    /**
+     * Sets up a complete OpenCms instance, creating the usual projects,
+     * and importing a default database.<p>
+     *
+     * @param importFolder the folder to import in the "real" FS
+     * @param targetFolder the target folder of the import in the VFS
+     * @param configFolder the folder to copy the standard configuration files from
+     * @param specialConfigFolder the folder that contains the special configuration fiiles for this setup
+     * @param testName the name of the test class (for writing it to the console)
+     * @param servletMapping The servlet mapping used by the OpenCms shell. Default: "/opencms/*".
+     * @param defaultWebAppName The default webapp name assumed by the OpenCms shell. Default: "ROOT".
+     * @param publish publish only if set
+     *
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/"
+     */
+    public static CmsObject setupOpenCms(
+        String importFolder,
+        String targetFolder,
+        String configFolder,
+        String specialConfigFolder,
+        String testName,
+        String servletMapping,
+        String defaultWebAppName,
+        boolean publish) {
+
         printInfoBox(new String[] {
             "Setting up OpenCms test class:",
             testName,
@@ -1024,15 +1036,20 @@ public class OpenCmsTestCase extends TestCase {
             "Importing from: " + importFolder,
             "Importing to  : " + targetFolder});
 
+        // set default values, if parameters are null
+        configFolder = configFolder == null ? getTestDataPath("WEB-INF/config." + m_dbProduct + "/") : configFolder;
+        testName = testName == null ? getCurrentTestClass() : testName;
+        specialConfigFolder = specialConfigFolder != null ? getTestDataPath(specialConfigFolder) : null;
+
         // intialize a new resource storage
         m_resourceStorages = new HashMap<String, OpenCmsTestResourceStorage>();
 
         // turn off exceptions after error logging during setup (won't work otherwise)
         OpenCmsTestLogAppender.setBreakOnError(false);
-        // output a message 
+        // output a message
         System.out.println("\n\n\n----- Starting test case: Importing OpenCms VFS data -----");
 
-        // kill any old shell that might have remained from a previous test 
+        // kill any old shell that might have remained from a previous test
         if (m_shell != null) {
             try {
                 m_shell.exit();
@@ -1068,15 +1085,15 @@ public class OpenCmsTestCase extends TestCase {
         // create a shell instance
         m_shell = new CmsShell(
             getTestDataPath("WEB-INF" + File.separator),
-            null,
-            null,
+            servletMapping,
+            defaultWebAppName,
             "${user}@${project}>",
             null,
             System.out,
             System.err,
             false);
 
-        // open the test script 
+        // open the test script
         File script;
         CmsObject cms = null;
 
@@ -1127,7 +1144,7 @@ public class OpenCmsTestCase extends TestCase {
             cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
             cms.getRequestContext().setSiteRoot("/sites/default/");
 
-            // output a message 
+            // output a message
             System.out.println("----- Starting test cases -----");
         } catch (Throwable t) {
             t.printStackTrace(System.err);

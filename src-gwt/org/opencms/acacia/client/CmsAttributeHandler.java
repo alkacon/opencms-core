@@ -288,13 +288,16 @@ public class CmsAttributeHandler extends CmsRootHandler {
         if (mayHaveMore && getAttributeType().isSimpleType()) {
             I_CmsFormEditWidget widget = m_widgetService.getAttributeFormWidget(m_attributeName);
             m_entity.addAttributeValue(m_attributeName, value);
+            int valueCount = m_entity.getAttribute(m_attributeName).getValueCount(); 
             String defaultValue = m_widgetService.getDefaultAttributeValue(
                 m_attributeName,
-                getSimplePath(m_entity.getAttribute(m_attributeName).getValueCount() - 1));
+                getSimplePath(valueCount - 1));
             CmsAttributeValueView valueView = null;
             if ((m_attributeValueViews.size() == 1) && !m_attributeValueViews.get(0).hasValue()) {
                 valueView = m_attributeValueViews.get(0);
                 valueView.setActive();
+                // setActive may have reset the value, so we set it again 
+                m_entity.setAttributeValue(m_attributeName, value, valueCount - 1);
                 valueView.getValueWidget().setValue(value);
             } else {
                 valueView = new CmsAttributeValueView(

@@ -41,6 +41,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.loader.CmsLoaderException;
@@ -72,6 +73,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -87,6 +89,8 @@ import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.xml.sax.SAXException;
+
+import com.google.common.collect.ComparisonChain;
 
 /**
  * Adds the XML handler rules for import and export of resources and accounts.<p>
@@ -366,7 +370,7 @@ public class CmsImportVersion7 implements I_CmsImport {
     private CmsImportParameters m_parameters;
 
     /** The list of resource to be parsed, this is a global list, which will be handled at the end of the import. */
-    private List<String> m_parseables;
+    private List<CmsResource> m_parseables;
 
     /** The project description. */
     private String m_projectDescription;
@@ -1850,7 +1854,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
                     if (OpenCms.getResourceManager().getResourceType(m_resource.getTypeId()) instanceof I_CmsLinkParseable) {
                         // store for later use
-                        m_parseables.add(getCms().getSitePath(m_resource));
+                        m_parseables.add(m_resource);
                     }
                     if (LOG.isInfoEnabled()) {
                         LOG.info(Messages.get().getBundle().key(
@@ -2168,7 +2172,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
         m_fileCounter = 1;
         m_totalFiles = 0;
-        m_parseables = new ArrayList<String>();
+        m_parseables = new ArrayList<CmsResource>();
 
         m_parameters = parameters;
 
@@ -2233,13 +2237,8 @@ public class CmsImportVersion7 implements I_CmsImport {
         I_CmsReport report = getReport();
         CmsObject cms = getCms();
         cms.getRequestContext().setAttribute(CmsLogEntry.ATTR_LOG_ENTRY, Boolean.FALSE);
-
         report.println(Messages.get().container(Messages.RPT_START_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
-
-        parseLinksSinglePass(cms, report);
-        report.println(Messages.get().container(Messages.RPT_PARSE_LINKS_SECOND_PASS_0), I_CmsReport.FORMAT_HEADLINE);
-        parseLinksSinglePass(cms, report);
-
+        parseLinks(cms, report);
         report.println(Messages.get().container(Messages.RPT_END_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
         m_parseables = null;
     }
@@ -3277,6 +3276,37 @@ public class CmsImportVersion7 implements I_CmsImport {
     }
 
     /**
+     * Sorts the parsealble resources before we actually parse the links.<p>
+     * 
+     * This is needed because we may, for example, have resources A and B such that A has a link to B, and B requires
+     * the relation corresponding to that link to be present for some functionality (e.g. the page_title macro in gallery name 
+     * mappings), so we need to parse the links for A first to create the relation before B is processed.
+     * 
+     * @parameter parseables the list of parseable resources which should be sorted in place 
+     * 
+     */
+    protected void sortParseableResources(List<CmsResource> parseables) {
+
+        Collections.sort(parseables, new Comparator<CmsResource>() {
+
+            public int compare(CmsResource a, CmsResource b) {
+
+                return ComparisonChain.start().compare(getRank(a), getRank(b)).compare(a.getRootPath(), b.getRootPath()).result();
+            }
+
+            int getRank(CmsResource res) {
+
+                if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        });
+
+    }
+
+    /**
      * Checks whether the content for the resource being imported exists either in the VFS or in the import file.<p>
      * 
      * @param resource the resource which should be checked 
@@ -3300,12 +3330,19 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     }
 
-    private void parseLinksSinglePass(CmsObject cms, I_CmsReport report) {
+    /**
+     * Parses the links.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param report the report 
+     */
+    private void parseLinks(CmsObject cms, I_CmsReport report) {
 
         int i = 0;
-        Iterator<String> it = m_parseables.iterator();
-        while (it.hasNext()) {
-            String resName = it.next();
+
+        sortParseableResources(m_parseables);
+        for (CmsResource parsableRes : m_parseables) {
+            String resName = cms.getSitePath(parsableRes);
 
             report.print(
                 org.opencms.report.Messages.get().container(

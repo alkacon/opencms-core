@@ -123,7 +123,8 @@ public class CmsSearchDialog extends CmsWidgetDialog {
                 getSettings().setExplorerPage(1);
                 params.put(A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, new String[] {Boolean.TRUE.toString()});
             } else {
-                CmsListMetadata metadata = A_CmsListDialog.getMetadata(CmsSearchResultsList.class.getName());
+                CmsSearchResultsList resultsList = new CmsSearchResultsList(getJsp());
+                CmsListMetadata metadata = resultsList.getMetadata(CmsSearchResultsList.class.getName());
                 boolean withExcerpts = (getSettings().getUserSettings().getWorkplaceSearchViewStyle() == CmsSearchResultStyle.STYLE_LIST_WITH_EXCERPTS);
                 if (metadata == null) {
                     if (!withExcerpts) {

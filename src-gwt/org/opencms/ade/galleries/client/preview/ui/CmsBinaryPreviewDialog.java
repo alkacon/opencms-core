@@ -56,10 +56,11 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
      * @param dialogMode the dialog mode
      * @param dialogHeight the dialog height to set
      * @param dialogWidth the dialog width to set     
+     * @param disableSelection true if selection from the preview should be disabled 
      */
-    public CmsBinaryPreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
+    public CmsBinaryPreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth, boolean disableSelection) {
 
-        super(dialogMode, dialogHeight, dialogWidth);
+        super(dialogMode, dialogHeight, dialogWidth, disableSelection);
     }
 
     /**

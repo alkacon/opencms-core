@@ -2571,7 +2571,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         Iterator<CmsProject> itProjects = getProjectDriver(dbc).readProjects(dbc, organizationalUnit.getName()).iterator();
         while (itProjects.hasNext()) {
             CmsProject project = itProjects.next();
-            deleteProject(dbc, project);
+            deleteProject(dbc, project, false);
         }
 
         // delete roles
@@ -2633,102 +2633,33 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void deleteProject(CmsDbContext dbc, CmsProject deleteProject) throws CmsException {
 
+        deleteProject(dbc, deleteProject, true);
+    }
+
+    /**
+     * Deletes a project.<p>
+     *
+     * Only the admin or the owner of the project can do this.
+     *
+     * @param dbc the current database context
+     * @param deleteProject the project to be deleted
+     * @param resetResources if true, the resources of the project to delete will be reset to their online state, or deleted if they have no online state  
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void deleteProject(CmsDbContext dbc, CmsProject deleteProject, boolean resetResources) throws CmsException {
+
         CmsUUID projectId = deleteProject.getUuid();
-        // changed/new/deleted files in the specified project
-        List<CmsResource> modifiedFiles = readChangedResourcesInsideProject(dbc, projectId, RCPRM_FILES_ONLY_MODE);
-        // changed/new/deleted folders in the specified project
-        List<CmsResource> modifiedFolders = readChangedResourcesInsideProject(dbc, projectId, RCPRM_FOLDERS_ONLY_MODE);
 
-        // all resources inside the project have to be be reset to their online state.
-        // 1. step: delete all new files
-        for (int i = 0; i < modifiedFiles.size(); i++) {
-            CmsResource currentFile = modifiedFiles.get(i);
-            if (currentFile.getState().isNew()) {
-                CmsLock lock = getLock(dbc, currentFile);
-                if (lock.isNullLock()) {
-                    // lock the resource
-                    lockResource(dbc, currentFile, CmsLockType.EXCLUSIVE);
-                } else if (!lock.isOwnedBy(dbc.currentUser()) || !lock.isInProject(dbc.currentProject())) {
-                    changeLock(dbc, currentFile, CmsLockType.EXCLUSIVE);
-                }
-                // delete the properties
-                getVfsDriver(dbc).deletePropertyObjects(
-                    dbc,
-                    projectId,
-                    currentFile,
-                    CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
-                // delete the file
-                getVfsDriver(dbc).removeFile(dbc, dbc.currentProject().getUuid(), currentFile);
-                // remove the access control entries
-                getUserDriver(dbc).removeAccessControlEntries(dbc, dbc.currentProject(), currentFile.getResourceId());
-                // fire the corresponding event
-                OpenCms.fireCmsEvent(new CmsEvent(
-                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFile)));
-            }
-        }
-
-        // 2. step: delete all new folders
-        for (int i = 0; i < modifiedFolders.size(); i++) {
-            CmsResource currentFolder = modifiedFolders.get(i);
-            if (currentFolder.getState().isNew()) {
-                // delete the properties
-                getVfsDriver(dbc).deletePropertyObjects(
-                    dbc,
-                    projectId,
-                    currentFolder,
-                    CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
-                // delete the folder
-                getVfsDriver(dbc).removeFolder(dbc, dbc.currentProject(), currentFolder);
-                // remove the access control entries
-                getUserDriver(dbc).removeAccessControlEntries(dbc, dbc.currentProject(), currentFolder.getResourceId());
-                // fire the corresponding event
-                OpenCms.fireCmsEvent(new CmsEvent(
-                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFolder)));
-            }
-        }
-
-        // 3. step: undo changes on all changed or deleted folders
-        for (int i = 0; i < modifiedFolders.size(); i++) {
-            CmsResource currentFolder = modifiedFolders.get(i);
-            if ((currentFolder.getState().isChanged()) || (currentFolder.getState().isDeleted())) {
-                CmsLock lock = getLock(dbc, currentFolder);
-                if (lock.isNullLock()) {
-                    // lock the resource
-                    lockResource(dbc, currentFolder, CmsLockType.EXCLUSIVE);
-                } else if (!lock.isOwnedBy(dbc.currentUser()) || !lock.isInProject(dbc.currentProject())) {
-                    changeLock(dbc, currentFolder, CmsLockType.EXCLUSIVE);
-                }
-                // undo all changes in the folder
-                undoChanges(dbc, currentFolder, CmsResource.UNDO_CONTENT);
-                // fire the corresponding event
-                OpenCms.fireCmsEvent(new CmsEvent(
-                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFolder)));
-            }
-        }
-
-        // 4. step: undo changes on all changed or deleted files
-        for (int i = 0; i < modifiedFiles.size(); i++) {
-            CmsResource currentFile = modifiedFiles.get(i);
-            if (currentFile.getState().isChanged() || currentFile.getState().isDeleted()) {
-                CmsLock lock = getLock(dbc, currentFile);
-                if (lock.isNullLock()) {
-                    // lock the resource
-                    lockResource(dbc, currentFile, CmsLockType.EXCLUSIVE);
-                } else if (!lock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
-                    if (lock.isLockableBy(dbc.currentUser())) {
-                        changeLock(dbc, currentFile, CmsLockType.EXCLUSIVE);
-                    }
-                }
-                // undo all changes in the file
-                undoChanges(dbc, currentFile, CmsResource.UNDO_CONTENT);
-                // fire the corresponding event
-                OpenCms.fireCmsEvent(new CmsEvent(
-                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFile)));
-            }
+        if (resetResources) {
+            // changed/new/deleted files in the specified project
+            List<CmsResource> modifiedFiles = readChangedResourcesInsideProject(dbc, projectId, RCPRM_FILES_ONLY_MODE);
+            // changed/new/deleted folders in the specified project
+            List<CmsResource> modifiedFolders = readChangedResourcesInsideProject(
+                dbc,
+                projectId,
+                RCPRM_FOLDERS_ONLY_MODE);
+            resetResourcesInProject(dbc, projectId, modifiedFiles, modifiedFolders);
         }
 
         // unlock all resources in the project
@@ -6417,7 +6348,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             availableLocales.add(CmsLocaleManager.getLocale(entry.getLocale()));
         }
         Locale bestLocale = localeManager.getBestMatchingLocale(locale, defaultLocales, availableLocales);
-        String bestLocaleStr = bestLocale.getLanguage();
+        String bestLocaleStr = bestLocale.toString();
         for (CmsUrlNameMappingEntry entry : lastEntries) {
             if (entry.getLocale().equals(bestLocaleStr)) {
                 return entry.getName();
@@ -10264,6 +10195,116 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         PrintfFormat fmt = new PrintfFormat("%0.6d");
         return name + "_" + fmt.sprintf(number);
+    }
+
+    /**
+     * Resets the resources in a project to their online state.<p>
+     * 
+     * @param dbc the database context 
+     * @param projectId the project id 
+     * @param modifiedFiles the modified files 
+     * @param modifiedFolders the modified folders 
+     * @throws CmsException if something goes wrong 
+     * @throws CmsSecurityException if we don't have the permissions 
+     * @throws CmsDataAccessException if something goes wrong with the database 
+     */
+    protected void resetResourcesInProject(
+        CmsDbContext dbc,
+        CmsUUID projectId,
+        List<CmsResource> modifiedFiles,
+        List<CmsResource> modifiedFolders) throws CmsException, CmsSecurityException, CmsDataAccessException {
+
+        // all resources inside the project have to be be reset to their online state.
+        // 1. step: delete all new files
+        for (int i = 0; i < modifiedFiles.size(); i++) {
+            CmsResource currentFile = modifiedFiles.get(i);
+            if (currentFile.getState().isNew()) {
+                CmsLock lock = getLock(dbc, currentFile);
+                if (lock.isNullLock()) {
+                    // lock the resource
+                    lockResource(dbc, currentFile, CmsLockType.EXCLUSIVE);
+                } else if (!lock.isOwnedBy(dbc.currentUser()) || !lock.isInProject(dbc.currentProject())) {
+                    changeLock(dbc, currentFile, CmsLockType.EXCLUSIVE);
+                }
+                // delete the properties
+                getVfsDriver(dbc).deletePropertyObjects(
+                    dbc,
+                    projectId,
+                    currentFile,
+                    CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
+                // delete the file
+                getVfsDriver(dbc).removeFile(dbc, dbc.currentProject().getUuid(), currentFile);
+                // remove the access control entries
+                getUserDriver(dbc).removeAccessControlEntries(dbc, dbc.currentProject(), currentFile.getResourceId());
+                // fire the corresponding event
+                OpenCms.fireCmsEvent(new CmsEvent(
+                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFile)));
+            }
+        }
+
+        // 2. step: delete all new folders
+        for (int i = 0; i < modifiedFolders.size(); i++) {
+            CmsResource currentFolder = modifiedFolders.get(i);
+            if (currentFolder.getState().isNew()) {
+                // delete the properties
+                getVfsDriver(dbc).deletePropertyObjects(
+                    dbc,
+                    projectId,
+                    currentFolder,
+                    CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
+                // delete the folder
+                getVfsDriver(dbc).removeFolder(dbc, dbc.currentProject(), currentFolder);
+                // remove the access control entries
+                getUserDriver(dbc).removeAccessControlEntries(dbc, dbc.currentProject(), currentFolder.getResourceId());
+                // fire the corresponding event
+                OpenCms.fireCmsEvent(new CmsEvent(
+                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFolder)));
+            }
+        }
+
+        // 3. step: undo changes on all changed or deleted folders
+        for (int i = 0; i < modifiedFolders.size(); i++) {
+            CmsResource currentFolder = modifiedFolders.get(i);
+            if ((currentFolder.getState().isChanged()) || (currentFolder.getState().isDeleted())) {
+                CmsLock lock = getLock(dbc, currentFolder);
+                if (lock.isNullLock()) {
+                    // lock the resource
+                    lockResource(dbc, currentFolder, CmsLockType.EXCLUSIVE);
+                } else if (!lock.isOwnedBy(dbc.currentUser()) || !lock.isInProject(dbc.currentProject())) {
+                    changeLock(dbc, currentFolder, CmsLockType.EXCLUSIVE);
+                }
+                // undo all changes in the folder
+                undoChanges(dbc, currentFolder, CmsResource.UNDO_CONTENT);
+                // fire the corresponding event
+                OpenCms.fireCmsEvent(new CmsEvent(
+                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFolder)));
+            }
+        }
+
+        // 4. step: undo changes on all changed or deleted files
+        for (int i = 0; i < modifiedFiles.size(); i++) {
+            CmsResource currentFile = modifiedFiles.get(i);
+            if (currentFile.getState().isChanged() || currentFile.getState().isDeleted()) {
+                CmsLock lock = getLock(dbc, currentFile);
+                if (lock.isNullLock()) {
+                    // lock the resource
+                    lockResource(dbc, currentFile, CmsLockType.EXCLUSIVE);
+                } else if (!lock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
+                    if (lock.isLockableBy(dbc.currentUser())) {
+                        changeLock(dbc, currentFile, CmsLockType.EXCLUSIVE);
+                    }
+                }
+                // undo all changes in the file
+                undoChanges(dbc, currentFile, CmsResource.UNDO_CONTENT);
+                // fire the corresponding event
+                OpenCms.fireCmsEvent(new CmsEvent(
+                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFile)));
+            }
+        }
     }
 
     /**

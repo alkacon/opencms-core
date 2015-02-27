@@ -15,8 +15,8 @@
 		<class/>
 		<description><![CDATA[<p>This module adds the Open Source text editor "CodeMirror" to the OpenCms Workplace.</p>
 <p>Install this module if you want a source code editor with syntax highlighting. The version of CodeMirror is 3.14</p>
-<p><i>&copy; 2014 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>9.5.0</version>
+<p><i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>9.5.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>

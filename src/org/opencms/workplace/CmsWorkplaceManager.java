@@ -1934,7 +1934,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      */
     public boolean supportsLazyUserLists() {
 
-        return "lazy".equalsIgnoreCase(m_userListMode);
+        boolean result = "lazy".equalsIgnoreCase(m_userListMode);
+        if (org.opencms.db.mssql.CmsUserDriver.isInstantiated()) {
+            LOG.warn("Lazy user lists currently not supported on MSSQL, using classic user list mode as a fallback.");
+            result = false;
+        }
+        return result;
+
     }
 
     /**

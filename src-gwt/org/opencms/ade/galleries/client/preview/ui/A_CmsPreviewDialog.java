@@ -122,8 +122,9 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
      * @param dialogMode the gallery dialog mode (view, widget, ade, editor, ...)
      * @param dialogHeight the dialog height to set
      * @param dialogWidth the dialog width to set
+     * @param disableSelection true if selection should be disabled in the preview  
      */
-    public A_CmsPreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth) {
+    public A_CmsPreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth, boolean disableSelection) {
 
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -145,13 +146,13 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
         // buttons        
         switch (m_galleryMode) {
             case editor:
-                m_selectButton.setVisible(CmsPreviewUtil.shouldShowSelectButton());
+                m_selectButton.setVisible(CmsPreviewUtil.shouldShowSelectButton() && !disableSelection);
                 m_closePreview.setText(Messages.get().key(Messages.GUI_PREVIEW_CLOSE_GALLERY_BUTTON_0));
                 m_buttonBar.getElement().getStyle().setBottom(94, Unit.PX);
                 m_buttonBar.getElement().getStyle().setRight(1, Unit.PX);
                 break;
             case widget:
-                m_selectButton.setVisible(true);
+                m_selectButton.setVisible(!disableSelection);
                 m_closePreview.setText(Messages.get().key(Messages.GUI_PREVIEW_CLOSE_GALLERY_BUTTON_0));
                 break;
             case ade:

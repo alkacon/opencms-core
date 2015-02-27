@@ -710,6 +710,8 @@ tinyMCE.init({
 	toolbar_items_size: 'small',
     menubar:false,
     resize : false,
+    entity_encoding: "named",
+    entities: '160,nbsp',
     paste_as_text: <%=""+Boolean.valueOf(OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorConfiguration("tinymce").getParameters().get("paste_text"))%>,
     cmsGalleryEnhancedOptions : <%= options.showElement("gallery.enhancedoptions", displayOptions)%>,
     cmsGalleryUseThickbox : <%= options.showElement("gallery.usethickbox", displayOptions)%>,

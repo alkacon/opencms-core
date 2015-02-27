@@ -117,9 +117,9 @@ public final class CmsBinaryResourcePreview extends A_CmsResourcePreview<CmsReso
     }
 
     /**
-     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#openPreview(java.lang.String)
+     * @see org.opencms.ade.galleries.client.preview.I_CmsResourcePreview#openPreview(java.lang.String, boolean)
      */
-    public void openPreview(String resourcePath) {
+    public void openPreview(String resourcePath, boolean disableSelection) {
 
         if (m_previewDialog != null) {
             m_previewDialog.removeFromParent();
@@ -128,7 +128,8 @@ public final class CmsBinaryResourcePreview extends A_CmsResourcePreview<CmsReso
         m_previewDialog = new CmsBinaryPreviewDialog(
             getGalleryDialog().getController().getDialogMode(),
             parentPanel.getOffsetHeight(),
-            parentPanel.getOffsetWidth());
+            parentPanel.getOffsetWidth(),
+            disableSelection);
 
         m_handler = new CmsBinaryPreviewHandler(this);
         m_previewDialog.init(m_handler);

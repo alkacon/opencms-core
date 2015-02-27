@@ -27,6 +27,7 @@
 
 package org.opencms.ade.editprovider;
 
+import org.opencms.ade.galleries.CmsGalleryActionElement;
 import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.main.OpenCms;
@@ -79,6 +80,7 @@ public class CmsEditProviderActionElement extends CmsGwtActionElement {
         StringBuffer sb = new StringBuffer();
         sb.append(super.export());
         sb.append(new CmsPublishActionElement(getJspContext(), getRequest(), getResponse()).export());
+        sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportWidget());
         sb.append(export());
         sb.append(createNoCacheScript(
             GWT_MODULE_NAME,

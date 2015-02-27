@@ -27,8 +27,13 @@
 
 package org.opencms.workplace.administration;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsDialog;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,6 +67,31 @@ public class CmsAdminEditorWrapper extends CmsDialog {
     public CmsAdminEditorWrapper(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Returns all parameters of the current workplace class 
+     * as hidden field tags that can be inserted in a form.<p>
+     * 
+     * @return all parameters of the current workplace class
+     * as hidden field tags that can be inserted in a html form
+     */
+    @Override
+    public String allParamsAsHidden() {
+
+        StringBuffer result = new StringBuffer(512);
+        Map<String, Object> params = allParamValues();
+        Iterator<Entry<String, Object>> i = params.entrySet().iterator();
+        while (i.hasNext()) {
+            Entry<String, Object> entry = i.next();
+            result.append("<input type=\"hidden\" name=\"");
+            result.append(entry.getKey());
+            result.append("\" value=\"");
+            String encoded = CmsEncoder.escapeXml(entry.getValue().toString());
+            result.append(encoded);
+            result.append("\">\n");
+        }
+        return result.toString();
     }
 
     /**

@@ -33,6 +33,7 @@ import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.i18n.I_CmsMessageBundle;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -160,7 +161,11 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
     public static String getResourceTypeName(CmsWorkplace wp, String name) {
 
         // try to find the localized key
-        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(name).getKey();
+        CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(name);
+        if (typeSettings == null) {
+            return name;
+        }
+        String key = typeSettings.getKey();
         return wp.keyDefault(key, name);
     }
 

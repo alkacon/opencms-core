@@ -257,4 +257,10 @@ public interface I_CmsGalleryProviderConstants {
     /** Path to the host page. */
     String VFS_OPEN_GALLERY_PATH = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
 
+    /** Option to enable/disable gallery selection. */
+    String CONFIG_GALLERIES_SELECTABLE = "galleriesSelectable";
+
+    /** Option to disable result selection if set to false. */
+    String CONFIG_RESULTS_SELECTABLE = "resultsSelectable";
+
 }

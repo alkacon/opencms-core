@@ -45,6 +45,7 @@ import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -488,6 +489,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
         if ((selectedGalleries != null) && selectedGalleries.contains(galleryInfo.getPath())) {
             checkBox.setChecked(true);
         }
+
         if (galleryInfo.isEditable()) {
             if (CmsEditExternalLinkDialog.LINK_GALLERY_RESOURCE_TYPE_NAME.equals(galleryInfo.getType())) {
                 CmsPushButton createExternalLink = createNewExternalLinkButton(galleryInfo.getPath());
@@ -499,6 +501,15 @@ public class CmsGalleriesTab extends A_CmsListTab {
             }
         }
         listItemWidget.addButton(createSelectButton(selectionHandler));
+        if (m_tabHandler.hasGalleriesSelectable()) {
+            CmsPushButton selectButton = createSelectResourceButton(
+                galleryInfo.getPath(),
+                CmsUUID.getNullUUID(),
+                "",
+                "");
+            listItemWidget.addButton(selectButton);
+        }
+
         CmsTreeItem treeItem = new CmsTreeItem(forTree, checkBox, listItemWidget);
         treeItem.setId(galleryInfo.getPath());
         return treeItem;

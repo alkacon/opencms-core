@@ -32,6 +32,7 @@ import org.opencms.test.OpenCmsTestCase;
 import java.io.File;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Properties;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -120,7 +121,36 @@ public class TestParameterConfiguration extends OpenCmsTestCase {
         for (String key : cmsProp.keySet()) {
             Object value = cmsProp.getObject(key);
             assertTrue("Key '" + key + "' not found in CmsConfiguration", extProp.containsKey(key));
-            assertTrue("Objects for '" + key + "' not equal", value.equals(extProp.getProperty(key)));
+            assertEquals("Objects for " + key + " not equal", extProp.getProperty(key), value);
         }
+    }
+    
+    /**
+     * Tests the extraction of properties.
+     * 
+     * @throws Exception
+     */
+    public void testExtractionOfPrefixedConfiguration() throws Exception {
+
+        CmsParameterConfiguration config = new CmsParameterConfiguration();
+
+        config.add("a",    "value_a");
+        config.add("a.b1", "value_a.b1");
+        config.add("a.b2", "value_a.b2");
+        config.add("a.b1.c1", "value_a.b1.c1"); // These three will be retrieved
+        config.add("a.b1.c2", "value_a.b1.c2"); // These three will be retrieved
+        config.add("a.b1.c3", "value_a.b1.c3"); // These three will be retrieved
+        config.add("a.b2.c1", "value_a.b2.c1");
+        config.add("a.b2.c2", "value_a.b2.c2");
+        config.add("a.b2.c3", "value_a.b2.c3");
+        Properties result = config.getPrefixedProperties("a.b1");
+        assertNull("Key 'a' found in Properties", result.getProperty("a"));
+        assertNull("Key 'a.b1' found in Properties", result.getProperty("a.b1"));
+        assertNull("Key 'b1' found in Properties", result.getProperty("b1"));
+        assertNull("Empty key '' found in Properties", result.getProperty(""));
+        assertEquals("Incorrect value of key c1 (a.b1.c1)", "value_a.b1.c1", result.getProperty("c1"));
+        assertEquals("Incorrect value of key c2 (a.b1.c2)", "value_a.b1.c2", result.getProperty("c2"));
+        assertEquals("Incorrect value of key c2 (a.b1.c3)", "value_a.b1.c3", result.getProperty("c3"));
+        assertEquals("Incorrect number of properties", 3, result.size());
     }
 }

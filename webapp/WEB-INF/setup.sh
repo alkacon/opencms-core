@@ -42,5 +42,5 @@ tail -f ${OPENCMS_BASE}/logs/setup.log
 trap 'kill $(jobs -pr)' SIGINT SIGTERM EXIT
 
 
-java -classpath "${OPENCMS_CLASSPATH}:${TOMCAT_CLASSPATH}:classes" org.opencms.setup.CmsAutoSetup "$@"
+java -classpath "${OPENCMS_CLASSPATH}:${TOMCAT_CLASSPATH}:${OPENCMS_BASE}/classes" org.opencms.setup.CmsAutoSetup "$@"
 

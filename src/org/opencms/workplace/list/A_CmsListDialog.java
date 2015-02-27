@@ -157,7 +157,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     private static final Log LOG = CmsLog.getLog(A_CmsListDialog.class);
 
     /** metadata map for all used list metadata objects. */
-    private static Map<String, CmsListMetadata> m_metadatas = new HashMap<String, CmsListMetadata>();
+    private Map<String, CmsListMetadata> m_metadatas = new HashMap<String, CmsListMetadata>();
 
     /** A flag which indicates whether the list should use database paging (only supported for some lists) .**/
     protected boolean m_lazy;
@@ -288,18 +288,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public static CmsHtmlList getListObject(Class<?> listDialog, CmsWorkplaceSettings settings) {
 
         return getListObjectMap(settings).get(listDialog.getName());
-    }
-
-    /**
-     * Returns the list metadata object for the given dialog.<p>
-     * 
-     * @param listDialogName the dialog class name
-     * 
-     * @return the list metadata object
-     */
-    public static CmsListMetadata getMetadata(String listDialogName) {
-
-        return m_metadatas.get(listDialogName);
     }
 
     /**
@@ -518,6 +506,18 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public final String getListId() {
 
         return m_listId;
+    }
+
+    /**
+     * Returns the list metadata object for the given dialog.<p>
+     * 
+     * @param listDialogName the dialog class name
+     * 
+     * @return the list metadata object
+     */
+    public CmsListMetadata getMetadata(String listDialogName) {
+
+        return getMetadataCache().get(listDialogName);
     }
 
     /**
@@ -947,7 +947,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected synchronized CmsListMetadata getMetadata(String listDialogName, String listId) {
 
-        if ((m_metadatas.get(listDialogName) == null) || m_metadatas.get(listDialogName).isVolatile()) {
+        getSettings();
+
+        if ((getMetadataCache().get(listDialogName) == null) || getMetadataCache().get(listDialogName).isVolatile()) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_METADATA_LIST_1, getListId()));
             }
@@ -960,12 +962,26 @@ public abstract class A_CmsListDialog extends CmsDialog {
             metadata.addIndependentAction(new CmsListPrintIAction());
             setMultiActions(metadata);
             metadata.checkIds();
-            m_metadatas.put(listDialogName, metadata);
+            getMetadataCache().put(listDialogName, metadata);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_METADATA_LIST_1, getListId()));
             }
         }
         return getMetadata(listDialogName);
+    }
+
+    /**
+     * Gets the list metadata cache.<p>
+     * 
+     * @return the list metadata cache 
+     */
+    protected Map<String, CmsListMetadata> getMetadataCache() {
+
+        CmsWorkplaceSettings settings = getSettings();
+        if (settings != null) {
+            return settings.getListMetadataCache();
+        }
+        return m_metadatas;
     }
 
     /**
