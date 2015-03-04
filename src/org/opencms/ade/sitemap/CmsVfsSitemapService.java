@@ -345,7 +345,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             if (id.isNullUUID()) {
                 String localRepositoryPath = CmsStringUtil.joinPaths(
                     entryPoint,
-                    OpenCms.getWorkplaceManager().getCategoryFolder());
+                    CmsCategoryService.getInstance().getRepositoryBaseFolderName(getCmsObject()));
 
                 // ensure category repository exists
                 if (!cms.existsResource(localRepositoryPath)) {
@@ -528,7 +528,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsResource entryPointResource = cms.readResource(entryPoint);
             String basePath = CmsStringUtil.joinPaths(
                 entryPointResource.getRootPath(),
-                OpenCms.getWorkplaceManager().getCategoryFolder());
+                CmsCategoryService.getInstance().getRepositoryBaseFolderName(getCmsObject()));
 
             categoryData.setBasePath(basePath);
             return categoryData;
