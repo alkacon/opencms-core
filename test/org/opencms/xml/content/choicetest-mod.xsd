@@ -1,0 +1,40 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="http://www.opencms.org/ChoiceElement.xsd"/>
+
+	<xsd:element name="OpenCmsChoiceTests" type="OpenCmsOpenCmsChoiceTests"/>
+
+	<xsd:complexType name="OpenCmsOpenCmsChoiceTests">
+		<xsd:sequence>
+			<xsd:element name="OpenCmsChoiceTest" type="OpenCmsOpenCmsChoiceTest" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsOpenCmsChoiceTest">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="ChoiceElements" type="OpenCmsChoiceElement" minOccurs="0"/>
+			<xsd:element name="Link" type="OpenCmsVarLink" minOccurs="0" />
+			<xsd:element name="NewEndText" type="OpenCmsHtml"/>
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+				<mapping element="Title" mapto="urlName" />
+			</mappings>
+			<defaults>
+			</defaults>
+			<layouts>
+			</layouts>
+			<validationrules/>
+			<relations/>
+			<searchsettings containerPageOnly="true"/>
+		</xsd:appinfo>
+	</xsd:annotation>
+
+</xsd:schema>

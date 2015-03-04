@@ -36,6 +36,7 @@ import org.opencms.util.CmsStringUtil;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.DriverManagerConnectionFactory;
@@ -82,6 +83,9 @@ public final class CmsDbPool {
 
     /** Key for the entity manager pool size. */
     public static final String KEY_ENTITY_MANAGER_POOL_SIZE = "entityMangerPoolSize";
+
+    /** Key for jdbc driver. */
+    public static final String KEY_CONNECTION_PROPERTIES = "connectionProperties";
 
     /** Key for jdbc driver. */
     public static final String KEY_JDBC_DRIVER = "jdbcDriver";
@@ -297,7 +301,10 @@ public final class CmsDbPool {
             jdbcUrl += jdbcUrlParams;
         }
 
-        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, username, password);
+        Properties connectionProperties = config.getPrefixedProperties(KEY_DATABASE_POOL + '.' + key + '.' + KEY_CONNECTION_PROPERTIES);
+        connectionProperties.put(KEY_USERNAME, username);
+        connectionProperties.put(KEY_PASSWORD, password);
+        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, connectionProperties);
 
         // Set up statement pool, if desired
         GenericKeyedObjectPoolFactory statementFactory = null;
