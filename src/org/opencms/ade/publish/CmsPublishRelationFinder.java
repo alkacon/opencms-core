@@ -304,8 +304,10 @@ public class CmsPublishRelationFinder {
         }
         try {
             CmsResource parentFolder = m_cms.readParentFolder(currentResource.getStructureId());
-            if (parentFolder.getState().isNew() || currentResource.isFile()) {
-                directlyRelatedResources.add(parentFolder);
+            if (parentFolder != null) { // parent folder of root folder is null 
+                if (parentFolder.getState().isNew() || currentResource.isFile()) {
+                    directlyRelatedResources.add(parentFolder);
+                }
             }
         } catch (CmsException e) {
             LOG.error(
@@ -314,7 +316,9 @@ public class CmsPublishRelationFinder {
         }
 
         try {
-            directlyRelatedResources.addAll(m_relatedResourceProvider.getAdditionalRelatedResources(m_cms, currentResource));
+            directlyRelatedResources.addAll(m_relatedResourceProvider.getAdditionalRelatedResources(
+                m_cms,
+                currentResource));
         } catch (Exception e) {
             LOG.error(
                 "Error processing additional related resource for "
