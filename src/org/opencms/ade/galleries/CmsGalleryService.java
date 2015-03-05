@@ -277,6 +277,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     }
 
+    /** Name for the 'galleryShowInvalidDefault' preference. */
+    public static final String PREF_GALLERY_SHOW_INVALID_DEFAULT = "galleryShowInvalidDefault";
+
     /** The key used for storing the last used gallery in adeview mode. */
     public static final String KEY_LAST_USED_GALLERY_ADEVIEW = "__adeView";
 
@@ -563,7 +566,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         try {
             data = new CmsGalleryDataBean();
             boolean galleryShowInvalidDefault = Boolean.parseBoolean(getWorkplaceSettings().getUserSettings().getAdditionalPreference(
-                "galleryShowInvalidDefault",
+                PREF_GALLERY_SHOW_INVALID_DEFAULT,
                 true));
             data.setIncludeExpiredDefault(galleryShowInvalidDefault);
 
@@ -1816,7 +1819,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         data.setMode(conf.getGalleryMode());
 
         boolean galleryShowInvalidDefault = Boolean.parseBoolean(getWorkplaceSettings().getUserSettings().getAdditionalPreference(
-            "galleryShowInvalidDefault",
+            PREF_GALLERY_SHOW_INVALID_DEFAULT,
             true));
         data.setIncludeExpiredDefault(galleryShowInvalidDefault);
 

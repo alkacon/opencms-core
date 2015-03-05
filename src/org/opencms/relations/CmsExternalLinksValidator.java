@@ -142,14 +142,13 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
 
         // get all links
         int pointerId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePointer.getStaticTypeName()).getTypeId();
-        List<CmsResource> links = cms.readResources(
-            "/",
-            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(pointerId));
+        CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(pointerId);
+        List<CmsResource> links = cms.readResources("/", filter);
         Iterator<CmsResource> iterator = links.iterator();
         Map<String, String> brokenLinks = new HashMap<String, String>();
 
         for (int i = 1; iterator.hasNext(); i++) {
-            CmsFile link = cms.readFile(cms.getSitePath(iterator.next()));
+            CmsFile link = cms.readFile(cms.getSitePath(iterator.next()), filter);
             String linkUrl = new String(link.getContents());
 
             // print to the report

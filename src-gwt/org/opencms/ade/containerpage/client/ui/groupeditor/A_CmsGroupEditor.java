@@ -497,7 +497,7 @@ public abstract class A_CmsGroupEditor extends Composite {
                 CmsContainerElement element = new CmsContainerElement();
                 element.setClientId(elementWidget.getId());
                 element.setResourceType(elementWidget.getNewType());
-                element.setNew(elementWidget.isNew());
+                element.setCreateNew(elementWidget.isCreateNew());
                 element.setSitePath(elementWidget.getSitePath());
                 element.setNewEditorDisabled(elementWidget.isNewEditorDisabled());
                 subItems.add(element);

@@ -27,6 +27,7 @@
 
 package org.opencms.configuration.preferences;
 
+import org.opencms.ade.galleries.CmsGalleryService;
 import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsContextInfo;
@@ -231,6 +232,17 @@ public class CmsUserSettingsStringPropertyWrapper {
         } else {
             return "" + m_settings.getExplorerFileEntryOptions();
         }
+    }
+
+    /**
+     * Gets the value of the 'show invalid elements in galleries'.<p>
+     * 
+     * @return the 'show invalid elements in galleries' setting  
+     */
+    @PrefMetadata(type = CmsGalleryShowInvalidDefaultPreference.class)
+    public String getGalleryShowInvalidDefault() {
+
+        return m_settings.getAdditionalPreference(CmsGalleryService.PREF_GALLERY_SHOW_INVALID_DEFAULT, true);
     }
 
     /**
@@ -780,6 +792,16 @@ public class CmsUserSettingsStringPropertyWrapper {
 
         m_settings.setExplorerFileEntryOptions(s);
 
+    }
+
+    /**
+     * Sets the default value for the checkbox which enables/disables showing invalid results in the gallery result tab.<p>
+     * 
+     * @param value the value to set 
+     */
+    public void setGalleryShowInvalidDefault(String value) {
+
+        m_settings.setAdditionalPreference(CmsGalleryService.PREF_GALLERY_SHOW_INVALID_DEFAULT, value);
     }
 
     /**

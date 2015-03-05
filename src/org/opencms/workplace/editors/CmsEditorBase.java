@@ -29,6 +29,9 @@ package org.opencms.workplace.editors;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.workplace.CmsDialog;
 
 import javax.servlet.http.HttpSession;
@@ -49,6 +52,17 @@ public class CmsEditorBase extends CmsDialog {
     public CmsEditorBase(CmsJspActionElement jsp) {
 
         super(jsp);
+    }
+
+    /**
+     * Checks that the current user is a workplace user.<p>
+     * 
+     * @throws CmsRoleViolationException if the user does not have the required role 
+     */
+    @Override
+    protected void checkRole() throws CmsRoleViolationException {
+
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.EDITOR);
     }
 
     /**

@@ -50,6 +50,7 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.logging.Log;
 
 import com.cybozu.labs.langdetect.DetectorFactory;
@@ -171,6 +172,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
         if (CmsStringUtil.isEmpty(localeName)) {
             return getDefaultLocale();
         }
+
         Locale locale = null;
         if (OpenCms.getMemoryMonitor() != null) {
             // this may be used AFTER shutdown
@@ -180,11 +182,11 @@ public class CmsLocaleManager implements I_CmsEventListener {
             return locale;
         }
         try {
-            String[] localeNames = CmsStringUtil.splitAsArray(localeName, '_');
-            locale = new Locale(
-                localeNames[0],
-                (localeNames.length > 1) ? localeNames[1] : "",
-                (localeNames.length > 2) ? localeNames[2] : "");
+            if ("all".equals(localeName)) {
+                locale = new Locale("all");
+            } else {
+                locale = LocaleUtils.toLocale(localeName);
+            }
         } catch (Throwable t) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_CREATE_LOCALE_FAILED_1, localeName), t);
             // map this error to the default locale

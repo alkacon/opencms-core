@@ -1178,6 +1178,7 @@
 				<preference name="elementView" nice-name="%(key.GUI_PREF_ELEMENT_VIEW_0)" />
 				<preference name="timeWarp" value="0"
 					nice-name="%(key.GUI_LABEL_TIMEWARP_0)" widget="datebox" />
+                <preference name="galleryShowInvalidDefault" value="false" nice-name="%(key.GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0)" widget="checkbox" />
 			</preference-tab>
 			<preference-tab name="extended">
 				<preference name="allowBrokenRelations" value="false"

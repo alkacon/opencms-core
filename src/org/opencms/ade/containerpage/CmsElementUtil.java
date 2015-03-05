@@ -537,7 +537,7 @@ public class CmsElementUtil {
         result.setClientId(elementBean.editorHash());
         result.setSitePath(elementBean.getSitePath());
 
-        result.setNew(elementBean.isCreateNew());
+        result.setCreateNew(elementBean.isCreateNew());
         CmsResourceTypeConfig typeConfig = getConfigData().getResourceType(typeName);
         if (typeConfig != null) {
             result.setElementView(typeConfig.getElementView());

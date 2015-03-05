@@ -161,6 +161,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         suite.addTest(new TestCmsSearch("testQueryEncoding"));
         suite.addTest(new TestCmsSearch("testSearchIssueWithSpecialFoldernames"));
         suite.addTest(new TestCmsSearch("testShutdownWhileIndexing"));
+        suite.addTest(new TestCmsSearch("testHasAnalyzerForAll"));
 
         // This test is intended only for performance/resource monitoring
         // suite.addTest(new TestCmsSearch("testCmsSearchLargeResult"));
@@ -419,6 +420,16 @@ public class TestCmsSearch extends OpenCmsTestCase {
         assertEquals(1, results.size());
         assertEquals("/sites/default/xmlcontent/article_0003.html", (results.get(0)).getPath());
         // assertEquals("/sites/default/xmlcontent/article_0004.html", ((CmsSearchResult)results.get(1)).getPath());
+    }
+
+    /** 
+     * Check if we have an analyzer entry for the pseudo-locale 'all'. 
+     *  
+     * @throws Exception if something goes wrong 
+     */
+    public void testHasAnalyzerForAll() throws Exception {
+
+        OpenCms.getSearchManager().getAnalyzer(new Locale("all"));
     }
 
     /**

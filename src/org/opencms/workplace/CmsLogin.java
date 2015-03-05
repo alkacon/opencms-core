@@ -1306,7 +1306,7 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_TRADEMARKS_0));
         html.append("</div>\n");
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
-        html.append("&copy; 2002 - 2014 Alkacon Software GmbH. ");
+        html.append("&copy; 2002 - 2015 Alkacon Software GmbH. ");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_RIGHTS_RESERVED_0));
         html.append("</div>\n");
 

@@ -121,7 +121,7 @@ public class TestParameterConfiguration extends OpenCmsTestCase {
         for (String key : cmsProp.keySet()) {
             Object value = cmsProp.getObject(key);
             assertTrue("Key '" + key + "' not found in CmsConfiguration", extProp.containsKey(key));
-            assertTrue("Objects for '" + key + "' not equal", value.equals(extProp.getProperty(key)));
+            assertEquals("Objects for " + key + " not equal", extProp.getProperty(key), value);
         }
     }
     

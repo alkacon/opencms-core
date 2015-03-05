@@ -290,7 +290,7 @@ public final class CmsContainerpageController {
             CmsContainerElement element = new CmsContainerElement();
             element.setClientId(elementWidget.getId());
             element.setResourceType(elementWidget.getNewType());
-            element.setNew(elementWidget.isNew());
+            element.setCreateNew(elementWidget.isCreateNew());
             element.setSitePath(elementWidget.getSitePath());
             element.setNewEditorDisabled(elementWidget.isNewEditorDisabled());
             m_currentElements.add(element);
@@ -368,7 +368,7 @@ public final class CmsContainerpageController {
             CmsContainerElement element = new CmsContainerElement();
             element.setClientId(elementWidget.getId());
             element.setResourceType(elementWidget.getNewType());
-            element.setNew(elementWidget.isNew());
+            element.setCreateNew(elementWidget.isCreateNew());
             element.setSitePath(elementWidget.getSitePath());
             element.setNewEditorDisabled(elementWidget.isNewEditorDisabled());
             m_currentElements.add(element);
@@ -2312,9 +2312,7 @@ public final class CmsContainerpageController {
                     replacer.setNewType(containerElement.getNewType());
                 }
             }
-            if (containerElement.isOverrideNew()) {
-                replacer.setNewType(elementData.getResourceType());
-            }
+            replacer.setCreateNew(containerElement.isCreateNew());
             if (isGroupcontainerEditing() && (containerElement.getInheritanceInfo() != null)) {
                 // in case of inheritance container editing, keep the inheritance info
                 replacer.setInheritanceInfo(containerElement.getInheritanceInfo());
