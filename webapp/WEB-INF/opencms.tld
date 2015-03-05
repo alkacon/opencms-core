@@ -2051,7 +2051,7 @@
           	<description><![CDATA[VFS-URI of the search form configuration file (either a JSON file or an XML content of type <code>jsp-search-form</code>.
            	]]></description>
             <name>configFile</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>            
         </attribute>
@@ -2061,6 +2061,14 @@
             <name>fileFormat</name>
             <required>false</required>
             <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>            
+        </attribute>
+	<attribute>
+          	<description><![CDATA[Instead of a configuration file, the JSON config can be directly given as String.          	  
+           	]]></description>
+            <name>configString</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>            
         </attribute>
     </tag>   

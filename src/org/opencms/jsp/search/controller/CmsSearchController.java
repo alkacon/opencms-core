@@ -118,6 +118,7 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
             int index = df.indexOf(' ');
             query += "&df=" + (index > 0 ? df.substring(0, index) : df);
         }
+        query = query.startsWith("&") ? query.substring(1, query.length()) : query;
         return query;
     }
 
@@ -195,7 +196,8 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
         // Check if query has changed
         final String lastQueryParam = m_common.getConfig().getLastQueryParam();
         final String queryParam = m_common.getConfig().getQueryParam();
-        if (parameters.containsKey(lastQueryParam)
+        if (!m_common.getConfig().getIgnoreQueryParam()
+            && parameters.containsKey(lastQueryParam)
             && parameters.containsKey(queryParam)
             && (parameters.get(lastQueryParam).length > 0)
             && (parameters.get(queryParam).length > 0)

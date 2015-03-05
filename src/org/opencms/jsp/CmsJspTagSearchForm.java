@@ -88,6 +88,9 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
     /** The "configFile" tag attribute. */
     private String m_configFile;
 
+    /** The "configString" tag attribute. */
+    private String m_configString;
+
     /** The "fileFormat" tag attribute converted to type FileFormat. */
     private FileFormat m_fileFormat;
 
@@ -138,6 +141,14 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
         return m_configFile;
     }
 
+    /** Getter for the "configString".
+     * @return The "configString".
+     */
+    public String getConfigString() {
+
+        return m_configString;
+    }
+
     /** Get the value of the specified format of the configuration file (given via the tag's "fileFormat" attribute).
      * @return The file format.
      */
@@ -154,6 +165,7 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
 
         m_cms = null;
         m_configFile = null;
+        setConfigString(null);
         m_searchController = null;
         m_index = null;
         m_controller = null;
@@ -166,6 +178,14 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
     public void setConfigFile(String fileName) {
 
         m_configFile = fileName;
+    }
+
+    /** Setter for the "configString".
+     * @param configString The "configString".
+     */
+    public void setConfigString(final String configString) {
+
+        m_configString = configString;
     }
 
     /** Setter for the file format.
@@ -193,7 +213,9 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
 
         try {
             I_CmsSearchConfiguration config;
-            if (m_fileFormat == FileFormat.JSON) {
+            if (m_configString != null) {
+                config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(m_configString));
+            } else if (m_fileFormat == FileFormat.JSON) {
                 // read the JSON config file
                 CmsFile configFile = m_cms.readFile(m_configFile);
                 OpenCms.getLocaleManager();

@@ -67,6 +67,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** A JSON key. */
     private static final String JSON_KEY_LAST_QUERYPARAM = "lastqueryparam";
     /** A JSON key. */
+    private static final String JSON_KEY_IGNORE_QUERY = "ignorequery";
+    /** A JSON key. */
     private static final String JSON_KEY_PAGEPARAM = "pageparam";
     /** A JSON key. */
     private static final String JSON_KEY_INDEX = "index";
@@ -177,6 +179,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         return new CmsSearchConfigurationCommon(
             getQueryParam(),
             getLastQueryParam(),
+            getIgnoreQuery(),
             getIndex(),
             getCore(),
             getExtraSolrParams());
@@ -399,6 +402,14 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         }
     }
 
+    /** Returns a flag indicating if the query given by the parameters should be ignored.
+     * @return A flag indicating if the query given by the parameters should be ignored.
+     */
+    private Boolean getIgnoreQuery() {
+
+        return parseOptionalBooleanValue(m_configObject, JSON_KEY_IGNORE_QUERY);
+    }
+
     /** Returns the configured Solr index, or <code>null</code> if no core is configured.
      * @return The configured Solr index, or <code>null</code> if no core is configured.
      */
@@ -413,8 +424,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     }
 
     /** Returns the configured request parameter for the last query, or the default parameter if no core is configured.
-     * @return The configured request parameter for the last query, or the default parameter if no core is configured.
-     */
+    * @return The configured request parameter for the last query, or the default parameter if no core is configured.
+    */
     private String getLastQueryParam() {
 
         final String param = parseOptionalStringValue(m_configObject, JSON_KEY_LAST_QUERYPARAM);

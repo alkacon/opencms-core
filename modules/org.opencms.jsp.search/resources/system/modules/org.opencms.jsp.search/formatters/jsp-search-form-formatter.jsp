@@ -110,7 +110,7 @@
 							<c:choose>
 							<c:when test="${controllers.didYouMean.config.isEnabled && not empty searchform.didYouMean}" >
 								<fmt:message key="results.didyoumean_1">
-									<fmt:param><a href='<cms:link>${cms.requestContext.uri}?${searchform.didYouMeanLinkParameters}</cms:link>'>${searchform.didYouMean}</a></fmt:param>
+									<fmt:param><a href='<cms:link>${cms.requestContext.uri}?${searchform.stateParameters.queryDidYouMean}</cms:link>'>${searchform.didYouMean}</a></fmt:param>
 								</fmt:message>
 							</c:when>
 							<c:otherwise>
@@ -160,14 +160,14 @@
 							<c:if test="${not empty pagination && searchform.numPages > 1}">
 								<ul class="pagination">
 									<li ${pagination.state.currentPage > 1 ? "" : "class='disabled'"}>
-										<a href="<cms:link>${cms.requestContext.uri}?${searchform.paginationLinkParameters['1']}</cms:link>"
+										<a href="<cms:link>${cms.requestContext.uri}?${searchform.stateParameters.setPage['1']}</cms:link>"
 										   aria-label='<fmt:message key="pagination.first.title"/>'>
 											<span aria-hidden="true"><fmt:message key="pagination.first"/></span>
 										</a>
 									</li>
 									<c:set var="previousPage">${pagination.state.currentPage > 1 ? pagination.state.currentPage - 1 : 1}</c:set>
 									<li ${pagination.state.currentPage > 1 ? "" : "class='disabled'"}>
-										<a href="<cms:link>${cms.requestContext.uri}?${searchform.paginationLinkParameters[previousPage]}</cms:link>"
+										<a href="<cms:link>${cms.requestContext.uri}?${searchform.stateParameters.setPage[previousPage]}</cms:link>"
 										   aria-label='<fmt:message key="pagination.previous.title"/>'>
 										   <span aria-hidden="true"><fmt:message key="pagination.previous"/></span>
 										</a>
@@ -176,18 +176,18 @@
 										end="${searchform.pageNavLast}">
 										<c:set var="is">${i}</c:set>
 										<li ${pagination.state.currentPage eq i ? "class='active'" : ""}><a
-											href="<cms:link>${cms.requestContext.uri}?${searchform.paginationLinkParameters[is]}</cms:link>">${is}</a></li>
+											href="<cms:link>${cms.requestContext.uri}?${searchform.stateParameters.setPage[is]}</cms:link>">${is}</a></li>
 									</c:forEach>
 									<c:set var="pages">${searchform.numPages}</c:set>
 									<c:set var="next">${pagination.state.currentPage < searchform.numPages ? pagination.state.currentPage + 1 : pagination.state.currentPage}</c:set>
 									<li	${pagination.state.currentPage >= searchform.numPages ? "class='disabled'" : ""}>
 										<a aria-label='<fmt:message key="pagination.next.title"/>'
-										   href="<cms:link>${cms.requestContext.uri}?${searchform.paginationLinkParameters[next]}</cms:link>">
+										   href="<cms:link>${cms.requestContext.uri}?${searchform.stateParameters.setPage[next]}</cms:link>">
 											<span aria-hidden="true"><fmt:message key="pagination.next"/></span>
 										</a>
 									</li>
 									<li	${pagination.state.currentPage >= searchform.numPages ? "class='disabled'" : ""}>
-										<a aria-label='<fmt:message key="pagination.last.title"/>' href="<cms:link>${cms.requestContext.uri}?${searchform.paginationLinkParameters[pages]}</cms:link>">
+										<a aria-label='<fmt:message key="pagination.last.title"/>' href="<cms:link>${cms.requestContext.uri}?${searchform.stateParameters.setPage[pages]}</cms:link>">
 											<span aria-hidden="true"><fmt:message key="pagination.last"/></span>
 										</a>
 									</li>

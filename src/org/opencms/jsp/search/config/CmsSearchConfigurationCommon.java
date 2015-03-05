@@ -36,6 +36,8 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     private final String m_queryParam;
     /** The request parameter for the last query. */
     private final String m_lastQueryParam;
+    /** A flag, indicating if the query params should be used at all (or if the query is fixed). */
+    private final boolean m_ignoreQuery;
     /** The Solr index to use for the query (specified by it's name). */
     private final String m_solrIndex;
     /** The Solr core to use for the query (specified by it's name). */
@@ -46,6 +48,7 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     /** Constructor for the common search configuration, where all configuration parameters are provided.
      * @param queryParam The query request param used by the search form.
      * @param lastQueryParam The last-query request param used by the search form.
+     * @param ignoreQuery A flag, indicating if the query param's values should be used for Solr query generation.
      * @param solrIndex The Solr index that should be used for the search.
      * @param solrCore The Solr core that should be used for the search.
      * @param extraSolrParams Extra params that are directly appended to each search query.
@@ -53,12 +56,14 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     public CmsSearchConfigurationCommon(
         final String queryParam,
         final String lastQueryParam,
+        final Boolean ignoreQuery,
         final String solrIndex,
         final String solrCore,
         final String extraSolrParams) {
 
         m_queryParam = queryParam;
         m_lastQueryParam = lastQueryParam;
+        m_ignoreQuery = ignoreQuery != null ? ignoreQuery.booleanValue() : false;
         m_solrIndex = solrIndex;
         m_solrCore = solrCore;
         m_extraSolrParams = extraSolrParams == null ? "" : extraSolrParams;
@@ -71,6 +76,14 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     public String getExtraSolrParams() {
 
         return m_extraSolrParams;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon#getIgnoreQueryParam()
+     */
+    public boolean getIgnoreQueryParam() {
+
+        return m_ignoreQuery;
     }
 
     /**

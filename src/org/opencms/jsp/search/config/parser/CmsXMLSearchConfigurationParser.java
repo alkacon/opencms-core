@@ -68,6 +68,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** XML element name. */
     private static final String XML_ELEMENT_LAST_QUERYPARAM = "LastQueryParam";
     /** XML element name. */
+    private static final String XML_ELEMENT_IGNORE_QUERY = "IgnoreQuery";
+    /** XML element name. */
     private static final String XML_ELEMENT_PAGEPARAM = "PageParam";
     /** XML element name. */
     private static final String XML_ELEMENT_INDEX = "Index";
@@ -179,6 +181,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         return new CmsSearchConfigurationCommon(
             getQueryParam(),
             getLastQueryParam(),
+            getIgnoreQuery(),
             getIndex(),
             getCore(),
             getExtraSolrParams());
@@ -394,6 +397,11 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     private String getExtraSolrParams() {
 
         return parseOptionalStringValue(XML_ELEMENT_EXTRASOLRPARAMS);
+    }
+
+    private Boolean getIgnoreQuery() {
+
+        return parseOptionalBooleanValue(XML_ELEMENT_IGNORE_QUERY);
     }
 
     /** Returns the configured Solr index, or <code>null</code> if the core is not specified.

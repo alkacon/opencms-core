@@ -69,13 +69,17 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
     public String generateQuery() {
 
         final StringBuffer query = new StringBuffer();
-        query.append("q=").append(m_state.getQuery());
-        /*
-         * if (m_config.getSolrIndex() != null) {
-         * query.append("&index=").append(m_config.getSolrIndex()); } if
-         * (m_config.getSolrCore() != null) {
-         * query.append("&core=").append(m_config.getSolrCore()); }
-         */
+        if (!m_config.getIgnoreQueryParam()) {
+            query.append("&q=").append(m_state.getQuery());
+        }
+
+        if (m_config.getSolrIndex() != null) {
+            query.append("&index=").append(m_config.getSolrIndex());
+        }
+        if (m_config.getSolrCore() != null) {
+            query.append("&core=").append(m_config.getSolrCore());
+        }
+
         if (!m_config.getExtraSolrParams().isEmpty()) {
             query.append('&').append(m_config.getExtraSolrParams());
         }

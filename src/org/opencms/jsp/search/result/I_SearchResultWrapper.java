@@ -48,12 +48,6 @@ public interface I_SearchResultWrapper {
      */
     String getDidYouMean();
 
-    /** Returns the correct link parameters for clicking on the "Did you mean?" suggestion.
-     *
-     * @return The correct link parameters for clicking on the "Did you mean?" suggestion.
-     */
-    String getDidYouMeanLinkParameters();
-
     /** Returns the last index of the documents displayed.
      * @return The last index of the documents displayed.
      */
@@ -99,23 +93,18 @@ public interface I_SearchResultWrapper {
      */
     int getPageNavLast();
 
-    /** Returns the map from a page number (as String) to the link parameters that should be appended when you want to display that page.
-     * @return The map from a page number (as String) to the link parameters that should be appended when you want to display that page.
-     */
-    Map<String, String> getPaginationLinkParameters();
-
     /** Returns the collection of the search results that are returned by Solr.
      * @return The collection of the search results that are returned by Solr.
      */
     Collection<I_CmsSearchResourceBean> getSearchResults();
 
-    /** Returns the map from a sort option name to the link parameters that should be appended when you want to display that search option.
-     * @return The map from a sort option name to the link parameters that should be appended when you want to display that search option.
-     */
-    Map<String, String> getSortLinkParameters();
-
     /** Returns the index (starting at 1) of the first result that is returned for displaying.
      * @return The index (starting at 1) of the first result that is returned for displaying.
      */
     Long getStart();
+
+    /** Returns the map from a sort option name to the link parameters that should be appended when you want to display that search option.
+     * @return The map from a sort option name to the link parameters that should be appended when you want to display that search option.
+     */
+    CmsSearchStateParameters getStateParameters();
 }

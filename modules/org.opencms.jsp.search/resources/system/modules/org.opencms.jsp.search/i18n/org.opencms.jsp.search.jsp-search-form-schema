@@ -1,324 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <XmlVfsBundles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/xmlvfsbundle.xsd">
-  <Bundle language="en">
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Title]]></Key>
-      <Value><![CDATA[Title]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Title.help]]></Key>
-      <Value><![CDATA[Title mapped to the title property, helping to identify your search form configuration.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Core]]></Key>
-      <Value><![CDATA[Solr Core]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Core.help]]></Key>
-      <Value><![CDATA[The Solr core to use for the search. Typically there is no need to set it explicitly, since the default core is chosen otherwise.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Index]]></Key>
-      <Value><![CDATA[Solr Index]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Index.help]]></Key>
-      <Value><![CDATA[The Solr index to use for the search. If not configured, "Solr Online" is used in the online project and "Solr Offline" in all other projects.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryParam]]></Key>
-      <Value><![CDATA[Request Parameter: Query]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryParam.help]]></Key>
-      <Value><![CDATA[The request parameter sent to transmit the current query string. Default: q.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.LastQueryParam]]></Key>
-      <Value><![CDATA[Request Parameter: Last Query]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.LastQueryParam.help]]></Key>
-      <Value><![CDATA[The request parameter sent to transmit the last query string. Default: lq.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.ExtraSolrParams]]></Key>
-      <Value><![CDATA[Additional Solr Query Parameters]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.ExtraSolrParams.help]]></Key>
-      <Value><![CDATA[A string of Solr query parameters, handed unmodified to Solr. E.g., to restrict the type to containerpages and the search to /sites/default/, use <code>fq=type:containerpage&fq=parent-folders:"/sites/default/"</code>.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageParam]]></Key>
-      <Value><![CDATA[Request Parameter: Current Page]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageParam.help]]></Key>
-      <Value><![CDATA[The request parameter sent to transmit the current page. Default: page.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageSize]]></Key>
-      <Value><![CDATA[Page Size]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageSize.help]]></Key>
-      <Value><![CDATA[The maximal number of results shown on a page.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageNavLength]]></Key>
-      <Value><![CDATA[Length of the Page Navigation]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageNavLength.help]]></Key>
-      <Value><![CDATA[Length of a "Google"-like page navigation. Should be an odd number. E.g., if you chose 5 and are at page 4, you get support for showing links to pages 2, 3, 4, 5, 6 in the pagination.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortParam]]></Key>
-      <Value><![CDATA[Request Parameter: Sort Option]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortParam.help]]></Key>
-      <Value><![CDATA[The request parameter sent to transmit the currently chosen sort option. Default: sort.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortOption]]></Key>
-      <Value><![CDATA[Sort Options]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortOption.help]]></Key>
-      <Value><![CDATA[Specify the different sort options.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.FieldFacet]]></Key>
-      <Value><![CDATA[Field Facets]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.FieldFacet.help]]></Key>
-      <Value><![CDATA[Specify the available field facets.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Highlighting]]></Key>
-      <Value><![CDATA[Highlighting Options]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Highlighting.help]]></Key>
-      <Value><![CDATA[Enable highlighting and specify the highlighting options.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Field]]></Key>
-      <Value><![CDATA[Facet Field]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Field.help]]></Key>
-      <Value><![CDATA[The name of the Solr field where the facet entries are read from.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Label]]></Key>
-      <Value><![CDATA[Facet Label]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Label.help]]></Key>
-      <Value><![CDATA[A label you can show above the facet in your form. Default: the facet name.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Name]]></Key>
-      <Value><![CDATA[Facet name]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Name.help]]></Key>
-      <Value><![CDATA[A name that is used to identify the facet when writing the formatter. Default: facet field.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.MinCount]]></Key>
-      <Value><![CDATA[Minimal Count]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.MinCount.help]]></Key>
-      <Value><![CDATA[The minimal number of hits (from all search results) a facet entry must have to be listed.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Limit]]></Key>
-      <Value><![CDATA[Maximal Number of Facet Entries]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Limit.help]]></Key>
-      <Value><![CDATA[The maximal number of facet entries that are returned. Default: unbounded.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Prefix]]></Key>
-      <Value><![CDATA[Prefix]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Prefix.help]]></Key>
-      <Value><![CDATA[A prefix, all collected facet entries must start with.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Order]]></Key>
-      <Value><![CDATA[Order]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Order.help]]></Key>
-      <Value><![CDATA[The order the, facet entries should be listed in. It's either "count" (default) or "index", which means alphabetical sorting.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.FilterQueryModifier]]></Key>
-      <Value><![CDATA[Filter Query Modifier]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.FilterQueryModifier.help]]></Key>
-      <Value><![CDATA[Typically, when a facet entry is checked, the filterquery "fq=facetfield:checkedEntry" is appended to the Solr query. The modifier substitutes the checkedEntry. The modifier can contain the macro %(value) that is replaced by the checked entry. Example: The modifier "[* TO %(value)]" will yield the filter query "fq=facetField:[* TO checkedEntry]".]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.IsAndFacet]]></Key>
-      <Value><![CDATA[Filter for all checked entries]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.IsAndFacet.help]]></Key>
-      <Value><![CDATA[By default, if more than one facet entry is checked, it is search for results meeting at least one of the conditions imposed by the checked entries. Checking this option, each result must match all imposed conditions.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.Field]]></Key>
-      <Value><![CDATA[Highlighted Field(s)]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.Field.help]]></Key>
-      <Value><![CDATA[The Solr field(s) that should be used for highlighting.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.Snippets]]></Key>
-      <Value><![CDATA[Number of Highlighted Snippets. Default: 1.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.Snippets.help]]></Key>
-      <Value><![CDATA[The maximal number of highlighted snippets that is returned from Solr.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.FragSize]]></Key>
-      <Value><![CDATA[Snippet Size]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.FragSize.help]]></Key>
-      <Value><![CDATA[The maximal size (in letters) of a highlighted snippet. Default: 100.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.AlternateField]]></Key>
-      <Value><![CDATA[Alternative Field]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.AlternateField.help]]></Key>
-      <Value><![CDATA[The Solr field that is returned instead of a highlighting snippet if no such snippet was found.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.MaxAlternateFieldLength]]></Key>
-      <Value><![CDATA[Maximal Alternative Field Size]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.MaxAlternateFieldLength.help]]></Key>
-      <Value><![CDATA[The maximal size (in letters) of the content from the alternative field. Default: the whole field.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.SimplePre]]></Key>
-      <Value><![CDATA[Highlighting Prefix]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.SimplePre.help]]></Key>
-      <Value><![CDATA[The String added in a highlighted snippet directly in front of the term to highlight. Default: <code>&lt;em&gt</code>.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.SimplePost]]></Key>
-      <Value><![CDATA[Highlighting Postfix]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.SimplePost.help]]></Key>
-      <Value><![CDATA[The String added in a highlighted snippet directly behind the term to highlight. Default: <code>&lt;/em&gt</code>.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.Formatter]]></Key>
-      <Value><![CDATA[Formatter]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.Formatter.help]]></Key>
-      <Value><![CDATA[The formatter used by Solr for highlighting. Default: as configured in Solr.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.Fragmenter]]></Key>
-      <Value><![CDATA[Fragmenter]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.Fragmenter.help]]></Key>
-      <Value><![CDATA[The fragmenter used by Solr for highlighting. Default: as configured in Solr.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.UseFastVectorHighlighting]]></Key>
-      <Value><![CDATA[Use Fast Vector Highlighting]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.HighlightingConfig.UseFastVectorHighlighting.help]]></Key>
-      <Value><![CDATA[Enable fast vector highlighting. This makes highlighting faster, but requires the highlighted fields to have <code>termOffsets</code>, <code>termPositions</code> and <code>termVectors</code> to be set to <code>true</code>.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.SortOptionConfig.SolrValue]]></Key>
-      <Value><![CDATA[Solr Value]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.SortOptionConfig.SolrValue.help]]></Key>
-      <Value><![CDATA[The value given to Solr's "sort" parameter, e.g. "Title_prop asc" or "score desc".]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.SortOptionConfig.ParamValue]]></Key>
-      <Value><![CDATA[Parameter Value]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.SortOptionConfig.ParamValue.help]]></Key>
-      <Value><![CDATA[The value of the request parameter to identify the sort option. Default: The Solr value.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.SortOptionConfig.Label]]></Key>
-      <Value><![CDATA[Label]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.SortOptionConfig.Label.help]]></Key>
-      <Value><![CDATA[A label to show for the sort option, e.g. "Sort by: Title ascending". Default: The configured parameter value.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Common]]></Key>
-      <Value><![CDATA[Common]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Pagination]]></Key>
-      <Value><![CDATA[Pagination]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortOptions]]></Key>
-      <Value><![CDATA[Sorting]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.FieldFacets]]></Key>
-      <Value><![CDATA[Field Facets]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Highlighting]]></Key>
-      <Value><![CDATA[Highlighting]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[default.JspSearchFormConfig.Title]]></Key>
-      <Value><![CDATA[Default Search Configuration]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMean]]></Key>
-      <Value><![CDATA[Did you mean]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanEnabled]]></Key>
-      <Value><![CDATA[Enable the "Did you mean ...?" feature]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanEnabled.help]]></Key>
-      <Value><![CDATA[Did you mean provides alternative search queries in the case that your search fails.]]></Value>
-    </Message>
-  </Bundle>
   <Bundle language="de">
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.Title]]></Key>
@@ -343,6 +25,14 @@
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.Index.help]]></Key>
       <Value><![CDATA[Name des Solr Suchindex der zur Suche genutzt wird. Falls kein Index angegeben wird, wird "Solr Online" im Online-Projekt und sonst "Solr Offline" genutzt.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.IgnoreQuery]]></Key>
+      <Value><![CDATA[Suchanfrage ignorieren]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.IgnoreQuery.help]]></Key>
+      <Value><![CDATA[Ist diese Option eingeschaltet, werden die durch Request-Parameter übermittelten Suchanfragen ignoriert. Die Anfrage sollte dann über "Zusätzliche Solr Query-Parameter" spezifiziert sein. Diese Option ist besonders zur Erstellung von Listen hilfreich.]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.QueryParam]]></Key>
@@ -605,6 +295,10 @@
       <Value><![CDATA[Allgemein]]></Value>
     </Message>
     <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.QueryOptions]]></Key>
+      <Value><![CDATA[Anfrage Optionen]]></Value>
+    </Message>
+    <Message>
       <Key><![CDATA[label.JspSearchFormConfig.Pagination]]></Key>
       <Value><![CDATA[Pagination]]></Value>
     </Message>
@@ -636,5 +330,335 @@
       <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanEnabled.help]]></Key>
       <Value><![CDATA["Meinten Sie ...?" bietet eine alternative Suchanfrage an, falls für die aktuelle Anfrage keine Ergebnisse gefunden werden.]]></Value>
     </Message>
-  </Bundle>  
+  </Bundle>
+  <Bundle language="en">
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.Title]]></Key>
+      <Value><![CDATA[Title]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.Title.help]]></Key>
+      <Value><![CDATA[Title mapped to the title property, helping to identify your search form configuration.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.Core]]></Key>
+      <Value><![CDATA[Solr Core]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.Core.help]]></Key>
+      <Value><![CDATA[The Solr core to use for the search. Typically there is no need to set it explicitly, since the default core is chosen otherwise.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.Index]]></Key>
+      <Value><![CDATA[Solr Index]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.Index.help]]></Key>
+      <Value><![CDATA[The Solr index to use for the search. If not configured, "Solr Online" is used in the online project and "Solr Offline" in all other projects.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.IgnoreQuery]]></Key>
+      <Value><![CDATA[Ignore Query]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.IgnoreQuery.help]]></Key>
+      <Value><![CDATA[If this option is checked, the query string send via the request parameter is ignored. The query should be specified in the "Additional Solr Query Parameters". The option is in paricular helpful when rendering lists (not search forms).]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.QueryParam]]></Key>
+      <Value><![CDATA[Request Parameter: Query]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.QueryParam.help]]></Key>
+      <Value><![CDATA[The request parameter sent to transmit the current query string. Default: q.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.LastQueryParam]]></Key>
+      <Value><![CDATA[Request Parameter: Last Query]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.LastQueryParam.help]]></Key>
+      <Value><![CDATA[The request parameter sent to transmit the last query string. Default: lq.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.ExtraSolrParams]]></Key>
+      <Value><![CDATA[Additional Solr Query Parameters]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.ExtraSolrParams.help]]></Key>
+      <Value><![CDATA[A string of Solr query parameters, handed unmodified to Solr. E.g., to restrict the type to containerpages and the search to /sites/default/, use <code>fq=type:containerpage&fq=parent-folders:"/sites/default/"</code>.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.PageParam]]></Key>
+      <Value><![CDATA[Request Parameter: Current Page]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.PageParam.help]]></Key>
+      <Value><![CDATA[The request parameter sent to transmit the current page. Default: page.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.PageSize]]></Key>
+      <Value><![CDATA[Page Size]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.PageSize.help]]></Key>
+      <Value><![CDATA[The maximal number of results shown on a page.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.PageNavLength]]></Key>
+      <Value><![CDATA[Length of the Page Navigation]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.PageNavLength.help]]></Key>
+      <Value><![CDATA[Length of a "Google"-like page navigation. Should be an odd number. E.g., if you chose 5 and are at page 4, you get support for showing links to pages 2, 3, 4, 5, 6 in the pagination.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.SortParam]]></Key>
+      <Value><![CDATA[Request Parameter: Sort Option]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.SortParam.help]]></Key>
+      <Value><![CDATA[The request parameter sent to transmit the currently chosen sort option. Default: sort.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.SortOption]]></Key>
+      <Value><![CDATA[Sort Options]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.SortOption.help]]></Key>
+      <Value><![CDATA[Specify the different sort options.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.FieldFacet]]></Key>
+      <Value><![CDATA[Field Facets]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.FieldFacet.help]]></Key>
+      <Value><![CDATA[Specify the available field facets.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.Highlighting]]></Key>
+      <Value><![CDATA[Highlighting Options]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.Highlighting.help]]></Key>
+      <Value><![CDATA[Enable highlighting and specify the highlighting options.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Field]]></Key>
+      <Value><![CDATA[Facet Field]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Field.help]]></Key>
+      <Value><![CDATA[The name of the Solr field where the facet entries are read from.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Label]]></Key>
+      <Value><![CDATA[Facet Label]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Label.help]]></Key>
+      <Value><![CDATA[A label you can show above the facet in your form. Default: the facet name.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Name]]></Key>
+      <Value><![CDATA[Facet name]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Name.help]]></Key>
+      <Value><![CDATA[A name that is used to identify the facet when writing the formatter. Default: facet field.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.MinCount]]></Key>
+      <Value><![CDATA[Minimal Count]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.MinCount.help]]></Key>
+      <Value><![CDATA[The minimal number of hits (from all search results) a facet entry must have to be listed.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Limit]]></Key>
+      <Value><![CDATA[Maximal Number of Facet Entries]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Limit.help]]></Key>
+      <Value><![CDATA[The maximal number of facet entries that are returned. Default: unbounded.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Prefix]]></Key>
+      <Value><![CDATA[Prefix]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Prefix.help]]></Key>
+      <Value><![CDATA[A prefix, all collected facet entries must start with.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Order]]></Key>
+      <Value><![CDATA[Order]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Order.help]]></Key>
+      <Value><![CDATA[The order the, facet entries should be listed in. It's either "count" (default) or "index", which means alphabetical sorting.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.FilterQueryModifier]]></Key>
+      <Value><![CDATA[Filter Query Modifier]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.FilterQueryModifier.help]]></Key>
+      <Value><![CDATA[Typically, when a facet entry is checked, the filterquery "fq=facetfield:checkedEntry" is appended to the Solr query. The modifier substitutes the checkedEntry. The modifier can contain the macro %(value) that is replaced by the checked entry. Example: The modifier "[* TO %(value)]" will yield the filter query "fq=facetField:[* TO checkedEntry]".]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.IsAndFacet]]></Key>
+      <Value><![CDATA[Filter for all checked entries]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.IsAndFacet.help]]></Key>
+      <Value><![CDATA[By default, if more than one facet entry is checked, it is search for results meeting at least one of the conditions imposed by the checked entries. Checking this option, each result must match all imposed conditions.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.Field]]></Key>
+      <Value><![CDATA[Highlighted Field(s)]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.Field.help]]></Key>
+      <Value><![CDATA[The Solr field(s) that should be used for highlighting.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.Snippets]]></Key>
+      <Value><![CDATA[Number of Highlighted Snippets. Default: 1.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.Snippets.help]]></Key>
+      <Value><![CDATA[The maximal number of highlighted snippets that is returned from Solr.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.FragSize]]></Key>
+      <Value><![CDATA[Snippet Size]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.FragSize.help]]></Key>
+      <Value><![CDATA[The maximal size (in letters) of a highlighted snippet. Default: 100.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.AlternateField]]></Key>
+      <Value><![CDATA[Alternative Field]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.AlternateField.help]]></Key>
+      <Value><![CDATA[The Solr field that is returned instead of a highlighting snippet if no such snippet was found.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.MaxAlternateFieldLength]]></Key>
+      <Value><![CDATA[Maximal Alternative Field Size]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.MaxAlternateFieldLength.help]]></Key>
+      <Value><![CDATA[The maximal size (in letters) of the content from the alternative field. Default: the whole field.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.SimplePre]]></Key>
+      <Value><![CDATA[Highlighting Prefix]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.SimplePre.help]]></Key>
+      <Value><![CDATA[The String added in a highlighted snippet directly in front of the term to highlight. Default: <code>&lt;em&gt</code>.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.SimplePost]]></Key>
+      <Value><![CDATA[Highlighting Postfix]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.SimplePost.help]]></Key>
+      <Value><![CDATA[The String added in a highlighted snippet directly behind the term to highlight. Default: <code>&lt;/em&gt</code>.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.Formatter]]></Key>
+      <Value><![CDATA[Formatter]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.Formatter.help]]></Key>
+      <Value><![CDATA[The formatter used by Solr for highlighting. Default: as configured in Solr.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.Fragmenter]]></Key>
+      <Value><![CDATA[Fragmenter]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.Fragmenter.help]]></Key>
+      <Value><![CDATA[The fragmenter used by Solr for highlighting. Default: as configured in Solr.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.UseFastVectorHighlighting]]></Key>
+      <Value><![CDATA[Use Fast Vector Highlighting]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.HighlightingConfig.UseFastVectorHighlighting.help]]></Key>
+      <Value><![CDATA[Enable fast vector highlighting. This makes highlighting faster, but requires the highlighted fields to have <code>termOffsets</code>, <code>termPositions</code> and <code>termVectors</code> to be set to <code>true</code>.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.SortOptionConfig.SolrValue]]></Key>
+      <Value><![CDATA[Solr Value]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.SortOptionConfig.SolrValue.help]]></Key>
+      <Value><![CDATA[The value given to Solr's "sort" parameter, e.g. "Title_prop asc" or "score desc".]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.SortOptionConfig.ParamValue]]></Key>
+      <Value><![CDATA[Parameter Value]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.SortOptionConfig.ParamValue.help]]></Key>
+      <Value><![CDATA[The value of the request parameter to identify the sort option. Default: The Solr value.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.SortOptionConfig.Label]]></Key>
+      <Value><![CDATA[Label]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.SortOptionConfig.Label.help]]></Key>
+      <Value><![CDATA[A label to show for the sort option, e.g. "Sort by: Title ascending". Default: The configured parameter value.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.Common]]></Key>
+      <Value><![CDATA[Common]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.QueryOptions]]></Key>
+      <Value><![CDATA[Query Options]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.Pagination]]></Key>
+      <Value><![CDATA[Pagination]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.SortOptions]]></Key>
+      <Value><![CDATA[Sorting]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.FieldFacets]]></Key>
+      <Value><![CDATA[Field Facets]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.Highlighting]]></Key>
+      <Value><![CDATA[Highlighting]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[default.JspSearchFormConfig.Title]]></Key>
+      <Value><![CDATA[Default Search Configuration]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMean]]></Key>
+      <Value><![CDATA[Did you mean]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanEnabled]]></Key>
+      <Value><![CDATA[Enable the "Did you mean ...?" feature]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanEnabled.help]]></Key>
+      <Value><![CDATA[Did you mean provides alternative search queries in the case that your search fails.]]></Value>
+    </Message>
+  </Bundle>
 </XmlVfsBundles>

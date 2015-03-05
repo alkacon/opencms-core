@@ -35,6 +35,13 @@ public interface I_CmsSearchConfigurationCommon {
      */
     String getExtraSolrParams();
 
+    /** Returns a flag, indicating if the query and lastquery params should be ignored when
+     *  generating the query. This is useful, if you have a fixed query in the extra Solr params
+     *  configured.
+     * @return A flag, indicating if the query and lastquery params should be ignored.
+     */
+    boolean getIgnoreQueryParam();
+
     /** Returns the parameter name of the request parameter used to send the last query string.
      * @return The request parameter name used to send the last query string.
      */

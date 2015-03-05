@@ -60,10 +60,6 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     final I_CmsSearchControllerMain m_controller;
     /** Map from field facet names to the facets as given by the search result. */
     private Map<String, FacetField> m_fieldFacetMap;
-    /** Map from page numbers (as String) to the links that should be used for the pagination. */
-    private Map<String, String> m_paginationLinks;
-    /** Map from the sort options (by name) to the links that should be used for choosing the sort option (if the options are not included in the search form. */
-    private Map<String, String> m_sortLinks;
 
     /** Constructor taking the main search form controller and the result list as normally returned.
      * @param controller The main search form controller.
@@ -103,17 +99,6 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
 
         }
         return suggestion;
-    }
-
-    /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getDidYouMeanLinkParameters()
-     */
-    public String getDidYouMeanLinkParameters() {
-
-        final Map<String, String[]> parameters = new HashMap<String, String[]>();
-        m_controller.addParametersForCurrentState(parameters);
-        parameters.put(m_controller.getCommon().getConfig().getQueryParam(), new String[] {getDidYouMean()});
-        return paramMapToString(parameters);
     }
 
     /**
@@ -212,28 +197,6 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getPaginationLinkParameters()
-     */
-    @Override
-    public Map<String, String> getPaginationLinkParameters() {
-
-        if (m_paginationLinks == null) {
-            m_paginationLinks = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
-
-                @Override
-                public Object transform(final Object page) {
-
-                    final Map<String, String[]> parameters = new HashMap<String, String[]>();
-                    m_controller.addParametersForCurrentState(parameters);
-                    parameters.put(m_controller.getPagination().getConfig().getPageParam(), new String[] {(String)page});
-                    return paramMapToString(parameters);
-                }
-            });
-        }
-        return m_paginationLinks;
-    }
-
-    /**
      * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getSearchResults()
      */
     @Override
@@ -243,36 +206,22 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getSortLinkParameters()
-     */
-    @Override
-    public Map<String, String> getSortLinkParameters() {
-
-        if (m_sortLinks == null) {
-            m_sortLinks = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
-
-                @Override
-                public Object transform(final Object sortOption) {
-
-                    final Map<String, String[]> parameters = new HashMap<String, String[]>();
-                    m_controller.addParametersForCurrentState(parameters);
-                    parameters.put(
-                        m_controller.getSorting().getConfig().getSortParam(),
-                        new String[] {(String)sortOption});
-                    return paramMapToString(parameters);
-                }
-            });
-        }
-        return m_sortLinks;
-    }
-
-    /**
      * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getStart()
      */
     @Override
     public Long getStart() {
 
         return m_start;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getStateParameters()
+     */
+    public CmsSearchStateParameters getStateParameters() {
+
+        Map<String, String[]> parameters = new HashMap<String, String[]>();
+        m_controller.addParametersForCurrentState(parameters);
+        return new CmsSearchStateParameters(this, parameters);
     }
 
     /** Converts the search results from CmsSearchResource to CmsSearchResourceBean.
@@ -286,22 +235,4 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
         }
     }
 
-    /** Converts a parameter map to the parameter string.
-     * @param parameters the parameter map.
-     * @return the parameter string.
-     */
-    String paramMapToString(final Map<String, String[]> parameters) {
-
-        final StringBuffer result = new StringBuffer();
-        for (final String key : parameters.keySet()) {
-            for (final String value : parameters.get(key)) {
-                result.append(key).append('=').append(value).append('&');
-            }
-        }
-        // remove last '&'
-        if (result.length() > 0) {
-            result.setLength(result.length() - 1);
-        }
-        return result.toString();
-    }
 }

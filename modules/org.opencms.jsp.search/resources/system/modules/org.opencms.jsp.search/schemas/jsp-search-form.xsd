@@ -18,6 +18,7 @@
 			<xsd:element name="Title" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Core" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Index" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="IgnoreQuery" type="OpenCmsBoolean" minOccurs="0" />
 			<xsd:element name="QueryParam" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="LastQueryParam" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="ExtraSolrParams" type="OpenCmsString" minOccurs="0" />
@@ -41,6 +42,7 @@
 			</mappings>
 			<defaults>
 				<default element="Title" value="%(key.default.JspSearchFormConfig.Title)" />
+				<default element="IgnoreQuery" value="true" />
 			</defaults>
 			<layouts/>
 			<validationrules/>
@@ -62,6 +64,7 @@
 			</searchsettings>
 			<tabs>
 				<tab element="Title" name="Common"/>
+				<tab element="IgnoreQuery" name="QueryOptions" />
 				<tab element="PageParam" name="Pagination"/>
 				<tab element="SortParam" name="SortOptions"/>
 				<tab element="FieldFacet" name="FieldFacets"/>
