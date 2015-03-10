@@ -88,7 +88,7 @@ implements I_CmsSearchConfigurationFacetField {
     public String modifyFilterQuery(final String facetValue) {
 
         if (m_fiterQueryModifier == null) {
-            return facetValue;
+            return "\"" + facetValue + "\"";
         }
         return m_fiterQueryModifier.replace("%(value)", facetValue);
     }
