@@ -27,11 +27,14 @@
 
 package org.opencms.jsp.search.result;
 
+import org.opencms.file.CmsObject;
+import org.opencms.jsp.util.CmsJspContentAccessBean;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
@@ -40,20 +43,26 @@ import org.apache.commons.collections.Transformer;
 public class CmsSearchResourceBean implements I_CmsSearchResourceBean {
 
     /** The result as returned normally. */
-    private final CmsSearchResource m_searchResource;
+    final CmsSearchResource m_searchResource;
     /** Lazy map to access the String fields of the document. */
     private Map<String, String> m_stringfields;
     /** Lazy map to access the Date fields of the document. */
     private Map<String, Date> m_datefields;
     /** Lazy map to access the multi-valued String fields of the document. */
     private Map<String, List<String>> m_multivaluedfields;
+    /** Lazy map to access content in different locales. */
+    private Map<String, CmsJspContentAccessBean> m_localizedContent;
+    /** Cms object. */
+    final CmsObject m_cmsObject;
 
     /** Constructor taking the search resource to wrap.
      * @param searchResource The search resource to wrap.
+     * @param cms The Cms object, used to read resources.
      */
-    public CmsSearchResourceBean(final CmsSearchResource searchResource) {
+    public CmsSearchResourceBean(final CmsSearchResource searchResource, final CmsObject cms) {
 
         m_searchResource = searchResource;
+        m_cmsObject = cms;
     }
 
     /**
@@ -121,5 +130,48 @@ public class CmsSearchResourceBean implements I_CmsSearchResourceBean {
     public CmsSearchResource getSearchResource() {
 
         return m_searchResource;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchResourceBean#getXmlContent()
+     */
+    @Override
+    public CmsJspContentAccessBean getXmlContent() {
+
+        CmsJspContentAccessBean accessBean = null;
+        try {
+            accessBean = new CmsJspContentAccessBean(m_cmsObject, m_searchResource);
+        } catch (Exception e) {
+            // do nothing - simply could not read content;
+        }
+        return accessBean;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchResourceBean#getXmlContentInLocale()
+     */
+    public Map<String, CmsJspContentAccessBean> getXmlContentInLocale() {
+
+        if (m_localizedContent == null) {
+            m_localizedContent = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                @Override
+                public Object transform(final Object locale) {
+
+                    CmsJspContentAccessBean accessBean = null;
+                    try {
+                        accessBean = new CmsJspContentAccessBean(
+                            m_cmsObject,
+                            Locale.forLanguageTag((String)locale),
+                            m_searchResource);
+                    } catch (Exception e) {
+                        // simply return null
+                    }
+                    return accessBean;
+                }
+            });
+
+        }
+        return m_localizedContent;
     }
 }

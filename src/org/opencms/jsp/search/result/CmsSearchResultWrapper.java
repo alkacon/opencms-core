@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.result;
 
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerMain;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.solr.CmsSolrResultList;
@@ -60,15 +61,22 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     final I_CmsSearchControllerMain m_controller;
     /** Map from field facet names to the facets as given by the search result. */
     private Map<String, FacetField> m_fieldFacetMap;
+    /** CmsObject. */
+    private final CmsObject m_cmsObject;
 
     /** Constructor taking the main search form controller and the result list as normally returned.
      * @param controller The main search form controller.
      * @param resultList The result list as returned from OpenCms' embedded Solr server.
+     * @param cms The Cms object used to access XML contents, if wanted.
      */
-    public CmsSearchResultWrapper(final I_CmsSearchControllerMain controller, final CmsSolrResultList resultList) {
+    public CmsSearchResultWrapper(
+        final I_CmsSearchControllerMain controller,
+        final CmsSolrResultList resultList,
+        final CmsObject cms) {
 
         m_controller = controller;
         m_solrResultList = resultList;
+        m_cmsObject = cms;
         convertSearchResults(resultList);
         final long l = resultList.getStart() == null ? 1 : resultList.getStart().longValue() + 1;
         m_start = Long.valueOf(l);
@@ -231,7 +239,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
 
         m_foundResources = new ArrayList<I_CmsSearchResourceBean>();
         for (final CmsSearchResource searchResult : searchResults) {
-            m_foundResources.add(new CmsSearchResourceBean(searchResult));
+            m_foundResources.add(new CmsSearchResourceBean(searchResult, m_cmsObject));
         }
     }
 

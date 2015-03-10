@@ -263,7 +263,7 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
         String query = m_searchController.generateQuery();
         try {
             CmsSolrResultList solrResultList = m_index.search(m_cms, query);
-            return new CmsSearchResultWrapper(m_searchController, solrResultList);
+            return new CmsSearchResultWrapper(m_searchController, solrResultList, m_cms);
         } catch (CmsSearchException e) {
             LOG.warn(Messages.get().getBundle().key(Messages.LOG_TAG_SEARCHFORM_SEARCH_FAILED_0), e);
             return null;

@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.search.result;
 
+import org.opencms.jsp.util.CmsJspContentAccessBean;
 import org.opencms.search.CmsSearchResource;
 
 import java.util.Date;
@@ -59,4 +60,16 @@ public interface I_CmsSearchResourceBean {
      * @return The wrapped CmsSearchResource.
      */
     CmsSearchResource getSearchResource();
+
+    /** Reads the resource and allows content access in the current request language - in case of an XML content.
+     * If the resource is not an XML content, it returns null.
+     * @return The XML content or null.
+     */
+    CmsJspContentAccessBean getXmlContent();
+
+    /** Reads the resource and allows content access in the specified language - in case of an XML content.
+     * If the resource is not an XML content, it returns null.
+     * @return The XML content or null.
+     */
+    Map<String, CmsJspContentAccessBean> getXmlContentInLocale();
 }
