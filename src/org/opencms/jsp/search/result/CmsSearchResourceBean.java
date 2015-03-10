@@ -28,13 +28,13 @@
 package org.opencms.jsp.search.result;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspContentAccessBean;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
@@ -162,7 +162,7 @@ public class CmsSearchResourceBean implements I_CmsSearchResourceBean {
                     try {
                         accessBean = new CmsJspContentAccessBean(
                             m_cmsObject,
-                            Locale.forLanguageTag((String)locale),
+                            CmsLocaleManager.getLocale((String)locale),
                             m_searchResource);
                     } catch (Exception e) {
                         // simply return null
