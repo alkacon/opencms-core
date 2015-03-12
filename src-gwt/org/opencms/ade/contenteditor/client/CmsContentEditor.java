@@ -627,6 +627,7 @@ public final class CmsContentEditor extends CmsEditorBase {
             protected void onResponse(final CmsContentDefinition result) {
 
                 if (result.isModelInfo()) {
+                    stop(false);
                     callback.execute(result);
                 } else {
                     registerContentDefinition(result);
