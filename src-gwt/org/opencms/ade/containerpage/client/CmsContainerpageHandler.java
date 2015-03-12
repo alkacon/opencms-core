@@ -63,6 +63,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Method;
 import org.opencms.gwt.client.util.CmsDomUtil.Target;
@@ -460,6 +461,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * Removes page overlay if present.<p>
      */
     public void hidePageOverlay() {
+
+        CmsDebugLog.consoleLog("hide " + new Date());
 
         if (m_overlay != null) {
             m_overlay.removeFromParent();
@@ -883,6 +886,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * Shows a page overlay preventing user actions.<p>
      */
     public void showPageOverlay() {
+
+        CmsDebugLog.consoleLog("show " + new Date());
 
         if (m_overlay == null) {
             m_overlay = new SimplePanel();

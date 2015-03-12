@@ -51,6 +51,7 @@ import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -336,6 +337,17 @@ public class CmsResultsTab extends A_CmsListTab {
                 onContentChange();
             }
         });
+    }
+
+    /** 
+     * Checks if the type is viewable as an image in the gallery result tab.<p>
+     * 
+     * @param typeName the type to check 
+     * @return true if the type can be viewed as an image in the result tab
+     */
+    public static boolean isImagelikeType(String typeName) {
+
+        return CmsGwtConstants.TYPE_IMAGE.equals(typeName) || CmsGwtConstants.TYPE_XML_IMAGE.equals(typeName);
     }
 
     /**
@@ -754,7 +766,16 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     private boolean isTilingViewAllowed() {
 
-        return (m_types.size() == 1) && m_types.iterator().next().equals(CmsResultItemWidget.IMAGE_TYPE);
+        if (m_types.size() == 0) {
+            return false;
+        }
+        for (String typeName : m_types) {
+            if (!isImagelikeType(typeName)) {
+                return false;
+            }
+        }
+        return true;
+
     }
 
     /**

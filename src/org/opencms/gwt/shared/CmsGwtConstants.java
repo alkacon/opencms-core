@@ -49,6 +49,7 @@ public final class CmsGwtConstants {
 
     /** Parameter to force a specific template context. */
     public static final String PARAM_TEMPLATE_CONTEXT = "__templateContext";
+
     /** Type name for container pages. */
     public static final String TYPE_CONTAINERPAGE = "containerpage";
 
@@ -67,8 +68,14 @@ public final class CmsGwtConstants {
     /** Name for the pseudo-type 'navlevel'. */
     public static final String TYPE_NAVLEVEL = "navlevel";
 
+    /** The xmlimage resource type name. */
+    public static final String TYPE_XML_IMAGE = "xmlimage";
+
     /** Name for configuration  setting to limit collector results while computing publish lists for collectors. */
     public static final String COLLECTOR_PUBLISH_LIST_LIMIT = "collectorPublishListLimit";
+
+    /** The image resource type name. */
+    public static final String TYPE_IMAGE = "image";
 
     /**
      * Hide constructor.<p>

@@ -45,6 +45,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
+import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -60,6 +61,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.i18n.CmsLocaleManager;
@@ -73,6 +75,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsLink;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.galleries.CmsGallerySearch;
@@ -93,6 +96,10 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPreferences;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsADESessionCache;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -300,6 +307,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /** The workplace locale from the current user's settings. */
     private Locale m_wpLocale;
+
+    private static volatile CmsVfsMemoryObjectCache m_xmlImageIdCache = new CmsVfsMemoryObjectCache();
 
     /**
      * Returns the initial gallery settings.<p>
@@ -1335,12 +1344,44 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             new CmsUUID(sResult.getStructureId()),
             CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
         CmsVfsService.addLockInfo(cms, resultResource, bean);
+
+        String permalinkId = sResult.getStructureId().toString();
+
+        if (sResult.getResourceType().equals(CmsGwtConstants.TYPE_XML_IMAGE)) {
+            String imageId = (String)m_xmlImageIdCache.getCachedObject(cms, resultResource.getRootPath());
+            if (imageId == null) {
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(
+                    cms,
+                    cms.readFile(cms.readResource(new CmsUUID(sResult.getStructureId()))));
+                for (Locale locale : content.getLocales()) {
+                    // Since the image field is synchronized between different locales, we use the value from the first locale in which it is available 
+                    I_CmsXmlContentValue value = content.getValue(XPATH_XMLIMAGE_IMAGE, locale);
+                    if (value != null) {
+                        CmsXmlVfsFileValue fileValue = (CmsXmlVfsFileValue)value;
+                        CmsLink link = fileValue.getLink(cms);
+                        if (link != null) { // link can be null if the field is not set 
+                            CmsUUID linkStructureId = link.getStructureId();
+                            if (linkStructureId != null) {
+                                imageId = linkStructureId.toString();
+                                m_xmlImageIdCache.putCachedObject(cms, resultResource.getRootPath(), imageId);
+                                permalinkId = linkStructureId.toString();
+                                // found it; exit.
+                                break;
+                            }
+                        }
+                    }
+                }
+            } else {
+                permalinkId = imageId;
+            }
+        }
+
         String permalink = CmsStringUtil.joinPaths(
             OpenCms.getSystemInfo().getOpenCmsContext(),
             CmsPermalinkResourceHandler.PERMALINK_HANDLER,
-            sResult.getStructureId().toString());
-        bean.setViewLink(permalink);
+            permalinkId);
 
+        bean.setViewLink(permalink);
         // set nice resource type name as subtitle
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(sResult.getResourceType());
         String resourceTypeDisplayName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName());

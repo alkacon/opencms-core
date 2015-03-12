@@ -32,6 +32,7 @@ import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsDroppedElementModeSelectionDialog;
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarAllGalleriesMenu;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementReuseMode;
@@ -237,7 +238,14 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         m_controller.getElementForDragAndDropFromContainer(idString, m_originalContainerId, callback);
                     }
                 });
+
+            } else if ((draggable instanceof CmsResultListItem)
+                && CmsToolbarAllGalleriesMenu.DND_MARKER.equals(((CmsResultListItem)draggable).getData())) {
+
+                m_controller.getImageElementForDragAndDrop(clientId, callback);
             } else {
+                CmsDebugLog.consoleLog("getElementForDragAndDropFromContainer");
+
                 m_controller.getElementForDragAndDropFromContainer(clientId, m_originalContainerId, callback);
             }
 

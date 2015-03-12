@@ -280,6 +280,9 @@
 					</property>
 				</properties>
 			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlimage" id="312">
+				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/xmlimage.xsd</param>
+			</type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="subsitemap" key="fileicon.subsitemap"
@@ -293,6 +296,13 @@
 				<newresource page="none"
 					uri="" order="490"
 					autosetnavigation="false" autosettitle="false" info="" />
+			</explorertype>
+			
+			<explorertype name="xmlimage" key="fileicon.xmlimage"
+				icon="image.png" bigicon="image_big.png" reference="xmlcontent">
+				<newresource 
+					uri="newresource_xmlcontent.jsp?newresourcetype=xmlimage" order="490"
+					autosetnavigation="false" autosettitle="false" info="desc.xmlimage" />
 			</explorertype>
 	
 			<explorertype name="category" key="fileicon.category"

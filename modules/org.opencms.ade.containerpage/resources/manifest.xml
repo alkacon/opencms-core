@@ -149,6 +149,26 @@
       <accesscontrol/>
     </file>
     <file>
+      <source>system/modules/org.opencms.ade.containerpage/formatters/xmlimage.jsp</source>
+      <destination>system/modules/org.opencms.ade.containerpage/formatters/xmlimage.jsp</destination>
+      <type>jsp</type>
+      <uuidstructure>f4815f5a-a949-4edd-9777-f5800d5ff4c0</uuidstructure>
+      <uuidresource>8b4f7f6b-c004-4668-90fa-f15d4a6cca24</uuidresource>
+      <datelastmodified>Wed, 04 May 2011 07:20:45 GMT</datelastmodified>
+      <userlastmodified>Admin</userlastmodified>
+      <datecreated>Wed, 04 May 2011 07:19:51 GMT</datecreated>
+      <usercreated>Admin</usercreated>
+      <flags>0</flags>
+      <properties>
+        <property>
+          <name>cache</name>
+          <value><![CDATA[container-element;locale]]></value>
+        </property>
+      </properties>
+      <relations/>
+      <accesscontrol/>
+    </file>
+    <file>
       <source>system/modules/org.opencms.ade.containerpage/.config</source>
       <destination>system/modules/org.opencms.ade.containerpage/.config</destination>
       <type>module_config</type>

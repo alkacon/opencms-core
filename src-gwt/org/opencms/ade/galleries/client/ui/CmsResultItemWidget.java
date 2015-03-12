@@ -49,9 +49,6 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public class CmsResultItemWidget extends CmsListItemWidget {
 
-    /** The image resource type name. */
-    public static final String IMAGE_TYPE = "image";
-
     /** Standard image tile scale parameter. */
     private static final String IMAGE_SCALE_PARAM = "?__scale=t:1,c:ffffff,r:0";
 
@@ -73,7 +70,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
         setIcon(CmsIconUtil.getResourceIconClasses(infoBean.getType(), infoBean.getPath(), false));
 
         // if resourceType=="image" prepare for tile view
-        if (IMAGE_TYPE.equals(infoBean.getType())) {
+        if (CmsResultsTab.isImagelikeType(infoBean.getType())) {
             m_hasTileView = true;
             // add tile view marker css classes
             String src = infoBean.getViewLink();

@@ -86,11 +86,11 @@ public class CmsResultListItem extends CmsListItem {
                 setName(resultItem.getClientId());
             }
             initMoveHandle(dndHandler);
-        } else {
-            if (resultItemWidget.hasTileView()) {
-                addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingItem());
-            }
         }
+        if (resultItemWidget.hasTileView()) {
+            addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingItem());
+        }
+
         // add  preview button
         if (hasPreview) {
             m_previewButton = createButton(

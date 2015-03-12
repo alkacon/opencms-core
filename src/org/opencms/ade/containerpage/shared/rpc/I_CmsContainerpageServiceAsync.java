@@ -118,6 +118,15 @@ public interface I_CmsContainerpageServiceAsync {
      */
     void copyElement(CmsUUID pageId, CmsUUID originalElementId, AsyncCallback<CmsUUID> resultCallback);
 
+    /** 
+     * Creates a wrapper content for the image with the given id and returns the wrapper content's structure id as a string.<p>
+     *  
+     * @param context the RPC context 
+     * @param imageId the structure id of the image, as a string 
+     * @param callback the callback to call with the result  
+     */
+    void createImageWrapperContent(CmsContainerPageRpcContext context, String imageId, AsyncCallback<String> callback);
+
     /**
      * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>
      * 

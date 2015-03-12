@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.CmsGalleryController;
@@ -46,6 +47,7 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsToolbarPopup;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.shared.CmsGwtConstants;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -60,6 +62,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * @since 8.0.0
  */
 public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpageHandler> {
+
+    /** Marker string to distinguish search results from the 'all galleries' dialog from results from other instances of the gallery dialog. */
+    public static final String DND_MARKER = "ALL_GALLERIES_DND_MARKER";
 
     /** The gallery service instance. */
     I_CmsGalleryServiceAsync m_galleryService = CmsGalleryController.createGalleryService();
@@ -143,7 +148,7 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
 
                 public boolean filterDnd(CmsResultItemBean resultBean) {
 
-                    return false;
+                    return CmsGwtConstants.TYPE_IMAGE.equals(resultBean.getType());
                 }
 
                 public I_CmsAutoHider getAutoHideParent() {
@@ -153,12 +158,12 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
 
                 public CmsDNDHandler getDndHandler() {
 
-                    return null;
+                    return CmsContainerpageController.get().getDndHandler();
                 }
 
                 public void processResultItem(CmsResultListItem item) {
 
-                    // do nothing
+                    item.setData(DND_MARKER);
                 }
 
             });
