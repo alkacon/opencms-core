@@ -245,8 +245,12 @@ public class CmsDefaultResourceStatusProvider {
 
         // find all distinct relation sources 
         for (CmsRelation relation : relations) {
-            CmsResource currentSource = relation.getSource(cms, CmsResourceFilter.ALL);
-            relationSources.put(currentSource.getStructureId(), currentSource);
+            try {
+                CmsResource currentSource = relation.getSource(cms, CmsResourceFilter.ALL);
+                relationSources.put(currentSource.getStructureId(), currentSource);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
 
         for (CmsResource relationResource : relationSources.values()) {
