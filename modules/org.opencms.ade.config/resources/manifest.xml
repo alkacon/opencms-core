@@ -299,7 +299,7 @@
 			</explorertype>
 			
 			<explorertype name="xmlimage" key="fileicon.xmlimage"
-				icon="image.png" bigicon="image_big.png" reference="xmlcontent">
+				icon="image.gif" bigicon="image_big.png" reference="xmlcontent">
 				<newresource 
 					uri="newresource_xmlcontent.jsp?newresourcetype=xmlimage" order="490"
 					autosetnavigation="false" autosettitle="false" info="desc.xmlimage" />
