@@ -447,7 +447,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             CmsSiteMatcher matcher = new CmsSiteMatcher(targetUri);
             if (OpenCms.getSiteManager().isMatching(matcher)) {
 
-                if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+                if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext() + "/")) {
                     path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                 }
                 boolean isWorkplaceServer = OpenCms.getSiteManager().isWorkplaceRequest(matcher);

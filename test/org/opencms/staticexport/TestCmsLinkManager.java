@@ -81,6 +81,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         suite1.addTest(new TestCmsLinkManager("testSymmetricSubstitution"));
         suite1.addTest(new TestCmsLinkManager("testCustomLinkHandler"));
         suite1.addTest(new TestCmsLinkManager("testRootPathAdjustment"));
+        suite1.addTest(new TestCmsLinkManager("testAbsolutePathAdjustment"));
 
         TestSetup wrapper = new TestSetup(suite1) {
 
@@ -100,22 +101,23 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
         suite.addTest(wrapper);
         // Test adjustment when OpenCms context is empty
-        suite.addTest(rootPathAdjustmentWrapped("*", "/data"));
+        suite.addTest(wrapTest("*", "/data", "testRootPathAdjustmentCopy"));
 
         return suite;
     }
 
     /**
-     * Runs testRootPathAdjustment() wrapped in an OpenCms instance where servletName and defaultWebAppName
+     * Runs the given test wrapped in an OpenCms instance where servletName and defaultWebAppName
      * are adjusted to test for different OpenCms contexts.
-     * 
-     * @param servletName the servlet name used for the OpenCms instance 
+     *
+     * @param servletName the servlet name used for the OpenCms instance
      * @param defaultWebAppName the default webapp name used for the OpenCms instance
-     * @return testRootPathAdjustment() wrapped in an own OpenCms instance.
+     * @param testCase the name of the test case to wrap
+     * @return the wrapped test case
      */
-    protected static Test rootPathAdjustmentWrapped(final String servletName, final String defaultWebAppName) {
+    protected static Test wrapTest(final String servletName, final String defaultWebAppName, final String testCase) {
 
-        return new TestSetup(new TestCmsLinkManager("testRootPathAdjustmentCopy")) {
+        return new TestSetup(new TestCmsLinkManager(testCase)) {
 
             @Override
             protected void setUp() {
@@ -130,6 +132,54 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
             }
 
         };
+    }
+
+    /**
+     * Test how the OpenCms context is removed from URLs when getting URLs with http://....
+     * Intended behavior: if and only if a link starts with "${server-url}/${context}/" the
+     * context is removed.
+     *
+     * Example: with context "http://localhost:8080/opencms":
+     * input link: http://localhost:8080/opencms/path  output link: /path
+     * input link: http://localhost:8080/opencmswhatever/path output link: /opencmswhatever/path
+     *
+     * Assumption: OpenCms context never ends with "/".
+     *
+     * @throws CmsException from getCmsObject()
+     *
+     */
+    public void testAbsolutePathAdjustment() throws CmsException {
+
+        echo("Testing root path adjustment / context removement for absolute paths");
+        String context = OpenCms.getSystemInfo().getOpenCmsContext();
+        echo("Using OpenCms context: " + context);
+
+        // put resource to access
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("/");
+        String link = context + "-test";
+        String[] folders = context.split("/");
+        String parents = "";
+        for (int i = 1; i < (folders.length - 1); i++) {
+            parents += "/" + folders[i];
+            cms.createResource(parents, new CmsResourceTypeFolder());
+        }
+        cms.createResource(link, new CmsResourceTypeFolder());
+        CmsLinkManager lm = OpenCms.getLinkManager();
+        String serverlink = lm.getServerLink(cms, "/");
+        serverlink = serverlink.substring(0, serverlink.length() - 1);
+        String inputlink = serverlink + link;
+        echo("Checking link "
+            + inputlink
+            + " in context "
+            + context
+            + " and site \""
+            + cms.getRequestContext().getSiteRoot()
+            + "\"");
+        String outputlink = lm.getRootPath(cms, inputlink);
+        echo("Result: " + outputlink);
+        assertEquals(link, outputlink);
+
     }
 
     /**
