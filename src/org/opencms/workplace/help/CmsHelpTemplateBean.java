@@ -44,6 +44,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
@@ -816,10 +817,9 @@ public class CmsHelpTemplateBean extends CmsDialog {
                             resolveMacros(RFS_HELPMAPPINGS));
                         CmsParameterConfiguration props = new CmsParameterConfiguration(absolutePath);
 
-                        if (wpResource.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
-                            // remove context from workplace path
-                            wpResource = wpResource.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
-                        }
+                        // remove context from workplace path
+                        wpResource = CmsLinkManager.removeOpenCmsContext(wpResource);
+
                         // determine mapping for workplace resource
                         while ((wpResource != null) && CmsStringUtil.isEmpty(helpResource)) {
                             helpResource = props.getString(wpResource, null);

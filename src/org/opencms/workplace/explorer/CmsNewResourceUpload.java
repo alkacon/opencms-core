@@ -48,6 +48,7 @@ import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
@@ -204,6 +205,16 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /** The uploaded files. */
     private List<String> m_uploadedFiles = new ArrayList<String>();
 
+    static {
+        DEFAULT_APPLET_WINDOW_COLORS.put("bgColor", "#C0C0C0");
+        DEFAULT_APPLET_WINDOW_COLORS.put("outerBorderRightBottom", "#333333");
+        DEFAULT_APPLET_WINDOW_COLORS.put("outerBorderLeftTop", "#C0C0C0");
+        DEFAULT_APPLET_WINDOW_COLORS.put("innerBorderRightBottom", "#777777");
+        DEFAULT_APPLET_WINDOW_COLORS.put("innerBorderLeftTop", "#F0F0F0");
+        DEFAULT_APPLET_WINDOW_COLORS.put("colorText", "#000000");
+        DEFAULT_APPLET_WINDOW_COLORS.put("progessBar", "#E10050");
+    }
+
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -224,16 +235,6 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public CmsNewResourceUpload(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-    }
-
-    static {
-        DEFAULT_APPLET_WINDOW_COLORS.put("bgColor", "#C0C0C0");
-        DEFAULT_APPLET_WINDOW_COLORS.put("outerBorderRightBottom", "#333333");
-        DEFAULT_APPLET_WINDOW_COLORS.put("outerBorderLeftTop", "#C0C0C0");
-        DEFAULT_APPLET_WINDOW_COLORS.put("innerBorderRightBottom", "#777777");
-        DEFAULT_APPLET_WINDOW_COLORS.put("innerBorderLeftTop", "#F0F0F0");
-        DEFAULT_APPLET_WINDOW_COLORS.put("colorText", "#000000");
-        DEFAULT_APPLET_WINDOW_COLORS.put("progessBar", "#E10050");
     }
 
     /**
@@ -908,10 +909,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
             // frame name parameter found, get URI
             String frameUri = getSettings().getFrameUris().get(getParamFramename());
             if (frameUri != null) {
-                if (frameUri.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
-                    // remove context path from URI before inclusion
-                    frameUri = frameUri.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
-                }
+                // remove context path from URI before inclusion
+                frameUri = CmsLinkManager.removeOpenCmsContext(frameUri);
                 return frameUri;
             }
         }

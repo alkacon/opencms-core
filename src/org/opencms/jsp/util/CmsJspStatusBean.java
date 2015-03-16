@@ -39,6 +39,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.site.CmsSite;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -273,9 +274,8 @@ public class CmsJspStatusBean extends CmsJspActionElement {
      */
     public String getRequestResourceName() {
 
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequestUri())
-            && getRequestUri().startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
-            return getRequestUri().substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequestUri())) {
+            return CmsLinkManager.removeOpenCmsContext(getRequestUri());
         }
         return getRequestUri();
     }

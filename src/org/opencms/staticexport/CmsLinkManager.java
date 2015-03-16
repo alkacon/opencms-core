@@ -71,6 +71,18 @@ public class CmsLinkManager {
     private CmsExternalLinksValidationResult m_pointerLinkValidationResult;
 
     /**
+     * Static initializer for the base URL.<p>
+     */
+    static {
+        m_baseUrl = null;
+        try {
+            m_baseUrl = new URL("http://127.0.0.1");
+        } catch (MalformedURLException e) {
+            // this won't happen
+        }
+    }
+
+    /**
      * Public constructor.<p>
      * 
      * @param linkSubstitutionHandler the link substitution handler to use
@@ -81,18 +93,6 @@ public class CmsLinkManager {
         if (m_linkSubstitutionHandler == null) {
             // just make very sure that this is not null
             m_linkSubstitutionHandler = new CmsDefaultLinkSubstitutionHandler();
-        }
-    }
-
-    /**
-     * Static initializer for the base URL.<p>
-     */
-    static {
-        m_baseUrl = null;
-        try {
-            m_baseUrl = new URL("http://127.0.0.1");
-        } catch (MalformedURLException e) {
-            // this won't happen
         }
     }
 
@@ -222,6 +222,21 @@ public class CmsLinkManager {
     public static boolean isAbsoluteUri(String uri) {
 
         return (uri == null) || ((uri.length() >= 1) && ((uri.charAt(0) == '/') || hasScheme(uri)));
+    }
+
+    /** 
+     * Given a path to a VFS resource, the method removes the OpenCms context,
+     * in case the path is prefixed by that context. 
+     * @param path the path where the OpenCms context should be removed
+     * @return the adjusted path
+     */
+    public static String removeOpenCmsContext(final String path) {
+
+        String context = OpenCms.getSystemInfo().getOpenCmsContext();
+        if (path.startsWith(context + "/")) {
+            return path.substring(context.length());
+        }
+        return path;
     }
 
     /**

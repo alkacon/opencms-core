@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.commons.CmsLock;
@@ -378,10 +379,8 @@ public class CmsDialog extends CmsToolDialog {
             params.put(PARAM_ACTION, "");
             if (frameUri != null) {
                 // URI found, include it
-                if (frameUri.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
-                    // remove context path from URI before inclusion
-                    frameUri = frameUri.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
-                }
+                // remove context path from URI before inclusion
+                frameUri = CmsLinkManager.removeOpenCmsContext(frameUri);
                 // include the found frame URI
                 getJsp().include(frameUri, null, params);
             } else {

@@ -85,6 +85,7 @@ import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.search.galleries.CmsGallerySearchResultList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionViolationException;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -636,10 +637,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(currentelement)) {
                         log("looking up:" + currentelement);
                         // removing the servlet context if present
-                        if (currentelement.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
-                            currentelement = currentelement.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
-                            log("removed context - result: " + currentelement);
-                        }
+                        currentelement = CmsLinkManager.removeOpenCmsContext(currentelement);
                         // get search results given resource path
                         result = findResourceInGallery(currentelement, data);
                         if (result != null) {

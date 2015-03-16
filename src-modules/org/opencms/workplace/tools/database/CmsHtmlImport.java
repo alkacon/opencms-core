@@ -54,6 +54,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.report.I_CmsReport;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -647,9 +648,7 @@ public class CmsHtmlImport {
             else if (link.startsWith("/")) {
 
                 // strip cms context path
-                if (link.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
-                    link = link.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
-                }
+                link = CmsLinkManager.removeOpenCmsContext(link);
 
                 // check if resource exists
                 if ((m_keepBrokenLinks) || (m_cmsObject.existsResource(link))) {

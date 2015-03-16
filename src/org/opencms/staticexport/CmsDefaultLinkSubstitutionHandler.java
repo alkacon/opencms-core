@@ -447,9 +447,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             CmsSiteMatcher matcher = new CmsSiteMatcher(targetUri);
             if (OpenCms.getSiteManager().isMatching(matcher)) {
 
-                if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext() + "/")) {
-                    path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
-                }
+                path = CmsLinkManager.removeOpenCmsContext(path);
                 boolean isWorkplaceServer = OpenCms.getSiteManager().isWorkplaceRequest(matcher);
                 if (isWorkplaceServer) {
                     String pathForCurrentSite = cms.getRequestContext().addSiteRoot(path);
@@ -492,7 +490,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             // URI is starting with opencms context
 
             // cut context from path
-            path = path.substring(context.length());
+            path = CmsLinkManager.removeOpenCmsContext(path);
 
             String siteRoot = null;
             CmsSite explicitTargetSite = OpenCms.getSiteManager().getSiteForRootPath(path);

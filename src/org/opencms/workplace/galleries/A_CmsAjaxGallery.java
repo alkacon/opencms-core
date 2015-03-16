@@ -47,6 +47,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -646,10 +647,8 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
             // remove workplace server prefix
             itemUrl = itemUrl.substring(OpenCms.getSiteManager().getWorkplaceServer().length());
         }
-        if (itemUrl.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
-            // remove context prefix to read resource from VFS
-            itemUrl = itemUrl.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
-        }
+        // remove context prefix to read resource from VFS
+        itemUrl = CmsLinkManager.removeOpenCmsContext(itemUrl);
         try {
             JspWriter out = getJsp().getJspContext().getOut();
             if (getCms().existsResource(itemUrl)) {
@@ -978,7 +977,6 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
         // create a new JSON object
         JSONObject jsonObj = new JSONObject();
         String sitePath = getCms().getRequestContext().getSitePath(res);
-        OpenCms.getSystemInfo().getOpenCmsContext();
         // fill JSON object with common information
         buildJsonItemCommonPart(jsonObj, res, sitePath);
         // fill JSON object with specific information
