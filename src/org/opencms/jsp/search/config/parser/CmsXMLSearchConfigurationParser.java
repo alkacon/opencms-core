@@ -61,8 +61,6 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** Logger for the class. */
     protected static final Log LOG = CmsLog.getLog(CmsXMLSearchConfigurationParser.class);
 
-    public String TESTPARAM;
-
     /** The element names of the xml content. */
     /** Elements for common options. */
     /** XML element name. */
@@ -172,7 +170,6 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
 
         m_xml = xml;
         m_locale = locale;
-        TESTPARAM = "test" + locale.getLanguage();
     }
 
     /**
@@ -182,7 +179,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     public I_CmsSearchConfigurationCommon parseCommon() {
 
         return new CmsSearchConfigurationCommon(
-            getQueryParam(false),
+            getQueryParam(),
             getLastQueryParam(),
             getIgnoreQuery(),
             getIndex(),
@@ -402,6 +399,9 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         return parseOptionalStringValue(XML_ELEMENT_EXTRASOLRPARAMS);
     }
 
+    /** Returns the flag indicating if the query parameters should be ignored.
+     * @return the flag indicating if the query parameters should be ignored.
+     */
     private Boolean getIgnoreQuery() {
 
         return parseOptionalBooleanValue(XML_ELEMENT_IGNORE_QUERY);
@@ -475,11 +475,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** Returns the configured request parameter for the current query string, or the default parameter if the core is not specified.
      * @return The configured request parameter for the current query string, or the default parameter if the core is not specified.
      */
-    private String getQueryParam(boolean test) {
+    private String getQueryParam() {
 
-        if (!test) {
-            return TESTPARAM;
-        }
         final String param = parseOptionalStringValue(XML_ELEMENT_QUERYPARAM);
         if (param == null) {
             return DEFAULT_QUERY_PARAM;
