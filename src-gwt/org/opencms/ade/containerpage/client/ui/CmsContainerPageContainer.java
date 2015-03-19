@@ -44,7 +44,9 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import com.google.common.base.Optional;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style.Display;
@@ -258,6 +260,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** Flag indicating the element positions need to be re-evaluated. */
     private boolean m_requiresPositionUpdate = true;
 
+    /** The container data. */
+    private CmsContainer m_containerData;
+
     /**
      * Constructor.<p>
      * 
@@ -271,6 +276,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         if (!containerData.isSubContainer()) {
             RootPanel.detachOnWindowClose(this);
         }
+        m_containerData = containerData;
         m_containerId = containerData.getName();
         element.setPropertyString(PROP_CONTAINER_MARKER, containerData.getName());
         m_containerType = containerData.getType();
@@ -282,6 +288,18 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         m_emptyContainerContent = containerData.getEmptyContainerContent();
         addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
         onAttach();
+    }
+
+    /** 
+     * Returns true if this container can act as drop target for the given resource type.<p>
+     * 
+     * @param resourceType the resource type to check
+     * @return true if the resource type can be dragged into this container 
+     */
+    public boolean acceptsType(String resourceType) {
+
+        Optional<Set<String>> restriction = m_containerData.getResourceTypeRestriction();
+        return !restriction.isPresent() || restriction.get().contains(resourceType);
     }
 
     /**
@@ -830,4 +848,5 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         m_requiresPositionUpdate = false;
         m_ownPosition = CmsPositionBean.getBoundingClientRect(getElement());
     }
+
 }

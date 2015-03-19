@@ -1768,6 +1768,12 @@
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+	        <description>A comma separated list of element types allowed in this container</description>
+	        <name>resourcetypes</name>
+	        <required>false</required>
+	        <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>        
     
     <tag>

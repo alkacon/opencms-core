@@ -28,7 +28,9 @@
 package org.opencms.ade.containerpage.shared;
 
 import java.util.List;
+import java.util.Set;
 
+import com.google.common.base.Optional;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -61,6 +63,9 @@ public class CmsContainer implements IsSerializable {
 
     /** The parent instance id. */
     private String m_parentInstanceId;
+
+    /** Set of resource types which can be dragged into this container. */
+    private Optional<Set<String>> m_resourceTypeRestriction = Optional.absent();
 
     /** The container type. */
     private String m_type;
@@ -178,6 +183,17 @@ public class CmsContainer implements IsSerializable {
     }
 
     /**
+     * Gets the set of resource types which can be dropped into this container, or the absent value if there is no additional restriction.<p>
+     * 
+     * @return the set of resource types which can be dropped into this container 
+     */
+    public Optional<Set<String>> getResourceTypeRestriction() {
+
+        return m_resourceTypeRestriction;
+
+    }
+
+    /**
      * Returns the container type. Used to determine the formatter used to render the contained elements.<p>
      * 
      * @return the container type
@@ -276,6 +292,19 @@ public class CmsContainer implements IsSerializable {
     public void setName(String name) {
 
         m_name = name;
+    }
+
+    /**
+     * Sets the resource type restriction for this container.<p>
+     * 
+     * If the parameter is not the absent value, then drag and drop of elements into this container
+     * will be restricted to the given types.<p>
+     * 
+     * @param typeRestriction the type restriction 
+     */
+    public void setResourceTypeRestriction(Optional<Set<String>> typeRestriction) {
+
+        m_resourceTypeRestriction = typeRestriction;
     }
 
     /**
