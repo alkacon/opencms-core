@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,9 +58,9 @@ import org.apache.commons.logging.Log;
 
 /**
  * This bean provides methods to generate customized http status error pages, e.g. to handle 404 (not found) errors.<p>
- * 
+ *
  * The JSPs using this bean are placed in the OpenCms VFS folder /system/handler/.<p>
- * 
+ *
  * @since 6.0
  */
 public class CmsJspStatusBean extends CmsJspActionElement {
@@ -129,10 +129,10 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Constructor, with parameters.
-     * 
+     *
      * @param context the JSP page context object
-     * @param req the JSP request 
-     * @param res the JSP response 
+     * @param req the JSP request
+     * @param res the JSP response
      */
     public CmsJspStatusBean(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
@@ -142,10 +142,10 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Constructor, with parameters.
-     * 
+     *
      * @param context the JSP page context object
-     * @param req the JSP request 
-     * @param res the JSP response 
+     * @param req the JSP request
+     * @param res the JSP response
      * @param t the exception that lead to the error
      */
     public CmsJspStatusBean(PageContext context, HttpServletRequest req, HttpServletResponse res, Throwable t) {
@@ -156,9 +156,9 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Tries to forward to the configured error page for the current site root if present.<p>
-     * 
+     *
      * @param rootPath the resource to be used as error page
-     * 
+     *
      * @return <code>true</code> if the forward was successful performed, <code>false</code> otherwise
      */
     public boolean forwardToErrorPage(String rootPath) {
@@ -170,7 +170,9 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
             // initialize a CMS object for the given resource
             CmsObject clone = OpenCms.initCmsObject(getCmsObject());
-            clone.getRequestContext().setSiteRoot(site.getSiteRoot());
+            if (site != null) {
+                clone.getRequestContext().setSiteRoot(site.getSiteRoot());
+            }
             String relPath = clone.getRequestContext().removeSiteRoot(rootPath);
             clone.getRequestContext().setUri(relPath);
 
@@ -198,7 +200,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
                 getResponse());
 
         } catch (Throwable e) {
-            // something went wrong log the exception and return false 
+            // something went wrong log the exception and return false
             LOG.error(e.getMessage(), e);
             return false;
         }
@@ -238,13 +240,13 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Returns the processed output of the specified element of an OpenCms page.<p>
-     * 
+     *
      * The page to get the content from is looked up in the property value "template-elements".
      * If no value is found, the page is read from the "contents/" subfolder of the handler folder.<p>
-     * 
-     * For each status code, an individual page can be created by naming it "content${STATUSCODE}.html". 
+     *
+     * For each status code, an individual page can be created by naming it "content${STATUSCODE}.html".
      * If the individual page can not be found, the content is read from "contentunknown.html".<p>
-     * 
+     *
      * @param element name of the element
      * @return the processed output of the specified element of an OpenCms page
      */
@@ -269,7 +271,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Returns the absolute path of the requested resource in the VFS of OpenCms.<p>
-     *  
+     *
      * @return the absolute path of the requested resource in the VFS of OpenCms
      */
     public String getRequestResourceName() {
@@ -292,9 +294,9 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Returns the full Workplace resource path to the selected resource.<p>
-     * 
+     *
      * @param resourceName the name of the resource to get the resource path for
-     * 
+     *
      * @return the full Workplace resource path to the selected resource
      */
     public String getResourceUri(String resourceName) {
@@ -357,10 +359,10 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Include a template part to display on the error page.<p>
-     * 
+     *
      * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
-     * 
+     *
      * @throws JspException in case there were problems including the target
      */
     public void includeTemplatePart(String target, String element) throws JspException {
@@ -370,11 +372,11 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Include a template part to display on the error page.<p>
-     * 
+     *
      * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
      * @param parameterMap a map of the request parameters
-     * 
+     *
      * @throws JspException in case there were problems including the target
      */
     public void includeTemplatePart(String target, String element, Map<String, Object> parameterMap)
@@ -399,10 +401,10 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Returns the localized resource string for a given message key.<p>
-     * 
+     *
      * If the key was not found in the bundle, the return value is
      * <code>"??? " + keyName + " ???"</code>.<p>
-     * 
+     *
      * The key can use the following parameters for formatting:
      * <ul>
      * <li>0: the HTTP status code</li>
@@ -411,9 +413,9 @@ public class CmsJspStatusBean extends CmsJspActionElement {
      * <li>3: the servlet name</li>
      * <li>4: the date of the request</li>
      * </ul>
-     * 
-     * @param keyName the key for the desired string 
-     * @return the resource string for the given key 
+     *
+     * @param keyName the key for the desired string
+     * @return the resource string for the given key
      */
     public String key(String keyName) {
 
@@ -422,12 +424,12 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Returns the localized resource string for a given message key.<p>
-     * 
+     *
      * For a detailed parameter description, see {@link CmsJspStatusBean#key(String)}.<p>
-     * 
+     *
      * @param keyName the key for the desired string
      * @param defaultKeyName the default key for the desired string, used if the keyName delivered no resource string
-     * @return the resource string for the given key 
+     * @return the resource string for the given key
      */
     public String key(String keyName, String defaultKeyName) {
 
@@ -440,12 +442,12 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Returns the localized resource string for a given message key depending on the HTTP status.<p>
-     * 
+     *
      * Automatically adds a status suffix for the key to get, eg. "keyname" gets the suffix "_404" for a 404 status.
      * For a detailed parameter description, see {@link CmsJspStatusBean#key(String)}.<p>
-     * 
-     * @param keyName the key for the desired string 
-     * @return the resource string for the given key 
+     *
+     * @param keyName the key for the desired string
+     * @return the resource string for the given key
      */
     public String keyStatus(String keyName) {
 
@@ -475,7 +477,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Returns true if the current user has the "DEVELOPER" role and can view the exception stacktrace.<p>
-     * 
+     *
      * @return true if the current user has the "DEVELOPER" role and can view the exception stacktrace
      */
     public boolean showException() {
@@ -485,9 +487,9 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Returns the parameter object for localization.<p>
-     * 
+     *
      * @return the parameter object for localization
-     * 
+     *
      * @see #key(String) for a more detailed object description
      */
     protected Object[] getLocalizeParameters() {
@@ -505,7 +507,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Returns the initialized messages object to read localized messages from.<p>
-     * 
+     *
      * @return the initialized messages object to read localized messages from
      */
     protected CmsMessages getMessages() {
@@ -519,8 +521,8 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Initializes the members of this bean with the information retrieved from the current request.<p>
-     * 
-     * @param req the JSP request 
+     *
+     * @param req the JSP request
      * @param t the exception that lead to the error
      */
     protected void initMembers(HttpServletRequest req, Throwable t) {
@@ -538,7 +540,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
             // JkEnvVar REDIRECT_URL none
             // JkEnvVar REDIRECT_STATUS none
-            // JkEnvVar REDIRECT_SERVLET_NAME OpenCmsServlet         
+            // JkEnvVar REDIRECT_SERVLET_NAME OpenCmsServlet
 
             String jkUri = (String)req.getAttribute("REDIRECT_URL");
             String jkStatusCode = (String)req.getAttribute("REDIRECT_STATUS");
@@ -615,7 +617,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Sets the parameter object for localization.<p>
-     * 
+     *
      * @param localizeParameters the parameter object for localization
      */
     protected void setLocalizeParameters(Object[] localizeParameters) {
@@ -625,7 +627,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
     /**
      * Sets the initialized messages object to read localized messages from.<p>
-     * 
+     *
      * @param messages the initialized messages object to read localized messages from
      */
     protected void setMessages(CmsMessages messages) {
