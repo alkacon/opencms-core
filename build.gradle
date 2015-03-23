@@ -798,15 +798,33 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
 
 task updater (dependsOn: setupJar, type: Zip){
     baseName 'opencms-upgrade-to'
+    
+    // only process the text files with the ReplaceTokens filter, copy everything else in a second from clause 
     from ("${projectDir}/webapp"){
-        include 'update/**'
-        exclude 'update/empty.jar'
+        include 'update/**/*.ori'
+        include 'update/**/*.html'
+        include 'update/**/*.xml'
+        include 'update/**/*.txt'
+        include 'update/**/*.jsp'
         exclude 'update/readme.txt'
+        exclude 'update/empty.jar'
         filter(ReplaceTokens, tokens: [
             OPENCMS_VERSION_NUMBER: version,
             OPENCMS_VERSION: product_name+' '+version
         ])
     }
+    
+    from ("${projectDir}/webapp"){
+        include 'update/**'
+        exclude 'update/**/*.ori'
+        exclude 'update/**/*.html'
+        exclude 'update/**/*.xml'
+        exclude 'update/**/*.txt'
+        exclude 'update/**/*.jsp'
+        exclude 'update/readme.txt'
+        exclude 'update/empty.jar'
+    }
+
     from ("${projectDir}/webapp/WEB-INF/solr"){
         into '/WEB-INF/solr-update/'
         include 'conf/schema.xml'
