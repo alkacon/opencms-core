@@ -29,6 +29,7 @@ package org.opencms.jsp;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.containerpage.CmsContainerpageService;
+import org.opencms.ade.containerpage.CmsElementUtil;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
@@ -130,6 +131,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
     /** The name attribute value. */
     private String m_name;
 
+    /** The optional container parameter. */
+    private String m_param;
+
     /** The parent container. */
     private CmsContainerBean m_parentContainer;
 
@@ -147,9 +151,6 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /** The container width as a string. */
     private String m_width;
-
-    /** The optional container parameter. */
-    private String m_param;
 
     /**
      * Ensures the appropriate formatter configuration ID is set in the element settings.<p>
@@ -357,7 +358,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
         List<CmsContainerElementBean> subElements;
         CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, element.getResource(), req);
         CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(cms);
-        if (!groupContainer.getTypes().contains(containerType)) {
+        if (!CmsElementUtil.checkGroupAllowed(containerType, groupContainer.getTypes())) {
             LOG.warn(new CmsIllegalStateException(Messages.get().container(
                 Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
                 element.getResource().getRootPath(),

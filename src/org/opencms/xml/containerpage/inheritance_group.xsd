@@ -29,7 +29,8 @@
 				<mapping element="ConfigName" mapto="property:Keywords" />
 			</mappings>
 			<formatters>
-				<formatter uri="/system/modules/org.opencms.ade.containerpage/formatters/group-container.jsp" type="*" preview="true" searchcontent="false" />
+				<formatter uri="/system/modules/org.opencms.ade.containerpage/formatters/group-container.jsp" type="group" preview="true" searchcontent="false" />
+				<formatter uri="/system/modules/org.opencms.ade.containerpage/formatters/group-container.jsp" type="inheritancegroup" preview="true" searchcontent="false" />
 			</formatters>
 		</xsd:appinfo>
 	</xsd:annotation>  

@@ -27,7 +27,8 @@
 				<mapping element="GroupContainers/Description" mapto="property:Description" />
 			</mappings>
 			<formatters>
-				<formatter uri="/system/modules/org.opencms.ade.containerpage/formatters/group-container.jsp" type="*" preview="true" searchcontent="false" />
+				<formatter uri="/system/modules/org.opencms.ade.containerpage/formatters/group-container.jsp" type="group" preview="true" searchcontent="false" />
+				<formatter uri="/system/modules/org.opencms.ade.containerpage/formatters/group-container.jsp" type="elementgroup" preview="true" searchcontent="false" />
 			</formatters>
 		</xsd:appinfo>
 

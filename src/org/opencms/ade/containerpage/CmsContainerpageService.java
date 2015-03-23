@@ -107,7 +107,6 @@ import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
-import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsGroupContainerBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
@@ -1411,15 +1410,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsFormatterConfiguration formatters = config.getFormatters(cms, resource);
         String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
         String containerType = null;
-
-        if (CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(typeName)
-            || CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME.equals(typeName)) {
-            // always reference the preview formatter for group containers
-            containerType = CmsFormatterBean.PREVIEW_TYPE;
-        } else {
-            containerType = container.getType();
-        }
-
+        containerType = container.getType();
         I_CmsFormatterBean formatter = null;
         if ((element.getSettings() != null)
             && element.getSettings().containsKey(CmsFormatterConfig.getSettingsKeyForContainer(container.getName()))) {

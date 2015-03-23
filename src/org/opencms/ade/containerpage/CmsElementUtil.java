@@ -83,7 +83,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -100,6 +99,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Sets;
+
 /**
  * Utility class to generate the element data objects used within the container-page editor.<p>
  *
@@ -109,6 +110,16 @@ public class CmsElementUtil {
 
     /** The maximum number of nested container levels. */
     public static final int MAX_NESTING_LEVEL = 5;
+
+    /** Container types for element groups. */
+    private static final Set<String> ELEMENT_GROUP_TYPES = Collections.unmodifiableSet(Sets.newHashSet(
+        "elementgroup",
+        "group"));
+
+    /** Container types for inheritance groups. */
+    private static final Set<String> INHERITANCE_GROUP_TYPES = Collections.unmodifiableSet(Sets.newHashSet(
+        "inheritancegroup",
+        "group"));
 
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(org.opencms.ade.containerpage.CmsElementUtil.class);
@@ -247,6 +258,41 @@ public class CmsElementUtil {
         m_parameterMap = parseRequestParameters(requestParameters);
     }
 
+    /** 
+     * Checks if a group element is allowed in a container with a given type.<p>
+     * 
+     * @param containerType the container type spec (comma separated) 
+     * @param storedContainerTypes the group's stored types 
+     * 
+     * @return true if the group is allowed in the container 
+     */
+    public static boolean checkGroupAllowed(String containerType, Set<String> storedContainerTypes) {
+
+        for (String storedType : storedContainerTypes) {
+            if (checkGroupAllowed(containerType, storedType)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** 
+     * Checks if a group is allowed in a container with the given type.<p>
+     *  
+     * @param containerType the container type (comma separated) 
+     * @param storedType the stored group type 
+     * 
+     * @return true if the group is allowed in the container 
+     */
+    public static boolean checkGroupAllowed(String containerType, String storedType) {
+
+        Set<String> storedTypeParts = CmsContainer.splitType(storedType);
+        Set<String> containerTypeParts = CmsContainer.splitType(containerType);
+        // check if storedTypeParts is a subset of containerTypeParts 
+        boolean result = Sets.intersection(containerTypeParts, storedTypeParts).size() == storedTypeParts.size();
+        return result;
+    }
+
     /**
      * Returns the HTML content for the given resource and container.<p>
      *
@@ -315,10 +361,8 @@ public class CmsElementUtil {
         //   elementData.setSettingConfig(new LinkedHashMap<String, CmsXmlContentProperty>(settingConfig));
         Map<String, String> contents = new HashMap<String, String>();
         if (element.isGroupContainer(m_cms)) {
-            Set<String> types = new HashSet<String>();
             Map<String, CmsContainer> containersByName = new HashMap<String, CmsContainer>();
             for (CmsContainer container : containers) {
-                types.add(container.getType());
                 containersByName.put(container.getName(), container);
             }
             CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(
@@ -334,7 +378,9 @@ public class CmsElementUtil {
                 if (groupContainer.getElements().isEmpty()) {
                     String emptySub = "<div>NEW AND EMPTY</div>";
                     for (String name : containersByName.keySet()) {
-                        contents.put(name, emptySub);
+                        if (checkGroupAllowed(containersByName.get(name).getType(), ELEMENT_GROUP_TYPES)) {
+                            contents.put(name, emptySub);
+                        }
                     }
                 } else {
                     // TODO: throw appropriate exception
@@ -346,7 +392,7 @@ public class CmsElementUtil {
                 for (CmsContainer cnt : containersByName.values()) {
 
                     String type = cnt.getType();
-                    if (groupContainer.getTypes().contains(type)) {
+                    if (checkGroupAllowed(type, groupContainer.getTypes())) {
                         contents.put(cnt.getName(), "<div>should not be used</div>");
                     }
                 }
@@ -371,8 +417,11 @@ public class CmsElementUtil {
                 elementData.setTitle(ref.getTitle());
             }
             for (CmsContainer container : containers) {
-                contents.put(container.getName(), "<div>should not be used</div>");
+                if (checkGroupAllowed(container.getType(), INHERITANCE_GROUP_TYPES)) {
+                    contents.put(container.getName(), "<div>should not be used</div>");
+                }
             }
+
             List<CmsInheritanceInfo> inheritanceInfos = new ArrayList<CmsInheritanceInfo>();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
                 CmsInheritedContainerState result = OpenCms.getADEManager().getInheritedContainerState(

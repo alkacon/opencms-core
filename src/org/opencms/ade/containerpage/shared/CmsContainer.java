@@ -27,8 +27,11 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
+import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -50,6 +53,9 @@ public class CmsContainer implements IsSerializable {
     /** List of the contained elements id's. */
     private List<CmsContainerElement> m_elements;
 
+    /** The content to display in case the container is empty. */
+    private String m_emptyContainerContent;
+
     /** The maximum number of elements. */
     private int m_maxElements;
 
@@ -67,9 +73,6 @@ public class CmsContainer implements IsSerializable {
 
     /** The width of the container. */
     private int m_width;
-
-    /** The content to display in case the container is empty. */
-    private String m_emptyContainerContent;
 
     /**
      * Constructor.<p>
@@ -115,6 +118,19 @@ public class CmsContainer implements IsSerializable {
     protected CmsContainer() {
 
         // do nothing 
+    }
+
+    /** 
+     * Splits the type attribute of a container into individual types.<p>
+     * 
+     * @param containerTypeSpec the container type attribute 
+     * 
+     * @return the entries of the type attribute 
+     */
+    public static Set<String> splitType(String containerTypeSpec) {
+
+        return Sets.newHashSet(Arrays.asList(containerTypeSpec.trim().split(" *, *")));
+
     }
 
     /**
@@ -286,6 +302,21 @@ public class CmsContainer implements IsSerializable {
     public void setType(String type) {
 
         m_type = type;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return "[Container name='"
+            + m_name
+            + "' type='"
+            + m_type
+            + "' numElements='"
+            + (m_elements == null ? 0 : m_elements.size())
+            + "']";
     }
 
 }
