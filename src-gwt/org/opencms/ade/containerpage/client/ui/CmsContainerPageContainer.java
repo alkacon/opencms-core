@@ -206,41 +206,17 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** Name of a special property for the container id. */
     public static final String PROP_CONTAINER_MARKER = "opencmsContainerId";
 
-    /** Flag indicating if this container is a detail view only container. */
-    boolean m_detailOnly;
-
-    /** The configured width for this container. */
-    private int m_configuredWidth;
-
-    /** Container element id. */
-    private String m_containerId;
-
-    /** The container type. */
-    private String m_containerType;
-
     /** The list of nested sub containers that are also valid drop targets during the current drag and drop. */
     private List<I_CmsDropTarget> m_dnDChildren;
 
-    /** Flag indicating if the container is editable by the current user. */
-    private boolean m_editable;
-
     /** The element position info cache. */
     private List<ElementPositionInfo> m_elementPositions;
-
-    /** The content to display in case the container is empty. */
-    private String m_emptyContainerContent;
 
     /** The element to display in case the container is empty. */
     private Element m_emptyContainerElement;
 
     /** Highlighting border for this container. */
     private CmsHighlightingBorder m_highlighting;
-
-    /** True if this is a detail view container. */
-    private boolean m_isDetailView;
-
-    /** The maximum number of elements in this container. */
-    private int m_maxElements;
 
     /** The overflowing element. */
     private Widget m_overflowingElement;
@@ -277,15 +253,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             RootPanel.detachOnWindowClose(this);
         }
         m_containerData = containerData;
-        m_containerId = containerData.getName();
         element.setPropertyString(PROP_CONTAINER_MARKER, containerData.getName());
-        m_containerType = containerData.getType();
-        m_maxElements = containerData.getMaxElements();
-        m_isDetailView = containerData.isDetailView();
-        m_detailOnly = containerData.isDetailOnly();
-        m_configuredWidth = containerData.getWidth();
-        m_editable = containerData.isEditable();
-        m_emptyContainerContent = containerData.getEmptyContainerContent();
         addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
         onAttach();
     }
@@ -340,10 +308,10 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         if (getWidgetCount() == 0) {
             if (m_emptyContainerElement != null) {
                 m_emptyContainerElement.getStyle().clearDisplay();
-            } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_emptyContainerContent)) {
+            } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_containerData.getEmptyContainerContent())) {
                 // add empty container element
                 try {
-                    m_emptyContainerElement = CmsDomUtil.createElement(m_emptyContainerContent);
+                    m_emptyContainerElement = CmsDomUtil.createElement(m_containerData.getEmptyContainerContent());
                     getElement().appendChild(m_emptyContainerElement);
                 } catch (Exception e) {
                     CmsDebugLog.getInstance().printLine(e.getMessage());
@@ -361,14 +329,14 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     public void checkMaxElementsOnEnter() {
 
         int count = getWidgetCount();
-        if (count >= m_maxElements) {
+        if (count >= m_containerData.getMaxElements()) {
             Widget overflowElement = null;
             int index = 0;
             for (Widget widget : this) {
                 boolean isDummy = widget.getStyleName().contains(CmsTemplateContextInfo.DUMMY_ELEMENT_MARKER);
                 if (!isDummy) {
                     index++;
-                    if (index >= m_maxElements) {
+                    if (index >= m_containerData.getMaxElements()) {
                         if (overflowElement == null) {
                             overflowElement = widget;
                         }
@@ -464,7 +432,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public int getConfiguredWidth() {
 
-        return m_configuredWidth;
+        return m_containerData.getWidth();
     }
 
     /**
@@ -474,7 +442,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public String getContainerId() {
 
-        return m_containerId;
+        return m_containerData.getName();
     }
 
     /**
@@ -484,7 +452,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public String getContainerType() {
 
-        return m_containerType;
+        return m_containerData.getType();
     }
 
     /**
@@ -584,7 +552,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public boolean isDetailOnly() {
 
-        return m_detailOnly;
+        return m_containerData.isDetailOnly();
     }
 
     /**
@@ -594,7 +562,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public boolean isDetailView() {
 
-        return m_isDetailView;
+        return m_containerData.isDetailView();
     }
 
     /**
@@ -602,7 +570,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public boolean isEditable() {
 
-        return m_editable;
+        return m_containerData.isEditable();
     }
 
     /**
