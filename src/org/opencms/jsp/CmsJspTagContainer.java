@@ -74,7 +74,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -85,9 +84,6 @@ import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.apache.commons.logging.Log;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.Sets;
 
 /**
  * Provides access to the page container elements.<p>
@@ -154,9 +150,6 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /** The optional container parameter. */
     private String m_param;
-
-    /** The resourcetypes parameter. */
-    private String m_resourceTypes;
 
     /**
      * Ensures the appropriate formatter configuration ID is set in the element settings.<p>
@@ -709,16 +702,6 @@ public class CmsJspTagContainer extends BodyTagSupport {
     }
 
     /**
-     * Gets the resourcetypes parameter.<p>
-     * 
-     * @return the resourcetypes parameter 
-     */
-    public String getResourcetypes() {
-
-        return m_resourceTypes;
-    }
-
-    /**
      * Returns the tag attribute.<p>
      *
      * @return the tag attribute
@@ -824,16 +807,6 @@ public class CmsJspTagContainer extends BodyTagSupport {
     }
 
     /**
-     * Sets the resourcetypes parameter.<p>
-     * 
-     * @param resourcetypes the resourcetypes parameter 
-     */
-    public void setResourcetypes(String resourcetypes) {
-
-        m_resourceTypes = resourcetypes;
-    }
-
-    /**
      * Sets the tag attribute.<p>
      *
      * @param tag the createTag to set
@@ -905,15 +878,6 @@ public class CmsJspTagContainer extends BodyTagSupport {
             m_parentContainer != null ? m_parentContainer.getName() : null,
             m_parentElement != null ? m_parentElement.getInstanceId() : null);
         cont.setDeatilOnly(isDetailOnly);
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_resourceTypes)) {
-            List<String> typeStrings = CmsStringUtil.splitAsList(m_resourceTypes.trim(), ",");
-            Set<String> typeSet = Sets.newHashSet();
-            for (String typeString : typeStrings) {
-                typeSet.add(typeString);
-            }
-            cont.setResourceTypeRestriction(Optional.fromNullable(typeSet));
-        }
-
         String result = "";
         try {
             result = CmsContainerpageService.getSerializedContainerInfo(cont);

@@ -560,11 +560,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     // skip containers that are children of the draggable element
                     continue;
                 }
-
                 if ((container != m_initialDropTarget)
                     && !container.isDetailView()
-                    && (elementData.getContents().get(container.getContainerId()) != null)
-                    && container.acceptsType(elementData.getResourceType())) {
+                    && (elementData.getContents().get(container.getContainerId()) != null)) {
 
                     Element placeholder = null;
                     if (elementData.isGroupContainer() || elementData.isInheritContainer()) {

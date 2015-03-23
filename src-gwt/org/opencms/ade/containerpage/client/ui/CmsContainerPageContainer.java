@@ -44,9 +44,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import com.google.common.base.Optional;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style.Display;
@@ -206,6 +204,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** Name of a special property for the container id. */
     public static final String PROP_CONTAINER_MARKER = "opencmsContainerId";
 
+    /** The container data. */
+    private CmsContainer m_containerData;
+
     /** The list of nested sub containers that are also valid drop targets during the current drag and drop. */
     private List<I_CmsDropTarget> m_dnDChildren;
 
@@ -236,9 +237,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** Flag indicating the element positions need to be re-evaluated. */
     private boolean m_requiresPositionUpdate = true;
 
-    /** The container data. */
-    private CmsContainer m_containerData;
-
     /**
      * Constructor.<p>
      * 
@@ -256,18 +254,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         element.setPropertyString(PROP_CONTAINER_MARKER, containerData.getName());
         addStyleName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget());
         onAttach();
-    }
-
-    /** 
-     * Returns true if this container can act as drop target for the given resource type.<p>
-     * 
-     * @param resourceType the resource type to check
-     * @return true if the resource type can be dragged into this container 
-     */
-    public boolean acceptsType(String resourceType) {
-
-        Optional<Set<String>> restriction = m_containerData.getResourceTypeRestriction();
-        return !restriction.isPresent() || restriction.get().contains(resourceType);
     }
 
     /**
@@ -816,5 +802,4 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         m_requiresPositionUpdate = false;
         m_ownPosition = CmsPositionBean.getBoundingClientRect(getElement());
     }
-
 }
