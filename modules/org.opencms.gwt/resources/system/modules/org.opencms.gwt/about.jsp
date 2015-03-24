@@ -1,4 +1,4 @@
-<%@page taglibs="cms" import="java.util.*,java.text.*,org.opencms.main.*,org.opencms.i18n.*" trimDirectiveWhitespaces="true" %><!DOCTYPE html>
+<%@page taglibs="cms" import="java.util.*,java.text.*,org.opencms.main.*,org.opencms.i18n.*"%><!DOCTYPE html>
 <html>
 <head>
 <cms:jquery js="jquery" />
