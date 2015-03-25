@@ -42,7 +42,7 @@
 			<layouts>
 				<layout element="ContentPath" widget="VfsFileWidget" configuration="excludefiles" />
 				<layout element="UploadPath" widget="VfsFileWidget" configuration="excludefiles" />
-				<layout element="ContentType" widget="TypeComboWidget" />
+				<layout element="ContentType" widget="org.opencms.widgets.CmsTypeComboWidget" />
 				<layout element="ProjectGroup" widget="GroupWidget" />
 				<layout element="ValidExtensions" widget="ComboWidget" configuration=".png;.jpg;.jpeg;.gif|.txt;.doc;.docx;.pdf;.odt|.zip;.rar;.bz2" />
 			</layouts>
