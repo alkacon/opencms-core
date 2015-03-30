@@ -97,12 +97,6 @@
             <param-name>UI</param-name>
             <param-value>org.opencms.workplace.CmsWorkplaceUI</param-value>
         </init-param>
-        <init-param>
-            <description>Application widgetset</description>
-            <param-name>widgetset</param-name>
-            <param-value>org.opencms.vaadin.OpenCmsWidgetset</param-value>
-        </init-param>
-        <load-on-startup>2</load-on-startup>
     </servlet>
     
     <servlet-mapping>
