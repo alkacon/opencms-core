@@ -866,6 +866,24 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Initializes the OpenCms context for Vaadin UI servlet.<p>
+     * 
+     * @param req the request
+     * @param res the response
+     * @param servlet the UI servlet
+     * 
+     * @throws IOException if user authentication fails
+     * @throws CmsException if something goes wrong
+     */
+    protected void initCmsContextForUI(HttpServletRequest req, HttpServletResponse res, CmsUIServlet servlet)
+    throws IOException, CmsException {
+
+        // instantiate CMS context
+        CmsObject cms = initCmsObject(req, res);
+        servlet.setCms(cms);
+    }
+
+    /**
      * Returns an independent copy of the provided CmsObject.<p>
      *
      * This can be useful in case a permanent reference to a CmsObject is stored.

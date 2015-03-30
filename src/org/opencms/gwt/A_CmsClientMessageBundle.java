@@ -83,6 +83,14 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
      */
     public String export(Locale locale) {
 
+        return export(locale, true);
+    }
+
+    /**
+     * @see org.opencms.gwt.I_CmsClientMessageBundle#export(java.util.Locale, boolean)
+     */
+    public String export(Locale locale, boolean wrapScript) {
+
         JSONObject keys = new JSONObject();
         try {
             ResourceBundle resourceBundle = CmsResourceBundleLoader.getBundle(getBundleName(), locale);
@@ -110,7 +118,9 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
         }
         StringBuffer sb = new StringBuffer();
         sb.append(getBundleName().replace('.', '_')).append("=").append(keys.toString()).append(";");
-        CmsGwtActionElement.wrapScript(sb);
+        if (wrapScript) {
+            CmsGwtActionElement.wrapScript(sb);
+        }
         return sb.toString();
     }
 

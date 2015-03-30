@@ -61,6 +61,16 @@ public interface I_CmsClientMessageBundle {
     /**
      * Returns the JSON code for this resource bundle and given locale.<p>
      * 
+     * @param locale the locale to export 
+     * @param wrapScript <code>true</code> to wrap the data in a script tag
+     * 
+     * @return the JSON code
+     */
+    String export(Locale locale, boolean wrapScript);
+
+    /**
+     * Returns the JSON code for this resource bundle and given locale.<p>
+     * 
      * @param localeName the name of the locale to export 
      * 
      * @return the JSON code

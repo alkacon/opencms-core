@@ -46,6 +46,12 @@
         <param-value>ROOT</param-value>
     </context-param>    
     
+    <context-param>
+  	    <description>Vaadin production mode</description>
+  	    <param-name>productionMode</param-name>
+  	    <param-value>true</param-value>
+	</context-param>
+    
 	<!-- 
 	    Uncomment this parameter in case you change the web application context using an application server 
 	    specific deployment descriptor. E.g. in Jboss, you could use the jboss-web.xml file to deploy opencms under the
@@ -81,9 +87,38 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     
+    <servlet>
+        <description>
+            The servlet that handles all workplace UI requests.  
+        </description>
+        <servlet-name>CmsUIServlet</servlet-name>
+        <servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
+        <init-param>
+            <param-name>UI</param-name>
+            <param-value>org.opencms.workplace.CmsWorkplaceUI</param-value>
+        </init-param>
+        <init-param>
+            <description>Application widgetset</description>
+            <param-name>widgetset</param-name>
+            <param-value>org.opencms.vaadin.OpenCmsWidgetset</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    
     <servlet-mapping>
         <servlet-name>OpenCmsServlet</servlet-name>
         <url-pattern>/opencms/*</url-pattern>
+    </servlet-mapping>
+    
+    <!-- mapping /workplace/* and /VAADIN/* to the UI servlet -->
+    <servlet-mapping>
+        <servlet-name>CmsUIServlet</servlet-name>
+        <url-pattern>/workplace/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>CmsUIServlet</servlet-name>
+        <url-pattern>/VAADIN/*</url-pattern>
     </servlet-mapping>
     
     <servlet-mapping>
