@@ -151,6 +151,7 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
                                                                                 if (config.content_css) {
                                                                                 options.content_css = config.content_css;
                                                                                 }
+                                                                                options.importcss_append = true;
                                                                                 if (config.height) {
                                                                                 options.editorHeight = config.height;
                                                                                 }
@@ -175,7 +176,7 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
                                                                                 if (config.cmsGalleryUseThickbox) {
                                                                                 options.cmsGalleryUseThickbox = config.cmsGalleryUseThickbox;
                                                                                 }
-                                                                                options.plugins = "anchor,charmap,code,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,spellchecker,-opencms";
+                                                                                options.plugins = "anchor,charmap,code,importcss,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,spellchecker,-opencms";
                                                                                 if (config.fullpage) {
                                                                                 options.plugins += ",fullpage";
                                                                                 }
