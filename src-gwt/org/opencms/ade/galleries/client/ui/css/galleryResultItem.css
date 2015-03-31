@@ -44,6 +44,12 @@
 	height: value("galleryResultItemCss.bigImageHeight","px");
 }
 
+@external .imagedrag;
+
+
+ 
+
+
 
 .expiredImageOverlay {
 	display: none; 

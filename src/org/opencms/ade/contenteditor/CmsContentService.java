@@ -599,6 +599,32 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#saveValue(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    public String saveValue(String contentId, String contentPath, String locale, String newValue)
+    throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource element = cms.readResource(new CmsUUID(contentId));
+            ensureLock(element);
+            CmsFile elementFile = cms.readFile(element);
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, elementFile);
+            I_CmsXmlContentValue value = content.getValue(contentPath, CmsLocaleManager.getLocale(locale));
+            value.setStringValue(cms, newValue);
+            byte[] newData = content.marshal();
+            elementFile.setContents(newData);
+            cms.writeFile(elementFile);
+            tryUnlock(elementFile);
+            return "";
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
+
+    }
+
+    /**
      * @see org.opencms.acacia.shared.rpc.I_CmsContentService#updateEntityHtml(org.opencms.acacia.shared.CmsEntity, java.lang.String, java.lang.String)
      */
     public CmsEntityHtml updateEntityHtml(CmsEntity entity, String contextUri, String htmlContextInfo) throws Exception {

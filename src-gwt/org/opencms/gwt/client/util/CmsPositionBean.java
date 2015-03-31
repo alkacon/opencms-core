@@ -265,8 +265,24 @@ public class CmsPositionBean {
      */
     public static CmsPositionBean getBoundingClientRect(Element panel) {
 
+        return getBoundingClientRect(panel, true);
+
+    }
+
+    /**
+     * Returns the bounding rectangle dimensions of the element including all floated elements.<p>
+     * 
+     * @param panel the panel
+     * @param addScroll if true, the result will contain the coordinates in the document's coordinate system, not the viewport coordinate system 
+     * 
+     * @return the position info
+     */
+    public static CmsPositionBean getBoundingClientRect(Element panel, boolean addScroll) {
+
         CmsPositionBean result = new CmsPositionBean();
-        getBoundingClientRect(panel, result, Window.getScrollLeft(), Window.getScrollTop());
+        getBoundingClientRect(panel, result, addScroll ? Window.getScrollLeft() : 0, addScroll
+        ? Window.getScrollTop()
+        : 0);
         return result;
     }
 
@@ -334,6 +350,20 @@ public class CmsPositionBean {
     }
 
     /**
+     * Checks whether a value is in a given interval (including the end points).<p>
+     * 
+     * @param min the minimum of the interval 
+     * @param max the maximum of the interval 
+     * @param value the value to check 
+     * 
+     * @return true if the value is in the given interval
+     */
+    public static boolean isInRangeInclusive(int min, int max, int value) {
+
+        return (min <= value) && (value <= max);
+    }
+
+    /**
      * Uses the getBoundingClientRect method to evaluate the element dimensions.<p>
      * 
      * @param element the element
@@ -349,6 +379,20 @@ public class CmsPositionBean {
                                                                                                                          pos.@org.opencms.gwt.client.util.CmsPositionBean::m_height=Math.round(rect.height);
                                                                                                                          pos.@org.opencms.gwt.client.util.CmsPositionBean::m_width=Math.round(rect.width);
                                                                                                                          }-*/;
+
+    /**
+     * Checks if the rectangle defined by this bean contains the given point.<p>
+     * 
+     * @param x the horizontal coordinate 
+     * @param y the vertical coordinate
+     *  
+     * @return true if this object contains the given point 
+     */
+    public boolean containsPoint(int x, int y) {
+
+        return isInRangeInclusive(getLeft(), (getLeft() + getWidth()) - 1, x)
+            && isInRangeInclusive(getTop(), (getTop() + getHeight()) - 1, y);
+    }
 
     /**
      * Increases the dimensions to completely surround the child.<p>

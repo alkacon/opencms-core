@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.category.CmsDataValue;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.Collections;
@@ -45,6 +46,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.common.base.Optional;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
@@ -78,6 +80,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             setImageClass(I_CmsImageBundle.INSTANCE.style().moveIcon());
             setButtonStyle(ButtonStyle.TRANSPARENT, null);
             setTitle(Messages.get().key(Messages.GUI_TOOLBAR_MOVE_TO_0));
+            addStyleName("cmsMoveHandle");
             m_draggable = draggable;
         }
 
@@ -130,11 +133,20 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     /** Arbitrary data belonging to the list item. */
     private Object m_data;
 
+    /** The class to set on the DND helper. */
+    private String m_dndHelperClass;
+
+    /** The class to set on the DND parent. */
+    private String m_dndParentClass;
+
     /** The drag helper. */
     private Element m_helper;
 
     /** The move handle. */
     private MoveHandle m_moveHandle;
+
+    /** The offset delta. */
+    private Optional<int[]> m_offsetDelta = Optional.absent();
 
     /** Indicating this box has a reduced height. */
     private boolean m_smallView;
@@ -205,6 +217,14 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getCursorOffsetDelta()
+     */
+    public Optional<int[]> getCursorOffsetDelta() {
+
+        return m_offsetDelta;
+    }
+
+    /**
      * Gets the data belonging to the list item.<p>
      * 
      * @return the data belonging to the list item 
@@ -226,6 +246,26 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
+     * Gets the class for the DND helper.<p>
+     * 
+     * @return the class for the DND helper 
+     */
+    public String getDndHelperClass() {
+
+        return m_dndHelperClass;
+    }
+
+    /**
+     * Gets the class for the DND parent.<p>
+     * 
+     * @return the class for the DND parent 
+     */
+    public String getDndParentClass() {
+
+        return m_dndParentClass;
+    }
+
+    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getDragHelper(I_CmsDropTarget)
      */
     public Element getDragHelper(I_CmsDropTarget target) {
@@ -241,7 +281,13 @@ public class CmsListItem extends Composite implements I_CmsListItem {
                     }
                 }
             }
+            int oldMoveHandleLeft = moveHandleLeft(getElement());
+            int oldElemLeft = getElement().getAbsoluteLeft();
+            //int oldMoveHandleLeft = m_moveHandle.getAbsoluteLeft();
             m_helper = CmsDomUtil.clone(getElement());
+            if (m_dndHelperClass != null) {
+                m_helper.addClassName(m_dndHelperClass);
+            }
             // remove all decorations
             List<com.google.gwt.dom.client.Element> elems = CmsDomUtil.getElementsByClass(
                 I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().decorationBox(),
@@ -262,10 +308,16 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             int elementTop = getElement().getAbsoluteTop();
             int parentTop = parentElement.getAbsoluteTop();
             m_provisionalParent = DOM.createElement(parentElement.getTagName());
+            if (m_dndParentClass != null) {
+                m_provisionalParent.addClassName(m_dndParentClass);
+            }
             RootPanel.getBodyElement().appendChild(m_provisionalParent);
-            m_provisionalParent.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().clearStyles());
+
             m_provisionalParent.getStyle().setWidth(parentElement.getOffsetWidth(), Unit.PX);
             m_provisionalParent.appendChild(m_helper);
+
+            m_provisionalParent.addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().clearStyles());
+
             Style style = m_helper.getStyle();
             style.setWidth(m_helper.getOffsetWidth(), Unit.PX);
             // the dragging class will set position absolute
@@ -274,8 +326,20 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             m_provisionalParent.getStyle().setPosition(Position.ABSOLUTE);
             m_provisionalParent.getStyle().setTop(parentTop, Unit.PX);
             m_provisionalParent.getStyle().setLeft(parentElement.getAbsoluteLeft(), Unit.PX);
+            int newMoveHandleLeft = moveHandleLeft(m_helper);
+            int newElemLeft = m_helper.getAbsoluteLeft();
+            CmsDebugLog.consoleLog("oL: "
+                + oldMoveHandleLeft
+                + ", nL: "
+                + newMoveHandleLeft
+                + ", nE: "
+                + newElemLeft
+                + ", oE: "
+                + oldElemLeft);
+            m_offsetDelta = Optional.fromNullable(new int[] {
+                ((newMoveHandleLeft - oldMoveHandleLeft) + oldElemLeft) - newElemLeft,
+                0});
             m_provisionalParent.getStyle().setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexDND());
-
         }
         // ensure mouse out
         if (m_listItemWidget != null) {
@@ -442,6 +506,26 @@ public class CmsListItem extends Composite implements I_CmsListItem {
         m_data = data;
     }
 
+    /** 
+     * Sets the class for the DND helper.<p>
+     * 
+     * @param dndHelperClass the class for the DND helper
+     */
+    public void setDndHelperClass(String dndHelperClass) {
+
+        m_dndHelperClass = dndHelperClass;
+    }
+
+    /**
+     * Sets the class for the DND parent.<p>
+     * 
+     * @param dndParentClass the class for the DND parent 
+     */
+    public void setDndParentClass(String dndParentClass) {
+
+        m_dndParentClass = dndParentClass;
+    }
+
     /**
      * @see org.opencms.gwt.client.ui.I_CmsListItem#setId(java.lang.String)
      */
@@ -593,6 +677,18 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
         addMainWidget(mainWidget);
         initContent();
+    }
+
+    /**
+     * Gets the left edge of the move handle located in the element.<p> 
+     * 
+     * @param elem the element to search in 
+     * 
+     * @return the left edge of the move handle  
+     */
+    protected int moveHandleLeft(Element elem) {
+
+        return CmsDomUtil.getElementsByClass("cmsMoveHandle", elem).get(0).getAbsoluteLeft();
     }
 
     /**

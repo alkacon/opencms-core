@@ -31,9 +31,9 @@ import org.opencms.acacia.client.CmsAttributeHandler;
 import org.opencms.acacia.client.CmsButtonBarHandler;
 import org.opencms.acacia.client.CmsChoiceMenuEntryBean;
 import org.opencms.acacia.client.CmsEditorBase;
+import org.opencms.acacia.client.CmsValueFocusHandler;
 import org.opencms.acacia.client.I_CmsEntityRenderer;
 import org.opencms.acacia.client.I_CmsWidgetService;
-import org.opencms.acacia.client.CmsValueFocusHandler;
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
 import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
@@ -51,6 +51,7 @@ import org.opencms.gwt.client.util.CmsStyleVariable;
 
 import java.util.List;
 
+import com.google.common.base.Optional;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -347,6 +348,14 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
     public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
 
         return addDomHandler(handler, MouseOverEvent.getType());
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getCursorOffsetDelta()
+     */
+    public Optional<int[]> getCursorOffsetDelta() {
+
+        return Optional.absent();
     }
 
     /**

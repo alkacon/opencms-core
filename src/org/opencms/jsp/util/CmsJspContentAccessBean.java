@@ -34,6 +34,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -131,6 +132,33 @@ public class CmsJspContentAccessBean {
         public Object transform(Object input) {
 
             return Boolean.valueOf(getRawContent().hasValue(String.valueOf(input), m_selectedLocale));
+        }
+    }
+
+    /**
+     * Transformer used for the 'imageDnd' EL attribute which is used to annotate images which can be replaced by drag and drop.<p>
+     */
+    public class CmsImageDndTransformer implements Transformer {
+
+        /**
+         * Creates a new instance.<p>
+         */
+        public CmsImageDndTransformer() {
+
+            // do nothing 
+
+        }
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            Locale locale = getLocale();
+            String attrValue = getRawContent().getFile().getStructureId() + "|" + input + "|" + locale;
+            String escapedAttrValue = CmsEncoder.escapeXml(attrValue);
+            String result = "data-imagednd=\"" + escapedAttrValue + "\"";
+            return result;
         }
     }
 
@@ -389,11 +417,11 @@ public class CmsJspContentAccessBean {
     /** The lazy initialized map for the "has locale value" check. */
     private Map<String, Map<String, Boolean>> m_hasLocaleValue;
 
+    /** Lazy map for imageDnd annotations. */
+    private Map<String, String> m_imageDnd;
+
     /** The locale used for accessing entries from the XML content, this may be a fallback default locale. */
     private Locale m_locale;
-
-    /** The original locale requested for accessing entries from the XML content. */
-    private Locale m_requestedLocale;
 
     /** The lazy initialized with the locale names. */
     private Map<String, List<String>> m_localeNames;
@@ -409,6 +437,9 @@ public class CmsJspContentAccessBean {
 
     /** The lazy initialized with the locale value lists. */
     private Map<String, Map<String, List<CmsJspContentAccessValueWrapper>>> m_localeValueList;
+
+    /** The original locale requested for accessing entries from the XML content. */
+    private Locale m_requestedLocale;
 
     /** Resource the XML content is created from. */
     private CmsResource m_resource;
@@ -609,6 +640,19 @@ public class CmsJspContentAccessBean {
     public CmsUUID getId() {
 
         return getRawContent().getFile().getStructureId();
+    }
+
+    /** 
+     * Gets the lazy imageDnd map.<p>
+     * 
+     * @return the lazy imageDnd map 
+     */
+    public Map<String, String> getImageDnd() {
+
+        if (m_imageDnd == null) {
+            m_imageDnd = CmsCollectionsGenericWrapper.createLazyMap(new CmsImageDndTransformer());
+        }
+        return m_imageDnd;
     }
 
     /**

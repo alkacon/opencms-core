@@ -164,6 +164,10 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
                 public void processResultItem(CmsResultListItem item) {
 
                     item.setData(DND_MARKER);
+                    item.setDndHelperClass("imagedrag");
+                    item.setDndParentClass("imageparent "
+                        + org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
+                    //item.setDragHelperTransformer(DRAG_HELPER_TRANSFORMER);
                 }
 
             });

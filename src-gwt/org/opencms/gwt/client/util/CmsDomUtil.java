@@ -1432,6 +1432,21 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Converts a NodeList to a List of elements.<p>
+     * 
+     * @param nodelist the node list 
+     * @return the list of elements 
+     */
+    public static List<Element> nodeListToList(NodeList<Element> nodelist) {
+
+        List<Element> result = Lists.newArrayList();
+        for (int i = 0; i < nodelist.getLength(); i++) {
+            result.add(nodelist.getItem(i));
+        }
+        return result;
+    }
+
+    /**
      * Generates an opening tag.<p>
      *
      * @param tag the tag to use

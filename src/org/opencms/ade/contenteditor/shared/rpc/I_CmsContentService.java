@@ -165,4 +165,17 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
         Collection<String> skipPaths,
         String lastEditedLocale,
         boolean clearOnSuccess) throws CmsRpcException;
+
+    /**
+     * Saves a value in an existing XML content.<p>
+     * 
+     * @param contentId the structure id of the content 
+     * @param contentPath the xpath of the value to set 
+     * @param locale the locale in which to set the value 
+     * @param value the value to set
+     * 
+     * @return not used 
+     * @throws CmsRpcException if something goes wrong  
+     */
+    String saveValue(String contentId, String contentPath, String locale, String value) throws CmsRpcException;
 }

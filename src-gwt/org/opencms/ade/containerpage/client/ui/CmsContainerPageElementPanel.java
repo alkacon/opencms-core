@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
@@ -252,6 +253,14 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
         getChildren().add(widget.asWidget());
         adopt(widget.asWidget());
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getCursorOffsetDelta()
+     */
+    public Optional<int[]> getCursorOffsetDelta() {
+
+        return Optional.absent();
     }
 
     /**

@@ -107,6 +107,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** The drag overlay. */
     private Element m_dragOverlay;
 
+    /** DND controller for images. We set this in onDragStart if we are dragging an image, and then delegate most of the other method calls to it if it is set.*/
+    private CmsImageDndController m_imageDndController;
+
     /** The ionitial drop target. */
     private I_CmsDropTarget m_initialDropTarget;
 
@@ -156,6 +159,13 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     */
     public void onDragCancel(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
+        if (m_imageDndController != null) {
+            m_imageDndController.onDragCancel(draggable, target, handler);
+            removeDragOverlay();
+            m_imageDndController = null;
+            return;
+        }
+
         stopDrag(handler);
     }
 
@@ -173,6 +183,18 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         m_initialDropTarget = target;
         handler.setOrientation(Orientation.ALL);
         m_controller.hideEditableListButtons();
+
+        if (isImage(draggable)) {
+            if (m_controller.isGroupcontainerEditing()) {
+                // don't allow image DND while editing group containers 
+                return false;
+            }
+            // We are going to delegate further method calls to this, and set it to null again if the image is dragged or the
+            // DND operation is cancelled
+            m_imageDndController = new CmsImageDndController(CmsContainerpageController.get());
+            return m_imageDndController.onDragStart(draggable, target, handler);
+
+        }
 
         if (!m_controller.isGroupcontainerEditing()) {
             boolean locked = m_controller.lockContainerpage();
@@ -239,10 +261,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     }
                 });
 
-            } else if ((draggable instanceof CmsResultListItem)
-                && CmsToolbarAllGalleriesMenu.DND_MARKER.equals(((CmsResultListItem)draggable).getData())) {
-
-                m_controller.getImageElementForDragAndDrop(clientId, callback);
             } else {
                 CmsDebugLog.consoleLog("getElementForDragAndDropFromContainer");
 
@@ -256,12 +274,20 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             handler.setStartPosition(-1, 0);
         }
         return true;
+
     }
 
     /**
     * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onDrop(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
     */
     public void onDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
+
+        if (m_imageDndController != null) {
+            m_imageDndController.onDrop(draggable, target, handler);
+            removeDragOverlay();
+            m_imageDndController = null;
+            return;
+        }
 
         boolean changedContainerpage = false;
         boolean isListItem = draggable instanceof CmsListItem;
@@ -441,6 +467,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     public void onPositionedPlaceholder(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
+        if (m_imageDndController != null) {
+            m_imageDndController.onPositionedPlaceholder(draggable, target, handler);
+            return;
+        }
+
         if (hasChangedPosition(target)) {
             checkPlaceholderVisibility(target);
             updateHighlighting(false);
@@ -451,6 +482,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onTargetEnter(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
      */
     public boolean onTargetEnter(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
+
+        if (m_imageDndController != null) {
+            return m_imageDndController.onTargetEnter(draggable, target, handler);
+        }
 
         Element placeholder = m_dragInfos.get(target);
         if (placeholder != null) {
@@ -472,6 +507,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onTargetLeave(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
      */
     public void onTargetLeave(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
+
+        if (m_imageDndController != null) {
+            m_imageDndController.onTargetLeave(draggable, target, handler);
+            return;
+        }
 
         m_currentTarget = null;
         m_currentIndex = -1;
@@ -722,6 +762,20 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             return false;
         }
         return ((CmsResultListItem)draggable).getResult().isCopyModel();
+    }
+
+    /** 
+     * Checks if the given draggable item is an image.<p>
+     * 
+     * @param draggable the item to check 
+     * 
+     * @return true if the given item is an image 
+     */
+    private boolean isImage(I_CmsDraggable draggable) {
+
+        return (draggable instanceof CmsResultListItem)
+            && CmsToolbarAllGalleriesMenu.DND_MARKER.equals(((CmsResultListItem)draggable).getData());
+
     }
 
     /**

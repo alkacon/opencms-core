@@ -106,6 +106,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -901,6 +902,43 @@ public final class CmsContentEditor extends CmsEditorBase {
             }
         };
         asyncCallback.execute();
+    }
+
+    /**
+     * Saves a value in an Xml content.<p>
+     * 
+     * @param contentId the structure id of the content 
+     * @param contentPath the xpath for which to set the value 
+     * @param locale the locale for which to set the value 
+     * @param value the new value 
+     * @param asyncCallback the callback for the result
+     */
+    public void saveValue(
+        final String contentId,
+        final String contentPath,
+        final String locale,
+        final String value,
+        final AsyncCallback<String> asyncCallback) {
+
+        CmsRpcAction<String> action = new CmsRpcAction<String>() {
+
+            @Override
+            public void execute() {
+
+                start(0, false);
+                getService().saveValue(contentId, contentPath, locale, value, this);
+
+            }
+
+            @Override
+            protected void onResponse(String result) {
+
+                stop(false);
+                asyncCallback.onSuccess(result);
+
+            }
+        };
+        action.execute();
     }
 
     /**

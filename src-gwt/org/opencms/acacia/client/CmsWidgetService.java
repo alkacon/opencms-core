@@ -28,9 +28,9 @@
 package org.opencms.acacia.client;
 
 import org.opencms.acacia.client.widgets.CmsFormWidgetWrapper;
+import org.opencms.acacia.client.widgets.CmsStringWidget;
 import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
-import org.opencms.acacia.client.widgets.CmsStringWidget;
 import org.opencms.acacia.shared.CmsAttributeConfiguration;
 import org.opencms.acacia.shared.CmsContentDefinition;
 import org.opencms.acacia.shared.CmsType;

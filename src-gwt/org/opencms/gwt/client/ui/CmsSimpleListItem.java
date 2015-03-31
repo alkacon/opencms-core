@@ -31,6 +31,7 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
+import com.google.common.base.Optional;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
@@ -75,6 +76,14 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
     public void add(Widget w) {
 
         m_panel.add(w);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDraggable#getCursorOffsetDelta()
+     */
+    public Optional<int[]> getCursorOffsetDelta() {
+
+        return Optional.absent();
     }
 
     /**

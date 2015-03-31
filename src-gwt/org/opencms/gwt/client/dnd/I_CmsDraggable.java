@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.dnd;
 
+import com.google.common.base.Optional;
 import com.google.gwt.dom.client.Element;
 
 /**
@@ -35,6 +36,13 @@ import com.google.gwt.dom.client.Element;
  * @since 8.0.0
  */
 public interface I_CmsDraggable {
+
+    /**
+     * Gets an optional pair of integers which are to be used as an "offset delta" for the drag and drop process.<p>
+     * 
+     * @return an optional array containing exactly 2 entries [x,y] 
+     */
+    Optional<int[]> getCursorOffsetDelta();
 
     /**
      * Creates the drag helper element and attaches it into the DOM.<p>

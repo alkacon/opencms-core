@@ -98,11 +98,11 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /** Add menu. */
     private CmsToolbarGalleryMenu m_add;
 
-    /** The button for the 'complete galleries' dialog. */
-    private CmsToolbarAllGalleriesMenu m_allGalleries;
-
     /** Add to favorites button. */
     private CmsAddToFavoritesButton m_addToFavorites;
+
+    /** The button for the 'complete galleries' dialog. */
+    private CmsToolbarAllGalleriesMenu m_allGalleries;
 
     /** Clip-board menu. */
     private CmsToolbarClipboardMenu m_clipboard;
@@ -354,6 +354,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         CmsContentEditorHandler contentEditorHandler = new CmsContentEditorHandler(containerpageHandler);
         CmsCompositeDNDController dndController = new CmsCompositeDNDController();
         dndController.addController(new CmsContainerpageDNDController(controller));
+        //dndController.addController(new CmsImageDndController(controller));
         controller.setDndController(dndController);
         CmsDNDHandler dndHandler = new CmsDNDHandler(dndController);
         dndHandler.setAnimationType(AnimationType.SPECIAL);

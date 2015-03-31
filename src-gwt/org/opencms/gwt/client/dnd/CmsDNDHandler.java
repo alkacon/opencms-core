@@ -902,6 +902,7 @@ public class CmsDNDHandler implements MouseDownHandler {
         if ((m_currentTarget == null) || (m_currentTarget.getPlaceholderIndex() < 0)) {
             cancel();
         } else {
+            CmsDebugLog.consoleLog("calling drop...");
             drop();
         }
     }

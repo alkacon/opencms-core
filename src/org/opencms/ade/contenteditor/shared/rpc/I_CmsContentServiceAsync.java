@@ -153,4 +153,16 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
         boolean clearOnSuccess,
         AsyncCallback<CmsValidationResult> callback);
 
+    /**
+     * Saves a value in an existing XML content.<p>
+     * 
+     * @param contentId the structure id of the content 
+     * @param contentPath the xpath of the value to set 
+     * @param locale the locale in which to set the value 
+     * @param value the value to set 
+     * 
+     * @param callback the callback to call with the result 
+     */
+    void saveValue(String contentId, String contentPath, String locale, String value, AsyncCallback<String> callback);
+
 }

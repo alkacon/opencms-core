@@ -29,6 +29,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.gwt.client.util.CmsStyleVariable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
@@ -110,11 +111,14 @@ public class CmsHighlightingBorder extends Composite {
     @UiField
     protected DivElement m_borderTop;
 
-    /** The positioning parent element. */
-    private Element m_positioningParent;
-
     /** The border offset. */
     private int m_borderOffset;
+
+    /** The style variable used to change the color of the border. */
+    private CmsStyleVariable m_colorVariable;
+
+    /** The positioning parent element. */
+    private Element m_positioningParent;
 
     /**
      * Constructor.<p>
@@ -149,7 +153,8 @@ public class CmsHighlightingBorder extends Composite {
 
         m_borderOffset = BORDER_OFFSET;
         initWidget(uiBinder.createAndBindUi(this));
-        getWidget().addStyleName(color.getCssClass());
+        m_colorVariable = new CmsStyleVariable(getWidget());
+        m_colorVariable.setValue(color.getCssClass());
         m_positioningParent = positioningParent;
         resetPosition();
     }
@@ -174,7 +179,8 @@ public class CmsHighlightingBorder extends Composite {
 
         m_borderOffset = borderOffset;
         initWidget(uiBinder.createAndBindUi(this));
-        getWidget().addStyleName(color.getCssClass());
+        m_colorVariable = new CmsStyleVariable(getWidget());
+        m_colorVariable.setValue(color.getCssClass());
         setPosition(height, width, positionLeft, positionTop);
     }
 
@@ -196,6 +202,16 @@ public class CmsHighlightingBorder extends Composite {
         if (m_positioningParent != null) {
             setPosition(m_positioningParent.getOffsetHeight(), m_positioningParent.getOffsetWidth(), 0, 0);
         }
+    }
+
+    /** 
+     * Sets the color of the border.<p>
+     * 
+     * @param color the color of the border 
+     */
+    public void setColor(BorderColor color) {
+
+        m_colorVariable.setValue(color.getCssClass());
     }
 
     /**

@@ -85,6 +85,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -1101,6 +1103,40 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Creates a new element.<p>
+     * 
+     * @param element the widget belonging to the element which is currently in memory only 
+     * @param callback the callback to call with the result 
+     */
+    public void createNewElement(
+        final CmsContainerPageElementPanel element,
+        final AsyncCallback<CmsContainerElement> callback) {
+
+        CmsRpcAction<CmsContainerElement> action = new CmsRpcAction<CmsContainerElement>() {
+
+            @Override
+            public void execute() {
+
+                getContainerpageService().createNewElement(
+                    CmsCoreProvider.get().getStructureId(),
+                    element.getId(),
+                    element.getNewType(),
+                    null,
+                    getLocale(),
+                    this);
+
+            }
+
+            @Override
+            protected void onResponse(CmsContainerElement result) {
+
+                callback.onSuccess(result);
+            }
+        };
+        action.execute();
+    }
+
+    /**
      * Deletes an element from the VFS, removes it from all containers and the client side cache.<p>
      * 
      * @param elementId the element to delete
@@ -1234,6 +1270,49 @@ public final class CmsContainerpageController {
     public CmsContainer getContainer(String containerName) {
 
         return m_containers.get(containerName);
+    }
+
+    /**
+     * Gets the container element widget to which the given element belongs, or Optional.absent if none could be found.<p>
+     *  
+     * @param element the element for which the container element widget should be found 
+     * 
+     * @return the container element widget, or Optional.absent if none can be found 
+     */
+    public Optional<CmsContainerPageElementPanel> getContainerElementWidgetForElement(Element element) {
+
+        final Element parentContainerElement = CmsDomUtil.getAncestor(
+            element,
+            I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
+        if (parentContainerElement == null) {
+            return Optional.absent();
+        }
+        final List<CmsContainerPageElementPanel> result = Lists.newArrayList();
+        processPageContent(new I_PageContentVisitor() {
+
+            public boolean beginContainer(String name, CmsContainer container) {
+
+                // we don't need to look into the container if we have already found our container element 
+                return result.isEmpty();
+            }
+
+            public void endContainer() {
+
+                // do nothing 
+            }
+
+            public void handleElement(CmsContainerPageElementPanel current) {
+
+                if ((current.getElement() == parentContainerElement) && result.isEmpty()) {
+                    result.add(current);
+                }
+            }
+        });
+        if (result.isEmpty()) {
+            return Optional.absent();
+        } else {
+            return Optional.fromNullable(result.get(0));
+        }
     }
 
     /**
