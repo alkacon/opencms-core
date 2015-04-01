@@ -86,8 +86,11 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
      */
     public void onFailure(Throwable t) {
 
-        // a status code exception indicates the session is no longer valid
-        if ((t instanceof StatusCodeException) && (((StatusCodeException)t).getStatusCode() == 500)) {
+        if ((t instanceof StatusCodeException) && (((StatusCodeException)t).getStatusCode() == 0)) {
+            // a status code 0 indicates the client aborted the request, most likely when leaving the page, this should be ignored
+            return;
+        } else if ((t instanceof StatusCodeException) && (((StatusCodeException)t).getStatusCode() == 500)) {
+            // a server error 500 most likely indicates an expired session and there for insufficient user rights to access any GWT service 
             CmsErrorDialog dialog = new CmsErrorDialog(Messages.get().key(Messages.GUI_SESSION_EXPIRED_0), null);
             dialog.center();
         } else {
