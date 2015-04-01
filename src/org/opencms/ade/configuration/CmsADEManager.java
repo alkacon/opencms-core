@@ -700,6 +700,16 @@ public class CmsADEManager {
     }
 
     /**
+     * Gets the sitemap configuration resource type.<p>
+     * 
+     * @return the resource type for sitemap configurations 
+     */
+    public I_CmsResourceType getSitemapConfigurationType() {
+
+        return m_configType;
+    }
+
+    /**
      * Returns all sub sites below the given path.<p>
      * 
      * @param cms the cms context
@@ -734,6 +744,9 @@ public class CmsADEManager {
         CmsADEConfigData configData = lookupConfiguration(cms, rootPath);
         String basePath = configData.getBasePath();
         String siteRoot = OpenCms.getSiteManager().getSiteRoot(rootPath);
+        if (siteRoot == null) {
+            siteRoot = "";
+        }
         if ((basePath == null) || !basePath.startsWith(siteRoot)) {
             // the subsite root should always be below the site root
             return siteRoot;
