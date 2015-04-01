@@ -264,31 +264,33 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     public void testCacheCorrectnessOffline() throws Exception {
 
         OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
+        try {
+            writeConfiguration(1, "a");
+            writeConfiguration(2, "b");
+            writeConfiguration(3, "c");
+            String level3 = "/system/level1/level2/level3";
+            // a, b, c
+            checkConfigurationForPath(level3, "alpha", false, "key=c", "key=a", "key=b");
 
-        writeConfiguration(1, "a");
-        writeConfiguration(2, "b");
-        writeConfiguration(3, "c");
-        String level3 = "/system/level1/level2/level3";
-        // a, b, c
-        checkConfigurationForPath(level3, "alpha", false, "key=c", "key=a", "key=b");
+            writeConfiguration(2, "d");
+            // a, d, c
+            checkConfigurationForPath(level3, "alpha", false, "key=c", "key=a", "key=d");
 
-        writeConfiguration(2, "d");
-        // a, d, c
-        checkConfigurationForPath(level3, "alpha", false, "key=c", "key=a", "key=d");
+            writeConfiguration(1, "b");
+            // b, d, c
+            checkConfigurationForPath(level3, "alpha", false, "key=c", "key=b", "key=d");
 
-        writeConfiguration(1, "b");
-        // b, d, c
-        checkConfigurationForPath(level3, "alpha", false, "key=c", "key=b", "key=d");
+            writeConfiguration(3, "a");
+            // b, d, a
+            checkConfigurationForPath(level3, "alpha", false, "key=a", "key=b", "key=d");
 
-        writeConfiguration(3, "a");
-        // b, d, a
-        checkConfigurationForPath(level3, "alpha", false, "key=a", "key=b", "key=d");
+            deleteConfiguration(2);
 
-        deleteConfiguration(2);
-
-        //b, -, a
-        checkConfigurationForPath(level3, "alpha", false, "key=a", "key=b");
-
+            //b, -, a
+            checkConfigurationForPath(level3, "alpha", false, "key=a", "key=b");
+        } finally {
+            publish();
+        }
     }
 
     /**
@@ -299,55 +301,57 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     public void testCacheCorrectnessOnline() throws Exception {
 
         OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
+        try {
+            writeConfiguration(1, "a");
+            writeConfiguration(2, "b");
+            writeConfiguration(3, "c");
+            publish();
+            String level3 = "/system/level1/level2/level3";
 
-        writeConfiguration(1, "a");
-        writeConfiguration(2, "b");
-        writeConfiguration(3, "c");
-        publish();
-        String level3 = "/system/level1/level2/level3";
+            // OFFLINE: a, b, c       ONLINE: a, b, c 
+            checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
 
-        // OFFLINE: a, b, c       ONLINE: a, b, c 
-        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
-        checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
+            writeConfiguration(2, "d");
+            // OFFLINE: a, d, c       ONLINE: a, b, c
+            checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=d");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
 
-        writeConfiguration(2, "d");
-        // OFFLINE: a, d, c       ONLINE: a, b, c
-        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=d");
-        checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
+            publish();
+            // OFFLINE: a, d, c       ONLINE: a, d, c
+            checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=d");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
 
-        publish();
-        // OFFLINE: a, d, c       ONLINE: a, d, c
-        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=d");
-        checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
+            writeConfiguration(1, "b");
+            // OFFLINE: b, d, c       ONLINE: a, d, c
+            checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=b", "key=d");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
 
-        writeConfiguration(1, "b");
-        // OFFLINE: b, d, c       ONLINE: a, d, c
-        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=b", "key=d");
-        checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=d");
+            publish();
+            // OFFLINE: b, d, c       ONLINE: b,d,c
+            checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=b", "key=d");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=b", "key=d");
 
-        publish();
-        // OFFLINE: b, d, c       ONLINE: b,d,c
-        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=b", "key=d");
-        checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=b", "key=d");
+            writeConfiguration(3, "a");
+            // OFFLINE: b, d, a       ONLINE: b,d,c
+            checkConfigurationForPath(level3, "alpha", OFFLINE, "key=a", "key=b", "key=d");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=b", "key=d");
 
-        writeConfiguration(3, "a");
-        // OFFLINE: b, d, a       ONLINE: b,d,c
-        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=a", "key=b", "key=d");
-        checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=b", "key=d");
+            publish();
+            // OFFLINE: b, d, a       ONLINE: b,d,a
+            checkConfigurationForPath(level3, "alpha", OFFLINE, "key=a", "key=b", "key=d");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=a", "key=b", "key=d");
 
-        publish();
-        // OFFLINE: b, d, a       ONLINE: b,d,a
-        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=a", "key=b", "key=d");
-        checkConfigurationForPath(level3, "alpha", ONLINE, "key=a", "key=b", "key=d");
+            deleteConfiguration(2);
+            // OFFLINE: b, -, a      ONLINE: b,d,a
+            checkConfigurationForPath(level3, "alpha", OFFLINE, "key=a", "key=b");
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=a", "key=b", "key=d");
 
-        deleteConfiguration(2);
-        // OFFLINE: b, -, a      ONLINE: b,d,a
-        checkConfigurationForPath(level3, "alpha", OFFLINE, "key=a", "key=b");
-        checkConfigurationForPath(level3, "alpha", ONLINE, "key=a", "key=b", "key=d");
-
-        publish();
-        checkConfigurationForPath(level3, "alpha", ONLINE, "key=a", "key=b");
-
+            publish();
+            checkConfigurationForPath(level3, "alpha", ONLINE, "key=a", "key=b");
+        } finally {
+            publish();
+        }
     }
 
     /**
@@ -419,6 +423,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             assertEquals(1, logHandler.getOfflineLoads());
             assertEquals(1, logHandler.getOnlineLoads());
         } finally {
+            publish();
             OpenCmsTestLogAppender.setHandler(null);
         }
     }
@@ -523,17 +528,21 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      */
     public void testNoConfigurations() throws Exception {
 
-        writeConfiguration(1, "a");
-        writeConfiguration(2, "b");
-        writeConfiguration(3, "c");
-        checkConfigurationForPath("/system/level1/level2/level3", "beta", OFFLINE);
-        checkConfigurationForPath("/system/level1/level2/level3", "beta", ONLINE);
-        deleteConfiguration(1);
-        deleteConfiguration(2);
-        deleteConfiguration(3);
-        checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE);
-        publish();
-        checkConfigurationForPath("/system/level1/level2/level3", "alpha", ONLINE);
+        try {
+            writeConfiguration(1, "a");
+            writeConfiguration(2, "b");
+            writeConfiguration(3, "c");
+            checkConfigurationForPath("/system/level1/level2/level3", "beta", OFFLINE);
+            checkConfigurationForPath("/system/level1/level2/level3", "beta", ONLINE);
+            deleteConfiguration(1);
+            deleteConfiguration(2);
+            deleteConfiguration(3);
+            checkConfigurationForPath("/system/level1/level2/level3", "alpha", OFFLINE);
+            publish();
+            checkConfigurationForPath("/system/level1/level2/level3", "alpha", ONLINE);
+        } finally {
+            publish();
+        }
     }
 
     /**
@@ -735,6 +744,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         } finally {
             deleteConfiguration("/system/x1/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
             deleteConfiguration("/system/x1/x2/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
+            publish();
         }
 
     }
@@ -775,6 +785,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         } finally {
             deleteConfiguration("/system/x1/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
             deleteConfiguration("/system/x1/x2/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
+            publish();
         }
 
     }
@@ -822,6 +833,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         } finally {
             deleteConfiguration("/system/x1/x2/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
             deleteConfiguration("/system/x1/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
+            publish();
         }
     }
 
@@ -859,6 +871,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         } finally {
             deleteConfiguration("/system/x1/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
             deleteConfiguration("/system/x1/x2/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
+            publish();
         }
 
     }
@@ -966,6 +979,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             assertEquals(0, logHandler.getOfflineLoads());
             assertEquals(0, logHandler.getOfflineReadResource());
         } finally {
+            publish();
             OpenCmsTestLogAppender.setBreakOnError(false);
             OpenCmsTestLogAppender.setHandler(null);
         }
