@@ -1238,10 +1238,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      */
     private CmsXmlContent getContentDocument(CmsFile file, boolean fromCache) throws CmsXmlException {
 
-        CmsXmlContent content;
+        CmsXmlContent content = null;
         if (fromCache) {
             content = getSessionCache().getCacheXmlContent(file.getStructureId());
-        } else {
+        }
+        if (content == null) {
             content = CmsXmlContentFactory.unmarshal(getCmsObject(), file);
             getSessionCache().setCacheXmlContent(file.getStructureId(), content);
         }
