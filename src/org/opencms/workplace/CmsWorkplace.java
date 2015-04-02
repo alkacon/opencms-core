@@ -1635,7 +1635,7 @@ public abstract class CmsWorkplace {
 
         if (segment == HTML_START) {
             StringBuffer result = new StringBuffer(512);
-            result.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n");
+            result.append("<!DOCTYPE html>\n");
             result.append("<html>\n<head>\n");
             if (title != null) {
                 result.append("<title>");

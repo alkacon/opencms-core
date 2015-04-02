@@ -115,7 +115,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
             "tool_content",
             getJsp().link(CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/list-explorer.jsp") + "?" + params);
         StringBuffer html = new StringBuffer(1024);
-        html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">\n");
+        html.append("<!DOCTYPE html>\n");
         html.append("<html>\n");
         html.append("\t<head>\n");
         html.append("\t\t<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=\"").append(getEncoding()).append(

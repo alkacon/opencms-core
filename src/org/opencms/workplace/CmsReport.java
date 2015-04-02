@@ -465,7 +465,7 @@ public class CmsReport extends CmsMultiDialog {
         }
         if (segment == HTML_START) {
             StringBuffer result = new StringBuffer(512);
-            result.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n");
+            result.append("<!DOCTYPE html>\n");
             result.append("<html>\n<head>\n");
             result.append("<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=");
             result.append(getEncoding());
