@@ -301,6 +301,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** The workplace locale from the current user's settings. */
     private Locale m_wpLocale;
 
+    /** Limit to the number results loaded on initial search. */
+    public static final int INITIAL_SEARCH_MAX_RESULTS = 200;
+
     /**
      * Returns the initial gallery settings.<p>
      * 
@@ -1656,8 +1659,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         while (!found) {
             params.setResultPage(currentPage);
             searchResults = searchBean.getResult(params);
-            Iterator<CmsGallerySearchResult> resultsIt = searchResults.listIterator();
             totalResults.append(searchResults);
+            Iterator<CmsGallerySearchResult> resultsIt = searchResults.listIterator();
             while (resultsIt.hasNext()) {
                 CmsGallerySearchResult searchResult = resultsIt.next();
                 if (searchResult.getPath().equals(resource.getRootPath())) {
@@ -1671,10 +1674,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             } else {
                 break;
             }
+            if (searchResults.getHitCount() > INITIAL_SEARCH_MAX_RESULTS) {
+                // in case the hit count is too large, don't continue the search to avoid slow load times
+                break;
+            }
         }
         boolean hasResults = searchResults != null;
         searchResults = totalResults;
-        if (found && hasResults) {
+        if (hasResults) {
             initialSearchObj.setSortOrder(params.getSortOrder().name());
             initialSearchObj.setResultCount(searchResults.getHitCount());
             initialSearchObj.setPage(params.getResultPage());
