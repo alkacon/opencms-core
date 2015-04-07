@@ -44,7 +44,9 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.solr.CmsSolrIndex;
+import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
@@ -262,7 +264,11 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
         m_searchController.updateFromRequestParameters(pageContext.getRequest().getParameterMap());
         String query = m_searchController.generateQuery();
         try {
-            CmsSolrResultList solrResultList = m_index.search(m_cms, query);
+            // use "complicated" constructor to allow more than 50 results -> set ignoreMaxResults to true
+            CmsSolrResultList solrResultList = m_index.search(
+                m_cms,
+                new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(query)),
+                true);
             return new CmsSearchResultWrapper(m_searchController, solrResultList, m_cms);
         } catch (CmsSearchException e) {
             LOG.warn(Messages.get().getBundle().key(Messages.LOG_TAG_SEARCHFORM_SEARCH_FAILED_0), e);
