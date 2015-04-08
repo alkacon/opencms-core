@@ -299,6 +299,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             // create OpenCms context, this will be set in the root site            
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
             cms.getRequestContext().setUri(handlerUri);
+            cms.getRequestContext().setSecureRequest(OpenCms.getSiteManager().usesSecureSite(req));
             // read the error handler file
             file = cms.readFile(handlerUri, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {

@@ -616,6 +616,16 @@ public final class CmsRequestContext {
         m_requestTime = time;
     }
 
+    /** 
+     * Sets the 'secure request' status.<p>
+     * 
+     * @param secureRequest the new value 
+     */
+    public void setSecureRequest(boolean secureRequest) {
+
+        m_isSecureRequest = secureRequest;
+    }
+
     /**
      * Sets the current root directory in the virtual file system.<p>
      * 
