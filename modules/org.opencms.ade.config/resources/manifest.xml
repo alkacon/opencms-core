@@ -62,7 +62,7 @@
 			<resource uri="/system/workplace/resources/filetypes/modelpage_big.png" />
 			<resource uri="/system/workplace/resources/filetypes/category.png" />
 			<resource uri="/system/workplace/resources/filetypes/category_big.png" />
-			
+
 			<resource uri="/system/workplace/resources/filetypes/htmlredirect.png" />
 			<resource
 				uri="/system/workplace/resources/filetypes/htmlredirect_big.png" />
@@ -186,7 +186,6 @@
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd
 				</param>
 			</type>
-
 			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
 				name="formatter_config" id="308">
 				<properties>
@@ -270,7 +269,6 @@
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/xmlvfsbundle.xsd
 				</param>
 			</type>
-
 			<type class="org.opencms.file.types.CmsResourceTypePlain" name="propertyvfsbundle"
 				id="307">
 				<properties>
@@ -280,8 +278,15 @@
 					</property>
 				</properties>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlimage" id="312">
-				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/xmlimage.xsd</param>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="xmlimage" id="312">
+				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/xmlimage.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="containermodel" id="313">
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/containermodel.xsd
+				</param>
 			</type>
 		</resourcetypes>
 		<explorertypes>
@@ -293,25 +298,19 @@
 			</explorertype>
 			<explorertype name="modelpage" key="fileicon.modelpage"
 				icon="modelpage.png" bigicon="modelpage_big.png" reference="folder">
-				<newresource page="none"
-					uri="" order="490"
+				<newresource page="none" uri="" order="490"
 					autosetnavigation="false" autosettitle="false" info="" />
 			</explorertype>
-			
 			<explorertype name="xmlimage" key="fileicon.xmlimage"
 				icon="image.gif" bigicon="image_big.png" reference="xmlcontent">
-				<newresource 
-					uri="newresource_xmlcontent.jsp?newresourcetype=xmlimage" order="490"
-					autosetnavigation="false" autosettitle="false" info="desc.xmlimage" />
+				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=xmlimage"
+					order="490" autosetnavigation="false" autosettitle="false" info="desc.xmlimage" />
 			</explorertype>
-	
 			<explorertype name="category" key="fileicon.category"
 				icon="category.png" bigicon="category_big.png" reference="folder">
-				<newresource page="none"
-					uri="" order="490"
+				<newresource page="none" uri="" order="490"
 					autosetnavigation="false" autosettitle="false" info="" />
 			</explorertype>
-			
 			<explorertype name="htmlredirect" key="fileicon.htmlredirect"
 				icon="htmlredirect.png" bigicon="htmlredirect_big.png" reference="xmlcontent">
 				<newresource
@@ -434,18 +433,18 @@
 							rule="containerpage" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
-							rule="containerpage-no-different-site-and-has-editor-role" />
+								name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
+								rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
+								name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
 							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
+								name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_SEO_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog"
-							rule="containerpage-no-different-site-and-has-editor-role" />
+								name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog"
+								rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
-							rule="containerpage-wpuser" />
+								name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
+								rule="containerpage-wpuser" />
 						</entry>
 						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings"
@@ -455,8 +454,8 @@
 
 						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAbout"
 							rule="containerpage" />
-							
-							
+
+
 
 
 					</contextmenu>
@@ -617,11 +616,11 @@
 							rule="sitemap" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="sitemap">
 							<entry key="GUI_EXPLORER_CONTEXT_ALIAS_DIALOG_0"
-							name="org.opencms.ade.sitemap.client.toolbar.CmsAliasDialog"
-							rule="sitemap" />
+								name="org.opencms.ade.sitemap.client.toolbar.CmsAliasDialog"
+								rule="sitemap" />
 							<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
-							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
-							rule="sitemap-wpuser" />
+								name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
+								rule="sitemap-wpuser" />
 						</entry>
 						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings"
@@ -650,6 +649,19 @@
 					uri="newresource_xmlcontent.jsp?newresourcetype=formatter_config"
 					order="23" autosetnavigation="false" autosettitle="false"
 					info="desc.formatter_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+
+			<explorertype name="containermodel" key="fileicon.containermodel"
+				icon="formatter_config.png" bigicon="formatter_config_big.png"
+				reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=containermodel"
+					order="25" autosetnavigation="false" autosettitle="false"
+					info="desc.containermodel" />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER"
 						permissions="+r+v+w+c" />
@@ -1120,9 +1132,9 @@
 			<relations />
 			<accesscontrol />
 		</file>
-		
-		
-		
+
+
+
 		<file>
 			<source>system/workplace/resources/filetypes/modelpage_big.png
 			</source>
@@ -1211,28 +1223,28 @@
 			<relations />
 			<accesscontrol />
 		</file>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		<file>
 			<source>system/workplace/resources/filetypes/function.png</source>
 			<destination>system/workplace/resources/filetypes/function.png
@@ -1653,8 +1665,8 @@
 					<value><![CDATA[Template device contexts]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
+			<relations />
+			<accesscontrol />
 		</file>
 	</files>
 </export>

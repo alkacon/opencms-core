@@ -80,6 +80,9 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     /** The resource type name for inherited container references.  */
     public static final String INHERIT_CONTAINER_TYPE_NAME = "inheritance_group";
 
+    /** The resource type name of container models. */
+    public static final String CONTAINER_MODEL_TYPE_NAME = "containermodel";
+
     /** The name of this resource type. */
     public static final String RESOURCE_TYPE_NAME = "containerpage";
 

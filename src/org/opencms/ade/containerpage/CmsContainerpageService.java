@@ -78,6 +78,7 @@ import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockType;
@@ -1292,6 +1293,45 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * Adds container-model-relations from all container model content elements to this container page.<p>
+     * 
+     * @param containerpage the container page resource
+     * @param xmlCnt the container page XML
+     * 
+     * @throws CmsLoaderException in case the container model resource type is not available
+     */
+    private void ensureContainerModelRelations(CmsResource containerpage, CmsXmlContainerPage xmlCnt)
+    throws CmsLoaderException {
+
+        int containerModelTypeId = OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypeXmlContainerPage.CONTAINER_MODEL_TYPE_NAME).getTypeId();
+        for (CmsContainerBean container : xmlCnt.getContainerPage(getCmsObject()).getContainers().values()) {
+            for (CmsContainerElementBean element : container.getElements()) {
+                try {
+                    element.initResource(getCmsObject());
+                    if (containerModelTypeId == element.getResource().getTypeId()) {
+                        try {
+                            List<CmsRelation> relations = getCmsObject().getRelationsForResource(
+                                element.getResource(),
+                                CmsRelationFilter.relationsFromStructureId(element.getId()).filterType(
+                                    CmsRelationType.CONTAINER_MODEL));
+                            if (relations.isEmpty()) {
+                                ensureLock(element.getResource());
+                                setContainerModelRelation(getCmsObject(), containerpage, element.getResource());
+                                tryUnlock(element.getResource());
+                            }
+                        } catch (CmsException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+    }
+
+    /**
      * Generates the XML container page bean for the given containers.<p>
      * 
      * @param containers the containers
@@ -1432,7 +1472,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, containerpageRootPath);
         CmsFormatterConfiguration formatters = config.getFormatters(cms, resource);
-        String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
         String containerType = null;
         containerType = container.getType();
         I_CmsFormatterBean formatter = null;
@@ -1969,6 +2008,21 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         return CmsPair.create(element, deletionCandidateStatuses);
     }
 
+    /**
+     * Checks whether the current page is a container model page.<p>
+     * 
+     * @param cms the CMS context
+     * @param containerPage the current page
+     * 
+     * @return <code>true</code> if the current page is a container model page
+     */
+    private boolean isEditingContainerModels(CmsObject cms, CmsResource containerPage) {
+
+        return (CmsResource.getParentFolder(containerPage.getRootPath()).endsWith("/.content/.containermodels/") && OpenCms.getRoleManager().hasRole(
+            cms,
+            CmsRole.DEVELOPER));
+    }
+
     /** 
      * Checks if small elements in a container page should be initially editable.<p>
      * 
@@ -2025,6 +2079,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsContainerPageBean page = generateContainerPageForContainers(containers, containerpage.getRootPath());
         CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(containerpageUri));
         xmlCnt.save(cms, page);
+        if (isEditingContainerModels(cms, containerpage)) {
+            ensureContainerModelRelations(containerpage, xmlCnt);
+        }
     }
 
     /**
@@ -2053,6 +2110,23 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         byte[] content = document.marshal();
         file.setContents(content);
         cms.writeFile(file);
+    }
+
+    /**
+     * Sets a container model relation.<p>
+     * 
+     * @param cms the CMS context
+     * @param containerPage the container page
+     * @param containerModel the container model content
+     * 
+     * @throws CmsException in case something goes wrong
+     */
+    private void setContainerModelRelation(CmsObject cms, CmsResource containerPage, CmsResource containerModel)
+    throws CmsException {
+
+        ensureLock(containerModel);
+        cms.addRelationToResource(containerModel, containerPage, CmsRelationType.CONTAINER_MODEL.getName());
+        tryUnlock(containerModel);
     }
 
     /**

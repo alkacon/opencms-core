@@ -121,6 +121,20 @@ public final class CmsObject {
     /**
      * Adds a new relation to the given resource.<p>
      *
+     * @param resource the source resource
+     * @param target the target resource
+     * @param type the type of the relation
+     *
+     * @throws CmsException if something goes wrong 
+     */
+    public void addRelationToResource(CmsResource resource, CmsResource target, String type) throws CmsException {
+
+        createRelation(resource, target, type, false);
+    }
+
+    /**
+     * Adds a new relation to the given resource.<p>
+     *
      * @param resourceName the name of the source resource
      * @param targetPath the path of the target resource
      * @param type the type of the relation
@@ -4034,6 +4048,23 @@ public final class CmsObject {
     /**
      * Adds a new relation to the given resource.<p>
      *
+     * @param resource the source resource
+     * @param target the target resource
+     * @param relationType the type of the relation
+     * @param importCase if importing relations
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void createRelation(CmsResource resource, CmsResource target, String relationType, boolean importCase)
+    throws CmsException {
+
+        CmsRelationType type = CmsRelationType.valueOf(relationType);
+        m_securityManager.addRelationToResource(m_context, resource, target, type, importCase);
+    }
+
+    /**
+     * Adds a new relation to the given resource.<p>
+     *
      * @param resourceName the name of the source resource
      * @param targetPath the path of the target resource
      * @param relationType the type of the relation
@@ -4046,8 +4077,7 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsResource target = readResource(targetPath, CmsResourceFilter.IGNORE_EXPIRATION);
-        CmsRelationType type = CmsRelationType.valueOf(relationType);
-        m_securityManager.addRelationToResource(m_context, resource, target, type, importCase);
+        createRelation(resource, target, relationType, importCase);
     }
 
     /**
