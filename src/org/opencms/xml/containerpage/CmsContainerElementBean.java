@@ -442,8 +442,8 @@ public class CmsContainerElementBean implements Cloneable {
             }
             // the resource object may have a wrong root path, e.g. if it was created before the resource was moved
             if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-                m_resource = cms.readResource(id);
-                m_releasedAndNotExpired = true;
+                m_resource = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+                m_releasedAndNotExpired = m_resource.isReleasedAndNotExpired(cms.getRequestContext().getRequestTime());
             } else {
                 if (!isTemporaryContent()) {
                     m_resource = cms.readResource(getId(), CmsResourceFilter.IGNORE_EXPIRATION);
