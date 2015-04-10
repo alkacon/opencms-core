@@ -718,12 +718,6 @@ public class CmsHtmlWidgetOption {
                                 // skip unlink button because no link buttons are defined as additional buttons
                                 continue;
                             }
-                        } else if (OPTION_STYLE.equals(barItem)) {
-                            // special handling of style select box to be shown only if a path to the styles XML had been defined
-                            if ((!showStylesXml()) && (!showStylesFormat())) {
-                                // skip if no path has been defined
-                                continue;
-                            }
                         } else if (!getAdditionalButtons().contains(barItem)) {
                             // skip all optional buttons that are not defined
                             continue;

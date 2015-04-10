@@ -32,11 +32,13 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestLogAppender;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -385,6 +387,30 @@ public class TestLiveConfig extends OpenCmsTestCase {
         } finally {
             restoreFiles();
         }
+    }
+
+    /**
+     * Tests whether getSubsiteFolder works correctly with the shared folder.<p>
+     */
+    public void testSharedGetSubSite() throws Exception {
+
+        CmsObject cms = rootCms();
+        String filename = "/shared/.content/.config";
+        String data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
+            + "<SitemapConfigurationsV2 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd\">\r\n"
+            + "  <SitemapConfigurationV2 language=\"en\">\r\n"
+            + "  </SitemapConfigurationV2>\r\n"
+            + "</SitemapConfigurationsV2>\r\n";
+        cms.createResource("/shared/.content", CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource(
+            filename,
+            OpenCms.getADEManager().getSitemapConfigurationType().getTypeId(),
+            data.getBytes(),
+            Collections.<CmsProperty> emptyList());
+        assertEquals(
+            "/shared",
+            CmsFileUtil.removeTrailingSeparator(OpenCms.getADEManager().getSubSiteRoot(cms, "/shared")));
+
     }
 
     /**
