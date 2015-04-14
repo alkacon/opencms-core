@@ -46,8 +46,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -79,8 +79,8 @@ public final class CmsSolrSpellchecker {
     /** The Solr CoreContainer object. */
     private CoreContainer m_coreContainer;
 
-    /** The SolrServer object. */
-    private SolrServer m_solrServer;
+    /** The SolrClient object. */
+    private SolrClient m_solrClient;
 
     /** Constant, defining the default spellchecker language. */
     private static final String LANG_DEFAULT = "en";
@@ -129,7 +129,7 @@ public final class CmsSolrSpellchecker {
 
         m_core = core;
         m_coreContainer = container;
-        m_solrServer = new EmbeddedSolrServer(m_coreContainer, m_core.getName());
+        m_solrClient = new EmbeddedSolrServer(m_coreContainer, m_core.getName());
     }
 
     /**
@@ -186,7 +186,8 @@ public final class CmsSolrSpellchecker {
         // Figure out whether a JSON or HTTP request has been sent
         CmsSpellcheckingRequest cmsSpellcheckingRequest = null;
         try {
-            final JSONObject jsonRequest = new JSONObject(getRequestBody(servletRequest));
+            String requestBody = getRequestBody(servletRequest);
+            final JSONObject jsonRequest = new JSONObject(requestBody);
             cmsSpellcheckingRequest = parseJsonRequest(jsonRequest);
         } catch (Exception e) {
             cmsSpellcheckingRequest = parseHttpRequest(servletRequest, cms);
@@ -219,8 +220,8 @@ public final class CmsSolrSpellchecker {
      */
     void parseAndAddDictionaries(CmsObject cms) {
 
-        CmsSpellcheckDictionaryIndexer.parseAndAddZippedDictionaries(this.m_solrServer, cms);
-        CmsSpellcheckDictionaryIndexer.parseAndAddDictionaries(this.m_solrServer, cms);
+        CmsSpellcheckDictionaryIndexer.parseAndAddZippedDictionaries(this.m_solrClient, cms);
+        CmsSpellcheckDictionaryIndexer.parseAndAddDictionaries(this.m_solrClient, cms);
     }
 
     /**
@@ -449,9 +450,9 @@ public final class CmsSolrSpellchecker {
         query.add(params);
 
         try {
-            QueryResponse qres = m_solrServer.query(query);
+            QueryResponse qres = m_solrClient.query(query);
             return qres.getSpellCheckResponse();
-        } catch (SolrServerException e) {
+        } catch (SolrServerException | IOException e) {
             LOG.debug("Exception while performing spellcheck query...");
         }
 

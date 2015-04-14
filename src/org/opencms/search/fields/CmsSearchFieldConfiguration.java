@@ -52,6 +52,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.lucene.uninverting.UninvertingReader.Type;
+
 /**
  * Abstract implementation for OpenCms search field configurations.<p>
  * 
@@ -83,17 +85,17 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
     /** The name of the configuration. */
     private String m_name;
 
+    static {
+        LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT);
+        LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT_BLOB);
+    }
+
     /**
      * Creates a new, empty field configuration.<p>
      */
     public CmsSearchFieldConfiguration() {
 
         m_fields = new ArrayList<CmsSearchField>();
-    }
-
-    static {
-        LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT);
-        LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT_BLOB);
     }
 
     /**
@@ -187,6 +189,18 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
                 addField(field);
             }
         }
+    }
+
+    /** To allow sorting on a field the field must be added to the map given to {@link org.apache.lucene.uninverting.UninvertingReader#wrap(org.apache.lucene.index.DirectoryReader, Map)}.
+     *  The method adds the configured fields. 
+     * @param uninvertingMap the map to which the fields are added.
+     */
+    public void addUninvertingMappings(Map<String, Type> uninvertingMap) {
+
+        for (String fieldName : getFieldNames()) {
+            uninvertingMap.put(fieldName, Type.SORTED);
+        }
+
     }
 
     /**

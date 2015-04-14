@@ -75,8 +75,8 @@ import javax.servlet.ServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.index.Term;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
@@ -165,8 +165,8 @@ public class CmsSolrIndex extends CmsSearchIndex {
     /** A constant for UTF-8 charset. */
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
-    /** The embedded Solr server for this index. */
-    SolrServer m_solr;
+    /** The embedded Solr client for this index. */
+    SolrClient m_solr;
 
     /** The post document manipulator. */
     private I_CmsSolrPostSearchProcessor m_postProcessor;
@@ -488,11 +488,11 @@ public class CmsSolrIndex extends CmsSearchIndex {
     /**
      * Sets the Solr server used by this index.<p>
      *
-     * @param server the server to set
+     * @param client the server to set
      */
-    public void setSolrServer(SolrServer server) {
+    public void setSolrServer(SolrClient client) {
 
-        m_solr = server;
+        m_solr = client;
     }
 
     /**
@@ -560,7 +560,6 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
             SolrQueryResponse solrQueryResponse = new SolrQueryResponse();
             solrQueryResponse.setAllValues(queryResponse.getResponse());
-            solrQueryResponse.setEndTime(queryResponse.getQTime());
 
             // create and initialize the solr request
             solrQueryRequest = new LocalSolrQueryRequest(core, solrQueryResponse.getResponseHeader());
@@ -921,7 +920,6 @@ public class CmsSolrIndex extends CmsSearchIndex {
                     // create and initialize the solr response
                     solrQueryResponse = new SolrQueryResponse();
                     solrQueryResponse.setAllValues(queryResponse.getResponse());
-                    solrQueryResponse.setEndTime(queryResponse.getQTime());
                     int paramsIndex = queryResponse.getResponseHeader().indexOf(HEADER_PARAMS_NAME, 0);
                     NamedList<Object> header = null;
                     Object o = queryResponse.getResponseHeader().getVal(paramsIndex);

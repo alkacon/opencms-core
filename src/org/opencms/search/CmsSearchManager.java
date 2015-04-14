@@ -94,7 +94,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.util.Version;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.CoreDescriptor;
 import org.apache.solr.core.SolrCore;
@@ -177,6 +177,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          * 
          * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
          */
+        @SuppressWarnings("unchecked")
         public void cmsEvent(CmsEvent event) {
 
             switch (event.getType()) {
@@ -800,8 +801,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * Since Lucene 3.0, many analyzers require a "version" parameter in the constructor and 
      * can not be created by a simple <code>newInstance()</code> call.
-     * This method will create analyzers by name for the {@link CmsSearchIndex#LUCENE_VERSION} version.<p>
-     * 
+     * This method will create analyzers by name.<p>
+     *
      * @param className the class name of the analyzer
      * @param stemmer the optional stemmer parameter required for the snowball analyzer
      * 
@@ -826,10 +827,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         // since Lucene 3.0 most analyzers need a "version" parameter and don't support an empty constructor
         if (StandardAnalyzer.class.equals(analyzerClass)) {
             // the Lucene standard analyzer is used
-            analyzer = new StandardAnalyzer(CmsSearchIndex.LUCENE_VERSION);
+            analyzer = new StandardAnalyzer();
         } else if (CmsGallerySearchAnalyzer.class.equals(analyzerClass)) {
             // OpenCms gallery multiple language analyzer
-            analyzer = new CmsGallerySearchAnalyzer(CmsSearchIndex.LUCENE_VERSION);
+            analyzer = new CmsGallerySearchAnalyzer();
         } else {
             boolean hasEmpty = false;
             boolean hasVersion = false;
@@ -858,12 +859,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             if (hasVersionWithString) {
                 // a constructor with a Lucene version parameter and a String has been found
                 analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {Version.class, String.class}).newInstance(
-                    CmsSearchIndex.LUCENE_VERSION,
                     stemmer);
             } else if (hasVersion) {
                 // a constructor with a Lucene version parameter has been found
-                analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {Version.class}).newInstance(
-                    CmsSearchIndex.LUCENE_VERSION);
+                analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {Version.class}).newInstance();
             } else if (hasEmpty) {
                 // an empty constructor has been found
                 analyzer = (Analyzer)analyzerClass.newInstance();
@@ -1741,7 +1740,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             // HTTP Server configured
             // TODO Implement multi core support for HTTP server
             // @see http://lucidworks.lucidimagination.com/display/solr/Configuring+solr.xml
-            index.setSolrServer(new HttpSolrServer(m_solrConfig.getServerUrl()));
+            index.setSolrServer(new HttpSolrClient(m_solrConfig.getServerUrl()));
         }
 
         // get the core container that contains one core for each configured index
@@ -1767,15 +1766,22 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
 
             // create the core
-            CoreDescriptor descriptor = new CoreDescriptor(m_coreContainer, index.getName(), m_solrConfig.getHome());
-            descriptor.setDataDir(dataDir.getAbsolutePath());
+            CoreDescriptor descriptor = new CoreDescriptor(
+                m_coreContainer,
+                index.getName(),
+                m_solrConfig.getHome(),
+                CoreDescriptor.CORE_DATADIR,
+                dataDir.getAbsolutePath());
+            SolrCore core = null;
             try {
-                SolrCore core = m_coreContainer.create(descriptor);
+                // creation includes registration.
+                core = m_coreContainer.create(descriptor, false);
                 core.setName(index.getName());
-                // Register the newly created core
-                m_coreContainer.register(core, false);
                 index.setSolrServer(new EmbeddedSolrServer(m_coreContainer, index.getName()));
-            } catch (Exception e) {
+            } catch (NullPointerException e) {
+                if (core != null) {
+                    core.close();
+                }
                 throw new CmsConfigurationException(Messages.get().container(
                     Messages.ERR_SOLR_SERVER_NOT_CREATED_3,
                     index.getName(),
@@ -2951,7 +2957,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         try {
             // get the core container
             // still no core container: create it
-            container = new CoreContainer(m_solrConfig.getHome(), m_solrConfig.getSolrFile());
+            container = CoreContainer.createAndLoad(m_solrConfig.getHome(), m_solrConfig.getSolrFile());
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_SOLR_CORE_CONTAINER_CREATED_2,
@@ -3018,7 +3024,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         if (m_coreContainer != null) {
             for (SolrCore core : m_coreContainer.getCores()) {
-                m_coreContainer.remove(core.getName());
+                m_coreContainer.unload(core.getName());
                 if (core.getOpenCount() > 1) {
                     LOG.error("There are still "
                         + core.getOpenCount()

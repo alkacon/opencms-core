@@ -55,6 +55,7 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
+import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexableField;
 import org.apache.tika.io.IOUtils;
 
@@ -100,7 +101,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
 
     static {
         STORED_ANALYSED_TYPE = new FieldType();
-        STORED_ANALYSED_TYPE.setIndexed(true);
+        STORED_ANALYSED_TYPE.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
         STORED_ANALYSED_TYPE.setOmitNorms(false);
         STORED_ANALYSED_TYPE.setStored(true);
         STORED_ANALYSED_TYPE.setTokenized(true);
@@ -112,7 +113,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
 
     static {
         NOT_STORED_ANALYSED_TYPE = new FieldType();
-        NOT_STORED_ANALYSED_TYPE.setIndexed(true);
+        NOT_STORED_ANALYSED_TYPE.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
         NOT_STORED_ANALYSED_TYPE.setOmitNorms(false);
         NOT_STORED_ANALYSED_TYPE.setStored(false);
         NOT_STORED_ANALYSED_TYPE.setTokenized(true);
@@ -124,7 +125,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
 
     static {
         STORED_NOT_ANALYSED_TYPE = new FieldType();
-        STORED_NOT_ANALYSED_TYPE.setIndexed(true);
+        STORED_NOT_ANALYSED_TYPE.setIndexOptions(IndexOptions.DOCS);
         STORED_NOT_ANALYSED_TYPE.setOmitNorms(false);
         STORED_NOT_ANALYSED_TYPE.setStored(true);
         STORED_NOT_ANALYSED_TYPE.setTokenized(false);
@@ -274,9 +275,9 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
         if (field instanceof CmsLuceneField) {
             add(((CmsLuceneField)field).createField(value));
         } else {
-            new CmsRuntimeException(Messages.get().container(
+            throw (new CmsRuntimeException(Messages.get().container(
                 Messages.LOG_INVALID_FIELD_CLASS_1,
-                field.getClass().getName()));
+                field.getClass().getName())));
         }
     }
 

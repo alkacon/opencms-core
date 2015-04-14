@@ -33,6 +33,7 @@ import org.opencms.util.CmsStringUtil;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
+import org.apache.lucene.index.IndexOptions;
 
 /**
  * An individual field configuration in a Lucene search index.<p>
@@ -210,10 +211,10 @@ public class CmsLuceneField extends CmsSearchField {
             final FieldType ft = new FieldType();
             if (isIndexed()) {
                 if (isTokenizedAndIndexed()) {
-                    ft.setIndexed(true);
+                    ft.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
                     ft.setTokenized(true);
                 } else {
-                    ft.setIndexed(true);
+                    ft.setIndexOptions(IndexOptions.DOCS);
                     ft.setTokenized(false);
                 }
             }

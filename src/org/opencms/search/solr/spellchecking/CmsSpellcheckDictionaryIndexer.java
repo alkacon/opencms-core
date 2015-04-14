@@ -53,7 +53,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.logging.Log;
-import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
 
@@ -87,7 +87,7 @@ public final class CmsSpellcheckDictionaryIndexer {
     /** Maximum amount of entries while parsing the dictionary. This variable is needed
      * in order to prevent OutOfMemoryExceptions while parsing large dictionaries. If you
      * encounter such exceptions you can adjust its value to a smaller number. */
-    private static final int MAX_LIST_SIZE = 250000;
+    private static final int MAX_LIST_SIZE = 100000;
 
     /**
      * FileFilter implementation that returns only directories whose name matches
@@ -110,13 +110,13 @@ public final class CmsSpellcheckDictionaryIndexer {
 
     /**
      * Adds all dictionaries that are available in the default directory. <p>
-     *  
-     * @param server The SolrServer instance object. 
+     *
+     * @param client The SolrClient instance object.
      * @param cms the cms context
      */
-    public static void parseAndAddDictionaries(SolrServer server, CmsObject cms) {
+    public static void parseAndAddDictionaries(SolrClient client, CmsObject cms) {
 
-        if ((null == server) || (null == cms)) {
+        if ((null == client) || (null == cms)) {
             return;
         }
 
@@ -148,14 +148,14 @@ public final class CmsSpellcheckDictionaryIndexer {
                     final List<SolrInputDocument> documents = new ArrayList<SolrInputDocument>();
 
                     readAndAddDocumentsFromStream(
-                        server,
+                        client,
                         lang,
                         new ByteArrayInputStream(file.getContents()),
                         documents,
                         true);
 
                     // Add and commit the remaining documents to the server
-                    addDocuments(server, documents, true);
+                    addDocuments(client, documents, true);
                 }
             }
 
@@ -169,11 +169,11 @@ public final class CmsSpellcheckDictionaryIndexer {
     }
 
     /**
-     * 
-     * @param server The SolrServer instance object. 
+     *
+     * @param client The SolrClient instance object.
      * @param cms The OpenCms instance object.
      */
-    public static void parseAndAddZippedDictionaries(SolrServer server, CmsObject cms) {
+    public static void parseAndAddZippedDictionaries(SolrClient client, CmsObject cms) {
 
         try {
             final List<CmsResource> resources = cms.getResourcesInFolder(
@@ -205,8 +205,8 @@ public final class CmsSpellcheckDictionaryIndexer {
                             // The (matching) filename reveals the language
                             final String lang = name.substring(5, 7);
 
-                            // Parse and add documents 
-                            readAndAddDocumentsFromStream(server, lang, zipStream, documents, false);
+                            // Parse and add documents
+                            readAndAddDocumentsFromStream(client, lang, zipStream, documents, false);
 
                             // Get the next file in the zip
                             entry = zipStream.getNextEntry();
@@ -217,7 +217,7 @@ public final class CmsSpellcheckDictionaryIndexer {
             }
 
             // Add all documents
-            addDocuments(server, documents, true);
+            addDocuments(client, documents, true);
         } catch (IOException e) {
             LOG.warn("Failed while reading from " + DEFAULT_DICTIONARY_DIRECTORY + ". ");
         } catch (CmsException e) {
@@ -252,62 +252,62 @@ public final class CmsSpellcheckDictionaryIndexer {
     }
 
     /**
-     * Add a list of documents to the Solr server.<p>
-     * 
-     * @param server The SolrServer instance object. 
+     * Add a list of documents to the Solr client.<p>
+     *
+     * @param client The SolrClient instance object.
      * @param documents The documents that should be added.
      * @param commit boolean flag indicating whether a "commit" call should be made after adding the documents
      *   
      * @throws IOException in case something goes wrong
      * @throws SolrServerException in case something goes wrong
      */
-    static void addDocuments(SolrServer server, List<SolrInputDocument> documents, boolean commit)
+    static void addDocuments(SolrClient client, List<SolrInputDocument> documents, boolean commit)
     throws IOException, SolrServerException {
 
-        if ((null == server) || (null == documents)) {
+        if ((null == client) || (null == documents)) {
             return;
         }
 
         if (!documents.isEmpty()) {
-            server.add(documents);
+            client.add(documents);
         }
 
         if (commit) {
-            server.commit();
+            client.commit();
         }
     }
 
     /**
-     * Deletes all documents from the Solr server.<p> 
-     * 
-     * @param server The SolrServer instance object. 
-     * 
+     * Deletes all documents from the Solr client.<p>
+     *
+     * @param client The SolrClient instance object.
+     *
      * @throws IOException in case something goes wrong
      * @throws SolrServerException in case something goes wrong
      */
-    static void deleteAllFiles(SolrServer server) throws IOException, SolrServerException {
+    static void deleteAllFiles(SolrClient client) throws IOException, SolrServerException {
 
-        if (null == server) {
+        if (null == client) {
             return;
         }
 
-        server.deleteByQuery("*:*");
-        server.commit();
+        client.deleteByQuery("*:*");
+        client.commit();
     }
 
     /**
-     * Deletes a single document from the Solr server.<p>
-     * 
-     * @param server The SolrServer instance object. 
-     * @param lang The affected language. 
-     * @param word The word that should be removed. 
-     * 
+     * Deletes a single document from the Solr client.<p>
+     *
+     * @param client The SolrClient instance object.
+     * @param lang The affected language.
+     * @param word The word that should be removed.
+     *
      * @throws IOException in case something goes wrong
      * @throws SolrServerException in case something goes wrong
      */
-    static void deleteDocument(SolrServer server, String lang, String word) throws IOException, SolrServerException {
+    static void deleteDocument(SolrClient client, String lang, String word) throws IOException, SolrServerException {
 
-        if ((null == server)
+        if ((null == client)
             || CmsStringUtil.isEmptyOrWhitespaceOnly(lang)
             || CmsStringUtil.isEmptyOrWhitespaceOnly(word)) {
             return;
@@ -317,7 +317,7 @@ public final class CmsSpellcheckDictionaryIndexer {
         // contains just a single word 
         if (word.trim().contains(" ")) {
             final String query = String.format("entry_%s:%s", lang, word);
-            server.deleteByQuery(query);
+            client.deleteByQuery(query);
         }
     }
 
@@ -426,17 +426,17 @@ public final class CmsSpellcheckDictionaryIndexer {
     }
 
     /**
-     * Parses the dictionary from an InputStream. 
-     * 
-     * @param server The SolrServer instance object. 
-     * @param lang The language of the dictionary. 
-     * @param is The InputStream object. 
-     * @param documents List to put the assembled SolrInputObjects into. 
+     * Parses the dictionary from an InputStream.
+     *
+     * @param client The SolrClient instance object.
+     * @param lang The language of the dictionary.
+     * @param is The InputStream object.
+     * @param documents List to put the assembled SolrInputObjects into.
      * @param closeStream boolean flag that determines whether to close the inputstream
      * or not. 
      */
     private static void readAndAddDocumentsFromStream(
-        final SolrServer server,
+        final SolrClient client,
         final String lang,
         final InputStream is,
         final List<SolrInputDocument> documents,
@@ -456,7 +456,7 @@ public final class CmsSpellcheckDictionaryIndexer {
 
                 // Prevent OutOfMemoryExceptions ...
                 if (documents.size() >= MAX_LIST_SIZE) {
-                    addDocuments(server, documents, false);
+                    addDocuments(client, documents, false);
                     documents.clear();
                 }
 

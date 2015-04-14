@@ -373,7 +373,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                 fields = getLocaleExtendedFields(params.getFields(), locale);
                 // add one sub-query for each of the selected fields, e.g. "content", "title" etc.                
                 for (String field : fields) {
-                    QueryParser p = new QueryParser(CmsSearchIndex.LUCENE_VERSION, field, getAnalyzer());
+                    QueryParser p = new QueryParser(field, getAnalyzer());
                     booleanFieldsQuery.add(p.parse(params.getSearchWords()), BooleanClause.Occur.SHOULD);
                 }
                 fieldsQuery = searcher.rewrite(booleanFieldsQuery);

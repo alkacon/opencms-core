@@ -37,7 +37,6 @@ import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.store.Directory;
 
 /**
  * Delegates indexing to a standard Lucene IndexWriter.<p>
@@ -92,21 +91,13 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
      */
     public void close() throws IOException {
 
-        // make sure directory is unlocked when it is closed
-        Directory dir = m_indexWriter.getDirectory();
-        try {
-            if ((m_index != null) && LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.LOG_INDEX_WRITER_MSG_CLOSE_2,
-                    m_index.getName(),
-                    m_index.getPath()));
-            }
-            m_indexWriter.close();
-        } finally {
-            if ((dir != null) && IndexWriter.isLocked(dir)) {
-                IndexWriter.unlock(dir);
-            }
+        if ((m_index != null) && LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().getBundle().key(
+                Messages.LOG_INDEX_WRITER_MSG_CLOSE_2,
+                m_index.getName(),
+                m_index.getPath()));
         }
+        m_indexWriter.close();
     }
 
     /**

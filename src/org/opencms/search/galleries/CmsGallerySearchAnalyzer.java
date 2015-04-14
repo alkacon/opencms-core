@@ -27,12 +27,9 @@
 
 package org.opencms.search.galleries;
 
-import org.opencms.search.CmsSearchIndex;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.core.LowerCaseFilter;
@@ -41,7 +38,6 @@ import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.util.StopwordAnalyzerBase;
 import org.apache.lucene.analysis.util.WordlistLoader;
-import org.apache.lucene.util.Version;
 
 /**
  * Special analyzer for multiple languages, used in the OpenCms gallery search index.<p>
@@ -72,36 +68,32 @@ public class CmsGallerySearchAnalyzer extends StopwordAnalyzerBase {
     /** Default maximum allowed token length. */
     public static final int DEFAULT_MAX_TOKEN_LENGTH = 255;
 
-    /**
-     * Constructor with version parameter.<p>
-     * 
-     * @param version the Lucene standard analyzer version to match
-      * @throws IOException 
+    /** Default constructor.
+     * @throws IOException @see org.apache.lucene.analysis.util.StopwordAnalyzerBase.StopwordAnalyzerBase(CharArraySet stopwords)
      */
-    public CmsGallerySearchAnalyzer(Version version)
+    public CmsGallerySearchAnalyzer()
     throws IOException {
 
         // initialize superclass
-        super(version, WordlistLoader.getWordSet(
+        super(WordlistLoader.getWordSet(
             new BufferedReader(new InputStreamReader(
                 CmsGallerySearchAnalyzer.class.getResourceAsStream("stopwords_multilanguage.txt"))),
-            "#",
-            CmsSearchIndex.LUCENE_VERSION));
+            "#"));
     }
 
     /**
-     * @see org.apache.lucene.analysis.Analyzer#createComponents(java.lang.String, java.io.Reader)
-     * 
+     * @see org.apache.lucene.analysis.Analyzer#createComponents(java.lang.String)
+     *
      * This is take from the Lucene StandardAnalyzer, which is final since 3.1
      */
     @Override
-    protected TokenStreamComponents createComponents(final String fieldName, final Reader reader) {
+    protected TokenStreamComponents createComponents(final String fieldName) {
 
-        final StandardTokenizer src = new StandardTokenizer(matchVersion, reader);
+        final StandardTokenizer src = new StandardTokenizer();
         src.setMaxTokenLength(DEFAULT_MAX_TOKEN_LENGTH);
-        TokenStream tok = new StandardFilter(matchVersion, src);
-        tok = new LowerCaseFilter(matchVersion, tok);
-        tok = new StopFilter(matchVersion, tok, stopwords);
+        TokenStream tok = new StandardFilter(src);
+        tok = new LowerCaseFilter(tok);
+        tok = new StopFilter(tok, stopwords);
         return new TokenStreamComponents(src, tok);
     }
 }

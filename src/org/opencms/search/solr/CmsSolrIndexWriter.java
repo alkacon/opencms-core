@@ -40,7 +40,7 @@ import org.opencms.search.I_CmsSearchDocument;
 import java.io.IOException;
 
 import org.apache.commons.logging.Log;
-import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.SolrInputDocument;
@@ -61,17 +61,17 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
     /** The Solr index. */
     private CmsSolrIndex m_index;
 
-    /** The Solr server. */
-    private SolrServer m_server;
+    /** The Solr client. */
+    private SolrClient m_server;
 
     /**
      * Constructor to create a Solr index writer.<p>
-     * 
-     * @param server the server to use
+     *
+     * @param client the client to use
      */
-    public CmsSolrIndexWriter(SolrServer server) {
+    public CmsSolrIndexWriter(SolrClient client) {
 
-        this(server, null);
+        this(client, null);
     }
 
     /**
@@ -80,14 +80,14 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
      * 
      * The OpenCms search instance is currently used only for improved logging of the 
      * index operations.<p>
-     * 
-     * @param server the standard Lucene IndexWriter to use as delegate
+     *
+     * @param client the standard Lucene IndexWriter to use as delegate
      * @param index the OpenCms search index instance this writer to supposed to write to
      */
-    public CmsSolrIndexWriter(SolrServer server, CmsSolrIndex index) {
+    public CmsSolrIndexWriter(SolrClient client, CmsSolrIndex index) {
 
         m_index = index;
-        m_server = server;
+        m_server = client;
         if (m_index != null) {
             LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_SOLR_WRITER_CREATE_2,

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<solr persistent="false">
-  <cores adminPath="/admin/cores" shareSchema="true">
-  </cores>
+<solr>
+  <str name="shareSchema">${shareSchema:true}</str>
 </solr>

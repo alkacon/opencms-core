@@ -28,7 +28,6 @@
 package org.opencms.search.fields;
 
 import org.opencms.file.CmsPropertyDefinition;
-import org.opencms.search.CmsSearchIndex;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -185,7 +184,7 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
     public Analyzer getAnalyzer(Analyzer analyzer) {
 
         // parent folder and last modified lookup fields must use whitespace analyzer
-        WhitespaceAnalyzer ws = new WhitespaceAnalyzer(CmsSearchIndex.LUCENE_VERSION);
+        WhitespaceAnalyzer ws = new WhitespaceAnalyzer();
         Map<String, Analyzer> analyzers = new HashMap<String, Analyzer>();
         // first make map the default hard coded fields
         analyzers.put(CmsSearchField.FIELD_PARENT_FOLDERS, ws);

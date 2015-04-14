@@ -2,7 +2,7 @@
 <config>
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}
 	</abortOnConfigurationError>
-	<luceneMatchVersion>LUCENE_43</luceneMatchVersion>
+	<luceneMatchVersion>LUCENE_5_0_0</luceneMatchVersion>
 	<dataDir>${solr.data.dir:}</dataDir>
 	<directoryFactory name="DirectoryFactory"
 		class="${solr.directoryFactory:solr.StandardDirectoryFactory}" />
@@ -55,13 +55,8 @@
 			multipartUploadLimitInKB="2048000" />
 		<httpCaching never304="true" />
 	</requestDispatcher>
-	<requestHandler name="/update" class="solr.XmlUpdateRequestHandler">
+	<requestHandler name="/update" class="solr.UpdateRequestHandler">
 	</requestHandler>
-	<requestHandler name="/update/javabin" class="solr.BinaryUpdateRequestHandler" />
-	<requestHandler name="/update/csv" class="solr.CSVRequestHandler"
-		startup="lazy" />
-	<requestHandler name="/update/json" class="solr.JsonUpdateRequestHandler"
-		startup="lazy" />
 	<requestHandler name="/update/extract" startup="lazy"
 		class="solr.extraction.ExtractingRequestHandler">
 		<lst name="defaults">
@@ -73,13 +68,10 @@
 			<str name="fmap.div">ignored_</str>
 		</lst>
 	</requestHandler>
-	<requestHandler name="/update/xslt" startup="lazy"
-		class="solr.XsltUpdateRequestHandler" />
 	<requestHandler name="/analysis/field" startup="lazy"
 		class="solr.FieldAnalysisRequestHandler" />
 	<requestHandler name="/analysis/document"
 		class="solr.DocumentAnalysisRequestHandler" startup="lazy" />
-	<requestHandler name="/admin/" class="solr.admin.AdminHandlers" />
 	<requestHandler name="/admin/ping" class="solr.PingRequestHandler">
 		<lst name="invariants">
 			<str name="q">solrpingquery</str>

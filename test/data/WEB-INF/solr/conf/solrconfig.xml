@@ -2,7 +2,7 @@
 <config>
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}
 	</abortOnConfigurationError>
-	<luceneMatchVersion>LUCENE_43</luceneMatchVersion>
+	<luceneMatchVersion>LUCENE_5_0_0</luceneMatchVersion>
 	<dataDir>${solr.data.dir:}</dataDir>
 	<directoryFactory name="DirectoryFactory"
 		class="${solr.directoryFactory:solr.StandardDirectoryFactory}" />
@@ -61,14 +61,12 @@
 			<int name="rows">10</int>
 			<str name="df">text</str>
 		</lst>
+		<arr name="last-components">
+			<str>spellcheck</str>
+		</arr>
 	</requestHandler>
-	<requestHandler name="/update" class="solr.XmlUpdateRequestHandler">
+	<requestHandler name="/update" class="solr.UpdateRequestHandler">
 	</requestHandler>
-	<requestHandler name="/update/javabin" class="solr.BinaryUpdateRequestHandler" />
-	<requestHandler name="/update/csv" class="solr.CSVRequestHandler"
-		startup="lazy" />
-	<requestHandler name="/update/json" class="solr.JsonUpdateRequestHandler"
-		startup="lazy" />
 	<requestHandler name="/update/extract" startup="lazy"
 		class="solr.extraction.ExtractingRequestHandler">
 		<lst name="defaults">
@@ -80,13 +78,10 @@
 			<str name="fmap.div">ignored_</str>
 		</lst>
 	</requestHandler>
-	<requestHandler name="/update/xslt" startup="lazy"
-		class="solr.XsltUpdateRequestHandler" />
 	<requestHandler name="/analysis/field" startup="lazy"
 		class="solr.FieldAnalysisRequestHandler" />
 	<requestHandler name="/analysis/document"
 		class="solr.DocumentAnalysisRequestHandler" startup="lazy" />
-	<requestHandler name="/admin/" class="solr.admin.AdminHandlers" />
 	<requestHandler name="/admin/ping" class="solr.PingRequestHandler">
 		<lst name="invariants">
 			<str name="q">solrpingquery</str>
@@ -113,7 +108,7 @@
 	<requestHandler name="/spell" class="solr.SearchHandler"
 		startup="lazy">
 		<lst name="defaults">
-			<str name="df">text</str>
+			<str name="df">spell</str>
 			<str name="spellcheck.dictionary">default</str>
 			<str name="spellcheck">on</str>
 			<str name="spellcheck.extendedResults">true</str>

@@ -39,10 +39,10 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.AtomicReaderContext;
-import org.apache.lucene.search.Collector;
+import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Scorer;
+import org.apache.lucene.search.SimpleCollector;
 
 /**
  * Collects category information during a search process.<p>
@@ -54,7 +54,7 @@ import org.apache.lucene.search.Scorer;
  * 
  * @since 6.0.0 
  */
-public class CmsSearchCategoryCollector extends Collector {
+public class CmsSearchCategoryCollector extends SimpleCollector {
 
     /**
      * Class with an increasing counter to avoid multiple look ups and 
@@ -144,17 +144,7 @@ public class CmsSearchCategoryCollector extends Collector {
     }
 
     /**
-     * @see org.apache.lucene.search.Collector#acceptsDocsOutOfOrder()
-     */
-    @Override
-    public boolean acceptsDocsOutOfOrder() {
-
-        // we just count hits and these don't need to be ordered
-        return true;
-    }
-
-    /**
-     * @see org.apache.lucene.search.Collector#collect(int)
+     * @see org.apache.lucene.search.SimpleCollector#collect(int)
      */
     @Override
     public void collect(int id) {
@@ -203,16 +193,17 @@ public class CmsSearchCategoryCollector extends Collector {
     }
 
     /**
-     * @see org.apache.lucene.search.Collector#setNextReader(org.apache.lucene.index.AtomicReaderContext)
+     * @see org.apache.lucene.search.Collector#needsScores()
      */
     @Override
-    public void setNextReader(AtomicReaderContext ctx) {
+    public boolean needsScores() {
 
-        m_docBase = ctx.docBase;
+        // We need no scorer - implies that we need no scores.
+        return false;
     }
 
     /**
-     * @see org.apache.lucene.search.Collector#setScorer(org.apache.lucene.search.Scorer)
+     * @see org.apache.lucene.search.SimpleCollector#setScorer(org.apache.lucene.search.Scorer)
      */
     @Override
     public void setScorer(Scorer arg0) {
@@ -227,5 +218,14 @@ public class CmsSearchCategoryCollector extends Collector {
     public String toString() {
 
         return formatCategoryMap(getCategoryCountResult());
+    }
+
+    /**
+     * @see org.apache.lucene.search.SimpleCollector#doSetNextReader(org.apache.lucene.index.LeafReaderContext)
+     */
+    @Override
+    protected void doSetNextReader(LeafReaderContext ctx) {
+
+        m_docBase = ctx.docBase;
     }
 }

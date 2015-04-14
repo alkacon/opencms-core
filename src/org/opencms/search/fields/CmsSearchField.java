@@ -36,6 +36,9 @@ import org.opencms.util.CmsStringUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.lucene.uninverting.UninvertingReader.Type;
 
 /**
  * A abstract implementation for a search field.<p>
@@ -237,6 +240,57 @@ public class CmsSearchField implements Serializable {
         m_name = name;
         m_boost = boost;
         m_defaultValue = defaultValue;
+    }
+
+    /** To allow sorting on a field the field must be added to the map given to {@link org.apache.lucene.uninverting.UninvertingReader#wrap(org.apache.lucene.index.DirectoryReader, Map)}.
+     *  The method adds all default fields. 
+     * @param uninvertingMap the map to which the fields are added.
+     */
+    public static void addUninvertingMappings(Map<String, Type> uninvertingMap) {
+
+        uninvertingMap.put(FIELD_CATEGORY, Type.SORTED);
+        uninvertingMap.put(FIELD_CONTENT, Type.SORTED);
+        uninvertingMap.put(FIELD_CONTENT_BLOB, Type.SORTED);
+        uninvertingMap.put(FIELD_CONTENT_LOCALES, Type.SORTED);
+        uninvertingMap.put(FIELD_DATE_CONTENT, Type.SORTED);
+        uninvertingMap.put(FIELD_DATE_CREATED, Type.SORTED);
+        uninvertingMap.put(FIELD_DATE_CREATED_LOOKUP, Type.SORTED);
+        uninvertingMap.put(FIELD_DATE_EXPIRED, Type.SORTED);
+        uninvertingMap.put(FIELD_DATE_LASTMODIFIED, Type.SORTED);
+        uninvertingMap.put(FIELD_DATE_LASTMODIFIED_LOOKUP, Type.SORTED);
+        uninvertingMap.put(FIELD_DATE_LOOKUP_SUFFIX, Type.SORTED);
+        uninvertingMap.put(FIELD_DATE_RELEASED, Type.SORTED);
+        uninvertingMap.put(FIELD_DEPENDENCY_TYPE, Type.SORTED);
+        uninvertingMap.put(FIELD_DESCRIPTION, Type.SORTED);
+        uninvertingMap.put(FIELD_DYNAMIC_EXACT, Type.SORTED);
+        uninvertingMap.put(FIELD_DYNAMIC_PROPERTIES, Type.SORTED);
+        uninvertingMap.put(FIELD_EXCERPT, Type.SORTED);
+        uninvertingMap.put(FIELD_FILENAME, Type.SORTED);
+        uninvertingMap.put(FIELD_ID, Type.SORTED);
+        uninvertingMap.put(FIELD_KEYWORDS, Type.SORTED);
+        uninvertingMap.put(FIELD_LINK, Type.SORTED);
+        uninvertingMap.put(FIELD_META, Type.SORTED);
+        uninvertingMap.put(FIELD_MIMETYPE, Type.SORTED);
+        uninvertingMap.put(FIELD_PARENT_FOLDERS, Type.SORTED);
+        uninvertingMap.put(FIELD_PATH, Type.SORTED);
+        uninvertingMap.put(FIELD_PREFIX_DEPENDENCY, Type.SORTED);
+        uninvertingMap.put(FIELD_PREFIX_DYNAMIC, Type.SORTED);
+        uninvertingMap.put(FIELD_PREFIX_TEXT, Type.SORTED);
+        uninvertingMap.put(FIELD_PRIORITY, Type.SORTED);
+        uninvertingMap.put(FIELD_RESOURCE_LOCALES, Type.SORTED);
+        uninvertingMap.put(FIELD_SCORE, Type.SORTED);
+        uninvertingMap.put(FIELD_SEARCH_EXCLUDE, Type.SORTED);
+        uninvertingMap.put(FIELD_SIZE, Type.SORTED);
+        uninvertingMap.put(FIELD_SORT_TITLE, Type.SORTED);
+        uninvertingMap.put(FIELD_STATE, Type.SORTED);
+        uninvertingMap.put(FIELD_SUFFIX, Type.SORTED);
+        uninvertingMap.put(FIELD_TEXT, Type.SORTED);
+        uninvertingMap.put(FIELD_TITLE, Type.SORTED);
+        uninvertingMap.put(FIELD_TITLE_UNSTORED, Type.SORTED);
+        uninvertingMap.put(FIELD_TYPE, Type.SORTED);
+        uninvertingMap.put(FIELD_USER_CREATED, Type.SORTED);
+        uninvertingMap.put(FIELD_USER_LAST_MODIFIED, Type.SORTED);
+        uninvertingMap.put(FIELD_VERSION, Type.SORTED);
     }
 
     /**

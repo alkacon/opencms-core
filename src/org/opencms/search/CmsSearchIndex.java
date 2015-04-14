@@ -39,7 +39,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -55,6 +54,7 @@ import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -98,7 +98,8 @@ import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.IOContext;
-import org.apache.lucene.util.Version;
+import org.apache.lucene.uninverting.UninvertingReader;
+import org.apache.lucene.uninverting.UninvertingReader.Type;
 
 /**
  * Abstract search index implementation.<p>
@@ -168,9 +169,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Constant for additional parameter for the Lucene index setting. */
     public static final String LUCENE_RAM_BUFFER_SIZE_MB = "lucene.RAMBufferSizeMB";
-
-    /** The Lucene Version used to create Query parsers and such. */
-    public static final Version LUCENE_VERSION = Version.LUCENE_43;
 
     /** Constant for additional parameter for controlling how many hits are loaded at maximum (default: 1000). */
     public static final String MAX_HITS = A_PARAM_PREFIX + ".maxHits";
@@ -1303,8 +1301,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             if (!params.isIgnoreQuery()) {
                 // since OpenCms 8 the query can be empty in which case only filters are used for the result
                 if (params.getParsedQuery() != null) {
-                    // the query was already build, re-use it 
-                    QueryParser p = new QueryParser(LUCENE_VERSION, CmsSearchField.FIELD_CONTENT, getAnalyzer());
+                    // the query was already build, re-use it
+                    QueryParser p = new QueryParser(CmsSearchField.FIELD_CONTENT, getAnalyzer());
                     fieldsQuery = p.parse(params.getParsedQuery());
                 } else if (params.getFieldQueries() != null) {
                     // each field has an individual query
@@ -1312,7 +1310,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     BooleanQuery shouldOccur = null;
                     for (CmsSearchParameters.CmsSearchFieldQuery fq : params.getFieldQueries()) {
                         // add one sub-query for each defined field
-                        QueryParser p = new QueryParser(LUCENE_VERSION, fq.getFieldName(), getAnalyzer());
+                        QueryParser p = new QueryParser(fq.getFieldName(), getAnalyzer());
                         // first generate the combined keyword query
                         Query keywordQuery = null;
                         if (fq.getSearchTerms().size() == 1) {
@@ -1352,14 +1350,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     // this is a "regular" query over one or more fields
                     // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
                     for (int i = 0; i < params.getFields().size(); i++) {
-                        QueryParser p = new QueryParser(LUCENE_VERSION, params.getFields().get(i), getAnalyzer());
+                        QueryParser p = new QueryParser(params.getFields().get(i), getAnalyzer());
                         p.setMultiTermRewriteMethod(MultiTermQuery.SCORING_BOOLEAN_QUERY_REWRITE);
                         booleanFieldsQuery.add(p.parse(params.getQuery()), BooleanClause.Occur.SHOULD);
                     }
                     fieldsQuery = searcher.rewrite(booleanFieldsQuery);
                 } else {
                     // if no fields are provided, just use the "content" field by default
-                    QueryParser p = new QueryParser(LUCENE_VERSION, CmsSearchField.FIELD_CONTENT, getAnalyzer());
+                    QueryParser p = new QueryParser(CmsSearchField.FIELD_CONTENT, getAnalyzer());
                     fieldsQuery = searcher.rewrite(p.parse(params.getQuery()));
                 }
 
@@ -1909,18 +1907,27 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             return null;
         }
         String backupPath = getPath() + "_backup";
+        FSDirectory oldDir = null;
+        FSDirectory newDir = null;
         try {
             // open file directory for Lucene
-            FSDirectory oldDir = FSDirectory.open(file);
-            FSDirectory newDir = FSDirectory.open(new File(backupPath));
+            oldDir = FSDirectory.open(file.toPath());
+            newDir = FSDirectory.open(Paths.get(backupPath));
             for (String fileName : oldDir.listAll()) {
-                oldDir.copy(newDir, fileName, fileName, IOContext.DEFAULT);
+                newDir.copyFrom(oldDir, fileName, fileName, IOContext.DEFAULT);
             }
         } catch (Exception e) {
             LOG.error(
                 Messages.get().getBundle().key(Messages.LOG_IO_INDEX_BACKUP_CREATE_3, getName(), getPath(), backupPath),
                 e);
             backupPath = null;
+        } finally {
+            if (oldDir != null) {
+                oldDir.close();
+            }
+            if (newDir != null) {
+                newDir.close();
+            }
         }
         return backupPath;
     }
@@ -1939,8 +1946,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     protected I_CmsIndexWriter createIndexWriter(boolean create, I_CmsReport report) throws CmsIndexException {
 
-        indexWriterUnlock(report);
-        IndexWriter indexWriter;
+        IndexWriter indexWriter = null;
+        FSDirectory dir = null;
         try {
             File f = new File(getPath());
             if (!f.exists()) {
@@ -1952,8 +1959,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 create = true;
             }
 
-            FSDirectory dir = FSDirectory.open(new File(getPath()));
-            IndexWriterConfig indexConfig = new IndexWriterConfig(LUCENE_VERSION, getAnalyzer());
+            dir = FSDirectory.open(Paths.get(getPath()));
+            IndexWriterConfig indexConfig = new IndexWriterConfig(getAnalyzer());
             //indexConfig.setMergePolicy(mergePolicy);
 
             if (m_luceneRAMBufferSizeMB != null) {
@@ -1969,6 +1976,19 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
             indexWriter = new IndexWriter(dir, indexConfig);
         } catch (Exception e) {
+            if (dir != null) {
+                dir.close();
+            }
+            if (indexWriter != null) {
+                try {
+                    indexWriter.close();
+                } catch (IOException closeExeception) {
+                    throw new CmsIndexException(Messages.get().container(
+                        Messages.ERR_IO_INDEX_WRITER_OPEN_2,
+                        getPath(),
+                        getName()), e);
+                }
+            }
             throw new CmsIndexException(Messages.get().container(
                 Messages.ERR_IO_INDEX_WRITER_OPEN_2,
                 getPath(),
@@ -2214,10 +2234,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     protected synchronized void indexSearcherOpen(String path) {
 
         IndexSearcher oldSearcher = null;
+        Directory indexDirectory = null;
         try {
-            Directory indexDirectory = FSDirectory.open(new File(path));
+            indexDirectory = FSDirectory.open(Paths.get(path));
             if (DirectoryReader.indexExists(indexDirectory)) {
-                IndexReader reader = DirectoryReader.open(indexDirectory);
+                IndexReader reader = UninvertingReader.wrap(
+                    DirectoryReader.open(indexDirectory),
+                    createUninvertingMap());
                 if (m_indexSearcher != null) {
                     // store old searcher instance to close it later
                     oldSearcher = m_indexSearcher;
@@ -2228,6 +2251,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
         } catch (IOException e) {
             LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_1, getName()), e);
+            if (indexDirectory != null) {
+                try {
+                    indexDirectory.close();
+                } catch (IOException closeException) {
+                    // do nothing
+                }
+            }
         }
         if (oldSearcher != null) {
             // close the old searcher if required
@@ -2260,43 +2290,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         } else {
             // make sure we end up with an open index searcher / reader           
             indexSearcherOpen(getPath());
-        }
-    }
-
-    /**
-     * Unlocks the Lucene index writer of this index if required.<p>
-     * 
-     * @param report the report to write error messages on
-     * 
-     * @throws CmsIndexException if unlocking of the index is impossible for any reason
-     */
-    protected void indexWriterUnlock(I_CmsReport report) throws CmsIndexException {
-
-        File indexPath = new File(getPath());
-        boolean indexLocked = true;
-        // check if the target index path already exists
-        if (indexPath.exists()) {
-            Directory indexDirectory = null;
-            // get the lock state of the given index            
-            try {
-                indexDirectory = FSDirectory.open(indexPath);
-                indexLocked = IndexWriter.isLocked(indexDirectory);
-            } catch (Exception e) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_IO_INDEX_READER_OPEN_2, getPath(), getName()), e);
-            }
-
-            // if index is locked try unlocking
-            if (indexLocked) {
-                try {
-                    // try to force unlock on the index
-                    IndexWriter.unlock(indexDirectory);
-                } catch (Exception e) {
-                    // unable to force unlock of Lucene index, we can't continue this way
-                    CmsMessageContainer msg = Messages.get().container(Messages.ERR_INDEX_LOCK_FAILED_1, getName());
-                    report.println(msg, I_CmsReport.FORMAT_ERROR);
-                    throw new CmsIndexException(msg, e);
-                }
-            }
         }
     }
 
@@ -2426,7 +2419,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             return;
         }
         try {
-            FSDirectory dir = FSDirectory.open(file);
+            FSDirectory dir = FSDirectory.open(file.toPath());
             dir.close();
             CmsFileUtil.purgeDirectory(file);
         } catch (Exception e) {
@@ -2442,6 +2435,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     protected void setIndexWriter(I_CmsIndexWriter writer) {
 
         m_indexWriter = writer;
+    }
+
+    private Map<String, Type> createUninvertingMap() {
+
+        Map<String, UninvertingReader.Type> uninvertingMap = new HashMap<String, UninvertingReader.Type>();
+        CmsSearchField.addUninvertingMappings(uninvertingMap);
+        getFieldConfiguration().addUninvertingMappings(uninvertingMap);
+        return uninvertingMap;
     }
 
 }
