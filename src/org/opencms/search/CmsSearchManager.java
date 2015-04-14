@@ -1767,7 +1767,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
 
             // create the core
-            CoreDescriptor descriptor = new CoreDescriptor(m_coreContainer, "descriptor", m_solrConfig.getHome());
+            CoreDescriptor descriptor = new CoreDescriptor(m_coreContainer, index.getName(), m_solrConfig.getHome());
             descriptor.setDataDir(dataDir.getAbsolutePath());
             try {
                 SolrCore core = m_coreContainer.create(descriptor);
