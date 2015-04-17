@@ -198,6 +198,9 @@ public class CmsConfigurationReader {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationReader.class);
 
+    /** The ShowInDefaultView node name. */
+    private static final String N_SHOW_IN_DEFAULT_VIEW = "ShowInDefaultView";
+
     /** The CMS context used for reading the configuration data. */
     private CmsObject m_cms;
 
@@ -549,11 +552,18 @@ public class CmsConfigurationReader {
             }
         }
 
+        I_CmsXmlContentValueLocation showDefaultViewLoc = node.getSubValue(N_SHOW_IN_DEFAULT_VIEW);
+        Boolean showInDefaultView = null;
+        if (showDefaultViewLoc != null) {
+            showInDefaultView = Boolean.valueOf(Boolean.parseBoolean(showDefaultViewLoc.getValue().getStringValue(m_cms)));
+        }
+
         List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
         for (I_CmsXmlContentValueLocation formatterLoc : node.getSubValues(N_FORMATTER)) {
             CmsFormatterBean formatter = parseFormatter(typeName, formatterLoc);
             formatters.add(formatter);
         }
+
         CmsResourceTypeConfig typeConfig = new CmsResourceTypeConfig(
             typeName,
             disabled,
@@ -562,6 +572,7 @@ public class CmsConfigurationReader {
             detailPagesDisabled,
             addDisabled,
             elementView,
+            showInDefaultView,
             order);
         m_resourceTypeConfigs.add(typeConfig);
     }

@@ -28,6 +28,7 @@
 package org.opencms.ade.galleries;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.galleries.preview.I_CmsPreviewProvider;
 import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
@@ -285,14 +286,20 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     }
 
-    /** Name for the 'galleryShowInvalidDefault' preference. */
-    public static final String PREF_GALLERY_SHOW_INVALID_DEFAULT = "galleryShowInvalidDefault";
+    /** Limit to the number results loaded on initial search. */
+    public static final int INITIAL_SEARCH_MAX_RESULTS = 200;
 
     /** The key used for storing the last used gallery in adeview mode. */
     public static final String KEY_LAST_USED_GALLERY_ADEVIEW = "__adeView";
 
+    /** Name for the 'galleryShowInvalidDefault' preference. */
+    public static final String PREF_GALLERY_SHOW_INVALID_DEFAULT = "galleryShowInvalidDefault";
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGalleryService.class);
+
+    /** The cache for xml images. */
+    private static volatile CmsVfsMemoryObjectCache m_xmlImageIdCache = new CmsVfsMemoryObjectCache();
 
     /** Serialization uid. */
     private static final long serialVersionUID = 1673026761080584889L;
@@ -308,12 +315,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /** The workplace locale from the current user's settings. */
     private Locale m_wpLocale;
-
-    /** The cache for xml images. */
-    private static volatile CmsVfsMemoryObjectCache m_xmlImageIdCache = new CmsVfsMemoryObjectCache();
-
-    /** Limit to the number results loaded on initial search. */
-    public static final int INITIAL_SEARCH_MAX_RESULTS = 200;
 
     /**
      * Returns the initial gallery settings.<p>
@@ -571,8 +572,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      */
     public CmsGalleryDataBean getInitialSettingsForContainerPage(
         List<I_CmsResourceType> resourceTypes,
-        List<String> creatableTypes,
-        List<String> deactivatedTypes,
+        Set<String> creatableTypes,
+        Set<String> deactivatedTypes,
         String uri,
         String locale) {
 
@@ -971,6 +972,18 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             types.add(info.getType());
         }
         return types;
+    }
+
+    protected boolean isHiddenFromAddMenu(CmsResourceTypeConfig typeConfig, CmsUUID elementView) {
+
+        if (typeConfig.isAddDisabled()) {
+            return true;
+        }
+
+        boolean matchingView = elementView.equals(typeConfig.getElementView())
+            || (typeConfig.isShowInDefaultView() && elementView.equals(CmsElementView.DEFAULT_ELEMENT_VIEW.getId()));
+
+        return !matchingView;
     }
 
     /**
@@ -1472,7 +1485,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * 
      * @return the map containing the available resource types
      */
-    private List<CmsResourceTypeBean> buildTypesList(List<I_CmsResourceType> types, List<String> creatableTypes) {
+    private List<CmsResourceTypeBean> buildTypesList(List<I_CmsResourceType> types, Set<String> creatableTypes) {
 
         ArrayList<CmsResourceTypeBean> list = new ArrayList<CmsResourceTypeBean>();
         if (types == null) {
@@ -1514,8 +1527,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      */
     private List<CmsResourceTypeBean> buildTypesList(
         List<I_CmsResourceType> resourceTypes,
-        List<String> creatableTypes,
-        List<String> deactivatedTypes,
+        Set<String> creatableTypes,
+        Set<String> deactivatedTypes,
         final List<String> typesForTypeTab) {
 
         List<CmsResourceTypeBean> result = buildTypesList(resourceTypes, creatableTypes);
@@ -2096,7 +2109,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         final List<String> typesForTypeTab) throws CmsRpcException {
 
         List<I_CmsResourceType> resourceTypes = null;
-        List<String> creatableTypes = null;
+        Set<String> creatableTypes = null;
         switch (galleryMode) {
             case editor:
             case view:
@@ -2106,18 +2119,18 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 if (resourceTypes.size() == 0) {
                     resourceTypes = Lists.newArrayList(getDefaultTypesForGallery());
                 }
-                creatableTypes = Collections.<String> emptyList();
+                creatableTypes = Collections.<String> emptySet();
                 break;
             case ade:
                 resourceTypes = new ArrayList<I_CmsResourceType>();
-                creatableTypes = new ArrayList<String>();
+                creatableTypes = new HashSet<String>();
                 try {
                     CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
                         getCmsObject(),
                         getCmsObject().getRequestContext().addSiteRoot(getCmsObject().getRequestContext().getUri()));
                     CmsUUID elementView = getSessionCache().getElementView();
                     for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
-                        if (typeConfig.isAddDisabled() || !elementView.equals(typeConfig.getElementView())) {
+                        if (typeConfig.isHiddenFromAddMenu(elementView)) {
                             continue;
                         }
                         if (typeConfig.checkViewable(getCmsObject(), referenceSitePath)) {
@@ -2126,7 +2139,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         }
                     }
                     for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(getCmsObject())) {
-                        if (typeConfig.isAddDisabled() || !elementView.equals(typeConfig.getElementView())) {
+                        if (typeConfig.isHiddenFromAddMenu(elementView)) {
                             continue;
                         }
                         String typeName = typeConfig.getTypeName();
@@ -2138,9 +2151,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 break;
             default:
                 resourceTypes = Collections.<I_CmsResourceType> emptyList();
-                creatableTypes = Collections.<String> emptyList();
+                creatableTypes = Collections.<String> emptySet();
         }
-        return buildTypesList(resourceTypes, creatableTypes, Collections.<String> emptyList(), typesForTypeTab);
+        return buildTypesList(resourceTypes, creatableTypes, Collections.<String> emptySet(), typesForTypeTab);
     }
 
     /**

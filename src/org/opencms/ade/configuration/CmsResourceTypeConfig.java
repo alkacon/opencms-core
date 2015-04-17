@@ -60,6 +60,20 @@ import com.google.common.collect.Lists;
  */
 public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResourceTypeConfig> {
 
+    /** 
+     * Represents the visibility status of a resource type  in  the 'Add' menu of the container page editor.<p> 
+     */
+    public enum AddMenuVisibility {
+        /** Type not visible. */
+        disabled,
+
+        /** Type does not belong to current view, but has been configured to be still visible in it. */
+        fromOtherView,
+
+        /** Type is normally visible. */
+        visible
+    }
+
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeConfig.class);
 
@@ -87,6 +101,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** The number used for sorting the resource type configurations. */
     private int m_order;
 
+    /** Flag which controls whether this type should be shown in the 'add' menu in the default view. */
+    private Boolean m_showInDefaultView;
+
     /** The name of the resource type. */
     private String m_typeName;
 
@@ -108,6 +125,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             false,
             false,
             CmsElementView.DEFAULT_ELEMENT_VIEW.getId(),
+            null,
             I_CmsConfigurationObject.DEFAULT_ORDER);
     }
 
@@ -121,6 +139,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param detailPagesDisabled true if detail page creation should be disabled for this type
      * @param addDisabled true if adding elements of this type via ADE should be disabled 
      * @param elementView the element view id
+     * @param showInDefaultView if true, the element type should be shown in the default element view even if it doesn't belong to it 
+     * 
      * @param order the number used for sorting resource types from modules  
      */
     public CmsResourceTypeConfig(
@@ -131,6 +151,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         boolean detailPagesDisabled,
         boolean addDisabled,
         CmsUUID elementView,
+        Boolean showInDefaultView,
         int order) {
 
         m_typeName = typeName;
@@ -140,6 +161,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         m_detailPagesDisabled = detailPagesDisabled;
         m_addDisabled = addDisabled;
         m_elementView = elementView;
+        m_showInDefaultView = showInDefaultView;
         m_order = order;
     }
 
@@ -338,6 +360,31 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         return createdResource;
     }
 
+    /** 
+     * Gets the visibility status in the 'add' menu for this type and the given element view.<p>
+     * 
+     * @param elementViewId the id of the view for which to compute the visibility status 
+     * 
+     * @return the visibility status 
+     */
+    public AddMenuVisibility getAddMenuVisibility(CmsUUID elementViewId) {
+
+        if (isAddDisabled()) {
+            return AddMenuVisibility.disabled;
+        }
+
+        if (elementViewId.equals(getElementView())) {
+            return AddMenuVisibility.visible;
+        }
+
+        if (isShowInDefaultView() && elementViewId.equals(CmsElementView.DEFAULT_ELEMENT_VIEW.getId())) {
+            return AddMenuVisibility.fromOtherView;
+        }
+
+        return AddMenuVisibility.disabled;
+
+    }
+
     /**
      * Returns the element view id.<p>
      * 
@@ -465,6 +512,37 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         return m_disabled;
     }
 
+    /** 
+     * Checks if the type should be hidden from the 'add' menu.<p>
+     * 
+     * @param elementView the current element view 
+     * 
+     * @return true if the type should be hidden 
+     */
+    public boolean isHiddenFromAddMenu(CmsUUID elementView) {
+
+        if (isAddDisabled()) {
+            return true;
+        }
+
+        boolean matchingView = elementView.equals(getElementView())
+            || (isShowInDefaultView() && elementView.equals(CmsElementView.DEFAULT_ELEMENT_VIEW.getId()));
+
+        return !matchingView;
+    }
+
+    /**
+     * Returns true if the type should be shown in the default view if it is not assigned to it.<p>
+     * 
+     * This defaults to 'false' if not set.
+     * 
+     * @return true if the type should be shown in the default view event if  it doens't belong to that element view 
+     */
+    public boolean isShowInDefaultView() {
+
+        return (m_showInDefaultView != null) && m_showInDefaultView.booleanValue();
+    }
+
     /**
      * @see org.opencms.ade.configuration.I_CmsConfigurationObject#merge(org.opencms.ade.configuration.I_CmsConfigurationObject)
      */
@@ -473,6 +551,10 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         CmsFolderOrName folderOrName = childConfig.m_folderOrName != null ? childConfig.m_folderOrName : m_folderOrName;
         String namePattern = childConfig.m_namePattern != null ? childConfig.m_namePattern : m_namePattern;
         CmsUUID elementView = childConfig.m_elementView != null ? childConfig.m_elementView : m_elementView;
+        Boolean showInDefaultView = childConfig.m_showInDefaultView != null
+        ? childConfig.m_showInDefaultView
+        : m_showInDefaultView;
+
         CmsResourceTypeConfig result = new CmsResourceTypeConfig(
             m_typeName,
             false,
@@ -481,6 +563,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             isDetailPagesDisabled() || childConfig.isDetailPagesDisabled(),
             childConfig.isAddDisabled(),
             elementView,
+            showInDefaultView,
             m_order);
         if (childConfig.isDisabled()) {
             result.m_disabled = true;
@@ -515,6 +598,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             m_detailPagesDisabled,
             isAddDisabled(),
             m_elementView,
+            m_showInDefaultView,
             m_order);
     }
 

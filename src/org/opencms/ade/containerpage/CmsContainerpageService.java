@@ -32,6 +32,7 @@ import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.ade.configuration.CmsModelPageConfig;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
+import org.opencms.ade.configuration.CmsResourceTypeConfig.AddMenuVisibility;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
 import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
@@ -123,6 +124,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -137,6 +139,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -677,11 +680,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 cms,
                 cms.getRequestContext().addSiteRoot(uri));
             List<I_CmsResourceType> resourceTypes = new ArrayList<I_CmsResourceType>();
-            List<String> disabledTypes = new ArrayList<String>();
+            Set<String> disabledTypes = new HashSet<String>();
+            final Set<String> typesAtTheEndOfTheList = Sets.newHashSet();
             for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
-                if (typeConfig.isAddDisabled() || !elementView.equals(typeConfig.getElementView())) {
+                AddMenuVisibility visibility = typeConfig.getAddMenuVisibility(elementView);
+
+                if (visibility == AddMenuVisibility.disabled) {
                     continue;
                 }
+
+                if (visibility == AddMenuVisibility.fromOtherView) {
+                    typesAtTheEndOfTheList.add(typeConfig.getTypeName());
+                }
+
                 if (typeConfig.checkViewable(cms, uri)) {
                     String typeName = typeConfig.getTypeName();
                     I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(typeName);
@@ -691,11 +702,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     }
                 }
             }
-            List<String> creatableTypes = new ArrayList<String>();
+            Set<String> creatableTypes = new HashSet<String>();
             for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(getCmsObject())) {
-                if (typeConfig.isAddDisabled()
-                    || !elementView.equals(typeConfig.getElementView())
-                    || disabledTypes.contains(typeConfig.getTypeName())) {
+                if (typeConfig.isHiddenFromAddMenu(elementView) || disabledTypes.contains(typeConfig.getTypeName())) {
                     continue;
                 }
                 String typeName = typeConfig.getTypeName();
@@ -705,6 +714,21 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsGalleryService srv = new CmsGalleryService();
             srv.setCms(cms);
             srv.setRequest(getRequest());
+            // we put the types 'imported' from other views at the end of the list. Since the sort is stable, 
+            // relative position of other types remains unchanged 
+            Collections.sort(resourceTypes, new Comparator<I_CmsResourceType>() {
+
+                public int compare(I_CmsResourceType first, I_CmsResourceType second) {
+
+                    return ComparisonChain.start().compare(rank(first), rank(second)).result();
+                }
+
+                int rank(I_CmsResourceType type) {
+
+                    return typesAtTheEndOfTheList.contains(type.getTypeName()) ? 1 : 0;
+                }
+            });
+
             data = srv.getInitialSettingsForContainerPage(resourceTypes, creatableTypes, disabledTypes, uri, locale);
 
         } catch (Exception e) {
