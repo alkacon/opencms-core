@@ -3274,7 +3274,7 @@ public final class CmsContainerpageController {
     protected void scheduleGalleryUpdate() {
 
         // only if not already scheduled 
-        if (m_galleryUpdateTimer != null) {
+        if (m_galleryUpdateTimer == null) {
             m_galleryUpdateTimer = new Timer() {
 
                 @Override
