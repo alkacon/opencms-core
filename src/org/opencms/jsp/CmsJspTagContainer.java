@@ -1000,6 +1000,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
      * @param isOnline true if we are in Online mode 
      * @param cms the Cms context 
      * @param elementBean the element bean 
+     * @param page the container page
      * @param isGroupContainer true if the element is a group-container 
      * 
      * @throws Exception if something goes wrong
@@ -1008,6 +1009,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
         boolean isOnline,
         CmsObject cms,
         CmsContainerElementBean elementBean,
+        CmsContainerPageBean page,
         boolean isGroupContainer) throws Exception {
 
         if (!isOnline) {
@@ -1017,7 +1019,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
             } else {
                 result.append(CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER);
             }
-            String serializedElement = getElementInfo(cms, elementBean);
+            String serializedElement = getElementInfo(cms, elementBean, page);
             result.append("'");
             result.append(" rel='").append(serializedElement);
             if (isGroupContainer) {
@@ -1086,18 +1088,21 @@ public class CmsJspTagContainer extends BodyTagSupport {
      * 
      * @param cms the current cms context
      * @param elementBean the element to serialize
+     * @param page the container page
      * 
      * @return the serialized element data
      * 
      * @throws Exception if something goes wrong
      */
-    private String getElementInfo(CmsObject cms, CmsContainerElementBean elementBean) throws Exception {
+    private String getElementInfo(CmsObject cms, CmsContainerElementBean elementBean, CmsContainerPageBean page)
+    throws Exception {
 
         return CmsContainerpageService.getSerializedElementInfo(
             cms,
             (HttpServletRequest)pageContext.getRequest(),
             (HttpServletResponse)pageContext.getResponse(),
-            elementBean);
+            elementBean,
+            page);
     }
 
     /**
@@ -1274,7 +1279,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 subElements = getInheritedContainerElements(cms, element);
             }
             // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
-            printElementWrapperTagStart(isOnline, cms, element, true);
+            printElementWrapperTagStart(isOnline, cms, element, standardContext.getPage(), true);
             for (CmsContainerElementBean subelement : subElements) {
 
                 try {
@@ -1309,7 +1314,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                     }
                     // execute the formatter JSP for the given element URI
                     // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
-                    printElementWrapperTagStart(isOnline, cms, subelement, false);
+                    printElementWrapperTagStart(isOnline, cms, subelement, standardContext.getPage(), false);
                     standardContext.setElement(subelement);
                     try {
                         String formatterSitePath;
@@ -1364,7 +1369,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
             if (alreadyFull) {
                 result = false;
                 if (!showInContext) {
-                    printElementWrapperTagStart(isOnline, cms, element, false);
+                    printElementWrapperTagStart(isOnline, cms, element, standardContext.getPage(), false);
                     pageContext.getOut().print(DUMMY_ELEMENT);
                     printElementWrapperTagEnd(isOnline, false);
                 }
@@ -1408,7 +1413,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                     }
                 }
 
-                printElementWrapperTagStart(isOnline, cms, element, false);
+                printElementWrapperTagStart(isOnline, cms, element, standardContext.getPage(), false);
                 standardContext.setElement(element);
                 try {
                     if (!showInContext) {

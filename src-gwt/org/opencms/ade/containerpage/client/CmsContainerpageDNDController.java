@@ -37,6 +37,7 @@ import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementReuseMode;
 import org.opencms.ade.containerpage.shared.CmsContainer;
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.ade.galleries.client.ui.CmsResultListItem;
@@ -206,6 +207,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         String containerId = null;
         if (target instanceof CmsContainerPageContainer) {
             containerId = ((CmsContainerPageContainer)target).getContainerId();
+        } else {
+            // set marker id
+            containerId = CmsContainerElement.MENU_CONTAINER_ID;
         }
         m_originalContainerId = containerId;
 

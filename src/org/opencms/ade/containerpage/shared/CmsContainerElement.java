@@ -60,6 +60,9 @@ public class CmsContainerElement implements IsSerializable {
     /** The resource type name for inherited container references.  */
     public static final String INHERIT_CONTAINER_TYPE_NAME = "inheritance_group";
 
+    /** The container id marking the edit menus. */
+    public static final String MENU_CONTAINER_ID = "cms_edit_menu_container";
+
     /** The element client id. */
     private String m_clientId;
 
