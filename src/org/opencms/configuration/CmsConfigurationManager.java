@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -471,7 +472,10 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         Transformer transformer = factory.newTransformer(new StreamSource(new File(transformPath)));
         transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
         transformer.setParameter("file", config.getXmlFileName());
-
+        InetAddress localhost = InetAddress.getLocalHost();
+        transformer.setParameter("hostName", localhost.getHostName());
+        transformer.setParameter("canonicalHostName", localhost.getCanonicalHostName());
+        transformer.setParameter("hostAddress", localhost.getHostAddress());
         // use a SAXSource here because we need to set the correct entity resolver to prevent errors   
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         parserFactory.setNamespaceAware(true);
