@@ -1432,7 +1432,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     throws CmsException {
 
         CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(cms, cms.addSiteRoot(sitePath));
-        Locale contentLocale = page.getLocales().get(0);
+        Locale contentLocale = OpenCms.getLocaleManager().getDefaultLocale(cms, CmsResource.getFolderPath(sitePath));
         CmsObject cloneCms = OpenCms.initCmsObject(cms);
         cloneCms.getRequestContext().setLocale(contentLocale);
         CmsContainerPageBean pageBean = page.getContainerPage(cms);
