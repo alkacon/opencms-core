@@ -102,6 +102,9 @@ public class CmsContainerElement implements IsSerializable {
     /** The title. */
     private String m_title;
 
+    /** True if the element is a container model. */
+    private boolean m_isContainerModel;
+
     /**
      * Default constructor.<p>
      */
@@ -250,6 +253,16 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
+     * Returns if the element is a container model.<p>
+     * 
+     * @return <code>true</code> if the element is a container model
+     */
+    public boolean isContainerModel() {
+
+        return m_isContainerModel;
+    }
+
+    /**
      * Reads the 'create new' status of the element.<p>
      * 
      * When the page containing the element is used a model page, this flag determines whether a copy of the element 
@@ -320,6 +333,16 @@ public class CmsContainerElement implements IsSerializable {
     public void setClientId(String clientId) {
 
         m_clientId = clientId;
+    }
+
+    /**
+     * Set if the element is a container model.<p>
+     * 
+     * @param isContainerModel <code>true</code> if the element is a container model
+     */
+    public void setContainerModel(boolean isContainerModel) {
+
+        m_isContainerModel = isContainerModel;
     }
 
     /**

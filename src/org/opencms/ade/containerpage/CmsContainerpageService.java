@@ -281,6 +281,34 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * Checks whether the given resource is of the type container model.<p>
+     * 
+     * @param resource the resource to check
+     * 
+     * @return <code>true</code> if the given resource is of the type container model
+     */
+    protected static boolean isContainerModelResource(CmsResource resource) {
+
+        return CmsResourceTypeXmlContainerPage.CONTAINER_MODEL_TYPE_NAME.equals(OpenCms.getResourceManager().getResourceType(
+            resource).getTypeName());
+    }
+
+    /**
+     * Checks whether the current page is a container model page.<p>
+     * 
+     * @param cms the CMS context
+     * @param containerPage the current page
+     * 
+     * @return <code>true</code> if the current page is a container model page
+     */
+    protected static boolean isEditingContainerModels(CmsObject cms, CmsResource containerPage) {
+
+        return (CmsResource.getParentFolder(containerPage.getRootPath()).endsWith("/.content/.containermodels/") && OpenCms.getRoleManager().hasRole(
+            cms,
+            CmsRole.DEVELOPER));
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#addToFavoriteList(java.lang.String)
      */
     public void addToFavoriteList(String clientId) throws CmsRpcException {
@@ -940,7 +968,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 Lists.newArrayList(getElementViews().values()),
                 getSessionCache().getElementView(),
                 reuseMode,
-                isModelPage);
+                isModelPage,
+                isEditingContainerModels(cms, containerPage));
         } catch (Throwable e) {
             error(e);
         }
@@ -1357,6 +1386,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         for (CmsContainerBean container : modelContainers) {
             for (CmsContainerElementBean element : container.getElements()) {
                 if (element.isCreateNew() && !newResources.containsKey(element.getId())) {
+                    element.initResource(cms);
                     String typeName = OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName();
                     CmsResourceTypeConfig typeConfig = configData.getResourceType(typeName);
                     if (typeConfig == null) {
@@ -2195,34 +2225,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         element.setSitePath(cms.getSitePath(groupContainerFile));
         element.setResourceType(CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
         return CmsPair.create(element, deletionCandidateStatuses);
-    }
-
-    /**
-     * Checks whether the given resource is of the type container model.<p>
-     * 
-     * @param resource the resource to check
-     * 
-     * @return <code>true</code> if the given resource is of the type container model
-     */
-    private boolean isContainerModelResource(CmsResource resource) {
-
-        return CmsResourceTypeXmlContainerPage.CONTAINER_MODEL_TYPE_NAME.equals(OpenCms.getResourceManager().getResourceType(
-            resource).getTypeName());
-    }
-
-    /**
-     * Checks whether the current page is a container model page.<p>
-     * 
-     * @param cms the CMS context
-     * @param containerPage the current page
-     * 
-     * @return <code>true</code> if the current page is a container model page
-     */
-    private boolean isEditingContainerModels(CmsObject cms, CmsResource containerPage) {
-
-        return (CmsResource.getParentFolder(containerPage.getRootPath()).endsWith("/.content/.containermodels/") && OpenCms.getRoleManager().hasRole(
-            cms,
-            CmsRole.DEVELOPER));
     }
 
     /** 

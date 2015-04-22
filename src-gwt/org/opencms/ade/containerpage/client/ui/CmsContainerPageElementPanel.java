@@ -168,6 +168,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      **/
     private boolean m_writePermission;
 
+    private boolean m_containerModel;
+
     /**
      * Constructor.<p>
      * 
@@ -184,7 +186,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * @param hasWritePermission indicates if the current user has write permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      * @param disableNewEditor flag to disable the new editor for this element 
-     * @param elementView theelement view of the element 
+     * @param elementView the element view of the element 
      */
     public CmsContainerPageElementPanel(
         Element element,
@@ -200,6 +202,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         boolean hasWritePermission,
         boolean releasedAndNotExpired,
         boolean disableNewEditor,
+        boolean containerModel,
         CmsUUID elementView) {
 
         super(element);
@@ -212,6 +215,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         m_hasSettings = hasSettings;
         m_parent = parent;
         m_disableNewEditor = disableNewEditor;
+        m_containerModel = containerModel;
         setViewPermission(hasViewPermission);
         setWritePermission(hasWritePermission);
         setReleasedAndNotExpired(releasedAndNotExpired);

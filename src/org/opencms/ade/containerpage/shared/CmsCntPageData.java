@@ -123,6 +123,9 @@ public final class CmsCntPageData implements IsSerializable {
     /** True if the container page is a model page. */
     private boolean m_isModelPage;
 
+    /** True if the page is used for container models. */
+    private boolean m_isContainerModel;
+
     /** The element reuse mode. */
     private ElementReuseMode m_reuseMode;
 
@@ -160,6 +163,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param elementView the current element view
      * @param reuseMode the element reuse mode 
      * @param isModelPage true if this is a model page 
+     * @param isContainerModel true if the page is used for container models
      */
     public CmsCntPageData(
         String noEditReason,
@@ -177,7 +181,8 @@ public final class CmsCntPageData implements IsSerializable {
         List<CmsElementViewInfo> elementViews,
         CmsUUID elementView,
         ElementReuseMode reuseMode,
-        boolean isModelPage) {
+        boolean isModelPage,
+        boolean isContainerModel) {
 
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
@@ -195,6 +200,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_elementView = elementView;
         m_reuseMode = reuseMode;
         m_isModelPage = isModelPage;
+        m_isContainerModel = isContainerModel;
     }
 
     /**
@@ -353,6 +359,16 @@ public final class CmsCntPageData implements IsSerializable {
     public CmsTemplateContextInfo getTemplateContextInfo() {
 
         return m_templateContextInfo;
+    }
+
+    /**
+     * Returns if the page is used for container models.<p>
+     * 
+     * @return true if the page is used for container models
+     */
+    public boolean isContainerModel() {
+
+        return m_isContainerModel;
     }
 
     /** 

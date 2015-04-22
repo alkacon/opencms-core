@@ -126,7 +126,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         m_settings = elementBean.getSettings();
         A_CmsFormFieldPanel formFieldPanel = null;
         boolean isEditableModelPage = CmsCoreProvider.get().getUserInfo().isDeveloper()
-            && CmsContainerpageController.get().getData().isModelPage();
+            && (CmsContainerpageController.get().getData().isModelPage() || CmsContainerpageController.get().getData().isContainerModel());
         if (m_contextInfo.shouldShowElementTemplateContextSelection()
             || isEditableModelPage
             || m_elementBean.hasAlternativeFormatters(m_containerId)) {

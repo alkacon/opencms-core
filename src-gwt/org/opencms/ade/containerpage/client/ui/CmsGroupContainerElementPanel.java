@@ -126,6 +126,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
             hasWritePermission,
             releasedAndNotExpired,
             true,
+            false,
             elementView);
         m_resourceType = resourceType;
     }
