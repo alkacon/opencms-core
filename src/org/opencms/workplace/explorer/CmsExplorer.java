@@ -602,11 +602,11 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("function initialize() {\n");
         content.append("top.setRootFolder(\"");
         String rootFolder = getRootFolder();
-        content.append(rootFolder);
+        content.append(CmsEncoder.escapeXml(rootFolder));
         content.append("\");\n");
 
         content.append("top.mode=\"");
-        content.append(getSettings().getExplorerMode());
+        content.append(CmsEncoder.escapeXml(getSettings().getExplorerMode()));
         content.append("\";\n");
         String additionalParams = getJsp().getRequest().getParameter(CmsExplorer.PARAMETER_CONTEXTMENUPARAMS);
         if (additionalParams != null) {

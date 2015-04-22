@@ -18,7 +18,7 @@ if (request.getParameter("reload") != null) {
 	CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
 	CmsFrameset wp2 = new CmsFrameset(jsp);
     // reload only the first time
-	%>top.body.location.href = '<%=wp2.getStartupUri()%>';<%
+	%>top.body.location.href = "<%=org.opencms.i18n.CmsEncoder.escapeXml(wp2.getStartupUri())%>";<%
 }
 	String files = wp.getFileList();
 	// System.err.println(files);

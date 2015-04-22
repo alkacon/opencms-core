@@ -35,6 +35,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
@@ -398,7 +399,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
             // store home link in JS variable to use it in body frame
             result.append("<script type=\"text/javascript\">\n<!--\n");
             result.append("\tvar homeLink = \"");
-            result.append(getParamHomelink());
+            result.append(CmsEncoder.escapeXml(getParamHomelink()));
             result.append("\";\n\n");
             result.append("//-->\n</script>\n");
 
@@ -454,7 +455,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 resourcePath));
 
             result.append(button(
-                "javascript:top.body.location.href='" + getParamHomelink() + "';",
+                "javascript:top.body.location.href='" + CmsEncoder.escapeXml(getParamHomelink()) + "';",
                 null,
                 "contents.png",
                 org.opencms.search.Messages.GUI_HELP_BUTTON_CONTENTS_0,
@@ -758,7 +759,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         headLink.append(PARAM_HOMELINK);
         headLink.append("=");
         headLink.append(getParamHomelink());
-        result.append(getJsp().link(attachRequestString(headLink.toString())));
+        result.append(CmsEncoder.escapeXml(getJsp().link(attachRequestString(headLink.toString()))));
         result.append("\" scrolling=\"no\" noresize>\n");
         result.append("\t<frame name=\"body\" src=\"");
         StringBuffer bodyLink = new StringBuffer(8);
