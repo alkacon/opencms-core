@@ -285,7 +285,7 @@
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
 				name="containermodel" id="313">
-				<param name="schema">/system/modules/org.opencms.ade.config/schemas/containermodel.xsd
+				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/containermodel.xsd
 				</param>
 			</type>
 		</resourcetypes>
