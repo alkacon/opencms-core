@@ -130,8 +130,8 @@ public final class CmsRelationType implements Serializable {
         EMBEDDED_OBJECT,
         OU_RESOURCE,
         CATEGORY,
-        CONTAINER_MODEL,
-        XSD};
+        XSD,
+        CONTAINER_MODEL};
 
     /** Flag to indicate if the relations of this type are parsed from the content or not. */
     private final boolean m_defInContent;
