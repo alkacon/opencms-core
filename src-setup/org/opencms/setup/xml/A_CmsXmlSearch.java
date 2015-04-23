@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,6 @@ import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
-import org.opencms.search.galleries.CmsGallerySearchAnalyzer;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
@@ -46,14 +45,14 @@ import org.dom4j.Document;
 
 /**
  * Skeleton for handling opencms-search.xml.<p>
- * 
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
 
     /**
      * Creates a new fieldconfiguration node.<p>
-     * 
+     *
      * @param document the document to modify
      * @param xpath the xpath to the fieldconfiguration, ie <code>opencms/search/fieldconfigurations/fieldconfiguration[name='...']</code>
      * @param fieldConf the field configuration
@@ -94,22 +93,8 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
     }
 
     /**
-     * Creates a new analyzer node.<p>
-     * 
-     * @param document the document to modify
-     * @param xpath the xpath to the non-existing index (ie. <code>/opencms/search/analyzers/analyzer[class='...']</code>)
-     * @param clazz the class attribute value
-     * @param locale the locale attribute value
-     */
-    protected void createAnalyzer(Document document, String xpath, Class<CmsGallerySearchAnalyzer> clazz, String locale) {
-
-        CmsSetupXmlHelper.setValue(document, xpath + "/" + CmsSearchConfiguration.N_CLASS, clazz.getName());
-        CmsSetupXmlHelper.setValue(document, xpath + "/" + CmsSearchConfiguration.N_LOCALE, locale);
-    }
-
-    /**
      * Creates a new document type node.<p>
-     * 
+     *
      * @param document the document to modify
      * @param xpath the xpath to the index source, ie <code>/opencms/search/documenttypes/documenttype[name='...']</code>
      * @param name the name attribute value
@@ -154,7 +139,7 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
 
     /**
      * Creates a new field node.<p>
-     * 
+     *
      * @param document the document to modify
      * @param xpath the xpath to the field, ie <code>opencms/search/fieldconfigurations/fieldconfiguration[name='...']/fields/field[@name="..."]</code>
      * @param field the field
@@ -237,7 +222,7 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
 
     /**
      * Creates a new mapping node.<p>
-     * 
+     *
      * @param document the document to modify
      * @param xpath the xpath to the field mapping, ie <code>opencms/search/fieldconfigurations/fieldconfiguration[name='...']/fields/field[@name="..."]/mappings/mapping[@type='...']</code>
      * @param mapping the field mapping
@@ -261,7 +246,7 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
 
     /**
      * Creates a new index node.<p>
-     * 
+     *
      * @param document the document to modify
      * @param xpath the xpath to the non-existing index (ie. <code>/opencms/search/indexes/index[name='...']</code>)
      * @param clazz the optional class attribute
@@ -308,7 +293,7 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
 
     /**
      * Creates a new indexsource node.<p>
-     * 
+     *
      * @param document the document to modify
      * @param xpath the xpath to the index source, ie <code>/opencms/search/indexsources/indexsource[name='...']</code>
      * @param name the name attribute value

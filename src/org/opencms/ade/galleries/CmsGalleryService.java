@@ -80,7 +80,6 @@ import org.opencms.relations.CmsLink;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.galleries.CmsGallerySearch;
-import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.search.galleries.CmsGallerySearchResultList;
@@ -1704,8 +1703,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsGallerySearchParameters params = prepareSearchParams(searchObj);
         org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
         searchBean.init(getSearchCms(searchObj));
-        searchBean.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
+        // TODO: Replace with the Solr index, as well.
+        //        searchBean.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
 
+        // TODO
         CmsGallerySearchResultList searchResults = null;
         CmsGallerySearchResultList totalResults = new CmsGallerySearchResultList();
         CmsGallerySearchResult foundItem = null;
@@ -2499,13 +2500,22 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
         CmsObject searchCms = getSearchCms(searchObj);
         searchBean.init(searchCms);
-        searchBean.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
-        CmsGallerySearchResultList searchResults = searchBean.getResult(params);
+
+        //         Lucene Search 
+        //        searchBean.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
+        //        CmsGallerySearchResultList lucenesearchResults = searchBean.getResult(params);
+
+        // TODO 
+        CmsGallerySearchResultList searchResults = OpenCms.getSearchManager().getIndexSolr("Solr Offline").gallerySearch(
+            searchCms,
+            params);
+        searchResults.calculatePages(params.getResultPage(), params.getMatchesPerPage());
+
         // set only the result dependent search params for this search
         // the user dependent params(galleries, types etc.) remain unchanged
         searchObjBean.setSortOrder(params.getSortOrder().name());
         searchObjBean.setScope(params.getScope());
-        searchObjBean.setResultCount(searchResults.getHitCount());
+        searchObjBean.setResultCount(searchResults.size());
         searchObjBean.setPage(params.getResultPage());
         searchObjBean.setLastPage(params.getResultPage());
         searchObjBean.setResults(buildSearchResultList(searchResults, null));

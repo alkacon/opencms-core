@@ -3,6 +3,9 @@
 
 <opencms>
 	<search>
+		<solr enabled="true">
+			<commitWithinMs>10000</commitWithinMs>
+		</solr>
 		<directory>index</directory>
 		<timeout>60000</timeout>
 		<offlineUpdateFrequency>30000</offlineUpdateFrequency>
@@ -109,19 +112,23 @@
 				</resourcetypes>
 			</documenttype>
 			<documenttype>
-				<name>xmlcontent-galleries</name>
-				<class>org.opencms.search.galleries.CmsGalleryDocumentXmlContent</class>
-				<mimetypes/>
+				<name>xmlcontent-solr</name>
+				<class>org.opencms.search.solr.CmsSolrDocumentXmlContent</class>
+				<mimetypes>
+					<mimetype>text/html</mimetype>
+				</mimetypes>
 				<resourcetypes>
-					<resourcetype>xmlcontent-galleries</resourcetype>
+					<resourcetype>xmlcontent-solr</resourcetype>
 				</resourcetypes>
 			</documenttype>	
             <documenttype>
-				<name>xmlpage-galleries</name>
-				<class>org.opencms.search.galleries.CmsGalleryDocumentXmlPage</class>
-				<mimetypes />
+				<name>containerpage-solr</name>
+				<class>org.opencms.search.solr.CmsSolrDocumentContainerPage</class>
+				<mimetypes>
+					<mimetype>text/html</mimetype>
+				</mimetypes>
 				<resourcetypes>
-					<resourcetype>xmlpage-galleries</resourcetype>
+					<resourcetype>containerpage-solr</resourcetype>
 				</resourcetypes>
 			</documenttype>		
 			<documenttype>
@@ -169,7 +176,7 @@
 				<locale>de</locale>
 			</analyzer>
 			<analyzer>
-				<class>org.apache.lucene.analysis.standard.StandardAnalyzer</class>
+				<class>org.apache.lucene.analysis.en.EnglishAnalyzer</class>
 				<locale>en</locale>
 			</analyzer>
 			<analyzer>
@@ -177,12 +184,11 @@
                 <locale>fr</locale>
 			</analyzer>
 			<analyzer>
-				<class>org.apache.lucene.analysis.snowball.SnowballAnalyzer</class>
-				<stemmer>Italian</stemmer>
+				<class>org.apache.lucene.analysis.it.ItalianAnalyzer</class>
 				<locale>it</locale>
 			</analyzer>
             <analyzer>
-				<class>org.opencms.search.galleries.CmsGallerySearchAnalyzer</class>
+				<class>org.apache.lucene.analysis.standard.StandardAnalyzer</class>
 				<locale>all</locale>
 			</analyzer>	
 		</analyzers>
@@ -214,6 +220,17 @@
 					<source>source1</source>
 				</sources>		
 			</index>
+			<index class="org.opencms.search.solr.CmsSolrIndex">
+				<name>Solr Offline</name>
+				<rebuild>offline</rebuild>
+				<project>Offline</project>
+				<locale>all</locale>
+				<configuration>solr_fields</configuration>
+				<sources>
+					<source>solr_source</source>
+				</sources>
+				<param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>
+			</index>			
 			<index>
 				<name>German online help</name>
 				<rebuild>auto</rebuild>
@@ -223,17 +240,6 @@
 					<source>source2</source>
 				</sources>		
 			</index>	
-            <index class="org.opencms.search.galleries.CmsGallerySearchIndex">
-				<name>Gallery Index</name>
-				<rebuild>offline</rebuild>
-				<project>Offline</project>
-				<locale>all</locale>			
-				<configuration>gallery_fields</configuration>	
-				<sources>
-					<source>gallery_source</source>
-				</sources>			
-                <param name="org.opencms.search.CmsSearchIndex.extractContent">false</param>				
-			</index>
 		</indexes>
 		<indexsources>				
 			<indexsource>
@@ -267,33 +273,33 @@
 	                <name>xmlpage</name>
 				</documenttypes-indexed>
 			</indexsource>	
-            <indexsource>
-				<name>gallery_source</name>
+			<indexsource>
+				<name>solr_source</name>
 				<indexer class="org.opencms.search.CmsVfsIndexer" />
 				<resources>
-					<resource>/sites/</resource>
-					<resource>/shared/</resource>
+					<resource>/</resource>
 				</resources>
 				<documenttypes-indexed>
-	                <name>xmlpage-galleries</name>
-					<name>xmlcontent-galleries</name>
+					<name>xmlcontent-solr</name>
+					<name>containerpage-solr</name>
+					<name>xmlpage</name>
+					<name>text</name>
 					<name>jsp</name>
-	                <name>text</name>
-	                <name>pdf</name>
-	                <name>rtf</name>
-	                <name>html</name>
-	                <name>image</name>
-	                <name>generic</name>
-	                <name>msoffice-ole2</name>
-	                <name>msoffice-ooxml</name>
-	                <name>openoffice</name>
-				</documenttypes-indexed>				
-			</indexsource>     
+					<name>pdf</name>
+					<name>rtf</name>
+					<name>html</name>
+					<name>image</name>
+					<name>generic</name>
+					<name>msoffice-ole2</name>
+					<name>msoffice-ooxml</name>
+					<name>openoffice</name>
+				</documenttypes-indexed>
+			</indexsource>    
 		</indexsources>		
 		<fieldconfigurations>		
 			<fieldconfiguration>
 				<name>standard</name>
-				<description>The standard OpenCms 8.0 search index field configuration.</description>
+				<description>The standard OpenCms search index field configuration.</description>
 				<fields>
 					<field name="content" display="%(key.field.content)" store="compress" index="true" excerpt="true">
 						<mapping type="content" />
@@ -317,57 +323,10 @@
 					</field>			
 				</fields>
 			</fieldconfiguration>	
-			<fieldconfiguration class="org.opencms.search.galleries.CmsGallerySearchFieldConfiguration">
-				<name>gallery_fields</name>
-				<description>The OpenCms gallery search index field configuration.</description>
-				<fields>
-					<field name="content" display="%(key.field.content)" store="compress" index="true" excerpt="true">
-                        <mapping type="content"/>
-                    </field>
-                    <field name="title-key" store="true" index="untokenized" boost="0.0">
-                        <mapping type="property">Title</mapping>
-                    </field>
-                    <field name="title" display="%(key.field.title)" store="false" index="true">
-                        <mapping type="property">Title</mapping>
-                    </field>
-                    <field name="description" display="%(key.field.description)" store="true" index="true">
-                        <mapping type="property">Description</mapping>
-                    </field>						
-					<field name="meta" store="false" index="true">
-						<mapping type="property">Title</mapping>
-						<mapping type="property">Description</mapping>
-					</field>	
-					<field name="res_dateExpired" store="true" index="untokenized">
-						<mapping type="attribute">dateExpired</mapping>
-					</field>		
-					<field name="res_dateReleased" store="true" index="untokenized">
-						<mapping type="attribute">dateReleased</mapping>
-					</field>	
-					<field name="res_length" store="true" index="untokenized">
-						<mapping type="attribute">length</mapping>
-					</field>										
-					<field name="res_state" store="true" index="untokenized">
-						<mapping type="attribute">state</mapping>
-					</field>
-                    <field name="res_structureId" store="true" index="untokenized">
-						<mapping type="attribute">structureId</mapping>
-					</field>									
-					<field name="res_userCreated" store="true" index="untokenized">
-						<mapping type="attribute">userCreated</mapping>
-					</field>			
-					<field name="res_userLastModified" store="true" index="untokenized">
-						<mapping type="attribute">userLastModified</mapping>
-					</field>	
-					<field name="res_locales" store="true" index="true" analyzer="WhitespaceAnalyzer">
-						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">res_locales</mapping>
-					</field>
-					<field name="additional_info" store="true" index="false">
-						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">additional_info</mapping>
-					</field>						
-					<field name="container_types" store="true" index="true" analyzer="WhitespaceAnalyzer">
-						<mapping type="dynamic" class="org.opencms.search.galleries.CmsGallerySearchFieldMapping">container_types</mapping>
-					</field>
-				</fields>
+			<fieldconfiguration class="org.opencms.search.solr.CmsSolrFieldConfiguration">
+				<name>solr_fields</name>
+				<description>The Solr search index field configuration.</description>
+				<fields />
 			</fieldconfiguration>	
 		</fieldconfigurations>				
 	</search>

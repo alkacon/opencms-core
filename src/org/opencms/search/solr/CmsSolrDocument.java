@@ -289,7 +289,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                             // TODO: make the length and the area configurable
                             val = CmsStringUtil.trimToSize(val, 1000, 50, "");
                         }
-                        if (schema.hasExplicitField(fieldName)) {
+                        if (schema.hasExplicitField(fieldName) || (schema.getDynamicPattern(fieldName) != null)) {
                             m_doc.addField(fieldName, val);
                         } else {
                             m_doc.addField(fieldName, val, field.getBoost());

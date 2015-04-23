@@ -146,11 +146,15 @@
 		</documenttypes>
 		<analyzers>
 			<analyzer>
+				<class>org.apache.lucene.analysis.standard.StandardAnalyzer</class>
+				<locale>all</locale>
+			</analyzer>
+			<analyzer>
 				<class>org.apache.lucene.analysis.de.GermanAnalyzer</class>
 				<locale>de</locale>
 			</analyzer>
 			<analyzer>
-				<class>org.apache.lucene.analysis.standard.StandardAnalyzer</class>
+				<class>org.apache.lucene.analysis.en.EnglishAnalyzer</class>
 				<locale>en</locale>
 			</analyzer>
 			<analyzer>
@@ -158,8 +162,7 @@
                 <locale>fr</locale>
 			</analyzer>
 			<analyzer>
-				<class>org.apache.lucene.analysis.snowball.SnowballAnalyzer</class>
-				<stemmer>Italian</stemmer>
+				<class>org.apache.lucene.analysis.it.ItalianAnalyzer</class>
 				<locale>it</locale>
 			</analyzer>
 		</analyzers>
@@ -214,7 +217,7 @@
 		<fieldconfigurations>
 			<fieldconfiguration>
 				<name>standard</name>
-				<description>Modified OpenCms 8.0 search index field configuration for test cases.</description>
+				<description>The standard OpenCms search index field configuration.</description>
 				<fields>
 					<field name="content" store="compress" index="true" excerpt="true">
 						<mapping type="content" />
@@ -248,7 +251,7 @@
 						<mapping type="dynamic" class="org.opencms.search.fields.CmsSearchFieldMapping">specialTwo</mapping>
 					</field>						
 				</fields>
-			</fieldconfiguration>			
+			</fieldconfiguration>	
 		</fieldconfigurations>			
 	</search>
 </opencms>

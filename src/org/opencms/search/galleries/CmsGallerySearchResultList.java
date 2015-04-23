@@ -135,7 +135,7 @@ public class CmsGallerySearchResultList extends ArrayList<CmsGallerySearchResult
      * @param pageIndex the index of the current page
      * @param matchesPerPage the matches per page
      */
-    protected void calculatePages(int pageIndex, int matchesPerPage) {
+    public void calculatePages(int pageIndex, int matchesPerPage) {
 
         m_pageIndex = pageIndex;
         // calculate the number of pages for this search result

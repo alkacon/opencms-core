@@ -127,6 +127,9 @@ public class CmsSolrQuery extends SolrQuery {
     /** The parameters given by the 'query string'.  */
     private Map<String, String[]> m_queryParameters = new HashMap<String, String[]>();
 
+    /** The search words. */
+    private String m_text;
+
     /** The name of the field to search the text in. */
     private List<String> m_textSearchFields = new ArrayList<String>();
 
@@ -262,7 +265,6 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
-    <<<<<<< HEAD
      * Removes the expiration flag.
      */
     public void removeExpiration() {
@@ -279,8 +281,6 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
-    =======
-    >>>>>>> branch_9_future
      * Sets the categories only if not set in the query parameters.<p>
      *
      * @param categories the categories to set
@@ -352,6 +352,26 @@ public class CmsSolrQuery extends SolrQuery {
     }
 
     /**
+     * Sets the highlightFields.<p>
+     *
+     * @param highlightFields the highlightFields to set
+     */
+    public void setHighlightFields(List<String> highlightFields) {
+
+        setParam("hl.fl", CmsStringUtil.listAsString(highlightFields, ","));
+    }
+
+    /**
+     * Sets the highlightFields.<p>
+     *
+     * @param highlightFields the highlightFields to set
+     */
+    public void setHighlightFields(String... highlightFields) {
+
+        setParam("hl.fl", CmsStringUtil.arrayAsString(highlightFields, ","));
+    }
+
+    /**
      * Sets the locales only if not set in the query parameters.<p>
      *
      * @param locales the locales to set
@@ -372,9 +392,19 @@ public class CmsSolrQuery extends SolrQuery {
             List<String> localeStrings = new ArrayList<String>();
             for (Locale locale : locales) {
                 localeStrings.add(locale.toString());
-                m_textSearchFields.add("text_" + locale);
+                if (!m_textSearchFields.contains("text")
+                    && !OpenCms.getLocaleManager().getAvailableLocales().contains(locale)) {
+                    // if the locale is not configured in the opencms-system.xml
+                    // there will no localized text fields, so take the general one
+                    m_textSearchFields.add("text");
+                } else {
+                    m_textSearchFields.add("text_" + locale);
+                }
             }
             addFilterQuery(CmsSearchField.FIELD_CONTENT_LOCALES, localeStrings, false, false);
+        }
+        if (m_text != null) {
+            setText(m_text);
         }
     }
 
@@ -386,6 +416,19 @@ public class CmsSolrQuery extends SolrQuery {
     public void setLocales(Locale... locales) {
 
         setLocales(Arrays.asList(locales));
+    }
+
+    /**
+     * @see org.apache.solr.client.solrj.SolrQuery#setRequestHandler(java.lang.String)
+     */
+    @Override
+    public SolrQuery setRequestHandler(String qt) {
+
+        SolrQuery q = super.setRequestHandler(qt);
+        if (m_text != null) {
+            setText(m_text);
+        }
+        return q;
     }
 
     /**
@@ -451,6 +494,7 @@ public class CmsSolrQuery extends SolrQuery {
      */
     public void setText(String text) {
 
+        m_text = text;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
             setQuery(createTextQuery(text));
         }
@@ -464,6 +508,9 @@ public class CmsSolrQuery extends SolrQuery {
     public void setTextSearchFields(List<String> textSearchFields) {
 
         m_textSearchFields = textSearchFields;
+        if (m_text != null) {
+            setText(m_text);
+        }
     }
 
     /**
@@ -489,7 +536,6 @@ public class CmsSolrQuery extends SolrQuery {
      * Creates a filter query on the given field name.<p>
      * 
      * Creates and adds a filter query.<p>
-    <<<<<<< HEAD
      * 
      * @param fieldName the field name to create a filter query on
      * @param vals the values that should match for the given field
@@ -544,7 +590,7 @@ public class CmsSolrQuery extends SolrQuery {
         if (m_textSearchFields.isEmpty()) {
             m_textSearchFields.add(CmsSearchField.FIELD_TEXT);
         }
-        String q = "{!q.op=OR qf=";
+        String q = "{!q.op=OR type=" + getRequestHandler() + " qf=";
         boolean first = true;
         for (String textField : m_textSearchFields) {
             if (!first) {

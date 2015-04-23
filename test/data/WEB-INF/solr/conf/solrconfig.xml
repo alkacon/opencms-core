@@ -21,32 +21,6 @@
 		<enableLazyFieldLoading>true</enableLazyFieldLoading>
 		<queryResultWindowSize>20</queryResultWindowSize>
 		<queryResultMaxDocsCached>200</queryResultMaxDocsCached>
-		<listener event="newSearcher" class="solr.QuerySenderListener">
-			<arr name="queries">
-				<lst>
-					<str name="q">OpenCms</str>
-					<str name="sort">path asc</str>
-				</lst>
-				<lst>
-					<str name="q">Alkacon</str>
-					<str name="sort">Title_prop asc</str>
-				</lst>
-			</arr>
-		</listener>
-		<listener event="firstSearcher" class="solr.QuerySenderListener">
-			<arr name="queries">
-				<lst>
-					<lst>
-						<str name="q">OpenCms</str>
-						<str name="sort">path asc</str>
-					</lst>
-					<lst>
-						<str name="q">Alkacon</str>
-						<str name="sort">Title_prop asc</str>
-					</lst>
-				</lst>
-			</arr>
-		</listener>
 		<useColdSearcher>false</useColdSearcher>
 		<maxWarmingSearchers>2</maxWarmingSearchers>
 	</query>
