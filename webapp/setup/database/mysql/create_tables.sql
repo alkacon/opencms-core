@@ -506,7 +506,7 @@ CREATE TABLE CMS_ALIASES
      site_root    VARCHAR(64) NOT NULL,
      alias_mode   INTEGER NOT NULL,
      structure_id VARCHAR(36) NOT NULL,
-     PRIMARY KEY (path, site_root)
+     PRIMARY KEY (path(255), site_root)
   )
 ENGINE = MYISAM
 CHARACTER SET UTF8;
