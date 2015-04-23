@@ -30,6 +30,7 @@ package org.opencms.ade.sitemap.shared.rpc;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsModelInfo;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
@@ -104,6 +105,7 @@ public interface I_CmsSitemapServiceAsync {
      * @param title the title for the model page 
      * @param description the description for the model page 
      * @param copyId the structure id of the resource to copy to create a new model page; if null, the model page is created as an empty container page
+     * @param isContainerModel <code>true</code> to create a new container model page
      * @param resultCallback the callback for the result 
      */
     void createNewModelPage(
@@ -111,6 +113,7 @@ public interface I_CmsSitemapServiceAsync {
         String title,
         String description,
         CmsUUID copyId,
+        boolean isContainerModel,
         AsyncCallback<CmsModelPageEntry> resultCallback);
 
     /**
@@ -168,7 +171,7 @@ public interface I_CmsSitemapServiceAsync {
      * @param id structure id of a folder
      * @param callback the callback for the result  
      */
-    void getModelPages(CmsUUID id, AsyncCallback<List<CmsModelPageEntry>> callback);
+    void getModelInfos(CmsUUID id, AsyncCallback<CmsModelInfo> callback);
 
     /** 
      * Loads the model page data for the "add" menu.<p>

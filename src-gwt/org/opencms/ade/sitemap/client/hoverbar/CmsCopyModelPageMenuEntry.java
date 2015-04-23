@@ -47,7 +47,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class CmsCopyModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
     /** The instance of the dialog for copying a model page. */
-    private CmsCopyModelPageDialog m_dialog;
+    CmsCopyModelPageDialog m_dialog;
 
     /**
      * Creates a new model page menu entry.<p>
@@ -116,14 +116,14 @@ public class CmsCopyModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
             }
 
-            @SuppressWarnings("synthetic-access")
             public void onSuccess(String title) {
 
                 if (title != null) {
                     CmsSitemapView.getInstance().getController().createNewModelPage(
                         title,
                         m_dialog.getDescription(),
-                        id);
+                        id,
+                        false);
                 }
             }
         });

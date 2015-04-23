@@ -258,6 +258,9 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CREATE_NEW_LABEL_0 = "GUI_CREATE_NEW_LABEL_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USE_AS_CONTAINER_MODEL_LABEL_0 = "GUI_USE_AS_CONTAINER_MODEL_LABEL_0";
+
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 

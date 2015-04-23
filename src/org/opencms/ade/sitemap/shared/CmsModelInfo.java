@@ -1,0 +1,85 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.ade.sitemap.shared;
+
+import java.util.List;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+/**
+ * Wraps the model page and container model info into one object.<p>
+ */
+public class CmsModelInfo implements IsSerializable {
+
+    /** The container model info. */
+    private List<CmsModelPageEntry> m_containerModels;
+
+    /** The model page info. */
+    private List<CmsModelPageEntry> m_modelPages;
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param modelPages the model pages
+     * @param containerModels the container models
+     */
+    public CmsModelInfo(List<CmsModelPageEntry> modelPages, List<CmsModelPageEntry> containerModels) {
+
+        m_modelPages = modelPages;
+        m_containerModels = containerModels;
+    }
+
+    /**
+     * Constructor required for serialization.<p>
+     */
+    protected CmsModelInfo() {
+
+        // nothing to do
+    }
+
+    /**
+     * Returns the container model info.<p>
+     * 
+     * @return the container model info
+     */
+    public List<CmsModelPageEntry> getContainerModels() {
+
+        return m_containerModels;
+    }
+
+    /**
+     * Returns the model page info.<p>
+     * 
+     * @return the model page info
+     */
+    public List<CmsModelPageEntry> getModelPages() {
+
+        return m_modelPages;
+    }
+
+}

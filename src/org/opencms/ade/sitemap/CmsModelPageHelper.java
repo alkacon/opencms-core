@@ -30,6 +30,8 @@ package org.opencms.ade.sitemap;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.ade.configuration.CmsModelPageConfig;
+import org.opencms.ade.containerpage.CmsContainerpageService;
+import org.opencms.ade.sitemap.shared.CmsModelInfo;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -54,6 +56,7 @@ import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -151,7 +154,38 @@ public class CmsModelPageHelper {
     }
 
     /**
-     * Creates a new potential model page in the default folder for new model pages.<p>+
+     * Creates a new container model page.<p>
+     * 
+     * @param name the page name
+     * @param description the page description
+     * 
+     * @return the new resource
+     * 
+     * @throws CmsException in case something goes wrong
+     */
+    public CmsResource createContainerModelPage(String name, String description) throws CmsException {
+
+        CmsResource modelFolder = ensureModelFolder(m_rootResource, true);
+        String pattern = "containermodel_%(number).html";
+        String newFilePath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(
+            m_cms,
+            CmsStringUtil.joinPaths(modelFolder.getRootPath(), pattern),
+            4);
+        CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, name, null);
+        CmsProperty descriptionProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, description, null);
+        CmsResource newPage = null;
+        newPage = m_cms.createResource(
+            newFilePath,
+            getType(CmsResourceTypeXmlContainerPage.getStaticTypeName()),
+            null,
+            Arrays.asList(titleProp, descriptionProp));
+
+        tryUnlock(newPage);
+        return newPage;
+    }
+
+    /**
+     * Creates a new potential model page in the default folder for new model pages.<p>
      * 
      * @param name the title for the model page 
      * @param description the description for the model page 
@@ -162,7 +196,7 @@ public class CmsModelPageHelper {
      */
     public CmsResource createPageInModelFolder(String name, String description, CmsUUID copyId) throws CmsException {
 
-        CmsResource modelFolder = ensureModelFolder(m_rootResource);
+        CmsResource modelFolder = ensureModelFolder(m_rootResource, false);
         String pattern = "templatemodel_%(number).html";
         String newFilePath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(
             m_cms,
@@ -193,13 +227,17 @@ public class CmsModelPageHelper {
      * Tries to either read or create the default folder for model pages in the current sitemap, and returns it.<p>
      * 
      * @param rootResource the root of the sitemap 
+     * @param isContainerModel <code>true</code> if a container model folder is requested 
+     * 
      * @return the folder resource
      *  
      * @throws CmsException if something goes wrong 
      */
-    public CmsResource ensureModelFolder(CmsResource rootResource) throws CmsException {
+    public CmsResource ensureModelFolder(CmsResource rootResource, boolean isContainerModel) throws CmsException {
 
-        String modelFolderPath = CmsStringUtil.joinPaths(m_adeConfig.getBasePath(), ".content/.templates");
+        String modelFolderPath = CmsStringUtil.joinPaths(m_adeConfig.getBasePath(), isContainerModel
+        ? CmsContainerpageService.CONTAINER_MODEL_PATH_FRAGMENT
+        : ".content/.templates");
         try {
             CmsResource result = m_cms.readFolder(modelFolderPath);
             return result;
@@ -214,6 +252,47 @@ public class CmsModelPageHelper {
             return result;
         }
 
+    }
+
+    /**
+     * Returns the local container model pages.<p>
+     * 
+     * @return the container model pages
+     */
+    public List<CmsModelPageEntry> getContainerModels() {
+
+        List<CmsModelPageEntry> result = new ArrayList<CmsModelPageEntry>();
+        String containerModelFolderPath = CmsStringUtil.joinPaths(
+            m_adeConfig.getBasePath(),
+            CmsContainerpageService.CONTAINER_MODEL_PATH_FRAGMENT);
+        if (m_cms.existsResource(containerModelFolderPath)) {
+            try {
+                List<CmsResource> modelResources = m_cms.readResources(
+                    containerModelFolderPath,
+                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(OpenCms.getResourceManager().getResourceType(
+                        CmsResourceTypeXmlContainerPage.getStaticTypeName())),
+                    false);
+                for (CmsResource model : modelResources) {
+                    CmsModelPageEntry entry = createModelPageEntry(model);
+                    if (entry != null) {
+                        result.add(entry);
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the model infos.<p>
+     * 
+     * @return the model infos
+     */
+    public CmsModelInfo getModelInfo() {
+
+        return new CmsModelInfo(getModelPages(), getContainerModels());
     }
 
     /** 

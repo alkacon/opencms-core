@@ -70,20 +70,19 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
     /**
      * Opens the editor for a model page menu entry.<p>
      * 
-     * @param id the model page menu entry 
+     * @param resourcePath the resource path of the model page
      */
-    public static void editModelPage(CmsUUID id) {
+    public static void editModelPage(String resourcePath) {
 
-        CmsNewResourceInfo info = CmsSitemapView.getInstance().getController().getData().getNewResourceInfoById(id);
-        CmsEditModelPageMenuEntry.openEditConfirmDialog(info);
+        CmsEditModelPageMenuEntry.openEditConfirmDialog(resourcePath);
     }
 
     /**
      * Opens the confirmation dialog for editing a model page.<p>
      * 
-     * @param resourceInfo the resource information bean which belongs to the model page to edit 
+     * @param resourcePath the resource path of the model page
      */
-    public static void openEditConfirmDialog(final CmsNewResourceInfo resourceInfo) {
+    public static void openEditConfirmDialog(final String resourcePath) {
 
         I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
 
@@ -94,17 +93,17 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
             public void onOk() {
 
-                String resourcePath = resourceInfo.getVfsPath();
+                String targetPath = resourcePath;
                 String siteRoot = CmsCoreProvider.get().getSiteRoot();
-                if (resourcePath.startsWith(siteRoot)) {
-                    resourcePath = resourcePath.substring(siteRoot.length());
+                if (targetPath.startsWith(siteRoot)) {
+                    targetPath = targetPath.substring(siteRoot.length());
                     // prepend slash if necessary
-                    if (!resourcePath.startsWith("/")) {
-                        resourcePath = "/" + resourcePath;
+                    if (!targetPath.startsWith("/")) {
+                        targetPath = "/" + targetPath;
                     }
                 }
                 CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-                controller.leaveEditor(resourcePath);
+                controller.leaveEditor(targetPath);
             }
         };
         String dialogTitle = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0);
@@ -123,8 +122,7 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
     public void execute() {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        CmsUUID id = entry.getId();
-        editModelPage(id);
+        editModelPage(entry.getSitePath());
     }
 
     /**

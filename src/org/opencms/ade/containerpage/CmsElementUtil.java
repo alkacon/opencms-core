@@ -604,8 +604,9 @@ public class CmsElementUtil {
         result.setHasSettings(hasSettings(m_cms, elementBean.getResource()));
         result.setPermissionInfo(permissionInfo);
         result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
-        result.setContainerModel(CmsContainerpageService.isContainerModelResource(elementBean.getResource())
-            && CmsContainerpageService.isEditingContainerModels(m_cms, m_page));
+        //TODO: check if the container model relation points the current page
+        result.setContainerModel(CmsContainerpageService.isEditingContainerModels(m_cms, m_page)
+            && CmsContainerpageService.isContainerModelResource(m_cms, elementBean.getResource()));
         return result;
     }
 

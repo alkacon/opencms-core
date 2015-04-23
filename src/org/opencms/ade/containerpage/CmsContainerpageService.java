@@ -151,6 +151,9 @@ import com.google.common.collect.Sets;
  */
 public class CmsContainerpageService extends CmsGwtService implements I_CmsContainerpageService {
 
+    /** The container model pages path fragment. */
+    public static final String CONTAINER_MODEL_PATH_FRAGMENT = "/.content/.containermodels/";
+
     /** Additional info key for storing the "edit small elements" setting on the user. */
     public static final String ADDINFO_EDIT_SMALL_ELEMENTS = "EDIT_SMALL_ELEMENTS";
 
@@ -283,14 +286,21 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * Checks whether the given resource is of the type container model.<p>
      * 
+     * @param cms the cms context
      * @param resource the resource to check
      * 
      * @return <code>true</code> if the given resource is of the type container model
      */
-    protected static boolean isContainerModelResource(CmsResource resource) {
+    protected static boolean isContainerModelResource(CmsObject cms, CmsResource resource) {
 
-        return CmsResourceTypeXmlContainerPage.CONTAINER_MODEL_TYPE_NAME.equals(OpenCms.getResourceManager().getResourceType(
-            resource).getTypeName());
+        boolean result = false;
+        try {
+            CmsRelation relation = getContainerModelRelation(cms, resource);
+            result = relation != null;
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        return result;
     }
 
     /**
@@ -303,9 +313,30 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      */
     protected static boolean isEditingContainerModels(CmsObject cms, CmsResource containerPage) {
 
-        return (CmsResource.getParentFolder(containerPage.getRootPath()).endsWith("/.content/.containermodels/") && OpenCms.getRoleManager().hasRole(
+        return (CmsResource.getParentFolder(containerPage.getRootPath()).endsWith(CONTAINER_MODEL_PATH_FRAGMENT) && OpenCms.getRoleManager().hasRole(
             cms,
             CmsRole.DEVELOPER));
+    }
+
+    /**
+     * Returns the container model relation of the given resource
+     * 
+     * @param cms the cms context
+     * @param resource the resource
+     * 
+     * @return the relation
+     * 
+     * @throws CmsException if reading the relation fails
+     */
+    private static CmsRelation getContainerModelRelation(CmsObject cms, CmsResource resource) throws CmsException {
+
+        List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.relationsFromStructureId(
+            resource.getStructureId()).filterType(CmsRelationType.CONTAINER_MODEL));
+        if (!relations.isEmpty()) {
+            return relations.get(0);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -1446,21 +1477,23 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * Adds container-model-relations from all container model content elements to this container page.<p>
      * 
      * @param containerpage the container page resource
-     * @param xmlCnt the container page XML
+     * @param containers the container page containers
      */
-    private void ensureContainerModelRelations(CmsResource containerpage, CmsXmlContainerPage xmlCnt) {
+    private void ensureContainerModelRelations(CmsResource containerpage, List<CmsContainer> containers) {
 
-        for (CmsContainerBean container : xmlCnt.getContainerPage(getCmsObject()).getContainers().values()) {
-            for (CmsContainerElementBean element : container.getElements()) {
+        for (CmsContainer container : containers) {
+            for (CmsContainerElement element : container.getElements()) {
                 try {
-                    element.initResource(getCmsObject());
-                    if (isContainerModelResource(element.getResource())) {
+
+                    if (element.isContainerModel()) {
                         try {
-                            CmsRelation relation = getContainerModelRelation(getCmsObject(), element.getResource());
+                            CmsContainerElementBean elementBean = getCachedElement(element.getClientId());
+                            elementBean.initResource(getCmsObject());
+                            CmsRelation relation = getContainerModelRelation(getCmsObject(), elementBean.getResource());
                             if (relation == null) {
-                                ensureLock(element.getResource());
-                                setContainerModelRelation(getCmsObject(), containerpage, element.getResource());
-                                tryUnlock(element.getResource());
+                                ensureLock(elementBean.getResource());
+                                setContainerModelRelation(getCmsObject(), containerpage, elementBean.getResource());
+                                tryUnlock(elementBean.getResource());
                             }
                         } catch (CmsException e) {
                             LOG.error(e.getLocalizedMessage(), e);
@@ -1658,38 +1691,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     private CmsContainerPageBean getContainerModelPage(CmsObject cms, CmsResource element) throws CmsException {
 
         CmsContainerPageBean result = null;
-        if (isContainerModelResource(element)) {
-            CmsRelation relation = getContainerModelRelation(cms, element);
-            if (relation != null) {
-                CmsResource modelPage = cms.readResource(relation.getTargetId());
-                if (CmsResourceTypeXmlContainerPage.isContainerPage(modelPage)) {
-                    CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(modelPage));
-                    result = xmlCnt.getContainerPage(cms);
-                }
+        CmsRelation relation = getContainerModelRelation(cms, element);
+        if (relation != null) {
+            CmsResource modelPage = cms.readResource(relation.getTargetId());
+            if (CmsResourceTypeXmlContainerPage.isContainerPage(modelPage)) {
+                CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(modelPage));
+                result = xmlCnt.getContainerPage(cms);
             }
         }
+
         return result;
-    }
-
-    /**
-     * Returns the container model relation of the given resource
-     * 
-     * @param cms the cms context
-     * @param resource the resource
-     * 
-     * @return the relation
-     * 
-     * @throws CmsException if reading the relation fails
-     */
-    private CmsRelation getContainerModelRelation(CmsObject cms, CmsResource resource) throws CmsException {
-
-        List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.relationsFromStructureId(
-            resource.getStructureId()).filterType(CmsRelationType.CONTAINER_MODEL));
-        if (!relations.isEmpty()) {
-            return relations.get(0);
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -1772,7 +1783,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         if (CmsContainerElement.MENU_CONTAINER_ID.equals(dndOriginContainer)) {
             // this indicates the element is added to the page and not being repositioned, check for container model data
             for (CmsContainerElementBean element : requestedElements) {
-                if (isContainerModelResource(element.getResource())) {
+                if (isContainerModelResource(cms, element.getResource())) {
                     pageBean = prepareforContainerModelContent(cms, element, pageBean, uriParam, locale);
                 }
             }
@@ -2351,7 +2362,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(containerpageUri));
         xmlCnt.save(cms, page);
         if (isEditingContainerModels(cms, containerpage)) {
-            ensureContainerModelRelations(containerpage, xmlCnt);
+            ensureContainerModelRelations(containerpage, containers);
         }
     }
 

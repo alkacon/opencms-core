@@ -35,6 +35,7 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsModelInfo;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
@@ -429,8 +430,13 @@ public class CmsSitemapController implements I_CmsSitemapController {
      * @param title the title of the model page 
      * @param description the description of the model page 
      * @param copyId the structure id of the resource which should be used as a copy model for the new page
+     * @param isContainerModel in case of a container model page
      */
-    public void createNewModelPage(final String title, final String description, final CmsUUID copyId) {
+    public void createNewModelPage(
+        final String title,
+        final String description,
+        final CmsUUID copyId,
+        final boolean isContainerModel) {
 
         CmsRpcAction<CmsModelPageEntry> action = new CmsRpcAction<CmsModelPageEntry>() {
 
@@ -439,36 +445,36 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
                 start(200, true);
 
-                getService().createNewModelPage(getEntryPoint(), title, description, copyId, this);
+                getService().createNewModelPage(getEntryPoint(), title, description, copyId, isContainerModel, this);
 
             }
 
             @Override
-            @SuppressWarnings("synthetic-access")
             protected void onResponse(final CmsModelPageEntry result) {
 
                 stop(false);
-                loadNewElementInfo(new AsyncCallback<Void>() {
+                if (isContainerModel) {
+                    CmsSitemapView.getInstance().displayNewModelPage(result, true);
+                } else {
+                    loadNewElementInfo(new AsyncCallback<Void>() {
 
-                    public void onFailure(Throwable caught) {
+                        public void onFailure(Throwable caught) {
 
-                        // TODO Auto-generated method stub
+                            // nothing to do
 
-                    }
+                        }
 
-                    public void onSuccess(Void v) {
+                        public void onSuccess(Void v) {
 
-                        CmsSitemapView.getInstance().displayNewModelPage(result);
-                    }
-                });
+                            CmsSitemapView.getInstance().displayNewModelPage(result, false);
+                        }
+                    });
+                }
 
             }
 
         };
         action.execute();
-
-        // TODO Auto-generated method stub
-
     }
 
     /**
@@ -1281,9 +1287,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
             }
         };
         action.execute();
-
-        // TODO Auto-generated method stub
-
     }
 
     /**
@@ -1316,18 +1319,18 @@ public class CmsSitemapController implements I_CmsSitemapController {
      */
     public void loadModelPages() {
 
-        CmsRpcAction<List<CmsModelPageEntry>> action = new CmsRpcAction<List<CmsModelPageEntry>>() {
+        CmsRpcAction<CmsModelInfo> action = new CmsRpcAction<CmsModelInfo>() {
 
             @Override
             public void execute() {
 
                 start(500, false);
-                getService().getModelPages(m_data.getRoot().getId(), this);
+                getService().getModelInfos(m_data.getRoot().getId(), this);
 
             }
 
             @Override
-            protected void onResponse(List<CmsModelPageEntry> result) {
+            protected void onResponse(CmsModelInfo result) {
 
                 stop(false);
                 CmsSitemapView.getInstance().displayModelPages(result);
@@ -1592,7 +1595,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
             }
 
-            @SuppressWarnings("synthetic-access")
             @Override
             protected void onResponse(Void result) {
 
@@ -1686,7 +1688,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
                 public void onFailure(Throwable caught) {
 
-                    // TODO Auto-generated method stub
+                    // nothing to do
 
                 }
 
@@ -2013,6 +2015,38 @@ public class CmsSitemapController implements I_CmsSitemapController {
         }
     }
 
+    /** 
+     * Loads the new element info.<p>
+     * 
+     * @param callback the callback to call when done 
+     */
+    void loadNewElementInfo(final AsyncCallback<Void> callback) {
+
+        CmsRpcAction<List<CmsNewResourceInfo>> newResourceInfoAction = new CmsRpcAction<List<CmsNewResourceInfo>>() {
+
+            @Override
+            public void execute() {
+
+                start(200, true);
+
+                getService().getNewElementInfo(m_data.getRoot().getSitePath(), this);
+            }
+
+            @Override
+            protected void onResponse(List<CmsNewResourceInfo> result) {
+
+                stop(false);
+
+                m_data.setNewElementInfos(result);
+                if (callback != null) {
+                    callback.onSuccess(null);
+                }
+            }
+
+        };
+        newResourceInfoAction.execute();
+    }
+
     /**
      * Store the gallery type information.<p>
      * 
@@ -2085,38 +2119,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
             && (CmsResource.getParentFolder(toPath) != null)
             && (entry != null)
             && (getEntry(CmsResource.getParentFolder(toPath)) != null) && (getEntry(entry.getSitePath()) != null));
-    }
-
-    /** 
-     * Loads the new element info.<p>
-     * 
-     * @param callback the callback to call when done 
-     */
-    private void loadNewElementInfo(final AsyncCallback<Void> callback) {
-
-        CmsRpcAction<List<CmsNewResourceInfo>> newResourceInfoAction = new CmsRpcAction<List<CmsNewResourceInfo>>() {
-
-            @Override
-            public void execute() {
-
-                start(200, true);
-
-                getService().getNewElementInfo(m_data.getRoot().getSitePath(), this);
-            }
-
-            @Override
-            protected void onResponse(List<CmsNewResourceInfo> result) {
-
-                stop(false);
-
-                m_data.setNewElementInfos(result);
-                if (callback != null) {
-                    callback.onSuccess(null);
-                }
-            }
-
-        };
-        newResourceInfoAction.execute();
     }
 
     /**

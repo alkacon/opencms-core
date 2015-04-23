@@ -89,6 +89,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     /** Checkbox to set the 'createNew' status. */
     private CmsCheckBox m_createNewCheckBox;
 
+    /** Checkbox to set the 'container model' status. */
+    private CmsCheckBox m_containerModelCheckBox;
+
     /** The element data bean. */
     private CmsContainerElementData m_elementBean;
 
@@ -125,10 +128,13 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         infoBean.setResourceType(elementBean.getResourceType());
         m_settings = elementBean.getSettings();
         A_CmsFormFieldPanel formFieldPanel = null;
+        boolean isEditableContainerModel = CmsCoreProvider.get().getUserInfo().isDeveloper()
+            && CmsContainerpageController.get().getData().isContainerModel();
         boolean isEditableModelPage = CmsCoreProvider.get().getUserInfo().isDeveloper()
-            && (CmsContainerpageController.get().getData().isModelPage() || CmsContainerpageController.get().getData().isContainerModel());
+            && CmsContainerpageController.get().getData().isModelPage();
         if (m_contextInfo.shouldShowElementTemplateContextSelection()
             || isEditableModelPage
+            || isEditableContainerModel
             || m_elementBean.hasAlternativeFormatters(m_containerId)) {
             CmsFieldsetFormFieldPanel fieldSetPanel = new CmsFieldsetFormFieldPanel(
                 infoBean,
@@ -159,18 +165,30 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 });
                 formatterFieldset.add(m_formatterSelect);
             }
-            if (isEditableModelPage) {
+            if (isEditableModelPage || isEditableContainerModel) {
                 CmsFieldSet createNewFieldSet = new CmsFieldSet();
                 createNewFieldSet.setLegend(org.opencms.ade.containerpage.client.Messages.get().key(
                     org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LEGEND_0
 
                 ));
                 createNewFieldSet.getElement().getStyle().setMarginTop(10, Unit.PX);
+                if (isEditableContainerModel) {
+                    m_containerModelCheckBox = new CmsCheckBox(org.opencms.ade.containerpage.client.Messages.get().key(
+                        org.opencms.ade.containerpage.client.Messages.GUI_USE_AS_CONTAINER_MODEL_LABEL_0));
+                    m_containerModelCheckBox.setDisplayInline(false);
+                    m_containerModelCheckBox.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
+                    createNewFieldSet.add(m_containerModelCheckBox);
+                    m_containerModelCheckBox.setChecked(elementWidget.isContainerModel());
+                }
+
                 m_createNewCheckBox = new CmsCheckBox(org.opencms.ade.containerpage.client.Messages.get().key(
                     org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LABEL_0));
+                m_createNewCheckBox.setDisplayInline(false);
+                m_createNewCheckBox.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
                 createNewFieldSet.add(m_createNewCheckBox);
                 fieldSetPanel.getMainPanel().insert(createNewFieldSet, 1);
                 m_createNewCheckBox.setChecked(elementWidget.isCreateNew());
+
             } else {
                 m_createNewCheckBox = null;
             }
@@ -347,6 +365,10 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         if (m_createNewCheckBox != null) {
             m_elementWidget.setCreateNew(m_createNewCheckBox.isChecked());
         }
+        if (m_containerModelCheckBox != null) {
+            m_elementWidget.setContainerModel(m_containerModelCheckBox.isChecked());
+        }
+
         m_controller.reloadElementWithSettings(
             m_elementWidget,
             m_elementBean.getClientId(),

@@ -39,6 +39,7 @@ import org.opencms.ade.sitemap.client.hoverbar.CmsCreateCategoryMenuEntry;
 import org.opencms.ade.sitemap.client.hoverbar.CmsCreateCategoryMenuEntry.CmsCategoryTitleAndName;
 import org.opencms.ade.sitemap.client.hoverbar.CmsDeleteCategoryMenuEntry;
 import org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarCreateGalleryButton;
+import org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarCreateModelPageButton;
 import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
 import org.opencms.ade.sitemap.client.hoverbar.I_CmsContextMenuItemProvider;
 import org.opencms.ade.sitemap.client.toolbar.CmsSitemapToolbar;
@@ -49,6 +50,7 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsModelInfo;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
@@ -202,6 +204,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /** Model page data beans for the model page mode. */
     private Map<CmsUUID, CmsModelPageEntry> m_modelPageData = Maps.newHashMap();
+
+    /** The container model pages root entry. */
+    private CmsModelPageTreeItem m_containerModelRoot;
 
     /** Root tree item for the model page mode. */
     private CmsModelPageTreeItem m_modelPageRoot;
@@ -460,23 +465,23 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      * 
      * @param modelPageData the model page data 
      */
-    public void displayModelPages(List<CmsModelPageEntry> modelPageData) {
+    public void displayModelPages(CmsModelInfo modelPageData) {
 
         m_modelPageTree.clear();
         m_modelPageTreeItems.clear();
-        CmsModelPageTreeItem root = CmsModelPageTreeItem.createRootItem();
-        m_modelPageRoot = root;
-        CmsHoverbarCreateModelPageButton createButton = new CmsHoverbarCreateModelPageButton();
+        CmsModelPageTreeItem modelPageRoot = CmsModelPageTreeItem.createRootItem(false);
+        m_modelPageRoot = modelPageRoot;
+        CmsHoverbarCreateModelPageButton createButton = new CmsHoverbarCreateModelPageButton(false);
         CmsSitemapHoverbar hoverbar = CmsSitemapHoverbar.installOn(
             m_controller,
             m_modelPageRoot,
             Collections.<Widget> singleton(createButton));
         hoverbar.setAlwaysVisible();
         createButton.setHoverbar(hoverbar);
-        m_modelPageTree.add(root);
-        for (CmsModelPageEntry entry : modelPageData) {
+        m_modelPageTree.add(modelPageRoot);
+        for (CmsModelPageEntry entry : modelPageData.getModelPages()) {
             m_modelPageData.put(entry.getStructureId(), entry);
-            CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(entry);
+            CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(entry, false);
             CmsSitemapHoverbar.installOn(
                 m_controller,
                 treeItem,
@@ -484,9 +489,30 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 entry.getSitePath(),
                 entry.getSitePath() != null);
             m_modelPageTreeItems.put(entry.getStructureId(), treeItem);
-            root.addChild(treeItem);
+            modelPageRoot.addChild(treeItem);
         }
-        root.setOpen(true);
+        modelPageRoot.setOpen(true);
+        m_containerModelRoot = CmsModelPageTreeItem.createRootItem(true);
+        CmsHoverbarCreateModelPageButton createContainerModelButton = new CmsHoverbarCreateModelPageButton(true);
+        CmsSitemapHoverbar containerModelHoverbar = CmsSitemapHoverbar.installOn(
+            m_controller,
+            m_containerModelRoot,
+            Collections.<Widget> singleton(createContainerModelButton));
+        containerModelHoverbar.setAlwaysVisible();
+        createContainerModelButton.setHoverbar(containerModelHoverbar);
+        m_modelPageTree.add(m_containerModelRoot);
+        for (CmsModelPageEntry entry : modelPageData.getContainerModels()) {
+            CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(entry, true);
+            CmsSitemapHoverbar.installOn(
+                m_controller,
+                treeItem,
+                entry.getStructureId(),
+                entry.getSitePath(),
+                entry.getSitePath() != null);
+            m_modelPageTreeItems.put(entry.getStructureId(), treeItem);
+            m_containerModelRoot.addChild(treeItem);
+        }
+        m_containerModelRoot.setOpen(true);
 
     }
 
@@ -525,10 +551,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      * Adds a new model page to the model page view.<p>
      * 
      * @param modelPageData the data for the new model page 
+     * @param isContainerModel in case of a container model page
      */
-    public void displayNewModelPage(CmsModelPageEntry modelPageData) {
+    public void displayNewModelPage(CmsModelPageEntry modelPageData, boolean isContainerModel) {
 
-        CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(modelPageData);
+        CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(modelPageData, isContainerModel);
         CmsSitemapHoverbar.installOn(
             m_controller,
             treeItem,
@@ -536,7 +563,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             modelPageData.getSitePath(),
             modelPageData.getSitePath() != null);
         m_modelPageTreeItems.put(modelPageData.getStructureId(), treeItem);
-        m_modelPageRoot.addChild(treeItem);
+        if (isContainerModel) {
+            m_containerModelRoot.addChild(treeItem);
+        } else {
+            m_modelPageRoot.addChild(treeItem);
+        }
     }
 
     /**
@@ -1328,7 +1359,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     modelPage.setResourceType(typeName);
                     modelPage.setStructureId(change.getEntryId());
                     modelPage.setOwnProperties(change.getOwnProperties());
-                    CmsModelPageTreeItem folderItem = new CmsModelPageTreeItem(modelPage);
+                    CmsModelPageTreeItem folderItem = new CmsModelPageTreeItem(modelPage, false);
                     CmsSitemapHoverbar.installOn(m_controller, folderItem, modelPage.getStructureId());
                     m_modelPageRoot.addChild(folderItem);
                     m_modelPageTreeItems.put(modelPage.getStructureId(), folderItem);

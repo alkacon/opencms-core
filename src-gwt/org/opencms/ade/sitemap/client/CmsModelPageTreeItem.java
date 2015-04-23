@@ -75,13 +75,22 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
     /** The folder entry id. */
     private CmsUUID m_entryId;
 
+    /** The container model flag. */
+    private boolean m_isContainerModel;
+
     /**
      * Creates the fake model page tree item used as a root for the tree view.<p>
+     * 
+     * @param isContainerModel in case of a container model page 
      */
-    public CmsModelPageTreeItem() {
+    public CmsModelPageTreeItem(boolean isContainerModel) {
 
         super(true);
-        CmsListInfoBean infoBean = new CmsListInfoBean(
+        m_isContainerModel = isContainerModel;
+        CmsListInfoBean infoBean = m_isContainerModel ? new CmsListInfoBean(
+            "Container models",
+            "Click on the plus symbol at the right to create a new container model.",
+            null) : new CmsListInfoBean(
             Messages.get().key(Messages.GUI_MODEL_PAGE_TREE_ROOT_TITLE_0),
             Messages.get().key(Messages.GUI_MODE_PAGE_TREE_ROOT_SUBTITLE_0),
             null);
@@ -94,10 +103,12 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
      * Constructor.<p>
      * 
      * @param modelpage the model page
+     * @param isContainerModel in case of a container model page
      */
-    public CmsModelPageTreeItem(CmsModelPageEntry modelpage) {
+    public CmsModelPageTreeItem(CmsModelPageEntry modelpage, boolean isContainerModel) {
 
         super(true);
+        m_isContainerModel = isContainerModel;
         initContent(createListWidget(modelpage));
         m_entryId = modelpage.getStructureId();
     }
@@ -105,11 +116,13 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
     /**
      * Creates the fake model page tree item used as a root for the tree view.<p>
      * 
+     * @param isContainerModel in case of a container model page
+     * 
      * @return the root tree item 
      */
-    public static CmsModelPageTreeItem createRootItem() {
+    public static CmsModelPageTreeItem createRootItem(boolean isContainerModel) {
 
-        return new CmsModelPageTreeItem();
+        return new CmsModelPageTreeItem(isContainerModel);
     }
 
     /**
@@ -131,6 +144,16 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
         // the site path is displayed as the sub title
         return getListItemWidget().getSubtitleLabel();
+    }
+
+    /**
+     * Returns whether the entry represents a container model page.<p>
+     * 
+     * @return <code>true</code> if the entry represents a container model page
+     */
+    public boolean isContainerModel() {
+
+        return m_isContainerModel;
     }
 
     /**
@@ -194,12 +217,12 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
         infoBean.setTitle(title);
         CmsListItemWidget result = new CmsModelPageListItemWidget(infoBean);
         result.setIcon(CmsIconUtil.getResourceIconClasses("modelpage", modelPage.getRootPath(), false));
-        if (CmsEditModelPageMenuEntry.checkVisible(modelPage.getStructureId())) {
+        if (m_isContainerModel || CmsEditModelPageMenuEntry.checkVisible(modelPage.getStructureId())) {
             result.addIconClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
 
-                    CmsEditModelPageMenuEntry.editModelPage(modelPage.getStructureId());
+                    CmsEditModelPageMenuEntry.editModelPage(modelPage.getSitePath());
                 }
             });
         }

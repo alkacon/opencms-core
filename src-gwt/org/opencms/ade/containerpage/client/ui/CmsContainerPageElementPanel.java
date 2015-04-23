@@ -97,6 +97,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /** The elements client id. */
     private String m_clientId;
 
+    /** The container model status. */
+    private boolean m_containerModel;
+
     /** The 'create new' flag. */
     private boolean m_createNew;
 
@@ -168,8 +171,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      **/
     private boolean m_writePermission;
 
-    private boolean m_containerModel;
-
     /**
      * Constructor.<p>
      * 
@@ -186,6 +187,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * @param hasWritePermission indicates if the current user has write permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      * @param disableNewEditor flag to disable the new editor for this element 
+     * @param containerModel the container model status
      * @param elementView the element view of the element 
      */
     public CmsContainerPageElementPanel(
@@ -523,6 +525,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         }
     }
 
+    /**
+     * Returns whether the element is used as a container model.<p>
+     *  
+     * @return <code>true</code> if the element is used as a container model
+     */
+    public boolean isContainerModel() {
+
+        return m_containerModel;
+    }
+
     /** 
      * Checks if this element has 'createNew' status, i.e. will be copied when using this page as a model for a new container page.<p>
      * 
@@ -531,9 +543,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public boolean isCreateNew() {
 
         return m_createNew;
-
-        //        return isNewOrCopyAsNew()
-        //            && m_clientId.matches("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*$");
     }
 
     /**
@@ -625,6 +634,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         Element tempDiv = DOM.createDiv();
         tempDiv.setInnerHTML(html);
         getElement().setInnerHTML(tempDiv.getFirstChildElement().getInnerHTML());
+    }
+
+    /**
+     * Sets the container model status.<p>
+     * 
+     * @param containerModel the container model status
+     */
+    public void setContainerModel(boolean containerModel) {
+
+        m_containerModel = containerModel;
     }
 
     /**

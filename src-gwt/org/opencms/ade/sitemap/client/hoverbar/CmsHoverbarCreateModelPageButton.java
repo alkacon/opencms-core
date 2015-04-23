@@ -25,9 +25,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.sitemap.client;
+package org.opencms.ade.sitemap.client.hoverbar;
 
-import org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar;
+import org.opencms.ade.sitemap.client.CmsSitemapView;
+import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.ui.CmsCreateModelPageDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
@@ -43,11 +44,17 @@ public class CmsHoverbarCreateModelPageButton extends CmsPushButton {
     /** The hover bar. */
     CmsSitemapHoverbar m_hoverbar;
 
+    /** The container model flag. */
+    private boolean m_isContainerModel;
+
     /**
      * Constructor.<p>
+     * 
+     * @param isContainerModel in case of a container model page
      */
-    public CmsHoverbarCreateModelPageButton() {
+    public CmsHoverbarCreateModelPageButton(boolean isContainerModel) {
 
+        m_isContainerModel = isContainerModel;
         setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.style().addIcon());
         setTitle(Messages.get().key(Messages.GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0));
         setButtonStyle(ButtonStyle.IMAGE, null);
@@ -81,7 +88,9 @@ public class CmsHoverbarCreateModelPageButton extends CmsPushButton {
      */
     protected void openDialog() {
 
-        CmsCreateModelPageDialog dialog = new CmsCreateModelPageDialog(CmsSitemapView.getInstance().getController());
+        CmsCreateModelPageDialog dialog = new CmsCreateModelPageDialog(
+            CmsSitemapView.getInstance().getController(),
+            m_isContainerModel);
         dialog.center();
     }
 

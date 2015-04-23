@@ -300,6 +300,20 @@ implements HasClickHandlers, I_CmsFormWidget, I_CmsHasInit, HasHorizontalAlignme
     }
 
     /**
+     * Toggles between display:inline-block and display:block.<p>
+     * 
+     * @param inline <code>true</code> to display inline-block
+     */
+    public void setDisplayInline(boolean inline) {
+
+        if (inline) {
+            addStyleName(CSS.inlineBlock());
+        } else {
+            removeStyleName(CSS.inlineBlock());
+        }
+    }
+
+    /**
      * Enables or disables the checkbox.<p>
      * 
      * @param enabled if true, enable the checkbox, else disable it

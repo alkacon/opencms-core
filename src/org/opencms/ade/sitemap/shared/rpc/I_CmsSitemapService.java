@@ -30,6 +30,7 @@ package org.opencms.ade.sitemap.shared.rpc;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsModelInfo;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
@@ -106,12 +107,17 @@ public interface I_CmsSitemapService extends RemoteService {
      * @param title the title for the model page 
      * @param description the description for the model page 
      * @param copyId the structure id of the resource to copy to create a new model page; if null, the model page is created as an empty container page
+     * @param isContainerModel <code>true</code> to create a new container model page
      *   
      * @return a bean representing the created model page 
      * @throws CmsRpcException if something goes wrong 
      */
-    CmsModelPageEntry createNewModelPage(String entryPointUri, String title, String description, CmsUUID copyId)
-    throws CmsRpcException;
+    CmsModelPageEntry createNewModelPage(
+        String entryPointUri,
+        String title,
+        String description,
+        CmsUUID copyId,
+        boolean isContainerModel) throws CmsRpcException;
 
     /**
      * Creates a sub-sitemap of the given sitemap starting from the given entry.<p>
@@ -185,7 +191,7 @@ public interface I_CmsSitemapService extends RemoteService {
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    List<CmsModelPageEntry> getModelPages(CmsUUID rootId) throws CmsRpcException;
+    CmsModelInfo getModelInfos(CmsUUID rootId) throws CmsRpcException;
 
     /** 
      * Loads the model page data for the "add" menu.<p>

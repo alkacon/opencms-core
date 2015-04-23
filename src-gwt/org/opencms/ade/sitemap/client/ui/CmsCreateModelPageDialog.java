@@ -37,15 +37,20 @@ public class CmsCreateModelPageDialog extends A_CmsNewModelPageDialog {
     /** The controller. */
     private CmsSitemapController m_controller;
 
+    /** The container model flag. */
+    private boolean m_isContainerModel;
+
     /** 
      * Constructor.<p>
      * 
      * @param controller the controller
+     * @param isContainerModel in case of a container model page
      */
-    public CmsCreateModelPageDialog(CmsSitemapController controller) {
+    public CmsCreateModelPageDialog(CmsSitemapController controller, boolean isContainerModel) {
 
         super(org.opencms.ade.sitemap.client.Messages.get().key(
             org.opencms.ade.sitemap.client.Messages.GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0), null);
+        m_isContainerModel = isContainerModel;
         m_controller = controller;
     }
 
@@ -58,7 +63,8 @@ public class CmsCreateModelPageDialog extends A_CmsNewModelPageDialog {
         m_controller.createNewModelPage(
             m_titleInput.getFormValueAsString(),
             m_descriptionInput.getFormValueAsString(),
-            null);
+            null,
+            m_isContainerModel);
         hide();
     }
 

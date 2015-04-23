@@ -39,6 +39,7 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
 import org.opencms.ade.sitemap.shared.CmsGalleryFolderEntry;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
+import org.opencms.ade.sitemap.shared.CmsModelInfo;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
@@ -410,18 +411,26 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     /**
      * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createNewModelPage(java.lang.String, java.lang.String, java.lang.String, org.opencms.util.CmsUUID)
      */
-    public CmsModelPageEntry createNewModelPage(String entryPointUri, String title, String description, CmsUUID copyId)
-    throws CmsRpcException {
+    public CmsModelPageEntry createNewModelPage(
+        String entryPointUri,
+        String title,
+        String description,
+        CmsUUID copyId,
+        boolean isContainerModel) throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
             CmsResource rootResource = cms.readResource(entryPointUri);
             CmsModelPageHelper helper = new CmsModelPageHelper(getCmsObject(), rootResource);
-            CmsResource page = helper.createPageInModelFolder(title, description, copyId);
-            String configPath = CmsStringUtil.joinPaths(entryPointUri, ".content/.config");
-            CmsResource configResource = cms.readResource(configPath);
-            helper.addModelPageToSitemapConfiguration(configResource, page, false);
-
+            CmsResource page;
+            if (isContainerModel) {
+                page = helper.createContainerModelPage(title, description);
+            } else {
+                page = helper.createPageInModelFolder(title, description, copyId);
+                String configPath = CmsStringUtil.joinPaths(entryPointUri, ".content/.config");
+                CmsResource configResource = cms.readResource(configPath);
+                helper.addModelPageToSitemapConfiguration(configResource, page, false);
+            }
             CmsModelPageEntry result = helper.createModelPageEntry(page);
             OpenCms.getADEManager().waitForCacheUpdate(false);
             return result;
@@ -588,16 +597,15 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getModelPages(org.opencms.util.CmsUUID)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#getModelInfos(org.opencms.util.CmsUUID)
      */
-    public List<CmsModelPageEntry> getModelPages(CmsUUID rootId) throws CmsRpcException {
+    public CmsModelInfo getModelInfos(CmsUUID rootId) throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
             CmsResource rootResource = cms.readResource(rootId);
             CmsModelPageHelper modelPageHelper = new CmsModelPageHelper(getCmsObject(), rootResource);
-            List<CmsModelPageEntry> entries = modelPageHelper.getModelPages();
-            return entries;
+            return modelPageHelper.getModelInfo();
         } catch (Throwable e) {
             error(e);
             return null; // will  never be reached 
