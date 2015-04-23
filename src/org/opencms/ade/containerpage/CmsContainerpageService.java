@@ -1405,8 +1405,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                             + typeName
                             + "' is not available in this sitemap.");
                     }
-
-                    CmsResource newResource = typeConfig.createNewElement(cloneCms, element.getResource());
+                    CmsResource newResource = typeConfig.createNewElement(
+                        cloneCms,
+                        element.getResource(),
+                        CmsResource.getParentFolder(cms.addSiteRoot(uriParam)));
                     newResources.put(element.getId(), newResource);
                 }
             }
