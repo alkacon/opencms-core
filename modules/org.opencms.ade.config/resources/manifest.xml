@@ -283,11 +283,6 @@
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/xmlimage.xsd
 				</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
-				name="containermodel" id="313">
-				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/containermodel.xsd
-				</param>
-			</type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="subsitemap" key="fileicon.subsitemap"
@@ -654,21 +649,7 @@
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
-
-			<explorertype name="containermodel" key="fileicon.containermodel"
-				icon="formatter_config.png" bigicon="formatter_config_big.png"
-				reference="xmlcontent">
-				<newresource page="otheroptions"
-					uri="newresource_xmlcontent.jsp?newresourcetype=containermodel"
-					order="25" autosetnavigation="false" autosettitle="false"
-					info="desc.containermodel" />
-				<accesscontrol>
-					<accessentry principal="ROLE.WORKPLACE_USER"
-						permissions="+r+v+w+c" />
-				</accesscontrol>
-			</explorertype>
-
-			<explorertype name="inheritance_group" key="fileicon.inheritance_group"
+            <explorertype name="inheritance_group" key="fileicon.inheritance_group"
 				icon="inheritancegroup.png" bigicon="inheritancegroup_big.png"
 				reference="xmlcontent">
 				<newresource
