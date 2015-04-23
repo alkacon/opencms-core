@@ -1453,7 +1453,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                             + "' is not available in this sitemap.");
                     }
 
-                    CmsResource newResource = typeConfig.createNewElement(cloneCms, element.getResource());
+                    CmsResource newResource = typeConfig.createNewElement(
+                        cloneCms,
+                        element.getResource(),
+                        CmsResource.getParentFolder(cms.getRequestContext().addSiteRoot(sitePath)));
                     CmsContainerElementBean newBean = new CmsContainerElementBean(
                         newResource.getStructureId(),
                         element.getFormatterId(),

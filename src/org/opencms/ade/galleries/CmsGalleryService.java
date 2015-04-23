@@ -27,9 +27,6 @@
 
 package org.opencms.ade.galleries;
 
-import org.opencms.ade.configuration.CmsADEConfigData;
-import org.opencms.ade.configuration.CmsElementView;
-import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.galleries.preview.I_CmsPreviewProvider;
 import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
@@ -972,18 +969,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             types.add(info.getType());
         }
         return types;
-    }
-
-    protected boolean isHiddenFromAddMenu(CmsResourceTypeConfig typeConfig, CmsUUID elementView) {
-
-        if (typeConfig.isAddDisabled()) {
-            return true;
-        }
-
-        boolean matchingView = elementView.equals(typeConfig.getElementView())
-            || (typeConfig.isShowInDefaultView() && elementView.equals(CmsElementView.DEFAULT_ELEMENT_VIEW.getId()));
-
-        return !matchingView;
     }
 
     /**
@@ -2122,33 +2107,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 creatableTypes = Collections.<String> emptySet();
                 break;
             case ade:
-                resourceTypes = new ArrayList<I_CmsResourceType>();
-                creatableTypes = new HashSet<String>();
-                try {
-                    CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
-                        getCmsObject(),
-                        getCmsObject().getRequestContext().addSiteRoot(getCmsObject().getRequestContext().getUri()));
-                    CmsUUID elementView = getSessionCache().getElementView();
-                    for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
-                        if (typeConfig.isHiddenFromAddMenu(elementView)) {
-                            continue;
-                        }
-                        if (typeConfig.checkViewable(getCmsObject(), referenceSitePath)) {
-                            String typeName = typeConfig.getTypeName();
-                            resourceTypes.add(getResourceManager().getResourceType(typeName));
-                        }
-                    }
-                    for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(getCmsObject())) {
-                        if (typeConfig.isHiddenFromAddMenu(elementView)) {
-                            continue;
-                        }
-                        String typeName = typeConfig.getTypeName();
-                        creatableTypes.add(typeName);
-                    }
-                } catch (CmsException e) {
-                    error(e);
-                }
-                break;
+                throw new IllegalStateException("This code should never be called");
+                // ADE case is handle by container page service 
             default:
                 resourceTypes = Collections.<I_CmsResourceType> emptyList();
                 creatableTypes = Collections.<String> emptySet();

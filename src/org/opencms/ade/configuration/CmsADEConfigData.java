@@ -261,16 +261,17 @@ public class CmsADEConfigData {
     /**
      * Returns a list of the creatable resource types.<p>
      * 
-     * @param cms the CMS context used to check whether the resource types are creatable 
+     * @param cms the CMS context used to check whether the resource types are creatable
+     * @param pageFolderRootPath the root path of the current container page 
      * @return the list of creatable resource type 
      * 
      * @throws CmsException if something goes wrong 
      */
-    public List<CmsResourceTypeConfig> getCreatableTypes(CmsObject cms) throws CmsException {
+    public List<CmsResourceTypeConfig> getCreatableTypes(CmsObject cms, String pageFolderRootPath) throws CmsException {
 
         List<CmsResourceTypeConfig> result = new ArrayList<CmsResourceTypeConfig>();
         for (CmsResourceTypeConfig typeConfig : getResourceTypes()) {
-            if (typeConfig.checkCreatable(cms)) {
+            if (typeConfig.checkCreatable(cms, pageFolderRootPath)) {
                 result.add(typeConfig);
             }
         }
@@ -766,15 +767,19 @@ public class CmsADEConfigData {
                 cms.getRequestContext().setSiteRoot(siteRoot);
                 for (CmsResourceTypeConfig config : getResourceTypes()) {
                     String typeName = config.getTypeName();
-                    String folderPath = config.getFolderPath(cms);
-                    result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
+                    if (!config.isPageRelative()) { // elements stored with container pages can not be used as detail contents 
+                        String folderPath = config.getFolderPath(cms, null);
+                        result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
+                    }
                 }
             }
         } else {
             for (CmsResourceTypeConfig config : getResourceTypes()) {
                 String typeName = config.getTypeName();
-                String folderPath = config.getFolderPath(getCms());
-                result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
+                if (!config.isPageRelative()) { // elements stored with container pages can not be used as detail contents
+                    String folderPath = config.getFolderPath(getCms(), null);
+                    result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
+                }
             }
         }
         return result;

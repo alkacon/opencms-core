@@ -198,6 +198,9 @@ public class CmsConfigurationReader {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationReader.class);
 
+    /** The PageRelative node name. */
+    private static final String N_PAGE_RELATIVE = "PageRelative";
+
     /** The ShowInDefaultView node name. */
     private static final String N_SHOW_IN_DEFAULT_VIEW = "ShowInDefaultView";
 
@@ -418,22 +421,26 @@ public class CmsConfigurationReader {
      * 
      * @throws CmsException if something goes wrong 
      */
-    public CmsFolderOrName parseFolderOrName(String basePath, I_CmsXmlContentLocation location) throws CmsException {
+    public CmsContentFolderDescriptor parseFolderOrName(String basePath, I_CmsXmlContentLocation location)
+    throws CmsException {
 
         if (location == null) {
             return null;
         }
         I_CmsXmlContentValueLocation nameLoc = location.getSubValue(N_NAME);
         I_CmsXmlContentValueLocation pathLoc = location.getSubValue(N_PATH);
+        I_CmsXmlContentValueLocation pageRelativeLoc = location.getSubValue(N_PAGE_RELATIVE);
         if (nameLoc != null) {
             String name = nameLoc.asString(m_cms);
-            return new CmsFolderOrName(basePath == null ? null : CmsStringUtil.joinPaths(
+            return new CmsContentFolderDescriptor(basePath == null ? null : CmsStringUtil.joinPaths(
                 basePath,
                 CmsADEManager.CONTENT_FOLDER_NAME), name);
         } else if (pathLoc != null) {
             String path = pathLoc.asString(m_cms);
             CmsResource folder = m_cms.readResource(path);
-            return new CmsFolderOrName(folder);
+            return new CmsContentFolderDescriptor(folder);
+        } else if (pageRelativeLoc != null) {
+            return CmsContentFolderDescriptor.createPageRelativeFolderDescriptor();
         } else {
             return null;
         }
@@ -507,7 +514,7 @@ public class CmsConfigurationReader {
 
         I_CmsXmlContentValueLocation typeNameLoc = node.getSubValue(N_TYPE_NAME);
         String typeName = typeNameLoc.asString(m_cms);
-        CmsFolderOrName folderOrName = parseFolderOrName(basePath, node.getSubValue(N_FOLDER));
+        CmsContentFolderDescriptor folderOrName = parseFolderOrName(basePath, node.getSubValue(N_FOLDER));
         I_CmsXmlContentValueLocation disabledLoc = node.getSubValue(N_DISABLED);
         boolean disabled = false;
         boolean addDisabled = false;

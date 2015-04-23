@@ -13,6 +13,7 @@
         <xsd:choice>    
 	      	<xsd:element name="Name" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
 	      	<xsd:element name="Path" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
+	      	<xsd:element name="PageRelative" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
         </xsd:choice>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
@@ -20,7 +21,12 @@
     <xsd:annotation>
         <xsd:appinfo>
 		<resourcebundle name="org.opencms.xml.containerpage.messages"/>
-	        <layouts/>
+	        <layouts>
+	        	<layout element="PageRelative" widget="DisplayWidget" configuration="true" />
+	        </layouts>
+	        <defaults>
+	        	<default element="PageRelative" value="X" />
+	       	</defaults>
         </xsd:appinfo>
     </xsd:annotation>
 </xsd:schema>

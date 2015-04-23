@@ -593,7 +593,9 @@ public class CmsElementUtil {
         }
         if (elementBean.isCreateNew()
             && CmsStringUtil.isEmptyOrWhitespaceOnly(permissionInfo.getNoEditReason())
-            && ((typeConfig == null) || !typeConfig.checkCreatable(m_cms))) {
+            && ((typeConfig == null) || !typeConfig.checkCreatable(
+                m_cms,
+                CmsResource.getParentFolder(m_page.getRootPath())))) {
             String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
             permissionInfo.setNoEditReason(Messages.get().getBundle().key(
                 Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1,

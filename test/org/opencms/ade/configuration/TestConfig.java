@@ -168,10 +168,11 @@ public class TestConfig extends OpenCmsTestCase {
         dummyUserCms.loginUser(username, "password");
         dummyUserCms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
-        CmsFolderOrName folder = new CmsFolderOrName(baseDirectory + "/.content", "plain");
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor(baseDirectory + "/.content", "plain");
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("plain", false, folder, "pattern_%(number)");
-        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("binary", false, new CmsFolderOrName(baseDirectory
-            + "/.content", "binary"), "binary_%(number).html");
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("binary", false, new CmsContentFolderDescriptor(
+            baseDirectory + "/.content",
+            "binary"), "binary_%(number).html");
 
         CmsTestConfigData config1 = new CmsTestConfigData(
             baseDirectory,
@@ -180,16 +181,16 @@ public class TestConfig extends OpenCmsTestCase {
             NO_DETAILPAGES,
             NO_MODEL_PAGES);
         config1.initialize(rootCms());
-        List<CmsResourceTypeConfig> creatableTypes = config1.getCreatableTypes(dummyUserCms);
+        List<CmsResourceTypeConfig> creatableTypes = config1.getCreatableTypes(dummyUserCms, null);
         assertEquals(1, creatableTypes.size());
         assertEquals(binary, creatableTypes.get(0).getTypeName());
 
-        creatableTypes = config1.getCreatableTypes(cms);
+        creatableTypes = config1.getCreatableTypes(cms, null);
         // because we're in the root site 
         assertEquals(0, creatableTypes.size());
 
         cms.getRequestContext().setSiteRoot("/sites/default");
-        creatableTypes = config1.getCreatableTypes(cms);
+        creatableTypes = config1.getCreatableTypes(cms, null);
 
         assertEquals(
             set("plain", "binary"),
@@ -210,7 +211,7 @@ public class TestConfig extends OpenCmsTestCase {
 
         String baseDirectory2 = "/sites/default/foo";
 
-        CmsFolderOrName folder = new CmsFolderOrName(contentDirectory, typename);
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor(contentDirectory, typename);
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, folder, "file_%(number)");
 
         CmsTestConfigData config1 = new CmsTestConfigData(
@@ -229,7 +230,7 @@ public class TestConfig extends OpenCmsTestCase {
         config2.setCreateContentsLocally(true);
         config2.setParent(config1);
         config2.initialize(rootCms());
-        String folderPath = config2.getResourceType("plain").getFolderPath(rootCms());
+        String folderPath = config2.getResourceType("plain").getFolderPath(rootCms(), null);
         assertPathEquals("/sites/default/foo/.content/plain", folderPath);
     }
 
@@ -249,9 +250,9 @@ public class TestConfig extends OpenCmsTestCase {
 
         String baseDirectory3 = "/sites/default/foo/bar";
 
-        CmsFolderOrName folder = new CmsFolderOrName(contentDirectory, typename);
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor(contentDirectory, typename);
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, folder, "file_%(number)");
-        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, new CmsFolderOrName(
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, new CmsContentFolderDescriptor(
             contentDirectory2,
             "foo"), "foo_%(number)");
 
@@ -288,14 +289,14 @@ public class TestConfig extends OpenCmsTestCase {
         assertEquals(2, typeConfigs.size());
         assertEquals(
             set(folderPath1, folderPath2),
-            set(typeConfigs.get(0).getFolderPath(rootCms()), typeConfigs.get(1).getFolderPath(rootCms())));
+            set(typeConfigs.get(0).getFolderPath(rootCms(), null), typeConfigs.get(1).getFolderPath(rootCms(), null)));
 
         assertEquals(2, config2.getResourceTypes().size());
         assertEquals(
             set("/sites/default/foo/.content/foo", "/sites/default/.content/plain"),
             set(
-                config2.getResourceTypes().get(0).getFolderPath(rootCms()),
-                config2.getResourceTypes().get(1).getFolderPath(rootCms())));
+                config2.getResourceTypes().get(0).getFolderPath(rootCms(), null),
+                config2.getResourceTypes().get(1).getFolderPath(rootCms(), null)));
     }
 
     /**
@@ -314,9 +315,9 @@ public class TestConfig extends OpenCmsTestCase {
 
         String baseDirectory3 = "/sites/default/foo/bar";
 
-        CmsFolderOrName folder = new CmsFolderOrName(contentDirectory, typename);
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor(contentDirectory, typename);
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, folder, "file_%(number)");
-        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, new CmsFolderOrName(
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, new CmsContentFolderDescriptor(
             contentDirectory2,
             "foo"), "foo_%(number)");
 
@@ -344,7 +345,9 @@ public class TestConfig extends OpenCmsTestCase {
             NO_MODEL_PAGES);
         config3.setParent(config2);
         config3.initialize(rootCms());
-        assertPathEquals("/sites/default/foo/.content/plain", config3.getResourceType("plain").getFolderPath(rootCms()));
+        assertPathEquals(
+            "/sites/default/foo/.content/plain",
+            config3.getResourceType("plain").getFolderPath(rootCms(), null));
     }
 
     /**
@@ -375,7 +378,7 @@ public class TestConfig extends OpenCmsTestCase {
         config2.setCreateContentsLocally(true);
         config2.setParent(config1);
         config2.initialize(rootCms());
-        String folderPath = config2.getResourceType("plain").getFolderPath(getCmsObject());
+        String folderPath = config2.getResourceType("plain").getFolderPath(getCmsObject(), null);
         assertPathEquals("/sites/default/foo/.content/plain", folderPath);
     }
 
@@ -396,7 +399,7 @@ public class TestConfig extends OpenCmsTestCase {
         } catch (CmsVfsResourceAlreadyExistsException e) {
             System.out.println("***" + e);
         }
-        CmsFolderOrName folder = new CmsFolderOrName(baseDirectory + "/.content", typename);
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor(baseDirectory + "/.content", typename);
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig(typename, false, folder, "file_%(number)");
         CmsTestConfigData config1 = new CmsTestConfigData(
             baseDirectory,
@@ -406,13 +409,13 @@ public class TestConfig extends OpenCmsTestCase {
             NO_MODEL_PAGES);
         config1.initialize(rootCms());
         assertSame(config1.getResourceType(typename), typeConf1);
-        typeConf1.createNewElement(getCmsObject());
+        typeConf1.createNewElement(getCmsObject(), null);
         CmsObject cms = rootCms();
         List<CmsResource> files = cms.getFilesInFolder(articleDirectory);
         assertEquals(1, files.size());
         assertTrue(files.get(0).getName().startsWith("file_"));
 
-        typeConf1.createNewElement(getCmsObject());
+        typeConf1.createNewElement(getCmsObject(), null);
         files = cms.getFilesInFolder(articleDirectory);
         assertEquals(2, files.size());
         assertTrue(files.get(0).getName().startsWith("file_"));
@@ -436,7 +439,7 @@ public class TestConfig extends OpenCmsTestCase {
         config1.setIsModuleConfig(true);
         config1.initialize(rootCms());
         typeConf1 = config1.getResourceType("foo");
-        String folderPath = typeConf1.getFolderPath(getCmsObject());
+        String folderPath = typeConf1.getFolderPath(getCmsObject(), null);
         assertPathEquals("/sites/default/.content/foo", folderPath);
     }
 
@@ -468,7 +471,7 @@ public class TestConfig extends OpenCmsTestCase {
         config2.initialize(rootCms());
 
         typeConf2 = config2.getResourceType("foo");
-        String folderPath = typeConf2.getFolderPath(getCmsObject());
+        String folderPath = typeConf2.getFolderPath(getCmsObject(), null);
         assertPathEquals("/sites/default/.content/foo", folderPath);
     }
 
@@ -577,9 +580,9 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testDiscardInheritedTypes() throws Exception {
 
-        CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/.content", "foldername");
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
-        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsFolderOrName(
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsContentFolderDescriptor(
             "/.content",
             "foldername2"), "pattern2_%(number)");
         CmsResourceTypeConfig typeConf3 = new CmsResourceTypeConfig("baz", false, folder, "blah");
@@ -613,9 +616,9 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testDiscardInheritedTypesMultilevel() throws Exception {
 
-        CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/.content", "foldername");
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
-        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsFolderOrName(
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsContentFolderDescriptor(
             "/.content",
             "foldername2"), "pattern2_%(number)");
         CmsResourceTypeConfig typeConf3 = new CmsResourceTypeConfig("baz", false, folder, "blah");
@@ -657,7 +660,7 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testInheritedFolderName1() throws Exception {
 
-        CmsFolderOrName folder = new CmsFolderOrName("/somefolder/.content", "blah");
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/somefolder/.content", "blah");
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/somefolder",
@@ -679,7 +682,7 @@ public class TestConfig extends OpenCmsTestCase {
 
         assertPathEquals(
             "/somefolder/.content/blah",
-            config2.getResourceType(typeConf1.getTypeName()).getFolderPath(getCmsObject()));
+            config2.getResourceType(typeConf1.getTypeName()).getFolderPath(getCmsObject(), null));
     }
 
     /**
@@ -689,7 +692,7 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testInheritedFolderName2() throws Exception {
 
-        CmsFolderOrName folder = new CmsFolderOrName("/somefolder/.content", "blah");
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/somefolder/.content", "blah");
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/somefolder",
@@ -710,7 +713,7 @@ public class TestConfig extends OpenCmsTestCase {
         config2.setParent(config1);
 
         CmsResourceTypeConfig rtc = config2.getResourceType(typeConf1.getTypeName());
-        String folderPath = rtc.getFolderPath(getCmsObject());
+        String folderPath = rtc.getFolderPath(getCmsObject(), null);
         assertPathEquals("/somefolder/.content/blah", folderPath);
     }
 
@@ -721,7 +724,7 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testInheritNamePattern() throws Exception {
 
-        CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/.content", "foldername");
         String pattern1 = "pattern1";
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, pattern1);
         CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, folder, null);
@@ -795,9 +798,9 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testInheritResourceTypes1() throws Exception {
 
-        CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/.content", "foldername");
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
-        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsFolderOrName(
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsContentFolderDescriptor(
             "/.content",
             "foldername2"), "pattern2_%(number)");
         CmsTestConfigData config1 = new CmsTestConfigData(
@@ -902,9 +905,9 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testOverrideResourceType() throws Exception {
 
-        CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/.content", "foldername");
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
-        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, new CmsFolderOrName(
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, new CmsContentFolderDescriptor(
             "/.content",
             "foldername2"), "pattern2_%(number)");
         CmsTestConfigData config1 = new CmsTestConfigData(
@@ -949,7 +952,7 @@ public class TestConfig extends OpenCmsTestCase {
         CmsResourceTypeConfig v8article = configData.getResourceType("v8article");
         assertNotNull(v8article);
         assertEquals("asdf", v8article.getNamePattern());
-        CmsFolderOrName folder = v8article.getFolderOrName();
+        CmsContentFolderDescriptor folder = v8article.getFolderOrName();
         assertTrue(folder.isName());
         assertEquals("asdf", folder.getFolderName());
         assertEquals(1, configData.getAllDetailPages().size());
@@ -993,7 +996,7 @@ public class TestConfig extends OpenCmsTestCase {
         CmsResourceTypeConfig anothertype = configData.getResourceType("anothertype");
         assertNotNull(anothertype);
         assertEquals("abc_%(number)", anothertype.getNamePattern());
-        CmsFolderOrName folder = anothertype.getFolderOrName();
+        CmsContentFolderDescriptor folder = anothertype.getFolderOrName();
         assertTrue(folder.isFolder());
         assertPathEquals("/sites/default", folder.getFolder().getRootPath());
         assertEquals(0, configData.getAllDetailPages().size());
@@ -1022,9 +1025,9 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testRemoveResourceType() throws Exception {
 
-        CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/.content", "foldername");
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
-        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsFolderOrName(
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsContentFolderDescriptor(
             "/.content",
             "foldername2"), "pattern2_%(number)");
         CmsResourceTypeConfig typeConf3 = new CmsResourceTypeConfig("baz", false, folder, "blah");
@@ -1059,9 +1062,9 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testReorderResourceTypes() throws Exception {
 
-        CmsFolderOrName folder = new CmsFolderOrName("/.content", "foldername");
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/.content", "foldername");
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
-        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsFolderOrName(
+        CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("bar", false, new CmsContentFolderDescriptor(
             "/.content",
             "foldername2"), "pattern2_%(number)");
         CmsResourceTypeConfig typeConf3 = new CmsResourceTypeConfig("baz", false, folder, "blah");
@@ -1096,7 +1099,7 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testResolveFolderName1() throws Exception {
 
-        CmsFolderOrName folder = new CmsFolderOrName("/somefolder/somesubfolder/.content", "blah");
+        CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/somefolder/somesubfolder/.content", "blah");
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, folder, "pattern_%(number)");
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/somefolder/somesubfolder",
@@ -1107,7 +1110,7 @@ public class TestConfig extends OpenCmsTestCase {
         config1.initialize(rootCms());
         assertPathEquals(
             "/somefolder/somesubfolder/.content/blah",
-            config1.getResourceType(typeConf1.getTypeName()).getFolderPath(getCmsObject()));
+            config1.getResourceType(typeConf1.getTypeName()).getFolderPath(getCmsObject(), null));
     }
 
     /**

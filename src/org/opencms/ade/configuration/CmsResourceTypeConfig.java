@@ -93,7 +93,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     private CmsUUID m_elementView;
 
     /** A reference to a folder of folder name. */
-    private CmsFolderOrName m_folderOrName;
+    private CmsContentFolderDescriptor m_folderOrName;
 
     /** The name pattern .*/
     private String m_namePattern;
@@ -115,7 +115,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param folder the folder reference 
      * @param pattern the name pattern 
      */
-    public CmsResourceTypeConfig(String typeName, boolean disabled, CmsFolderOrName folder, String pattern) {
+    public CmsResourceTypeConfig(String typeName, boolean disabled, CmsContentFolderDescriptor folder, String pattern) {
 
         this(
             typeName,
@@ -146,7 +146,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     public CmsResourceTypeConfig(
         String typeName,
         boolean disabled,
-        CmsFolderOrName folder,
+        CmsContentFolderDescriptor folder,
         String pattern,
         boolean detailPagesDisabled,
         boolean addDisabled,
@@ -169,12 +169,13 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * Checks if this resource type is creatable.<p>
      * 
      * @param cms the current CMS context 
+     * @param pageFolderRootPath the root path of the folder containing the current container page 
      * 
      * @return <code>true</code> if the resource type is creatable 
      * 
      * @throws CmsException if something goes wrong 
      */
-    public boolean checkCreatable(CmsObject cms) throws CmsException {
+    public boolean checkCreatable(CmsObject cms, String pageFolderRootPath) throws CmsException {
 
         if (cms.getRequestContext().getCurrentProject().isOnlineProject()
             || "".equals(cms.getRequestContext().getSiteRoot())) {
@@ -187,7 +188,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             return OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER);
         }
         checkInitialized();
-        String folderPath = getFolderPath(cms);
+        String folderPath = getFolderPath(cms, pageFolderRootPath);
         CmsObject createCms = OpenCms.initCmsObject(m_cms);
         createCms.getRequestContext().setCurrentProject(cms.getRequestContext().getCurrentProject());
         String oldSiteRoot = cms.getRequestContext().getSiteRoot();
@@ -307,32 +308,20 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * Creates a new element.<p>
      * 
      * @param userCms the CMS context to use
-     * 
-     * @return the created resource
-     *  
-     * @throws CmsException if something goes wrong 
-     */
-    public CmsResource createNewElement(CmsObject userCms) throws CmsException {
-
-        return createNewElement(userCms, null);
-    }
-
-    /**
-     * Creates a new element.<p>
-     * 
-     * @param userCms the CMS context to use
      * @param modelResource the model resource to use
+     * @param pageFolderRootPath the root path of the folder containing the current container page 
      * 
      * @return the created resource
      *  
      * @throws CmsException if something goes wrong 
      */
-    public CmsResource createNewElement(CmsObject userCms, CmsResource modelResource) throws CmsException {
+    public CmsResource createNewElement(CmsObject userCms, CmsResource modelResource, String pageFolderRootPath)
+    throws CmsException {
 
         checkOffline(userCms);
         checkInitialized();
         CmsObject rootCms = rootCms(userCms);
-        String folderPath = getFolderPath(userCms);
+        String folderPath = getFolderPath(userCms, pageFolderRootPath);
         CmsObject folderCreateCms = OpenCms.initCmsObject(m_cms);
         folderCreateCms.getRequestContext().setCurrentProject(userCms.getRequestContext().getCurrentProject());
         createFolder(folderCreateCms, folderPath);
@@ -358,6 +347,21 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             LOG.info(e.getLocalizedMessage(), e);
         }
         return createdResource;
+    }
+
+    /**
+     * Creates a new element.<p>
+     * 
+     * @param userCms the CMS context to use
+     * @param pageFolderRootPath root path of the folder containing the current container page 
+     * 
+     * @return the created resource
+     *  
+     * @throws CmsException if something goes wrong 
+     */
+    public CmsResource createNewElement(CmsObject userCms, String pageFolderRootPath) throws CmsException {
+
+        return createNewElement(userCms, null);
     }
 
     /** 
@@ -399,14 +403,15 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * Computes the folder path for this resource type.<p>
      * 
      * @param cms the cms context to use 
+     * @param pageFolderRootPath root path of the folder containing the current container page 
      * 
      * @return the folder root path for this resource type 
      */
-    public String getFolderPath(CmsObject cms) {
+    public String getFolderPath(CmsObject cms, String pageFolderRootPath) {
 
         checkInitialized();
         if (m_folderOrName != null) {
-            return m_folderOrName.getFolderPath(cms);
+            return m_folderOrName.getFolderPath(cms, pageFolderRootPath);
         } else {
             return CmsStringUtil.joinPaths(
                 cms.getRequestContext().getSiteRoot(),
@@ -531,6 +536,17 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         return !matchingView;
     }
 
+    /** 
+     * Returns true if this resource type is configured as 'page relative', i.e. elements of this type are to be stored 
+     * with the container page on which they were created.<p>
+     * 
+     * @return true if this is a page relative type configuration 
+     */
+    public boolean isPageRelative() {
+
+        return (m_folderOrName != null) && m_folderOrName.isPageRelative();
+    }
+
     /**
      * Returns true if the type should be shown in the default view if it is not assigned to it.<p>
      * 
@@ -548,7 +564,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     public CmsResourceTypeConfig merge(CmsResourceTypeConfig childConfig) {
 
-        CmsFolderOrName folderOrName = childConfig.m_folderOrName != null ? childConfig.m_folderOrName : m_folderOrName;
+        CmsContentFolderDescriptor folderOrName = childConfig.m_folderOrName != null
+        ? childConfig.m_folderOrName
+        : m_folderOrName;
         String namePattern = childConfig.m_namePattern != null ? childConfig.m_namePattern : m_namePattern;
         CmsUUID elementView = childConfig.m_elementView != null ? childConfig.m_elementView : m_elementView;
         Boolean showInDefaultView = childConfig.m_showInDefaultView != null
@@ -609,7 +627,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * 
      * @return the folder bean from the configuration 
      */
-    protected CmsFolderOrName getFolderOrName() {
+    protected CmsContentFolderDescriptor getFolderOrName() {
 
         return m_folderOrName;
     }
@@ -675,10 +693,10 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
         if (m_folderOrName != null) {
             if (m_folderOrName.isName()) {
-                m_folderOrName = new CmsFolderOrName(basePath, m_folderOrName.getFolderName());
+                m_folderOrName = new CmsContentFolderDescriptor(basePath, m_folderOrName.getFolderName());
             }
         } else {
-            m_folderOrName = new CmsFolderOrName(basePath, m_typeName);
+            m_folderOrName = new CmsContentFolderDescriptor(basePath, m_typeName);
         }
     }
 }

@@ -37,34 +37,34 @@ import org.opencms.util.CmsStringUtil;
 import org.apache.commons.logging.Log;
 
 /**
- * A bean which can either represent a folder or a relative folder name, but not both at the same time.<p>
- * 
- * @author Georg Westenberger
- * 
- * @version $Revision: 1.0$
- * 
- * @since 8.0.0
+ * A bean which represents the location configured for content elements of a specific type in a sitemap configuration.<p>
  */
-public class CmsFolderOrName {
+public class CmsContentFolderDescriptor {
 
-    /** The folder name. */
-    private String m_folderName;
+    /** Name of the folder for elements stored with container pages. */
+    public static final String ELEMENTS_FOLDER_NAME = ".elements";
 
-    /** The folder resource's structure id. */
-    private CmsResource m_folder;
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsContentFolderDescriptor.class);
 
     /** The base path which the folder name is relative to. */
     private String m_basePath;
 
-    /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFolderOrName.class);
+    /** The folder resource's structure id. */
+    private CmsResource m_folder;
+
+    /** The folder name. */
+    private String m_folderName;
+
+    /** The 'isPageRelative' flag. If true, elements of this type will be stored with the pages on which they were created. */
+    private boolean m_isPageRelative;
 
     /**
      * Creates an instance based on an existing folder.<p>
      * 
      * @param folder the folder 
      */
-    public CmsFolderOrName(CmsResource folder) {
+    public CmsContentFolderDescriptor(CmsResource folder) {
 
         m_folder = folder;
     }
@@ -75,11 +75,30 @@ public class CmsFolderOrName {
      * @param basePath the base path which the folder name is relative to 
      * @param name the relative folder name 
      */
-    public CmsFolderOrName(String basePath, String name) {
+    public CmsContentFolderDescriptor(String basePath, String name) {
 
         m_basePath = basePath;
 
         m_folderName = name;
+    }
+
+    /**
+     * Private constructor which does nothing.<p>
+     */
+    private CmsContentFolderDescriptor() {
+
+    }
+
+    /** 
+     * Creates folder descriptor which represents the 'page relative' setting.<p>
+     * 
+     * @return the folder descriptor for the 'page relative' setting 
+     */
+    public static CmsContentFolderDescriptor createPageRelativeFolderDescriptor() {
+
+        CmsContentFolderDescriptor result = new CmsContentFolderDescriptor();
+        result.m_isPageRelative = true;
+        return result;
     }
 
     /**
@@ -115,10 +134,11 @@ public class CmsFolderOrName {
     /**
      * Computes the folder root path.<p>
      * 
-     * @param cms the CMS context to use 
+     * @param cms the CMS context to use
+     * @param pageFolderPath the root path of the folder containing the current container page  
      * @return the folder root path 
      */
-    public String getFolderPath(CmsObject cms) {
+    public String getFolderPath(CmsObject cms, String pageFolderPath) {
 
         if (m_folder != null) {
             try {
@@ -129,16 +149,21 @@ public class CmsFolderOrName {
                 LOG.error(e.getLocalizedMessage(), e);
                 return m_folder.getRootPath();
             }
-        } else {
-            if (m_basePath != null) {
-                return CmsStringUtil.joinPaths(m_basePath, m_folderName);
-            } else {
-                return CmsStringUtil.joinPaths(
-                    cms.getRequestContext().getSiteRoot(),
-                    CmsADEManager.CONTENT_FOLDER_NAME,
-                    m_folderName);
+        } else if (m_basePath != null) {
+            return CmsStringUtil.joinPaths(m_basePath, m_folderName);
+        } else if (m_isPageRelative) {
+            if (pageFolderPath == null) {
+                throw new IllegalArgumentException(
+                    "getFolderPath called without page folder, but pageRelative is enabled!");
             }
+            return CmsStringUtil.joinPaths(pageFolderPath, ELEMENTS_FOLDER_NAME);
+        } else {
+            return CmsStringUtil.joinPaths(
+                cms.getRequestContext().getSiteRoot(),
+                CmsADEManager.CONTENT_FOLDER_NAME,
+                m_folderName);
         }
+
     }
 
     /**
@@ -159,6 +184,16 @@ public class CmsFolderOrName {
     public boolean isName() {
 
         return m_folderName != null;
+    }
+
+    /**
+     * Returns true if this page descriptor represents the 'page relative' setting.<p>
+     * 
+     * @return true if this is page relative 
+     */
+    public boolean isPageRelative() {
+
+        return m_isPageRelative;
     }
 
 }

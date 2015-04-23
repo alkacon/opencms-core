@@ -456,7 +456,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 LOG.error("copyElement: Type not configured in ADE configuration: " + typeName);
                 return originalElementId;
             } else {
-                CmsResource newResource = typeConfig.createNewElement(cms, element);
+                CmsResource newResource = typeConfig.createNewElement(
+                    cms,
+                    element,
+                    CmsResource.getParentFolder(page.getRootPath()));
                 return newResource.getStructureId();
             }
         } catch (Throwable e) {
@@ -487,7 +490,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, pageResource);
                 cms.getRequestContext().setLocale(locale);
 
-                CmsResource newResource = resTypeConfig.createNewElement(cms);
+                CmsResource newResource = resTypeConfig.createNewElement(cms, pageResource.getRootPath());
                 CmsFile file = cms.readFile(newResource);
 
                 CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
@@ -545,7 +548,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (modelResourceStructureId != null) {
                 modelResource = cms.readResource(modelResourceStructureId);
             }
-            CmsResource newResource = typeConfig.createNewElement(cloneCms, modelResource);
+            CmsResource newResource = typeConfig.createNewElement(
+                cloneCms,
+                modelResource,
+                CmsResource.getParentFolder(pageResource.getRootPath()));
             CmsContainerElementBean bean = getCachedElement(clientId);
             CmsContainerElementBean newBean = new CmsContainerElementBean(
                 newResource.getStructureId(),
@@ -709,6 +715,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
                 cms,
                 cms.getRequestContext().addSiteRoot(uri));
+            CmsResource pageResource = cms.readResource(uri, CmsResourceFilter.IGNORE_EXPIRATION);
             List<I_CmsResourceType> resourceTypes = new ArrayList<I_CmsResourceType>();
             Set<String> disabledTypes = new HashSet<String>();
             final Set<String> typesAtTheEndOfTheList = Sets.newHashSet();
@@ -733,7 +740,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 }
             }
             Set<String> creatableTypes = new HashSet<String>();
-            for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(getCmsObject())) {
+            for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(
+                getCmsObject(),
+                CmsResource.getParentFolder(pageResource.getRootPath()))) {
                 if (typeConfig.isHiddenFromAddMenu(elementView) || disabledTypes.contains(typeConfig.getTypeName())) {
                     continue;
                 }
@@ -1110,7 +1119,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (inheritanceContainer.isNew()) {
                 CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, containerPage.getRootPath());
                 CmsResourceTypeConfig typeConfig = config.getResourceType(CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME);
-                referenceResource = typeConfig.createNewElement(cms);
+                referenceResource = typeConfig.createNewElement(cms, containerPage.getRootPath());
                 inheritanceContainer.setClientId(referenceResource.getStructureId().toString());
             }
             if (referenceResource == null) {
@@ -2189,7 +2198,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getCmsObject(),
                 pageResource.getRootPath());
             CmsResourceTypeConfig typeConfig = config.getResourceType(CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
-            groupContainerResource = typeConfig.createNewElement(getCmsObject());
+            groupContainerResource = typeConfig.createNewElement(getCmsObject(), pageResource.getRootPath());
             String resourceName = cms.getSitePath(groupContainerResource);
             groupContainer.setSitePath(resourceName);
             groupContainer.setClientId(groupContainerResource.getStructureId().toString());
