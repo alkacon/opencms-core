@@ -263,8 +263,11 @@ public class CmsPublishScheduled extends CmsDialog {
         String userName = getCms().getRequestContext().getCurrentUser().getName();
 
         // get the java date format
-        DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, getLocale());
-        Date date = dateFormat.parse(publishScheduledDate);
+        //        DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, getLocale());
+        //        dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        //        Date date = dateFormat.parse(publishScheduledDate);
+        long lDate = org.opencms.widgets.CmsCalendarWidget.getCalendarDate(getMessages(), publishScheduledDate, true);
+        Date date = new Date(lDate);
 
         // check if the selected date is in the future
         if (date.getTime() < new Date().getTime()) {
