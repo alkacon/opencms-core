@@ -187,6 +187,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
         m_updateSet.add(ID_UPDATE_ALL);
         m_detailPageIdCache.invalidateAll();
+        m_pathCache.clear();
     }
 
     /**
