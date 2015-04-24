@@ -34,16 +34,17 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.collectors.I_CmsCollectorPublishListProvider;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.gwt.shared.I_CmsCollectorInfoFactory;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
+import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -126,32 +127,49 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                 Map<String, String> params = options.getParameters();
 
                 String pageId = options.getParameters().get(CmsPublishOptions.PARAM_CONTAINERPAGE);
-                if (!res.getStructureId().toString().equals(pageId)) {
-                    return Collections.emptySet();
-                }
+                String detailId = options.getParameters().get(CmsPublishOptions.PARAM_DETAIL);
+
                 Set<CmsResource> result = Sets.newHashSet();
 
-                I_CmsCollectorInfoFactory collectorInfoFactory = AutoBeanFactorySource.create(I_CmsCollectorInfoFactory.class);
-                for (Map.Entry<String, String> entry : params.entrySet()) {
-                    if (entry.getKey().startsWith(CmsPublishOptions.PARAM_COLLECTOR_INFO)) {
-                        try {
-                            AutoBean<I_CmsContentLoadCollectorInfo> autoBean = AutoBeanCodex.decode(
-                                collectorInfoFactory,
-                                I_CmsContentLoadCollectorInfo.class,
-                                entry.getValue());
-                            I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(
-                                autoBean.as().getCollectorName());
-                            if (collector == null) {
-                                continue;
+                if (res.getStructureId().toString().equals(detailId)) {
+                    String detailContentPagePath = CmsJspTagContainer.getDetailOnlyPageName(cms.getRequestContext().removeSiteRoot(
+                        res.getRootPath()));
+                    try {
+                        CmsResource detailContentPage = cms.readResource(
+                            detailContentPagePath,
+                            CmsResourceFilter.IGNORE_EXPIRATION);
+                        result.add(detailContentPage);
+                    } catch (CmsVfsResourceNotFoundException e) {
+                        // ignore 
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+                if (res.getStructureId().toString().equals(pageId)) {
+
+                    I_CmsCollectorInfoFactory collectorInfoFactory = AutoBeanFactorySource.create(I_CmsCollectorInfoFactory.class);
+                    for (Map.Entry<String, String> entry : params.entrySet()) {
+                        if (entry.getKey().startsWith(CmsPublishOptions.PARAM_COLLECTOR_INFO)) {
+                            try {
+                                AutoBean<I_CmsContentLoadCollectorInfo> autoBean = AutoBeanCodex.decode(
+                                    collectorInfoFactory,
+                                    I_CmsContentLoadCollectorInfo.class,
+                                    entry.getValue());
+                                I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(
+                                    autoBean.as().getCollectorName());
+                                if (collector == null) {
+                                    continue;
+                                }
+                                I_CmsCollectorPublishListProvider publishListProvider = getCollectorPublishListProvider(collector);
+                                result.addAll(publishListProvider.getPublishResources(cmsObject, autoBean.as()));
+                            } catch (Exception e) {
+                                LOG.error(e.getLocalizedMessage(), e);
                             }
-                            I_CmsCollectorPublishListProvider publishListProvider = getCollectorPublishListProvider(collector);
-                            result.addAll(publishListProvider.getPublishResources(cmsObject, autoBean.as()));
-                        } catch (Exception e) {
-                            LOG.error(e.getLocalizedMessage(), e);
                         }
                     }
                 }
                 return result;
+
             }
 
             /**
