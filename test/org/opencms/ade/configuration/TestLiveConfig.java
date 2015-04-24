@@ -407,6 +407,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
             OpenCms.getADEManager().getSitemapConfigurationType().getTypeId(),
             data.getBytes(),
             Collections.<CmsProperty> emptyList());
+        OpenCms.getADEManager().waitForCacheUpdate(false);
         assertEquals(
             "/shared",
             CmsFileUtil.removeTrailingSeparator(OpenCms.getADEManager().getSubSiteRoot(cms, "/shared")));
