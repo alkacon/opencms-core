@@ -75,6 +75,9 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     /** The link for displaying the resource. */
     private String m_viewLink;
 
+    /** The raw title, without any status information attached. */
+    private String m_rawTitle = "";
+
     /**
      * Default constructor.<p>
      */
@@ -141,6 +144,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     public String getPath() {
 
         return m_path;
+    }
+
+    /**
+     * Gets the raw title, without status information attached.<p>
+     * 
+     * @return the raw title 
+     */
+    public String getRawTitle() {
+
+        return m_rawTitle;
     }
 
     /**
@@ -306,6 +319,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     public void setPreset(boolean preset) {
 
         m_isPreset = preset;
+    }
+
+    /** 
+     * Sets the raw title.<p>
+     * 
+     * @param rawTitle the raw title 
+     */
+    public void setRawTitle(String rawTitle) {
+
+        m_rawTitle = rawTitle;
     }
 
     /**

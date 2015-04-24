@@ -1333,9 +1333,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         bean.setPath(path);
 
         // title
-        bean.setTitle(CmsStringUtil.isEmptyOrWhitespaceOnly(sResult.getTitle())
+        String rawTitle = CmsStringUtil.isEmptyOrWhitespaceOnly(sResult.getTitle())
         ? CmsResource.getName(sResult.getPath())
-        : sResult.getTitle());
+        : sResult.getTitle();
+        bean.setTitle(rawTitle);
+        bean.setRawTitle(rawTitle);
         // resource type
         bean.setType(sResult.getResourceType());
         // structured id
@@ -2108,7 +2110,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 break;
             case ade:
                 throw new IllegalStateException("This code should never be called");
-                // ADE case is handle by container page service 
+                // ADE case is handled by container page service 
             default:
                 resourceTypes = Collections.<I_CmsResourceType> emptyList();
                 creatableTypes = Collections.<String> emptySet();

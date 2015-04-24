@@ -161,6 +161,11 @@ sourceSets.testGwt.compileClasspath += files("$buildDir/classes/modules") { buil
 project.ext.componentsRuntimeClassPath=configurations.componentsRuntime
 componentsRuntimeClassPath += files("${project.buildDir}/libs/opencms-components.jar") { builtBy 'componentsJar' }
 
+task copyDeps(type: Copy) {
+    from configurations.distribution
+    into "${buildDir}/deps"
+}
+
 task componentsJar(type: Jar) {
     from sourceSets.components.output
     baseName 'opencms-components'
