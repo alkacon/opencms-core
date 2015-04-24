@@ -562,7 +562,7 @@ public class CmsResultsTab extends A_CmsListTab {
             SelectHandler selectHandler = new SelectHandler(
                 resultItem.getPath(),
                 structureId,
-                resultItem.getTitle(),
+                resultItem.getRawTitle(),
                 resultItem.getType());
             listItem.addSelectClickHandler(selectHandler);
 
