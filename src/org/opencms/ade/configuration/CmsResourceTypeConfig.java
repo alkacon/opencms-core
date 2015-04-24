@@ -361,7 +361,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     public CmsResource createNewElement(CmsObject userCms, String pageFolderRootPath) throws CmsException {
 
-        return createNewElement(userCms, null);
+        return createNewElement(userCms, null, null);
     }
 
     /** 
