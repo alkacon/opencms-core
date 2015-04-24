@@ -127,6 +127,8 @@ dependencies {
     distribution group: 'org.apache.lucene', name: 'lucene-spatial', version: '5.1.0'
     distribution group: 'org.apache.lucene', name: 'lucene-suggest', version: '5.1.0'
     distribution group: 'org.apache.lucene', name: 'lucene-join', version: '5.1.0'
+    distribution group: 'org.apache.lucene', name: 'lucene-backward-codecs', version: '5.1.0'
+    
     distribution group: 'org.apache.openjpa', name: 'openjpa', version: '2.2.0'
     distribution group: 'org.apache.pdfbox', name: 'fontbox', version: '1.7.1'
     distribution group: 'org.apache.pdfbox', name: 'pdfbox', version: '1.7.1'
