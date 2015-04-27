@@ -49,10 +49,17 @@
       </analyzer>
     </fieldType>
 
-    <!-- A field type that stores the hierarchy of a path. -->
+	<!-- A field type that stored the Hierarchy of an path. -->
     <fieldType name="text_path" class="solr.TextField" positionIncrementGap="100">
       <analyzer>
         <tokenizer class="solr.PathHierarchyTokenizerFactory"/>
+      </analyzer>
+    </fieldType>
+
+    <!-- A field type that splits at commas -->
+    <fieldType name="text_cs" class="solr.TextField" positionIncrementGap="2">
+      <analyzer>
+          <tokenizer class="solr.PatternTokenizerFactory" pattern=",\s*" />
       </analyzer>
     </fieldType>
 
@@ -219,16 +226,17 @@
    <field name="timestamp"           type="date"         indexed="true"  stored="true"  default="NOW"/>
    <field name="path"                type="string"       indexed="true"  stored="true"  required="true" />
    <field name="filename"            type="string"       indexed="true"  stored="true"  required="true" />
-   <field name="path_hierarchy"      type="text_path"    indexed="true"  stored="true"  required="true" /><!-- is copied -->
-   <field name="parent-folders"      type="string"       indexed="true"  stored="true"  required="true" multiValued="true" />
+   <field name="path_hierarchy"      type="text_path"    indexed="true"  stored="true" required="true" /><!-- is copied -->
+   <field name="parent-folders"      type="string"       indexed="true"  stored="true" required="true" multiValued="true" />
    <field name="type"                type="string"       indexed="true"  stored="true"  required="true" />
-   <field name="state"               type="string"       indexed="true"  stored="true"  required="true" />
-   <field name="userLastModified"    type="string"       indexed="true"  stored="true"  required="true" />
-   <field name="userCreated"         type="string"       indexed="true"  stored="true"  required="true" />
-   <field name="version"             type="int"          indexed="true"  stored="true"  required="true" />
+   <field name="state"               type="string"       indexed="true"  stored="true" />
+   <field name="userLastModified"    type="string"       indexed="true"  stored="true" />
+   <field name="userCreated"         type="string"       indexed="true"  stored="true" />
+   <field name="version"             type="int"          indexed="true"  stored="true" />
    <field name="search_exclude"      type="boolean"      indexed="true"  stored="true" />
+   <field name="search_channel"      type="string"       indexed="true"  stored="true"  multiValued="true" />
    <field name="mimetype"            type="string"       indexed="true"  stored="true" />
-   <field name="containerTypes"      type="string"       indexed="true"  stored="true" />
+   <field name="container_types"     type="string"       indexed="true"  stored="true" />
    <field name="suffix"              type="string"       indexed="true"  stored="true" />
    <field name="size"                type="int"          indexed="true"  stored="true"  required="true" />
    <field name="res_locales"         type="string"       indexed="true"  stored="true"  required="true" multiValued="true" />
@@ -238,12 +246,12 @@
    <field name="lastmodified"        type="date"         indexed="true"  stored="true"  required="true" />
    <field name="expired"             type="date"         indexed="true"  stored="true"  />
    <field name="released"            type="date"         indexed="true"  stored="true"  />
-   <field name="meta"                type="text_general" indexed="true"  stored="true"  multiValued="true" />
-   <field name="content"             type="text_general" indexed="true"  stored="true"  multiValued="true" />
+   <field name="meta"                type="text_general" indexed="true"  stored="true" multiValued="true" />
+   <field name="content"             type="text_general" indexed="true"  stored="true" multiValued="true" />
    <field name="contentblob"         type="binary"       indexed="false" stored="true"  />
    <field name="category"            type="text_general" indexed="true"  stored="true"  multiValued="true" />
-   <field name="category_exact"      type="string"       indexed="true"  stored="true"  multiValued="true" termVectors="true" /><!-- is copied -->
-   <field name="additionalInfo"      type="string"       indexed="false" stored="true" />
+   <field name="category_exact"      type="string"       indexed="true"  stored="true" multiValued="true" termVectors="true" /><!-- is copied -->
+   <field name="additional_info"     type="string"       indexed="false" stored="true" />
    <field name="dependencyType"      type="string"       indexed="true"  stored="true" />
    <field name="place"               type="location"     indexed="true"  stored="true" />
    <field name="text"                type="text_general" indexed="true"  stored="true"  multiValued="true"/><!-- Catchall for general text fields -->
@@ -261,7 +269,8 @@
    <field name="explicit_title"           type="string"       indexed="true"  stored="true" />
    <field name="mteaser"                  type="string"       indexed="true"  stored="true" multiValued="true" />
 
-   <dynamicField name="*_exact"      type="string"       indexed="true"  stored="true"/>
+   <dynamicField name="*_excerpt"    type="text_general" indexed="true"  stored="true" termVectors="on" termPositions="on" termOffsets="on" />
+   <dynamicField name="*_exact"      type="string"       indexed="true"  stored="false"/>
    <dynamicField name="*_prop"       type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_i"          type="int"          indexed="true"  stored="true"/>
    <dynamicField name="*_s"          type="string"       indexed="true"  stored="true"/>
@@ -291,6 +300,8 @@
    <dynamicField name="random_*"     type="random" />
    <dynamicField name="text_*"       type="text_general" indexed="true"  stored="true" termVectors="true" termPositions="true" termOffsets="true"/>
    <dynamicField name="dep_*"        type="string"       indexed="false" stored="true" multiValued="true"/>
+   <dynamicField name="*_cs"         type="text_cs"      indexed="true" stored="false" multiValued="true"/>
+   <dynamicField name="*_sort"       type="alphaOnlySort" indexed="true" stored="false" required="false" multiValued="false"/>
  </fields>
 
  <copyField source="*_en"      dest="text_en"/>

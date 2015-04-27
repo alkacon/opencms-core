@@ -37,21 +37,19 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
-import org.apache.lucene.document.DateTools;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexableField;
 
 /**
  * Contains a single search result from the gallery search index.<p>
@@ -170,173 +168,101 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
     }
 
     /**
-     * Creates a new gallery search result.<p>
+     * Creates a new gallery search result.
      * 
      * @param cms the current CMS context (used for reading information missing from the index)
+     * @param doc the I_CmsSearchResult document to extract information from. 
      * @param score the score of this search result
-     * @param doc the Lucene document to extract fields from such as description, title, key words etc. pp.
-     * @param excerpt the excerpt of the search result's content
      * @param locale the locale to create the result for
      */
-    public CmsGallerySearchResult(CmsObject cms, int score, Document doc, String excerpt, Locale locale) {
+    public CmsGallerySearchResult(I_CmsSearchDocument doc, CmsObject cms, int score, Locale locale) {
 
-        m_score = score;
-        m_excerpt = excerpt;
-
-        m_path = null;
-        IndexableField f = doc.getField(CmsSearchField.FIELD_PATH);
-        if (f != null) {
-            m_path = f.stringValue();
+        if (null == doc) {
+            throw new IllegalArgumentException();
         }
 
-        if (locale == null) {
+        m_score = score; //(int)doc.getScore();
+
+        m_path = doc.getFieldValueAsString(CmsSearchField.FIELD_PATH);
+
+        if (null == locale) {
             OpenCms.getLocaleManager();
             locale = CmsLocaleManager.getDefaultLocale();
         }
 
-        m_title = null;
-        f = doc.getField(CmsSearchField.FIELD_TITLE);
-        if (f != null) {
-            m_title = f.stringValue();
-        }
-        if (m_title == null) {
-            f = doc.getField(CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_TITLE, locale));
-            if (f != null) {
-                m_title = f.stringValue();
-            }
+        String effFieldName = CmsSearchFieldConfiguration.getLocaleExtendedName(
+            CmsSearchField.FIELD_TITLE_UNSTORED,
+            locale.toString()) + "_s";
+        m_title = doc.getFieldValueAsString(effFieldName);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_title)) {
+            m_title = doc.getFieldValueAsString(CmsPropertyDefinition.PROPERTY_TITLE
+                + CmsSearchField.FIELD_DYNAMIC_PROPERTIES);
         }
 
-        m_description = null;
-        f = doc.getField(CmsSearchField.FIELD_DESCRIPTION);
-        if (f != null) {
-            m_description = f.stringValue();
-        }
-        if (m_description == null) {
-            f = doc.getField(CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_DESCRIPTION, locale));
-            if (f != null) {
-                m_description = f.stringValue();
-            }
+        effFieldName = CmsSearchFieldConfiguration.getLocaleExtendedName(
+            CmsSearchField.FIELD_DESCRIPTION,
+            locale.toString())
+            + "_s";
+        m_description = doc.getFieldValueAsString(effFieldName);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_description)) {
+            m_description = doc.getFieldValueAsString(CmsPropertyDefinition.PROPERTY_DESCRIPTION
+                + CmsSearchField.FIELD_DYNAMIC_PROPERTIES);
         }
 
-        m_resourceType = null;
-        f = doc.getField(CmsSearchField.FIELD_TYPE);
-        if (f != null) {
-            m_resourceType = f.stringValue();
-        }
+        m_resourceType = doc.getFieldValueAsString(CmsSearchField.FIELD_TYPE);
 
-        m_dateCreated = null;
-        f = doc.getField(CmsSearchField.FIELD_DATE_CREATED);
-        if (f != null) {
-            try {
-                m_dateCreated = DateTools.stringToDate(f.stringValue());
-            } catch (ParseException exc) {
-                // NOOP, date is null
-            }
-        }
+        m_dateCreated = doc.getFieldValueAsDate(CmsSearchField.FIELD_DATE_CREATED);
 
-        m_dateLastModified = null;
-        f = doc.getField(CmsSearchField.FIELD_DATE_LASTMODIFIED);
-        if (f != null) {
-            try {
-                m_dateLastModified = DateTools.stringToDate(f.stringValue());
-            } catch (ParseException exc) {
-                // NOOP, date is null
-            }
-        }
+        m_dateLastModified = doc.getFieldValueAsDate(CmsSearchField.FIELD_DATE_LASTMODIFIED);
 
-        m_dateExpired = null;
-        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_DATE_EXPIRED);
-        if (f != null) {
-            try {
-                m_dateExpired = DateTools.stringToDate(f.stringValue());
-            } catch (ParseException exc) {
-                // NOOP, date is null
-            }
-        }
+        m_dateExpired = doc.getFieldValueAsDate(CmsSearchField.FIELD_DATE_EXPIRED);
 
-        m_dateReleased = null;
-        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_DATE_RELEASED);
-        if (f != null) {
-            try {
-                m_dateReleased = DateTools.stringToDate(f.stringValue());
-            } catch (ParseException exc) {
-                // NOOP, date is null
-            }
-        }
+        m_dateReleased = doc.getFieldValueAsDate(CmsSearchField.FIELD_DATE_RELEASED);
 
         m_length = 0;
-        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_LENGTH);
-        if (f != null) {
+        final String s_length = doc.getFieldValueAsString(CmsSearchField.FIELD_SIZE);
+        if (null != s_length) {
             try {
-                m_length = Integer.parseInt(f.stringValue());
+                m_length = Integer.parseInt(s_length);
             } catch (NumberFormatException exc) {
                 // NOOP, default is 0
             }
         }
 
         m_state = 0;
-        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STATE);
-        if (f != null) {
+        final String s_state = doc.getFieldValueAsString(CmsSearchField.FIELD_STATE);
+        if (s_state != null) {
             try {
-                m_state = Integer.parseInt(f.stringValue());
+                m_state = Integer.parseInt(s_state);
             } catch (NumberFormatException exc) {
                 // NOOP, default is 0
             }
         }
 
-        m_userCreated = null;
-        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_USER_CREATED);
-        if (f != null) {
-            m_userCreated = f.stringValue();
+        m_userCreated = doc.getFieldValueAsString(CmsSearchField.FIELD_USER_CREATED);
+
+        m_structureId = doc.getFieldValueAsString(CmsSearchField.FIELD_ID);
+
+        m_userLastModified = doc.getFieldValueAsString(CmsSearchField.FIELD_USER_LAST_MODIFIED);
+
+        m_additonalInfo = doc.getFieldValueAsString(CmsSearchField.FIELD_ADDITIONAL_INFO);
+        final String s_containerTypes = doc.getFieldValueAsString(CmsSearchField.FIELD_CONTAINER_TYPES);
+        if (s_containerTypes != null) {
+            m_containerTypes = CmsStringUtil.splitAsList(s_containerTypes, ' ');
+        } else {
+            m_containerTypes = new ArrayList<String>(0);
         }
 
-        m_structureId = null;
-        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STRUCTURE_ID);
-        if (f != null) {
-            m_structureId = f.stringValue();
+        final String s_locales = doc.getFieldValueAsString(CmsSearchField.FIELD_RESOURCE_LOCALES);
+        if (null != s_locales) {
+            m_locales = CmsStringUtil.splitAsList(s_locales, ' ');
+        } else {
+            m_locales = new ArrayList<String>(0);
         }
 
-        m_userLastModified = null;
-        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_RESOURCE_USER_LASTMODIFIED);
-        if (f != null) {
-            m_userLastModified = f.stringValue();
-        }
-
-        m_additonalInfo = null;
-        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_ADDITIONAL_INFO);
-        if (f != null) {
-            m_additonalInfo = f.stringValue();
-        }
-
-        m_containerTypes = null;
-        f = doc.getField(CmsGallerySearchFieldMapping.FIELD_CONTAINER_TYPES);
-        if (f != null) {
-            String containers = f.stringValue();
-            m_containerTypes = CmsStringUtil.splitAsList(containers, ' ');
-        }
-
-        m_locales = null;
-        f = doc.getField(CmsSearchField.FIELD_RESOURCE_LOCALES);
-        if (f != null) {
-            String locales = f.stringValue();
-            m_locales = CmsStringUtil.splitAsList(locales, ' ');
-        }
-        if (cms != null) {
+        if ((null != cms) && (null != m_structureId)) {
             initializeMissingFieldsFromVfs(cms, new CmsUUID(m_structureId));
         }
-    }
-
-    /**
-     * Creates a new gallery search result.<p>
-     * 
-     * @param score the score of this search result
-     * @param doc the Lucene document to extract fields from such as description, title, key words etc. pp.
-     * @param excerpt the excerpt of the search result's content
-     * @param locale the locale to create the result for
-     */
-    public CmsGallerySearchResult(int score, Document doc, String excerpt, Locale locale) {
-
-        this(null, score, doc, excerpt, locale);
     }
 
     /**

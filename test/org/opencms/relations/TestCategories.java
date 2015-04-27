@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,7 +50,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * Tests for the memory monitor.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestCategories extends OpenCmsTestCase {
@@ -60,7 +60,7 @@ public class TestCategories extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCategories(String arg0) {
@@ -70,8 +70,8 @@ public class TestCategories extends OpenCmsTestCase {
 
     /**
      * Stores an error message which will cause the test to fail.<p>
-     * 
-     * @param error the error message 
+     *
+     * @param error the error message
      */
     public static void storeError(String error) {
 
@@ -80,7 +80,7 @@ public class TestCategories extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -139,7 +139,7 @@ public class TestCategories extends OpenCmsTestCase {
 
     /**
      * Tests changing the base folder name of the category repositories.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testCategoryBaseFolder() throws Exception {
@@ -186,7 +186,7 @@ public class TestCategories extends OpenCmsTestCase {
         assertEquals(cms.getRequestContext().getSiteRoot()
             + CmsCategoryService.getInstance().getRepositoryBaseFolderName(cms), catC.getBasePath());
 
-        // assert the created resource 
+        // assert the created resource
         CmsResource resC = cms.readResource(cms.getRequestContext().removeSiteRoot(catC.getRootPath()));
         assertEquals(catC.getId(), resC.getStructureId());
         assertEquals(catC.getRootPath(), resC.getRootPath());
@@ -208,7 +208,7 @@ public class TestCategories extends OpenCmsTestCase {
 
     /**
      * Tests category assignment when changing the base folder name of the category repositories.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testCategoryBaseFolderAssign() throws Exception {
@@ -294,7 +294,7 @@ public class TestCategories extends OpenCmsTestCase {
 
     /**
      * Tests resource categories reparation after changing the base folder name of the category repositories.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testCategoryBaseFolderRepair() throws Exception {
@@ -391,7 +391,7 @@ public class TestCategories extends OpenCmsTestCase {
 
     /**
      * Tests the categories when several repositories define the same category.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testCategoryConflict() throws Exception {
@@ -419,7 +419,7 @@ public class TestCategories extends OpenCmsTestCase {
         assertEquals("B2 test", catB2.getDescription());
         assertEquals(CmsCategoryService.CENTRALIZED_REPOSITORY, catB2.getBasePath());
 
-        // assert the created resource 
+        // assert the created resource
         CmsResource resB2 = cms.readResource(cms.getRequestContext().removeSiteRoot(catB2.getRootPath()));
         assertEquals(catB2.getId(), resB2.getStructureId());
         assertEquals(catB2.getRootPath(), resB2.getRootPath());
@@ -440,7 +440,7 @@ public class TestCategories extends OpenCmsTestCase {
 
     /**
      * Tests the categories assignment when several repositories define the same category.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testCategoryConflictAssign() throws Exception {
@@ -482,7 +482,7 @@ public class TestCategories extends OpenCmsTestCase {
 
     /**
      * Tests resource categories reparation after deleting/adding a centralized category.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testCategoryConflictRepair() throws Exception {
@@ -562,7 +562,7 @@ public class TestCategories extends OpenCmsTestCase {
         assertEquals(1, resources.size());
         assertEquals(cms.readResource("index.html"), resources.get(0));
 
-        // recreate global category 
+        // recreate global category
         CmsCategory catB2bis = CmsCategoryService.getInstance().createCategory(cms, null, "b", "B2", "B2 test", null);
         assertEquals(catB2.getRootPath(), catB2bis.getRootPath());
 
@@ -607,7 +607,7 @@ public class TestCategories extends OpenCmsTestCase {
 
     /**
      * Tests the category tree access with different repositories.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testCategoryTree() throws Exception {
@@ -630,7 +630,7 @@ public class TestCategories extends OpenCmsTestCase {
         assertEquals("A test", catA.getDescription());
         assertEquals(CmsCategoryService.CENTRALIZED_REPOSITORY, catA.getBasePath());
 
-        // assert the created resource 
+        // assert the created resource
         CmsResource resA = cms.readResource(cms.getRequestContext().removeSiteRoot(catA.getRootPath()));
         assertEquals(catA.getId(), resA.getStructureId());
         assertEquals(catA.getRootPath(), resA.getRootPath());
@@ -660,7 +660,7 @@ public class TestCategories extends OpenCmsTestCase {
         assertEquals(cms.getRequestContext().getSiteRoot()
             + CmsCategoryService.getInstance().getRepositoryBaseFolderName(cms), catB.getBasePath());
 
-        // assert the created resource 
+        // assert the created resource
         CmsResource resB = cms.readResource(cms.getRequestContext().removeSiteRoot(catB.getRootPath()));
         assertEquals(catB.getId(), resB.getStructureId());
         assertEquals(catB.getRootPath(), resB.getRootPath());
@@ -691,7 +691,7 @@ public class TestCategories extends OpenCmsTestCase {
         assertEquals("AA test", catAA.getDescription());
         assertEquals(CmsCategoryService.CENTRALIZED_REPOSITORY, catAA.getBasePath());
 
-        // assert the created resource 
+        // assert the created resource
         CmsResource resAA = cms.readResource(cms.getRequestContext().removeSiteRoot(catAA.getRootPath()));
         assertEquals(catAA.getId(), resAA.getStructureId());
         assertEquals(catAA.getRootPath(), resAA.getRootPath());
@@ -719,7 +719,7 @@ public class TestCategories extends OpenCmsTestCase {
 
     /**
      * Tests the category assignment with different repositories.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testCategoryTreeAssign() throws Exception {
@@ -846,7 +846,7 @@ public class TestCategories extends OpenCmsTestCase {
 
     /**
      * Tests copying a file with assigned categories across different category contexts when the categories remain valid.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testCopyValid() throws Exception {
@@ -876,7 +876,7 @@ public class TestCategories extends OpenCmsTestCase {
             "D2 Test",
             "/folder2/index.html");
 
-        // assign category 
+        // assign category
         cms.lockResource("/folder1/index.html");
         CmsCategoryService.getInstance().addResourceToCategory(cms, "/folder1/index.html", d1.getPath());
 
@@ -896,7 +896,7 @@ public class TestCategories extends OpenCmsTestCase {
 
     /**
      * Tests the case where a moved resource is published, but its category has been deleted and re-created in a different repository.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testPublishMovedResourceWithCategories1() throws Exception {
@@ -911,6 +911,7 @@ public class TestCategories extends OpenCmsTestCase {
                 public void handleLogEvent(LoggingEvent event) {
 
                     if (event.getLevel().toString().contains("ERROR")) {
+                        // TODO: This may be an error unrelated to the original error. Need more precise check.
                         storeError(event.getMessage().toString());
                     }
                 }
@@ -943,7 +944,7 @@ public class TestCategories extends OpenCmsTestCase {
 
     /**
      * Tests the case where a moved resource is published, but its category has been deleted.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testPublishMovedResourceWithCategories2() throws Exception {

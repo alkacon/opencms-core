@@ -32,11 +32,9 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
-import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
@@ -56,8 +54,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-
 /**
  * Lucene document factory class to extract index data from a resource 
  * of type <code>CmsResourceTypeContainerPage</code>.<p>
@@ -68,9 +64,6 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
 
     /** The solr document type name for xml-contents. */
     public static final String TYPE_CONTAINERPAGE_SOLR = "containerpage-solr";
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSolrDocumentContainerPage.class);
 
     /**
      * Creates a new instance of this lucene document factory.<p>
@@ -126,34 +119,6 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
             }
         }
         return new CmsExtractionResult(content.toString(), items);
-    }
-
-    /**
-     * Generates a new lucene document instance from contents of the given resource for the provided index.<p>
-     * 
-     * For container pages, we must not cache based on the container page content age, 
-     * since the content of the included elements may change any time.
-     */
-    @Override
-    public I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, CmsSearchIndex index)
-    throws CmsException {
-
-        // extract the content from the resource
-        I_CmsExtractionResult content = null;
-
-        if (index.isExtractingContent()) {
-            // do full text content extraction only if required
-
-            try {
-                content = extractContent(cms, resource, index);
-            } catch (Exception e) {
-                // text extraction failed for document - continue indexing meta information only
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
-            }
-        }
-
-        // create the Lucene document according to the index field configuration
-        return index.getFieldConfiguration().createDocument(cms, resource, index, content);
     }
 
     /**

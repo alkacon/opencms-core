@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,16 +31,20 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.CmsDocumentDependency;
@@ -62,6 +66,7 @@ import org.opencms.xml.content.I_CmsXmlContentHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -71,7 +76,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * The search field implementation for Solr.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
@@ -81,6 +86,9 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /** The content locale for the indexed document is stored in order to save performance. */
     private List<Locale> m_contentLocales;
+
+    /** The gallery fields. */
+    private Set<CmsSolrField> m_multiLocaleFields = new HashSet<CmsSolrField>();
 
     /** A list of Solr fields. */
     private Map<String, CmsSolrField> m_solrFields = new HashMap<String, CmsSolrField>();
@@ -94,51 +102,44 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     }
 
     /**
-     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#addAdditionalFields()
+     * Adds the additional fields to the configuration, if they are not null.<p>
+     *
+     * @param additionalFields the additional fields to add
      */
-    @Override
-    public void addAdditionalFields() {
+    public void addAdditionalFields(List<CmsSolrField> additionalFields) {
 
-        addContentFields();
-        addLuceneFields();
-
-        CmsSolrField sfield = new CmsSolrField(CmsSearchField.FIELD_MIMETYPE, null, null, null, 0);
-        m_solrFields.put(sfield.getName(), sfield);
-
-        sfield = new CmsSolrField(CmsSearchField.FIELD_FILENAME, null, null, null, 0);
-        m_solrFields.put(sfield.getName(), sfield);
-
-        sfield = new CmsSolrField(CmsSearchField.FIELD_VERSION, null, null, null, 0);
-        m_solrFields.put(sfield.getName(), sfield);
-
-        sfield = new CmsSolrField(CmsSearchField.FIELD_STATE, null, null, null, 0);
-        CmsSearchFieldMapping map = new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.ATTRIBUTE,
-            CmsSearchField.FIELD_STATE);
-        sfield.addMapping(map);
-        m_solrFields.put(sfield.getName(), sfield);
-
-        sfield = new CmsSolrField(CmsSearchField.FIELD_USER_LAST_MODIFIED, null, null, null, 0);
-        map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.ATTRIBUTE, CmsSearchField.FIELD_USER_LAST_MODIFIED);
-        sfield.addMapping(map);
-        m_solrFields.put(sfield.getName(), sfield);
-
-        sfield = new CmsSolrField(CmsSearchField.FIELD_USER_CREATED, null, null, null, 0);
-        map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.ATTRIBUTE, CmsSearchField.FIELD_USER_CREATED);
-        sfield.addMapping(map);
-        m_solrFields.put(sfield.getName(), sfield);
-
-        getFields().clear();
-        getFields().addAll(m_solrFields.values());
+        if (additionalFields != null) {
+            for (CmsSolrField solrField : additionalFields) {
+                m_solrFields.put(solrField.getName(), solrField);
+            }
+        }
     }
 
     /**
-     * Appends the Solr specific search fields to the document.<p>
-     * 
-     * @see org.opencms.search.fields.I_CmsSearchFieldAppdender#appendFields(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
+     * Returns all configured Solr fields.<p>
+     *
+     * @return all configured Solr fields
+     */
+    public Map<String, CmsSolrField> getSolrFields() {
+
+        return Collections.unmodifiableMap(m_solrFields);
+    }
+
+    /**
+     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#init()
      */
     @Override
-    public I_CmsSearchDocument appendFields(
+    public void init() {
+
+        super.init();
+        addAdditionalFields();
+    }
+
+    /**
+     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#appendAdditionalValuesToDcoument(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
+     */
+    @Override
+    protected I_CmsSearchDocument appendAdditionalValuesToDcoument(
         I_CmsSearchDocument document,
         CmsObject cms,
         CmsResource resource,
@@ -155,31 +156,58 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
         document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_VERSION), "" + resource.getVersion());
 
-        return document;
-    }
+        // Add title
+        //        System.out.println("-----------------------------------");
+        //        System.out.println(resource.getName() + ":   " + extractionResult.getContentItems().keySet());
+        //        System.out.println(resource.getName() + ":   " + extractionResult.getContentItems().get("title_en_s"));
+        //        System.out.println("-----------------------------------");
 
-    /**
-     * Returns all configured Solr fields.<p>
-     * 
-     * @return all configured Solr fields
-     */
-    public Map<String, CmsSolrField> getSolrFields() {
+        //        if (resource.isInternal()
+        //            || resource.isFolder()
+        //            || resource.isTemporaryFile()
+        //            || (resource.getDateExpired() <= System.currentTimeMillis())) {
+        //            // don't index internal resources, folders or temporary files or resources with expire date in the past
+        //            return true;
+        //        }
+        //
+        //        try {
+        //            // do property lookup with folder search
+        //            String propValue = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, true).getValue();
+        //            excludeFromIndex = Boolean.valueOf(propValue).booleanValue();
+        //            if (!excludeFromIndex && (propValue != null)) {
+        //                // property value was neither "true" nor null, must check for "all"
+        //                excludeFromIndex = PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue.trim());
+        //            }
+        //        } catch (CmsException e) {
+        //            if (LOG.isDebugEnabled()) {
+        //                LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNABLE_TO_READ_PROPERTY_1, resource.getRootPath()));
+        //            }
+        //        }
+        //        if (!excludeFromIndex && !USE_ALL_LOCALE.equalsIgnoreCase(getLocale().getLanguage())) {
+        //            // check if any resource default locale has a match with the index locale, if not skip resource
+        //            List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
+        //            Locale match = OpenCms.getLocaleManager().getFirstMatchingLocale(
+        //                Collections.singletonList(getLocale()),
+        //                locales);
+        //            excludeFromIndex = (match == null);
+        //        }
 
-        return Collections.unmodifiableMap(m_solrFields);
-    }
-
-    /**
-     * Adds the additional fields to the configuration, if they are not null.<p>
-     * 
-     * @param additionalFields the additional fields to add
-     */
-    protected void addAdditionalFields(List<CmsSolrField> additionalFields) {
-
-        if (additionalFields != null) {
-            for (CmsSolrField solrField : additionalFields) {
-                m_solrFields.put(solrField.getName(), solrField);
-            }
+        boolean excludeFromIndex = false;
+        String propValue = CmsProperty.get(CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, propertiesSearched).getValue();
+        excludeFromIndex = Boolean.valueOf(propValue).booleanValue();
+        if (!excludeFromIndex && (propValue != null)) {
+            // property value was neither "true" nor null, must check for "all"
+            excludeFromIndex = CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue.trim())
+                || CmsSolrIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_SOLR.equalsIgnoreCase(propValue.trim());
         }
+
+        if (resource.getRootPath().startsWith("/system") || (CmsResourceTypeJsp.getJSPTypeId() == resource.getTypeId())) {
+            document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_CHANNEL), "gallery");
+        } else {
+            document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_CHANNEL), "content");
+        }
+
+        return document;
     }
 
     /**
@@ -241,7 +269,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                             }
                         }
                     } else {
-                        // this is not a localized content field, just perform the regular mapping 
+                        // this is not a localized content field, just perform the regular mapping
                         mapResult = mapping.getStringValue(
                             cms,
                             resource,
@@ -250,7 +278,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                             propertiesSearched);
                     }
                     if (mapResult != null) {
-                        // append the found mapping result to text content of this field 
+                        // append the found mapping result to text content of this field
                         if (text.length() > 0) {
                             text.append('\n');
                         }
@@ -394,11 +422,58 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             itemLocales = CmsStringUtil.splitAsList(localesAsString, ' ');
             for (String locale : itemLocales) {
                 resourceLocales.add(new Locale(locale));
+                // Write the value for each multilingual field into locale-aware Solr fields (e.g.
+                // "title_<locale>_s").
+                for (CmsSolrField sf : m_multiLocaleFields) {
+                    String effFieldName = CmsSearchFieldConfiguration.getLocaleExtendedName(sf.getName(), locale)
+                        + "_s";
+                    String value = extraction.getContentItems().get(effFieldName);
+                    CmsSolrField f = new CmsSolrField(effFieldName, null, null, null, 0);
+                    document.addSearchField(f, value);
+
+                    effFieldName = CmsSearchFieldConfiguration.getLocaleExtendedName(sf.getName(), locale) + "_txt";
+                    value = extraction.getContentItems().get(effFieldName);
+                    f = new CmsSolrField(effFieldName, null, null, null, 0);
+                    document.addSearchField(f, value);
+                }
             }
         } else {
             // For all other resources add all default locales
             resourceLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
+
+            /*
+             * A problem is likely to arise when dealing with multilingual fields:
+             * Only values extracted from XML resources are written into the Solr locale-aware fields (e.g.
+             * "title_<locale>_s"), therefore sorting by them will not work as non-XML (unilingual) resources extract
+             * the information by the resource property facility and will not write to an Solr locale-aware field.
+             *
+             * The following code is used to fix this behavior, at least for "Title".
+             */
+
+            // Check all passed properties for "Title"...
+            for (final CmsProperty prop : propertiesSearched) {
+                if (prop.getName().equals(CmsPropertyDefinition.PROPERTY_TITLE)) {
+                    final String value = prop.getValue();
+
+                    // Write a Solr locale-aware field for every locale the system supports...
+                    final List<Locale> availableLocales = OpenCms.getLocaleManager().getAvailableLocales();
+                    for (final Locale locale : availableLocales) {
+                        final String lang = locale.getLanguage();
+                        // Don't proceed if a field has already written for this locale.
+                        if (!resourceLocales.contains(lang)) {
+                            final String effFieldName = CmsSearchFieldConfiguration.getLocaleExtendedName(
+                                CmsSearchField.FIELD_TITLE_UNSTORED,
+                                locale) + "_s";
+
+                            final CmsSolrField f = new CmsSolrField(effFieldName, null, null, null, 0);
+                            document.addSearchField(f, value);
+                        }
+                    }
+                }
+            }
+
         }
+
         document.addResourceLocales(resourceLocales);
 
         // append the content locales
@@ -441,8 +516,8 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                     null,
                     CmsSearchField.BOOST_DEFAULT), prop.getValue());
 
-                // Also write the property using the dynamic field '_s' in order to prevent tokenization 
-                // of the property. The resulting field is named '<property>_prop_s'. 
+                // Also write the property using the dynamic field '_s' in order to prevent tokenization
+                // of the property. The resulting field is named '<property>_prop_s'.
                 document.addSearchField(new CmsSolrField(prop.getName()
                     + CmsSearchField.FIELD_DYNAMIC_PROPERTIES
                     + "_s", null, null, null, CmsSearchField.BOOST_DEFAULT), prop.getValue());
@@ -453,18 +528,18 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * Retrieves the locales for an content, that is whether an XML content nor an XML page.<p>
-     * 
+     *
      * Uses following strategy:
      * <ul>
      * <li>first by file name</li>
      * <li>then by detection and</li>
      * <li>otherwise take the first configured default locale for this resource</li>
      * </ul>
-     *  
+     *
      * @param cms the current CmsObject
      * @param resource the resource to get the content locales for
      * @param extraction the extraction result
-     * 
+     *
      * @return the determined locales for the given resource
      */
     protected List<Locale> getContentLocales(CmsObject cms, CmsResource resource, I_CmsExtractionResult extraction) {
@@ -493,10 +568,10 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * Returns the search field mappings declared within the XSD.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resource the resource
-     * 
+     *
      * @return the fields to map
      */
     protected Set<CmsSearchField> getXSDMappings(CmsObject cms, CmsResource resource) {
@@ -514,6 +589,128 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         return null;
     }
 
+    /**
+     * Adds additional fields to this field configuration.<p>
+     */
+    private void addAdditionalFields() {
+
+        /*
+         * Add fields from opencms-search.xml (Lucene fields)
+         */
+        for (CmsSearchField field : getFields()) {
+            if (field instanceof CmsLuceneField) {
+                CmsSolrField newSolrField = new CmsSolrField((CmsLuceneField)field);
+                m_solrFields.put(newSolrField.getName(), newSolrField);
+            }
+        }
+
+        /*
+         * Add the content fields (multiple for contents with more than one locale)
+         */
+        // add the content_<locale> fields to this configuration
+        CmsSolrField solrField = new CmsSolrField(
+            CmsSearchField.FIELD_CONTENT,
+            null,
+            null,
+            null,
+            CmsSearchField.BOOST_DEFAULT);
+        solrField.addMapping(new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, CmsSearchField.FIELD_CONTENT));
+        m_solrFields.put(solrField.getName(), solrField);
+        for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
+            solrField = new CmsSolrField(
+                CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_CONTENT, locale),
+                Collections.singletonList(locale.toString() + CmsSearchField.FIELD_EXCERPT),
+                locale,
+                null,
+                CmsSearchField.BOOST_DEFAULT);
+            solrField.addMapping(new CmsSearchFieldMapping(
+                CmsSearchFieldMappingType.CONTENT,
+                CmsSearchField.FIELD_CONTENT));
+            m_solrFields.put(solrField.getName(), solrField);
+        }
+
+        /*
+         * Fields filled within appendFields
+         */
+        CmsSolrField sfield = new CmsSolrField(CmsSearchField.FIELD_MIMETYPE, null, null, null, 0);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        sfield = new CmsSolrField(CmsSearchField.FIELD_FILENAME, null, null, null, 0);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        sfield = new CmsSolrField(CmsSearchField.FIELD_VERSION, null, null, null, 0);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        sfield = new CmsSolrField(CmsSearchField.FIELD_SEARCH_CHANNEL, null, null, null, 0);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        /*
+         * Add multi-locale fields without mapping, filled in appendLocales 
+         */
+        sfield = new CmsSolrField(CmsSearchField.FIELD_TITLE_UNSTORED, null, null, null, 0);
+        m_multiLocaleFields.add(sfield);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        sfield = new CmsSolrField(CmsSearchField.FIELD_DESCRIPTION, null, null, null, 0);
+        m_solrFields.put(sfield.getName(), sfield);
+        m_multiLocaleFields.add(sfield);
+
+        /*
+         * Fields with mapping 
+         */
+        sfield = new CmsSolrField(CmsSearchField.FIELD_STATE, null, null, null, 0);
+        CmsSearchFieldMapping map = new CmsSearchFieldMapping(
+            CmsSearchFieldMappingType.ATTRIBUTE,
+            CmsSearchField.FIELD_STATE);
+        sfield.addMapping(map);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        sfield = new CmsSolrField(CmsSearchField.FIELD_USER_LAST_MODIFIED, null, null, null, 0);
+        map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.ATTRIBUTE, CmsSearchField.FIELD_USER_LAST_MODIFIED);
+        sfield.addMapping(map);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        sfield = new CmsSolrField(CmsSearchField.FIELD_USER_CREATED, null, null, null, 0);
+        map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.ATTRIBUTE, CmsSearchField.FIELD_USER_CREATED);
+        sfield.addMapping(map);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        sfield = new CmsSolrField(CmsSearchField.FIELD_META, null, null, null, 0);
+        map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_TITLE);
+        sfield.addMapping(map);
+        map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_DESCRIPTION);
+        sfield.addMapping(map);
+        map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.ATTRIBUTE, I_CmsXmlConfiguration.A_NAME);
+        sfield.addMapping(map);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        sfield = new CmsSolrField(CmsSearchField.FIELD_SEARCH_EXCLUDE, null, null, null, 0);
+        map = new CmsSearchFieldMapping(
+            CmsSearchFieldMappingType.PROPERTY_SEARCH,
+            CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE);
+        sfield.addMapping(map);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        sfield = new CmsSolrField(CmsSearchField.FIELD_CONTAINER_TYPES, null, null, null, 0);
+        map = new CmsSearchFieldMapping(
+            CmsSearchFieldMappingType.DYNAMIC,
+            "org.opencms.search.galleries.CmsGallerySearchFieldMapping");
+        map.setDefaultValue("container_types");
+        sfield.addMapping(map);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        sfield = new CmsSolrField(CmsSearchField.FIELD_ADDITIONAL_INFO, null, null, null, 0);
+        map = new CmsSearchFieldMapping(
+            CmsSearchFieldMappingType.DYNAMIC,
+            "org.opencms.search.galleries.CmsGallerySearchFieldMapping");
+        map.setDefaultValue("additional_info");
+        sfield.addMapping(map);
+        m_solrFields.put(sfield.getName(), sfield);
+
+        getFields().clear();
+        getFields().addAll(m_solrFields.values());
+    }
+    
     /**
      * Returns the search field mappings declared within the XSD that should be applied to the container page.<p>
      *
@@ -538,53 +735,11 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     }
 
     /**
-     * Adds a localized field for the extracted content to the schema.<p>
-     */
-    private void addContentFields() {
-
-        // add the content_<locale> fields to this configuration
-
-        CmsSolrField solrField = new CmsSolrField(
-            CmsSearchField.FIELD_CONTENT,
-            null,
-            null,
-            null,
-            CmsSearchField.BOOST_DEFAULT);
-        solrField.addMapping(new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, CmsSearchField.FIELD_CONTENT));
-        m_solrFields.put(solrField.getName(), solrField);
-        for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
-            solrField = new CmsSolrField(
-                CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_CONTENT, locale),
-                Collections.singletonList(locale.toString() + CmsSearchField.FIELD_EXCERPT),
-                locale,
-                null,
-                CmsSearchField.BOOST_DEFAULT);
-            solrField.addMapping(new CmsSearchFieldMapping(
-                CmsSearchFieldMappingType.CONTENT,
-                CmsSearchField.FIELD_CONTENT));
-            m_solrFields.put(solrField.getName(), solrField);
-        }
-    }
-
-    /**
-     * Converts and adds the Lucene fields configured in <code>opencms-search.xml</code>.<p>
-     */
-    private void addLuceneFields() {
-
-        for (CmsSearchField field : getFields()) {
-            if (field instanceof CmsLuceneField) {
-                CmsSolrField solrField = new CmsSolrField((CmsLuceneField)field);
-                m_solrFields.put(solrField.getName(), solrField);
-            }
-        }
-    }
-
-    /**
      * Returns <code>true</code> if at least one of the index sources uses a VFS indexer that is able
      * to index locale dependent resources.<p>
-     * 
+     *
      * TODO This should be improved somehow
-     * 
+     *
      * @return <code>true</code> if this field configuration should resolve locale dependencies
      */
     private boolean hasLocaleDependencies() {

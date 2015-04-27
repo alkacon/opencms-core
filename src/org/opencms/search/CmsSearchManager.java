@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,7 +62,6 @@ import org.opencms.search.fields.CmsLuceneFieldConfiguration;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
-import org.opencms.search.galleries.CmsGallerySearchAnalyzer;
 import org.opencms.search.solr.CmsSolrConfiguration;
 import org.opencms.search.solr.CmsSolrFieldConfiguration;
 import org.opencms.search.solr.CmsSolrIndex;
@@ -77,7 +76,6 @@ import org.opencms.util.CmsWaitHandle;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -92,7 +90,7 @@ import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.util.Version;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.core.CoreContainer;
@@ -100,10 +98,10 @@ import org.apache.solr.core.CoreDescriptor;
 import org.apache.solr.core.SolrCore;
 
 /**
- * Implements the general management and configuration of the search and 
+ * Implements the general management and configuration of the search and
  * indexing facilities in OpenCms.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
@@ -126,7 +124,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         /**
          * Creates a new force unlock type with the given name.<p>
-         * 
+         *
          * @param mode the mode id to use
          */
         protected CmsSearchForceUnlockMode(String mode) {
@@ -136,9 +134,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         /**
          * Returns the lock type for the given type value.<p>
-         *  
+         *
          * @param type the type value to get the lock type for
-         * 
+         *
          * @return the lock type for the given type value
          */
         public static CmsSearchForceUnlockMode valueOf(String type) {
@@ -174,7 +172,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         /**
          * Implements the event listener of this class.<p>
-         * 
+         *
          * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
          */
         @SuppressWarnings("unchecked")
@@ -222,7 +220,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         /**
          * Adds a list of {@link CmsPublishedResource} objects to be indexed.<p>
-         * 
+         *
          * @param resourcesToIndex the list of {@link CmsPublishedResource} objects to be indexed
          */
         protected synchronized void addResourcesToIndex(List<CmsPublishedResource> resourcesToIndex) {
@@ -296,7 +294,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         /**
          * Updates all offline indexes for the given list of {@link CmsResource} objects.<p>
-         * 
+         *
          * @param resources a list of {@link CmsResource} objects to update in the offline indexes
          */
         protected synchronized void reIndexResources(List<CmsResource> resources) {
@@ -335,7 +333,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param handler the offline index event handler
          */
         protected CmsSearchOfflineIndexThread(CmsSearchOfflineHandler handler) {
@@ -344,10 +342,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             m_handler = handler;
         }
 
-        /** 
+        /**
          * Gets the wait handle used for signalling when the worker thread has finished.
-         *  
-         * @return the wait handle 
+         *
+         * @return the wait handle
          **/
         public CmsWaitHandle getWaitHandle() {
 
@@ -424,9 +422,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         /**
-         * Obtains the list of resource to update in the offline index, 
+         * Obtains the list of resource to update in the offline index,
          * then optimizes the list by removing duplicate entries.<p>
-         * 
+         *
          * @return the list of resource to update in the offline index
          */
         protected List<CmsPublishedResource> getResourcesToIndex() {
@@ -473,14 +471,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         // continue
                     }
                     waitSteps++;
-                    // wait 5 times then stop waiting 
+                    // wait 5 times then stop waiting
                 } while ((waitSteps < 5) && m_isUpdating);
             }
         }
 
         /**
          * Updates the offline search indexes for the given list of resources.<p>
-         * 
+         *
          * @param report the report to write the index information to
          * @param resourcesToIndex the list of {@link CmsPublishedResource} objects to index
          */
@@ -525,9 +523,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         /**
          * Helper method which changes the states of resources which are to be indexed but have the wrong path to 'deleted'.
          * This is needed to deal with moved resources, since the documents with the old paths must be removed from the index,
-         * 
-         * @param resourcesToIndex the resources to index 
-         * 
+         *
+         * @param resourcesToIndex the resources to index
+         *
          * @return the resources to index, but resource states are set to 'deleted' for resources with outdated paths
          */
         private List<CmsPublishedResource> changeStateOfMoveOriginsToDeleted(List<CmsPublishedResource> resourcesToIndex) {
@@ -535,7 +533,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             Map<CmsUUID, String> lastValidPaths = new HashMap<CmsUUID, String>();
             for (CmsPublishedResource resource : resourcesToIndex) {
                 if (resource.getState().isDeleted()) {
-                    // we don't want the last path to be from a deleted resource 
+                    // we don't want the last path to be from a deleted resource
                     continue;
                 }
                 lastValidPaths.put(resource.getStructureId(), resource.getRootPath());
@@ -557,7 +555,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         resource.getRootPath(),
                         resource.getType(),
                         resource.isFolder(),
-                        CmsResource.STATE_DELETED, // make sure index entry with outdated path is deleted  
+                        CmsResource.STATE_DELETED, // make sure index entry with outdated path is deleted
                         resource.getSiblingCount()));
                 }
             }
@@ -567,8 +565,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * An offline index worker Thread runs each time for every offline index update action.<p>
-     * 
-     * This was decoupled from the main {@link CmsSearchOfflineIndexThread} in order to avoid 
+     *
+     * This was decoupled from the main {@link CmsSearchOfflineIndexThread} in order to avoid
      * problems if a single operation "hangs" the Tread.<p>
      */
     protected class CmsSearchOfflineIndexWorkThread extends Thread {
@@ -581,7 +579,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         /**
          * Updates the offline search indexes for the given list of resources.<p>
-         * 
+         *
          * @param report the report to write the index information to
          * @param resourcesToIndex the list of {@link CmsPublishedResource} objects to index
          */
@@ -728,26 +726,43 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns an analyzer for the given class name.<p>
-     * 
+     *
      * @param className the class name of the analyzer
-     * 
+     *
      * @return the appropriate lucene analyzer
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public static Analyzer getAnalyzer(String className) throws Exception {
 
-        return getAnalyzer(className, null);
+        Analyzer analyzer = null;
+        Class<?> analyzerClass;
+        try {
+            analyzerClass = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            // allow Lucene standard classes to be written in a short form
+            analyzerClass = Class.forName(LUCENE_ANALYZER + className);
+        }
+
+        // since Lucene 3.0 most analyzers need a "version" parameter and don't support an empty constructor
+        if (StandardAnalyzer.class.equals(analyzerClass)) {
+            // the Lucene standard analyzer is used - but without any stopwords.
+            // TODO: Is it a good idea to remove the default english stopwords used by default?
+            analyzer = new StandardAnalyzer(new CharArraySet(0, false));
+        } else {
+            analyzer = (Analyzer)analyzerClass.newInstance();
+        }
+        return analyzer;
     }
 
     /**
      * Returns the Solr index configured with the parameters name.
-     * The parameters must contain a key/value pair with an existing 
+     * The parameters must contain a key/value pair with an existing
      * Solr index, otherwise <code>null</code> is returned.<p>
-     * 
+     *
      * @param cms the current context
      * @param params the parameter map
-     * 
+     *
      * @return the best matching Solr index
      */
     public static final CmsSolrIndex getIndexSolr(CmsObject cms, Map<String, String[]> params) {
@@ -782,9 +797,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns <code>true</code> if the index for the given name is a Lucene index, <code>false</code> otherwise.<p>
-     * 
+     *
      * @param indexName the name of the index to check
-     * 
+     *
      * @return <code>true</code> if the index for the given name is a Lucene index
      */
     public static boolean isLuceneIndex(String indexName) {
@@ -797,83 +812,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Returns an analyzer for the given class name.<p>
-     * 
-     * Since Lucene 3.0, many analyzers require a "version" parameter in the constructor and 
-     * can not be created by a simple <code>newInstance()</code> call.
-     * This method will create analyzers by name.<p>
-     *
-     * @param className the class name of the analyzer
-     * @param stemmer the optional stemmer parameter required for the snowball analyzer
-     * 
-     * @return the appropriate lucene analyzer
-     * 
-     * @throws Exception if something goes wrong
-     * 
-     * @deprecated The stemmer parameter is used only by the snownall analyzer, which is deprecated in Lucene 3.
-     */
-    @Deprecated
-    private static Analyzer getAnalyzer(String className, String stemmer) throws Exception {
-
-        Analyzer analyzer = null;
-        Class<?> analyzerClass;
-        try {
-            analyzerClass = Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            // allow Lucene standard classes to be written in a short form
-            analyzerClass = Class.forName(LUCENE_ANALYZER + className);
-        }
-
-        // since Lucene 3.0 most analyzers need a "version" parameter and don't support an empty constructor
-        if (StandardAnalyzer.class.equals(analyzerClass)) {
-            // the Lucene standard analyzer is used
-            analyzer = new StandardAnalyzer();
-        } else if (CmsGallerySearchAnalyzer.class.equals(analyzerClass)) {
-            // OpenCms gallery multiple language analyzer
-            analyzer = new CmsGallerySearchAnalyzer();
-        } else {
-            boolean hasEmpty = false;
-            boolean hasVersion = false;
-            boolean hasVersionWithString = false;
-            // another analyzer is used, check if we find a suitable constructor 
-            Constructor<?>[] constructors = analyzerClass.getConstructors();
-            for (int i = 0; i < constructors.length; i++) {
-                Constructor<?> c = constructors[i];
-                Class<?>[] parameters = c.getParameterTypes();
-                if (parameters.length == 0) {
-                    // an empty constructor has been found
-                    hasEmpty = true;
-                }
-                if ((parameters.length == 1) && parameters[0].equals(Version.class)) {
-                    // a constructor with a Lucene version parameter has been found
-                    hasVersion = true;
-                }
-                if ((stemmer != null)
-                    && (parameters.length == 2)
-                    && parameters[0].equals(Version.class)
-                    && parameters[1].equals(String.class)) {
-                    // a constructor with a Lucene version parameter and a String has been found
-                    hasVersionWithString = true;
-                }
-            }
-            if (hasVersionWithString) {
-                // a constructor with a Lucene version parameter and a String has been found
-                analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {Version.class, String.class}).newInstance(
-                    stemmer);
-            } else if (hasVersion) {
-                // a constructor with a Lucene version parameter has been found
-                analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {Version.class}).newInstance();
-            } else if (hasEmpty) {
-                // an empty constructor has been found
-                analyzer = (Analyzer)analyzerClass.newInstance();
-            }
-        }
-        return analyzer;
-    }
-
-    /**
      * Adds an analyzer.<p>
-     * 
+     *
      * @param analyzer an analyzer
      */
     public void addAnalyzer(CmsSearchAnalyzer analyzer) {
@@ -890,7 +830,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Adds a document type.<p>
-     * 
+     *
      * @param documentType a document type
      */
     public void addDocumentTypeConfig(CmsSearchDocumentType documentType) {
@@ -907,7 +847,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Adds a search field configuration to the search manager.<p>
-     * 
+     *
      * @param fieldConfiguration the search field configuration to add
      */
     public void addFieldConfiguration(CmsSearchFieldConfiguration fieldConfiguration) {
@@ -922,7 +862,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Adds a search index to the configuration.<p>
-     * 
+     *
      * @param searchIndex the search index to add
      */
     public void addSearchIndex(CmsSearchIndex searchIndex) {
@@ -965,7 +905,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Adds a search index source configuration.<p>
-     * 
+     *
      * @param searchIndexSource a search index source configuration
      */
     public void addSearchIndexSource(CmsSearchIndexSource searchIndexSource) {
@@ -982,7 +922,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Implements the event listener of this class.<p>
-     * 
+     *
      * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
      */
     public void cmsEvent(CmsEvent event) {
@@ -1046,7 +986,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns all Solr index.<p>
-     * 
+     *
      * @return all Solr indexes
      */
     public List<CmsSolrIndex> getAllSolrIndexes() {
@@ -1063,12 +1003,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns an analyzer for the given language.<p>
-     * 
+     *
      * The analyzer is selected according to the analyzer configuration.<p>
-     * 
+     *
      * @param locale the locale to get the analyzer for
      * @return the appropriate lucene analyzer
-     * 
+     *
      * @throws CmsSearchException if something goes wrong
      */
     public Analyzer getAnalyzer(Locale locale) throws CmsSearchException {
@@ -1082,7 +1022,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         try {
-            analyzer = getAnalyzer(analyzerConf.getClassName(), analyzerConf.getStemmerAlgorithm());
+            analyzer = getAnalyzer(analyzerConf.getClassName());
         } catch (Exception e) {
             throw new CmsSearchException(Messages.get().container(Messages.ERR_LOAD_ANALYZER_1, className), e);
         }
@@ -1092,7 +1032,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns an unmodifiable view of the map that contains the {@link CmsSearchAnalyzer} list.<p>
-     * 
+     *
      * The keys in the map are {@link Locale} objects, and the values are {@link CmsSearchAnalyzer} objects.
      *
      * @return an unmodifiable view of the Analyzers Map
@@ -1104,9 +1044,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns the search analyzer for the given locale.<p>
-     * 
+     *
      * @param locale the locale to get the analyzer for
-     * 
+     *
      * @return the search analyzer for the given locale
      */
     public CmsSearchAnalyzer getCmsSearchAnalyzer(Locale locale) {
@@ -1116,7 +1056,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns the name of the directory below WEB-INF/ where the search indexes are stored.<p>
-     * 
+     *
      * @return the name of the directory below WEB-INF/ where the search indexes are stored
      */
     public String getDirectory() {
@@ -1126,7 +1066,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns the configured Solr home directory <code>null</code> if not set.<p>
-     * 
+     *
      * @return the Solr home directory
      */
     public String getDirectorySolr() {
@@ -1136,10 +1076,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns a lucene document factory for given resource.<p>
-     * 
+     *
      * The type of the document factory is selected by the type of the resource
      * and the MIME type of the resource content, according to the configuration in <code>opencms-search.xml</code>.<p>
-     * 
+     *
      * @param resource a cms resource
      * @return a lucene document factory or null
      */
@@ -1158,13 +1098,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns a lucene document factory for given resource type and MIME type.<p>
-     * 
-     * The type of the document factory is selected  according to the configuration 
+     *
+     * The type of the document factory is selected  according to the configuration
      * in <code>opencms-search.xml</code>.<p>
-     * 
+     *
      * @param resourceType the resource type name
      * @param mimeType the MIME type
-     * 
+     *
      * @return a lucene document factory or null in case no matching factory was found
      */
     public I_CmsDocumentFactory getDocumentFactory(String resourceType, String mimeType) {
@@ -1186,13 +1126,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns a document type config.<p>
-     * 
+     *
      * @param name the name of the document type config
      * @return the document type config.
      */
     public CmsSearchDocumentType getDocumentTypeConfig(String name) {
 
-        // this is really used only for the search manager GUI, 
+        // this is really used only for the search manager GUI,
         // so performance is not an issue and no lookup map is generated
         for (int i = 0; i < m_documentTypeConfigs.size(); i++) {
             CmsSearchDocumentType type = m_documentTypeConfigs.get(i);
@@ -1225,11 +1165,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns the search field configuration with the given name.<p>
-     * 
+     *
      * In case no configuration is available with the given name, <code>null</code> is returned.<p>
-     * 
+     *
      * @param name the name to get the search field configuration for
-     * 
+     *
      * @return the search field configuration with the given name
      */
     public CmsSearchFieldConfiguration getFieldConfiguration(String name) {
@@ -1239,7 +1179,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns the unmodifieable List of configured {@link CmsSearchFieldConfiguration} entries.<p>
-     * 
+     *
      * @return the unmodifieable List of configured {@link CmsSearchFieldConfiguration} entries
      */
     public List<CmsSearchFieldConfiguration> getFieldConfigurations() {
@@ -1252,7 +1192,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns the Lucene search field configurations only.<p>
-     * 
+     *
      * @return the Lucene search field configurations
      */
     public List<CmsLuceneFieldConfiguration> getFieldConfigurationsLucene() {
@@ -1267,9 +1207,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         return Collections.unmodifiableList(result);
     }
 
-    /** 
+    /**
      * Returns the Solr search field configurations only.<p>
-     * 
+     *
      * @return the Solr search field configurations
      */
     public List<CmsSolrFieldConfiguration> getFieldConfigurationsSolr() {
@@ -1296,7 +1236,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns the highlighter.<p>
-     * 
+     *
      * @return the highlighter
      */
     public I_CmsTermHighlighter getHighlighter() {
@@ -1307,9 +1247,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /**
      * Returns the Lucene search index configured with the given name.<p>
      * The index must exist, otherwise <code>null</code> is returned.
-     * 
+     *
      * @param indexName then name of the requested search index
-     * 
+     *
      * @return the Lucene search index configured with the given name
      */
     public CmsSearchIndex getIndex(String indexName) {
@@ -1324,7 +1264,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns the seconds to wait for an index lock during an update operation.<p>
-     * 
+     *
      * @return the seconds to wait for an index lock during an update operation
      */
     public int getIndexLockMaxWaitSeconds() {
@@ -1334,7 +1274,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns the names of all configured indexes.<p>
-     * 
+     *
      * @return list of names
      */
     public List<String> getIndexNames() {
@@ -1350,7 +1290,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /**
      * Returns the Solr index configured with the given name.<p>
      * The index must exist, otherwise <code>null</code> is returned.
-     * 
+     *
      * @param indexName then name of the requested Solr index
      * @return the Solr index configured with the given name
      */
@@ -1365,7 +1305,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns a search index source for a specified source name.<p>
-     * 
+     *
      * @param sourceName the name of the index source
      * @return a search index source
      */
@@ -1406,7 +1346,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns an unmodifiable list of all configured <code>{@link CmsSearchIndex}</code> instances.<p>
-     * 
+     *
      * @return an unmodifiable list of all configured <code>{@link CmsSearchIndex}</code> instances
      */
     public List<CmsSearchIndex> getSearchIndexes() {
@@ -1416,7 +1356,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns an unmodifiable list of all configured <code>{@link CmsSearchIndex}</code> instances.<p>
-     * 
+     *
      * @return an unmodifiable list of all configured <code>{@link CmsSearchIndex}</code> instances
      */
     public List<CmsSearchIndex> getSearchIndexesAll() {
@@ -1426,7 +1366,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns an unmodifiable list of all configured <code>{@link CmsSearchIndex}</code> instances.<p>
-     * 
+     *
      * @return an unmodifiable list of all configured <code>{@link CmsSearchIndex}</code> instances
      */
     public List<CmsSolrIndex> getSearchIndexesSolr() {
@@ -1442,7 +1382,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns an unmodifiable view (read-only) of the SearchIndexSources Map.<p>
-     * 
+     *
      * @return an unmodifiable view (read-only) of the SearchIndexSources Map
      */
     public Map<String, CmsSearchIndexSource> getSearchIndexSources() {
@@ -1452,9 +1392,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Return singleton instance of the OpenCms spellchecker.<p>
-     * 
+     *
      * @param cms the cms object.
-     *  
+     *
      * @return instance of CmsSolrSpellchecker.
      */
     public CmsSolrSpellchecker getSolrDictionary(CmsObject cms) {
@@ -1476,7 +1416,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns the Solr configuration.<p>
-     * 
+     *
      * @return the Solr configuration
      */
     public CmsSolrConfiguration getSolrServerConfiguration() {
@@ -1496,9 +1436,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Initializes the search manager.<p>
-     * 
+     *
      * @param cms the cms object
-     * 
+     *
      * @throws CmsRoleViolationException in case the given opencms object does not have <code>{@link CmsRole#WORKPLACE_MANAGER}</code> permissions
      */
     public void initialize(CmsObject cms) throws CmsRoleViolationException {
@@ -1529,7 +1469,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Initializes all configured document types and search indexes.<p>
-     * 
+     *
      * This methods needs to be called if after a change in the index configuration has been made.
      */
     public void initializeIndexes() {
@@ -1560,7 +1500,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns if the offline indexing is paused.<p>
-     * 
+     *
      * @return <code>true</code> if the offline indexing is paused
      */
     public boolean isOfflineIndexingPaused() {
@@ -1569,15 +1509,15 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Updates the indexes from as a scheduled job.<p> 
-     * 
+     * Updates the indexes from as a scheduled job.<p>
+     *
      * @param cms the OpenCms user context to use when reading resources from the VFS
      * @param parameters the parameters for the scheduled job
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @return the String to write in the scheduler log
-     * 
+     *
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
      */
     public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
@@ -1646,9 +1586,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Rebuilds (if required creates) all configured indexes.<p>
-     * 
+     *
      * @param report the report object to write messages (or <code>null</code>)
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public synchronized void rebuildAllIndexes(I_CmsReport report) throws CmsException {
@@ -1658,7 +1598,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             // iterate all configured search indexes
             CmsSearchIndex searchIndex = m_indexes.get(i);
             try {
-                // update the index 
+                // update the index
                 updateIndex(searchIndex, report, null);
             } catch (CmsException e) {
                 container = new CmsMessageContainer(
@@ -1678,17 +1618,17 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Rebuilds (if required creates) the index with the given name.<p>
-     * 
+     *
      * @param indexName the name of the index to rebuild
      * @param report the report object to write messages (or <code>null</code>)
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public synchronized void rebuildIndex(String indexName, I_CmsReport report) throws CmsException {
 
         // get the search index by name
         CmsSearchIndex index = getIndex(indexName);
-        // update the index 
+        // update the index
         updateIndex(index, report, null);
         // clean up the extraction result cache
         cleanExtractionCache();
@@ -1696,10 +1636,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Rebuilds (if required creates) the List of indexes with the given name.<p>
-     * 
+     *
      * @param indexNames the names (String) of the index to rebuild
      * @param report the report object to write messages (or <code>null</code>)
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public synchronized void rebuildIndexes(List<String> indexNames, I_CmsReport report) throws CmsException {
@@ -1710,7 +1650,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             // get the search index by name
             CmsSearchIndex index = getIndex(indexName);
             if (index != null) {
-                // update the index 
+                // update the index
                 updateIndex(index, report, null);
             } else {
                 if (LOG.isWarnEnabled()) {
@@ -1724,9 +1664,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Registers a new Solr core for the given index.<p>
-     * 
+     *
      * @param index the index to register a new Solr core for
-     * 
+     *
      * @throws CmsConfigurationException if no Solr server is configured
      */
     public void registerSolrIndex(CmsSolrIndex index) throws CmsConfigurationException {
@@ -1796,15 +1736,15 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Removes this field configuration from the OpenCms configuration (if it is not used any more).<p>
-     * 
-     * @param fieldConfiguration the field configuration to remove from the configuration 
-     * 
-     * @return true if remove was successful, false if preconditions for removal are ok but the given 
+     *
+     * @param fieldConfiguration the field configuration to remove from the configuration
+     *
+     * @return true if remove was successful, false if preconditions for removal are ok but the given
      *         field configuration was unknown to the manager.
-     * 
-     * @throws CmsIllegalStateException if the given field configuration is still used by at least one 
+     *
+     * @throws CmsIllegalStateException if the given field configuration is still used by at least one
      *         <code>{@link CmsSearchIndex}</code>.
-     *  
+     *
      */
     public boolean removeSearchFieldConfiguration(CmsSearchFieldConfiguration fieldConfiguration)
     throws CmsIllegalStateException {
@@ -1842,13 +1782,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Removes a search field from the field configuration.<p>
-     * 
+     *
      * @param fieldConfiguration the field configuration
      * @param field field to remove from the field configuration
-     * 
-     * @return true if remove was successful, false if preconditions for removal are ok but the given 
+     *
+     * @return true if remove was successful, false if preconditions for removal are ok but the given
      *         field was unknown.
-     * 
+     *
      * @throws CmsIllegalStateException if the given field is the last field inside the given field configuration.
      */
     public boolean removeSearchFieldConfigurationField(
@@ -1875,13 +1815,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Removes a search field mapping from the given field.<p>
-     * 
+     *
      * @param field the field
      * @param mapping mapping to remove from the field
-     * 
-     * @return true if remove was successful, false if preconditions for removal are ok but the given 
+     *
+     * @return true if remove was successful, false if preconditions for removal are ok but the given
      *         mapping was unknown.
-     * 
+     *
      * @throws CmsIllegalStateException if the given mapping is the last mapping inside the given field.
      */
     public boolean removeSearchFieldMapping(CmsLuceneField field, CmsSearchFieldMapping mapping)
@@ -1906,7 +1846,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Removes a search index from the configuration.<p>
-     * 
+     *
      * @param searchIndex the search index to remove
      */
     public void removeSearchIndex(CmsSearchIndex searchIndex) {
@@ -1924,7 +1864,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Removes all indexes included in the given list (which must contain the name of an index to remove).<p>
-     * 
+     *
      * @param indexNames the names of the index to remove
      */
     public void removeSearchIndexes(List<String> indexNames) {
@@ -1935,7 +1875,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             // get the search index by name
             CmsSearchIndex index = getIndex(indexName);
             if (index != null) {
-                // remove the index 
+                // remove the index
                 removeSearchIndex(index);
             } else {
                 if (LOG.isWarnEnabled()) {
@@ -1947,15 +1887,15 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Removes this indexsource from the OpenCms configuration (if it is not used any more).<p>
-     * 
-     * @param indexsource the indexsource to remove from the configuration 
-     * 
-     * @return true if remove was successful, false if preconditions for removal are ok but the given 
+     *
+     * @param indexsource the indexsource to remove from the configuration
+     *
+     * @return true if remove was successful, false if preconditions for removal are ok but the given
      *         searchindex was unknown to the manager.
-     * 
-     * @throws CmsIllegalStateException if the given indexsource is still used by at least one 
+     *
+     * @throws CmsIllegalStateException if the given indexsource is still used by at least one
      *         <code>{@link CmsSearchIndex}</code>.
-     *  
+     *
      */
     public boolean removeSearchIndexSource(CmsSearchIndexSource indexsource) throws CmsIllegalStateException {
 
@@ -1982,7 +1922,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 referrers.toString()));
         }
 
-        // remove operation (no exception) 
+        // remove operation (no exception)
         return m_indexSources.remove(indexsource.getName()) != null;
 
     }
@@ -2001,7 +1941,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Sets the name of the directory below WEB-INF/ where the search indexes are stored.<p>
-     * 
+     *
      * @param value the name of the directory below WEB-INF/ where the search indexes are stored
      */
     public void setDirectory(String value) {
@@ -2041,8 +1981,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Sets the unlock mode during indexing.<p>
-     * 
-     * @param value the value 
+     *
+     * @param value the value
      */
     public void setForceunlock(String value) {
 
@@ -2067,7 +2007,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Sets the seconds to wait for an index lock during an update operation.<p>
-     * 
+     *
      * @param value the seconds to wait for an index lock during an update operation
      */
     public void setIndexLockMaxWaitSeconds(int value) {
@@ -2168,7 +2108,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Sets the Solr configuration.<p>
-     * 
+     *
      * @param config the Solr configuration
      */
     public void setSolrServerConfiguration(CmsSolrConfiguration config) {
@@ -2178,7 +2118,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Sets the timeout to abandon threads indexing a resource.<p>
-     * 
+     *
      * @param value the timeout in milliseconds
      */
     public void setTimeout(long value) {
@@ -2188,7 +2128,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Sets the timeout to abandon threads indexing a resource as a String.<p>
-     * 
+     *
      * @param value the timeout in milliseconds
      */
     public void setTimeout(String value) {
@@ -2205,7 +2145,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Shuts down the search manager.<p>
-     * 
+     *
      * This will cause all search indices to be shut down.<p>
      */
     public void shutDown() {
@@ -2235,13 +2175,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Updates all offline indexes.<p>
-     * 
-     * Can be used to force an index update when it's not convenient to wait until the 
+     *
+     * Can be used to force an index update when it's not convenient to wait until the
      * offline update interval has eclipsed.<p>
-     * 
-     * Since the offline index will still need some time to update the new resources even if it runs directly, 
+     *
+     * Since the offline index will still need some time to update the new resources even if it runs directly,
      * a wait time of 2500 or so should be given in order to make sure the index finished updating.
-     * 
+     *
      * @param waitTime milliseconds to wait after the offline update index was notified of the changes
      */
     public void updateOfflineIndexes(long waitTime) {
@@ -2269,10 +2209,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Collects the related containerpages to the resources that have been published.<p>
-     * 
+     *
      * @param adminCms an OpenCms user context with Admin permissions
      * @param updateResources the resources to be re-indexed
-     * 
+     *
      * @return the updated list of resource to re-index
      */
     protected List<CmsPublishedResource> findRelatedContainerPages(
@@ -2342,7 +2282,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns the set of names of all configured document types.<p>
-     * 
+     *
      * @return the set of names of all configured document types
      */
     protected List<String> getDocumentTypes() {
@@ -2357,7 +2297,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Returns the a offline project used for offline indexing.<p>
-     * 
+     *
      * @return the offline project if available
      */
     protected CmsProject getOfflineIndexProject() {
@@ -2377,9 +2317,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         return result;
     }
 
-    /** 
+    /**
      * Returns a new thread manager for the indexing threads.<p>
-     * 
+     *
      * @return a new thread manager for the indexing threads
      */
     protected CmsIndexingThreadManager getThreadManager() {
@@ -2389,13 +2329,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Initializes the available Cms resource types to be indexed.<p>
-     * 
+     *
      * A map stores document factories keyed by a string representing
      * a colon separated list of Cms resource types and/or mimetypes.<p>
-     * 
-     * The keys of this map are used to trigger a document factory to convert 
+     *
+     * The keys of this map are used to trigger a document factory to convert
      * a Cms resource into a Lucene index document.<p>
-     * 
+     *
      * A document factory is a class implementing the interface
      * {@link org.opencms.search.documents.I_CmsDocumentFactory}.<p>
      */
@@ -2462,7 +2402,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Initializes the configured search indexes.<p>
-     * 
+     *
      * This initializes also the list of Cms resources types
      * to be indexed by an index source.<p>
      */
@@ -2504,10 +2444,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Incrementally updates all indexes that have their rebuild mode set to <code>"auto"</code>
-     * after resources have been published.<p> 
-     * 
+     * after resources have been published.<p>
+     *
      * @param adminCms an OpenCms user context with Admin permissions
-     * @param publishHistoryId the history ID of the published project 
+     * @param publishHistoryId the history ID of the published project
      * @param report the report to write the output to
      */
     protected synchronized void updateAllIndexes(CmsObject adminCms, CmsUUID publishHistoryId, I_CmsReport report) {
@@ -2546,7 +2486,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             // if the resource was moved, we must contain both entries
                             updateResources.remove(res);
                         }
-                        // "equals()" implementation of published resource checks for id, 
+                        // "equals()" implementation of published resource checks for id,
                         // so the removed value may have a different "deleted" or "modified" status value
                         updateResources.add(res);
                     } else {
@@ -2554,7 +2494,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         updateResources.add(res);
                         // check for the siblings (not for deleted resources, these are already gone)
                         if (!res.getState().isDeleted() && (res.getSiblingCount() > 1)) {
-                            // this resource has siblings                    
+                            // this resource has siblings
                             try {
                                 // read siblings from the online project
                                 List<CmsResource> siblings = adminCms.readSiblings(
@@ -2614,15 +2554,15 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Updates (if required creates) the index with the given name.<p>
-     * 
-     * If the optional List of <code>{@link CmsPublishedResource}</code> instances is provided, the index will be 
-     * incrementally updated for these resources only. If this List is <code>null</code> or empty, 
+     *
+     * If the optional List of <code>{@link CmsPublishedResource}</code> instances is provided, the index will be
+     * incrementally updated for these resources only. If this List is <code>null</code> or empty,
      * the index will be fully rebuild.<p>
-     * 
+     *
      * @param index the index to update or rebuild
-     * @param report the report to write output messages to 
+     * @param report the report to write output messages to
      * @param resourcesToIndex an (optional) list of <code>{@link CmsPublishedResource}</code> objects to update in the index
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected synchronized void updateIndex(
@@ -2778,12 +2718,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Incrementally updates the given index.<p>
-     * 
+     *
      * @param cms the OpenCms user context to use for accessing the VFS
      * @param index the index to update
-     * @param report the report to write output messages to 
+     * @param report the report to write output messages to
      * @param resourcesToIndex a list of <code>{@link CmsPublishedResource}</code> objects to update in the index
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected synchronized void updateIndexIncremental(
@@ -2891,7 +2831,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Updates the offline search indexes for the given list of resources.<p>
-     * 
+     *
      * @param report the report to write the index information to
      * @param resourcesToIndex the list of {@link CmsPublishedResource} objects to index
      */
@@ -2924,7 +2864,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Checks if the given containerpage is used as a detail containers and adds the related detail content to the resource set.<p>
-     * 
+     *
      * @param adminCms the cms context
      * @param containerPages the containerpages
      * @param containerPage the container page site path
@@ -2948,7 +2888,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Creates the Solr core container.<p>
-     * 
+     *
      * @return the created core container
      */
     private CoreContainer createCoreContainer() {
@@ -2977,9 +2917,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /**
      * Returns the report in the given event data, if <code>null</code>
      * a new log report is used.<p>
-     * 
+     *
      * @param event the event to get the report for
-     * 
+     *
      * @return the report
      */
     private I_CmsReport getEventReport(CmsEvent event) {
@@ -2996,10 +2936,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /**
      * Gets all structure ids for which published resources of both states 'new' and 'deleted' exist in the given list.<p>
-     * 
+     *
      * @param publishedResources a list of published resources
-     * 
-     * @return the set of structure ids that satisfy the condition above 
+     *
+     * @return the set of structure ids that satisfy the condition above
      */
     private Set<CmsUUID> getIdsOfPublishResourcesWhichAreBothNewAndDeleted(List<CmsPublishedResource> publishedResources) {
 

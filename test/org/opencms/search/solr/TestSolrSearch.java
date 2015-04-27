@@ -208,6 +208,28 @@ public class TestSolrSearch extends OpenCmsTestCase {
 
         assertNotNull(results.getHighLighting());
         echo("Highlighting works fine!");
+
+        CmsSolrQuery q = new CmsSolrQuery(getCmsObject(), null);
+        q.setTextSearchFields("content_en");
+        q.setText("OpenCms");
+        q.setHighlight(true);
+        q.setHighlightFragsize(200);
+        q.setHighlightFields("content_en");
+        CmsSolrResultList res = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE).search(getCmsObject(), q);
+        Map<String, Map<String, List<String>>> highlighting = res.getHighLighting();
+        assertTrue("There should be some highlighted documents", highlighting != null);
+
+        if (highlighting != null) {
+            for (Map<String, List<String>> map : highlighting.values()) {
+                for (List<String> entry : map.values()) {
+                    for (String s : entry) {
+                        assertTrue(
+                            "There must occure OpenCms in the highlighting",
+                            s.toLowerCase().contains("OpenCms".toLowerCase()));
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -892,7 +914,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         query.setRows(new Integer(1000));
         query.setRequestHandler("lucene");
         query.setResourceTypes("article");
-        String ex = "q={!q.op=OR qf=text_en}test&fl=pla,plub&qt=lucene&rows=1000&fq=parent-folders:\"/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]&fq=con_locales:de&fq=type:article";
+        String ex = "q={!q.op=OR type=lucene qf=text_de}test&fl=pla,plub&qt=lucene&rows=1000&fq=parent-folders:\"/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]&fq=con_locales:de&fq=type:article";
         assertEquals(ex, query.toString());
 
         assertEquals("article", CmsSolrQuery.getResourceType(query.getFilterQueries()));

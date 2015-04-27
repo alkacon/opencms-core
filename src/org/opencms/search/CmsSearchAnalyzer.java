@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import java.util.Locale;
 /**
  * An analyzer class is used by Lucene to reduce the content to be indexed
  * with trimmed endings etc.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSearchAnalyzer {
 
@@ -44,9 +44,6 @@ public class CmsSearchAnalyzer {
 
     /** A locale as a key to select the analyzer. */
     private Locale m_locale;
-
-    /** The stemmer algorithm to be used (only for the deprecated SnowBall analyzer). */
-    private String m_stemmerAlgorithm;
 
     /**
      * Returns the className.<p>
@@ -72,25 +69,12 @@ public class CmsSearchAnalyzer {
      * Returns the locale as a String.<p>
      *
      * @return the locale as a String
-     * 
+     *
      * @see #getLocale()
      */
     public String getLocaleString() {
 
         return getLocale().toString();
-    }
-
-    /**
-     * Returns the stemmer algorithm.<p>
-     *
-     * This is required only for the SnowBall analyzer, which is deprecated in Lucene and should not longer be 
-     * used since all languages have special analyzers now.<p>
-     *
-     * @return the stemmer algorithm
-     */
-    public String getStemmerAlgorithm() {
-
-        return m_stemmerAlgorithm;
     }
 
     /**
@@ -117,7 +101,7 @@ public class CmsSearchAnalyzer {
      * Sets the locale as a String.<p>
      *
      * @param locale the locale
-     * 
+     *
      * @see #setLocale(Locale)
      */
     public void setLocaleString(String locale) {
@@ -125,16 +109,4 @@ public class CmsSearchAnalyzer {
         setLocale(CmsLocaleManager.getLocale(locale));
     }
 
-    /**
-     * Sets the stemmer algorithm.<p>
-     *
-     * This is required only for the SnowBall analyzer, which is deprecated in Lucene and should not longer be 
-     * used since all languages have special analyzers now.<p>
-     *
-     * @param stemmerAlgorithm the stemmer algorithm
-     */
-    public void setStemmerAlgorithm(String stemmerAlgorithm) {
-
-        m_stemmerAlgorithm = stemmerAlgorithm;
-    }
 }

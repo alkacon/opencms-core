@@ -181,6 +181,26 @@ public class CmsSearchField implements Serializable {
      */
     public static final String FIELD_TITLE_UNSTORED = "title";
 
+    // TODO: Comments
+    public static final String FIELD_TIMESTAMP = "timestamp";
+    public static final String FIELD_PATH_HIERARCHY = "path_hierarchy";
+    /** Name of the field that contains the gallery index container information. */
+    public static final String FIELD_CONTAINER_TYPES = "container_types";
+    public static final String FIELD_CATEGORY_EXACT = "category_exact";
+    /** Name of the field that contains the gallery index additional information. */
+    public static final String FIELD_ADDITIONAL_INFO = "additional_info";
+    public static final String FIELD_PLACE = "place";
+    public static final String FIELD_SPELL = "spell";
+    // TODO: concat those field names; "text" + locale, where needed like content fields or exceprt fields
+    public static final String FIELD_TEXT_EN = "text_en";
+    public static final String FIELD_TEXT_DE = "text_de";
+    public static final String FIELD_TEXT_EL = "text_el";
+    public static final String FIELD_TEXT_ES = "text_es";
+    public static final String FIELD_TEXT_FR = "text_fr";
+    public static final String FIELD_TEXT_HU = "text_hu";
+    public static final String FIELD_TEXT_IT = "text_it";
+    public static final String FIELD_SEARCH_CHANNEL = "search_channel";
+
     /** Name of the field that contains the type of the document. */
     public static final String FIELD_TYPE = "type";
 

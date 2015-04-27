@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,14 +67,14 @@ import org.apache.solr.core.SolrCore;
 
 /**
  * Tests the Solr configuration.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class TestSolrConfiguration extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestSolrConfiguration(String arg0) {
@@ -84,7 +84,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -147,7 +147,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
             CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR,
             "text/html");
         CmsExtractionResultCache cache = factory.getCache();
-        String cacheName = cache.getCacheName(res, Locale.ENGLISH, CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR);
+        String cacheName = cache.getCacheName(res, null, CmsSolrDocumentXmlContent.TYPE_XMLCONTENT_SOLR);
         CmsExtractionResult result = cache.getCacheObject(cacheName);
         assertNotNull(result);
     }
@@ -204,7 +204,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
     /**
      * Tests the CmsSearch with folder names with upper case letters.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testPostProcessor() throws Exception {
@@ -221,7 +221,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
     /**
      * Test result count for changed content of two siblings.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReindexPublishedSiblings() throws Throwable {
@@ -307,7 +307,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
     /**
      * Tests shutting down Solr.<p>
-     * 
+     *
      * @throws Throwable
      */
     public void testShutDown() throws Throwable {

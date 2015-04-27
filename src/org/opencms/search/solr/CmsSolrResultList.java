@@ -4,6 +4,8 @@ package org.opencms.search.solr;
 import org.opencms.search.CmsSearchResource;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,14 +18,14 @@ import org.apache.solr.common.SolrDocumentList;
 
 /**
  * Encapsulates a list of 'OpenCms resource documents' ({@link CmsSearchResource}).<p>
- * 
- * This list can be accessed exactly like an {@link ArrayList} which entries are 
+ *
+ * This list can be accessed exactly like an {@link ArrayList} which entries are
  * {@link CmsSearchResource} that extend {@link org.opencms.file.CmsResource} and
  * holds the Solr implementation of {@link org.opencms.search.I_CmsSearchDocument}
- * as member. <b>This enables you to deal with the resulting list as you do with 
- * well known {@link List} and work on it's entries like you do on 
+ * as member. <b>This enables you to deal with the resulting list as you do with
+ * well known {@link List} and work on it's entries like you do on
  * {@link org.opencms.file.CmsResource}.</b><p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
@@ -36,6 +38,9 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /** The time in ms when the highlighting is finished. */
     private long m_highlightEndTime;
+
+    /** A map of highlighting. */
+    private Map<String, Map<String, List<String>>> m_highlighting;
 
     /** The current page (start / rows), used to build a pagination. */
     private int m_page;
@@ -60,7 +65,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * The public constructor.<p>
-     * 
+     *
      * @param query original Solr query
      * @param queryResponse original query response
      * @param resultDocuments original list of Solr documents
@@ -100,11 +105,13 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
         m_resultDocuments = resultDocuments;
         m_queryResponse = queryResponse;
+
+        m_highlighting = transformHighlighting();
     }
 
     /**
      * Returns the last index of documents to display.<p>
-     * 
+     *
      * @return the last index of documents to display
      */
     public int getEnd() {
@@ -114,9 +121,9 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * @param name the name
-     * 
+     *
      * @return the facet field
      */
     public FacetField getFacetDate(String name) {
@@ -126,7 +133,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * @return the list of faceted date fields
      */
     public List<FacetField> getFacetDates() {
@@ -136,9 +143,9 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * @param name the name
-     * 
+     *
      * @return the facet field
      */
     public FacetField getFacetField(String name) {
@@ -148,7 +155,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * @return the list of faceted fields
      */
     public List<FacetField> getFacetFields() {
@@ -158,7 +165,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * @return the facet query
      */
     public Map<String, Integer> getFacetQuery() {
@@ -168,7 +175,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * @return the list of facet ranges
      */
     @SuppressWarnings("rawtypes")
@@ -179,7 +186,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the time in ms when the highlighting is finished.<p>
-     * 
+     *
      * @return the time in ms when the highlighting is finished
      */
     public long getHighlightEndTime() {
@@ -189,17 +196,17 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the highlighting information.<p>
-     * 
+     *
      * @return the highlighting information
      */
     public Map<String, Map<String, List<String>>> getHighLighting() {
 
-        return m_queryResponse.getHighlighting();
+        return m_highlighting;
     }
 
     /**
      * Delegator.<p>
-     * 
+     *
      * @return the limiting facets
      */
     public List<FacetField> getLimitingFacets() {
@@ -209,7 +216,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the score of the best matching document.<p>
-     * 
+     *
      * @return the score of the best matching document
      */
     public Float getMaxScore() {
@@ -219,7 +226,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the count of docs that have been found.<p>
-     * 
+     *
      * @return the count of docs that have been found
      */
     public long getNumFound() {
@@ -229,7 +236,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the current page.<p>
-     * 
+     *
      * @return the current page
      */
     public int getPage() {
@@ -239,7 +246,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * The original Solr query.<p>
-     * 
+     *
      * @return the query
      */
     public SolrQuery getQuery() {
@@ -249,7 +256,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the requested row count.<p>
-     * 
+     *
      * @return the rows
      */
     public Integer getRows() {
@@ -269,7 +276,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the start index (offset).<p>
-     * 
+     *
      * @return the start
      */
     public Long getStart() {
@@ -279,7 +286,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the start time.<p>
-     * 
+     *
      * @return the start time
      */
     public long getStartTime() {
@@ -289,11 +296,50 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the visible hit count.<p>
-     * 
+     *
      * @return the visible count of documents
      */
     public long getVisibleHitCount() {
 
         return m_visibleHitCount;
+    }
+
+    /**
+     * Transforms / corrects the highlighting.<p>
+     *
+     * @return the highlighting
+     */
+    private Map<String, Map<String, List<String>>> transformHighlighting() {
+
+        Map<String, Map<String, List<String>>> result = new HashMap<String, Map<String, List<String>>>();
+        if (m_queryResponse.getHighlighting() != null) {
+            for (String key : m_queryResponse.getHighlighting().keySet()) {
+                Map<String, ?> value = m_queryResponse.getHighlighting().get(key);
+                Map<String, List<String>> innerResult = new HashMap<String, List<String>>();
+                for (String innerKey : value.keySet()) {
+                    Object entry = value.get(innerKey);
+                    List<String> innerList = new ArrayList<String>();
+                    if (entry instanceof String) {
+                        innerResult.put(innerKey, Collections.singletonList((String)entry));
+                    } else if (entry instanceof String[]) {
+                        String[] li = (String[])entry;
+                        for (Object lo : li) {
+                            String s = (String)lo;
+                            innerList.add(s);
+                        }
+                        innerResult.put(innerKey, innerList);
+                    } else if (entry instanceof List<?>) {
+                        List<?> li = (List<?>)entry;
+                        for (Object lo : li) {
+                            String s = (String)lo;
+                            innerList.add(s);
+                        }
+                        innerResult.put(innerKey, innerList);
+                    }
+                }
+                result.put(key, innerResult);
+            }
+        }
+        return result;
     }
 }
