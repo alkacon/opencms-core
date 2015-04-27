@@ -44,7 +44,6 @@ import org.opencms.util.CmsUUID;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -168,7 +167,7 @@ public class CmsPublishRelationFinder {
         ResourceMap publishRelatedResources = getChangedResourcesReachableFromOriginalResources(reachable);
         removeNestedItemsFromTopLevel(publishRelatedResources);
         //addParentFolders(publishRelatedResources);
-        removeUnchangedTopLevelResources(publishRelatedResources);
+        removeUnchangedTopLevelResources(publishRelatedResources, reachable);
         return publishRelatedResources;
     }
 
@@ -177,8 +176,9 @@ public class CmsPublishRelationFinder {
      * moves these children to the top level.<p>
      * 
      * @param publishRelatedResources the resource map to modify 
+     * @param reachability the reachability map 
      */
-    public void removeUnchangedTopLevelResources(ResourceMap publishRelatedResources) {
+    public void removeUnchangedTopLevelResources(ResourceMap publishRelatedResources, ResourceMap reachability) {
 
         Set<CmsResource> unchangedParents = Sets.newHashSet();
         Set<CmsResource> childrenOfUnchangedParents = Sets.newHashSet();
@@ -199,8 +199,14 @@ public class CmsPublishRelationFinder {
         for (CmsResource parent : unchangedParents) {
             publishRelatedResources.remove(parent);
         }
-        for (CmsResource child : childrenOfUnchangedParents) {
-            publishRelatedResources.put(child, new HashSet<CmsResource>());
+
+        // Try to find hierarchical relationships in childrenOfUnchangedParents 
+        while (findAndMoveParentWithChildren(childrenOfUnchangedParents, reachability, publishRelatedResources)) {
+            // do nothing 
+        }
+        // only the resources with no 'children' are left, transfer them to the target map 
+        for (CmsResource remainingResource : childrenOfUnchangedParents) {
+            publishRelatedResources.get(remainingResource);
         }
     }
 
@@ -260,6 +266,41 @@ public class CmsPublishRelationFinder {
             }
         }
         return relatedResources;
+    }
+
+    /** 
+     * Tries to find a parent with related children in a set, and moves them to a result ResourceMap.<p>
+     * 
+     * @param originalSet the original set 
+     * @param reachability the reachability ResourceMap 
+     * @param result the target ResourceMap to move the parent/children to 
+     * 
+     * @return true if a parent with children could be found (and moved) 
+     */
+    private boolean findAndMoveParentWithChildren(
+        Set<CmsResource> originalSet,
+        ResourceMap reachability,
+        ResourceMap result) {
+
+        for (CmsResource parent : originalSet) {
+            Set<CmsResource> reachableResources = reachability.get(parent);
+            Set<CmsResource> children = Sets.newHashSet();
+            if (reachableResources.size() > 1) {
+                for (CmsResource potentialChild : reachableResources) {
+                    if ((potentialChild != parent) && originalSet.contains(potentialChild)) {
+                        children.add(potentialChild);
+                    }
+                }
+                if (children.size() > 0) {
+                    result.get(parent).addAll(children);
+                    originalSet.removeAll(children);
+                    originalSet.remove(parent);
+                    return true;
+                }
+            }
+        }
+        return false;
+
     }
 
     /**
