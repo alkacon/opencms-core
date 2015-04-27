@@ -751,23 +751,27 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             Set<String> disabledTypes = new HashSet<String>();
             final Set<String> typesAtTheEndOfTheList = Sets.newHashSet();
             for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
-                AddMenuVisibility visibility = typeConfig.getAddMenuVisibility(elementView);
+                try {
+                    AddMenuVisibility visibility = typeConfig.getAddMenuVisibility(elementView);
 
-                if (visibility == AddMenuVisibility.disabled) {
-                    continue;
-                }
-
-                if (visibility == AddMenuVisibility.fromOtherView) {
-                    typesAtTheEndOfTheList.add(typeConfig.getTypeName());
-                }
-
-                if (typeConfig.checkViewable(cms, uri)) {
-                    String typeName = typeConfig.getTypeName();
-                    I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(typeName);
-                    resourceTypes.add(resType);
-                    if (!config.hasFormatters(cms, resType, containers)) {
-                        disabledTypes.add(typeName);
+                    if (visibility == AddMenuVisibility.disabled) {
+                        continue;
                     }
+
+                    if (visibility == AddMenuVisibility.fromOtherView) {
+                        typesAtTheEndOfTheList.add(typeConfig.getTypeName());
+                    }
+
+                    if (typeConfig.checkViewable(cms, uri)) {
+                        String typeName = typeConfig.getTypeName();
+                        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(typeName);
+                        if (!config.hasFormatters(cms, resType, containers)) {
+                            disabledTypes.add(typeName);
+                        }
+                        resourceTypes.add(resType);
+                    }
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
             Set<String> creatableTypes = new HashSet<String>();
