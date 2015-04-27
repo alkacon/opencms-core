@@ -229,6 +229,7 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
                 return internalIterator.next();
             }
 
+            @Override
             public void remove() {
 
                 throw new UnsupportedOperationException();

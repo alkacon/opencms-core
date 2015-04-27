@@ -16,29 +16,114 @@
 	left: 0px;
 }
 
-
-@sprite .colorRed .borderLeft{
-	gwt-image: 'borders.leftChangedBorderHighlight';
-}
-@sprite .colorRed .borderTop{
-	gwt-image: 'borders.topChangedBorderHighlight';
-}
-@sprite .colorRed .borderBottom{
-	gwt-image: 'borders.bottomChangedBorderHighlight';
-}
-@sprite .colorRed .borderRight{
-	gwt-image: 'borders.rightChangedBorderHighlight';
+.highlightBox .borderLeft, .highlightBox .borderRight{
+	width: 2px;
 }
 
-@sprite .colorBlue .borderLeft{
-	gwt-image: 'borders.leftNewBorderHighlight';
+.highlightBox .borderTop, .highlightBox .borderBottom{
+	height: 2px
 }
-@sprite .colorBlue .borderTop{
-	gwt-image: 'borders.topNewBorderHighlight';
+
+
+.animated .borderLeft{
+	animation: moveDown 30s linear normal infinite;
 }
-@sprite .colorBlue .borderBottom{
-	gwt-image: 'borders.bottomNewBorderHighlight';
+
+.animated .borderRight{
+	animation: moveDown 30s linear reverse infinite;
 }
-@sprite .colorBlue .borderRight{
-	gwt-image: 'borders.rightNewBorderHighlight';
+
+.animated .borderTop{
+	animation: moveRight 30s linear reverse infinite;
+}
+
+.animated .borderBottom{
+	animation: moveRight 30s linear normal infinite;
+}
+
+@-moz-keyframes moveRight {
+	0% {background-position: 0% 50%;}
+	25% {background-position: 25% 50%;}
+	50% {background-position: 50% 50%;}
+	75% {background-position: 75% 50%;}
+	100% {background-position: 100% 50%;}
+}
+
+@-moz-keyframes moveDown {
+	0% {background-position: 50% 0%;}
+	25% {background-position: 50% 25%;}
+	50% {background-position: 50% 50%;}
+	75% {background-position: 50% 75%;}
+	100% {background-position: 50% 100%;}
+}
+
+.colorSolidGrey .borderLeft, .colorSolidGrey .borderRight, .colorSolidGrey .borderTop, .colorSolidGrey .borderBottom{
+	background: rgba(181,189,200,1);
+}
+
+.colorGrey .borderLeft, .colorGrey .borderRight{
+	background: linear-gradient(
+  		to bottom,
+  		rgba(181,189,200,1) ,
+  		rgba(181,189,200,1)  50%,
+  		rgba(125,185,232,0) 50%,
+  		rgba(125,185,232,0)
+	);
+	background-size: 100% 16px;
+}
+
+.colorGrey .borderTop, .colorGrey .borderBottom{
+	background: linear-gradient(
+  		to right,
+  		rgba(181,189,200,1) ,
+  		rgba(181,189,200,1)  50%,
+  		rgba(125,185,232,0) 50%,
+  		rgba(125,185,232,0)
+	);
+	background-size: 16px  100%;
+}
+
+
+.colorRed .borderLeft, .colorRed .borderRight{
+	background: linear-gradient(
+  		to bottom,
+  		rgba(179,27,52,1),
+  		rgba(179,27,52,1) 50%,
+  		rgba(125,185,232,0) 50%,
+  		rgba(125,185,232,0)
+	);
+	background-size: 100% 16px;
+}
+
+.colorRed .borderTop, .colorRed .borderBottom{
+	background: linear-gradient(
+  		to right,
+  		rgba(179,27,52,1),
+  		rgba(179,27,52,1) 50%,
+  		rgba(125,185,232,0) 50%,
+  		rgba(125,185,232,0)
+	);
+	background-size: 16px  100%;
+}
+
+.colorBlue .borderLeft, .colorBlue .borderRight{
+	background: linear-gradient(
+  		to bottom,
+  		rgba(135,224,253,1),
+  		rgba(135,224,253,1)  50%,
+  		rgba(125,185,232,0) 50%,
+  		rgba(125,185,232,0)
+	);
+	background-size: 100% 16px;
+}
+
+.colorBlue .borderTop, .colorBlue .borderBottom{
+	background: linear-gradient(
+  		to right,
+  		rgba(135,224,253,1),
+  		rgba(135,224,253,1)  50%,
+  		rgba(125,185,232,0) 50%,
+  		rgba(125,185,232,0)
+	);
+	background-size: 16px  100%;
 }

@@ -1048,6 +1048,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String animated();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String borderBottom();
 
         /** 
@@ -1083,7 +1090,21 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * 
          * @return the CSS class name
          */
+        String colorGrey();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
         String colorRed();
+
+        /** 
+         * Access method.<p>
+         * 
+         * @return the CSS class name
+         */
+        String colorSolidGrey();
 
         /** 
          * Access method.<p>

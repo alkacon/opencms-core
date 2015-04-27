@@ -54,8 +54,14 @@ public class CmsHighlightingBorder extends Composite {
         /** Color blue. */
         blue(I_CmsLayoutBundle.INSTANCE.highlightCss().colorBlue()),
 
+        /** Color grey. */
+        grey(I_CmsLayoutBundle.INSTANCE.highlightCss().colorGrey()),
+
         /** Color red. */
-        red(I_CmsLayoutBundle.INSTANCE.highlightCss().colorRed());
+        red(I_CmsLayoutBundle.INSTANCE.highlightCss().colorRed()),
+
+        /** Solid grey. */
+        solidGrey(I_CmsLayoutBundle.INSTANCE.highlightCss().colorSolidGrey());
 
         /** CSS class used to display the border colour. */
         private String m_cssClass;
@@ -182,6 +188,21 @@ public class CmsHighlightingBorder extends Composite {
         m_colorVariable = new CmsStyleVariable(getWidget());
         m_colorVariable.setValue(color.getCssClass());
         setPosition(height, width, positionLeft, positionTop);
+    }
+
+    /**
+     * Enables the border animation.<p>
+     * (Is enabled by default)<p>
+     * 
+     * @param animated <code>true</code> to enable border animation
+     */
+    public void enableAnimation(boolean animated) {
+
+        if (animated) {
+            addStyleName(I_CmsLayoutBundle.INSTANCE.highlightCss().animated());
+        } else {
+            removeStyleName(I_CmsLayoutBundle.INSTANCE.highlightCss().animated());
+        }
     }
 
     /**
