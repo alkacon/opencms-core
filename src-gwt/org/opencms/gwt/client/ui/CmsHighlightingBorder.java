@@ -304,8 +304,8 @@ public class CmsHighlightingBorder extends Composite {
      */
     private void setWidth(int width) {
 
-        m_borderTop.getStyle().setWidth(width, Unit.PX);
-        m_borderBottom.getStyle().setWidth(width, Unit.PX);
+        m_borderTop.getStyle().setWidth(width + BORDER_WIDTH, Unit.PX);
+        m_borderBottom.getStyle().setWidth(width + BORDER_WIDTH, Unit.PX);
         m_borderRight.getStyle().setLeft(width, Unit.PX);
     }
 

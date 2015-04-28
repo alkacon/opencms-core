@@ -171,6 +171,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      **/
     private boolean m_writePermission;
 
+    /** Container model highlighting. */
+    private CmsHighlightingBorder m_containerModelHighlighting;
+
     /**
      * Constructor.<p>
      * 
@@ -462,12 +465,18 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      */
     public void highlightElement() {
 
+        CmsPositionBean position = CmsPositionBean.getBoundingClientRect(getElement());
         if (m_highlighting == null) {
-            m_highlighting = new CmsHighlightingBorder(CmsPositionBean.getBoundingClientRect(getElement()), isNew()
-                || isCreateNew() ? CmsHighlightingBorder.BorderColor.blue : CmsHighlightingBorder.BorderColor.red);
+            m_highlighting = new CmsHighlightingBorder(position, isNew() || isCreateNew()
+            ? CmsHighlightingBorder.BorderColor.blue
+            : CmsHighlightingBorder.BorderColor.red);
             RootPanel.get().add(m_highlighting);
         } else {
-            m_highlighting.setPosition(CmsPositionBean.getBoundingClientRect(getElement()));
+            m_highlighting.setPosition(position);
+        }
+        // also update the container model highlighting position, if present
+        if (m_containerModelHighlighting != null) {
+            m_containerModelHighlighting.setPosition(position);
         }
     }
 
@@ -598,7 +607,14 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     @Override
     public void removeFromParent() {
 
-        removeHighlighting();
+        if (m_highlighting != null) {
+            m_highlighting.removeFromParent();
+            m_highlighting = null;
+        }
+        if (m_containerModelHighlighting != null) {
+            m_containerModelHighlighting.removeFromParent();
+            m_containerModelHighlighting = null;
+        }
         super.removeFromParent();
     }
 
@@ -768,6 +784,26 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     }
 
     /**
+     * Shows the container model highlighting if appropriate.<p>
+     */
+    public void showContainerModelHighlighting() {
+
+        // only if attached to the DOM
+        if (m_containerModel && RootPanel.getBodyElement().isOrHasChild(getElement())) {
+            CmsPositionBean dimensions = CmsPositionBean.getBoundingClientRect(getElement());
+            if (m_containerModelHighlighting != null) {
+                m_containerModelHighlighting.setPosition(dimensions);
+            } else {
+                m_containerModelHighlighting = new CmsHighlightingBorder(
+                    dimensions,
+                    CmsHighlightingBorder.BorderColor.solidGrey);
+                m_containerModelHighlighting.enableAnimation(false);
+                RootPanel.get().add(m_containerModelHighlighting);
+            }
+        }
+    }
+
+    /**
      * Shows list collector direct edit buttons (old direct edit style), if present.<p>
      */
     public void showEditableListButtons() {
@@ -833,18 +869,29 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     }
 
     /**
+     * Updates container model highlighting.<p>
+     */
+    public void updateContainerModelHighlighting() {
+
+        // only if attached to the DOM
+        if (m_containerModel
+            && (m_containerModelHighlighting != null)
+            && RootPanel.getBodyElement().isOrHasChild(getElement())) {
+            m_containerModelHighlighting.setPosition(CmsPositionBean.getBoundingClientRect(getElement()));
+        }
+    }
+
+    /**
      * Updates the option bar position.<p>
      */
     public void updateOptionBarPosition() {
 
-        if (m_elementOptionBar == null) {
-            return;
-        }
         // only if attached to the DOM
-        if (RootPanel.getBodyElement().isOrHasChild(getElement())) {
+        if ((m_elementOptionBar != null) && RootPanel.getBodyElement().isOrHasChild(getElement())) {
             int absoluteTop = getElement().getAbsoluteTop();
             int absoluteRight = getElement().getAbsoluteRight();
             CmsPositionBean dimensions = CmsPositionBean.getBoundingClientRect(getElement());
+
             if (Math.abs(absoluteTop - dimensions.getTop()) > 20) {
                 absoluteTop = (dimensions.getTop() - absoluteTop) + 2;
                 m_elementOptionBar.getElement().getStyle().setTop(absoluteTop, Unit.PX);

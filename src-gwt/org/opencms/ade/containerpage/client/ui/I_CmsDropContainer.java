@@ -188,9 +188,19 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
     void setPlaceholderVisibility(boolean visible);
 
     /**
+     * Shows container model highlighting on all contained container models.<p>
+     */
+    void showContainerModelHighlighting();
+
+    /**
      * Shows list collector direct edit buttons (old direct edit style), if present.<p>
      */
     void showEditableListButtons();
+
+    /**
+     * Updates container model highlighting on all contained container models.<p>
+     */
+    void updateContainerModelHighlighting();
 
     /**
      * Updates the cached position info.<p>

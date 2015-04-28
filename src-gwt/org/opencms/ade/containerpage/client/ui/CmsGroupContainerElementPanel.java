@@ -373,9 +373,6 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     public void onConsumeChildren(List<CmsContainerPageElementPanel> children) {
 
         m_children = new ArrayList<CmsContainerPageElementPanel>(children);
-
-        // TODO Auto-generated method stub
-
     }
 
     /**

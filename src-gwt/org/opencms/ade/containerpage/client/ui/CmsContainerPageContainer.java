@@ -665,6 +665,18 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#showContainerModelHighlighting()
+     */
+    public void showContainerModelHighlighting() {
+
+        for (Widget child : this) {
+            if (child instanceof CmsContainerPageElementPanel) {
+                ((CmsContainerPageElementPanel)child).showContainerModelHighlighting();
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#showEditableListButtons()
      */
     public void showEditableListButtons() {
@@ -672,6 +684,18 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         for (Widget child : this) {
             if (child instanceof CmsContainerPageElementPanel) {
                 ((CmsContainerPageElementPanel)child).showEditableListButtons();
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#updateContainerModelHighlighting()
+     */
+    public void updateContainerModelHighlighting() {
+
+        for (Widget child : this) {
+            if (child instanceof CmsContainerPageElementPanel) {
+                ((CmsContainerPageElementPanel)child).updateContainerModelHighlighting();
             }
         }
     }

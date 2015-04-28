@@ -2471,6 +2471,9 @@ public final class CmsContainerpageController {
                 for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
                     container.showEditableListButtons();
                     container.updateOptionBars();
+                    if (getData().isContainerModel()) {
+                        container.showContainerModelHighlighting();
+                    }
                 }
 
                 if (m_timerRuns > 3) {
@@ -2966,6 +2969,18 @@ public final class CmsContainerpageController {
     public boolean unlockResource(CmsUUID structureId) {
 
         return CmsCoreProvider.get().unlock(structureId);
+    }
+
+    /**
+     * Updates container model highlighting.<p>
+     */
+    public void updateContainerModelHighlighting() {
+
+        if (getData().isContainerModel()) {
+            for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
+                container.updateContainerModelHighlighting();
+            }
+        }
     }
 
     /** 
