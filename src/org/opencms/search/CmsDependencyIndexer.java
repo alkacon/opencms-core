@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,6 @@
 package org.opencms.search;
 
 import org.opencms.db.CmsPublishedResource;
-import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -51,7 +50,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * A VFS indexer that resolves locale dependent documents.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsDependencyIndexer extends CmsVfsIndexer {
@@ -118,21 +117,6 @@ public class CmsDependencyIndexer extends CmsVfsIndexer {
     }
 
     /**
-     * @see org.opencms.search.CmsVfsIndexer#newInstance(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.CmsSearchIndex)
-     */
-    @Override
-    public I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, CmsSearchIndex index) {
-
-        CmsDependencyIndexer indexer = new CmsDependencyIndexer();
-
-        indexer.m_cms = cms;
-        indexer.m_report = report;
-        indexer.m_index = index;
-
-        return indexer;
-    }
-
-    /**
      * @see org.opencms.search.I_CmsIndexer#rebuildIndex(org.opencms.search.I_CmsIndexWriter, org.opencms.search.CmsIndexingThreadManager, org.opencms.search.CmsSearchIndexSource)
      */
     @Override
@@ -184,9 +168,9 @@ public class CmsDependencyIndexer extends CmsVfsIndexer {
 
     /**
      * Creates a folder based lookup map for the given resource list.<p>
-     * 
+     *
      * @param resources the list of resource to build the lookup map for
-     * 
+     *
      * @return a folder based lookup map for the given resource list
      */
     protected Map<String, List<CmsResource>> createFolderLookupMap(List<CmsResource> resources) {
