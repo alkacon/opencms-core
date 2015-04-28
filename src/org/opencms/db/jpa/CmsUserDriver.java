@@ -2103,7 +2103,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
             dbc,
             CmsUUID.getConstantUUID(guestUser),
             guestUser,
-            OpenCms.getPasswordHandler().digest(""),
+            OpenCms.getPasswordHandler().digest((new CmsUUID()).toString()),
             " ",
             " ",
             " ",
