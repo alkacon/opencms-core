@@ -4,10 +4,8 @@
 	background: transparent;
 }
 
-
-/** Opacity filter somehow hides the hightlighting in IE7 and IE8, will not use it for now. */
 .highlightBox {
-	opacity: 0.6;
+	opacity: 0.7;
 }
 
 .highlightBox div{
@@ -24,86 +22,57 @@
 	height: 2px
 }
 
-
-.animated .borderLeft{
-	animation: moveDown 30s linear normal infinite;
-}
-
-.animated .borderRight{
-	animation: moveDown 30s linear reverse infinite;
-}
-
-.animated .borderTop{
-	animation: moveRight 30s linear reverse infinite;
-}
-
-.animated .borderBottom{
-	animation: moveRight 30s linear normal infinite;
-}
-
 @if user.agent safari {
 	.animated .borderLeft{
-		-webkit-animation: moveDown 30s linear normal infinite;
+		-webkit-animation: moveDown 1s linear normal infinite;
 	}
 	
 	.animated .borderRight{
-		-webkit-animation: moveDown 30s linear reverse infinite;
+		-webkit-animation: moveDown 1s linear reverse infinite;
 	}
 	
 	.animated .borderTop{
-		-webkit-animation: moveRight 30s linear reverse infinite;
+		-webkit-animation: moveRight 1s linear reverse infinite;
 	}
 	
 	.animated .borderBottom{
-		-webkit-animation: moveRight 30s linear normal infinite;
+		-webkit-animation: moveRight 1s linear normal infinite;
 	}	
 	
 	@-webkit-keyframes moveRight {
-		0% {background-position: 0% 50%;}
-		25% {background-position: 25% 50%;}
-		50% {background-position: 50% 50%;}
-		75% {background-position: 75% 50%;}
-		100% {background-position: 100% 50%;}
+		0% {background-position: 0px 50%;}
+		100% {background-position: 16px 50%;}
 	}
 
 	@-webkit-keyframes moveDown {
-		0% {background-position: 50% 0%;}
-		25% {background-position: 50% 25%;}
-		50% {background-position: 50% 50%;}
-		75% {background-position: 50% 75%;}
-		100% {background-position: 50% 100%;}
-	}	
+		0% {background-position: 50% 8px;}
+		100% {background-position: 50% 24px;}
+	}
 } @else {
 	.animated .borderLeft{
-		animation: moveDown 30s linear normal infinite;
+		animation: moveDown 1s linear normal infinite;
 	}
 	
 	.animated .borderRight{
-		animation: moveDown 30s linear reverse infinite;
+		animation: moveDown 1s linear reverse infinite;
 	}
 	
 	.animated .borderTop{
-		animation: moveRight 30s linear reverse infinite;
+		animation: moveRight 1s linear reverse infinite;
 	}
 	
 	.animated .borderBottom{
-		animation: moveRight 30s linear normal infinite;
+		animation: moveRight 1s linear normal infinite;
 	}	
 	
 	@keyframes moveRight {
-		0% {background-position: 0% 50%;}
-		25% {background-position: 25% 50%;}
-		50% {background-position: 50% 50%;}
-		75% {background-position: 75% 50%;}
-		100% {background-position: 100% 50%;}
+		0% {background-position: 0px 50%;}
+		100% {background-position: 16px 50%;}
 	}
 
 	@keyframes moveDown {
-		0% {background-position: 50% 0%;}
-		25% {background-position: 50% 25%;}
-		50% {background-position: 50% 50%;}
-		75% {background-position: 50% 75%;}
-		100% {background-position: 50% 100%;}
+		0% {background-position: 50% 8px;}
+		100% {background-position: 50% 24px;}
 	}
 }
 
