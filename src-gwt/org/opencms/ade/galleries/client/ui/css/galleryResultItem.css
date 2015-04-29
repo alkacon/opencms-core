@@ -16,14 +16,8 @@
 .tilingItem .imageTile, .tilingList .tilingItem .titleRow, .tilingList .tilingItem .itemIcon, .tilingList .tilingItem .itemAdditional{
 	display: none;
 }
-@if user.agent ie6 {
-	.tilingList .tilingItem, .tilingList .tilingItem div, .tilingList .imageTile, .tilingList .tilingItem .itemContainer, .tilingList .tilingItem .itemContent{
-		display: inline;
-	}
-} @else {
-	.tilingList .tilingItem, .tilingList .tilingItem div, .tilingList .imageTile, .tilingList .tilingItem .itemContainer, .tilingList .tilingItem .itemContent{
-		display: inline-block;
-	}
+.tilingList .tilingItem, .tilingList .tilingItem div, .tilingList .imageTile, .tilingList .tilingItem .itemContainer, .tilingList .tilingItem .itemContent{
+	display: inline-block;
 }
 
 .tilingList .tilingItem .itemContainer{

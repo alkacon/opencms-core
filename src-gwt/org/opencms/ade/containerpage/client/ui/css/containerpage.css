@@ -185,17 +185,11 @@ div.groupcontainerPlaceholder{
 	visibility: hidden;
 }
 
-@if user.agent ie6 {
-	.toolbarSelection .optionBar .toolbarSelection,
-	.toolbarSelection .optionBar.cmsHovering .cmsState{
-		display: inline;
-	}
-} @else {
-	.toolbarSelection .optionBar .toolbarSelection,
-	.toolbarSelection .optionBar.cmsHovering .cmsState{
-		display: inline-block;
-	}
+.toolbarSelection .optionBar .toolbarSelection,
+.toolbarSelection .optionBar.cmsHovering .cmsState{
+	display: inline-block;
 }
+
 @sprite .optionBar .cmsState-up-hovering .toolbarClipboard, .optionBar .cmsState-down-hovering .toolbarClipboard, .optionBar .cmsState-down .toolbarClipboard {
     gwt-image: "images.favoriteIconActive";
 }

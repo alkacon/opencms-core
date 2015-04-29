@@ -11,14 +11,6 @@ body.galleryBody, div.galleryBody {
 	overflow: hidden;
 }
 
-@if user.agent ie6 {
-body.galleryBody *{
-	zoom: 1;
-}
-body.galleryBody{
-	height: 499px;
-}
-}
 div.resultTabUpload{
 	float: right;
 	margin: 1px 1px 0 0;
@@ -88,16 +80,10 @@ div.paramsText {
 	max-width: 600px;
 }
 
-@if user.agent ie6 {
-	.showParams, .paramsText {
-		display: inline;
-		zoom: 1;
-	}
-} @else {
-	.showParams, .paramsText {
-		display: inline-block;
-	}
+.showParams, .paramsText {
+	display: inline-block;
 }
+
 
 div.searchTabRow {
 	clear: both;

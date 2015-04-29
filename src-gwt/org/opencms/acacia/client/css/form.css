@@ -515,14 +515,8 @@ div.helpBubble{
 	display: none;
 }
 
-@if user.agent ie8 {
-	.dragPlaceholder {
-		-ms-filter: "alpha(opacity = 50)";
-	}
-} @else {
-	.dragPlaceholder {
-        opacity: 0.5;
-	}
+.dragPlaceholder {
+    opacity: 0.5;
 }
 
 .dragStarted .entity .attributeValue .buttonBar > div{

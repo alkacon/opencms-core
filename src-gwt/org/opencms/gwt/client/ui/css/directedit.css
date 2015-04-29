@@ -88,30 +88,16 @@ div.expiredListElementOverlay {
 	display: none !important;
 }
 
-@if user.agent ie6 {
-	.toolbarRemove .optionBar .toolbarRemove, 
-	.toolbarEdit .optionBar .toolbarEdit, 
-	.toolbarEdit .directEditButtons .toolbarNew,
-	.toolbarMove .optionBar .toolbarMove, 
-	.toolbarNew .optionBar .toolbarNew, 
-	.toolbarProperties .optionBar .toolbarProperties, 
-	.toolbarSelection .optionBar .toolbarSelection,
-	.toolbarSelection .optionBar.cmsHovering .cmsState{
-		display: inline;
-	}
-} @else {
-	.toolbarRemove .optionBar .toolbarRemove, 
-	.toolbarEdit .optionBar .toolbarEdit, 
-	.toolbarEdit .directEditButtons .toolbarNew,
-	.toolbarMove .optionBar .toolbarMove, 
-	.toolbarNew .optionBar .toolbarNew, 
-	.toolbarProperties .optionBar .toolbarProperties, 
-	.toolbarSelection .optionBar .toolbarSelection,
-	.toolbarSelection .optionBar.cmsHovering .cmsState{
-		display: inline-block;
-	}
+.toolbarRemove .optionBar .toolbarRemove, 
+.toolbarEdit .optionBar .toolbarEdit, 
+.toolbarEdit .directEditButtons .toolbarNew,
+.toolbarMove .optionBar .toolbarMove, 
+.toolbarNew .optionBar .toolbarNew, 
+.toolbarProperties .optionBar .toolbarProperties, 
+.toolbarSelection .optionBar .toolbarSelection,
+.toolbarSelection .optionBar.cmsHovering .cmsState{
+	display: inline-block;
 }
-
 
 @sprite .optionBar .cmsState-up-hovering .toolbarClipboard, .optionBar .cmsState-down-hovering .toolbarClipboard, .optionBar .cmsState-down .toolbarClipboard {
     gwt-image: "coreImages.icons.favoriteIconActive";

@@ -14,14 +14,8 @@ div.inlineLabel{
 div.inlineLabel, div.inputTextSmall{
 	vertical-align: middle;
 }
-@if user.agent ie6 {
-	div.inlineLabel, div.inputTextSmall, div.selectBox{
-		display: inline;
-	}
-} @else {
-	div.inlineLabel, div.inputTextSmall, div.selectBox{
-		display: inline-block;
-	}
+div.inlineLabel, div.inputTextSmall, div.selectBox{
+	display: inline-block;
 }
 div.floatCheckbox{
 	float: left;

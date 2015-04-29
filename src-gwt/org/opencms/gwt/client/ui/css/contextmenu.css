@@ -76,12 +76,6 @@ div.menuInfoLabel {
 	cursor: default;
 }
 
-@if user.agent ie6 { /* IE6 HACK for the separator */
-	.cmsMenuBar .menuItemSeparator {
-		margin-top: -1px;
-	}
-}
-
 .cmsMenuBar, .menuPanel{
 	border-radius: 8px;
 }

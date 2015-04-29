@@ -4,17 +4,8 @@
 	position:relative;
 }
 
-@if user.agent ie6 {
-  	.menu{
-        display: inline;
-    }
-    .menu .button{
-		overflow: visible !important;
-  	}
-} @else {
-    .menu{
-        display: inline-block;
-    }
+.menu{
+    display: inline-block;
 }
 
 .menu .button{

@@ -78,15 +78,8 @@ div.paramsText {
 	max-width: 600px;
 }
 
-@if user.agent ie6 {
-	.showParams, .paramsText {
-		display: inline;
-		zoom: 1;
-	}
-} @else {
-	.showParams, .paramsText {
-		display: inline-block;
-	}
+.showParams, .paramsText {
+	display: inline-block;
 }
 
 div.searchTabRow {

@@ -44,15 +44,10 @@ div.hoverbar{
 .dragStarted .hoverbar .cmsState{
 	display: none;
 }
-@if user.agent ie6 {
-	.dragStarted .hoverbar .cmsState.hoverbarMove{
-		display: inline;
-	}
-} @else {
-	.dragStarted .hoverbar .cmsState.hoverbarMove{
-		display: inline-block;
-	}	
-}
+.dragStarted .hoverbar .cmsState.hoverbarMove{
+	display: inline-block;
+}	
+
 @sprite .cmsState-up-hovering .hoverbarContext, .context .hoverbarContext, .cmsState-down .hoverbarContext, .cmsState-down-hovering .hoverbarContext{
     gwt-image: "icons.menuIconActive";
 }

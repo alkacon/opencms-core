@@ -130,13 +130,6 @@ div.frameDialog div.popupButtonPanel {
 	z-index: value("constants.css.zIndexInline");
 }
 
-@if user.agent ie6 {
-.popup, .popup * {
-    /* fixes a glitch with relatively positioned elements in dialogs which sometimes vanish */
-	zoom:1;
-}
-}
-
 .hideCaption .caption{
 	display: none;
 }

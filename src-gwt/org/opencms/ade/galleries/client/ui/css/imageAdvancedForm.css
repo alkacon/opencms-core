@@ -22,12 +22,6 @@ div.selectBox *{
 	font-size: value("constants.css.fontSizeSmall");
 	line-height: 12px;
 }
-@if user.agent ie6 {
-	div.input, div.selectBox{
-		display: inline;
-	}
-} @else {
-	div.input, div.selectBox{
-		display: inline-block;
-	}
+div.input, div.selectBox{
+	display: inline-block;
 }

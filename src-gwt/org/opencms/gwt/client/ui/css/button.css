@@ -99,16 +99,6 @@ div.cmsTransparentButton {
     vertical-align:top;
 }
 
-/** IE correction. */
-@if user.agent ie6 {
-	div.cmsTextButton.cmsState, div.cmsTransparentButton.cmsState, div.cmsMenuButton.cmsState, div.cmsImageButton.cmsState {
-		display:inline;
-	}
-	div.cmsMinWidth div.html-face {
-		overflow:visible;
-	}
-}
-
 /**
  * State depended styles.
  */

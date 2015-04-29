@@ -142,12 +142,6 @@ div.textArea textarea{
 	outline: none;
 }
 
-@if user.agent ie6 {
-	.checkBox * {
-		display: inline;
-	}
-}
-
 @sprite .cmsState-up-disabled .checkBoxImage {
 	gwt-image: "inputImages.checkboxUncheckedDisabled";
 }
@@ -223,14 +217,6 @@ div.textArea textarea{
 .radioButton .gwt-ToggleButton {
 	outline: none;
 }
-
-@if user.agent ie6 {
-	.checkBox * {
-		display: inline;
-	}
-}
-
-
 
 @sprite .cmsState-up-disabled .radioButtonImage {
 	gwt-image: "inputImages.radioUncheckedDisabled";
@@ -550,14 +536,8 @@ input.comboBoxOpener:disabled{
 .openerHover {
 }
 
-@if user.agent ie6 {
-	.inlineBlock {
-		display: inline;
-	}
-} @else {
-	.inlineBlock {
-		display: inline-block;
-	}
+.inlineBlock {
+	display: inline-block;
 }
 
 .label {

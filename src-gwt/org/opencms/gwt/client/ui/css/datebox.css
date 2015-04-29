@@ -65,11 +65,7 @@ table.datePickerDays td div.datePickerDayIsValueAndHighlighted { /*the highlight
 	vertical-align: top;
 	width: 50px;
 }
-@if user.agent ie6 { /* IE6 HACK for the inline-block */
-	.time {
-		display: inline;
-	}
-}
+
 .ampm { /* Format the am/pm outer div. */
 	margin-left: 6px;
 	vertical-align: top;

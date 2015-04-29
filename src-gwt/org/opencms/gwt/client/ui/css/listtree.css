@@ -1,9 +1,3 @@
-@if user.agent ie6 {
-	.listTreeItem {
-		vertical-align: bottom;
-	}
-}
-
 li.listTreeItem {
 	margin: 2px 0;
 	display: block;
@@ -26,19 +20,8 @@ div.listTreeItemOpener > img {
 	background-position: center !important;
 }
 
-@if user.agent ie6 {
-	div.listTreeItemOpener {
-		display: inline;
-		vertical-align: bottom;
-	}
-	
-	div.listTreeItemOpener * {
-		display: inline;
-	}
-} @else {
-	div.listTreeItemOpener {
-		display: inline-block;
-	}
+div.listTreeItemOpener {
+	display: inline-block;
 }
 
 @sprite span.plus {

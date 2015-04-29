@@ -5,13 +5,6 @@
 	width: auto;
 }
 
-@if user.agent ie6 {
-	.floatBox * {
-		display: inline; 
-	}
-} @else {
-}	
-
 .floatDecoratedPanel {
 	zoom: 1;
 }
@@ -26,9 +19,3 @@
 	float:left;
 	margin-top: 12px;
 }
-
-@if user.agent ie6 {
-	.decorationBox * { 
-		display: inline;
-	}
-} 

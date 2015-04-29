@@ -161,12 +161,7 @@ div.itemIcon{
     display: inline;
 }
 .titleRow{}
-@if user.agent ie6 {
-	div.titleRow{
-		margin-top: 3px;
-		margin-bottom: 3px;
-	}
-}
+
 .cmsHovering .buttonPanel{
 	display: block;
 }

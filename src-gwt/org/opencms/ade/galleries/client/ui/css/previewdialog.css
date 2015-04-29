@@ -194,16 +194,9 @@ table.infoTable tr, table.infoTable td{
 	font-weight:bold;
 }
 
-@if user.agent ie6 {
-	.formatLabel, .formatText, .formatSelectBox{
-		display:inline;
-		zoom:1;
-	}
-} @else {
-	.formatLabel, .formatText, .formatSelectBox{
-		display: inline-block;
-	}	
-}
+.formatLabel, .formatText, .formatSelectBox{
+	display: inline-block;
+}	
 
 div.buttonPadding {
 	padding-top: 2px !important;

@@ -7,14 +7,8 @@
 	text-overflow: ellipsis;
 }
 
-@if user.agent ie6 {
-	.inlineBlock {
-		display: inline;
-	}
-} @else {
-	.inlineBlock {
-		display: inline-block;
-	}
+.inlineBlock {
+	display: inline-block;
 }
 
 .truncatingLabel.multiLineLabel{
