@@ -41,21 +41,73 @@
 	animation: moveRight 30s linear normal infinite;
 }
 
-@-moz-keyframes moveRight {
-	0% {background-position: 0% 50%;}
-	25% {background-position: 25% 50%;}
-	50% {background-position: 50% 50%;}
-	75% {background-position: 75% 50%;}
-	100% {background-position: 100% 50%;}
+@if user.agent safari {
+	.animated .borderLeft{
+		-webkit-animation: moveDown 30s linear normal infinite;
+	}
+	
+	.animated .borderRight{
+		-webkit-animation: moveDown 30s linear reverse infinite;
+	}
+	
+	.animated .borderTop{
+		-webkit-animation: moveRight 30s linear reverse infinite;
+	}
+	
+	.animated .borderBottom{
+		-webkit-animation: moveRight 30s linear normal infinite;
+	}	
+	
+	@-webkit-keyframes moveRight {
+		0% {background-position: 0% 50%;}
+		25% {background-position: 25% 50%;}
+		50% {background-position: 50% 50%;}
+		75% {background-position: 75% 50%;}
+		100% {background-position: 100% 50%;}
+	}
+
+	@-webkit-keyframes moveDown {
+		0% {background-position: 50% 0%;}
+		25% {background-position: 50% 25%;}
+		50% {background-position: 50% 50%;}
+		75% {background-position: 50% 75%;}
+		100% {background-position: 50% 100%;}
+	}	
+} @else {
+	.animated .borderLeft{
+		animation: moveDown 30s linear normal infinite;
+	}
+	
+	.animated .borderRight{
+		animation: moveDown 30s linear reverse infinite;
+	}
+	
+	.animated .borderTop{
+		animation: moveRight 30s linear reverse infinite;
+	}
+	
+	.animated .borderBottom{
+		animation: moveRight 30s linear normal infinite;
+	}	
+	
+	@keyframes moveRight {
+		0% {background-position: 0% 50%;}
+		25% {background-position: 25% 50%;}
+		50% {background-position: 50% 50%;}
+		75% {background-position: 75% 50%;}
+		100% {background-position: 100% 50%;}
+	}
+
+	@keyframes moveDown {
+		0% {background-position: 50% 0%;}
+		25% {background-position: 50% 25%;}
+		50% {background-position: 50% 50%;}
+		75% {background-position: 50% 75%;}
+		100% {background-position: 50% 100%;}
+	}
 }
 
-@-moz-keyframes moveDown {
-	0% {background-position: 50% 0%;}
-	25% {background-position: 50% 25%;}
-	50% {background-position: 50% 50%;}
-	75% {background-position: 50% 75%;}
-	100% {background-position: 50% 100%;}
-}
+
 
 .colorSolidGrey .borderLeft, .colorSolidGrey .borderRight, .colorSolidGrey .borderTop, .colorSolidGrey .borderBottom{
 	background: rgba(181,189,200,1);
