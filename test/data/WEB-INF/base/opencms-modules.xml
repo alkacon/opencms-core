@@ -207,6 +207,25 @@
 					</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
+				name="sitemap_master_config" id="313">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd
+				</param>
+			</type>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
 					name="module_config" id="28">
 					<properties>
 						<property>

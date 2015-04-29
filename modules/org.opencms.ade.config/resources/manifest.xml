@@ -283,6 +283,28 @@
 				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/xmlimage.xsd
 				</param>
 			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
+				name="sitemap_master_config" id="313">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_master_config.xsd
+				</param>
+			</type>
+			
+			
+			
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="subsitemap" key="fileicon.subsitemap"
@@ -449,16 +471,12 @@
 
 						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAbout"
 							rule="containerpage" />
-
-
-
-
 					</contextmenu>
 				</editoptions>
 			</explorertype>
 			<explorertype name="groupcontainer" key="fileicon.groupcontainer"
 				icon="elementgroup.png" bigicon="elementgroup_big.png" reference="xmlcontent">
-				<newresource
+				<newresource 
 					uri="newresource_xmlcontent.jsp?newresourcetype=groupcontainer"
 					order="26" autosetnavigation="false" autosettitle="false"
 					info="desc.groupcontainer" />
@@ -631,6 +649,17 @@
 					uri="newresource_xmlcontent.jsp?newresourcetype=module_config"
 					order="22" autosetnavigation="false" autosettitle="false"
 					info="desc.module_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="sitemap_master_config" key="fileicon.sitemap_master_config"
+				icon="module_config.png" bigicon="module_config_big.png" reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_master_config"
+					order="23" autosetnavigation="false" autosettitle="false"
+					info="desc.sitemap_master_config" />
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER"
 						permissions="+r+v+w+c" />

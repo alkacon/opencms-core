@@ -61,6 +61,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -79,17 +80,25 @@ public class CmsADEConfigData {
     /** The cache state to which the wrapped configuration bean belongs. */
     private CmsADEConfigCacheState m_cache;
 
+    /** The configuration sequence (contains the list of all sitemap configuration data beans to be used for inheritance). */
+    private CmsADEConfigurationSequence m_configSequence;
+
     /** 
      * Creates a new configuration data object, based on an internal configuration data bean and a 
      * configuration cache state.<p>
      * 
      * @param data the internal configuration data bean 
-     * @param cache the configuration cache state 
+     * @param cache the configuration cache state
+     * @param configSequence the configuration sequence  
      */
-    public CmsADEConfigData(CmsADEConfigDataInternal data, CmsADEConfigCacheState cache) {
+    public CmsADEConfigData(
+        CmsADEConfigDataInternal data,
+        CmsADEConfigCacheState cache,
+        CmsADEConfigurationSequence configSequence) {
 
         m_data = data;
         m_cache = cache;
+        m_configSequence = configSequence;
     }
 
     /**
@@ -686,11 +695,13 @@ public class CmsADEConfigData {
      */
     public CmsADEConfigData parent() {
 
-        if (m_data.getBasePath() == null) {
+        Optional<CmsADEConfigurationSequence> parentPath = m_configSequence.getParent();
+        if (parentPath.isPresent()) {
+            CmsADEConfigDataInternal internalData = parentPath.get().getConfig();
+            return new CmsADEConfigData(internalData, m_cache, parentPath.get());
+        } else {
             return null;
         }
-        String parentPath = CmsResource.getParentFolder(m_data.getBasePath());
-        return m_cache.lookupConfiguration(parentPath);
     }
 
     /**

@@ -76,6 +76,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
             null,
             false,
             basePath,
+            null,
             resourceTypeConfig,
             false,
             propertyConfig,
@@ -86,7 +87,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
             false,
             false,
             false,
-            new CmsFormatterChangeSet()), null);
+            new CmsFormatterChangeSet()), null, null);
     }
 
     /**

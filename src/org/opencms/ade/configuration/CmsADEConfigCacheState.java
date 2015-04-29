@@ -46,6 +46,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -67,7 +68,7 @@ public class CmsADEConfigCacheState {
     private Map<String, String> m_folderTypes = new HashMap<String, String>();
 
     /** The merged configuration from all the modules. */
-    private CmsADEConfigData m_moduleConfiguration;
+    private CmsADEConfigDataInternal m_moduleConfiguration;
 
     /** The list of module configurations. */
     private List<CmsADEConfigDataInternal> m_moduleConfigurations;
@@ -104,10 +105,10 @@ public class CmsADEConfigCacheState {
                 // In theory, the base path should never be null 
                 m_siteConfigurationsByPath.put(data.getBasePath(), data);
             } else {
-                LOG.warn("Empty base path for sitemap configuration!");
+                LOG.info("Empty base path for sitemap configuration: " + data.getResource().getRootPath());
             }
         }
-        m_moduleConfiguration = wrap(mergeConfigurations(moduleConfigs));
+        m_moduleConfiguration = mergeConfigurations(moduleConfigs);
         try {
             m_folderTypes = computeFolderTypes();
         } catch (Exception e) {
@@ -143,7 +144,7 @@ public class CmsADEConfigCacheState {
         Map<String, String> folderTypes = Maps.newHashMap();
         // do this first, since folder types from modules should be overwritten by folder types from sitemaps 
         if (m_moduleConfiguration != null) {
-            folderTypes.putAll(m_moduleConfiguration.getFolderTypes());
+            folderTypes.putAll(wrap(m_moduleConfiguration).getFolderTypes());
         }
 
         List<CmsADEConfigDataInternal> configDataObjects = new ArrayList<CmsADEConfigDataInternal>(
@@ -272,24 +273,11 @@ public class CmsADEConfigCacheState {
         CmsADEConfigDataInternal internalSiteConfig = getSiteConfigData(rootPath);
         CmsADEConfigData result;
         if (internalSiteConfig == null) {
-            result = m_moduleConfiguration;
+            result = wrap(m_moduleConfiguration);
         } else {
             result = wrap(internalSiteConfig);
         }
         return result;
-    }
-
-    /** 
-     * Wraps an internal sitemap configuration bean into a CmsADEConfigData object, together with 
-     * a reference to this cache state.<p>
-     * 
-     * @param config the configuration object to wrap
-     *  
-     * @return the wrapped configuration object 
-     */
-    public CmsADEConfigData wrap(CmsADEConfigDataInternal config) {
-
-        return new CmsADEConfigData(config, this);
     }
 
     /**
@@ -340,7 +328,7 @@ public class CmsADEConfigCacheState {
      */
     protected CmsADEConfigData getModuleConfiguration() {
 
-        return m_moduleConfiguration;
+        return wrap(m_moduleConfiguration);
     }
 
     /**
@@ -360,6 +348,24 @@ public class CmsADEConfigCacheState {
         if (path == null) {
             return null;
         }
+        List<String> prefixes = getSiteConfigPaths(path);
+        if (prefixes.size() == 0) {
+            return null;
+        }
+        // for any two prefixes of a string, one is a prefix of the other. so the alphabetically last
+        // prefix is the longest prefix of all.
+        return m_siteConfigurationsByPath.get(prefixes.get(prefixes.size() - 1));
+    }
+
+    /** 
+     * Finds the paths of sitemap configuration base paths above a given path.<p>
+     * 
+     * @param path the path for which to find the base paths of all valid sitemap configurations
+     *  
+     * @return the list of base paths 
+     */
+    protected List<String> getSiteConfigPaths(String path) {
+
         String normalizedPath = CmsStringUtil.joinPaths("/", path, "/");
         List<String> prefixes = new ArrayList<String>();
 
@@ -375,14 +381,8 @@ public class CmsADEConfigCacheState {
                 prefixes.add(parent);
             }
         }
-
-        if (prefixes.size() == 0) {
-            return null;
-        }
         Collections.sort(prefixes);
-        // for any two prefixes of a string, one is a prefix of the other. so the alphabetically last
-        // prefix is the longest prefix of all.
-        return m_siteConfigurationsByPath.get(prefixes.get(prefixes.size() - 1));
+        return prefixes;
     }
 
     /**
@@ -463,4 +463,37 @@ public class CmsADEConfigCacheState {
         return result;
     }
 
+    /**
+     * Wraps the internal config data into a bean which manages the lookup of inherited configurations.<p>
+     * 
+     * @param data the config data to wrap 
+     * 
+     * @return the wrapper object 
+     */
+    private CmsADEConfigData wrap(CmsADEConfigDataInternal data) {
+
+        String path = data.getBasePath();
+        List<CmsADEConfigDataInternal> configList = Lists.newArrayList();
+        configList.add(m_moduleConfiguration);
+        if (path != null) {
+            List<String> siteConfigPaths = getSiteConfigPaths(path);
+            for (String siteConfigPath : siteConfigPaths) {
+                CmsADEConfigDataInternal currentConfig = m_siteConfigurationsByPath.get(siteConfigPath);
+                CmsResource masterConfigResource = currentConfig.getMasterConfig();
+                if (currentConfig.getMasterConfig() != null) {
+                    CmsADEConfigDataInternal masterConfig = m_siteConfigurations.get(masterConfigResource.getStructureId());
+                    if (masterConfig != null) {
+                        configList.add(masterConfig);
+                    } else {
+                        LOG.warn("Master configuration "
+                            + masterConfigResource.getRootPath()
+                            + " not found for sitemap configuration in "
+                            + currentConfig.getBasePath());
+                    }
+                }
+                configList.add(currentConfig);
+            }
+        }
+        return new CmsADEConfigData(data, this, new CmsADEConfigurationSequence(configList));
+    }
 }

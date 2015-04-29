@@ -946,7 +946,8 @@ public class TestConfig extends OpenCmsTestCase {
             cms,
             new HashMap<CmsUUID, CmsADEConfigDataInternal>(),
             new ArrayList<CmsADEConfigDataInternal>(),
-            new HashMap<CmsUUID, CmsElementView>()));
+            new HashMap<CmsUUID, CmsElementView>()), new CmsADEConfigurationSequence(
+            Collections.singletonList(configDataInternal)));
         assertFalse(configData.isModuleConfiguration());
         assertEquals(1, configData.getResourceTypes().size());
         CmsResourceTypeConfig v8article = configData.getResourceType("v8article");
@@ -990,7 +991,8 @@ public class TestConfig extends OpenCmsTestCase {
             cms,
             new HashMap<CmsUUID, CmsADEConfigDataInternal>(),
             new ArrayList<CmsADEConfigDataInternal>(),
-            new HashMap<CmsUUID, CmsElementView>()));
+            new HashMap<CmsUUID, CmsElementView>()), new CmsADEConfigurationSequence(
+            Collections.singletonList(configDataInternal)));
         assertTrue(configData.isModuleConfiguration());
         assertEquals(1, configData.getResourceTypes().size());
         CmsResourceTypeConfig anothertype = configData.getResourceType("anothertype");

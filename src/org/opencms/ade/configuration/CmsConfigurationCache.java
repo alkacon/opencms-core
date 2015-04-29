@@ -92,6 +92,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationCache.class);
 
+    public static final String SITEMAP_MASTER_CONFIG = "sitemap_master_config";
+
     /** The resource type for sitemap configurations. */
     protected I_CmsResourceType m_configType;
 
@@ -177,7 +179,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         if (siteConfigFile.endsWith(CmsADEManager.CONFIG_SUFFIX)) {
             return CmsResource.getParentFolder(CmsResource.getParentFolder(siteConfigFile));
         }
-        return siteConfigFile;
+        return null;
     }
 
     /**
@@ -410,7 +412,11 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
      */
     protected boolean isSitemapConfiguration(String rootPath, int type) {
 
-        return rootPath.endsWith(CmsADEManager.CONFIG_SUFFIX) && (type == m_configType.getTypeId());
+        if (type == m_configType.getTypeId()) {
+            return rootPath.endsWith(CmsADEManager.CONFIG_SUFFIX);
+        } else {
+            return OpenCms.getResourceManager().matchResourceType(SITEMAP_MASTER_CONFIG, type);
+        }
     }
 
     /**

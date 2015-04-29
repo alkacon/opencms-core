@@ -32,6 +32,7 @@ import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
@@ -83,6 +84,9 @@ public class CmsConfigurationReader {
 
     /** The description node name. */
     public static final String N_DESCRIPTION = "Description";
+
+    /** The master configuration node name. */
+    public static final String N_MASTER_CONFIG = "MasterConfig";
 
     /** The detail page node name. */
     public static final String N_DETAIL_PAGE = "DetailPage";
@@ -394,10 +398,18 @@ public class CmsConfigurationReader {
 
         boolean isModuleConfig = OpenCms.getResourceManager().getResourceType(content.getFile().getTypeId()).getTypeName().equals(
             CmsADEManager.MODULE_CONFIG_TYPE);
+
+        String masterConfig = getString(root.getSubValue(N_MASTER_CONFIG));
+        CmsResource masterConfigResource = null;
+        if (masterConfig != null) {
+            masterConfigResource = m_cms.readResource(masterConfig, CmsResourceFilter.IGNORE_EXPIRATION);
+        }
+
         CmsADEConfigDataInternal result = new CmsADEConfigDataInternal(
             content.getFile(),
             isModuleConfig,
             basePath,
+            masterConfigResource,
             m_resourceTypeConfigs,
             discardInheritedTypes,
             m_propertyConfigs,

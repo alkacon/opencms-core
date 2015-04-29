@@ -55,6 +55,10 @@ public class CmsADEConfigDataInternal {
     protected boolean m_discardInheritedProperties;
     /** Should inherited types be discarded? */
     protected boolean m_discardInheritedTypes;
+
+    /** The master configuration resource (possibly null). */
+    protected CmsResource m_masterConfig;
+
     /** The configured formatter changes. */
     protected CmsFormatterChangeSet m_formatterChangeSet = new CmsFormatterChangeSet();
     /** True if this is a module configuration, not a normal sitemap configuration. */
@@ -87,7 +91,8 @@ public class CmsADEConfigDataInternal {
 
      * @param resource the resource from which this configuration data was read
      * @param isModuleConfig true if this is a module configuration 
-     * @param basePath the base path 
+     * @param basePath the base path
+     * @param masterConfig the master configuration resource (possibly null) 
      * @param resourceTypeConfig the resource type configuration
      * @param discardInheritedTypes the "discard inherited types" flag  
      * @param propertyConfig the property configuration
@@ -104,6 +109,7 @@ public class CmsADEConfigDataInternal {
         CmsResource resource,
         boolean isModuleConfig,
         String basePath,
+        CmsResource masterConfig,
         List<CmsResourceTypeConfig> resourceTypeConfig,
         boolean discardInheritedTypes,
         List<CmsPropertyConfig> propertyConfig,
@@ -124,6 +130,7 @@ public class CmsADEConfigDataInternal {
         m_ownDetailPages = detailPageInfos;
         m_functionReferences = functionReferences;
         m_isModuleConfig = isModuleConfig;
+        m_masterConfig = masterConfig;
 
         m_discardInheritedTypes = discardInheritedTypes;
         m_discardInheritedProperties = discardInheritedProperties;
@@ -184,6 +191,16 @@ public class CmsADEConfigDataInternal {
     public List<CmsFunctionReference> getFunctionReferences() {
 
         return m_functionReferences;
+    }
+
+    /** 
+     * Gets the master configuration resource (may be null).<p>
+     * 
+     * @return the master configuration resource 
+     */
+    public CmsResource getMasterConfig() {
+
+        return m_masterConfig;
     }
 
     /**
