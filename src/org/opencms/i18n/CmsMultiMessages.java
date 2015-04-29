@@ -39,6 +39,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Optional;
+
 /**
  * Provides access to the localized messages for several resource bundles simultaneously.<p>
  * 
@@ -49,6 +51,21 @@ import org.apache.commons.logging.Log;
  * @since 6.0.0 
  */
 public class CmsMultiMessages extends CmsMessages {
+
+    /** 
+     * Interface to provide fallback keys to be used when the message for a key is not found.<p>
+     */
+    public interface I_KeyFallbackHandler {
+
+        /** 
+         * Gets the fallback key for the given key, or the absent value if there is no fallback key.<p>
+         * 
+         * @param key the original key 
+         * 
+         * @return the fallback key 
+         */
+        Optional<String> getFallbackKey(String key);
+    }
 
     /** Constant for the multi bundle name. */
     public static final String MULTI_BUNDLE_NAME = CmsMultiMessages.class.getName();
@@ -64,6 +81,9 @@ public class CmsMultiMessages extends CmsMessages {
 
     /** List of resource bundles from the installed modules. */
     private List<CmsMessages> m_messages;
+
+    /** The key fallback handler. */
+    private I_KeyFallbackHandler m_keyFallbackHandler;
 
     /**
      * Constructor for creating a new messages object initialized with the given locale.<p>
@@ -165,7 +185,7 @@ public class CmsMultiMessages extends CmsMessages {
     @Override
     public String getString(String keyName) {
 
-        return resolveKey(keyName);
+        return resolveKeyWithFallback(keyName);
     }
 
     /**
@@ -184,11 +204,21 @@ public class CmsMultiMessages extends CmsMessages {
     public String key(String keyName, boolean allowNull) {
 
         // special implementation since we uses several bundles for the messages
-        String result = resolveKey(keyName);
+        String result = resolveKeyWithFallback(keyName);
         if ((result == null) && !allowNull) {
             result = formatUnknownKey(keyName);
         }
         return result;
+    }
+
+    /**
+     * Sets the key fallback handler.<p>
+     * 
+     * @param fallbackHandler the new key fallback handler 
+     */
+    public void setFallbackHandler(I_KeyFallbackHandler fallbackHandler) {
+
+        m_keyFallbackHandler = fallbackHandler;
     }
 
     /**
@@ -251,6 +281,25 @@ public class CmsMultiMessages extends CmsMessages {
             }
         }
         // return the result        
+        return result;
+    }
+
+    /** 
+     * Resolves a message key, using the key fallback handler if it is set.<p>
+     * 
+     * @param keyName the key to resolve 
+     * 
+     * @return the resolved key 
+     */
+    private String resolveKeyWithFallback(String keyName) {
+
+        String result = resolveKey(keyName);
+        if ((result == null) && (m_keyFallbackHandler != null)) {
+            Optional<String> fallback = m_keyFallbackHandler.getFallbackKey(keyName);
+            if (fallback.isPresent()) {
+                result = resolveKey(fallback.get());
+            }
+        }
         return result;
     }
 }

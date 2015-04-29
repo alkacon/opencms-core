@@ -44,6 +44,7 @@ import org.opencms.i18n.CmsListResourceBundle;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
+import org.opencms.i18n.CmsMultiMessages.I_KeyFallbackHandler;
 import org.opencms.i18n.CmsResourceBundleLoader;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -111,6 +112,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -192,6 +194,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** Constant for the "description" appinfo attribute name. */
     public static final String APPINFO_ATTR_DESCRIPTION = "description";
+
+    /** Constant for the 'messagekeyhandler' node. */
+    public static final String APPINFO_MESSAGEKEYHANDLER = "messagekeyhandler";
 
     /** Constant for the "displaycompact" appinfo attribute name. */
     public static final String APPINFO_ATTR_DISPLAY = "display";
@@ -632,6 +637,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
+    /** Message key fallback handler for the editor. */
+    private CmsMultiMessages.I_KeyFallbackHandler m_messageKeyHandler = new CmsMultiMessages.I_KeyFallbackHandler() {
+
+        public Optional<String> getFallbackKey(String key) {
+
+            return Optional.absent();
+        }
+    };
+
     /**
      * Copies a given CMS context and set the copy's site root to '/'.<p>
      *  
@@ -860,6 +874,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             result = Collections.emptyList();
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getMessageKeyHandler()
+     */
+    public I_KeyFallbackHandler getMessageKeyHandler() {
+
+        return m_messageKeyHandler;
     }
 
     /**
@@ -1121,6 +1143,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     initSynchronizations(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_EDITOR_CHANGE_HANDLERS)) {
                     initEditorChangeHandlers(element);
+                } else if (nodeName.equals(APPINFO_MESSAGEKEYHANDLER)) {
+                    initMessageKeyHandler(element);
                 }
             }
         }
@@ -2144,16 +2168,16 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * Initializes the element mappings for this content handler.<p>
-     *
-     * Element mappings allow storing values from the XML content in other locations.
-     * For example, if you have an element called "Title", it's likely a good idea to
-     * store the value of this element also in the "Title" property of a XML content resource.<p>
-     *
-     * @param root the "mappings" element from the appinfo node of the XML content definition
-     * @param contentDefinition the content definition the mappings belong to
-     * @throws CmsXmlException if something goes wrong
-     */
+    * Initializes the element mappings for this content handler.<p>
+    *
+    * Element mappings allow storing values from the XML content in other locations.
+    * For example, if you have an element called "Title", it's likely a good idea to
+    * store the value of this element also in the "Title" property of a XML content resource.<p>
+    *
+    * @param root the "mappings" element from the appinfo node of the XML content definition
+    * @param contentDefinition the content definition the mappings belong to
+    * @throws CmsXmlException if something goes wrong
+    */
     protected void initMappings(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
 
         Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(root, APPINFO_MAPPING);
@@ -3333,6 +3357,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             result = result.substring(0, result.length() - 1);
         }
         return result;
+    }
+
+    private void initMessageKeyHandler(Element element) {
+
+        String className = element.attributeValue(APPINFO_ATTR_CLASS);
+        String configuration = element.attributeValue(APPINFO_ATTR_CONFIGURATION);
+        try {
+            Object messageKeyHandler = Class.forName(className).getConstructor(String.class).newInstance(configuration);
+            m_messageKeyHandler = (CmsMultiMessages.I_KeyFallbackHandler)messageKeyHandler;
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
     /** 

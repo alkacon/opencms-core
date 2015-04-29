@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.i18n.CmsMultiMessages.I_KeyFallbackHandler;
 import org.opencms.main.CmsException;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.search.fields.CmsSearchField;
@@ -87,7 +88,7 @@ public interface I_CmsXmlContentHandler {
         /** map for all container pages the content is placed on */
         PAGE
     }
-    
+
     /** Mapping name for the 'date expired' mapping. */
     String ATTRIBUTE_DATEEXPIRED = "dateexpired";
 
@@ -278,6 +279,15 @@ public interface I_CmsXmlContentHandler {
      * @return the mapping defined for the given element xpath
      */
     List<String> getMappings(String elementName);
+
+    /**
+     * Gets the message key fallback handler.<p>
+     * 
+     * This is used to automatically provide fallbacks for missing message keys in the editor.<p>
+     *  
+     * @return the message key fallback handler 
+     */
+    I_KeyFallbackHandler getMessageKeyHandler();
 
     /**
      * Returns the {@link CmsMessages} that are used to resolve localized keys 

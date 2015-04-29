@@ -27,6 +27,8 @@
 			<xsd:element name="visibilities" type="OpenCmsDefaultAppinfoVisibilities" minOccurs="0" />
 			<xsd:element name="synchronizations" type="OpenCmsDefaultAppinfoSynchronizations" minOccurs="0" />
 			<xsd:element name="editorchangehandlers" type="OpenCmsDefaultAppinfoEditorChangeHandlers" minOccurs="0" />
+			<xsd:element name="messagekeyhandler" type="OpenCmsDefaultAppinfoMessageKeyHandler" minOccurs="0" />      
+			
 		</xsd:all>
 	</xsd:complexType>
 	

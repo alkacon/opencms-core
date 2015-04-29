@@ -35,6 +35,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.A_CmsResourceCollector;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -974,7 +975,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         // add customized message bundle eventually specified in XSD of XML content
         addMessages(m_content.getHandler().getMessages(getLocale()));
-
+        ((CmsMultiMessages)getMessages()).setFallbackHandler(m_content.getHandler().getMessageKeyHandler());
         // initialize tab lists for error handling before generating the editor form
         m_errorTabs = new ArrayList<CmsXmlContentTab>();
         m_warningTabs = new ArrayList<CmsXmlContentTab>();
@@ -1205,7 +1206,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @param locale the locale of the content to save
      * @throws CmsXmlException if something goes wrong
      */
-    @SuppressWarnings("unchecked")
     public void setEditorValues(Locale locale) throws CmsXmlException {
 
         List<String> names = m_content.getNames(locale);

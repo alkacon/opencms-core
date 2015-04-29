@@ -316,4 +316,9 @@
 		<xsd:attribute name="scope" type="xsd:string" use="optional" />
 		<xsd:attribute name="configuration" type="xsd:string" use="optional" />
 	</xsd:complexType>
+	
+	<xsd:complexType name="OpenCmsDefaultAppinfoMessageKeyHandler">
+		<xsd:attribute name="class" type="xsd:string" use="required" />
+		<xsd:attribute name="configuration" type="xsd:string" use="optional" />
+	</xsd:complexType>
 </xsd:schema>

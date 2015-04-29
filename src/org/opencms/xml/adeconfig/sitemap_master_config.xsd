@@ -36,6 +36,7 @@
 				<tab element="RemoveFormatters" name="TabFormatters" collapse="false" />
 				<tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
 			</tabs>
+			<messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.SitemapMasterConfiguration:label.SitemapConfiguration" />
         </xsd:appinfo>        
     </xsd:annotation>
 </xsd:schema>

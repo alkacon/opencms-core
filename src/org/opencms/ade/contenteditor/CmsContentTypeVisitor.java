@@ -361,6 +361,8 @@ public class CmsContentTypeVisitor {
         m_contentHandler = xmlContentDefinition.getContentHandler();
         CmsMessages messages = null;
         m_messages = new CmsMultiMessages(messageLocale);
+        m_messages.setFallbackHandler(xmlContentDefinition.getContentHandler().getMessageKeyHandler());
+
         try {
             messages = OpenCms.getWorkplaceManager().getMessages(messageLocale);
             if (messages != null) {
