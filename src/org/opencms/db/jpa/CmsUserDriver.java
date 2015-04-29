@@ -1392,30 +1392,16 @@ public class CmsUserDriver implements I_CmsUserDriver {
     public CmsUser readUser(CmsDbContext dbc, String userFqn, String password, String remoteAddress)
     throws CmsDataAccessException, CmsPasswordEncryptionException {
 
-        CmsUser user = null;
-
-        try {
-            Query q = m_sqlManager.createQuery(dbc, C_USERS_READ_WITH_PWD_3);
-            q.setParameter(1, CmsOrganizationalUnit.getSimpleName(userFqn));
-            q.setParameter(2, CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(userFqn));
-            q.setParameter(3, OpenCms.getPasswordHandler().digest(password));
-
-            try {
-                CmsDAOUsers u = (CmsDAOUsers)q.getSingleResult();
-                user = internalCreateUser(dbc, u);
-            } catch (NoResultException e) {
-                CmsMessageContainer message = org.opencms.db.Messages.get().container(
-                    org.opencms.db.Messages.ERR_UNKNOWN_USER_1,
-                    userFqn);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(message.key());
-                }
-                throw new CmsDbEntryNotFoundException(message);
-            }
-
+        CmsUser user = readUser(dbc, userFqn);
+        if (OpenCms.getPasswordHandler().checkPassword(password, user.getPassword(), true)) {
             return user;
-        } catch (PersistenceException e) {
-            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
+        } else {
+            CmsMessageContainer message = org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_UNKNOWN_USER_1, userFqn);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message.key());
+            }
+            throw new CmsDbEntryNotFoundException(message);
         }
     }
 
@@ -2103,7 +2089,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
             dbc,
             CmsUUID.getConstantUUID(guestUser),
             guestUser,
-            OpenCms.getPasswordHandler().digest(""),
+            OpenCms.getPasswordHandler().digest((new CmsUUID()).toString()),
             " ",
             " ",
             " ",
