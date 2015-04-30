@@ -171,6 +171,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Constant for the "appinfo" element name itself. */
     public static final String APPINFO_APPINFO = "appinfo";
 
+    /** Constant for the "addto" appinfo attribute name. */
+    public static final String APPINFO_ATTR_ADD_TO = "addto";
+
     /** Constant for the "boost" appinfo attribute name. */
     public static final String APPINFO_ATTR_BOOST = "boost";
 
@@ -194,9 +197,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** Constant for the "description" appinfo attribute name. */
     public static final String APPINFO_ATTR_DESCRIPTION = "description";
-
-    /** Constant for the 'messagekeyhandler' node. */
-    public static final String APPINFO_MESSAGEKEYHANDLER = "messagekeyhandler";
 
     /** Constant for the "displaycompact" appinfo attribute name. */
     public static final String APPINFO_ATTR_DISPLAY = "display";
@@ -269,15 +269,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** Constant for the "targetfield" appinfo attribute name. */
     public static final String APPINFO_ATTR_TARGET_FIELD = "targetfield";
-
-    /** Constant for the "addto" appinfo attribute name. */
-    public static final String APPINFO_ATTR_ADD_TO = "addto";
-
-    /** Constant for the "page" value of the appinfo attribute "addto". */
-    public static final String APPINFO_VALUE_ADD_TO_PAGE = "page";
-
-    /** Constant for the "element" value of the appinfo attribute "addto". */
-    public static final String APPINFO_VALUE_ADD_TO_CONTENT = "element";
 
     /** Constant for the "type" appinfo attribute name. */
     public static final String APPINFO_ATTR_TYPE = "type";
@@ -353,6 +344,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** Constant for the "mappings" appinfo element name. */
     public static final String APPINFO_MAPPINGS = "mappings";
+
+    /** Constant for the 'messagekeyhandler' node. */
+    public static final String APPINFO_MESSAGEKEYHANDLER = "messagekeyhandler";
 
     /** Constant for the "modelfolder" appinfo element name. */
     public static final String APPINFO_MODELFOLDER = "modelfolder";
@@ -434,6 +428,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Constant for the "validationrules" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULES = "validationrules";
 
+    /** Constant for the "element" value of the appinfo attribute "addto". */
+    public static final String APPINFO_VALUE_ADD_TO_CONTENT = "element";
+
+    /** Constant for the "page" value of the appinfo attribute "addto". */
+    public static final String APPINFO_VALUE_ADD_TO_PAGE = "page";
+
     /** Constant for the "visibilities" appinfo element name. */
     public static final String APPINFO_VISIBILITIES = "visibilities";
 
@@ -476,6 +476,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The attribute name for the "prefer folder" option for properties. */
     private static final String APPINFO_ATTR_PREFERFOLDER = "PreferFolder";
 
+    /** The 'useDefault' attribute name. */
+    private static final String APPINFO_ATTR_USE_DEFAULT = "useDefault";
+
     /** The node name for the default complex widget configuration. */
     private static final Object APPINFO_DEFAULTWIDGET = "defaultwidget";
 
@@ -487,9 +490,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The principal list separator. */
     private static final String PRINCIPAL_LIST_SEPARATOR = ",";
-
-    /** The 'useDefault' attribute name. */
-    private static final String APPINFO_ATTR_USE_DEFAULT = "useDefault";
 
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
@@ -590,14 +590,23 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The editor change handlers. */
     private List<I_CmsXmlContentEditorChangeHandler> m_editorChangeHandlers;
 
-    /** The visibility configurations by element path. */
-    private Map<String, VisibilityConfiguration> m_visibilityConfigurations;
+    /** A set of keys identifying the mappings which should use default values if the corresponding values are not set in the XML content. */
+    private Set<String> m_mappingsUsingDefault = new HashSet<String>();
+
+    /** Message key fallback handler for the editor. */
+    private CmsMultiMessages.I_KeyFallbackHandler m_messageKeyHandler = new CmsMultiMessages.I_KeyFallbackHandler() {
+
+        public Optional<String> getFallbackKey(String key) {
+
+            return Optional.absent();
+        }
+    };
 
     /** The paths of values for which no macros should be resolved when getting the default value. */
     private Set<String> m_nonMacroResolvableDefaults = new HashSet<String>();
 
-    /** A set of keys identifying the mappings which should use default values if the corresponding values are not set in the XML content. */
-    private Set<String> m_mappingsUsingDefault = new HashSet<String>();
+    /** The visibility configurations by element path. */
+    private Map<String, VisibilityConfiguration> m_visibilityConfigurations;
 
     /**
      * Creates a new instance of the default XML content handler.<p>
@@ -636,15 +645,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         }
         CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
-
-    /** Message key fallback handler for the editor. */
-    private CmsMultiMessages.I_KeyFallbackHandler m_messageKeyHandler = new CmsMultiMessages.I_KeyFallbackHandler() {
-
-        public Optional<String> getFallbackKey(String key) {
-
-            return Optional.absent();
-        }
-    };
 
     /**
      * Copies a given CMS context and set the copy's site root to '/'.<p>

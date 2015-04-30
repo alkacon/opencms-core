@@ -64,6 +64,9 @@ public class CmsADEConfigCacheState {
     /** Cached detail page types. */
     private volatile Set<String> m_detailPageTypes;
 
+    /** The available element views. */
+    private Map<CmsUUID, CmsElementView> m_elementViews;
+
     /** The cached content types for folders. */
     private Map<String, String> m_folderTypes = new HashMap<String, String>();
 
@@ -78,9 +81,6 @@ public class CmsADEConfigCacheState {
 
     /** The configurations from the sitemap / VFS. */
     private Map<String, CmsADEConfigDataInternal> m_siteConfigurationsByPath = new HashMap<String, CmsADEConfigDataInternal>();
-
-    /** The available element views. */
-    private Map<CmsUUID, CmsElementView> m_elementViews;
 
     /**
      * Creates a new configuration cache state.<p>

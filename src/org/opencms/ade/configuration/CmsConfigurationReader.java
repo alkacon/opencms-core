@@ -85,9 +85,6 @@ public class CmsConfigurationReader {
     /** The description node name. */
     public static final String N_DESCRIPTION = "Description";
 
-    /** The master configuration node name. */
-    public static final String N_MASTER_CONFIG = "MasterConfig";
-
     /** The detail page node name. */
     public static final String N_DETAIL_PAGE = "DetailPage";
 
@@ -135,6 +132,9 @@ public class CmsConfigurationReader {
 
     /** The JSP node name. */
     public static final String N_JSP = "Jsp";
+
+    /** The master configuration node name. */
+    public static final String N_MASTER_CONFIG = "MasterConfig";
 
     /** The max width node name. */
     public static final String N_MAX_WIDTH = "MaxWidth";

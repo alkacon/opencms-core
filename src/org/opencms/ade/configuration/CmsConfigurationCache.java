@@ -83,6 +83,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     /** ID which is used to signal that the module configuration should be updated. */
     public static final CmsUUID ID_UPDATE_MODULES = CmsUUID.getNullUUID();
 
+    public static final String SITEMAP_MASTER_CONFIG = "sitemap_master_config";
+
     /** The interval at which the tasks which checks for configuration updates runs, in milliseconds. */
     public static final int TASK_DELAY_MILLIS = 3 * 1000;
 
@@ -91,8 +93,6 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationCache.class);
-
-    public static final String SITEMAP_MASTER_CONFIG = "sitemap_master_config";
 
     /** The resource type for sitemap configurations. */
     protected I_CmsResourceType m_configType;

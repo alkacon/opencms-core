@@ -76,14 +76,14 @@ public class CmsMultiMessages extends CmsMessages {
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(CmsMultiMessages.class);
 
+    /** The key fallback handler. */
+    private I_KeyFallbackHandler m_keyFallbackHandler;
+
     /** A cache for the messages to prevent multiple lookups in many bundles. */
     private Map<String, String> m_messageCache;
 
     /** List of resource bundles from the installed modules. */
     private List<CmsMessages> m_messages;
-
-    /** The key fallback handler. */
-    private I_KeyFallbackHandler m_keyFallbackHandler;
 
     /**
      * Constructor for creating a new messages object initialized with the given locale.<p>

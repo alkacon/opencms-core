@@ -56,13 +56,13 @@ public class CmsADEConfigDataInternal {
     /** Should inherited types be discarded? */
     protected boolean m_discardInheritedTypes;
 
-    /** The master configuration resource (possibly null). */
-    protected CmsResource m_masterConfig;
-
     /** The configured formatter changes. */
     protected CmsFormatterChangeSet m_formatterChangeSet = new CmsFormatterChangeSet();
+
     /** True if this is a module configuration, not a normal sitemap configuration. */
     protected boolean m_isModuleConfig;
+    /** The master configuration resource (possibly null). */
+    protected CmsResource m_masterConfig;
     /** The base path of this configuration. */
     private String m_basePath;
     /** The list of configured function references. */
@@ -80,11 +80,11 @@ public class CmsADEConfigDataInternal {
     /** The internal resource type entries. */
     private List<CmsResourceTypeConfig> m_ownResourceTypes = Lists.newArrayList();
 
-    /** The resource from which the configuration data was read. */
-    private CmsResource m_resource;
-
     /** True if detail pages from this sitemap should be preferred when linking to contents inside this sitemap. */
     private boolean m_preferDetailPagesForLocalContents;
+
+    /** The resource from which the configuration data was read. */
+    private CmsResource m_resource;
 
     /**
      * Creates a new configuration data instance.<p>
