@@ -39,6 +39,7 @@ import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
 import org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog;
 import org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -230,7 +231,9 @@ public class CmsResourceInfoView extends Composite {
 
         initWidget(uiBinder.createAndBindUi(this));
         CmsListItemWidget infoBox = new CmsListItemWidget(status.getListInfo());
-        infoBox.addButton(new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler()));
+        CmsContextMenuButton menuButton = new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler());
+        menuButton.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+        infoBox.addButton(menuButton);
         m_infoBoxContainer.add(infoBox);
         m_dateCreated.setText(status.getDateCreated());
         m_dateExpired.setText(status.getDateExpired());
