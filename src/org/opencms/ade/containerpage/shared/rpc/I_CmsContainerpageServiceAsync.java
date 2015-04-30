@@ -57,18 +57,20 @@ public interface I_CmsContainerpageServiceAsync {
     /**
      * Adds an element specified by it's id to the favorite list.<p>
      * 
+     * @param context the rpc context
      * @param clientId the element id
      * @param callback the call-back executed on response
      */
-    void addToFavoriteList(String clientId, AsyncCallback<Void> callback);
+    void addToFavoriteList(CmsContainerPageRpcContext context, String clientId, AsyncCallback<Void> callback);
 
     /**
      * Adds an element specified by it's id to the recent list.<p>
      * 
+     * @param context the rpc context
      * @param clientId the element id
      * @param callback the call-back executed on response
      */
-    void addToRecentList(String clientId, AsyncCallback<Void> callback);
+    void addToRecentList(CmsContainerPageRpcContext context, String clientId, AsyncCallback<Void> callback);
 
     /**
      * Check if a page or its elements have been changed.<p>

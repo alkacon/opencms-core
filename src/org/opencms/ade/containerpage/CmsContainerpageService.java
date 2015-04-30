@@ -132,6 +132,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -153,6 +154,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /** The container model pages path fragment. */
     public static final String CONTAINER_MODEL_PATH_FRAGMENT = "/.content/.containermodels/";
+
+    /** The source container page id settings key. */
+    public static final String SOURCE_CONTAINERPAGE_ID_SETTING = "source_containerpage_id";
 
     /** Additional info key for storing the "edit small elements" setting on the user. */
     public static final String ADDINFO_EDIT_SMALL_ELEMENTS = "EDIT_SMALL_ELEMENTS";
@@ -340,14 +344,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#addToFavoriteList(java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#addToFavoriteList(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, java.lang.String)
      */
-    public void addToFavoriteList(String clientId) throws CmsRpcException {
+    public void addToFavoriteList(CmsContainerPageRpcContext context, String clientId) throws CmsRpcException {
 
         try {
             ensureSession();
             List<CmsContainerElementBean> list = OpenCms.getADEManager().getFavoriteList(getCmsObject());
-            updateFavoriteRecentList(clientId, list);
+            updateFavoriteRecentList(context.getPageStructureId(), clientId, list);
             OpenCms.getADEManager().saveFavoriteList(getCmsObject(), list);
         } catch (Throwable e) {
             error(e);
@@ -355,14 +359,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#addToRecentList(java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#addToRecentList(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, java.lang.String)
      */
-    public void addToRecentList(String clientId) throws CmsRpcException {
+    public void addToRecentList(CmsContainerPageRpcContext context, String clientId) throws CmsRpcException {
 
         try {
             ensureSession();
             List<CmsContainerElementBean> list = OpenCms.getADEManager().getRecentList(getCmsObject());
-            updateFavoriteRecentList(clientId, list);
+            updateFavoriteRecentList(context.getPageStructureId(), clientId, list);
             OpenCms.getADEManager().saveRecentList(getCmsObject(), list);
         } catch (Throwable e) {
             error(e);
@@ -1768,8 +1772,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsContainerPageBean pageBean = generateContainerPageForContainers(
             containers,
             cms.getRequestContext().addSiteRoot(uriParam));
-        Map<String, String> idMapping = new HashMap<String, String>();
-        List<CmsContainerElementBean> requestedElements = new ArrayList<CmsContainerElementBean>();
+        Map<String, CmsContainerElementBean> idMapping = new HashMap<String, CmsContainerElementBean>();
         for (String elemId : clientIds) {
             if ((elemId == null)) {
                 continue;
@@ -1780,17 +1783,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getSessionCache().setCacheContainerElement(element.editorHash(), element);
             }
             element.initResource(cms);
-            idMapping.put(element.editorHash(), elemId);
-            requestedElements.add(element);
+            idMapping.put(elemId, element);
         }
 
         if (CmsContainerElement.MENU_CONTAINER_ID.equals(dndOriginContainer)) {
             // this indicates the element is added to the page and not being repositioned, check for container model data
-            for (CmsContainerElementBean element : requestedElements) {
-                if (isContainerModelResource(cms, element.getResource())) {
-                    pageBean = prepareforContainerModelContent(cms, element, pageBean, uriParam, locale);
-                }
-            }
+            pageBean = prepareforContainerModelContent(cms, idMapping, pageBean, uriParam, locale);
         }
 
         CmsElementUtil elemUtil = new CmsElementUtil(
@@ -1803,7 +1801,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             locale);
         Map<String, CmsContainerElementData> result = new HashMap<String, CmsContainerElementData>();
         Set<String> ids = new HashSet<String>();
-        for (CmsContainerElementBean element : requestedElements) {
+        for (Entry<String, CmsContainerElementBean> entry : idMapping.entrySet()) {
+            CmsContainerElementBean element = entry.getValue();
             String dndId = null;
             if (ids.contains(element.editorHash())) {
                 continue;
@@ -1838,7 +1837,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 continue;
             }
             elementData.setDndId(dndId);
-            result.put(idMapping.get(element.editorHash()), elementData);
+            result.put(entry.getKey(), elementData);
             if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
                 // this is a group-container 
                 CmsResource elementRes = cms.readResource(element.getId());
@@ -2294,7 +2293,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * Adds the model container elements to the page.<p>
      * 
      * @param cms the cms context
-     * @param element the model container element
+     * @param elements the requested elements
      * @param page the page
      * @param uriParam the page uri
      * @param locale the content locale
@@ -2305,43 +2304,90 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      */
     private CmsContainerPageBean prepareforContainerModelContent(
         CmsObject cms,
-        CmsContainerElementBean element,
+        Map<String, CmsContainerElementBean> elements,
         CmsContainerPageBean page,
         String uriParam,
         Locale locale) throws CmsException {
 
-        CmsContainerPageBean modelPage = getContainerModelPage(cms, element.getResource());
-        if (modelPage != null) {
+        for (Entry<String, CmsContainerElementBean> entry : elements.entrySet()) {
+            CmsContainerElementBean element = entry.getValue();
+            CmsContainerPageBean modelPage = null;
             String modelInstanceId = null;
-            Map<String, List<CmsContainerBean>> containerByParent = new HashMap<String, List<CmsContainerBean>>();
+            boolean foundInstance = false;
+            if (isContainerModelResource(cms, element.getResource())) {
+                modelPage = getContainerModelPage(cms, element.getResource());
+            } else {
+                // here we need to make sure to remove the source container page setting and to set a new element instance id
 
-            for (CmsContainerBean container : modelPage.getContainers().values()) {
-                if (container.getParentInstanceId() != null) {
-                    if (!containerByParent.containsKey(container.getParentInstanceId())) {
-                        containerByParent.put(container.getParentInstanceId(), new ArrayList<CmsContainerBean>());
+                Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
+                String source = settings.get(SOURCE_CONTAINERPAGE_ID_SETTING);
+                settings.remove(SOURCE_CONTAINERPAGE_ID_SETTING);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(source)) {
+                    try {
+                        CmsUUID sourceId = new CmsUUID(source);
+                        CmsResource sourcePage = cms.readResource(sourceId);
+                        if (CmsResourceTypeXmlContainerPage.isContainerPage(sourcePage)) {
+                            CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(
+                                cms,
+                                cms.readFile(sourcePage));
+                            modelPage = xmlCnt.getContainerPage(cms);
+                            modelInstanceId = element.getInstanceId();
+                        }
+                    } catch (Exception e) {
+                        LOG.info(e.getLocalizedMessage(), e);
                     }
-                    containerByParent.get(container.getParentInstanceId()).add(container);
+                    settings.remove(CmsContainerElementBean.ELEMENT_INSTANCE_ID);
+                    element = CmsContainerElementBean.cloneWithSettings(element, settings);
                 }
-                if (modelInstanceId == null) {
-                    for (CmsContainerElementBean child : container.getElements()) {
-                        if (child.getId().equals(element.getId())) {
-                            modelInstanceId = child.getInstanceId();
-                            break;
+            }
+
+            if (modelPage != null) {
+
+                Map<String, List<CmsContainerBean>> containerByParent = new HashMap<String, List<CmsContainerBean>>();
+
+                for (CmsContainerBean container : modelPage.getContainers().values()) {
+                    if (container.getParentInstanceId() != null) {
+                        if (!containerByParent.containsKey(container.getParentInstanceId())) {
+                            containerByParent.put(container.getParentInstanceId(), new ArrayList<CmsContainerBean>());
+                        }
+                        containerByParent.get(container.getParentInstanceId()).add(container);
+                    }
+                    if (!foundInstance) {
+                        for (CmsContainerElementBean child : container.getElements()) {
+                            if (modelInstanceId == null) {
+                                if (child.getId().equals(element.getId())) {
+                                    modelInstanceId = child.getInstanceId();
+                                    foundInstance = true;
+                                    // we also want to keep the settings of the container model
+                                    Map<String, String> settings = new HashMap<String, String>(
+                                        child.getIndividualSettings());
+                                    settings.remove(CmsContainerElementBean.ELEMENT_INSTANCE_ID);
+                                    element = CmsContainerElementBean.cloneWithSettings(element, settings);
+                                    break;
+                                }
+                            } else {
+                                if (modelInstanceId.equals(child.getInstanceId())) {
+                                    foundInstance = true;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
-            }
-            if (containerByParent.containsKey(modelInstanceId)) {
-                List<CmsContainerBean> modelContainers = collectModelStructure(
-                    modelInstanceId,
-                    element.getInstanceId(),
-                    containerByParent);
+                if (foundInstance && containerByParent.containsKey(modelInstanceId)) {
+                    List<CmsContainerBean> modelContainers = collectModelStructure(
+                        modelInstanceId,
+                        element.getInstanceId(),
+                        containerByParent);
 
-                modelContainers = createNewElementsForContainerModel(cms, modelContainers, uriParam, locale);
-                modelContainers.addAll(page.getContainers().values());
-                page = new CmsContainerPageBean(modelContainers);
-            }
+                    modelContainers = createNewElementsForContainerModel(cms, modelContainers, uriParam, locale);
+                    modelContainers.addAll(page.getContainers().values());
+                    page = new CmsContainerPageBean(modelContainers);
+                }
 
+            }
+            // update the entry element value, as the settings will have changed
+            entry.setValue(element);
         }
         return page;
     }
@@ -2418,19 +2464,25 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * Update favorite or recent list with the given element.<p>
      * 
+     * @param containerPageId the edited container page structure id 
      * @param clientId the elements client id
      * @param list the list to update
      * 
      * @return the updated list
      */
-    private List<CmsContainerElementBean> updateFavoriteRecentList(String clientId, List<CmsContainerElementBean> list) {
+    private List<CmsContainerElementBean> updateFavoriteRecentList(
+        CmsUUID containerPageId,
+        String clientId,
+        List<CmsContainerElementBean> list) {
 
-        CmsContainerElementBean element = getCachedElement(clientId).clone();
-        element.removeInstanceId();
+        CmsContainerElementBean element = getCachedElement(clientId);
+        Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
+        settings.put(SOURCE_CONTAINERPAGE_ID_SETTING, containerPageId.toString());
+        element = CmsContainerElementBean.cloneWithSettings(element, settings);
         Iterator<CmsContainerElementBean> listIt = list.iterator();
         while (listIt.hasNext()) {
             CmsContainerElementBean listElem = listIt.next();
-            if (listElem.getId().equals(element.getId())) {
+            if (element.getInstanceId().equals(listElem.getInstanceId())) {
                 listIt.remove();
             }
         }

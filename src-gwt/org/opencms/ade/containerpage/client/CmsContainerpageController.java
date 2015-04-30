@@ -889,7 +889,7 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
-                getContainerpageService().addToFavoriteList(clientId, this);
+                getContainerpageService().addToFavoriteList(getData().getRpcContext(), clientId, this);
             }
 
             /**
@@ -922,7 +922,7 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
-                getContainerpageService().addToRecentList(clientId, this);
+                getContainerpageService().addToRecentList(getData().getRpcContext(), clientId, this);
             }
 
             /**

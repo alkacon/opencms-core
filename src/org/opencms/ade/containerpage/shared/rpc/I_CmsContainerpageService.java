@@ -57,20 +57,22 @@ public interface I_CmsContainerpageService extends RemoteService {
     /**
      * Adds an element specified by it's id to the favorite list.<p>
      * 
+     * @param context the rpc context
      * @param clientId the element id
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void addToFavoriteList(String clientId) throws CmsRpcException;
+    void addToFavoriteList(CmsContainerPageRpcContext context, String clientId) throws CmsRpcException;
 
     /**
      * Adds an element specified by it's id to the recent list.<p>
      * 
+     * @param context the rpc context
      * @param clientId the element id
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void addToRecentList(String clientId) throws CmsRpcException;
+    void addToRecentList(CmsContainerPageRpcContext context, String clientId) throws CmsRpcException;
 
     /**
      * Check if a page or its elements have been changed.<p> 
