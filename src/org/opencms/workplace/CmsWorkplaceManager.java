@@ -91,6 +91,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -98,6 +99,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 /**
  * Manages the global OpenCms workplace settings for all users.<p>
@@ -259,6 +263,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The configured workplace views. */
     private List<CmsWorkplaceView> m_views;
 
+    /** Expiring cache used to limit the number of notifications sent because of invalid workplace server names. */
+    private Cache<String, String> m_workplaceServerUserChecks;
+
     /** The XML content auto correction flag. */
     private boolean m_xmlContentAutoCorrect;
 
@@ -270,6 +277,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_INITIALIZE_START_0));
         }
+
         m_locales = new ArrayList<Locale>();
         m_labelSiteFolders = new ArrayList<String>();
         m_localizedFolders = new ArrayList<String>();
@@ -302,6 +310,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         // important to set this to null to avoid unnecessary overhead during configuration phase
         m_explorerTypeSettings = null;
+        CacheBuilder cb = CacheBuilder.newBuilder().expireAfterWrite(2, TimeUnit.MINUTES).concurrencyLevel(3);
+        m_workplaceServerUserChecks = cb.build();
+
     }
 
     /**
@@ -555,6 +566,35 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public boolean autoLockResources() {
 
         return m_autoLockResources;
+    }
+
+    /** 
+     * Checks whether the workplace is accessed through the workplace server, and sends an error message otherwise.<p>
+     * 
+     * @param request the request to check 
+     * @param cms the CmsObject to use 
+     */
+    public void checkWorkplaceRequest(HttpServletRequest request, CmsObject cms) {
+
+        try {
+            if (!OpenCms.getSiteManager().isWorkplaceRequest(request)) {
+                CmsUser user = cms.getRequestContext().getCurrentUser();
+                // to limit the number of times broadcast is called for a user, we use an expiring cache
+                // with the user name as  key 
+                if (null == m_workplaceServerUserChecks.getIfPresent(user.getName())) {
+                    m_workplaceServerUserChecks.put(user.getName(), "");
+                    OpenCms.getSessionManager().sendBroadcast(
+                        null,
+                        Messages.get().getBundle(getWorkplaceLocale(cms)).key(
+                            Messages.ERR_WORKPLACE_SERVER_CHECK_FAILED_0),
+                        user);
+
+                }
+
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
     /**

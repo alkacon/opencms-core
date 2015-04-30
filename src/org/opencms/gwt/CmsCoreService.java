@@ -638,6 +638,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      */
     public List<CmsBroadcastMessage> getBroadcast() {
 
+        OpenCms.getWorkplaceManager().checkWorkplaceRequest(getRequest(), getCmsObject());
         CmsSessionInfo sessionInfo = OpenCms.getSessionManager().getSessionInfo(getRequest().getSession());
         if (sessionInfo == null) {
             return null;

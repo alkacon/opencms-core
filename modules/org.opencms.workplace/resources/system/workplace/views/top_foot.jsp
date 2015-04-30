@@ -9,6 +9,7 @@
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	CmsFrameset wp = new CmsFrameset(cms);
 	CmsWorkplaceCustomFoot customFoot = OpenCms.getWorkplaceManager().getCustomFoot();
+	OpenCms.getWorkplaceManager().checkWorkplaceRequest(request, cms.getCmsObject());
 
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>

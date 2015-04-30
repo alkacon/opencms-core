@@ -39,6 +39,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_DEFAULT_TEMPLATE_ADE_WARNING_0 = "ERR_DEFAULT_TEMPLATE_ADE_WARNING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DEFAULT_TEMPLATE_WARNING_0 = "ERR_DEFAULT_TEMPLATE_WARNING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INITIALIZE_WORKPLACE_0 = "ERR_INITIALIZE_WORKPLACE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -63,10 +69,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_WORKPLACE_LOCK_RESOURCE_1 = "ERR_WORKPLACE_LOCK_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DEFAULT_TEMPLATE_WARNING_0 = "ERR_DEFAULT_TEMPLATE_WARNING_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_DEFAULT_TEMPLATE_ADE_WARNING_0 = "ERR_DEFAULT_TEMPLATE_ADE_WARNING_0";
+    public static final String ERR_WORKPLACE_SERVER_CHECK_FAILED_0 = "ERR_WORKPLACE_SERVER_CHECK_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_AJAX_REPORT_ERROR_0 = "GUI_AJAX_REPORT_ERROR_0";
