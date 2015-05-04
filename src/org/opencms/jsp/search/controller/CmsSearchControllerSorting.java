@@ -103,10 +103,10 @@ public class CmsSearchControllerSorting implements I_CmsSearchControllerSorting 
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateFromRequestParameters(java.util.Map)
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateFromRequestParameters(java.util.Map, boolean)
      */
     @Override
-    public void updateFromRequestParameters(final Map<String, String[]> parameters) {
+    public void updateFromRequestParameters(final Map<String, String[]> parameters, boolean isReloaded) {
 
         if (parameters.containsKey(m_config.getSortParam())) {
             final String[] sortValues = parameters.get(m_config.getSortParam());

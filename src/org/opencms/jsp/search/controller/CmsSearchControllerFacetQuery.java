@@ -27,25 +27,26 @@
 
 package org.opencms.jsp.search.controller;
 
-import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery.I_CmsFacetQueryItem;
 import org.opencms.jsp.search.state.CmsSearchStateFacet;
 import org.opencms.jsp.search.state.I_CmsSearchStateFacet;
 
 import java.util.Iterator;
 import java.util.Map;
 
-/** Search controller for the field facet options. */
-public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacetField {
+/** Search controller for the query facet options. */
+public class CmsSearchControllerFacetQuery implements I_CmsSearchControllerFacetQuery {
 
     /** Configuration of the field facet options. */
-    private final I_CmsSearchConfigurationFacetField m_config;
+    private final I_CmsSearchConfigurationFacetQuery m_config;
     /** State of the field facets. */
     private final I_CmsSearchStateFacet m_state;
 
     /** Constructor taking the managed configuration.
      * @param config The configuration to manage by the controller.
      */
-    public CmsSearchControllerFacetField(final I_CmsSearchConfigurationFacetField config) {
+    public CmsSearchControllerFacetQuery(final I_CmsSearchConfigurationFacetQuery config) {
 
         m_config = config;
         m_state = new CmsSearchStateFacet();
@@ -81,16 +82,16 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField#getConfig()
+     * @see org.opencms.jsp.search.controller.I_CmsSearchControllerFacetQuery#getConfig()
      */
     @Override
-    public I_CmsSearchConfigurationFacetField getConfig() {
+    public I_CmsSearchConfigurationFacetQuery getConfig() {
 
         return m_config;
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField#getState()
+     * @see org.opencms.jsp.search.controller.I_CmsSearchControllerFacetQuery#getState()
      */
     @Override
     public I_CmsSearchStateFacet getState() {
@@ -139,64 +140,15 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
     protected void addFilterQueryParts(final StringBuffer query) {
 
         if (!m_state.getCheckedEntries().isEmpty()) {
-            query.append("&fq={!tag=").append(m_config.getField()).append('}');
-            query.append(m_config.getField());
-            query.append(":(");
             final Iterator<String> fieldIterator = m_state.getCheckedEntries().iterator();
-            query.append(m_config.modifyFilterQuery(fieldIterator.next()));
+            query.append("&fq={!tag=").append(m_config.getName()).append("}(").append(fieldIterator.next());
             final String concater = m_config.getIsAndFacet() ? " AND " : " OR ";
             while (fieldIterator.hasNext()) {
                 query.append(concater);
-                query.append(m_config.modifyFilterQuery(fieldIterator.next()));
+                query.append(fieldIterator.next());
             }
             query.append(')');
         }
-    }
-
-    /** Appends the query part for the facet to the query string.
-     * @param query The current query string.
-     * @param fieldPrefix The facet's field used to identify the facet.
-     * @param name The name of the facet parameter, e.g. "limit", "order", ....
-     * @param value The value to set for the parameter specified by name.
-     */
-    protected void appendQueryPart(
-        final StringBuffer query,
-        final String fieldPrefix,
-        final String name,
-        final String value) {
-
-        query.append("&");
-        if ((fieldPrefix != null) && !fieldPrefix.trim().isEmpty()) {
-            query.append("f.").append(fieldPrefix).append('.');
-        }
-        query.append("facet.").append(name).append("=").append(value);
-    }
-
-    /** Generates the query parts for the facet options, except the filter parts.
-     * @param fieldPrefix The facet's field used to identify the facet.
-     * @param useLimit Flag, if the limit option should be set.
-     * @return The common query parts.
-     */
-    protected StringBuffer generateCommonQueryParts(final String fieldPrefix, final boolean useLimit) {
-
-        final StringBuffer queryPart = new StringBuffer();
-        // mincount
-        if (m_config.getMinCount() != null) {
-            appendQueryPart(queryPart, fieldPrefix, "mincount", m_config.getMinCount().toString());
-        }
-        // limit
-        if (useLimit && (m_config.getLimit() != null)) {
-            appendQueryPart(queryPart, fieldPrefix, "limit", m_config.getLimit().toString());
-        }
-        // sort
-        if (m_config.getSortOrder() != null) {
-            appendQueryPart(queryPart, fieldPrefix, "sort", m_config.getSortOrder().toString());
-        }
-        // prefix
-        if (!m_config.getPrefix().isEmpty()) {
-            appendQueryPart(queryPart, fieldPrefix, "prefix", m_config.getPrefix());
-        }
-        return queryPart;
     }
 
     /** Generate query part for the facet, without filters.
@@ -204,13 +156,10 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
      */
     protected StringBuffer generateFacetPart() {
 
-        final StringBuffer query = new StringBuffer();
-        query.append("&facet.field=");
-        if (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet()) {
-            query.append("{!ex=").append(m_config.getField()).append('}');
+        final StringBuffer query = new StringBuffer("facet=true");
+        for (I_CmsFacetQueryItem q : m_config.getQueryList()) {
+            query.append("&facet.query={!ex=").append(m_config.getName()).append("}").append(q.getQuery());
         }
-        query.append(m_config.getField());
-        query.append(generateCommonQueryParts(m_config.getField(), m_state.getUseLimit()));
         return query;
     }
 

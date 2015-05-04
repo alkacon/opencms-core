@@ -60,6 +60,10 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
     Map<String, I_CmsSearchStateParameters> m_sortingMap;
     /** Map from facet names to state parameters without the filter queries for the facet. */
     Map<String, I_CmsSearchStateParameters> m_resetFacetMap;
+    /** Map from facet names to state parameters with parameters for ignoring the facet's limit added. */
+    Map<String, I_CmsSearchStateParameters> m_ignoreLimitFacetMap;
+    /** Map from facet names to state parameters with parameters for ignoring the facet's limit removed. */
+    Map<String, I_CmsSearchStateParameters> m_respectLimitFacetMap;
     /** Map from facet names to a map from facet items to state parameters with the item unchecked. */
     Map<String, Map<String, I_CmsSearchStateParameters>> m_uncheckFacetMap;
     /** Map from facet names to a map from facet items to state parameters with the item checked. */
@@ -73,6 +77,35 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
 
         m_params = params;
         m_result = result;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchStateParameters#getAddIgnoreFacetLimit()
+     */
+    public Map<String, I_CmsSearchStateParameters> getAddIgnoreFacetLimit() {
+
+        if (m_ignoreLimitFacetMap == null) {
+            m_ignoreLimitFacetMap = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                @Override
+                public Object transform(final Object facet) {
+
+                    final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
+                    String facetParamKey = null;
+                    try {
+                        facetParamKey = m_result.getController().getFieldFacets().getFieldFacetController().get(facet).getConfig().getIgnoreMaxParamKey();
+                    } catch (Exception e) {
+                        // Facet did not exist
+                        LOG.warn(Messages.get().getBundle().key(Messages.LOG_FACET_NOT_CONFIGURED_1, facet), e);
+                    }
+                    if ((facetParamKey != null) && !parameters.containsKey(facetParamKey)) {
+                        parameters.put(facetParamKey, null);
+                    }
+                    return new CmsSearchStateParameters(m_result, parameters);
+                }
+            });
+        }
+        return m_ignoreLimitFacetMap;
     }
 
     /**
@@ -139,9 +172,38 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
 
         final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
         parameters.put(
-            m_result.getController().getCommon().getConfig().getQueryParam(),
+            m_result.getController().getDidYouMean().getConfig().getQueryParam(),
             new String[] {m_result.getDidYouMean()});
         return new CmsSearchStateParameters(m_result, parameters);
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_CmsSearchStateParameters#getRemoveIgnoreFacetLimit()
+     */
+    public Map<String, I_CmsSearchStateParameters> getRemoveIgnoreFacetLimit() {
+
+        if (m_ignoreLimitFacetMap == null) {
+            m_ignoreLimitFacetMap = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                @Override
+                public Object transform(final Object facet) {
+
+                    final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
+                    String facetParamKey = null;
+                    try {
+                        facetParamKey = m_result.getController().getFieldFacets().getFieldFacetController().get(facet).getConfig().getIgnoreMaxParamKey();
+                    } catch (Exception e) {
+                        // Facet did not exist
+                        LOG.warn(Messages.get().getBundle().key(Messages.LOG_FACET_NOT_CONFIGURED_1, facet), e);
+                    }
+                    if ((facetParamKey != null) && parameters.containsKey(facetParamKey)) {
+                        parameters.remove(facetParamKey);
+                    }
+                    return new CmsSearchStateParameters(m_result, parameters);
+                }
+            });
+        }
+        return m_ignoreLimitFacetMap;
     }
 
     /**
@@ -303,8 +365,13 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
 
         final StringBuffer result = new StringBuffer();
         for (final String key : parameters.keySet()) {
-            for (final String value : parameters.get(key)) {
-                result.append(key).append('=').append(value).append('&');
+            String[] values = parameters.get(key);
+            if (null == values) {
+                result.append(key).append('&');
+            } else {
+                for (final String value : parameters.get(key)) {
+                    result.append(key).append('=').append(value).append('&');
+                }
             }
         }
         // remove last '&'

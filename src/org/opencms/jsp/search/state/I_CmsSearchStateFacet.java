@@ -27,7 +27,7 @@
 
 package org.opencms.jsp.search.state;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /** Interface for the state all facet types have in common. */
@@ -44,9 +44,9 @@ public interface I_CmsSearchStateFacet {
     void clearChecked();
 
     /** Returns all checked entries of a facet.
-     * @return Collection of the facet's entries that are checked.
+     * @return List of the facet's entries that are checked.
      */
-    Collection<String> getCheckedEntries();
+    List<String> getCheckedEntries();
 
     /** Returns a flag, indicating if the checked entries should be ignored.
      * @return Flag, indicating if the checked entries should be ignored.

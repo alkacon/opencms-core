@@ -39,6 +39,7 @@
 			<c:set var="escapedQuery">${fn:replace(common.state.query,'"','&quot;')}</c:set>
 			<input type="hidden" name="${common.config.lastQueryParam}"
 				value="${escapedQuery}" />
+			<input type="hidden" name="${common.config.reloadedParam}" />
 			<%-- choose layout dependent on the presence of search options --%>
 			<c:set var="hasSortOptions" value="${cms:getListSize(controllers.sorting.config.sortOptions) > 0}" />
 			<c:set var="colWidthInput" value="${hasSortOptions?4:12}" />
@@ -72,10 +73,33 @@
 				</c:if>
 			</div>
 			<div class="row" style="margin-top: 20px;">
-				<c:set var="hasFacets" value="${cms:getListSize(searchform.fieldFacets) > 0}" />
+				<c:set var="hasFacets" value="${(cms:getListSize(searchform.fieldFacets) > 0) or (not empty searchform.facetQuery)}" />
 				<c:if test="${hasFacets}">
 					<!-- Facets -->
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<!-- Query facet -->
+						<c:if test="${(not empty controllers.queryFacet) and (not empty searchform.facetQuery)}">
+							<c:set var="facetController" value="${controllers.queryFacet}" />
+							<div class="panel panel-default">
+								<div class="panel-heading">${facetController.config.label}</div>
+								<div class="panel-body">				
+									<c:forEach var="entry" items="${facetController.config.queryList}">
+										<c:if test="${not empty searchform.facetQuery[entry.query]}">
+											<div class="checkbox">
+												<label> <input type="checkbox"
+													name="${facetController.config.paramKey}"
+													value="${entry.query}"
+													onclick="submitSearchForm()"
+													${facetController.state.isChecked[entry.query]?"checked":""} />
+													${entry.label} (${searchform.facetQuery[entry.query]})
+												</label>
+											</div>
+										</c:if>
+									</c:forEach>
+								</div>
+							</div>
+						</c:if>
+									
 						<c:set var="fieldFacetControllers" value="${controllers.fieldFacets}" />
 						<c:forEach var="facet" items="${searchform.fieldFacets}">
 							<c:set var="facetController"
@@ -95,6 +119,17 @@
 												</label>
 											</div>
 										</c:forEach>
+										<%-- Show option to show more facet entries --%>
+										<c:if test="${not empty facetController.config.limit}">
+											<c:choose>
+											<c:when test="${facetController.state.useLimit}">
+												<a href="<cms:link>${cms.requestContext.uri}?${searchform.stateParameters.addIgnoreFacetLimit[facet.name]}</cms:link>">Show more</a>
+											</c:when>
+											<c:otherwise>
+												<a href="<cms:link>${cms.requestContext.uri}?${searchform.stateParameters.removeIgnoreFacetLimit[facet.name]}</cms:link>">Show less</a>
+											</c:otherwise>
+											</c:choose>
+										</c:if>
 									</div>
 								</div>
 							</c:if>

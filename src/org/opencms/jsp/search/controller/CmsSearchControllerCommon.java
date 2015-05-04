@@ -31,6 +31,7 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.state.CmsSearchStateCommon;
 import org.opencms.jsp.search.state.I_CmsSearchStateCommon;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /** Search controller for the common search options. */
@@ -59,7 +60,7 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
         if (!m_state.getQuery().isEmpty()) {
             parameters.put(m_config.getQueryParam(), new String[] {m_state.getQuery()});
         }
-
+        parameters.put(m_config.getReloadedParam(), null);
     }
 
     /**
@@ -70,7 +71,10 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
 
         final StringBuffer query = new StringBuffer();
         if (!m_config.getIgnoreQueryParam()) {
-            query.append("&q=").append(m_state.getQuery());
+            String queryString = m_state.getQuery().isEmpty() && m_config.getSearchForEmptyQueryParam()
+            ? "*"
+            : m_state.getQuery();
+            query.append("&q=").append(m_config.getModifiedQuery(queryString));
         }
 
         if (m_config.getSolrIndex() != null) {
@@ -82,6 +86,12 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
 
         if (!m_config.getExtraSolrParams().isEmpty()) {
             query.append('&').append(m_config.getExtraSolrParams());
+        }
+        for (String additionalParam : m_state.getAdditionalParameters().keySet()) {
+            query.append('&').append(
+                resolveMacros(
+                    m_config.getAdditionalParameters().get(additionalParam),
+                    m_state.getAdditionalParameters().get(additionalParam)));
         }
         return query.toString();
     }
@@ -115,26 +125,44 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateFromRequestParameters(java.util.Map)
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateFromRequestParameters(java.util.Map, boolean)
      */
     @Override
-    public void updateFromRequestParameters(final Map<String, String[]> parameters) {
+    public void updateFromRequestParameters(final Map<String, String[]> parameters, boolean isReloaded) {
+
+        m_state.setQuery("");
 
         if (parameters.containsKey(m_config.getQueryParam())) {
             final String[] queryStrings = parameters.get(m_config.getQueryParam());
             if (queryStrings.length > 0) {
                 m_state.setQuery(queryStrings[0]);
-                return;
             }
         }
         if (parameters.containsKey(m_config.getLastQueryParam())) {
             final String[] queryStrings = parameters.get(m_config.getLastQueryParam());
             if (queryStrings.length > 0) {
                 m_state.setLastQuery(queryStrings[0]);
-                return;
             }
         }
-        m_state.setQuery("");
+        // Set state for additional query parameters
+        Map<String, String> additionalParameters = new HashMap<String, String>(
+            m_config.getAdditionalParameters().size());
+        for (String key : m_config.getAdditionalParameters().keySet()) {
+            if (parameters.containsKey(key)
+                && ((parameters.get(key).length > 0) && (parameters.get(key)[0].length() > 0))) {
+                additionalParameters.put(key, parameters.get(key)[0]);
+            }
+        }
+        m_state.setAdditionalParameters(additionalParameters);
     }
 
+    /** Replaces the %(value) macro accordingly.
+     * @param string The String where the macros should be replaced.
+     * @param value The value used for the replacement.
+     * @return The original String with %(value) macros replaced.
+     */
+    private String resolveMacros(final String string, final String value) {
+
+        return string.replaceAll("\\%\\(value\\)", value);
+    }
 }

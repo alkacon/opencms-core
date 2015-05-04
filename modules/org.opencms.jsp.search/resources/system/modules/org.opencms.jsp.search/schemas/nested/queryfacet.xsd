@@ -1,0 +1,36 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.jsp.search/schemas/nested/queryfacetitem.xsd"/>
+
+	<xsd:element name="QueryFacetConfigs" type="OpenCmsQueryFacetConfigs"/>
+
+	<xsd:complexType name="OpenCmsQueryFacetConfigs">
+		<xsd:sequence>
+			<xsd:element name="QueryFacetConfig" type="OpenCmsQueryFacetConfig" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsQueryFacetConfig">
+		<xsd:sequence>
+			<xsd:element name="QueryItem" type="OpenCmsFacetQueryItem" minOccurs="1" maxOccurs="unbounded" />
+			<xsd:element name="Label" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="IsAndFacet" type="OpenCmsBoolean" minOccurs="0" />
+			<xsd:element name="PreSelection" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+	
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.jsp.search.jsp-search-form-schema" />
+			<searchsettings>
+				<searchsetting element="QueryItem" searchcontent="false" />
+				<searchsetting element="Label" searchcontent="false" />
+				<searchsetting element="IsAndFacet" searchcontent="false" />
+				<searchsetting element="PreSelection" searchcontent="false" />
+			</searchsettings>
+		</xsd:appinfo>
+	</xsd:annotation>
+
+</xsd:schema>

@@ -27,11 +27,16 @@
 
 package org.opencms.jsp.search.config;
 
+import java.util.List;
+
 /**
  * Search configuration special for field facets. Extends @see{org.opencms.jsp.search.config.CmsSearchConfigurationFacet}.
  */
 public class CmsSearchConfigurationFacetField extends CmsSearchConfigurationFacet
 implements I_CmsSearchConfigurationFacetField {
+
+    /** A prefix, all entries of a facet must start with. */
+    protected String m_prefix = "";
 
     /** The index field to use for the facet. */
     protected String m_field;
@@ -44,30 +49,29 @@ implements I_CmsSearchConfigurationFacetField {
      * @param minCount The minimal number of hits that is necessary to add a term to the facet.
      * @param limit The maximal number of facet entries.
      * @param prefix A prefix all entries of a facet must have.
-     * @param name The name of the facet (used to identify it when
      * @param label The label that can be shown over the facet entries in your search form.
      * @param order The sorting of the facet entries (either "count", which is default, or "index", which causes alphabetical sorting).
      * @param filterQueryModifier Modifier for the filter queries when a facet entry is checked. Can contain "%(value)" - what is replaced by the facet entry's value.
      * @param isAndFacet If set to true, the facets filters for results containing all checked entries. Otherwise it filters for results containing at least one checked entry.
+     * @param preselection The list of facet items that should be preselected for the first search.
      */
     public CmsSearchConfigurationFacetField(
         final String field,
         final Integer minCount,
         final Integer limit,
         final String prefix,
-        final String name,
         final String label,
         final SortOrder order,
         final String filterQueryModifier,
-        final Boolean isAndFacet) {
+        final Boolean isAndFacet,
+        final List<String> preselection) {
 
-        super(minCount, limit, prefix, name, label, order, isAndFacet);
-        if (m_name == null) {
-            m_name = field;
+        super(minCount, limit, label, field, order, isAndFacet, preselection);
+
+        if (prefix != null) {
+            m_prefix = prefix;
         }
-        if (m_label == null) {
-            m_label = m_name;
-        }
+
         m_field = field;
         m_fiterQueryModifier = filterQueryModifier;
     }
@@ -79,6 +83,15 @@ implements I_CmsSearchConfigurationFacetField {
     public String getField() {
 
         return m_field;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField#getPrefix()
+     */
+    @Override
+    public String getPrefix() {
+
+        return m_prefix;
     }
 
     /**

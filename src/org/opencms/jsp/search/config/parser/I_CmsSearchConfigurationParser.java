@@ -30,6 +30,7 @@ package org.opencms.jsp.search.config.parser;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSorting;
@@ -63,6 +64,11 @@ public interface I_CmsSearchConfigurationParser {
      * @return The configuration for the pagination.
      */
     I_CmsSearchConfigurationPagination parsePagination();
+
+    /** Returns the configuration for the query facet.
+     * @return The configuration for the query facet.
+     */
+    I_CmsSearchConfigurationFacetQuery parseQueryFacet();
 
     /** Returns the configuration for sorting.
      * @return The configuration for sorting.

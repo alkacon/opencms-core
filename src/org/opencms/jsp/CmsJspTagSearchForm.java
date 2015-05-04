@@ -261,7 +261,8 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
      */
     private I_SearchResultWrapper getSearchResults() {
 
-        m_searchController.updateFromRequestParameters(pageContext.getRequest().getParameterMap());
+        // The second parameter is just ignored - so it does not matter
+        m_searchController.updateFromRequestParameters(pageContext.getRequest().getParameterMap(), false);
         String query = m_searchController.generateQuery();
         try {
             // use "complicated" constructor to allow more than 50 results -> set ignoreMaxResults to true

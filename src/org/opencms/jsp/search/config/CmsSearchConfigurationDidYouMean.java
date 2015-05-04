@@ -30,24 +30,39 @@ package org.opencms.jsp.search.config;
 /** Class keeping the configuration of the "Did you mean ...?" feature of the search form. */
 public class CmsSearchConfigurationDidYouMean implements I_CmsSearchConfigurationDidYouMean {
 
-    /** Flag, indicating if "Did you mean ...?" is enabled. */
-    private boolean m_enabled;
+    /** A modifier for the search query. */
+    private final String m_queryModifier;
+    /** Parameter used to transmit the query used for spellchecking. */
+    private final String m_param;
 
     /** Constructor setting all the state.
-     * @param enabled Flag, indicating if "Did you mean ...?" should be enabled.
+     * @param param The request parameter used to send the spellcheck query.
+     * @param queryModifier The query modifier used for the spellcheck query.
      */
-    public CmsSearchConfigurationDidYouMean(final Boolean enabled) {
+    public CmsSearchConfigurationDidYouMean(final String param, final String queryModifier) {
 
-        m_enabled = enabled != null ? enabled.booleanValue() : false;
+        m_param = param;
+        m_queryModifier = queryModifier;
 
     }
 
     /**
-     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean#getIsEnabled()
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean#getModifiedQuery(java.lang.String)
      */
-    public boolean getIsEnabled() {
+    public String getModifiedQuery(final String queryString) {
 
-        return m_enabled;
+        if (null != m_queryModifier) {
+            return m_queryModifier.replace("%(query)", queryString);
+        }
+        return queryString;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean#getQueryParam()
+     */
+    public String getQueryParam() {
+
+        return m_param;
     }
 
 }

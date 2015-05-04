@@ -53,6 +53,11 @@ public interface I_SearchResultWrapper {
      */
     int getEnd();
 
+    /** Returns the result of the query facet, i.e., the map from queries to the number of hits.
+     * @return The result of the query facet, i.e., the map from queries to the number of hits.
+     */
+    Map<String, Integer> getFacetQuery();
+
     /** Returns the map for field facet names to the search result part for that field facet.
      * @return The map for field facet names to the search result part for that field facet.
      */

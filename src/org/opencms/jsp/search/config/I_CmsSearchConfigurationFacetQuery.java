@@ -27,17 +27,30 @@
 
 package org.opencms.jsp.search.config;
 
-/** Interface of the "Did you mean ...?" configuration for the JSP search form. */
-public interface I_CmsSearchConfigurationDidYouMean {
+import java.util.List;
 
-    /** Modifies the query string according to the specified query modifier.
-     * @param queryString the query to modify.
-     * @return the modified query.
-     */
-    String getModifiedQuery(String queryString);
+/** Interface for the query facet configuration. */
+public interface I_CmsSearchConfigurationFacetQuery extends I_CmsSearchConfigurationFacet {
 
-    /** Returns the parameter name of the request parameter used to send the current query string for spellchecking.
-     * @return The request parameter name used to send the current query string for spellchecking.
+    /** The interface of a single query facet item. */
+    public interface I_CmsFacetQueryItem {
+
+        /** Returns the label of the item, useful to show it.
+         * @return the label of the item.
+         */
+        String getLabel();
+
+        /** Returns the query of the item.
+         * @return the query of the item.
+         */
+        String getQuery();
+    }
+
+    /** The name of the range facet. */
+    String NAME = "query_query";
+
+    /** Returns the list of queries that belong to the facet.
+     * @return The list of queries that belong to the facet.
      */
-    String getQueryParam();
+    List<I_CmsFacetQueryItem> getQueryList();
 }

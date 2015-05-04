@@ -27,8 +27,20 @@
 
 package org.opencms.jsp.search.state;
 
+import java.util.Map;
+
 /** Class for keeping the state of the common search options. */
 public interface I_CmsSearchStateCommon {
+
+    /** Getter for the map from the additional request parameters to their values.
+     * @return The map from the additional request parameters to their values.
+     */
+    Map<String, String> getAdditionalParameters();
+
+    /** Getter for the flag indicating if the search is called the first time, or reloaded.
+     * @return Typically, false only if the search form is loaded the first time, otherwise it should be true.
+     */
+    boolean getIsReloaded();
 
     /** Returns the last query string (as entered by the user).
      * @return The last query string (as entered by the user).
@@ -39,6 +51,16 @@ public interface I_CmsSearchStateCommon {
      * @return The current query string (as entered by the user).
      */
     String getQuery();
+
+    /** Setter for the additional parameters and their values.
+     * @param parameters Map from the additional parameters and their values.
+     */
+    void setAdditionalParameters(Map<String, String> parameters);
+
+    /** Setter for the flag indicating if the search is called the first time, or reloaded.
+     * @param isReloaded Typically false only if the search form is loaded the first time, otherwise it should be true.
+     */
+    void setIsReloaded(boolean isReloaded);
 
     /** Setter for the last query string (as entered by the user).
      * @param lastquery The last query string (as entered by the user).
