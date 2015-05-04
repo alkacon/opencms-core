@@ -2164,7 +2164,7 @@
         <name>getListSize</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
         <function-signature>
-            java.lang.Integer getListSize(java.util.List)
+            java.lang.Integer getListSize(java.util.Collection)
         </function-signature>
     </function>
         
