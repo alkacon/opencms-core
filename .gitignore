@@ -25,3 +25,4 @@
 /.gradle
 **/.gradle
 Thumbs.db
+/.nb-gradle/private/
