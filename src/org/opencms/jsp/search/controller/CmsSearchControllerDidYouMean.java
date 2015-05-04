@@ -28,30 +28,26 @@
 package org.opencms.jsp.search.controller;
 
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
+import org.opencms.jsp.search.state.CmsSearchStateDidYouMean;
+import org.opencms.jsp.search.state.I_CmsSearchStateDidYouMean;
 
 import java.util.Map;
 
 /** Controller for the "Did you mean ...?" feature. */
 public class CmsSearchControllerDidYouMean implements I_CmsSearchControllerDidYouMean {
 
-    /** Stores the query param from which the query is read. */
-    private final String m_queryparam;
-
     /** Stores the configuration. */
     private final I_CmsSearchConfigurationDidYouMean m_config;
+    /** Stores the configuration. */
+    private final I_CmsSearchStateDidYouMean m_state;
 
-    /** Stores the current query string. */
-    private String m_querystring;
-
-    /** Constructor, taking the configuration and the queryparam.
-     * @param config The Configuration.
-     * @param queryparam The configured query parameter.
+    /** Constructor, taking the configuration.
+     * @param config the configuration.
      */
-    public CmsSearchControllerDidYouMean(I_CmsSearchConfigurationDidYouMean config, String queryparam) {
+    public CmsSearchControllerDidYouMean(I_CmsSearchConfigurationDidYouMean config) {
 
-        m_queryparam = queryparam;
         m_config = config;
-
+        m_state = new CmsSearchStateDidYouMean();
     }
 
     /**
@@ -69,11 +65,9 @@ public class CmsSearchControllerDidYouMean implements I_CmsSearchControllerDidYo
     public String generateQuery() {
 
         StringBuffer q = new StringBuffer();
-        if (m_config.getIsEnabled()) {
-            q.append("spellcheck=true");
-            q.append("&spellcheck.q=").append(m_querystring);
-            q.append("&spellcheck.collate=true");
-        }
+        q.append("spellcheck=true");
+        q.append("&spellcheck.q=").append(m_config.getModifiedQuery(m_state.getQuery()));
+        q.append("&spellcheck.collate=true");
         return q.toString();
     }
 
@@ -95,19 +89,18 @@ public class CmsSearchControllerDidYouMean implements I_CmsSearchControllerDidYo
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateFromRequestParameters(java.util.Map)
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateFromRequestParameters(java.util.Map, boolean)
      */
-    public void updateFromRequestParameters(Map<String, String[]> parameters) {
+    public void updateFromRequestParameters(Map<String, String[]> parameters, boolean isReloaded) {
 
-        if (parameters.containsKey(m_queryparam)) {
-            final String[] queryStrings = parameters.get(m_queryparam);
+        if (parameters.containsKey(m_config.getQueryParam())) {
+            final String[] queryStrings = parameters.get(m_config.getQueryParam());
             if (queryStrings.length > 0) {
-                m_querystring = queryStrings[0];
+                m_state.setQuery(queryStrings[0]);
                 return;
             }
         }
-        m_querystring = "";
-
+        m_state.setQuery("");
     }
 
 }

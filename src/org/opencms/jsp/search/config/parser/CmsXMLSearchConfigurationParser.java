@@ -30,6 +30,8 @@ package org.opencms.jsp.search.config.parser;
 import org.opencms.jsp.search.config.CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.config.CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
+import org.opencms.jsp.search.config.CmsSearchConfigurationFacetQuery;
+import org.opencms.jsp.search.config.CmsSearchConfigurationFacetQuery.CmsFacetQueryItem;
 import org.opencms.jsp.search.config.CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.CmsSearchConfigurationSortOption;
@@ -38,6 +40,8 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacet;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery.I_CmsFacetQueryItem;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
@@ -48,6 +52,7 @@ import org.opencms.xml.content.CmsXmlContentValueSequence;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -68,7 +73,13 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** XML element name. */
     private static final String XML_ELEMENT_LAST_QUERYPARAM = "LastQueryParam";
     /** XML element name. */
+    private static final String XML_ELEMENT_RELOADED_PARAM = "ReloadedParam";
+    /** XML element name. */
+    private static final String XML_ELEMENT_SEARCH_FOR_EMPTY_QUERY = "SearchForEmptyQuery";
+    /** XML element name. */
     private static final String XML_ELEMENT_IGNORE_QUERY = "IgnoreQuery";
+    /** XML element name. */
+    private static final String XML_ELEMENT_QUERY_MODIFIER = "QueryModifier";
     /** XML element name. */
     private static final String XML_ELEMENT_PAGEPARAM = "PageParam";
     /** XML element name. */
@@ -78,6 +89,12 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** XML element name. */
     private static final String XML_ELEMENT_EXTRASOLRPARAMS = "ExtraSolrParams";
     /** XML element name. */
+    private static final String XML_ELEMENT_ADDITIONAL_PARAMETERS = "AdditionalRequestParams";
+    /** XML element name. */
+    private static final String XML_ELEMENT_ADDITIONAL_PARAMETERS_PARAM = "Param";
+    /** XML element name. */
+    private static final String XML_ELEMENT_ADDITIONAL_PARAMETERS_SOLRQUERY = "SolrQuery";
+    /** XML element name. */
     private static final String XML_ELEMENT_PAGESIZE = "PageSize";
     /** XML element name. */
     private static final String XML_ELEMENT_PAGENAVLENGTH = "PageNavLength";
@@ -85,6 +102,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** XML element names for facet configuration. */
     /** XML element name for the root element of a field facet configuration. */
     private static final String XML_ELEMENT_FIELD_FACETS = "FieldFacet";
+    /** XML element name for the root element of the query facet configuration. */
+    private static final String XML_ELEMENT_QUERY_FACET = "QueryFacet";
     /** XML element names for facet options. */
     /** XML element name. */
     private static final String XML_ELEMENT_FACET_LIMIT = "Limit";
@@ -92,8 +111,6 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     private static final String XML_ELEMENT_FACET_MINCOUNT = "MinCount";
     /** XML element name. */
     private static final String XML_ELEMENT_FACET_LABEL = "Label";
-    /** XML element name. */
-    private static final String XML_ELEMENT_FACET_NAME = "Name";
     /** XML element name. */
     private static final String XML_ELEMENT_FACET_FIELD = "Field";
     /** XML element name. */
@@ -104,6 +121,14 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     private static final String XML_ELEMENT_FACET_FILTERQUERYMODIFIER = "FilterQueryModifier";
     /** XML element name. */
     private static final String XML_ELEMENT_FACET_ISANDFACET = "IsAndFacet";
+    /** XML element name. */
+    private static final String XML_ELEMENT_FACET_PRESELECTION = "PreSelection";
+    /** XML element name. */
+    private static final String XML_ELEMENT_QUERY_FACET_QUERY = "QueryItem";
+    /** XML element name. */
+    private static final String XML_ELEMENT_QUERY_FACET_QUERY_QUERY = "Query";
+    /** XML element name. */
+    private static final String XML_ELEMENT_QUERY_FACET_QUERY_LABEL = "Label";
 
     /** XML element names for sort options. */
     /** XML element name. */
@@ -142,12 +167,19 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
 
     /** XML element names for "Did you mean ...?". */
     /** XML element name. */
-    private static final String XML_ELEMENT_DIDYOUMEAN_ENABLED = "DidYouMeanEnabled";
+    private static final String XML_ELEMENT_DIDYOUMEAN = "DidYouMean";
+    /** XML elements for the "Did you mean ...?" configuration. */
+    /** XML element name. */
+    private static final String XML_ELEMENT_DIDYOUMEAN_QUERYPARAM = "QueryParam";
+    /** XML element name. */
+    private static final String XML_ELEMENT_DIDYOUMEAN_QUERY_MODIFIER = "QueryModifier";
 
     /** Default value. */
     private static final String DEFAULT_QUERY_PARAM = "q";
     /** Default value. */
     private static final String DEFAULT_LAST_QUERY_PARAM = "lq";
+    /** Default value. */
+    private static final String DEFAULT_RELOADED_PARAM = "reloaded";
     /** Default value. */
     private static final String DEFAULT_SORT_PARAM = "sort";
     /** Default value. */
@@ -181,10 +213,14 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         return new CmsSearchConfigurationCommon(
             getQueryParam(),
             getLastQueryParam(),
+            getFirstCallParam(),
+            getSearchForEmtpyQuery(),
             getIgnoreQuery(),
+            getQueryModifier(),
             getIndex(),
             getCore(),
-            getExtraSolrParams());
+            getExtraSolrParams(),
+            getAdditionalRequestParameters());
     }
 
     /**
@@ -192,7 +228,18 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
      */
     public I_CmsSearchConfigurationDidYouMean parseDidYouMean() {
 
-        return new CmsSearchConfigurationDidYouMean(parseOptionalBooleanValue(XML_ELEMENT_DIDYOUMEAN_ENABLED));
+        final I_CmsXmlContentValue didYouMean = m_xml.getValue(XML_ELEMENT_DIDYOUMEAN, m_locale);
+        if (didYouMean == null) {
+            return null;
+        } else {
+            final String pathPrefix = didYouMean.getPath() + "/";
+            String param = parseOptionalStringValue(pathPrefix + XML_ELEMENT_DIDYOUMEAN_QUERYPARAM);
+            if (null == param) {
+                param = getQueryParam();
+            }
+            String modifier = parseOptionalStringValue(pathPrefix + XML_ELEMENT_DIDYOUMEAN_QUERY_MODIFIER);
+            return new CmsSearchConfigurationDidYouMean(param, modifier);
+        }
     }
 
     /**
@@ -271,12 +318,59 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     }
 
     /**
+     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseQueryFacet()
+     */
+    @Override
+    public I_CmsSearchConfigurationFacetQuery parseQueryFacet() {
+
+        final String pathPrefix = XML_ELEMENT_QUERY_FACET + "/";
+        try {
+            final List<I_CmsFacetQueryItem> queries = parseFacetQueryItems(pathPrefix + XML_ELEMENT_QUERY_FACET_QUERY);
+            final String label = parseOptionalStringValue(pathPrefix + XML_ELEMENT_FACET_LABEL);
+            final Boolean isAndFacet = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_FACET_ISANDFACET);
+            final List<String> preselection = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_PRESELECTION);
+            return new CmsSearchConfigurationFacetQuery(queries, label, isAndFacet, preselection);
+        } catch (final Exception e) {
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.ERR_QUERY_FACET_MANDATORY_KEY_MISSING_1,
+                    XML_ELEMENT_QUERY_FACET_QUERY),
+                e);
+            return null;
+        }
+    }
+
+    /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseSorting()
      */
     @Override
     public I_CmsSearchConfigurationSorting parseSorting() {
 
         return new CmsSearchConfigurationSorting(getSortParam(), getSortOptions());
+    }
+
+    /** Helper to read a mandatory String value list.
+     * @param path The XML path of the element to read.
+     * @return The String list stored in the XML, or <code>null</code> if the value could not be read.
+     * @throws Exception thrown if the list of String values can not be read.
+     */
+    protected List<I_CmsFacetQueryItem> parseFacetQueryItems(final String path) throws Exception {
+
+        final List<I_CmsXmlContentValue> values = m_xml.getValues(path, m_locale);
+        if (values == null) {
+            return null;
+        } else {
+            List<I_CmsFacetQueryItem> parsedItems = new ArrayList<I_CmsFacetQueryItem>(values.size());
+            for (I_CmsXmlContentValue value : values) {
+                I_CmsFacetQueryItem item = parseFacetQueryItem(value.getPath() + "/");
+                if (null != item) {
+                    parsedItems.add(item);
+                } else {
+                    // TODO: log
+                }
+            }
+            return parsedItems;
+        }
     }
 
     /** Reads the configuration of a field facet.
@@ -288,7 +382,6 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         try {
             final String field = parseMandatoryStringValue(pathPrefix + XML_ELEMENT_FACET_FIELD);
             final String label = parseOptionalStringValue(pathPrefix + XML_ELEMENT_FACET_LABEL);
-            final String name = parseOptionalStringValue(pathPrefix + XML_ELEMENT_FACET_NAME);
             final Integer minCount = parseOptionalIntValue(pathPrefix + XML_ELEMENT_FACET_MINCOUNT);
             final Integer limit = parseOptionalIntValue(pathPrefix + XML_ELEMENT_FACET_LIMIT);
             final String prefix = parseOptionalStringValue(pathPrefix + XML_ELEMENT_FACET_PREFIX);
@@ -302,16 +395,17 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             final String filterQueryModifier = parseOptionalStringValue(pathPrefix
                 + XML_ELEMENT_FACET_FILTERQUERYMODIFIER);
             final Boolean isAndFacet = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_FACET_ISANDFACET);
+            final List<String> preselection = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_PRESELECTION);
             return new CmsSearchConfigurationFacetField(
                 field,
                 minCount,
                 limit,
                 prefix,
-                name,
                 label,
                 order,
                 filterQueryModifier,
-                isAndFacet);
+                isAndFacet,
+                preselection);
         } catch (final Exception e) {
             LOG.error(
                 Messages.get().getBundle().key(
@@ -378,6 +472,43 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         }
     }
 
+    /** Helper to read an optional String value list.
+     * @param path The XML path of the element to read.
+     * @return The String list stored in the XML, or <code>null</code> if the value could not be read.
+     */
+    protected List<String> parseOptionalStringValues(final String path) {
+
+        final List<I_CmsXmlContentValue> values = m_xml.getValues(path, m_locale);
+        if (values == null) {
+            return null;
+        } else {
+            List<String> stringValues = new ArrayList<String>(values.size());
+            for (I_CmsXmlContentValue value : values) {
+                stringValues.add(value.getStringValue(null));
+            }
+            return stringValues;
+        }
+    }
+
+    /** Returns a map with additional request parameters, mapping the parameter names to Solr query parts.
+     * @return A map with additional request parameters, mapping the parameter names to Solr query parts.
+     */
+    private Map<String, String> getAdditionalRequestParameters() {
+
+        List<I_CmsXmlContentValue> parametersToParse = m_xml.getValues(XML_ELEMENT_ADDITIONAL_PARAMETERS, m_locale);
+        Map<String, String> result = new HashMap<String, String>(parametersToParse.size());
+        for (I_CmsXmlContentValue additionalParam : parametersToParse) {
+            String param = m_xml.getValue(
+                additionalParam.getPath() + "/" + XML_ELEMENT_ADDITIONAL_PARAMETERS_PARAM,
+                m_locale).toString();
+            String solrQuery = m_xml.getValue(
+                additionalParam.getPath() + "/" + XML_ELEMENT_ADDITIONAL_PARAMETERS_SOLRQUERY,
+                m_locale).toString();
+            result.put(param, solrQuery);
+        }
+        return result;
+    }
+
     /** Returns the configured Solr core, or <code>null</code> if the core is not specified.
      * @return The configured Solr core, or <code>null</code> if the core is not specified.
      */
@@ -399,6 +530,22 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         return parseOptionalStringValue(XML_ELEMENT_EXTRASOLRPARAMS);
     }
 
+    /** Returns the configured request parameter for the last query, or the default parameter if the core is not specified.
+     * @return The configured request parameter for the last query, or the default parameter if the core is not specified.
+     */
+    private String getFirstCallParam() {
+
+        final String param = parseOptionalStringValue(XML_ELEMENT_RELOADED_PARAM);
+        if (param == null) {
+            return DEFAULT_RELOADED_PARAM;
+        } else {
+            return param;
+        }
+    }
+
+    /** Returns a flag, indicating if the query and lastquery parameters should be ignored. E.g., if only the additional parameters should be used for the search.
+     * @return A flag, indicating if the query and lastquery parameters should be ignored.
+     */
     private Boolean getIgnoreQuery() {
 
         return parseOptionalBooleanValue(XML_ELEMENT_IGNORE_QUERY);
@@ -469,6 +616,14 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         }
     }
 
+    /** Returns the optional query modifier.
+     * @return the optional query modifier.
+     */
+    private String getQueryModifier() {
+
+        return parseOptionalStringValue(XML_ELEMENT_QUERY_MODIFIER);
+    }
+
     /** Returns the configured request parameter for the current query string, or the default parameter if the core is not specified.
      * @return The configured request parameter for the current query string, or the default parameter if the core is not specified.
      */
@@ -480,6 +635,14 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         } else {
             return param;
         }
+    }
+
+    /** Returns a flag, indicating if search should be performed using a wildcard if the empty query is given.
+     * @return A flag, indicating if search should be performed using a wildcard if the empty query is given.
+     */
+    private Boolean getSearchForEmtpyQuery() {
+
+        return parseOptionalBooleanValue(XML_ELEMENT_SEARCH_FOR_EMPTY_QUERY);
     }
 
     /** Returns the configured sort options, or the empty list if no such options are configured.
@@ -513,6 +676,23 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             return DEFAULT_SORT_PARAM;
         } else {
             return param;
+        }
+    }
+
+    /** Parses a single query facet item with query and label.
+     * @param prefix path to the query facet item (with trailing '/').
+     * @return the query facet item.
+     */
+    private I_CmsFacetQueryItem parseFacetQueryItem(final String prefix) {
+
+        I_CmsXmlContentValue query = m_xml.getValue(prefix + XML_ELEMENT_QUERY_FACET_QUERY_QUERY, m_locale);
+        if (null != query) {
+            String queryString = query.getStringValue(null);
+            I_CmsXmlContentValue label = m_xml.getValue(prefix + XML_ELEMENT_QUERY_FACET_QUERY_LABEL, m_locale);
+            String labelString = null != label ? label.getStringValue(null) : null;
+            return new CmsFacetQueryItem(queryString, labelString);
+        } else {
+            return null;
         }
     }
 

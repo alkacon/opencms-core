@@ -27,12 +27,28 @@
       <Value><![CDATA[Name des Solr Suchindex der zur Suche genutzt wird. Falls kein Index angegeben wird, wird "Solr Online" im Online-Projekt und sonst "Solr Offline" genutzt.]]></Value>
     </Message>
     <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.SearchForEmptyQuery]]></Key>
+      <Value><![CDATA[Für leere Suchanfrage suchen]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.SearchForEmptyQuery.help]]></Key>
+      <Value><![CDATA[Ist diese Option eingeschaltet, wird eine Suche nach "*" ausgeführt falls kein Suchbegriff eingegeben wurde. Andernfalls wird bei fehlendem Suchbegriff gar nicht gesucht.]]></Value>
+    </Message>
+    <Message>
       <Key><![CDATA[label.JspSearchFormConfig.IgnoreQuery]]></Key>
       <Value><![CDATA[Suchanfrage ignorieren]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.IgnoreQuery.help]]></Key>
       <Value><![CDATA[Ist diese Option eingeschaltet, werden die durch Request-Parameter übermittelten Suchanfragen ignoriert. Die Anfrage sollte dann über "Zusätzliche Solr Query-Parameter" spezifiziert sein. Diese Option ist besonders zur Erstellung von Listen hilfreich.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.QueryModifier]]></Key>
+      <Value><![CDATA[Suchanfragen-Modifizierer]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.QueryModifier.help]]></Key>
+      <Value><![CDATA[Normalerweise wird die eingegebene Suchanfrage als "q=Suchanfrage" an den Solr-Query angehängt. Durch den Modifizierer, kann "Suchanfrage" ersetzt werden. Der Modifizierer kann das Makro %(query) enthalten, welches durch "Suchanfrage" ersetzt wird. Beispiel: Der Modifizierer "content_en:%(query) OR Title_prop:%(query)" liefert die Anfrage "q=content_en:Suchanfrage OR Title_prop:Suchanfrage".]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.QueryParam]]></Key>
@@ -51,12 +67,28 @@
       <Value><![CDATA[Der Request-Parameter über den die letzte Suchanfrage übermittelt wird. Default: lq.]]></Value>
     </Message>
     <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.ReloadedParam]]></Key>
+      <Value><![CDATA[Request-Parameter: wiederholt geladen]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.ReloadedParam.help]]></Key>
+      <Value><![CDATA[Der Request-Parameter zeigt an, ob das Suchformular zum wiederholten Male geladen wird. Default: reloaded.]]></Value>
+    </Message>
+    <Message>
       <Key><![CDATA[label.JspSearchFormConfig.ExtraSolrParams]]></Key>
       <Value><![CDATA[Zusätzliche Solr Query-Parameter]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.ExtraSolrParams.help]]></Key>
       <Value><![CDATA[Ein String mit Solr Query-Parametern, der unverändert an Solr weitergegeben wird. Beispiel: Um die Suche auf Containerpages einzuschränken und nur unter /sites/default/ zu suchen, kann der Parameter <code>fq=type:containerpage&fq=parent-folders:"/sites/default/"</code> gewählt werden.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.AdditionalRequestParams]]></Key>
+      <Value><![CDATA[Zusätzliche Request-Parameter]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.AdditionalRequestParams.help]]></Key>
+      <Value><![CDATA[Mit zusätzlichen Request-Parametern kann die Solr-Query unter Verwendung des Parameterwertes erweitert werden.]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.PageParam]]></Key>
@@ -107,12 +139,36 @@
       <Value><![CDATA[Spezifikation der aktuellen Feldfacetten.]]></Value>
     </Message>
     <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.QueryFacet]]></Key>
+      <Value><![CDATA[Query-Facette]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.QueryFacet.help]]></Key>
+      <Value><![CDATA[Spezifikation einer Query-Facette.]]></Value>
+    </Message>
+    <Message>
       <Key><![CDATA[label.JspSearchFormConfig.Highlighting]]></Key>
       <Value><![CDATA[Highlight-Optionen]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.Highlighting.help]]></Key>
       <Value><![CDATA[Schalten Sie die Highlighting-Komponente von Solr ein und geben Sie Highlight-Optionen an.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.AdditionalParamConfig.Param]]></Key>
+      <Value><![CDATA[Name des Request-Parameters]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.AdditionalParamConfig.Param.help]]></Key>
+      <Value><![CDATA[Name des zusätzlichen Request-Parameters, dessen Wert die Suche beeinflussen soll.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.AdditionalParamConfig.SolrQuery]]></Key>
+      <Value><![CDATA[Solr-Query]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.AdditionalParamConfig.SolrQuery.help]]></Key>
+      <Value><![CDATA[Ein Teil einer Solr-Query, die unter Nutzung des Wertes des zusätzlichen Request-Parameters erzeugt wird. Z.B. könnte der Query-Teil als "fq=lastmodified:[%(value) TO *]" spezifiziert sein. Das Makro "%(value)" wird durch den aktuellen Wert des zusätzlichen Request-Parameters ersetzt.]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.FieldFacetConfig.Field]]></Key>
@@ -129,14 +185,6 @@
     <Message>
       <Key><![CDATA[label.FieldFacetConfig.Label.help]]></Key>
       <Value><![CDATA[Ein Label das oberhalb der Facetten-Werte angezeigt werden kann. Default: der Facetten-Name.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Name]]></Key>
-      <Value><![CDATA[Facetten-Name]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Name.help]]></Key>
-      <Value><![CDATA[Ein Name zur Identifizieren der Facette im Formatter. Default: Name des Facetten-Feldes.]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.FieldFacetConfig.MinCount]]></Key>
@@ -185,6 +233,62 @@
     <Message>
       <Key><![CDATA[label.FieldFacetConfig.IsAndFacet.help]]></Key>
       <Value><![CDATA[Standardmäßig wird, falls mehr als ein Facetteneintrag angeklickt ist, nach Resultaten gesucht, die mindestens eine der durch die Facetteneinträge entstehenden Bedingungen erfüllen. Wählen Sie die Konfigurationsoption aus, muss jedes Resultat alle Bedingungen erfüllen.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.PreSelection]]></Key>
+      <Value><![CDATA[Vorausgewählter Facetteneintrag]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.PreSelection.help]]></Key>
+      <Value><![CDATA[Facetten-Eintrag, der beim ersten Laden des Suchformulars bereits ausgewählt sein soll.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.QueryItem]]></Key>
+      <Value><![CDATA[Facettierter Query]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.QueryItem.help]]></Key>
+      <Value><![CDATA[Ein Filter-Query, der als Facetten-Eintrag dient.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.Label]]></Key>
+      <Value><![CDATA[Facetten-Label]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.Label.help]]></Key>
+      <Value><![CDATA[Ein Label das oberhalb der Facetten-Werte angezeigt werden kann. Default: der Facetten-Name.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.IsAndFacet]]></Key>
+      <Value><![CDATA[Nach allen Bedingungen filtern]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.IsAndFacet.help]]></Key>
+      <Value><![CDATA[Standardmäßig wird, falls mehr als ein Facetteneintrag angeklickt ist, nach Resultaten gesucht, die mindestens eine der durch die Facetteneinträge entstehenden Bedingungen erfüllen. Wählen Sie die Konfigurationsoption aus, muss jedes Resultat alle Bedingungen erfüllen.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.PreSelection]]></Key>
+      <Value><![CDATA[Vorausgewählter Facetteneintrag]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.PreSelection.help]]></Key>
+      <Value><![CDATA[Facetten-Eintrag, der beim ersten Laden des Suchformulars bereits ausgewählt sein soll.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FacetQueryItem.Query]]></Key>
+      <Value><![CDATA[Query]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FacetQueryItem.Query.help]]></Key>
+      <Value><![CDATA[Der tatsächliche Wert des Filter-Queries der einen Facetten-Eintrag charakterisiert. Z.B. "lastmodified:[NOW-1MONTHS TO NOW]" um nur Ergebnisse, die innerhalb des letzten Monats geändert wurden, zu erhalten.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FacetQueryItem.Label]]></Key>
+      <Value><![CDATA[Label]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FacetQueryItem.Label.help]]></Key>
+      <Value><![CDATA[Ein Label, das zur Darstellung des Facetten-Eintrags genutzt werden kann.]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.HighlightingConfig.Field]]></Key>
@@ -311,6 +415,10 @@
       <Value><![CDATA[Feld-Facetten]]></Value>
     </Message>
     <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.QueryFacets]]></Key>
+      <Value><![CDATA[Query-Facette]]></Value>
+    </Message>
+    <Message>
       <Key><![CDATA[label.JspSearchFormConfig.Highlighting]]></Key>
       <Value><![CDATA[Highlighting]]></Value>
     </Message>
@@ -319,16 +427,32 @@
       <Value><![CDATA[Standard Suchkonfiguration]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMean]]></Key>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanTab]]></Key>
       <Value><![CDATA[Meinten Sie]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanEnabled]]></Key>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMean]]></Key>
       <Value><![CDATA[Aktivieren der "Meinten Sie ...?" Funktion]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanEnabled.help]]></Key>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMean.help]]></Key>
       <Value><![CDATA["Meinten Sie ...?" bietet eine alternative Suchanfrage an, falls für die aktuelle Anfrage keine Ergebnisse gefunden werden.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.DidYouMeanConfig.QueryParam]]></Key>
+      <Value><![CDATA[Request-Parameter: "Meinten Sie ...?"-Query]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.DidYouMeanConfig.QueryParam.help]]></Key>
+      <Value><![CDATA[Der Request-Parameter sollte genutzt werden, wenn die Suchanfrage für die "Meinten Sie ...?"-Funktion von der eigentlichen Suchanfrage abweicht. Wird er nicht angegeben, wird die (unmodifizierte) eigentliche Suchanfrage auch für die "Meinten Sie ...?"-Funktion genutzt.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.DidYouMeanConfig.QueryModifier]]></Key>
+      <Value><![CDATA[Suchanfragen-Modifizierer]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.DidYouMeanConfig.QueryModifier.help]]></Key>
+      <Value><![CDATA[Normalerweise wird die eingegebene Suchanfrage als "spellcheck.q=Suchanfrage" an den Solr-Query angehängt. Durch den Modifizierer, kann "Suchanfrage" ersetzt werden. Der Modifizierer kann das Makro %(query) enthalten, welches durch "Suchanfrage" ersetzt wird. Beispiel: Der Modifizierer "content_en:%(query)" liefert die Anfrage "spellcheck.q=content_en:Suchanfrage".]]></Value>
     </Message>
   </Bundle>
   <Bundle language="en">
@@ -357,12 +481,28 @@
       <Value><![CDATA[The Solr index to use for the search. If not configured, "Solr Online" is used in the online project and "Solr Offline" in all other projects.]]></Value>
     </Message>
     <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.SearchForEmptyQuery]]></Key>
+      <Value><![CDATA[Search for empty query]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.SearchForEmptyQuery.help]]></Key>
+      <Value><![CDATA[If enabled, a search for "*" will be performed if the search query is empty. Otherwise, no search will be performed for the empty query.]]></Value>
+    </Message>
+    <Message>
       <Key><![CDATA[label.JspSearchFormConfig.IgnoreQuery]]></Key>
       <Value><![CDATA[Ignore Query]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.IgnoreQuery.help]]></Key>
       <Value><![CDATA[If this option is checked, the query string send via the request parameter is ignored. The query should be specified in the "Additional Solr Query Parameters". The option is in paricular helpful when rendering lists (not search forms).]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.QueryModifier]]></Key>
+      <Value><![CDATA[Query Modifier]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.QueryModifier.help]]></Key>
+      <Value><![CDATA[Usually, the entered search query is passed to Solr as "q=my query". Via the modifier, "my query" can be replaced. The modifier can contain the macro %(query), which is replaced by the original query string. For example, the modifier "content_en:%(query) OR Title_prop:%(query)" will yield "q=content_en:my query OR Title_prop:my query" for the original query string "my query".]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.QueryParam]]></Key>
@@ -381,12 +521,28 @@
       <Value><![CDATA[The request parameter sent to transmit the last query string. Default: lq.]]></Value>
     </Message>
     <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.ReloadedParam]]></Key>
+      <Value><![CDATA[Request Parameter: Reloaded]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.ReloadedParam.help]]></Key>
+      <Value><![CDATA[The request parameter sent to indicate that the page with the search form is reloaded. Default: reloaded.]]></Value>
+    </Message>
+    <Message>
       <Key><![CDATA[label.JspSearchFormConfig.ExtraSolrParams]]></Key>
       <Value><![CDATA[Additional Solr Query Parameters]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.ExtraSolrParams.help]]></Key>
       <Value><![CDATA[A string of Solr query parameters, handed unmodified to Solr. E.g., to restrict the type to containerpages and the search to /sites/default/, use <code>fq=type:containerpage&fq=parent-folders:"/sites/default/"</code>.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.AdditionalRequestParams]]></Key>
+      <Value><![CDATA[Additional Request Parameter]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.AdditionalRequestParams.help]]></Key>
+      <Value><![CDATA[Additional request parameters can be used to extend the Solr query according to the request parameter's value.]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.PageParam]]></Key>
@@ -437,12 +593,36 @@
       <Value><![CDATA[Specify the available field facets.]]></Value>
     </Message>
     <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.QueryFacet]]></Key>
+      <Value><![CDATA[Query Facet]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.QueryFacet.help]]></Key>
+      <Value><![CDATA[Specify a query facet.]]></Value>
+    </Message>
+    <Message>
       <Key><![CDATA[label.JspSearchFormConfig.Highlighting]]></Key>
       <Value><![CDATA[Highlighting Options]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.Highlighting.help]]></Key>
       <Value><![CDATA[Enable highlighting and specify the highlighting options.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.AdditionalParamConfig.Param]]></Key>
+      <Value><![CDATA[Request Parameter Name]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.AdditionalParamConfig.Param.help]]></Key>
+      <Value><![CDATA[Name of the additional request parameter that should influence the search.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.AdditionalParamConfig.SolrQuery]]></Key>
+      <Value><![CDATA[Solr Query Part]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.AdditionalParamConfig.SolrQuery.help]]></Key>
+      <Value><![CDATA[The Solr query part that should be generated using the value of the additional request parameter. For example, the query part could be "fq=lastmodified:[%(value) TO *]". The macro "%(value)" will be replaced by the value of the request parameter.]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.FieldFacetConfig.Field]]></Key>
@@ -459,14 +639,6 @@
     <Message>
       <Key><![CDATA[label.FieldFacetConfig.Label.help]]></Key>
       <Value><![CDATA[A label you can show above the facet in your form. Default: the facet name.]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Name]]></Key>
-      <Value><![CDATA[Facet name]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[label.FieldFacetConfig.Name.help]]></Key>
-      <Value><![CDATA[A name that is used to identify the facet when writing the formatter. Default: facet field.]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.FieldFacetConfig.MinCount]]></Key>
@@ -515,6 +687,62 @@
     <Message>
       <Key><![CDATA[label.FieldFacetConfig.IsAndFacet.help]]></Key>
       <Value><![CDATA[By default, if more than one facet entry is checked, it is search for results meeting at least one of the conditions imposed by the checked entries. Checking this option, each result must match all imposed conditions.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.PreSelection]]></Key>
+      <Value><![CDATA[Preselected Facet Entry]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.PreSelection.help]]></Key>
+      <Value><![CDATA[A facet entry, that is already selected, when the search form is loaded for the first time.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.QueryItem]]></Key>
+      <Value><![CDATA[Facetted Query]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.QueryItem.help]]></Key>
+      <Value><![CDATA[A filter query, that serves as facet entry.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.Label]]></Key>
+      <Value><![CDATA[Facet Label]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.Label.help]]></Key>
+      <Value><![CDATA[A label you can show above the facet in your form. Default: the facet name.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.IsAndFacet]]></Key>
+      <Value><![CDATA[Filter for all checked entries]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.IsAndFacet.help]]></Key>
+      <Value><![CDATA[By default, if more than one facet entry is checked, it is search for results meeting at least one of the conditions imposed by the checked entries. Checking this option, each result must match all imposed conditions.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.PreSelection]]></Key>
+      <Value><![CDATA[Preselected Facet Entry]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.QueryFacetConfig.PreSelection.help]]></Key>
+      <Value><![CDATA[A facet entry, that is already selected, when the search form is loaded for the first time.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FacetQueryItem.Query]]></Key>
+      <Value><![CDATA[Query]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FacetQueryItem.Query.help]]></Key>
+      <Value><![CDATA[The actual value of the filter query that makes up the facet entry, e.g. "lastmodified:[NOW-1MONTHS TO NOW]" for selecting everything modified during the last month.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FacetQueryItem.Label]]></Key>
+      <Value><![CDATA[Label]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FacetQueryItem.Label.help]]></Key>
+      <Value><![CDATA[The label that can be used to display the facet entry.]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.HighlightingConfig.Field]]></Key>
@@ -641,6 +869,10 @@
       <Value><![CDATA[Field Facets]]></Value>
     </Message>
     <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.QueryFacets]]></Key>
+      <Value><![CDATA[Query Facet]]></Value>
+    </Message>
+    <Message>
       <Key><![CDATA[label.JspSearchFormConfig.Highlighting]]></Key>
       <Value><![CDATA[Highlighting]]></Value>
     </Message>
@@ -649,16 +881,32 @@
       <Value><![CDATA[Default Search Configuration]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMean]]></Key>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanTab]]></Key>
       <Value><![CDATA[Did you mean]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanEnabled]]></Key>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMean]]></Key>
       <Value><![CDATA[Enable the "Did you mean ...?" feature]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanEnabled.help]]></Key>
+      <Key><![CDATA[label.JspSearchFormConfig.DidYouMean.help]]></Key>
       <Value><![CDATA[Did you mean provides alternative search queries in the case that your search fails.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.DidYouMeanConfig.QueryParam]]></Key>
+      <Value><![CDATA[Request Parameter: "Did you mean ...?"- Query]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.DidYouMeanConfig.QueryParam.help]]></Key>
+      <Value><![CDATA[The request parameter used to transmit the query for the "Did you mean ...?"-feature. If the parameter is not specified, the main query string is used instead of a special alternative query.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.DidYouMeanConfig.QueryModifier]]></Key>
+      <Value><![CDATA[Query Modifier]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.DidYouMeanConfig.QueryModifier.help]]></Key>
+      <Value><![CDATA[Usually, the entered search query is passed to Solr as "spellcheck.q=my query". Via the modifier, "my query" can be replaced. The modifier can contain the macro %(query), which is replaced by the original query string. For example, the modifier "content_en:%(query)" will yield "q=content_en:my query" for the original query string "my query".]]></Value>
     </Message>
   </Bundle>
 </XmlVfsBundles>

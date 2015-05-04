@@ -86,7 +86,7 @@
     </Message>
     <Message>
       <Key><![CDATA[content.edited]]></Key>
-      <Value><![CDATA[Der Inhalt wurde bearbeitet]]></Value>
+      <Value><![CDATA[Der Inhalt wurde bearbeitet.]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[content.autoReload]]></Key>

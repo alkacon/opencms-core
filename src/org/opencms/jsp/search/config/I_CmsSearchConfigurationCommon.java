@@ -27,8 +27,15 @@
 
 package org.opencms.jsp.search.config;
 
+import java.util.Map;
+
 /** Interface the common search configuration must implement. */
 public interface I_CmsSearchConfigurationCommon {
+
+    /** Returns a map from request parameter names to Solr query parts (where the parameter's values are typically inserted).
+     * @return A map from request parameter names to Solr query parts (where the parameter's values are typically inserted).
+     */
+    Map<String, String> getAdditionalParameters();
 
     /** Returns the extra params given to Solr.
      * @return The extra params given to Solr - in format "p1=v1&p2=v2".
@@ -47,10 +54,26 @@ public interface I_CmsSearchConfigurationCommon {
      */
     String getLastQueryParam();
 
+    /** Modifies the query string according to the specified query modifier.
+     * @param queryString the query to modify.
+     * @return the modified query.
+     */
+    String getModifiedQuery(String queryString);
+
     /** Returns the parameter name of the request parameter used to send the current query string.
      * @return The request parameter name used to send the current query string.
      */
     String getQueryParam();
+
+    /** Returns the parameter name of the request parameter used to indicate if the search form is loaded the first time or repeatedly.
+     * @return The request parameter name used to indicate if the search form is loaded the first time or repeatedly.
+     */
+    String getReloadedParam();
+
+    /** Returns a flag, indicating if for an empty search query, search should be performed using a wildcard.
+     * @return A flag, indicating if for an empty search query, search should be performed using a wildcard.
+     */
+    boolean getSearchForEmptyQueryParam();
 
     /** Returns the Solr core that should be used. Can also be <code>null</code>.
      * @return The Solr core to use, or <code>null</code> if none is configured.

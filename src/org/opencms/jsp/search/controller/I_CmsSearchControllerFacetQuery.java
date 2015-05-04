@@ -25,19 +25,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.jsp.search.config;
+package org.opencms.jsp.search.controller;
 
-/** Interface of the "Did you mean ...?" configuration for the JSP search form. */
-public interface I_CmsSearchConfigurationDidYouMean {
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
+import org.opencms.jsp.search.state.I_CmsSearchStateFacet;
 
-    /** Modifies the query string according to the specified query modifier.
-     * @param queryString the query to modify.
-     * @return the modified query.
+/** Interface to get controllers state and configuration - version for the query facet. */
+public interface I_CmsSearchControllerFacetQuery extends I_CmsSearchController {
+
+    /** Returns the configuration.
+     * @return The configuration.
      */
-    String getModifiedQuery(String queryString);
+    I_CmsSearchConfigurationFacetQuery getConfig();
 
-    /** Returns the parameter name of the request parameter used to send the current query string for spellchecking.
-     * @return The request parameter name used to send the current query string for spellchecking.
+    /** Returns the state.
+     * @return The state.
      */
-    String getQueryParam();
+    I_CmsSearchStateFacet getState();
+
 }

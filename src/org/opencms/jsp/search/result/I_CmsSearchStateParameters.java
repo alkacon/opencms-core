@@ -32,6 +32,11 @@ import java.util.Map;
 /** Interface for the search state parameters. */
 public interface I_CmsSearchStateParameters {
 
+    /** Returns the search state parameters with the parameter for ignoring a facet's (specified by first key) limit added.
+     * @return The search state parameters with the parameter for ignoring a facet's (specified by first key) limit added.
+     */
+    Map<String, I_CmsSearchStateParameters> getAddIgnoreFacetLimit();
+
     /** Returns the search state parameters with the filter query for facets (specified by first key) item (specified by the second key) added.
      * @return The search state parameters with the filter query for facets (specified by first key) item (specified by the second key) added.
      */
@@ -41,6 +46,11 @@ public interface I_CmsSearchStateParameters {
      * @return The search state parameters with adjusted Query parameter for the "Did you mean?" link.
      */
     I_CmsSearchStateParameters getQueryDidYouMean();
+
+    /** Returns the search state parameters with the parameter for ignoring a facet's (specified by first key) limit removed.
+     * @return The search state parameters with the parameter for ignoring a facet's (specified by first key) limit removed.
+     */
+    Map<String, I_CmsSearchStateParameters> getRemoveIgnoreFacetLimit();
 
     /** Returns the search state parameters with all filter queries for facets removed.
      * @return The search state parameters with all filter queries for facets removed.
@@ -66,4 +76,5 @@ public interface I_CmsSearchStateParameters {
      * @return The search state parameters with the filter query for facets (specified by first key) item (specified by the second key) removed.
      */
     Map<String, Map<String, I_CmsSearchStateParameters>> getUncheckFacetItem();
+
 }

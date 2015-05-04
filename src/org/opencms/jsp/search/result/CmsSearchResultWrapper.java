@@ -61,6 +61,8 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     final I_CmsSearchControllerMain m_controller;
     /** Map from field facet names to the facets as given by the search result. */
     private Map<String, FacetField> m_fieldFacetMap;
+    /** Map with the facet items of the query facet and their counts. */
+    private Map<String, Integer> m_facetQuery;
     /** CmsObject. */
     private final CmsObject m_cmsObject;
 
@@ -83,6 +85,13 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
         m_end = resultList.getEnd();
         m_numFound = resultList.getNumFound();
         m_maxScore = resultList.getMaxScore();
+        if (resultList.getFacetQuery() != null) {
+            Map<String, Integer> originalMap = resultList.getFacetQuery();
+            m_facetQuery = new HashMap<String, Integer>(originalMap.size());
+            for (String q : resultList.getFacetQuery().keySet()) {
+                m_facetQuery.put(removeLocalParamPrefix(q), originalMap.get(q));
+            }
+        }
     }
 
     /**
@@ -100,11 +109,10 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     public String getDidYouMean() {
 
         String suggestion = null;
-        if (getController().getDidYouMean().getConfig().getIsEnabled()) {
+        if (null != getController().getDidYouMean()) {
             if (m_solrResultList.getSpellCheckResponse() != null) {
                 suggestion = m_solrResultList.getSpellCheckResponse().getCollatedResult();
             }
-
         }
         return suggestion;
     }
@@ -116,6 +124,15 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     public int getEnd() {
 
         return m_end;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getFacetQuery()
+     */
+    @Override
+    public Map<String, Integer> getFacetQuery() {
+
+        return m_facetQuery;
     }
 
     /**
@@ -241,6 +258,19 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
         for (final CmsSearchResource searchResult : searchResults) {
             m_foundResources.add(new CmsSearchResourceBean(searchResult, m_cmsObject));
         }
+    }
+
+    /** Removes the !{ex=...} prefix from the query.
+     * @param q the original query
+     * @return the query with the prefix !{ex=...} removed.
+     */
+    private String removeLocalParamPrefix(final String q) {
+
+        int index = q.indexOf('}');
+        if (index >= 0) {
+            return q.substring(index + 1);
+        }
+        return q;
     }
 
 }

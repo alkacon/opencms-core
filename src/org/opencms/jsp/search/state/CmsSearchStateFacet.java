@@ -29,8 +29,8 @@ package org.opencms.jsp.search.state;
 
 import org.opencms.util.CmsCollectionsGenericWrapper;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
@@ -39,7 +39,7 @@ import org.apache.commons.collections.Transformer;
 public class CmsSearchStateFacet implements I_CmsSearchStateFacet {
 
     /** The checked facet entries. */
-    Collection<String> m_checked;
+    List<String> m_checked;
     /** Map with "facet entry" - "isChecked" pairs. */
     private Map<String, Boolean> m_checkedMap;
     /** Indicator if the configured limit for the maximal number of facet entries should be used. */
@@ -50,7 +50,7 @@ public class CmsSearchStateFacet implements I_CmsSearchStateFacet {
     /** Default constructor. */
     public CmsSearchStateFacet() {
 
-        m_checked = new HashSet<String>();
+        m_checked = new LinkedList<String>();
         m_useLimit = true;
         m_ignoreChecked = false;
     }
@@ -79,7 +79,7 @@ public class CmsSearchStateFacet implements I_CmsSearchStateFacet {
      * @see org.opencms.jsp.search.state.I_CmsSearchStateFacet#getCheckedEntries()
      */
     @Override
-    public Collection<String> getCheckedEntries() {
+    public List<String> getCheckedEntries() {
 
         return m_checked;
     }

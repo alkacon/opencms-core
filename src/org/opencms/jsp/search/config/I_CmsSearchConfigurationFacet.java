@@ -27,6 +27,8 @@
 
 package org.opencms.jsp.search.config;
 
+import java.util.List;
+
 /** Configuration common to all facets. Used as base interface for all special facet interfaces. */
 public interface I_CmsSearchConfigurationFacet {
 
@@ -41,6 +43,11 @@ public interface I_CmsSearchConfigurationFacet {
          */
         index
     }
+
+    /** Returns the facet specific request parameter used to send the information if the maximum number of facet entries should be ignored.
+     * @return The facet specific request parameter used to send the information if the maximum number of facet entries should be ignored.
+     */
+    String getIgnoreMaxParamKey();
 
     /** Returns true if the facet filters, such that only documents with all checked facet entries appear, otherwise false.
      * @return A flag, indicating if the facet's filters are concatenated by AND (or OR).
@@ -67,15 +74,15 @@ public interface I_CmsSearchConfigurationFacet {
      */
     String getName();
 
-    /** Returns the facet specific part of the request parameter used to send the checked facet entries.
-     * @return The facet specific part of the request parameter used to send the checked facet entries.
+    /** Returns the facet specific request parameter used to send the checked facet entries.
+     * @return The facet specific request parameter used to send the checked facet entries.
      */
     String getParamKey();
 
-    /** Returns the prefix all entries of a facet must match.
-     * @return The prefix all entries of a facet must match. (Solr: facet.prefix)
+    /** A list of facet-entries that should be preselected, if the search form is rendered the first time.
+     * @return The list of facet-entries that should be preselected, if the search form is rendered the first time.
      */
-    String getPrefix();
+    List<String> getPreSelection();
 
     /** Returns the sort order that should be used for the facet entries (either "count" or "index").
      * @return The sort order that should be used for the facet entries (either "count" or "index"). (Solr: facet.sort)

@@ -57,6 +57,12 @@ public interface I_CmsSearchControllerMain extends I_CmsSearchController {
      */
     I_CmsSearchControllerPagination getPagination();
 
+    /** Returns the controller for the query facet.
+    *
+    * @return The controller for the query facet.
+    */
+    I_CmsSearchControllerFacetQuery getQueryFacet();
+
     /** Returns the controller for sorting.
      * @return The controller for sorting.
      */

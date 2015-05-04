@@ -45,6 +45,7 @@ public interface I_CmsSearchController {
     void updateForQueryChange();
 
     /** Update the controllers state from the given request parameters.
-     * @param parameters The request parameters. */
-    void updateFromRequestParameters(Map<String, String[]> parameters);
+     * @param parameters The request parameters.
+     * @param isRepeated a flag, indicating, if the search is performed repeatedly, opposed to entering the search page for the first time. */
+    void updateFromRequestParameters(final Map<String, String[]> parameters, final boolean isRepeated);
 }

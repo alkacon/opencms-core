@@ -27,6 +27,9 @@
 
 package org.opencms.jsp.search.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Search configuration for common parameters as the query parameter etc.
  */
@@ -36,6 +39,12 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     private final String m_queryParam;
     /** The request parameter for the last query. */
     private final String m_lastQueryParam;
+    /** The request parameter send to indicate that this is not the first load of the search form. */
+    private final String m_reloadedParam;
+    /** A modifier for the search query. */
+    private final String m_queryModifier;
+    /** A flag, indicating if the empty query should be interpreted as "*:*" or if no search should be performed. */
+    private final boolean m_searchForEmptyQuery;
     /** A flag, indicating if the query params should be used at all (or if the query is fixed). */
     private final boolean m_ignoreQuery;
     /** The Solr index to use for the query (specified by it's name). */
@@ -44,29 +53,52 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     private final String m_solrCore;
     /** Extra parameters given to Solr, specified like "p1=v1&p2=v2". */
     private final String m_extraSolrParams;
+    /** Additional request parameters mapped to their Solr query parts. */
+    private final Map<String, String> m_additionalParameters;
 
     /** Constructor for the common search configuration, where all configuration parameters are provided.
      * @param queryParam The query request param used by the search form.
      * @param lastQueryParam The last-query request param used by the search form.
+     * @param reloadedParam The first-call request param used by the search form.
+     * @param seachForEmptyQuery A flag, indicating if the empty query should be interpreted as "*:*" or if no search should be performed.
      * @param ignoreQuery A flag, indicating if the query param's values should be used for Solr query generation.
+     * @param queryModifier Modifier for the given query string.
      * @param solrIndex The Solr index that should be used for the search.
      * @param solrCore The Solr core that should be used for the search.
      * @param extraSolrParams Extra params that are directly appended to each search query.
+     * @param additionalParameters A map from additional request parameters to Solr query parts.
      */
     public CmsSearchConfigurationCommon(
         final String queryParam,
         final String lastQueryParam,
+        final String reloadedParam,
+        final Boolean seachForEmptyQuery,
         final Boolean ignoreQuery,
+        final String queryModifier,
         final String solrIndex,
         final String solrCore,
-        final String extraSolrParams) {
+        final String extraSolrParams,
+        final Map<String, String> additionalParameters) {
 
         m_queryParam = queryParam;
         m_lastQueryParam = lastQueryParam;
+        m_reloadedParam = reloadedParam;
+        m_searchForEmptyQuery = seachForEmptyQuery != null ? seachForEmptyQuery.booleanValue() : false;
         m_ignoreQuery = ignoreQuery != null ? ignoreQuery.booleanValue() : false;
+        m_queryModifier = queryModifier;
         m_solrIndex = solrIndex;
         m_solrCore = solrCore;
         m_extraSolrParams = extraSolrParams == null ? "" : extraSolrParams;
+        m_additionalParameters = additionalParameters != null ? additionalParameters : new HashMap<String, String>();
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon#getAdditionalParameters()
+     */
+    @Override
+    public Map<String, String> getAdditionalParameters() {
+
+        return m_additionalParameters;
     }
 
     /**
@@ -96,12 +128,41 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     }
 
     /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon#getModifiedQuery(java.lang.String)
+     */
+    @Override
+    public String getModifiedQuery(String queryString) {
+
+        if (null != m_queryModifier) {
+            return m_queryModifier.replace("%(query)", queryString);
+        }
+        return queryString;
+    }
+
+    /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon#getQueryParam()
      */
     @Override
     public String getQueryParam() {
 
         return m_queryParam;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon#getReloadedParam()
+     */
+    public String getReloadedParam() {
+
+        return m_reloadedParam;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon#getSearchForEmptyQueryParam()
+     */
+    @Override
+    public boolean getSearchForEmptyQueryParam() {
+
+        return m_searchForEmptyQuery;
     }
 
     /**

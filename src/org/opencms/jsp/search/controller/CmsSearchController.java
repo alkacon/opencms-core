@@ -47,6 +47,8 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
     I_CmsSearchControllerPagination m_pagination;
     /** The controller for the field facets. */
     I_CmsSearchControllerFacetsField m_fieldFacets;
+    /** The controller for the query facet. */
+    I_CmsSearchControllerFacetQuery m_queryFacet;
     /** The controller for the highlighting. */
     I_CmsSearchControllerHighlighting m_highlighting;
     /** The controller for the "Did you mean ...?" feature. */
@@ -76,10 +78,14 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
             m_highlighting = new CmsSearchControllerHighlighting(config.getHighlighterConfig());
             m_controllers.add(m_highlighting);
         }
-        m_didyoumean = new CmsSearchControllerDidYouMean(
-            config.getDidYouMeanConfig(),
-            m_common.getConfig().getQueryParam());
-        m_controllers.add(m_didyoumean);
+        if (config.getDidYouMeanConfig() != null) {
+            m_didyoumean = new CmsSearchControllerDidYouMean(config.getDidYouMeanConfig());
+            m_controllers.add(m_didyoumean);
+        }
+        if (config.getQueryFacetConfig() != null) {
+            m_queryFacet = new CmsSearchControllerFacetQuery(config.getQueryFacetConfig());
+            m_controllers.add(m_queryFacet);
+        }
     }
 
     /**
@@ -167,6 +173,15 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
     }
 
     /**
+     * @see org.opencms.jsp.search.controller.I_CmsSearchControllerMain#getQueryFacet()
+     */
+    @Override
+    public I_CmsSearchControllerFacetQuery getQueryFacet() {
+
+        return m_queryFacet;
+    }
+
+    /**
      * @see org.opencms.jsp.search.controller.I_CmsSearchControllerMain#getSorting()
      */
     @Override
@@ -188,14 +203,15 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateFromRequestParameters(java.util.Map)
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateFromRequestParameters(java.util.Map, boolean)
      */
     @Override
-    public void updateFromRequestParameters(final Map<String, String[]> parameters) {
+    public void updateFromRequestParameters(final Map<String, String[]> parameters, final boolean unused) {
 
         // Check if query has changed
         final String lastQueryParam = m_common.getConfig().getLastQueryParam();
         final String queryParam = m_common.getConfig().getQueryParam();
+        final String firstCallParam = m_common.getConfig().getReloadedParam();
         if (!m_common.getConfig().getIgnoreQueryParam()
             && parameters.containsKey(lastQueryParam)
             && parameters.containsKey(queryParam)
@@ -204,8 +220,9 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
             && !parameters.get(queryParam)[0].equals(parameters.get(lastQueryParam)[0])) {
             updateForQueryChange();
         }
+        boolean isReloaded = parameters.containsKey(firstCallParam);
         for (final I_CmsSearchController controller : m_controllers) {
-            controller.updateFromRequestParameters(parameters);
+            controller.updateFromRequestParameters(parameters, isReloaded);
         }
 
     }

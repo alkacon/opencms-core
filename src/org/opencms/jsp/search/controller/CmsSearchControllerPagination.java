@@ -105,10 +105,10 @@ public class CmsSearchControllerPagination implements I_CmsSearchControllerPagin
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateFromRequestParameters(java.util.Map)
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateFromRequestParameters(java.util.Map, boolean)
      */
     @Override
-    public void updateFromRequestParameters(final Map<String, String[]> parameters) {
+    public void updateFromRequestParameters(final Map<String, String[]> parameters, boolean isReloaded) {
 
         if (!m_state.getIgnorePage() && parameters.containsKey(m_config.getPageParam())) {
             final String[] page = parameters.get(m_config.getPageParam());

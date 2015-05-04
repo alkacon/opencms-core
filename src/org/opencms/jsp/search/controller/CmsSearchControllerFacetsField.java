@@ -111,13 +111,13 @@ public class CmsSearchControllerFacetsField implements I_CmsSearchControllerFace
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateFromRequestParameters(java.util.Map)
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateFromRequestParameters(java.util.Map, boolean)
      */
     @Override
-    public void updateFromRequestParameters(final Map<String, String[]> parameters) {
+    public void updateFromRequestParameters(final Map<String, String[]> parameters, boolean isReloaded) {
 
         for (final I_CmsSearchControllerFacetField controller : m_fieldFacets.values()) {
-            controller.updateFromRequestParameters(parameters);
+            controller.updateFromRequestParameters(parameters, isReloaded);
         }
 
     }

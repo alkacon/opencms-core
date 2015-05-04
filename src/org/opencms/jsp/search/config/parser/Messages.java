@@ -41,7 +41,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_MANDATORY_HIGHLIGHTING_FIELD_MISSING_0 = "ERR_MANDATORY_HIGHLIGHTING_FIELD_MISSING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_ADDITIONAL_PARAMETER_CONFIG_WRONG_0 = "ERR_ADDITIONAL_PARAMETER_CONFIG_WRONG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ADDITIONAL_PARAMETER_CONFIG_NOT_PARSED_0 = "LOG_ADDITIONAL_PARAMETER_CONFIG_NOT_PARSED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_FIELD_FACET_MANDATORY_KEY_MISSING_1 = "ERR_FIELD_FACET_MANDATORY_KEY_MISSING_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_QUERY_FACET_MANDATORY_KEY_MISSING_1 = "ERR_QUERY_FACET_MANDATORY_KEY_MISSING_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_OPTIONAL_BOOLEAN_MISSING_1 = "LOG_OPTIONAL_BOOLEAN_MISSING_1";
@@ -75,6 +84,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_SORT_CONFIG_0 = "LOG_NO_SORT_CONFIG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_OPTIONAL_STRING_LIST_MISSING_1 = "LOG_OPTIONAL_STRING_LIST_MISSING_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_OPTIONAL_STRING_ENTRY_UNPARSABLE_1 = "LOG_OPTIONAL_STRING_ENTRY_UNPARSABLE_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.jsp.search.config.parser";

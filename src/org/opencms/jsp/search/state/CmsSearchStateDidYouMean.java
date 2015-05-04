@@ -25,19 +25,29 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.jsp.search.config;
+package org.opencms.jsp.search.state;
 
-/** Interface of the "Did you mean ...?" configuration for the JSP search form. */
-public interface I_CmsSearchConfigurationDidYouMean {
+/** Class for handling the state of the "Did you mean?" search options. */
+public class CmsSearchStateDidYouMean implements I_CmsSearchStateDidYouMean {
 
-    /** Modifies the query string according to the specified query modifier.
-     * @param queryString the query to modify.
-     * @return the modified query.
+    /** The current query string (as given by the user). */
+    private String m_query = "";
+
+    /**
+     * @see org.opencms.jsp.search.state.I_CmsSearchStateDidYouMean#getQuery()
      */
-    String getModifiedQuery(String queryString);
+    public String getQuery() {
 
-    /** Returns the parameter name of the request parameter used to send the current query string for spellchecking.
-     * @return The request parameter name used to send the current query string for spellchecking.
+        return m_query;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.state.I_CmsSearchStateDidYouMean#setQuery(java.lang.String)
      */
-    String getQueryParam();
+    public void setQuery(String query) {
+
+        m_query = query;
+
+    }
+
 }

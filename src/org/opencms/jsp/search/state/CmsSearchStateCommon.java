@@ -27,6 +27,9 @@
 
 package org.opencms.jsp.search.state;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /** Class for handling the state of the common search options. */
 public class CmsSearchStateCommon implements I_CmsSearchStateCommon {
 
@@ -34,6 +37,27 @@ public class CmsSearchStateCommon implements I_CmsSearchStateCommon {
     private String m_query = "";
     /** The last query string (as given by the user). */
     private String m_lastquery = "";
+    /** The flag, indicating if the search is performed for the first time or not. */
+    private boolean m_isReloaded;
+    /** Map from the additional request parameters to their values. */
+    private Map<String, String> m_additionalParameters;
+
+    /**
+     * @see org.opencms.jsp.search.state.I_CmsSearchStateCommon#getAdditionalParameters()
+     */
+    @Override
+    public Map<String, String> getAdditionalParameters() {
+
+        return m_additionalParameters == null ? new HashMap<String, String>() : m_additionalParameters;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.state.I_CmsSearchStateCommon#getIsReloaded()
+     */
+    public boolean getIsReloaded() {
+
+        return m_isReloaded;
+    }
 
     /**
      * @see org.opencms.jsp.search.state.I_CmsSearchStateCommon#getLastQuery()
@@ -51,6 +75,24 @@ public class CmsSearchStateCommon implements I_CmsSearchStateCommon {
     public String getQuery() {
 
         return m_query;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.state.I_CmsSearchStateCommon#setAdditionalParameters(java.util.Map)
+     */
+    @Override
+    public void setAdditionalParameters(Map<String, String> parameters) {
+
+        m_additionalParameters = parameters;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.state.I_CmsSearchStateCommon#setIsReloaded(boolean)
+     */
+    public void setIsReloaded(boolean isReloaded) {
+
+        m_isReloaded = isReloaded;
+
     }
 
     /**

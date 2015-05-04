@@ -35,6 +35,11 @@ public interface I_CmsSearchConfigurationFacetField extends I_CmsSearchConfigura
      */
     String getField();
 
+    /** Returns the prefix all entries of a facet must match.
+     * @return The prefix all entries of a facet must match. (Solr: facet.prefix)
+     */
+    String getPrefix();
+
     /** Returns the (modified) filter query that should be send as filter query when a facet entry is checked.
      * @param facetValue The modifier that should be applied the each filter query appended when checking a facet entry.
      * The modifier can contain the macro "%(value)" that is substituted by the facet entry's value.
@@ -42,4 +47,5 @@ public interface I_CmsSearchConfigurationFacetField extends I_CmsSearchConfigura
      * @return The filter query's value.
      */
     String modifyFilterQuery(String facetValue);
+
 }

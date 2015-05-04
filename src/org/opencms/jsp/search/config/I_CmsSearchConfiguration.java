@@ -59,6 +59,11 @@ public interface I_CmsSearchConfiguration {
      */
     I_CmsSearchConfigurationPagination getPaginationConfig();
 
+    /** Returns the configuration for field facets.
+     * @return The configuration for field facets.
+     */
+    I_CmsSearchConfigurationFacetQuery getQueryFacetConfig();
+
     /** Returns the configuration for sorting.
      * @return The configuration for sorting.
      */
