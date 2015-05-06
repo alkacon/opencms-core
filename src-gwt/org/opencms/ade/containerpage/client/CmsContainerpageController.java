@@ -1070,7 +1070,7 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Creates a new resource for crag container elements with the status new and opens the content editor.<p>
+     * Creates a new resource for drag container elements with the status new and opens the content editor.<p>
      * 
      * @param element the container element
      * @param modelResourceStructureId the model resource structure id
@@ -2674,7 +2674,7 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
-                getContainerpageService().saveFavoriteList(clientIds, this);
+                getContainerpageService().saveFavoriteList(clientIds, CmsCoreProvider.get().getUri(), this);
             }
 
             /**

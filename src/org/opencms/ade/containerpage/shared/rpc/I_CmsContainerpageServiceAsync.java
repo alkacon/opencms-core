@@ -340,9 +340,10 @@ public interface I_CmsContainerpageServiceAsync {
      * Saves the favorite list.<p>
      * 
      * @param clientIds favorite list element id's
+     * @param uri the container page URI
      * @param callback the call-back executed on response
      */
-    void saveFavoriteList(List<String> clientIds, AsyncCallback<Void> callback);
+    void saveFavoriteList(List<String> clientIds, String uri, AsyncCallback<Void> callback);
 
     /**
      * Saves a group-container element.<p>
@@ -386,9 +387,10 @@ public interface I_CmsContainerpageServiceAsync {
      * Saves the recent list.<p>
      * 
      * @param clientIds recent list element id's
+     * @param uri the container page URI
      * @param callback the call-back executed on response
      */
-    void saveRecentList(List<String> clientIds, AsyncCallback<Void> callback);
+    void saveRecentList(List<String> clientIds, String uri, AsyncCallback<Void> callback);
 
     /** 
      * Saves the default value for small element editability on page load.<p>

@@ -215,6 +215,7 @@ public class CmsContainerElementBean implements Cloneable {
      * @param resourceType the resource type
      * @param targetFolder the parent folder of the resource
      * @param individualSettings the element settings as a map of name/value pairs
+     * @param isCopyModels if this element when used in models should be copied instead of reused
      * @param locale the locale to use
      *
      * @return the created element bean
@@ -226,6 +227,7 @@ public class CmsContainerElementBean implements Cloneable {
         I_CmsResourceType resourceType,
         String targetFolder,
         Map<String, String> individualSettings,
+        boolean isCopyModels,
         Locale locale) throws CmsException {
 
         if (!(resourceType instanceof CmsResourceTypeXmlContent)) {
@@ -235,7 +237,7 @@ public class CmsContainerElementBean implements Cloneable {
             CmsUUID.getNullUUID(),
             null,
             individualSettings,
-            false);
+            !isCopyModels);
         elementBean.m_inMemoryOnly = true;
         elementBean.m_editorHash = resourceType.getTypeName() + elementBean.getSettingsHash();
         byte[] content = new byte[0];

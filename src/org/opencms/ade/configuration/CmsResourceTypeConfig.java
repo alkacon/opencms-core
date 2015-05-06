@@ -89,6 +89,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** True if this is a disabled configuration. */
     private boolean m_disabled;
 
+    /** Elements of this type when used in models should be copied instead of reused. */
+    private Boolean m_copyInModels;
+
     /** The element view id. */
     private CmsUUID m_elementView;
 
@@ -126,6 +129,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             false,
             CmsElementView.DEFAULT_ELEMENT_VIEW.getId(),
             null,
+            null,
             I_CmsConfigurationObject.DEFAULT_ORDER);
     }
 
@@ -140,6 +144,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param addDisabled true if adding elements of this type via ADE should be disabled 
      * @param elementView the element view id
      * @param showInDefaultView if true, the element type should be shown in the default element view even if it doesn't belong to it 
+     * @param copyInModels if elements of this type when used in models should be copied instead of reused
      * 
      * @param order the number used for sorting resource types from modules  
      */
@@ -152,6 +157,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         boolean addDisabled,
         CmsUUID elementView,
         Boolean showInDefaultView,
+        Boolean copyInModels,
         int order) {
 
         m_typeName = typeName;
@@ -162,6 +168,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         m_addDisabled = addDisabled;
         m_elementView = elementView;
         m_showInDefaultView = showInDefaultView;
+        m_copyInModels = copyInModels;
         m_order = order;
     }
 
@@ -500,6 +507,16 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
+     * Returns if elements of this type when used in models should be copied instead of reused.<p>
+     * 
+     * @return if elements of this type when used in models should be copied instead of reused
+     */
+    public boolean isCopyInModels() {
+
+        return (m_copyInModels == null) || m_copyInModels.booleanValue();
+    }
+
+    /**
      * True if the detail page creation should be disabled for this resource type.<p>
      * 
      * @return true if detail page creation should be disabled for this type 
@@ -572,6 +589,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         Boolean showInDefaultView = childConfig.m_showInDefaultView != null
         ? childConfig.m_showInDefaultView
         : m_showInDefaultView;
+        Boolean copyInModels = childConfig.m_copyInModels != null ? childConfig.m_copyInModels : m_copyInModels;
 
         CmsResourceTypeConfig result = new CmsResourceTypeConfig(
             m_typeName,
@@ -582,6 +600,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             childConfig.isAddDisabled(),
             elementView,
             showInDefaultView,
+            copyInModels,
             m_order);
         if (childConfig.isDisabled()) {
             result.m_disabled = true;
@@ -617,6 +636,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             isAddDisabled(),
             m_elementView,
             m_showInDefaultView,
+            m_copyInModels,
             m_order);
     }
 

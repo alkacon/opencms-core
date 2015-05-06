@@ -208,6 +208,9 @@ public class CmsConfigurationReader {
     /** The ShowInDefaultView node name. */
     private static final String N_SHOW_IN_DEFAULT_VIEW = "ShowInDefaultView";
 
+    /** The CopyInModels node name. */
+    private static final String N_COPY_IN_MODELS = "CopyInModels";
+
     /** The CMS context used for reading the configuration data. */
     private CmsObject m_cms;
 
@@ -577,6 +580,12 @@ public class CmsConfigurationReader {
             showInDefaultView = Boolean.valueOf(Boolean.parseBoolean(showDefaultViewLoc.getValue().getStringValue(m_cms)));
         }
 
+        I_CmsXmlContentValueLocation copyInModelsLoc = node.getSubValue(N_COPY_IN_MODELS);
+        Boolean copyInModels = null;
+        if (copyInModelsLoc != null) {
+            copyInModels = Boolean.valueOf(Boolean.parseBoolean(copyInModelsLoc.getValue().getStringValue(m_cms)));
+        }
+
         List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
         for (I_CmsXmlContentValueLocation formatterLoc : node.getSubValues(N_FORMATTER)) {
             CmsFormatterBean formatter = parseFormatter(typeName, formatterLoc);
@@ -592,6 +601,7 @@ public class CmsConfigurationReader {
             addDisabled,
             elementView,
             showInDefaultView,
+            copyInModels,
             order);
         m_resourceTypeConfigs.add(typeConfig);
     }

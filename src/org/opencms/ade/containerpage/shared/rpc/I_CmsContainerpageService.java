@@ -364,10 +364,11 @@ public interface I_CmsContainerpageService extends RemoteService {
      * Saves the favorite list.<p>
      * 
      * @param clientIds favorite list element id's
+     * @param uri the container page URI
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void saveFavoriteList(List<String> clientIds) throws CmsRpcException;
+    void saveFavoriteList(List<String> clientIds, String uri) throws CmsRpcException;
 
     /**
      * Saves a group-container element.<p>
@@ -415,10 +416,11 @@ public interface I_CmsContainerpageService extends RemoteService {
      * Saves the recent list.<p>
      * 
      * @param clientIds recent list element id's
+     * @param uri the container page URI
      * 
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    void saveRecentList(List<String> clientIds) throws CmsRpcException;
+    void saveRecentList(List<String> clientIds, String uri) throws CmsRpcException;
 
     /** 
      * Enables or disables editing for small elements on page load.<p>
