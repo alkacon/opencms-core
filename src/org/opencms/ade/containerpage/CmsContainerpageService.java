@@ -311,6 +311,27 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * Checks whether the given resource is of the type container model.<p>
+     * 
+     * @param cms the cms context
+     * @param resource the resource to check
+     * @param modelPageId the model page id
+     * 
+     * @return <code>true</code> if the given resource is of the type container model
+     */
+    protected static boolean isContainerModelResource(CmsObject cms, CmsResource resource, CmsUUID modelPageId) {
+
+        boolean result = false;
+        try {
+            CmsRelation relation = getContainerModelRelation(cms, resource);
+            result = (relation != null) && relation.getTargetId().equals(modelPageId);
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        return result;
+    }
+
+    /**
      * Checks whether the current page is a container model page.<p>
      * 
      * @param cms the CMS context
@@ -1499,21 +1520,24 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         for (CmsContainer container : containers) {
             for (CmsContainerElement element : container.getElements()) {
                 try {
-
+                    CmsContainerElementBean elementBean = getCachedElement(
+                        element.getClientId(),
+                        containerpage.getRootPath());
+                    elementBean.initResource(getCmsObject());
                     if (element.isContainerModel()) {
                         try {
-                            CmsContainerElementBean elementBean = getCachedElement(
-                                element.getClientId(),
-                                containerpage.getRootPath());
-                            elementBean.initResource(getCmsObject());
+
                             CmsRelation relation = getContainerModelRelation(getCmsObject(), elementBean.getResource());
                             if (relation == null) {
-                                ensureLock(elementBean.getResource());
                                 setContainerModelRelation(getCmsObject(), containerpage, elementBean.getResource());
-                                tryUnlock(elementBean.getResource());
                             }
                         } catch (CmsException e) {
                             LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    } else {
+                        CmsRelation relation = getContainerModelRelation(getCmsObject(), elementBean.getResource());
+                        if ((relation != null) && relation.getTargetId().equals(containerpage.getStructureId())) {
+                            removeContainerModelRelation(getCmsObject(), containerpage, elementBean.getResource());
                         }
                     }
                 } catch (Exception e) {
@@ -2427,6 +2451,26 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             getSessionCache().setCacheContainerElement(element.editorHash(), element);
         }
         return page;
+    }
+
+    /**
+     * Removes a container model relation.<p>
+     * 
+     * @param cms the CMS context
+     * @param containerPage the container page
+     * @param containerModel the container model content
+     * 
+     * @throws CmsException in case something goes wrong
+     */
+    private void removeContainerModelRelation(CmsObject cms, CmsResource containerPage, CmsResource containerModel)
+    throws CmsException {
+
+        ensureLock(containerModel);
+        cms.deleteRelationsFromResource(
+            containerModel,
+            CmsRelationFilter.relationsToStructureId(containerPage.getStructureId()).filterType(
+                CmsRelationType.CONTAINER_MODEL));
+        tryUnlock(containerModel);
     }
 
     /**
