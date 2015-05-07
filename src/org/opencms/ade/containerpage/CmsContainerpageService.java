@@ -1574,7 +1574,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsADEConfigData configData = getConfigData(pageRootPath);
         CmsResourceTypeConfig typeConfig = configData.getResourceType(OpenCms.getResourceManager().getResourceType(
             resource).getTypeName());
-        element = new CmsContainerElementBean(convertToServerId(id), null, null, !typeConfig.isCopyInModels());
+        element = new CmsContainerElementBean(convertToServerId(id), null, null, (typeConfig != null)
+            && typeConfig.isCopyInModels());
         getSessionCache().setCacheContainerElement(element.editorHash(), element);
         return element;
     }

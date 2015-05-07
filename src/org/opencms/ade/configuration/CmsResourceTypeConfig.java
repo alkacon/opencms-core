@@ -513,7 +513,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     public boolean isCopyInModels() {
 
-        return (m_copyInModels == null) || m_copyInModels.booleanValue();
+        return (m_copyInModels != null) && m_copyInModels.booleanValue();
     }
 
     /**
