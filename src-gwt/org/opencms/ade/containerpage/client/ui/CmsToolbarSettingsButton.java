@@ -29,6 +29,7 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -59,7 +60,7 @@ public class CmsToolbarSettingsButton extends A_CmsToolbarOptionButton {
         boolean disableButtons = CmsContainerpageController.get().isEditingDisabled();
         boolean useTemplateContexts = CmsContainerpageController.get().getData().getTemplateContextInfo().shouldShowElementTemplateContextSelection();
         boolean isGroupContainer = element instanceof CmsGroupContainerElementPanel;
-        return (useTemplateContexts || element.hasSettings())
+        return (useTemplateContexts || (element.hasSettings() || CmsCoreProvider.get().getUserInfo().isDeveloper()))
             && !element.getParentTarget().isDetailView()
             && !disableButtons
             && !isGroupContainer;
