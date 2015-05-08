@@ -1820,6 +1820,25 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns if the given element has a container model child.<p>
+     *  
+     * @param elementWidget the element
+     * 
+     * @return <code>true</code> if the given element has a container model child
+     */
+    public boolean hasContainerModelChild(CmsContainerPageElementPanel elementWidget) {
+
+        boolean result = false;
+        for (CmsContainerPageElementPanel model : collectContainerModels()) {
+            if ((model != elementWidget) && elementWidget.getElement().isOrHasChild(model.getElement())) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns if the given element has a container model parent.<p>
      *  
      * @param elementWidget the element

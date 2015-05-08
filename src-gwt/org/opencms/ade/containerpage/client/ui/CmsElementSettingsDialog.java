@@ -178,6 +178,14 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                     m_containerModelCheckBox.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
                     createNewFieldSet.add(m_containerModelCheckBox);
                     m_containerModelCheckBox.setChecked(elementWidget.isContainerModel());
+                    if (m_controller.hasContainerModelParent(elementWidget)) {
+                        m_containerModelCheckBox.disable(org.opencms.ade.containerpage.client.Messages.get().key(
+                            org.opencms.ade.containerpage.client.Messages.GUI_CONTAINER_MODEL_DISABLED_PARENT_0));
+                    }
+                    if (m_controller.hasContainerModelChild(elementWidget)) {
+                        m_containerModelCheckBox.disable(org.opencms.ade.containerpage.client.Messages.get().key(
+                            org.opencms.ade.containerpage.client.Messages.GUI_CONTAINER_MODEL_DISABLED_CHILD_0));
+                    }
                 }
 
                 m_createNewCheckBox = new CmsCheckBox(org.opencms.ade.containerpage.client.Messages.get().key(
