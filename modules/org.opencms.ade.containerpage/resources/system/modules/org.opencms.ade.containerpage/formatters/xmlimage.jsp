@@ -44,7 +44,8 @@
 			<span ${rdfa.Image}>
                 <img 
                     src="<cms:link>${value.Image}</cms:link>" 
-                    class="${cssShape} img-responsive ${cssBorder}" 
+                    class="${cssShape} img-responsive ${cssBorder}"
+                    ${content.imageDnd['Image']} 
                     alt="${value.Headline}" 
                     title="<c:out value='${value.Headline} ${copyright}' escapeXml='false' />" />
             </span>
