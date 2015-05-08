@@ -474,10 +474,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         } else {
             m_highlighting.setPosition(position);
         }
-        // also update the container model highlighting position, if present
-        if (m_containerModelHighlighting != null) {
-            m_containerModelHighlighting.setPosition(position);
-        }
     }
 
     /**
@@ -785,17 +781,18 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Shows the container model highlighting if appropriate.<p>
+     * 
+     * @param highlightingPosition the highlighting position
      */
-    public void showContainerModelHighlighting() {
+    public void showContainerModelHighlighting(CmsPositionBean highlightingPosition) {
 
         // only if attached to the DOM
         if (m_containerModel && RootPanel.getBodyElement().isOrHasChild(getElement())) {
-            CmsPositionBean dimensions = CmsPositionBean.getBoundingClientRect(getElement());
             if (m_containerModelHighlighting != null) {
-                m_containerModelHighlighting.setPosition(dimensions);
+                m_containerModelHighlighting.setPosition(highlightingPosition);
             } else {
                 m_containerModelHighlighting = new CmsHighlightingBorder(
-                    dimensions,
+                    highlightingPosition,
                     CmsHighlightingBorder.BorderColor.solidGrey);
                 m_containerModelHighlighting.enableAnimation(false);
                 RootPanel.get().add(m_containerModelHighlighting);
@@ -866,19 +863,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
         m_checkingEditables = false;
         resetNodeInsertedHandler();
-    }
-
-    /**
-     * Updates container model highlighting.<p>
-     */
-    public void updateContainerModelHighlighting() {
-
-        // only if attached to the DOM
-        if (m_containerModel
-            && (m_containerModelHighlighting != null)
-            && RootPanel.getBodyElement().isOrHasChild(getElement())) {
-            m_containerModelHighlighting.setPosition(CmsPositionBean.getBoundingClientRect(getElement()));
-        }
     }
 
     /**

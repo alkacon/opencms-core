@@ -50,7 +50,7 @@ public class CmsContainer implements IsSerializable {
     /** Flag indicating the container is editable by the current user. */
     private boolean m_editable;
 
-    /** List of the contained elements id's. */
+    /** List of the contained elements. */
     private List<CmsContainerElement> m_elements;
 
     /** The content to display in case the container is empty. */

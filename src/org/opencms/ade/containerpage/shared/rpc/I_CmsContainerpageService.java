@@ -361,6 +361,31 @@ public interface I_CmsContainerpageService extends RemoteService {
     void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers) throws CmsRpcException;
 
     /**
+     * Saves the settings for the given element to the container page and returns the updated element data.<p>
+     * 
+     * @param context the RPC context  
+     * @param detailContentId the detail content structure id
+     * @param reqParams optional request parameters 
+     * @param clientId the requested element ids 
+     * @param settings the settings for which the element data should be loaded 
+     * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
+     * @param locale the content locale
+     * @return the element data 
+     * 
+     * @throws CmsRpcException if something goes wrong processing the request 
+     */
+    CmsContainerElementData saveElementSettings(
+        CmsContainerPageRpcContext context,
+        CmsUUID detailContentId,
+        String reqParams,
+        String clientId,
+        Map<String, String> settings,
+        List<CmsContainer> containers,
+        boolean allowNested,
+        String locale) throws CmsRpcException;
+
+    /**
      * Saves the favorite list.<p>
      * 
      * @param clientIds favorite list element id's

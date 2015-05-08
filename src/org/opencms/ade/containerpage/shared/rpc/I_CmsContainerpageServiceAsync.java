@@ -200,7 +200,6 @@ public interface I_CmsContainerpageServiceAsync {
      */
     void getElementWithSettings(
         CmsContainerPageRpcContext context,
-
         CmsUUID detailContentId,
         String reqParams,
         String clientId,
@@ -335,6 +334,30 @@ public interface I_CmsContainerpageServiceAsync {
     void saveDetailContainers(String detailContainerResource, List<CmsContainer> containers,
 
     AsyncCallback<Void> callback);
+
+    /**
+     * Saves the settings for the given element to the container page and returns the updated element data.<p>
+     * 
+     * @param context the RPC context  
+     * @param detailContentId the detail content structure id
+     * @param reqParams optional request parameters 
+     * @param clientId the requested element ids 
+     * @param settings the settings for which the element data should be loaded 
+     * @param containers the containers of the current page
+     * @param allowNested if nested containers are allowed
+     * @param locale the content locale
+     * @param callback the callback for receiving the element data  
+     */
+    void saveElementSettings(
+        CmsContainerPageRpcContext context,
+        CmsUUID detailContentId,
+        String reqParams,
+        String clientId,
+        Map<String, String> settings,
+        List<CmsContainer> containers,
+        boolean allowNested,
+        String locale,
+        AsyncCallback<CmsContainerElementData> callback);
 
     /**
      * Saves the favorite list.<p>

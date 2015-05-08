@@ -268,6 +268,42 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * Checks whether the given resource is of the type container model.<p>
+     * 
+     * @param cms the cms context
+     * @param resource the resource to check
+     * @param modelPageId the model page id
+     * 
+     * @return <code>true</code> if the given resource is of the type container model
+     */
+    public static boolean isContainerModelResource(CmsObject cms, CmsResource resource, CmsUUID modelPageId) {
+
+        boolean result = false;
+        try {
+            CmsRelation relation = getContainerModelRelation(cms, resource);
+            result = (relation != null) && relation.getTargetId().equals(modelPageId);
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        return result;
+    }
+
+    /**
+     * Checks whether the current page is a container model page.<p>
+     * 
+     * @param cms the CMS context
+     * @param containerPage the current page
+     * 
+     * @return <code>true</code> if the current page is a container model page
+     */
+    public static boolean isEditingContainerModels(CmsObject cms, CmsResource containerPage) {
+
+        return (CmsResource.getParentFolder(containerPage.getRootPath()).endsWith(CONTAINER_MODEL_PATH_FRAGMENT) && OpenCms.getRoleManager().hasRole(
+            cms,
+            CmsRole.DEVELOPER));
+    }
+
+    /**
      * Fetches the container page data.<p>
      * 
      * @param request the current request
@@ -308,42 +344,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             LOG.warn(e.getLocalizedMessage(), e);
         }
         return result;
-    }
-
-    /**
-     * Checks whether the given resource is of the type container model.<p>
-     * 
-     * @param cms the cms context
-     * @param resource the resource to check
-     * @param modelPageId the model page id
-     * 
-     * @return <code>true</code> if the given resource is of the type container model
-     */
-    protected static boolean isContainerModelResource(CmsObject cms, CmsResource resource, CmsUUID modelPageId) {
-
-        boolean result = false;
-        try {
-            CmsRelation relation = getContainerModelRelation(cms, resource);
-            result = (relation != null) && relation.getTargetId().equals(modelPageId);
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-        return result;
-    }
-
-    /**
-     * Checks whether the current page is a container model page.<p>
-     * 
-     * @param cms the CMS context
-     * @param containerPage the current page
-     * 
-     * @return <code>true</code> if the current page is a container model page
-     */
-    protected static boolean isEditingContainerModels(CmsObject cms, CmsResource containerPage) {
-
-        return (CmsResource.getParentFolder(containerPage.getRootPath()).endsWith(CONTAINER_MODEL_PATH_FRAGMENT) && OpenCms.getRoleManager().hasRole(
-            cms,
-            CmsRole.DEVELOPER));
     }
 
     /**
@@ -1108,6 +1108,74 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         } catch (Throwable e) {
             error(e);
         }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveElementSettings(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.util.Map, java.util.List, boolean, java.lang.String)
+     */
+    public CmsContainerElementData saveElementSettings(
+        CmsContainerPageRpcContext context,
+        CmsUUID detailContentId,
+        String reqParams,
+        String clientId,
+        Map<String, String> settings,
+        List<CmsContainer> containers,
+        boolean allowNested,
+        String locale) throws CmsRpcException {
+
+        CmsContainerElementData element = null;
+        try {
+            ensureSession();
+            CmsObject cms = getCmsObject();
+            CmsResource pageResource = cms.readResource(context.getPageStructureId());
+            initRequestFromRpcContext(context);
+            Locale contentLocale = CmsLocaleManager.getLocale(locale);
+            CmsContainerElementBean elementBean = getCachedElement(clientId, pageResource.getRootPath());
+            elementBean.initResource(cms);
+            // make sure to keep the element instance id
+            if (!settings.containsKey(CmsContainerElementBean.ELEMENT_INSTANCE_ID)
+                && elementBean.getIndividualSettings().containsKey(CmsContainerElementBean.ELEMENT_INSTANCE_ID)) {
+                settings.put(
+                    CmsContainerElementBean.ELEMENT_INSTANCE_ID,
+                    elementBean.getIndividualSettings().get(CmsContainerElementBean.ELEMENT_INSTANCE_ID));
+            }
+            elementBean = CmsContainerElementBean.cloneWithSettings(
+                elementBean,
+                convertSettingValues(elementBean.getResource(), settings, contentLocale));
+            getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
+
+            // update client id within container data
+            for (CmsContainer container : containers) {
+                for (CmsContainerElement child : container.getElements()) {
+                    if (child.getClientId().equals(clientId)) {
+                        child.setClientId(elementBean.editorHash());
+                    }
+                }
+            }
+            if (detailContentId == null) {
+                saveContainers(cms, pageResource, cms.getSitePath(pageResource), containers);
+            } else {
+                List<CmsContainer> detailContainers = new ArrayList<CmsContainer>();
+                for (CmsContainer container : containers) {
+                    if (container.isDetailOnly()) {
+                        detailContainers.add(container);
+                    }
+                }
+                CmsObject rootCms = OpenCms.initCmsObject(cms);
+                rootCms.getRequestContext().setSiteRoot("");
+                CmsResource detailResource = rootCms.readResource(detailContentId);
+                ensureLock(detailResource);
+                saveContainers(rootCms, detailResource, detailResource.getRootPath(), detailContainers);
+            }
+            String containerpageUri = cms.getSitePath(pageResource);
+            CmsElementUtil elemUtil = new CmsElementUtil(cms, containerpageUri, generateContainerPageForContainers(
+                containers,
+                pageResource.getRootPath()), detailContentId, getRequest(), getResponse(), contentLocale);
+            element = elemUtil.getElementData(pageResource, elementBean, containers, allowNested);
+        } catch (Throwable e) {
+            error(e);
+        }
+        return element;
     }
 
     /**

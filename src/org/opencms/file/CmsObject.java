@@ -994,6 +994,19 @@ public final class CmsObject {
     /**
      * Deletes the relations to a given resource.<p>
      *
+     * @param resource the resource to delete the relations from
+     * @param filter the filter to use for deleting the relations
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void deleteRelationsFromResource(CmsResource resource, CmsRelationFilter filter) throws CmsException {
+
+        m_securityManager.deleteRelationsForResource(m_context, resource, filter);
+    }
+
+    /**
+     * Deletes the relations to a given resource.<p>
+     *
      * @param resourceName the resource to delete the relations from
      * @param filter the filter to use for deleting the relations
      *

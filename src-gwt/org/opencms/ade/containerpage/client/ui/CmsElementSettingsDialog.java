@@ -48,6 +48,7 @@ import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
@@ -64,7 +65,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * The element settings dialog.<p>
@@ -372,14 +372,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             m_elementWidget,
             m_elementBean.getClientId(),
             filteredFieldValues,
-            new AsyncCallback<CmsContainerPageElementPanel>() {
+            new I_CmsSimpleCallback<CmsContainerPageElementPanel>() {
 
-                public void onFailure(Throwable caught) {
-
-                    // will not be executed
-                }
-
-                public void onSuccess(CmsContainerPageElementPanel result) {
+                public void execute(CmsContainerPageElementPanel result) {
 
                     if (isTemplateContextChanged()) {
                         // if the context multiselect box isn't displayed, of course it can't change values,
