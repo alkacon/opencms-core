@@ -30,6 +30,7 @@ package org.opencms.jsp.util;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsFunctionReference;
+import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
@@ -39,6 +40,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -676,6 +678,9 @@ public final class CmsJspStandardContextBean {
     /** The VFS content access bean. */
     private CmsJspVfsAccessBean m_vfsBean;
 
+    /** The current container page resource, lazy initialized. */
+    private CmsResource m_pageResource;
+
     /**
      * Creates an empty instance.<p>
      */
@@ -1182,6 +1187,34 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns if the current element is a container model.<p>
+     * 
+     * @return <code>true</code> if the current element is a container model
+     */
+    public boolean isContainerModelElement() {
+
+        return (m_element != null)
+            && !m_element.isInMemoryOnly()
+            && isContainerModelPage()
+            && CmsContainerpageService.isContainerModelResource(
+                m_cms,
+                m_element.getResource(),
+                getContainerPage().getStructureId());
+    }
+
+    /**
+     * Returns if the current page is used to manage container models.<p>
+     * 
+     * @return <code>true</code> if the current page is used to manage container models
+     */
+    public boolean isContainerModelPage() {
+
+        CmsResource page = getContainerPage();
+        return (page != null) && CmsContainerpageService.isEditingContainerModels(m_cms, page);
+
+    }
+
+    /**
      * Returns <code>true</code in case a detail page is available for the current element.<p>
      * 
      * @return <code>true</code in case a detail page is available for the current element
@@ -1402,6 +1435,27 @@ public final class CmsJspStandardContextBean {
 
         m_elementInstances = null;
         m_parentContainers = null;
+    }
+
+    /**
+     * Returns the current container page resource.<p>
+     * 
+     * @return the current container page resource
+     */
+    private CmsResource getContainerPage() {
+
+        try {
+            if (m_pageResource == null) {
+                // get the container page itself, checking the history first
+                m_pageResource = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(m_request);
+                if (m_pageResource == null) {
+                    m_pageResource = m_cms.readResource(m_cms.getRequestContext().getUri());
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return m_pageResource;
     }
 
     /**
