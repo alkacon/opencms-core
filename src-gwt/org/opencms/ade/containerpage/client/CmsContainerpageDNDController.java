@@ -966,6 +966,5 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         for (Entry<I_CmsDropContainer, CmsPositionBean> containerEntry : containers.entrySet()) {
             containerEntry.getKey().refreshHighlighting(containerEntry.getValue());
         }
-        m_controller.updateContainerModelHighlighting();
     }
 }

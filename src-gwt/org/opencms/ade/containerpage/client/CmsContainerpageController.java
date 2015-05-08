@@ -64,7 +64,6 @@ import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
@@ -1821,6 +1820,25 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Returns if the given element has a container model parent.<p>
+     *  
+     * @param elementWidget the element
+     * 
+     * @return <code>true</code> if the given element has a container model parent
+     */
+    public boolean hasContainerModelParent(CmsContainerPageElementPanel elementWidget) {
+
+        boolean result = false;
+        for (CmsContainerPageElementPanel model : collectContainerModels()) {
+            if ((model != elementWidget) && model.getElement().isOrHasChild(elementWidget.getElement())) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns if the page has changed.<p>
      * 
      * @return <code>true</code> if the page has changed
@@ -2487,7 +2505,6 @@ public final class CmsContainerpageController {
                     container.showEditableListButtons();
                     container.updateOptionBars();
                 }
-                showContainerModelHighlighting();
                 if (m_timerRuns > 3) {
                     cancel();
                 }
@@ -2983,14 +3000,6 @@ public final class CmsContainerpageController {
         return CmsCoreProvider.get().unlock(structureId);
     }
 
-    /**
-     * Updates container model highlighting.<p>
-     */
-    public void updateContainerModelHighlighting() {
-
-        showContainerModelHighlighting();
-    }
-
     /** 
      * Adds the given element data to the element cache.<p>
      * 
@@ -3334,45 +3343,6 @@ public final class CmsContainerpageController {
             m_handler.enableSaveReset(false);
             if (unlock) {
                 unlockContainerpage();
-            }
-        }
-    }
-
-    /**
-     * Shows the container model highlighting.<p>
-     */
-    protected void showContainerModelHighlighting() {
-
-        if (getData().isContainerModel()) {
-            Map<CmsContainerPageElementPanel, CmsPositionBean> models = new HashMap<CmsContainerPageElementPanel, CmsPositionBean>();
-
-            // to avoid any overlapping highlighting borders...
-
-            for (CmsContainerPageElementPanel model : collectContainerModels()) {
-                models.put(model, CmsPositionBean.generatePositionInfo(model));
-
-            }
-            List<CmsContainerPageElementPanel> modelsToMatch = new ArrayList<CmsContainerPageElementPanel>(
-                models.keySet());
-            for (CmsContainerPageElementPanel modelA : models.keySet()) {
-                modelsToMatch.remove(modelA);
-                for (CmsContainerPageElementPanel modelB : modelsToMatch) {
-                    CmsPositionBean posA = models.get(modelA);
-                    CmsPositionBean posB = models.get(modelB);
-                    if (CmsPositionBean.checkCollision(
-                        posA,
-                        posB,
-                        CmsContainerpageDNDController.HIGHLIGHTING_OFFSET * 3)) {
-                        CmsPositionBean.avoidCollision(
-                            posA,
-                            posB,
-                            CmsContainerpageDNDController.HIGHLIGHTING_OFFSET * 3);
-                    }
-                }
-            }
-
-            for (Entry<CmsContainerPageElementPanel, CmsPositionBean> modelEntry : models.entrySet()) {
-                modelEntry.getKey().showContainerModelHighlighting(modelEntry.getValue());
             }
         }
     }

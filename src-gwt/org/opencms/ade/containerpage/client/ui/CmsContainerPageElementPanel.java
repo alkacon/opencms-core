@@ -171,9 +171,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      **/
     private boolean m_writePermission;
 
-    /** Container model highlighting. */
-    private CmsHighlightingBorder m_containerModelHighlighting;
-
     /**
      * Constructor.<p>
      * 
@@ -607,10 +604,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
             m_highlighting.removeFromParent();
             m_highlighting = null;
         }
-        if (m_containerModelHighlighting != null) {
-            m_containerModelHighlighting.removeFromParent();
-            m_containerModelHighlighting = null;
-        }
         super.removeFromParent();
     }
 
@@ -777,27 +770,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public void setWritePermission(boolean writePermission) {
 
         m_writePermission = writePermission;
-    }
-
-    /**
-     * Shows the container model highlighting if appropriate.<p>
-     * 
-     * @param highlightingPosition the highlighting position
-     */
-    public void showContainerModelHighlighting(CmsPositionBean highlightingPosition) {
-
-        // only if attached to the DOM
-        if (m_containerModel && RootPanel.getBodyElement().isOrHasChild(getElement())) {
-            if (m_containerModelHighlighting != null) {
-                m_containerModelHighlighting.setPosition(highlightingPosition);
-            } else {
-                m_containerModelHighlighting = new CmsHighlightingBorder(
-                    highlightingPosition,
-                    CmsHighlightingBorder.BorderColor.solidGrey);
-                m_containerModelHighlighting.enableAnimation(false);
-                RootPanel.get().add(m_containerModelHighlighting);
-            }
-        }
     }
 
     /**
