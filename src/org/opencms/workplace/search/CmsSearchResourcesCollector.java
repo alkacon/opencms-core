@@ -277,9 +277,7 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
             String[] searchRoots = new String[resources.size()];
             resources.toArray(searchRoots);
             for (int i = 0; i < searchRoots.length; i++) {
-                this.LOG.debug("searchRoot PRE: " + searchRoots[i]);
                 searchRoots[i] = getWp().getCms().addSiteRoot(searchRoots[i]);
-                this.LOG.debug("searchRoot POST: " + searchRoots[i]);
             }
             m_searchBean.setSearchRoots(searchRoots);
         } else {
