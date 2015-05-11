@@ -1805,7 +1805,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         if ((roots != null) && (roots.size() > 0)) {
             // add the all configured search roots with will request context
             for (int i = 0; i < roots.size(); i++) {
-                String searchRoot = cms.getRequestContext().addSiteRoot(roots.get(i));
+                
+                //EM 2015-05-05 These roots are already "getSiteRooted" in getSearchBean
+                //String searchRoot = cms.getRequestContext().addSiteRoot(roots.get(i));
+                String searchRoot = roots.get(i);
+
                 extendPathFilter(terms, searchRoot);
             }
         } else {
