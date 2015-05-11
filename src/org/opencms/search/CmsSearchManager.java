@@ -1706,6 +1706,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
 
             // create the core
+            // TODO: suboptimal - forces always the same schema
             CoreDescriptor descriptor = new CoreDescriptor(
                 m_coreContainer,
                 index.getName(),
