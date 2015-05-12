@@ -655,7 +655,13 @@ public class CmsSitemapController implements I_CmsSitemapController {
         deleteWarningDialog.loadAndShow(null);
     }
 
-    public void disableModelPage(final CmsUUID id, final boolean disable, final AsyncCallback<Void> asyncCallback) {
+    /**
+     * Disables the given model page entry within the configuration.<p>
+     * 
+     * @param id the entry id
+     * @param disable <code>true</code> to disable the entry
+     */
+    public void disableModelPage(final CmsUUID id, final boolean disable) {
 
         CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
 
@@ -671,9 +677,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
             protected void onResponse(Void result) {
 
                 stop(false);
-                loadNewElementInfo(null);
-                asyncCallback.onSuccess(null);
-
+                CmsSitemapView.getInstance().updateModelPageDisabledState(id, disable);
             }
         };
         action.execute();

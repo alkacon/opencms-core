@@ -430,6 +430,18 @@ public class CmsADEConfigData {
      */
     public List<CmsModelPageConfig> getModelPages() {
 
+        return getModelPages(false);
+    }
+
+    /**
+     * Gets the list of available model pages.<p>
+     * 
+     * @param includeDisable <code>true</code> to include disabled model pages 
+     * 
+     * @return the list of available model pages 
+     */
+    public List<CmsModelPageConfig> getModelPages(boolean includeDisable) {
+
         CmsADEConfigData parentData = parent();
         List<CmsModelPageConfig> parentModelPages;
         if ((parentData != null) && !m_data.isDiscardInheritedModelPages()) {
@@ -441,7 +453,7 @@ public class CmsADEConfigData {
         List<CmsModelPageConfig> result = combineConfigurationElements(
             parentModelPages,
             m_data.getOwnModelPageConfig(),
-            false);
+            includeDisable);
         return result;
     }
 

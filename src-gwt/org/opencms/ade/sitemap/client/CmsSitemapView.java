@@ -790,6 +790,24 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     }
 
     /**
+     * Returns the disabled state of the given model page entry.<p>
+     * 
+     * @param id the entry id
+     * 
+     * @return the disabled state
+     */
+    public boolean isDisabledModelPageEntry(CmsUUID id) {
+
+        boolean result = false;
+        if (m_modelPageTreeItems.containsKey(id)) {
+            result = m_modelPageTreeItems.get(id).isDisabled();
+        } else if (m_parentModelPageTreeItems.containsKey(id)) {
+            result = m_parentModelPageTreeItems.get(id).isDisabled();
+        }
+        return result;
+    }
+
+    /**
      * Returns if the current sitemap editor mode is galleries.<p>
      * 
      * @return <code>true</code> if the current sitemap editor mode is galleries
@@ -1192,6 +1210,21 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         for (CmsClientSitemapEntry entry : entries.values()) {
             CmsSitemapTreeItem item = CmsSitemapTreeItem.getItemById(entry.getId());
             item.updateEntry(entry);
+        }
+    }
+
+    /**
+     * Updates the disabled state for the given model page.<p>
+     * 
+     * @param entryId the model page id 
+     * @param disabled the disabled state
+     */
+    public void updateModelPageDisabledState(CmsUUID entryId, boolean disabled) {
+
+        if (m_modelPageTreeItems.containsKey(entryId)) {
+            m_modelPageTreeItems.get(entryId).setDisabled(disabled);
+        } else if (m_parentModelPageTreeItems.containsKey(entryId)) {
+            m_parentModelPageTreeItems.get(entryId).setDisabled(disabled);
         }
     }
 

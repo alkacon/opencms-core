@@ -116,6 +116,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
         initContent(createListWidget(modelpage));
         m_entryId = modelpage.getStructureId();
         m_isParentModel = isParentModel;
+        setDisabled(modelpage.isDisabled());
     }
 
     /**
@@ -192,9 +193,9 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
         m_disabled = disabled;
         if (m_disabled) {
-            addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().notInNavigationEntry());
+            getListItemWidget().addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().hiddenNavEntry());
         } else {
-            removeStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().notInNavigationEntry());
+            getListItemWidget().removeStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().hiddenNavEntry());
         }
     }
 

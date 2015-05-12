@@ -358,7 +358,7 @@ public class CmsModelPageHelper {
      */
     public List<CmsModelPageEntry> getModelPages() {
 
-        List<CmsModelPageConfig> modelPageConfigs = m_adeConfig.getModelPages();
+        List<CmsModelPageConfig> modelPageConfigs = m_adeConfig.getModelPages(true);
         return buildModelPageList(modelPageConfigs);
     }
 
@@ -369,10 +369,8 @@ public class CmsModelPageHelper {
      */
     public List<CmsModelPageEntry> getParentModelPages() {
 
-        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
-            m_cms,
-            CmsResource.getParentFolder(m_adeConfig.getBasePath()));
-        if (adeConfig.isModuleConfiguration()) {
+        CmsADEConfigData adeConfig = m_adeConfig.parent();
+        if ((adeConfig == null) || adeConfig.isModuleConfiguration()) {
             return Collections.emptyList();
         }
         List<CmsModelPageConfig> modelPageConfigs = adeConfig.getModelPages();
