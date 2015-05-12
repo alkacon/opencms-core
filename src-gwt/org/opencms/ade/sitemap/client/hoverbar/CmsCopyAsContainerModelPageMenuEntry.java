@@ -42,9 +42,9 @@ import org.opencms.util.CmsUUID;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** 
- * Context menu entry for copying a model page.<p>
+ * Context menu entry for copying a model page to be used as a container model page.<p>
  */
-public class CmsCopyModelPageMenuEntry extends A_CmsSitemapMenuEntry {
+public class CmsCopyAsContainerModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
     /** The instance of the dialog for copying a model page. */
     CmsCopyModelPageDialog m_dialog;
@@ -54,10 +54,10 @@ public class CmsCopyModelPageMenuEntry extends A_CmsSitemapMenuEntry {
      * 
      * @param hoverbar the hoverbar 
      */
-    public CmsCopyModelPageMenuEntry(CmsSitemapHoverbar hoverbar) {
+    public CmsCopyAsContainerModelPageMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setLabel(Messages.get().key(Messages.GUI_COPY_MODEL_PAGE_0));
+        setLabel("Copy as container model page");
         setActive(true);
     }
 
@@ -123,7 +123,7 @@ public class CmsCopyModelPageMenuEntry extends A_CmsSitemapMenuEntry {
                         title,
                         m_dialog.getDescription(),
                         id,
-                        false);
+                        true);
                 }
             }
         });

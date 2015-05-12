@@ -58,6 +58,12 @@ public class CmsModelPageEntry implements IsSerializable {
     /** The list info bean containing the information to display in widgets showing this entry. */
     private CmsListInfoBean m_listInfoBean;
 
+    /** The disabled flag. */
+    private boolean m_disabled;
+
+    /** The default page flag. */
+    private boolean m_default;
+
     /**
      * Default constructor.<p>
      */
@@ -124,6 +130,46 @@ public class CmsModelPageEntry implements IsSerializable {
     public CmsUUID getStructureId() {
 
         return m_structureId;
+    }
+
+    /**
+     * Returns whether the given page is the default model.<p>
+     * 
+     * @return if the given page is the default model
+     */
+    public boolean isDefault() {
+
+        return m_default;
+    }
+
+    /**
+     * Returns if the model page is disabled.<p>
+     * 
+     * @return if the model page is disabled
+     */
+    public boolean isDisabled() {
+
+        return m_disabled;
+    }
+
+    /**
+     * Sets if the given page is the default model.<p>
+     * 
+     * @param defaultl the given page is the default model
+     */
+    public void setDefault(boolean defaultl) {
+
+        m_default = defaultl;
+    }
+
+    /**
+     * Sets if the model page is disabled.<p>
+     * 
+     * @param disabled if the model page is disabled
+     */
+    public void setDisabled(boolean disabled) {
+
+        m_disabled = disabled;
     }
 
     /**

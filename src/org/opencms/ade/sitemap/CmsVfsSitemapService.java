@@ -409,7 +409,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createNewModelPage(java.lang.String, java.lang.String, java.lang.String, org.opencms.util.CmsUUID)
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#createNewModelPage(java.lang.String, java.lang.String, java.lang.String, org.opencms.util.CmsUUID, boolean)
      */
     public CmsModelPageEntry createNewModelPage(
         String entryPointUri,
@@ -424,14 +424,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsModelPageHelper helper = new CmsModelPageHelper(getCmsObject(), rootResource);
             CmsResource page;
             if (isContainerModel) {
-                page = helper.createContainerModelPage(title, description);
+                page = helper.createContainerModelPage(title, description, copyId);
             } else {
                 page = helper.createPageInModelFolder(title, description, copyId);
                 String configPath = CmsStringUtil.joinPaths(entryPointUri, ".content/.config");
                 CmsResource configResource = cms.readResource(configPath);
                 helper.addModelPageToSitemapConfiguration(configResource, page, false);
             }
-            CmsModelPageEntry result = helper.createModelPageEntry(page);
+            CmsModelPageEntry result = helper.createModelPageEntry(page, false, false);
             OpenCms.getADEManager().waitForCacheUpdate(false);
             return result;
         } catch (Throwable e) {
@@ -469,6 +469,25 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
         return null;
 
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#disableModelPage(java.lang.String, org.opencms.util.CmsUUID, boolean)
+     */
+    public void disableModelPage(String baseUri, CmsUUID modelPageId, boolean disabled) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsResource rootResource = cms.readResource(baseUri);
+            CmsModelPageHelper helper = new CmsModelPageHelper(getCmsObject(), rootResource);
+            String configPath = CmsStringUtil.joinPaths(baseUri, ".content/.config");
+            CmsResource configResource = cms.readResource(configPath);
+            helper.disableModelPage(configResource, modelPageId, disabled);
+            OpenCms.getADEManager().waitForCacheUpdate(false);
+        } catch (Throwable e) {
+            error(e);
+
+        }
     }
 
     /**

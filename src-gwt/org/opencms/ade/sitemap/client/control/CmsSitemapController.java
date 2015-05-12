@@ -655,6 +655,31 @@ public class CmsSitemapController implements I_CmsSitemapController {
         deleteWarningDialog.loadAndShow(null);
     }
 
+    public void disableModelPage(final CmsUUID id, final boolean disable, final AsyncCallback<Void> asyncCallback) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                start(200, true);
+                getService().disableModelPage(getEntryPoint(), id, disable, this);
+
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                stop(false);
+                loadNewElementInfo(null);
+                asyncCallback.onSuccess(null);
+
+            }
+        };
+        action.execute();
+
+    }
+
     /**
      * Edits the given sitemap entry.<p>
      * 

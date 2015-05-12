@@ -29,6 +29,7 @@ package org.opencms.ade.sitemap.client;
 
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.hoverbar.CmsEditModelPageMenuEntry;
+import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.file.CmsResource;
@@ -75,25 +76,27 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
     /** The folder entry id. */
     private CmsUUID m_entryId;
 
+    /** The parent model flag. */
+    private boolean m_isParentModel;
+
     /** The container model flag. */
     private boolean m_isContainerModel;
+
+    /** The disabled flag. */
+    private boolean m_disabled;
 
     /**
      * Creates the fake model page tree item used as a root for the tree view.<p>
      * 
      * @param isContainerModel in case of a container model page 
+     * @param title the title
+     * @param subTitle the sub title
      */
-    public CmsModelPageTreeItem(boolean isContainerModel) {
+    public CmsModelPageTreeItem(boolean isContainerModel, String title, String subTitle) {
 
         super(true);
         m_isContainerModel = isContainerModel;
-        CmsListInfoBean infoBean = m_isContainerModel ? new CmsListInfoBean(
-            "Container models",
-            "Click on the plus symbol at the right to create a new container model.",
-            null) : new CmsListInfoBean(
-            Messages.get().key(Messages.GUI_MODEL_PAGE_TREE_ROOT_TITLE_0),
-            Messages.get().key(Messages.GUI_MODE_PAGE_TREE_ROOT_SUBTITLE_0),
-            null);
+        CmsListInfoBean infoBean = new CmsListInfoBean(title, subTitle, null);
         CmsListItemWidget content = new CmsListItemWidget(infoBean);
         content.setIcon(CmsIconUtil.getResourceIconClasses("modelpage", false));
         initContent(content);
@@ -104,25 +107,29 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
      * 
      * @param modelpage the model page
      * @param isContainerModel in case of a container model page
+     * @param isParentModel the parent model flag
      */
-    public CmsModelPageTreeItem(CmsModelPageEntry modelpage, boolean isContainerModel) {
+    public CmsModelPageTreeItem(CmsModelPageEntry modelpage, boolean isContainerModel, boolean isParentModel) {
 
         super(true);
         m_isContainerModel = isContainerModel;
         initContent(createListWidget(modelpage));
         m_entryId = modelpage.getStructureId();
+        m_isParentModel = isParentModel;
     }
 
     /**
      * Creates the fake model page tree item used as a root for the tree view.<p>
      * 
      * @param isContainerModel in case of a container model page
+     * @param title the title
+     * @param subTitle the sub title
      * 
      * @return the root tree item 
      */
-    public static CmsModelPageTreeItem createRootItem(boolean isContainerModel) {
+    public static CmsModelPageTreeItem createRootItem(boolean isContainerModel, String title, String subTitle) {
 
-        return new CmsModelPageTreeItem(isContainerModel);
+        return new CmsModelPageTreeItem(isContainerModel, title, subTitle);
     }
 
     /**
@@ -154,6 +161,41 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
     public boolean isContainerModel() {
 
         return m_isContainerModel;
+    }
+
+    /**
+     * Returns if the model page entry is disabled.<p>
+     * 
+     * @return <code>true</code> if the model page entry is disabled
+     */
+    public boolean isDisabled() {
+
+        return m_disabled;
+    }
+
+    /**
+     * Returns if this model page entry is inherited from the parent configuration.<p>
+     * 
+     * @return <code>true</code> if this model page entry is inherited from the parent configuration
+     */
+    public boolean isParentModel() {
+
+        return m_isParentModel;
+    }
+
+    /**
+     * Sets the model page entry disabled.<p>
+     * 
+     * @param disabled <code>true</Code> to disable
+     */
+    public void setDisabled(boolean disabled) {
+
+        m_disabled = disabled;
+        if (m_disabled) {
+            addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().notInNavigationEntry());
+        } else {
+            removeStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().notInNavigationEntry());
+        }
     }
 
     /**

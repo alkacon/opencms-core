@@ -183,6 +183,12 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRM_LEAVING_TITLE_0 = "GUI_CONFIRM_LEAVING_TITLE_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTAINER_MODEL_PAGE_TREE_ROOT_SUBTITLE_0 = "GUI_CONTAINER_MODEL_PAGE_TREE_ROOT_SUBTITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTAINER_MODEL_PAGE_TREE_ROOT_TITLE_0 = "GUI_CONTAINER_MODEL_PAGE_TREE_ROOT_TITLE_0";
+
     /**  Message constant for key in the resource bundle. */
     public static final String GUI_CONTEXTMENU_CATEGORY_MODE_0 = "GUI_CONTEXTMENU_CATEGORY_MODE_0";
 
@@ -397,13 +403,13 @@ public final class Messages {
     public static final String GUI_MERGE_SITEMAP_CONFIRM_TITLE_0 = "GUI_MERGE_SITEMAP_CONFIRM_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODE_PAGE_TREE_ROOT_SUBTITLE_0 = "GUI_MODE_PAGE_TREE_ROOT_SUBTITLE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_MODEL_PAGE_DESCRIPTION_LABEL_0 = "GUI_MODEL_PAGE_DESCRIPTION_LABEL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODEL_PAGE_TITLE_LABEL_0 = "GUI_MODEL_PAGE_TITLE_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_PAGE_TREE_ROOT_SUBTITLE_0 = "GUI_MODEL_PAGE_TREE_ROOT_SUBTITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODEL_PAGE_TREE_ROOT_TITLE_0 = "GUI_MODEL_PAGE_TREE_ROOT_TITLE_0";
@@ -446,6 +452,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ONLY_NAVIGATION_BUTTON_TITLE_0 = "GUI_ONLY_NAVIGATION_BUTTON_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PARENT_MODEL_PAGE_TREE_ROOT_SUBTITLE_0 = "GUI_PARENT_MODEL_PAGE_TREE_ROOT_SUBTITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PARENT_MODEL_PAGE_TREE_ROOT_TITLE_0 = "GUI_PARENT_MODEL_PAGE_TREE_ROOT_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTY_EDITOR_TEXT_0 = "GUI_PROPERTY_EDITOR_TEXT_0";

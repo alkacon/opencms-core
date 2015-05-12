@@ -229,6 +229,12 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     /** The registered tree items. */
     private Map<CmsUUID, CmsSitemapTreeItem> m_treeItems;
 
+    /** The parent model page root. */
+    private CmsModelPageTreeItem m_parentModelPageRoot;
+
+    /** The parent model page entries. */
+    private Map<CmsUUID, CmsModelPageTreeItem> m_parentModelPageTreeItems = new HashMap<CmsUUID, CmsModelPageTreeItem>();
+
     /**
      * Returns the instance.<p>
      *
@@ -469,8 +475,40 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         m_modelPageTree.clear();
         m_modelPageTreeItems.clear();
-        CmsModelPageTreeItem modelPageRoot = CmsModelPageTreeItem.createRootItem(false);
-        m_modelPageRoot = modelPageRoot;
+        m_parentModelPageTreeItems.clear();
+
+        if ((modelPageData.getParentModelPages() != null) && !modelPageData.getParentModelPages().isEmpty()) {
+            m_parentModelPageRoot = CmsModelPageTreeItem.createRootItem(
+                false,
+                Messages.get().key(Messages.GUI_PARENT_MODEL_PAGE_TREE_ROOT_TITLE_0),
+                Messages.get().key(Messages.GUI_PARENT_MODEL_PAGE_TREE_ROOT_SUBTITLE_0));
+
+            for (CmsModelPageEntry parentModel : modelPageData.getParentModelPages()) {
+                if (parentModel.isDisabled()) {
+                    continue;
+                }
+                CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(parentModel, false, true);
+                CmsSitemapHoverbar.installOn(
+                    m_controller,
+                    treeItem,
+                    parentModel.getStructureId(),
+                    parentModel.getSitePath(),
+                    parentModel.getSitePath() != null);
+                m_parentModelPageTreeItems.put(parentModel.getStructureId(), treeItem);
+                m_parentModelPageRoot.addChild(treeItem);
+            }
+            if (m_parentModelPageRoot.getChildren().getWidgetCount() > 0) {
+                m_modelPageTree.add(m_parentModelPageRoot);
+            } else {
+                m_parentModelPageRoot = null;
+            }
+        } else {
+            m_parentModelPageRoot = null;
+        }
+        m_modelPageRoot = CmsModelPageTreeItem.createRootItem(
+            false,
+            Messages.get().key(Messages.GUI_MODEL_PAGE_TREE_ROOT_TITLE_0),
+            Messages.get().key(Messages.GUI_MODEL_PAGE_TREE_ROOT_SUBTITLE_0));
         CmsHoverbarCreateModelPageButton createButton = new CmsHoverbarCreateModelPageButton(false);
         CmsSitemapHoverbar hoverbar = CmsSitemapHoverbar.installOn(
             m_controller,
@@ -478,21 +516,29 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             Collections.<Widget> singleton(createButton));
         hoverbar.setAlwaysVisible();
         createButton.setHoverbar(hoverbar);
-        m_modelPageTree.add(modelPageRoot);
+        m_modelPageTree.add(m_modelPageRoot);
         for (CmsModelPageEntry entry : modelPageData.getModelPages()) {
-            m_modelPageData.put(entry.getStructureId(), entry);
-            CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(entry, false);
-            CmsSitemapHoverbar.installOn(
-                m_controller,
-                treeItem,
-                entry.getStructureId(),
-                entry.getSitePath(),
-                entry.getSitePath() != null);
-            m_modelPageTreeItems.put(entry.getStructureId(), treeItem);
-            modelPageRoot.addChild(treeItem);
+            if (m_parentModelPageTreeItems.containsKey(entry.getStructureId())) {
+                CmsModelPageTreeItem item = m_parentModelPageTreeItems.get(entry.getStructureId());
+                item.setDisabled(entry.isDisabled());
+            } else {
+                m_modelPageData.put(entry.getStructureId(), entry);
+                CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(entry, false, false);
+                CmsSitemapHoverbar.installOn(
+                    m_controller,
+                    treeItem,
+                    entry.getStructureId(),
+                    entry.getSitePath(),
+                    entry.getSitePath() != null);
+                m_modelPageTreeItems.put(entry.getStructureId(), treeItem);
+                m_modelPageRoot.addChild(treeItem);
+            }
         }
-        modelPageRoot.setOpen(true);
-        m_containerModelRoot = CmsModelPageTreeItem.createRootItem(true);
+        m_modelPageRoot.setOpen(true);
+        m_containerModelRoot = CmsModelPageTreeItem.createRootItem(
+            true,
+            Messages.get().key(Messages.GUI_CONTAINER_MODEL_PAGE_TREE_ROOT_TITLE_0),
+            Messages.get().key(Messages.GUI_CONTAINER_MODEL_PAGE_TREE_ROOT_SUBTITLE_0));
         CmsHoverbarCreateModelPageButton createContainerModelButton = new CmsHoverbarCreateModelPageButton(true);
         CmsSitemapHoverbar containerModelHoverbar = CmsSitemapHoverbar.installOn(
             m_controller,
@@ -502,7 +548,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         createContainerModelButton.setHoverbar(containerModelHoverbar);
         m_modelPageTree.add(m_containerModelRoot);
         for (CmsModelPageEntry entry : modelPageData.getContainerModels()) {
-            CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(entry, true);
+            CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(entry, true, false);
             CmsSitemapHoverbar.installOn(
                 m_controller,
                 treeItem,
@@ -555,7 +601,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      */
     public void displayNewModelPage(CmsModelPageEntry modelPageData, boolean isContainerModel) {
 
-        CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(modelPageData, isContainerModel);
+        CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(modelPageData, isContainerModel, false);
         CmsSitemapHoverbar.installOn(
             m_controller,
             treeItem,
@@ -753,6 +799,18 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         return EditorMode.galleries == m_editorMode;
     }
 
+    /**
+     * Returns if the given entry is a template model page.<p>
+     * 
+     * @param entryId the entry id
+     * 
+     * @return <code>true</code> if the given entry is a template model page
+     */
+    public boolean isModelPageEntry(CmsUUID entryId) {
+
+        return m_modelPageData.containsKey(entryId);
+    }
+
     /** 
      * Checks if the sitemap editor is in 'model page mode'.<p>
      * 
@@ -771,6 +829,18 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     public boolean isNavigationMode() {
 
         return EditorMode.navigation == m_editorMode;
+    }
+
+    /**
+     * Returns if the given entry is a template model page inherited from the parent configuration.<p>
+     * 
+     * @param entryId the entry id
+     * 
+     * @return <code>true</code> if the given entry is a template model page
+     */
+    public boolean isParentModelPageEntry(CmsUUID entryId) {
+
+        return m_parentModelPageTreeItems.containsKey(entryId);
     }
 
     /**
@@ -1359,7 +1429,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                     modelPage.setResourceType(typeName);
                     modelPage.setStructureId(change.getEntryId());
                     modelPage.setOwnProperties(change.getOwnProperties());
-                    CmsModelPageTreeItem folderItem = new CmsModelPageTreeItem(modelPage, false);
+                    CmsModelPageTreeItem folderItem = new CmsModelPageTreeItem(modelPage, false, false);
                     CmsSitemapHoverbar.installOn(m_controller, folderItem, modelPage.getStructureId());
                     m_modelPageRoot.addChild(folderItem);
                     m_modelPageTreeItems.put(modelPage.getStructureId(), folderItem);

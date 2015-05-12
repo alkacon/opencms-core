@@ -131,6 +131,17 @@ public interface I_CmsSitemapService extends RemoteService {
     CmsSitemapChange createSubSitemap(CmsUUID entryId) throws CmsRpcException;
 
     /**
+     * Sets the disabled flag of a model page within the current sitemap configuration.<p>
+     * 
+     * @param baseUri the base uri for the current sitemap 
+     * @param modelPageId structure id of the model page to remove
+     * @param disabled the disabled flag
+     * 
+     * @throws CmsRpcException if something goes wrong 
+     */
+    void disableModelPage(String baseUri, CmsUUID modelPageId, boolean disabled) throws CmsRpcException;
+
+    /**
      * Gets the alias import results from the server.<p>
      * 
      * @param resultKey the key which identifies the alias import results to get 

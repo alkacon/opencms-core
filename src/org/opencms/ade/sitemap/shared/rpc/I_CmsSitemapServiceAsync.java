@@ -125,6 +125,16 @@ public interface I_CmsSitemapServiceAsync {
     void createSubSitemap(CmsUUID entryId, AsyncCallback<CmsSitemapChange> callback);
 
     /**
+     * Sets the disabled flag of a model page within the current sitemap configuration.<p>
+     * 
+     * @param baseUri the base uri for the current sitemap 
+     * @param modelPageId structure id of the model page to remove
+     * @param disabled the disabled flag
+     * @param callback the callback 
+     */
+    void disableModelPage(String baseUri, CmsUUID modelPageId, boolean disabled, AsyncCallback<Void> callback);
+
+    /**
      * Gets the alias import results from the server.<p>
      * 
      * @param resultKey the key which identifies the alias import results to get 

@@ -42,15 +42,23 @@ public class CmsModelInfo implements IsSerializable {
     /** The model page info. */
     private List<CmsModelPageEntry> m_modelPages;
 
+    /** The parent model pages. */
+    private List<CmsModelPageEntry> m_parentModelPages;
+
     /**
      * Constructor.<p>
      * 
      * @param modelPages the model pages
+     * @param parentModelPages the global model pages
      * @param containerModels the container models
      */
-    public CmsModelInfo(List<CmsModelPageEntry> modelPages, List<CmsModelPageEntry> containerModels) {
+    public CmsModelInfo(
+        List<CmsModelPageEntry> modelPages,
+        List<CmsModelPageEntry> parentModelPages,
+        List<CmsModelPageEntry> containerModels) {
 
         m_modelPages = modelPages;
+        m_parentModelPages = parentModelPages;
         m_containerModels = containerModels;
     }
 
@@ -80,6 +88,16 @@ public class CmsModelInfo implements IsSerializable {
     public List<CmsModelPageEntry> getModelPages() {
 
         return m_modelPages;
+    }
+
+    /**
+     * Returns the parent model pages.<p>
+     * 
+     * @return the parent model pages
+     */
+    public List<CmsModelPageEntry> getParentModelPages() {
+
+        return m_parentModelPages;
     }
 
 }

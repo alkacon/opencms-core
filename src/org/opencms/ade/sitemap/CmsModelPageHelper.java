@@ -55,9 +55,11 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -158,12 +160,13 @@ public class CmsModelPageHelper {
      * 
      * @param name the page name
      * @param description the page description
+     * @param copyId structure id of the resource to use as a model for the model page, if any (may be null)
      * 
      * @return the new resource
      * 
      * @throws CmsException in case something goes wrong
      */
-    public CmsResource createContainerModelPage(String name, String description) throws CmsException {
+    public CmsResource createContainerModelPage(String name, String description, CmsUUID copyId) throws CmsException {
 
         CmsResource modelFolder = ensureModelFolder(m_rootResource, true);
         String pattern = "containermodel_%(number).html";
@@ -174,11 +177,20 @@ public class CmsModelPageHelper {
         CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, name, null);
         CmsProperty descriptionProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, description, null);
         CmsResource newPage = null;
-        newPage = m_cms.createResource(
-            newFilePath,
-            getType(CmsResourceTypeXmlContainerPage.getStaticTypeName()),
-            null,
-            Arrays.asList(titleProp, descriptionProp));
+        if (copyId == null) {
+            newPage = m_cms.createResource(
+                newFilePath,
+                getType(CmsResourceTypeXmlContainerPage.getStaticTypeName()),
+                null,
+                Arrays.asList(titleProp, descriptionProp));
+        } else {
+            CmsResource copyResource = m_cms.readResource(copyId);
+            m_cms.copyResource(copyResource.getRootPath(), newFilePath);
+            m_cms.writePropertyObject(newFilePath, titleProp);
+            m_cms.writePropertyObject(newFilePath, descriptionProp);
+
+            newPage = m_cms.readResource(newFilePath);
+        }
 
         tryUnlock(newPage);
         return newPage;
@@ -221,6 +233,50 @@ public class CmsModelPageHelper {
         }
         tryUnlock(newPage);
         return newPage;
+    }
+
+    /**
+     * Disables the given model page.<p>
+     * 
+     * @param sitemapConfig the configuration resource
+     * @param structureId the model page id
+     * @param disabled <code>true</code> to disabe the entry
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void disableModelPage(CmsResource sitemapConfig, CmsUUID structureId, boolean disabled) throws CmsException {
+
+        CmsFile sitemapConfigFile = m_cms.readFile(sitemapConfig);
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, sitemapConfigFile);
+        CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
+        reader.parseConfiguration(m_adeConfig.getBasePath(), content);
+        List<CmsModelPageConfig> modelPageConfigs = reader.getModelPageConfigs();
+
+        int i = 0;
+        for (CmsModelPageConfig config : modelPageConfigs) {
+            if (config.getResource().getStructureId().equals(structureId)) {
+                break;
+            }
+            i += 1;
+        }
+        I_CmsXmlContentValue value;
+        if (i < modelPageConfigs.size()) {
+            value = content.getValue(CmsConfigurationReader.N_MODEL_PAGE, Locale.ENGLISH, i);
+        } else {
+            value = content.addValue(m_cms, CmsConfigurationReader.N_MODEL_PAGE, Locale.ENGLISH, i);
+            String linkValuePath = value.getPath() + "/" + CmsConfigurationReader.N_MODEL_PAGE;
+            I_CmsXmlContentValue linkValue = content.hasValue(linkValuePath, Locale.ENGLISH) ? content.getValue(
+                linkValuePath,
+                Locale.ENGLISH) : content.addValue(m_cms, linkValuePath, Locale.ENGLISH, 0);
+            CmsResource model = m_cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            linkValue.setStringValue(m_cms, m_cms.getSitePath(model));
+        }
+        String disabledPath = value.getPath() + "/" + CmsConfigurationReader.N_DISABLED;
+        I_CmsXmlContentValue disabledValue = content.hasValue(disabledPath, Locale.ENGLISH) ? content.getValue(
+            disabledPath,
+            Locale.ENGLISH) : content.addValue(m_cms, disabledPath, Locale.ENGLISH, 0);
+        disabledValue.setStringValue(m_cms, Boolean.toString(disabled));
+        writeSitemapConfig(content, sitemapConfigFile);
     }
 
     /** 
@@ -273,7 +329,7 @@ public class CmsModelPageHelper {
                         CmsResourceTypeXmlContainerPage.getStaticTypeName())),
                     false);
                 for (CmsResource model : modelResources) {
-                    CmsModelPageEntry entry = createModelPageEntry(model);
+                    CmsModelPageEntry entry = createModelPageEntry(model, false, false);
                     if (entry != null) {
                         result.add(entry);
                     }
@@ -292,7 +348,7 @@ public class CmsModelPageHelper {
      */
     public CmsModelInfo getModelInfo() {
 
-        return new CmsModelInfo(getModelPages(), getContainerModels());
+        return new CmsModelInfo(getModelPages(), getParentModelPages(), getContainerModels());
     }
 
     /** 
@@ -302,24 +358,25 @@ public class CmsModelPageHelper {
      */
     public List<CmsModelPageEntry> getModelPages() {
 
-        List<CmsModelPageEntry> result = Lists.newArrayList();
         List<CmsModelPageConfig> modelPageConfigs = m_adeConfig.getModelPages();
-        for (CmsModelPageConfig config : modelPageConfigs) {
-            CmsUUID structureId = config.getResource().getStructureId();
-            try {
-                CmsResource modelPage = m_cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-                CmsModelPageEntry entry = createModelPageEntry(modelPage);
-                if (entry != null) {
-                    result.add(entry);
-                }
-            } catch (CmsVfsResourceNotFoundException e) {
-                continue;
-            } catch (Exception e) {
-                LOG.error(e.getLocalizedMessage(), e);
-                continue;
-            }
+        return buildModelPageList(modelPageConfigs);
+    }
+
+    /**
+     * Returns the parent model pages.<p>
+     *  
+     * @return the parent model pages
+     */
+    public List<CmsModelPageEntry> getParentModelPages() {
+
+        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
+            m_cms,
+            CmsResource.getParentFolder(m_adeConfig.getBasePath()));
+        if (adeConfig.isModuleConfiguration()) {
+            return Collections.emptyList();
         }
-        return result;
+        List<CmsModelPageConfig> modelPageConfigs = adeConfig.getModelPages();
+        return buildModelPageList(modelPageConfigs);
     }
 
     /** 
@@ -355,13 +412,17 @@ public class CmsModelPageHelper {
      * Creates a model page entry bean from a model page resource.<p>
      * 
      * @param resource the model page resource
+     * @param disabled if the model page is disabled
+     * @param isDefault if this is the default model page
      *  
      * @return the model page entry bean 
      */
-    CmsModelPageEntry createModelPageEntry(CmsResource resource) {
+    CmsModelPageEntry createModelPageEntry(CmsResource resource, boolean disabled, boolean isDefault) {
 
         try {
             CmsModelPageEntry result = new CmsModelPageEntry();
+            result.setDefault(isDefault);
+            result.setDisabled(disabled);
             List<CmsProperty> properties = m_cms.readPropertyObjects(resource, false);
             Map<String, CmsClientProperty> clientProperties = Maps.newHashMap();
             for (CmsProperty prop : properties) {
@@ -391,6 +452,34 @@ public class CmsModelPageHelper {
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Builds the model page list.<p>
+     * 
+     * @param modelPageConfigs the model page configuration
+     * 
+     * @return the list
+     */
+    private List<CmsModelPageEntry> buildModelPageList(List<CmsModelPageConfig> modelPageConfigs) {
+
+        List<CmsModelPageEntry> result = Lists.newArrayList();
+        for (CmsModelPageConfig config : modelPageConfigs) {
+            CmsUUID structureId = config.getResource().getStructureId();
+            try {
+                CmsResource modelPage = m_cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsModelPageEntry entry = createModelPageEntry(modelPage, config.isDisabled(), config.isDefault());
+                if (entry != null) {
+                    result.add(entry);
+                }
+            } catch (CmsVfsResourceNotFoundException e) {
+                continue;
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                continue;
+            }
+        }
+        return result;
     }
 
     /**
