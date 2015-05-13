@@ -431,7 +431,7 @@ public class CmsGallerySearchParameters {
         }
 
         // set result page
-        query.setStart(new Integer(m_resultPage * m_matchesPerPage));
+        query.setStart(new Integer((m_resultPage - 1) * m_matchesPerPage));
 
         // set search locale
         if (null != m_locale) {
