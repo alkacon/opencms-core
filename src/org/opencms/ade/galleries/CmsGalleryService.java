@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -127,9 +127,9 @@ import com.google.common.collect.Sets;
 
 /**
  * Handles all RPC services related to the gallery dialog.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.ade.galleries.CmsGalleryService
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync
@@ -152,7 +152,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param resourceType the resource type of the gallery
          * @param contentType the resource type of the gallery content
          * @param galleries the gallery resources
@@ -170,7 +170,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         /**
          * Adds a type to the list of content types.<p>
-         * 
+         *
          * @param type the type to add
          */
         protected void addContentType(I_CmsResourceType type) {
@@ -250,9 +250,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param type the resource type 
-         * @param onlyShowInFullList the flag to control the visibility 
+         *
+         * @param type the resource type
+         * @param onlyShowInFullList the flag to control the visibility
          */
         public TypeWithVisibility(I_CmsResourceType type, boolean onlyShowInFullList) {
 
@@ -314,13 +314,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns the initial gallery settings.<p>
-     * 
+     *
      * @param request the current request
      * @param config the gallery configuration
-     * 
-     * @return the initial gallery settings 
-     * 
-     * @throws CmsRpcException if something goes wrong 
+     *
+     * @return the initial gallery settings
+     *
+     * @throws CmsRpcException if something goes wrong
      */
     public static CmsGalleryDataBean getInitialSettings(HttpServletRequest request, CmsGalleryConfiguration config)
     throws CmsRpcException {
@@ -339,11 +339,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns the initial search data.<p>
-     * 
+     *
      * @param request the current request
      * @param config the gallery configuration
-     * 
-     * @return the search data 
+     *
+     * @return the search data
      */
     public static CmsGallerySearchBean getSearch(HttpServletRequest request, CmsGalleryDataBean config) {
 
@@ -551,19 +551,19 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             return getInitialSettingsInternal(conf);
         } catch (Throwable t) {
             error(t);
-            return null; // will never be reached 
+            return null; // will never be reached
         }
     }
 
     /**
      * Returns the initial gallery data for the container page editor.<p>
-     * 
+     *
      * @param resourceTypes the available resource types
      * @param creatableTypes the creatable types
      * @param deactivatedTypes the disabled types
      * @param uri the page URI
      * @param locale the content locale
-     * 
+     *
      * @return the gallery data
      */
     public CmsGalleryDataBean getInitialSettingsForContainerPage(
@@ -878,11 +878,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Gets an initialized CmsObject to be used for the actual search for a given search bean.<p>
-     * 
-     * @param searchObj the search object 
+     *
+     * @param searchObj the search object
      * @return the initialized CmsObject
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsObject getSearchCms(CmsGallerySearchBean searchObj) throws CmsException {
 
@@ -896,10 +896,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Gets the sitemap sub entries for a given path as resources.<p>
-     * 
-     * @param rootPath the root path 
-     * @return the sitemap sub entry resources 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param rootPath the root path
+     * @return the sitemap sub entry resources
+     * @throws CmsException if something goes wrong
      */
     protected List<CmsResource> getSitemapSubEntryResources(String rootPath) throws CmsException {
 
@@ -920,12 +920,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Internal method for getting sitemap sub entries for a given root path.<p>
-     * 
-     * @param rootPath the root path 
-     * @param isRoot true if this method is used to get the root entries of a sitemap 
-     * @return the list of sitemap sub-entry beans 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param rootPath the root path
+     * @param isRoot true if this method is used to get the root entries of a sitemap
+     * @return the list of sitemap sub-entry beans
+     *
+     * @throws CmsException if something goes wrong
      */
     protected List<CmsSitemapEntryBean> getSubEntriesInternal(String rootPath, boolean isRoot) throws CmsException {
 
@@ -955,11 +955,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         return result;
     }
 
-    /** 
+    /**
      * Gets the type names from the gallery data bean.<p>
-     * 
-     * @param data the gallery data bean 
-     * @return the type names 
+     *
+     * @param data the gallery data bean
+     * @return the type names
      */
     protected List<String> getTypeNames(CmsGalleryDataBean data) {
 
@@ -972,15 +972,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Checks whether a given resource is a sitemap entry.<p>
-     * 
+     *
      * This is used for preselected entries in the gallery widget.<p>
-     * 
-     * 
-     * @param cms the current CMS context   
-     * @param resource the resource to check 
-     * @return true if the resource is a sitemap entry 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     *
+     * @param cms the current CMS context
+     * @param resource the resource to check
+     * @return true if the resource is a sitemap entry
+     *
+     * @throws CmsException if something goes wrong
      */
     protected boolean isSitemapEntry(CmsObject cms, CmsResource resource) throws CmsException {
 
@@ -1034,11 +1034,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Reads the resources for a collection of structure ids and returns the list of resources which could be read.<p>
-     * 
-     * @param structureIds the structure ids for which we want to read the resources 
-     * @param filter the filter used to read the resource 
-     * 
-     * @return the list of resources for the given structure id  
+     *
+     * @param structureIds the structure ids for which we want to read the resources
+     * @param filter the filter used to read the resource
+     *
+     * @return the list of resources for the given structure id
      */
     protected List<CmsResource> readAll(Collection<CmsUUID> structureIds, CmsResourceFilter filter) {
 
@@ -1055,10 +1055,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Gets the sitemap tree open state.<p>
-     * 
-     * @param treeToken the tree token to use 
-     * 
-     * @return the sitemap tree open state 
+     *
+     * @param treeToken the tree token to use
+     *
+     * @return the sitemap tree open state
      */
     CmsTreeOpenState getSitemapTreeState(String treeToken) {
 
@@ -1069,10 +1069,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Gets the VFS tree open state.<p>
-     * 
-     * @param treeToken the tree token 
-     * 
-     * @return the VFS tree open state 
+     *
+     * @param treeToken the tree token
+     *
+     * @return the VFS tree open state
      */
     CmsTreeOpenState getVfsTreeState(String treeToken) {
 
@@ -1083,13 +1083,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Creates the sitemap entry bean for a resource.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param resource the resource for which the sitemap entry bean should be created
-     *  
-     * @return the created sitemap entry bean 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the created sitemap entry bean
+     *
+     * @throws CmsException if something goes wrong
      */
     CmsSitemapEntryBean internalCreateSitemapEntryBean(CmsObject cms, CmsResource resource) throws CmsException {
 
@@ -1098,7 +1098,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(cms);
         CmsJspNavElement entry = navBuilder.getNavigationForResource(resource.getRootPath());
         if (entry == null) {
-            // may be null for expired resources 
+            // may be null for expired resources
             return null;
         }
         return prepareSitemapEntry(cms, entry, false);
@@ -1107,13 +1107,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /**
      * Creates the VFS entry bean for a resource.<p>
      *
-     * @param resource the resource for which to create the VFS entry bean 
-     * @param title the title 
-     * @param isRoot true if this is a root entry 
-     * @param isEditable true if this entry is editable 
-     * @param children the children of the entry 
-     * 
-     * @return the created VFS entry bean 
+     * @param resource the resource for which to create the VFS entry bean
+     * @param title the title
+     * @param isRoot true if this is a root entry
+     * @param isEditable true if this entry is editable
+     * @param children the children of the entry
+     *
+     * @return the created VFS entry bean
      * @throws CmsException if something goes wrong
      */
     CmsVfsEntryBean internalCreateVfsEntryBean(
@@ -1160,10 +1160,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Checks if the current user has write permissions on the given resource.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param resource the resource to check
-     * 
+     *
      * @return <code>true</code> if the current user has write permissions on the given resource
      */
     boolean isEditable(CmsObject cms, CmsResource resource) {
@@ -1177,11 +1177,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Adds galleries for a given type.<p>
-     * 
-     * @param galleryTypeInfos the gallery type infos 
-     * @param typeName the type name 
-     * 
-     * @throws CmsLoaderException if something goes wrong 
+     *
+     * @param galleryTypeInfos the gallery type infos
+     * @param typeName the type name
+     *
+     * @throws CmsLoaderException if something goes wrong
      */
     private void addGalleriesForType(Map<String, CmsGalleryTypeInfo> galleryTypeInfos, String typeName)
     throws CmsLoaderException {
@@ -1205,11 +1205,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns the map with the available galleries.<p>
-     * 
+     *
      * The map uses gallery path as the key and stores the CmsGalleriesListInfoBean as the value.<p>
-     * 
+     *
      * @param galleryTypes the galleries
-     * 
+     *
      * @return the map with gallery info beans
      */
     private List<CmsGalleryFolderBean> buildGalleriesList(Map<String, CmsGalleryTypeInfo> galleryTypes) {
@@ -1241,7 +1241,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     // error reading title property
                     logError(e);
                 }
-                // sitepath as gallery id 
+                // sitepath as gallery id
                 bean.setPath(sitePath);
                 // content types
                 bean.setContentTypes(contentTypes);
@@ -1258,9 +1258,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns a map with the available locales.<p>
-     * 
+     *
      * The map entry key is the current locale and the value the localized nice name.<p>
-     * 
+     *
      * @return the map representation of all available locales
      */
     private Map<String, String> buildLocalesMap() {
@@ -1276,10 +1276,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns the list of beans for the given search results.<p>
-     * 
+     *
      * @param searchResult the list of search results
-     * @param presetResult the search result which corresponds to a preset value in the editor 
-     * 
+     * @param presetResult the search result which corresponds to a preset value in the editor
+     *
      * @return the list with the current search results
      */
     private List<CmsResultItemBean> buildSearchResultList(
@@ -1304,13 +1304,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Builds a single search result list item for the client from a server-side search result.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param sResult the server-side search result 
-     * @param presetResult the preselected result 
-     * 
+     *
+     * @param cms the current CMS context
+     * @param sResult the server-side search result
+     * @param presetResult the preselected result
+     *
      * @return the client side search result item
-     *  
+     *
      * @throws CmsException if something goes wrong
      * @throws ParseException if date parsing fails
      */
@@ -1355,12 +1355,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     cms,
                     cms.readFile(cms.readResource(new CmsUUID(sResult.getStructureId()))));
                 for (Locale locale : content.getLocales()) {
-                    // Since the image field is synchronized between different locales, we use the value from the first locale in which it is available 
+                    // Since the image field is synchronized between different locales, we use the value from the first locale in which it is available
                     I_CmsXmlContentValue value = content.getValue(XPATH_XMLIMAGE_IMAGE, locale);
                     if (value != null) {
                         CmsXmlVfsFileValue fileValue = (CmsXmlVfsFileValue)value;
                         CmsLink link = fileValue.getLink(cms);
-                        if (link != null) { // link can be null if the field is not set 
+                        if (link != null) { // link can be null if the field is not set
                             CmsUUID linkStructureId = link.getStructureId();
                             if (linkStructureId != null) {
                                 imageId = linkStructureId.toString();
@@ -1463,12 +1463,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Generates a map with all available content types.<p>
-     * 
+     *
      * The map uses resource type name as the key and stores the CmsTypesListInfoBean as the value.
-     * 
+     *
      * @param types the resource types
-     * @param creatableTypes the creatable types 
-     * 
+     * @param creatableTypes the creatable types
+     *
      * @return the map containing the available resource types
      */
     private List<CmsResourceTypeBean> buildTypesList(List<I_CmsResourceType> types, Set<String> creatableTypes) {
@@ -1503,12 +1503,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns the resource types beans.<p>
-     * 
+     *
      * @param resourceTypes the resource types
      * @param creatableTypes the creatable types
      * @param deactivatedTypes the deactivated types
-     * @param typesForTypeTab the types which should be shown in the types tab according to the gallery configuration 
-     * 
+     * @param typesForTypeTab the types which should be shown in the types tab according to the gallery configuration
+     *
      * @return the resource types
      */
     private List<CmsResourceTypeBean> buildTypesList(
@@ -1557,9 +1557,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns a list of resource types by a request parameter.<p>
-     * 
+     *
      * @param resourceTypes the resource types parameter
-     * 
+     *
      * @return the resource types
      */
     private List<I_CmsResourceType> convertTypeNamesToTypes(List<String> resourceTypes) {
@@ -1580,11 +1580,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Creates a resource type bean for the given type.<p>
-     * 
+     *
      * @param type the resource type
-     * @param preview the preview provider 
+     * @param preview the preview provider
      * @param creatable if the type may be created by the current user
-     * 
+     *
      * @return the resource type bean
      */
     private CmsResourceTypeBean createTypeBean(I_CmsResourceType type, I_CmsPreviewProvider preview, boolean creatable) {
@@ -1617,13 +1617,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns the search object containing the list with search results and the path to the specified resource.<p>
-     * 
+     *
      * @param resourceName the given resource
-     * @param data the gallery data bean 
-     * 
+     * @param data the gallery data bean
+     *
      * @return the gallery search object containing the current search parameter and the search result list
-     * 
-     * @throws CmsException if the search fails 
+     *
+     * @throws CmsException if the search fails
      */
     private CmsGallerySearchBean findResourceInGallery(String resourceName, CmsGalleryDataBean data)
     throws CmsException {
@@ -1787,8 +1787,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Get default types for gallery together with visibility.<p>
-     * 
-     * @return the default types 
+     *
+     * @return the default types
      */
     private List<I_CmsResourceType> getDefaultTypesForGallery() {
 
@@ -1797,18 +1797,18 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Generates a list of available galleries for the given gallery-type.<p>
-     * 
+     *
      * @param galleryTypeId the gallery-type
-     * 
+     *
      * @return the list of galleries
-     * 
+     *
      */
     private List<CmsResource> getGalleriesByType(int galleryTypeId) {
 
         List<CmsResource> galleries = new ArrayList<CmsResource>();
 
-        // We swallow errors in this method because we don't  want a failure to read some folders (e.g. because of permission problems) to 
-        // cause an empty gallery list as a result 
+        // We swallow errors in this method because we don't  want a failure to read some folders (e.g. because of permission problems) to
+        // cause an empty gallery list as a result
 
         try {
             galleries.addAll(getCmsObject().readResources(
@@ -1855,10 +1855,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Helper method for getting the initial gallery settings.<p>
-     * 
-     * @param conf the gallery configration 
-     * @return the gallery settings 
-     * 
+     *
+     * @param conf the gallery configration
+     * @return the gallery settings
+     *
      * @throws CmsRpcException if something goes wrong
      */
     private CmsGalleryDataBean getInitialSettingsInternal(CmsGalleryConfiguration conf) throws CmsRpcException {
@@ -1975,7 +1975,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     }
                     // check if the gallery is available in this site and still exists
                     if (!conf.hasResultsSelectable()) {
-                        // if selecting results is explicitly disabled, opening the start gallery does not make much sense 
+                        // if selecting results is explicitly disabled, opening the start gallery does not make much sense
                         data.setStartGallery(null);
                     } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(startGallery)) {
                         boolean galleryExists = getCmsObject().existsResource(startGallery);
@@ -2033,10 +2033,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Reads the preview provider configuration and generates needed type-provider mappings.<p>
-     * 
-     * @param types the resource types 
-     * 
-     * @return a map from resource types to preview providers 
+     *
+     * @param types the resource types
+     *
+     * @return a map from resource types to preview providers
      */
     private Map<I_CmsResourceType, I_CmsPreviewProvider> getPreviewProviderForTypes(List<I_CmsResourceType> types) {
 
@@ -2080,14 +2080,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns the resource types configured to be used within the given gallery mode.<p>
-     * 
+     *
      * @param galleryMode the gallery mode
      * @param referenceSitePath the reference site-path to check permissions for
      * @param resourceTypesList the resource types parameter
-     * @param typesForTypeTab the types which should be shown in the types tab according to the gallery configuration 
-     * 
+     * @param typesForTypeTab the types which should be shown in the types tab according to the gallery configuration
+     *
      * @return the resource types
-     * 
+     *
      * @throws CmsRpcException if something goes wrong reading the configuration
      */
     private List<CmsResourceTypeBean> getResourceTypeBeans(
@@ -2111,7 +2111,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 break;
             case ade:
                 throw new IllegalStateException("This code should never be called");
-                // ADE case is handled by container page service 
+                // ADE case is handled by container page service
             default:
                 resourceTypes = Collections.<I_CmsResourceType> emptyList();
                 creatableTypes = Collections.<String> emptySet();
@@ -2121,9 +2121,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns the VFS root entries.<p>
-     * 
+     *
      * @return the VFS root entries
-     * 
+     *
      * @throws CmsRpcException if something goes wrong
      */
     private List<CmsVfsEntryBean> getRootEntries() throws CmsRpcException {
@@ -2161,7 +2161,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns the session cache.<p>
-     * 
+     *
      * @return the session cache
      */
     private CmsADESessionCache getSessionCache() {
@@ -2174,11 +2174,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Gets the attribute name for a tree open state.<p>
-     * 
-     * @param treeName the tree name 
+     *
+     * @param treeName the tree name
      * @param treeToken the tree token
-     *  
-     * @return the attribute name for the tree 
+     *
+     * @return the attribute name for the tree
      */
     private String getTreeOpenStateAttributeName(String treeName, String treeToken) {
 
@@ -2187,7 +2187,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns the workplace locale from the current user's settings.<p>
-     * 
+     *
      * @return the workplace locale
      */
     private Locale getWorkplaceLocale() {
@@ -2200,7 +2200,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns the workplace settings of the current user.<p>
-     * 
+     *
      * @return the workplace settings
      */
     private CmsWorkplaceSettings getWorkplaceSettings() {
@@ -2213,13 +2213,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Checks whether a resource has a navigation property.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param resource the resource to use 
-     * 
+     *
+     * @param cms the current CMS context
+     * @param resource the resource to use
+     *
      * @return true if the resource has a navigation property
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     private boolean hasNavigationProperty(CmsObject cms, CmsResource resource) throws CmsException {
 
@@ -2231,9 +2231,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns the search parameters for the given query data.<p>
-     * 
+     *
      * @param searchData the query data
-     * 
+     *
      * @return the prepared search parameters
      */
     private CmsGallerySearchParameters prepareSearchParams(CmsGallerySearchBean searchData) {
@@ -2247,7 +2247,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             params.setResourceTypes(searchData.getTypes());
         }
 
-        // set the selected galleries to the parameters 
+        // set the selected galleries to the parameters
         if (searchData.getGalleries() != null) {
             List<String> paramGalleries = new ArrayList<String>();
             for (String gallerySitePath : searchData.getGalleries()) {
@@ -2328,13 +2328,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Prepares a sitemap entry bean from the given navigation element.<p>
-     * 
+     *
      * @param cms the cms context
      * @param navElement the navigation element
      * @param isRoot <code>true</code> if this is a site root entry
-     * 
+     *
      * @return the sitemap entry
-     * 
+     *
      * @throws CmsException if something goes wrong reading types and resources
      */
     private CmsSitemapEntryBean prepareSitemapEntry(CmsObject cms, CmsJspNavElement navElement, boolean isRoot)
@@ -2402,9 +2402,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns a map with gallery type names associated with the list of available galleries for this type.<p>
-     * 
-     * @param resourceTypes the resources types to collect the galleries for 
-     * 
+     *
+     * @param resourceTypes the resources types to collect the galleries for
+     *
      * @return a map with gallery type and  the associated galleries
      */
     private Map<String, CmsGalleryTypeInfo> readGalleryInfosByTypeBeans(List<CmsResourceTypeBean> resourceTypes) {
@@ -2424,9 +2424,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns a map with gallery type names associated with the list of available galleries for this type.<p>
-     * 
-     * @param resourceTypes the resources types to collect the galleries for 
-     * 
+     *
+     * @param resourceTypes the resources types to collect the galleries for
+     *
      * @return a map with gallery type and  the associated galleries
      */
     private Map<String, CmsGalleryTypeInfo> readGalleryInfosByTypeNames(List<String> resourceTypes) {
@@ -2444,12 +2444,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Returns the gallery search object containing the results for the current parameter.<p>
-     * 
-     * @param searchObj the current search object 
-     * 
+     *
+     * @param searchObj the current search object
+     *
      * @return the search result
-     * 
-     * @throws CmsException if the search fails 
+     *
+     * @throws CmsException if the search fails
      */
     private CmsGallerySearchBean search(CmsGallerySearchBean searchObj) throws CmsException {
 
@@ -2463,11 +2463,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsObject searchCms = getSearchCms(searchObj);
         searchBean.init(searchCms);
 
-        //         Lucene Search 
+        //         Lucene Search
         //        searchBean.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
         //        CmsGallerySearchResultList lucenesearchResults = searchBean.getResult(params);
 
-        // TODO 
+        // TODO
         CmsGallerySearchResultList searchResults = OpenCms.getSearchManager().getIndexSolr("Solr Offline").gallerySearch(
             searchCms,
             params);
@@ -2477,7 +2477,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         // the user dependent params(galleries, types etc.) remain unchanged
         searchObjBean.setSortOrder(params.getSortOrder().name());
         searchObjBean.setScope(params.getScope());
-        searchObjBean.setResultCount(searchResults.size());
+        searchObjBean.setResultCount(searchResults.getHitCount());
         searchObjBean.setPage(params.getResultPage());
         searchObjBean.setLastPage(params.getResultPage());
         searchObjBean.setResults(buildSearchResultList(searchResults, null));
@@ -2487,12 +2487,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /**
      * Sets the last opened gallery information for the current user.<p>
-     * 
+     *
      * @param searchObject the current search
      */
     private void setLastOpenedGallery(CmsGallerySearchBean searchObject) {
 
-        if ((searchObject.getGalleries() != null) && (searchObject.getGalleries().size() <= 1) // if the size is 0, the user has actively deselected the galleries, so we want to handle this case too 
+        if ((searchObject.getGalleries() != null) && (searchObject.getGalleries().size() <= 1) // if the size is 0, the user has actively deselected the galleries, so we want to handle this case too
             && searchObject.haveGalleriesChanged()) {
             String galleryPath = searchObject.getGalleries().isEmpty() ? null : searchObject.getGalleries().get(0);
             CmsWorkplaceSettings settings = getWorkplaceSettings();

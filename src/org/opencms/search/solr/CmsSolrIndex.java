@@ -273,7 +273,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 return null;
             }
 
-            resultList.setHitCount(list.size());
+            resultList.setHitCount(Long.valueOf(list.getNumFound()).intValue());
             for (final CmsSearchResource resource : list) {
                 //                final int score = resource.getScore(100f);
                 final I_CmsSearchDocument document = resource.getDocument();
