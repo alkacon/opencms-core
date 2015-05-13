@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,66 +50,10 @@ import org.apache.solr.client.solrj.SolrQuery.ORDER;
 
 /**
  * Parameters used for the gallery search index.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsGallerySearchParameters {
-
-    /**
-     * Helper class to store a time range.<p>
-     */
-    class CmsGallerySearchTimeRange {
-
-        /** The end time of the time range. */
-        long m_endTime;
-
-        /** The start time of the time range. */
-        long m_startTime;
-
-        /**
-         * Default constructor.<p>
-         * 
-         * This will create an object where the start date is equal to 
-         * {@link Long#MIN_VALUE} and the end date is equal to {@link Long#MAX_VALUE}.<p>
-         */
-        public CmsGallerySearchTimeRange() {
-
-            m_startTime = Long.MIN_VALUE;
-            m_endTime = Long.MAX_VALUE;
-        }
-
-        /**
-         * Constructor with start and end time.<p>
-         * 
-         * @param startTime the start time of the time range
-         * @param endTime the end time of the time range
-         */
-        public CmsGallerySearchTimeRange(long startTime, long endTime) {
-
-            m_startTime = startTime;
-            m_endTime = endTime;
-        }
-
-        /**
-         * Returns the end time of the time range.<p>
-         * 
-         * @return the end time of the time range
-         */
-        public long getEndTime() {
-
-            return m_endTime;
-        }
-
-        /**
-         * Returns the start time of the time range.<p>
-         * 
-         * @return the start time of the time range
-         */
-        public long getStartTime() {
-
-            return m_startTime;
-        }
-    }
 
     /** Sort parameter constants. */
     public enum CmsGallerySortParam {
@@ -187,6 +131,62 @@ public class CmsGallerySearchParameters {
         public static final CmsGallerySortParam DEFAULT = title_asc;
     }
 
+    /**
+     * Helper class to store a time range.<p>
+     */
+    class CmsGallerySearchTimeRange {
+
+        /** The end time of the time range. */
+        long m_endTime;
+
+        /** The start time of the time range. */
+        long m_startTime;
+
+        /**
+         * Default constructor.<p>
+         *
+         * This will create an object where the start date is equal to
+         * {@link Long#MIN_VALUE} and the end date is equal to {@link Long#MAX_VALUE}.<p>
+         */
+        public CmsGallerySearchTimeRange() {
+
+            m_startTime = Long.MIN_VALUE;
+            m_endTime = Long.MAX_VALUE;
+        }
+
+        /**
+         * Constructor with start and end time.<p>
+         *
+         * @param startTime the start time of the time range
+         * @param endTime the end time of the time range
+         */
+        public CmsGallerySearchTimeRange(long startTime, long endTime) {
+
+            m_startTime = startTime;
+            m_endTime = endTime;
+        }
+
+        /**
+         * Returns the end time of the time range.<p>
+         *
+         * @return the end time of the time range
+         */
+        public long getEndTime() {
+
+            return m_endTime;
+        }
+
+        /**
+         * Returns the start time of the time range.<p>
+         *
+         * @return the start time of the time range
+         */
+        public long getStartTime() {
+
+            return m_startTime;
+        }
+    }
+
     /** The categories to search in. */
     private List<String> m_categories;
 
@@ -248,9 +248,129 @@ public class CmsGallerySearchParameters {
     }
 
     /**
-     * Returns a CmsSolrQuery representation of this class. 
-     * @param cms the openCms object. 
-     * @return CmsSolrQuery representation of this class. 
+     * Returns the categories that have been included in the search.<p>
+     *
+     * If no categories have been set, then <code>null</code> is returned.<p>
+     *
+     * @return the categories that have been included in the search
+     */
+    public List<String> getCategories() {
+
+        return m_categories;
+    }
+
+    /**
+     * Returns the container types that have been included in the search.<p>
+     *
+     * @return the container types that have been included in the search
+     */
+    public List<String> getContainerTypes() {
+
+        return m_containerTypes;
+    }
+
+    /**
+     * Returns the time range for the date of creation that has been used for the search result.<p>
+     *
+     * In case this time range has not been set, this will return an object
+     * where the start date is equal to {@link Long#MIN_VALUE} and the end date is equal to {@link Long#MAX_VALUE}.<p>
+     *
+     * @return the time range for the date of creation that has been used for the search result
+     */
+    public CmsGallerySearchTimeRange getDateCreatedRange() {
+
+        if (m_dateCreatedTimeRange == null) {
+            m_dateCreatedTimeRange = new CmsGallerySearchTimeRange();
+        }
+        return m_dateCreatedTimeRange;
+    }
+
+    /**
+     * Returns the time range for the dadelete examplete of last modification that has been used for the search result.<p>
+     *
+     * In case this time range has not been set, this will return an object
+     * where the start date is equal to {@link Long#MIN_VALUE} and the end date is equal to {@link Long#MAX_VALUE}.<p>
+     *
+     * @return the time range for the date of last modification that has been used for the search result
+     */
+    public CmsGallerySearchTimeRange getDateLastModifiedRange() {
+
+        if (m_dateLastModifiedTimeRange == null) {
+            m_dateLastModifiedTimeRange = new CmsGallerySearchTimeRange();
+        }
+        return m_dateLastModifiedTimeRange;
+    }
+
+    /**
+     * Returns the list of the names of the fields to search in.<p>
+     *
+     * If this has not been set, then the default fields defined in
+     * {@link CmsSearchIndex#DOC_META_FIELDS} are used as default.<p>
+     *
+     * @return the list of the names of the fields to search in
+     */
+    public List<String> getFields() {
+
+        if (m_fields == null) {
+            setFields(Arrays.asList(CmsSearchIndex.DOC_META_FIELDS));
+        }
+        return m_fields;
+    }
+
+    /**
+     * Returns the list of folders to search in.<p>
+     *
+     * @return a list of paths of VFS folders
+     */
+    public List<String> getFolders() {
+
+        return m_folders;
+    }
+
+    /**
+     * Returns the galleries that have been included in the search.<p>
+     *
+     * If no galleries have been set, then <code>null</code> is returned.<p>
+     *
+     * @return the galleries that have been included in the search
+     */
+    public List<String> getGalleries() {
+
+        return m_galleries;
+    }
+
+    /**
+     * Returns the locale that has been used for the search.<p>
+     *
+     * If no locale has been set, then <code>null</code> is returned.<p>
+     *
+     * @return the locale that has been used for the search
+     */
+    public String getLocale() {
+
+        if (m_locale == null) {
+            m_locale = CmsLocaleManager.getDefaultLocale().toString();
+        }
+        return m_locale;
+    }
+
+    /**
+     * Returns the maximum number of matches per result page.<p>
+     *
+     * @return the the maximum number of matches per result page
+     *
+     * @see #getMatchesPerPage()
+     * @see #setResultPage(int)
+     */
+    public int getMatchesPerPage() {
+
+        return m_matchesPerPage;
+    }
+
+    /**
+     * Returns a CmsSolrQuery representation of this class.
+     * @param cms the openCms object.
+     * @return CmsSolrQuery representation of this class.
      */
     public CmsSolrQuery getQuery(CmsObject cms) {
 
@@ -281,7 +401,7 @@ public class CmsGallerySearchParameters {
             query.setFields(m_fields.toArray(new String[m_fields.size()]));
         }
 
-        // set scope / folders to search in 
+        // set scope / folders to search in
         m_foldersToSearchIn = new ArrayList<String>();
         addFoldersToSearchIn(m_folders);
         addFoldersToSearchIn(m_galleries);
@@ -330,182 +450,9 @@ public class CmsGallerySearchParameters {
     }
 
     /**
-     * Adds folders to perform the search in. 
-     * @param folders Folders to search in. 
-     */
-    private void addFoldersToSearchIn(final List<String> folders) {
-
-        if (null == folders) {
-            return;
-        }
-
-        for (String folder : folders) {
-            if (!CmsResource.isFolder(folder)) {
-                folder += "/";
-            }
-
-            m_foldersToSearchIn.add(folder);
-        }
-    }
-
-    /**
-     * Applies the defined search folders to the Solr query. 
-     * 
-     * @param obj The current CmsObject object. 
-     */
-    private void setSearchFolders(CmsObject obj) {
-
-        // check if parentFolders to search in have been set
-        // if this evaluates false, the search folders have already been set, so 
-        // there's no need to add a scope filter 
-        if (m_foldersToSearchIn.isEmpty()) {
-            // only append scope filter if no no folders or galleries given
-            setSearchScopeFilter(obj);
-        }
-    }
-
-    /**
-     * Sets the search scope. 
-     * 
-     * @param cms The current CmsObject object. 
-     */
-    private void setSearchScopeFilter(CmsObject cms) {
-
-        final List<String> searchRoots = CmsSearchUtil.computeScopeFolders(cms, this);
-
-        // If the resource types contain the type "function" also 
-        // add "/system/modules/" to the search path
-        if ((null != getResourceTypes()) && getResourceTypes().contains(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION)) {
-            searchRoots.add("/system/modules/");
-        }
-
-        addFoldersToSearchIn(searchRoots);
-    }
-
-    /**
-     * Returns the categories that have been included in the search.<p>
-     *
-     * If no categories have been set, then <code>null</code> is returned.<p>
-     * 
-     * @return the categories that have been included in the search
-     */
-    public List<String> getCategories() {
-
-        return m_categories;
-    }
-
-    /**
-     * Returns the container types that have been included in the search.<p>
-     *
-     * @return the container types that have been included in the search
-     */
-    public List<String> getContainerTypes() {
-
-        return m_containerTypes;
-    }
-
-    /**
-     * Returns the time range for the date of creation that has been used for the search result.<p>
-     * 
-     * In case this time range has not been set, this will return an object 
-     * where the start date is equal to {@link Long#MIN_VALUE} and the end date is equal to {@link Long#MAX_VALUE}.<p>
-     * 
-     * @return the time range for the date of creation that has been used for the search result
-     */
-    public CmsGallerySearchTimeRange getDateCreatedRange() {
-
-        if (m_dateCreatedTimeRange == null) {
-            m_dateCreatedTimeRange = new CmsGallerySearchTimeRange();
-        }
-        return m_dateCreatedTimeRange;
-    }
-
-    /**
-     * Returns the time range for the dadelete examplete of last modification that has been used for the search result.<p>
-     * 
-     * In case this time range has not been set, this will return an object 
-     * where the start date is equal to {@link Long#MIN_VALUE} and the end date is equal to {@link Long#MAX_VALUE}.<p>
-     * 
-     * @return the time range for the date of last modification that has been used for the search result
-     */
-    public CmsGallerySearchTimeRange getDateLastModifiedRange() {
-
-        if (m_dateLastModifiedTimeRange == null) {
-            m_dateLastModifiedTimeRange = new CmsGallerySearchTimeRange();
-        }
-        return m_dateLastModifiedTimeRange;
-    }
-
-    /**
-     * Returns the list of the names of the fields to search in.<p>
-     *
-     * If this has not been set, then the default fields defined in
-     * {@link CmsSearchIndex#DOC_META_FIELDS} are used as default.<p>
-     *
-     * @return the list of the names of the fields to search in
-     */
-    public List<String> getFields() {
-
-        if (m_fields == null) {
-            setFields(Arrays.asList(CmsSearchIndex.DOC_META_FIELDS));
-        }
-        return m_fields;
-    }
-
-    /**
-     * Returns the list of folders to search in.<p>
-     * 
-     * @return a list of paths of VFS folders
-     */
-    public List<String> getFolders() {
-
-        return m_folders;
-    }
-
-    /**
-     * Returns the galleries that have been included in the search.<p>
-     *
-     * If no galleries have been set, then <code>null</code> is returned.<p>
-     *
-     * @return the galleries that have been included in the search
-     */
-    public List<String> getGalleries() {
-
-        return m_galleries;
-    }
-
-    /**
-     * Returns the locale that has been used for the search.<p>
-     *     
-     * If no locale has been set, then <code>null</code> is returned.<p>
-     *
-     * @return the locale that has been used for the search
-     */
-    public String getLocale() {
-
-        if (m_locale == null) {
-            m_locale = CmsLocaleManager.getDefaultLocale().toString();
-        }
-        return m_locale;
-    }
-
-    /**
-     * Returns the maximum number of matches per result page.<p>
-     *
-     * @return the the maximum number of matches per result page
-     * 
-     * @see #getMatchesPerPage()
-     * @see #setResultPage(int)
-     */
-    public int getMatchesPerPage() {
-
-        return m_matchesPerPage;
-    }
-
-    /**
      * Gets the reference path.<p>
-     * 
-     * @return the gallery reference path 
+     *
+     * @return the gallery reference path
      */
     public String getReferencePath() {
 
@@ -526,9 +473,9 @@ public class CmsGallerySearchParameters {
 
     /**
      * Returns the index of the requested result page.<p>
-     * 
+     *
      * @return the index of the requested result page
-     * 
+     *
      * @see #setResultPage(int)
      * @see #getMatchesPerPage()
      * @see #setMatchesPerPage(int)
@@ -540,8 +487,8 @@ public class CmsGallerySearchParameters {
 
     /**
      * The gallery search scope.<p>
-     * 
-     * @return the gallery search scope 
+     *
+     * @return the gallery search scope
      */
     public CmsGallerySearchScope getScope() {
 
@@ -553,7 +500,7 @@ public class CmsGallerySearchParameters {
 
     /**
      * Returns the words (terms) that have been used for the full text search.<p>
-     * 
+     *
      * If no search words have been set, then <code>null</code> is returned.<p>
      *
      * @return the words (terms) that have been used for the full text search
@@ -563,11 +510,303 @@ public class CmsGallerySearchParameters {
         return m_words;
     }
 
-    /** 
-     * Returns the Lucene sort indicated by the selected sort order.<p> 
-     * 
+    /**
+     * Returns the sort order that has been used in the search.<p>
+     *
+     * If the sort parameter has not been set the default sort order
+     * defined by {@link CmsGallerySortParam#DEFAULT} is used.<p>
+     *
+     * @return the sort order that has been used in the search
+     */
+    public CmsGallerySortParam getSortOrder() {
+
+        if (m_sortOrder == null) {
+
+            m_sortOrder = CmsGallerySortParam.DEFAULT;
+        }
+        return m_sortOrder;
+    }
+
+    /**
+     * Returns a sort for a localized title.<p>
+     *
+     * @param locale the locale to sort with
+     * @param desc indicates if the sort should be descending
+     *
+     * @return a sort for a localized title
+     */
+    public CmsPair<String, org.apache.solr.client.solrj.SolrQuery.ORDER> getTitleSort(String locale, boolean desc) {
+
+        // for saving performance and sorting case-insensitive
+        // the un-stored title field should be used
+        //        String titleName = CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_SORT_TITLE, locale);
+
+        final String sortTitle = CmsSearchFieldConfiguration.getLocaleExtendedName(
+            CmsSearchField.FIELD_TITLE_UNSTORED,
+            getLocale()) + "_s";
+
+        if (desc) {
+            return CmsPair.create(sortTitle, ORDER.desc);
+        } else {
+            return CmsPair.create(sortTitle, ORDER.asc);
+        }
+    }
+
+    /**
+     * Returns the search exclude property ignore flag.<p>
+     *
+     * @return the search exclude property ignore flag
+     */
+    public boolean isIgnoreSearchExclude() {
+
+        return m_ignoreSearchExclude;
+    }
+
+    /**
+     * Sets the categories for the search.<p>
+     *
+     * Results are found only if they are contained in at least one of the given categories.
+     *
+     * @param categories the categories to set
+     */
+    public void setCategories(List<String> categories) {
+
+        m_categories = categories;
+    }
+
+    /**
+     * Sets the container types for the search.<p>
+     *
+     * Results are found only if they are compatible with one of the given container types.
+     * If no container type is set, results compatible with any container will be returned in the search result.<p>
+     *
+     * @param containerTypes the container types to set
+     */
+    public void setContainerTypes(List<String> containerTypes) {
+
+        m_containerTypes = containerTypes;
+    }
+
+    /**
+     * Sets the time range for the date of resource creation to consider in the search.<p>
+     *
+     * @param startTime the start time of the time range
+     * @param endTime the end time of the time range
+     */
+    public void setDateCreatedTimeRange(long startTime, long endTime) {
+
+        if (m_dateCreatedTimeRange == null) {
+            m_dateCreatedTimeRange = new CmsGallerySearchTimeRange(startTime, endTime);
+        }
+    }
+
+    /**
+     * Sets the time range for the date of resource last modification to consider in the search.<p>
+     *
+     * @param startTime the start time of the time range
+     * @param endTime the end time of the time range
+     */
+    public void setDateLastModifiedTimeRange(long startTime, long endTime) {
+
+        if (m_dateLastModifiedTimeRange == null) {
+            m_dateLastModifiedTimeRange = new CmsGallerySearchTimeRange(startTime, endTime);
+        }
+    }
+
+    /**
+     * Sets the list of the names of the fields to search in. <p>
+     *
+     * @param fields the list of names of the fields to set
+     */
+    public void setFields(List<String> fields) {
+
+        m_fields = fields;
+    }
+
+    /**
+     * Sets the folders to search in.<p>
+     *
+     * @param folders the list of VFS folders
+     */
+    public void setFolders(List<String> folders) {
+
+        m_folders = folders;
+    }
+
+    /**
+     * Sets the galleries for the search.<p>
+     *
+     * Results are found only if they are contained in one of the given galleries.
+     * If no gallery is set, results from all galleries will be returned in the search result.<p>
+     *
+     * @param galleries the galleries to set
+     */
+    public void setGalleries(List<String> galleries) {
+
+        m_galleries = galleries;
+    }
+
+    /**
+     * Sets the search exclude property ignore flag.<p>
+     *
+     * @param excludeForPageEditor the search exclude property ignore flag
+     */
+    public void setIgnoreSearchExclude(boolean excludeForPageEditor) {
+
+        m_ignoreSearchExclude = excludeForPageEditor;
+    }
+
+    /**
+     * Sets the maximum number of matches per result page.<p>
+     *
+     * Use this together with {@link #setResultPage(int)} in order to split the result
+     * in more than one page.<p>
+     *
+     * @param matchesPerPage the the maximum number of matches per result page to set
+     *
+     * @see #getMatchesPerPage()
+     * @see #setResultPage(int)
+     */
+    public void setMatchesPerPage(int matchesPerPage) {
+
+        m_matchesPerPage = matchesPerPage;
+    }
+
+    /**
+     * Sets the gallery reference path.<p>
+     *
+     * @param referencePath the gallery reference path
+     */
+    public void setReferencePath(String referencePath) {
+
+        m_referencePath = referencePath;
+    }
+
+    /**
+     * Sets the names of the resource types to include in the search result.<p>
+     *
+     * Results are found only if they resources match one of the given resource type names.
+     * If no resource type name is set, all resource types will be returned in the search result.<p>
+     *
+     * @param resourceTypes the names of the resource types to include in the search result
+     */
+    public void setResourceTypes(List<String> resourceTypes) {
+
+        m_resourceTypes = resourceTypes;
+    }
+
+    /**
+     * Sets the index of the result page that should be returned.<p>
+     *
+     * Use this together with {@link #setMatchesPerPage(int)} in order to split the result
+     * in more than one page.<p>
+     *
+     * @param resultPage the index of the result page to return
+     *
+     * @see #getResultPage()
+     * @see #getMatchesPerPage()
+     * @see #setMatchesPerPage(int)
+     */
+    public void setResultPage(int resultPage) {
+
+        m_resultPage = resultPage;
+    }
+
+    /**
+     * Sets the search scope.<p>
+     *
+     * @param scope the search scope
+     */
+    public void setScope(CmsGallerySearchScope scope) {
+
+        m_scope = scope;
+    }
+
+    /**
+     * Sets the locale for the search.<p>
+     *
+     * Results are found only if they match the given locale.
+     * If no locale is set, results for all locales will be returned in the search result.<p>
+     *
+     * @param locale the locale to set
+     */
+    public void setSearchLocale(String locale) {
+
+        m_locale = locale;
+    }
+
+    /**
+     * Sets the words (terms) for the full text search.<p>
+     *
+     * Results are found only if they text extraction for the resource contains all given search words.
+     * If no search word is set, all resources will be returned in the search result.<p>
+     *
+     * Please note that this should be a list of words separated by white spaces.
+     * Simple Lucene modifiers such as (+), (-) and (*) are allowed, but anything more complex then this
+     * will be removed.<p>
+     *
+     * @param words the words (terms) for the full text search to set
+     */
+    public void setSearchWords(String words) {
+
+        m_words = words;
+    }
+
+    /**
+     * Sets the sort order for the search.<p>
+     *
+     * @param sortOrder the sort order to set
+     */
+    public void setSortOrder(CmsGallerySortParam sortOrder) {
+
+        m_sortOrder = sortOrder;
+    }
+
+    /**
+     * Wraps this parameters to the standard search parameters, so that inherited methods in the search index
+     * can be used.<p>
+     *
+     * @return this parameters wrapped to the standard search parameters
+     */
+    protected CmsSearchParameters getCmsSearchParams() {
+
+        CmsSearchParameters result = new CmsSearchParameters();
+        result.setFields(getFields());
+        result.setExcerptOnlySearchedFields(true);
+        if (getSearchWords() != null) {
+            result.setQuery(getSearchWords());
+            result.setIgnoreQuery(false);
+        } else {
+            result.setIgnoreQuery(true);
+        }
+
+        return result;
+    }
+
+    /**
+     * Adds folders to perform the search in.
+     * @param folders Folders to search in.
+     */
+    private void addFoldersToSearchIn(final List<String> folders) {
+
+        if (null == folders) {
+            return;
+        }
+
+        for (String folder : folders) {
+            if (!CmsResource.isFolder(folder)) {
+                folder += "/";
+            }
+
+            m_foldersToSearchIn.add(folder);
+        }
+    }
+
+    /**
+     * Returns the Lucene sort indicated by the selected sort order.<p>
+     *
      * @return the Lucene sort indicated by the selected sort order
-     * 
+     *
      * @see #getSortOrder()
      */
     private CmsPair<String, org.apache.solr.client.solrj.SolrQuery.ORDER> getSort() {
@@ -629,275 +868,36 @@ public class CmsGallerySearchParameters {
     }
 
     /**
-     * Returns the sort order that has been used in the search.<p>
-     * 
-     * If the sort parameter has not been set the default sort order 
-     * defined by {@link CmsGallerySortParam#DEFAULT} is used.<p>
-     * 
-     * @return the sort order that has been used in the search
+     * Applies the defined search folders to the Solr query.
+     *
+     * @param obj The current CmsObject object.
      */
-    public CmsGallerySortParam getSortOrder() {
+    private void setSearchFolders(CmsObject obj) {
 
-        if (m_sortOrder == null) {
-
-            m_sortOrder = CmsGallerySortParam.DEFAULT;
-        }
-        return m_sortOrder;
-    }
-
-    /**
-     * Returns a sort for a localized title.<p>
-     * 
-     * @param locale the locale to sort with
-     * @param desc indicates if the sort should be descending
-     * 
-     * @return a sort for a localized title
-     */
-    public CmsPair<String, org.apache.solr.client.solrj.SolrQuery.ORDER> getTitleSort(String locale, boolean desc) {
-
-        // for saving performance and sorting case-insensitive
-        // the un-stored title field should be used
-        //        String titleName = CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_SORT_TITLE, locale);
-
-        final String sortTitle = CmsSearchFieldConfiguration.getLocaleExtendedName(
-            CmsSearchField.FIELD_TITLE_UNSTORED,
-            getLocale()) + "_s";
-
-        if (desc) {
-            return CmsPair.create(sortTitle, ORDER.desc);
-        } else {
-            return CmsPair.create(sortTitle, ORDER.asc);
+        // check if parentFolders to search in have been set
+        // if this evaluates false, the search folders have already been set, so
+        // there's no need to add a scope filter
+        if (m_foldersToSearchIn.isEmpty()) {
+            // only append scope filter if no no folders or galleries given
+            setSearchScopeFilter(obj);
         }
     }
 
     /**
-     * Returns the search exclude property ignore flag.<p>
+     * Sets the search scope.
      *
-     * @return the search exclude property ignore flag
+     * @param cms The current CmsObject object.
      */
-    public boolean isIgnoreSearchExclude() {
+    private void setSearchScopeFilter(CmsObject cms) {
 
-        return m_ignoreSearchExclude;
-    }
+        final List<String> searchRoots = CmsSearchUtil.computeScopeFolders(cms, this);
 
-    /**
-     * Sets the categories for the search.<p>
-     *
-     * Results are found only if they are contained in at least one of the given categories.
-     *
-     * @param categories the categories to set
-     */
-    public void setCategories(List<String> categories) {
-
-        m_categories = categories;
-    }
-
-    /**
-     * Sets the container types for the search.<p>
-     *
-     * Results are found only if they are compatible with one of the given container types.
-     * If no container type is set, results compatible with any container will be returned in the search result.<p>
-     *
-     * @param containerTypes the container types to set
-     */
-    public void setContainerTypes(List<String> containerTypes) {
-
-        m_containerTypes = containerTypes;
-    }
-
-    /** 
-     * Sets the time range for the date of resource creation to consider in the search.<p>
-     * 
-     * @param startTime the start time of the time range
-     * @param endTime the end time of the time range
-     */
-    public void setDateCreatedTimeRange(long startTime, long endTime) {
-
-        if (m_dateCreatedTimeRange == null) {
-            m_dateCreatedTimeRange = new CmsGallerySearchTimeRange(startTime, endTime);
-        }
-    }
-
-    /** 
-     * Sets the time range for the date of resource last modification to consider in the search.<p> 
-     * 
-     * @param startTime the start time of the time range
-     * @param endTime the end time of the time range
-     */
-    public void setDateLastModifiedTimeRange(long startTime, long endTime) {
-
-        if (m_dateLastModifiedTimeRange == null) {
-            m_dateLastModifiedTimeRange = new CmsGallerySearchTimeRange(startTime, endTime);
-        }
-    }
-
-    /**
-     * Sets the list of the names of the fields to search in. <p>
-     * 
-     * @param fields the list of names of the fields to set
-     */
-    public void setFields(List<String> fields) {
-
-        m_fields = fields;
-    }
-
-    /**
-     * Sets the folders to search in.<p>
-     * 
-     * @param folders the list of VFS folders
-     */
-    public void setFolders(List<String> folders) {
-
-        m_folders = folders;
-    }
-
-    /**
-     * Sets the galleries for the search.<p>
-     *
-     * Results are found only if they are contained in one of the given galleries.
-     * If no gallery is set, results from all galleries will be returned in the search result.<p>
-     *
-     * @param galleries the galleries to set
-     */
-    public void setGalleries(List<String> galleries) {
-
-        m_galleries = galleries;
-    }
-
-    /**
-     * Sets the search exclude property ignore flag.<p>
-     *
-     * @param excludeForPageEditor the search exclude property ignore flag
-     */
-    public void setIgnoreSearchExclude(boolean excludeForPageEditor) {
-
-        m_ignoreSearchExclude = excludeForPageEditor;
-    }
-
-    /**
-     * Sets the maximum number of matches per result page.<p>
-     *
-     * Use this together with {@link #setResultPage(int)} in order to split the result 
-     * in more than one page.<p> 
-     *
-     * @param matchesPerPage the the maximum number of matches per result page to set
-     * 
-     * @see #getMatchesPerPage()
-     * @see #setResultPage(int)
-     */
-    public void setMatchesPerPage(int matchesPerPage) {
-
-        m_matchesPerPage = matchesPerPage;
-    }
-
-    /** 
-     * Sets the gallery reference path.<p>
-     * 
-     * @param referencePath the gallery reference path 
-     */
-    public void setReferencePath(String referencePath) {
-
-        m_referencePath = referencePath;
-    }
-
-    /**
-     * Sets the names of the resource types to include in the search result.<p>
-     *
-     * Results are found only if they resources match one of the given resource type names.
-     * If no resource type name is set, all resource types will be returned in the search result.<p>
-     *
-     * @param resourceTypes the names of the resource types to include in the search result
-     */
-    public void setResourceTypes(List<String> resourceTypes) {
-
-        m_resourceTypes = resourceTypes;
-    }
-
-    /**
-     * Sets the index of the result page that should be returned.<p>
-     *
-     * Use this together with {@link #setMatchesPerPage(int)} in order to split the result 
-     * in more than one page.<p> 
-     *
-     * @param resultPage the index of the result page to return
-     *
-     * @see #getResultPage()
-     * @see #getMatchesPerPage()
-     * @see #setMatchesPerPage(int)
-     */
-    public void setResultPage(int resultPage) {
-
-        m_resultPage = resultPage;
-    }
-
-    /** 
-     * Sets the search scope.<p>
-     * 
-     * @param scope the search scope 
-     */
-    public void setScope(CmsGallerySearchScope scope) {
-
-        m_scope = scope;
-    }
-
-    /**
-     * Sets the locale for the search.<p>
-     * 
-     * Results are found only if they match the given locale.
-     * If no locale is set, results for all locales will be returned in the search result.<p>
-     * 
-     * @param locale the locale to set
-     */
-    public void setSearchLocale(String locale) {
-
-        m_locale = locale;
-    }
-
-    /**
-     * Sets the words (terms) for the full text search.<p>
-     *
-     * Results are found only if they text extraction for the resource contains all given search words.
-     * If no search word is set, all resources will be returned in the search result.<p>
-     *
-     * Please note that this should be a list of words separated by white spaces.
-     * Simple Lucene modifiers such as (+), (-) and (*) are allowed, but anything more complex then this
-     * will be removed.<p> 
-     *
-     * @param words the words (terms) for the full text search to set
-     */
-    public void setSearchWords(String words) {
-
-        m_words = words;
-    }
-
-    /**
-     * Sets the sort order for the search.<p>
-     *
-     * @param sortOrder the sort order to set
-     */
-    public void setSortOrder(CmsGallerySortParam sortOrder) {
-
-        m_sortOrder = sortOrder;
-    }
-
-    /**
-     * Wraps this parameters to the standard search parameters, so that inherited methods in the search index 
-     * can be used.<p>
-     * 
-     * @return this parameters wrapped to the standard search parameters
-     */
-    protected CmsSearchParameters getCmsSearchParams() {
-
-        CmsSearchParameters result = new CmsSearchParameters();
-        result.setFields(getFields());
-        result.setExcerptOnlySearchedFields(true);
-        if (getSearchWords() != null) {
-            result.setQuery(getSearchWords());
-            result.setIgnoreQuery(false);
-        } else {
-            result.setIgnoreQuery(true);
+        // If the resource types contain the type "function" also
+        // add "/system/modules/" to the search path
+        if ((null != getResourceTypes()) && getResourceTypes().contains(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION)) {
+            searchRoots.add("/system/modules/");
         }
 
-        return result;
+        addFoldersToSearchIn(searchRoots);
     }
 }
