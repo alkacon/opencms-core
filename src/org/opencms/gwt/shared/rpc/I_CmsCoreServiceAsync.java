@@ -282,11 +282,11 @@ public interface I_CmsCoreServiceAsync {
     /**
      * Unlocks the given resource.<p>
      * 
-     * @param sitePath the resource site path
+     * @param rootPath the resource root path
      * @param callback the async callback
      */
     @SynchronizedRpcRequest
-    void unlock(String sitePath, AsyncCallback<String> callback);
+    void unlock(String rootPath, AsyncCallback<String> callback);
 
     /**
      * Performs a batch of validations and returns the results.<p>
