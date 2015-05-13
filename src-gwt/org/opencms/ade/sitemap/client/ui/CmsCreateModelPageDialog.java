@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.ui;
 
+import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 
 /**
@@ -48,8 +49,9 @@ public class CmsCreateModelPageDialog extends A_CmsNewModelPageDialog {
      */
     public CmsCreateModelPageDialog(CmsSitemapController controller, boolean isContainerModel) {
 
-        super(org.opencms.ade.sitemap.client.Messages.get().key(
-            org.opencms.ade.sitemap.client.Messages.GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0), null);
+        super(isContainerModel
+        ? Messages.get().key(Messages.GUI_CREATE_CONTAINER_MODEL_PAGE_DIALOG_TITLE_0)
+        : Messages.get().key(Messages.GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0), null);
         m_isContainerModel = isContainerModel;
         m_controller = controller;
     }

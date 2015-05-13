@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.ui;
 
+import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -43,12 +44,14 @@ public class CmsCopyModelPageDialog extends A_CmsNewModelPageDialog {
      * Constructor.<p>
      * 
      * @param infoBean the list info bean to display in the dialog 
+     * @param isContainerModel if copying as container model
      * @param callback the callback to call with the title entered by the user 
      */
-    public CmsCopyModelPageDialog(CmsListInfoBean infoBean, AsyncCallback<String> callback) {
+    public CmsCopyModelPageDialog(CmsListInfoBean infoBean, boolean isContainerModel, AsyncCallback<String> callback) {
 
-        super(org.opencms.ade.sitemap.client.Messages.get().key(
-            org.opencms.ade.sitemap.client.Messages.GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0), infoBean);
+        super(isContainerModel
+        ? Messages.get().key(Messages.GUI_COPY_AS_CONTAINER_MODEL_PAGE_DIALOG_TITLE_0)
+        : Messages.get().key(Messages.GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0), infoBean);
         m_callback = callback;
     }
 

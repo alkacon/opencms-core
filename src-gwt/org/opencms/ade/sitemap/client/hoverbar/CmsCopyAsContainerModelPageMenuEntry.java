@@ -29,13 +29,8 @@ package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
-import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.ui.CmsCopyModelPageDialog;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
-import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
-import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.ui.CmsConfirmDialog;
-import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsUUID;
 
@@ -57,47 +52,8 @@ public class CmsCopyAsContainerModelPageMenuEntry extends A_CmsSitemapMenuEntry 
     public CmsCopyAsContainerModelPageMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setLabel("Copy as container model page");
+        setLabel(Messages.get().key(Messages.GUI_COPY_AS_CONTAINER_MODEL_PAGE_0));
         setActive(true);
-    }
-
-    /**
-     * Opens the confirmation dialog for editing a model page.<p>
-     * 
-     * @param resourceInfo the resource information bean which belongs to the model page to edit 
-     */
-    public static void openEditConfirmDialog(final CmsNewResourceInfo resourceInfo) {
-
-        I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
-
-            public void onClose() {
-
-                // noop 
-            }
-
-            public void onOk() {
-
-                String resourcePath = resourceInfo.getVfsPath();
-                String siteRoot = CmsCoreProvider.get().getSiteRoot();
-                if (resourcePath.startsWith(siteRoot)) {
-                    resourcePath = resourcePath.substring(siteRoot.length());
-                    // prepend slash if necessary
-                    if (!resourcePath.startsWith("/")) {
-                        resourcePath = "/" + resourcePath;
-                    }
-                }
-                CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-                controller.leaveEditor(resourcePath);
-            }
-        };
-        String dialogTitle = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0);
-        String dialogContent = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_CONTENT_0);
-        String buttonText = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_OK_0);
-
-        CmsConfirmDialog dialog = new CmsConfirmDialog(dialogTitle, dialogContent);
-        dialog.getOkButton().setText(buttonText);
-        dialog.setHandler(handler);
-        dialog.center();
     }
 
     /**
@@ -108,7 +64,7 @@ public class CmsCopyAsContainerModelPageMenuEntry extends A_CmsSitemapMenuEntry 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         final CmsUUID id = entry.getId();
         CmsListInfoBean listInfo = CmsSitemapView.getInstance().getModelPageEntry(id).getListInfoBean();
-        m_dialog = new CmsCopyModelPageDialog(listInfo, new AsyncCallback<String>() {
+        m_dialog = new CmsCopyModelPageDialog(listInfo, true, new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {
 

@@ -265,7 +265,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
                 public void onClick(ClickEvent event) {
 
-                    CmsEditModelPageMenuEntry.editModelPage(modelPage.getSitePath());
+                    CmsEditModelPageMenuEntry.editModelPage(modelPage.getSitePath(), isContainerModel());
                 }
             });
         }

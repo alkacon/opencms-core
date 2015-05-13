@@ -71,18 +71,9 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
      * Opens the editor for a model page menu entry.<p>
      * 
      * @param resourcePath the resource path of the model page
+     * @param isContainerModel if the given entry is a container model page
      */
-    public static void editModelPage(String resourcePath) {
-
-        CmsEditModelPageMenuEntry.openEditConfirmDialog(resourcePath);
-    }
-
-    /**
-     * Opens the confirmation dialog for editing a model page.<p>
-     * 
-     * @param resourcePath the resource path of the model page
-     */
-    public static void openEditConfirmDialog(final String resourcePath) {
+    public static void editModelPage(final String resourcePath, boolean isContainerModel) {
 
         I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
 
@@ -106,8 +97,15 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
                 controller.leaveEditor(targetPath);
             }
         };
-        String dialogTitle = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0);
-        String dialogContent = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_CONTENT_0);
+        String dialogTitle;
+        String dialogContent;
+        if (isContainerModel) {
+            dialogTitle = Messages.get().key(Messages.GUI_EDIT_CONTAINER_MODELS_CONFIRM_TITLE_0);
+            dialogContent = Messages.get().key(Messages.GUI_EDIT_CONTAINER_MODEL_CONFIRM_CONTENT_0);
+        } else {
+            dialogTitle = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0);
+            dialogContent = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_CONTENT_0);
+        }
         String buttonText = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_OK_0);
 
         CmsConfirmDialog dialog = new CmsConfirmDialog(dialogTitle, dialogContent);
@@ -122,7 +120,9 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
     public void execute() {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        editModelPage(entry.getSitePath());
+        CmsUUID id = entry.getId();
+        editModelPage(entry.getSitePath(), !CmsSitemapView.getInstance().isModelPageEntry(id)
+            && !CmsSitemapView.getInstance().isParentModelPageEntry(id));
     }
 
     /**

@@ -108,7 +108,7 @@ public class CmsCopyModelPageMenuEntry extends A_CmsSitemapMenuEntry {
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         final CmsUUID id = entry.getId();
         CmsListInfoBean listInfo = CmsSitemapView.getInstance().getModelPageEntry(id).getListInfoBean();
-        m_dialog = new CmsCopyModelPageDialog(listInfo, new AsyncCallback<String>() {
+        m_dialog = new CmsCopyModelPageDialog(listInfo, false, new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {
 

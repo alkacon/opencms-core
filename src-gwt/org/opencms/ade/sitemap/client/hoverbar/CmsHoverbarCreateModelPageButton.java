@@ -56,7 +56,9 @@ public class CmsHoverbarCreateModelPageButton extends CmsPushButton {
 
         m_isContainerModel = isContainerModel;
         setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.style().addIcon());
-        setTitle(Messages.get().key(Messages.GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0));
+        setTitle(isContainerModel
+        ? Messages.get().key(Messages.GUI_CREATE_CONTAINER_MODEL_PAGE_BUTTON_TITLE_0)
+        : Messages.get().key(Messages.GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0));
         setButtonStyle(ButtonStyle.IMAGE, null);
         addClickHandler(new ClickHandler() {
 

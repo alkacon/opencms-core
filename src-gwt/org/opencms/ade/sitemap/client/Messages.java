@@ -199,10 +199,25 @@ public final class Messages {
     public static final String GUI_COPY_MODEL_PAGE_0 = "GUI_COPY_MODEL_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DISABLED_PAGE_0 = "GUI_DISABLED_PAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_AS_CONTAINER_MODEL_PAGE_0 = "GUI_COPY_AS_CONTAINER_MODEL_PAGE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_AS_CONTAINER_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_COPY_AS_CONTAINER_MODEL_PAGE_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0 = "GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_CONTAINER_MODEL_PAGE_BUTTON_TITLE_0 = "GUI_CREATE_CONTAINER_MODEL_PAGE_BUTTON_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_CONTAINER_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_CREATE_CONTAINER_MODEL_PAGE_DIALOG_TITLE_0";
 
     /**  Message constant for key in the resource bundle. */
     public static final String GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0";
@@ -260,6 +275,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0 = "GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_CONTAINER_MODELS_CONFIRM_TITLE_0 = "GUI_EDIT_CONTAINER_MODELS_CONFIRM_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_CONTAINER_MODEL_CONFIRM_CONTENT_0 = "GUI_EDIT_CONTAINER_MODEL_CONFIRM_CONTENT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_MODELPAGE_CONTEXTMENU_0 = "GUI_EDIT_MODELPAGE_CONTEXTMENU_0";

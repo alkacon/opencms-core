@@ -28,6 +28,7 @@
 package org.opencms.ade.sitemap.client.hoverbar;
 
 import org.opencms.ade.sitemap.client.CmsSitemapView;
+import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
@@ -48,7 +49,7 @@ public class CmsDisableMenuEntry extends A_CmsSitemapMenuEntry {
     public CmsDisableMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setLabel("Disabled");
+        setLabel(Messages.get().key(Messages.GUI_DISABLED_PAGE_0));
         setActive(true);
     }
 
