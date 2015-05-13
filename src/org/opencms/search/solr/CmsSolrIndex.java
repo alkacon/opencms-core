@@ -81,7 +81,6 @@ import org.apache.lucene.index.Term;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
@@ -94,7 +93,6 @@ import org.apache.solr.common.util.NamedList;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.handler.ReplicationHandler;
-import org.apache.solr.handler.component.HighlightComponent;
 import org.apache.solr.handler.component.ResponseBuilder;
 import org.apache.solr.handler.component.SearchComponent;
 import org.apache.solr.request.LocalSolrQueryRequest;
@@ -107,7 +105,6 @@ import org.apache.solr.schema.SchemaField;
 import org.apache.solr.search.DocListAndSet;
 import org.apache.solr.search.DocSlice;
 import org.apache.solr.search.QParser;
-import org.apache.solr.servlet.SolrRequestParsers;
 import org.apache.solr.util.FastWriter;
 
 /**
@@ -258,6 +255,44 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public I_CmsIndexWriter createIndexWriter(boolean create, I_CmsReport report) {
 
         return new CmsSolrIndexWriter(m_solr, this);
+    }
+
+    /**
+     * TODO: This method should be avoided, adjust the Gallery search to use
+     * {@link #search(CmsObject, CmsSolrQuery, boolean, ServletResponse)}
+     * instead.<p>
+     */
+    public CmsGallerySearchResultList gallerySearch(CmsObject cms, CmsGallerySearchParameters params) {
+
+        final CmsGallerySearchResultList resultList = new CmsGallerySearchResultList();
+
+        try {
+            final CmsSolrResultList list = search(cms, params.getQuery(cms), false, null);
+
+            if (null == list) {
+                return null;
+            }
+
+            resultList.setHitCount(list.size());
+            for (final CmsSearchResource resource : list) {
+                //                final int score = resource.getScore(100f);
+                final I_CmsSearchDocument document = resource.getDocument();
+                // TODO
+                //                final String excerpt = "";
+                final Locale locale = CmsLocaleManager.getLocale(params.getLocale());
+
+                final CmsGallerySearchResult result = new CmsGallerySearchResult(
+                    document,
+                    cms,
+                    (int)document.getScore(),
+                    locale);
+
+                resultList.add(result);
+            }
+        } catch (CmsSearchException e) {
+            e.printStackTrace();
+        }
+        return resultList;
     }
 
     /**
@@ -414,38 +449,38 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Performs a search.<p>
-     * 
-     * Returns a list of 'OpenCms resource documents' 
+     *
+     * Returns a list of 'OpenCms resource documents'
      * ({@link CmsSearchResource}) encapsulated within the class  {@link CmsSolrResultList}.
-     * This list can be accessed exactly like an {@link List} which entries are 
-     * {@link CmsSearchResource} that extend {@link CmsResource} and holds the Solr 
-     * implementation of {@link I_CmsSearchDocument} as member. <b>This enables you to deal 
+     * This list can be accessed exactly like an {@link List} which entries are
+     * {@link CmsSearchResource} that extend {@link CmsResource} and holds the Solr
+     * implementation of {@link I_CmsSearchDocument} as member. <b>This enables you to deal
      * with the resulting list as you do with well known {@link List} and work on it's entries
      * like you do on {@link CmsResource}.</b>
-     * 
+     *
      * <h4>What will be done with the Solr search result?</h4>
      * <ul>
      * <li>Although it can happen, that there are less results returned than rows were requested
      * (imagine an index containing less documents than requested rows) we try to guarantee
      * the requested amount of search results and to provide a working pagination with
      * security check.</li>
-     * 
+     *
      * <li>To be sure we get enough documents left even the permission check reduces the amount
-     * of found documents, the rows are multiplied by <code>'5'</code> and the current page 
-     * additionally the offset is added. The count of documents we don't have enough 
-     * permissions for grows with increasing page number, that's why we also multiply 
+     * of found documents, the rows are multiplied by <code>'5'</code> and the current page
+     * additionally the offset is added. The count of documents we don't have enough
+     * permissions for grows with increasing page number, that's why we also multiply
      * the rows by the current page count.</li>
-     * 
+     *
      * <li>Also make sure we perform the permission check for all found documents, so start with
      * the first found doc.</li>
      * </ul>
-     * 
+     *
      * <b>NOTE:</b> If latter pages than the current one are containing protected documents the
-     * total hit count will be incorrect, because the permission check ends if we have 
-     * enough results found for the page to display. With other words latter pages than 
-     * the current can contain documents that will first be checked if those pages are 
+     * total hit count will be incorrect, because the permission check ends if we have
+     * enough results found for the page to display. With other words latter pages than
+     * the current can contain documents that will first be checked if those pages are
      * requested to be displayed, what causes a incorrect hit count.<p>
-     * 
+     *
      * @param cms the current OpenCms context
      * @param ignoreMaxRows <code>true</code> to return all all requested rows, <code>false</code> to use max rows
      * @param query the OpenCms Solr query
@@ -453,7 +488,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
      * @return the list of found documents
      *
      * @throws CmsSearchException if something goes wrong
-     * 
+     *
      * @see org.opencms.search.solr.CmsSolrResultList
      * @see org.opencms.search.CmsSearchResource
      * @see org.opencms.search.I_CmsSearchDocument
@@ -742,16 +777,16 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /**
      * Performs the actual search.<p>
-     * 
+     *
      * @param cms the current OpenCms context
      * @param ignoreMaxRows <code>true</code> to return all all requested rows, <code>false</code> to use max rows
      * @param query the OpenCms Solr query
      * @param response the servlet response to write the query result to, may also be <code>null</code>
-     * 
+     *
      * @return the found documents
-     * 
+     *
      * @throws CmsSearchException if something goes wrong
-     * 
+     *
      * @see #search(CmsObject, CmsSolrQuery, boolean)
      */
     @SuppressWarnings("unchecked")
@@ -825,7 +860,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             long visibleHitCount = hitCount;
             float maxScore = 0;
 
-            // If we're using a postprocessor, (re-)initialize it before using it 
+            // If we're using a postprocessor, (re-)initialize it before using it
             if (m_postProcessor != null) {
                 m_postProcessor.init();
             }
@@ -1084,43 +1119,5 @@ public class CmsSolrIndex extends CmsSearchIndex {
         } else {
             throw new UnsupportedOperationException();
         }
-    }
-
-    /**
-     * TODO: This method should be avoided, adjust the Gallery search to use
-     * {@link #search(CmsObject, CmsSolrQuery, boolean, ServletResponse)} 
-     * instead.<p>
-     */
-    public CmsGallerySearchResultList gallerySearch(CmsObject cms, CmsGallerySearchParameters params) {
-
-        final CmsGallerySearchResultList resultList = new CmsGallerySearchResultList();
-
-        try {
-            final CmsSolrResultList list = search(cms, params.getQuery(cms), false, null);
-
-            if (null == list) {
-                return null;
-            }
-
-            resultList.setHitCount(list.size());
-            for (final CmsSearchResource resource : list) {
-                //                final int score = resource.getScore(100f);
-                final I_CmsSearchDocument document = resource.getDocument();
-                // TODO
-                //                final String excerpt = "";
-                final Locale locale = CmsLocaleManager.getLocale(params.getLocale());
-
-                final CmsGallerySearchResult result = new CmsGallerySearchResult(
-                    document,
-                    cms,
-                    (int)document.getScore(),
-                    locale);
-
-                resultList.add(result);
-            }
-        } catch (CmsSearchException e) {
-            e.printStackTrace();
-        }
-        return resultList;
     }
 }
