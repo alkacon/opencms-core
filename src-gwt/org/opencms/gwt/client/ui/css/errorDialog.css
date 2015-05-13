@@ -7,11 +7,11 @@
 	overflow: auto;
 	white-space: nowrap;
 }
-@sprite table tr td.errorIcon, div.errorIcon, span.errorIcon{
+@sprite span.errorIcon{
 	gwt-image: "gwtImages.errorImage";
-	margin: 0px 0px 0px 3px;
-	display: block;
-	float: left;
+	display: inline-block;
+	width:32px;
+	height: 32px;
 }
 .message{
 	margin: 5px 0px 5px 45px;

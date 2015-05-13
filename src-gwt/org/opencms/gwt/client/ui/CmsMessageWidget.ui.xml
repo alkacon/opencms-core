@@ -4,14 +4,13 @@
 	<ui:style>
 		table.main{
 			display: block;
+			table-layout: fixed;
 		}
-		.icon{
-			background-repeat: no-repeat;
-			background-position: 50% 50%;
+	table.main tr td.iconCol{
 			vertical-align: middle;
 			padding: 0px;
 			width: 60px;
-			float: none;
+			text-align: center;
 		}
 		table.main div.message{
 			vertical-align: middle;
@@ -32,7 +31,8 @@
 	</ui:style>
 	<div class="{style.outercontainer} {resources.generalCss.cornerAll}" >
 	<table class="{style.main} ">
-		<tr><td><div ui:field="m_icon" class="{style.icon}" /></td><td><div ui:field="m_message" class="{style.message}"></div></td></tr>
+		<colgroup><col class="{style.iconCol}" /><col /></colgroup>
+		<tr><td class="{style.iconCol}"><span ui:field="m_icon"  /></td><td><div ui:field="m_message" class="{style.message}"></div></td></tr>
 	</table>
 	</div>
 </ui:UiBinder>
