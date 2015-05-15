@@ -218,6 +218,17 @@ li.dragging, div.dragging{
 	margin: 0px !important;
 	z-index: value("constants.css.zIndexDND") !important;
 }
+
+.dragging .buttonPanel > * {
+	display: none !important;
+}
+
+@external cmsMoveHandle; 
+
+.dragging .buttonPanel > .cmsMoveHandle { 
+	display: inline-block !important;  
+}
+
 .dragging .itemContainer {
 		box-shadow: 2px 2px 6px value("constants.css.boxShadowColorOther");
 } 
