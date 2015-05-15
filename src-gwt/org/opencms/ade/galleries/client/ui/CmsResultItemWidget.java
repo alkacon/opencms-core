@@ -30,6 +30,8 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.dnd.I_CmsDragHandle;
+import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
@@ -49,6 +51,44 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public class CmsResultItemWidget extends CmsListItemWidget {
 
+    /** 
+     * Widget containing the image(s) for a result list item..<p>
+     */
+    public class ImageTile extends HTML implements I_CmsDragHandle {
+
+        /** The draggable result list item. */
+        private I_CmsDraggable m_draggable;
+
+        /**
+         * Creates a new instance with the given content.<p>
+         * 
+         * @param content the HTML content 
+         */
+        public ImageTile(String content) {
+
+            super(content);
+        }
+
+        /** 
+         * @see org.opencms.gwt.client.dnd.I_CmsDragHandle#getDraggable()
+         */
+        public I_CmsDraggable getDraggable() {
+
+            return m_draggable;
+        }
+
+        /**
+         * Sets the draggable widget.<p>
+         * 
+         * @param draggable the draggable widget 
+         */
+        public void setDraggable(I_CmsDraggable draggable) {
+
+            m_draggable = draggable;
+        }
+
+    }
+
     /** Standard image tile scale parameter. */
     private static final String IMAGE_SCALE_PARAM = "?__scale=t:1,c:ffffff,r:0";
 
@@ -57,6 +97,9 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     /** The tool tip handler. */
     private CmsToolTipHandler m_tooltipHandler;
+
+    /** The image tile. */
+    private ImageTile m_imageTile;
 
     /**
      * Constructor.<p>
@@ -79,7 +122,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
             }
             String timeParam = "&time=" + System.currentTimeMillis();
             // insert tile view image div
-            HTML imageTile = new HTML("<img src=\"" + src + getBigImageScaleParam()
+            ImageTile imageTile = new ImageTile("<img src=\"" + src + getBigImageScaleParam()
             // add time stamp to override browser image caching
                 + timeParam
                 + "\" class=\""
@@ -98,10 +141,21 @@ public class CmsResultItemWidget extends CmsListItemWidget {
                 + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().expiredImageOverlay()
                 + "' />");
             imageTile.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().imageTile());
+            m_imageTile = imageTile;
             m_tooltipHandler = new CmsToolTipHandler(imageTile, generateTooltipHtml(infoBean));
             m_contentPanel.insert(imageTile, 0);
         }
 
+    }
+
+    /** 
+     * Gets the image tile.<p>
+     * 
+     * @return the image tile 
+     */
+    public ImageTile getImageTile() {
+
+        return m_imageTile;
     }
 
     /**

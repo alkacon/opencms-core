@@ -28,6 +28,7 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.Messages;
+import org.opencms.ade.galleries.client.ui.CmsResultItemWidget.ImageTile;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
@@ -76,6 +77,11 @@ public class CmsResultListItem extends CmsListItem {
         m_result = resultItem;
         resultItem.addAdditionalInfo(Messages.get().key(Messages.GUI_PREVIEW_LABEL_PATH_0), resultItem.getPath());
         CmsResultItemWidget resultItemWidget = new CmsResultItemWidget(resultItem);
+        ImageTile imageTile = resultItemWidget.getImageTile();
+        if (imageTile != null) {
+            imageTile.setDraggable(this);
+            imageTile.addMouseDownHandler(dndHandler);
+        }
         resultItemWidget.setUnselectable();
         initContent(resultItemWidget);
         if (dndHandler != null) {
