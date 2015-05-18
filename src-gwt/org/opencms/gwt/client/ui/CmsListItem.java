@@ -38,7 +38,6 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsListItemCss;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.category.CmsDataValue;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.Collections;
@@ -328,14 +327,6 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             m_provisionalParent.getStyle().setLeft(parentElement.getAbsoluteLeft(), Unit.PX);
             int newMoveHandleLeft = moveHandleLeft(m_helper);
             int newElemLeft = m_helper.getAbsoluteLeft();
-            CmsDebugLog.consoleLog("oL: "
-                + oldMoveHandleLeft
-                + ", nL: "
-                + newMoveHandleLeft
-                + ", nE: "
-                + newElemLeft
-                + ", oE: "
-                + oldElemLeft);
             m_offsetDelta = Optional.fromNullable(new int[] {
                 ((newMoveHandleLeft - oldMoveHandleLeft) + oldElemLeft) - newElemLeft,
                 0});

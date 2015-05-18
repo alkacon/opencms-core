@@ -38,7 +38,6 @@ import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder.BorderColor;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.util.CmsStringUtil;
@@ -254,7 +253,6 @@ public class CmsImageDndController implements I_CmsDNDController {
 
                         if (m_containerElement.isPresent()) {
                             String clientId = m_containerElement.get().getId();
-                            CmsDebugLog.consoleLog("Reloading element " + clientId);
                             m_pageController.reloadElements(new String[] {clientId});
                         } else {
                             Window.Location.reload();

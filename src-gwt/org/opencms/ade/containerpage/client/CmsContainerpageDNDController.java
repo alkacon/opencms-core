@@ -266,7 +266,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 });
 
             } else {
-                CmsDebugLog.consoleLog("getElementForDragAndDropFromContainer");
 
                 m_controller.getElementForDragAndDropFromContainer(clientId, m_originalContainerId, callback);
             }

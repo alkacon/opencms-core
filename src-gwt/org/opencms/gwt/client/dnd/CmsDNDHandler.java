@@ -586,7 +586,6 @@ public class CmsDNDHandler implements MouseDownHandler {
         }
         Object source = event.getSource();
         if (!(source instanceof I_CmsDragHandle)) {
-            CmsDebugLog.consoleLog("invalid target: " + source);
             // source is no drag handle, wrong DNDHandler assignment ignore
             return;
         }
@@ -903,7 +902,6 @@ public class CmsDNDHandler implements MouseDownHandler {
         if ((m_currentTarget == null) || (m_currentTarget.getPlaceholderIndex() < 0)) {
             cancel();
         } else {
-            CmsDebugLog.consoleLog("calling drop...");
             drop();
         }
     }
