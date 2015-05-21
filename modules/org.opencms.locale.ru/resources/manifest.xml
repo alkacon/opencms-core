@@ -3,18 +3,18 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>9.0.0</opencms_version>
+		<opencms_version>9.5.1</opencms_version>
 		<createdate>Wed, 08 May 2013 09:48:51 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.locale.ru</name>
-		<nicename><![CDATA[OpenCms 9 Russian localization for the workplace]]></nicename>
+		<nicename><![CDATA[OpenCms 9.5.1 Russian localization for the workplace]]></nicename>
 		<group>OpenCms Localization</group>
 		<class/>
 		<description><![CDATA[OpenCms Localization]]></description>
-		<version>9.0.1</version>
+		<version>9.5.1</version>
 		<authorname><![CDATA[ITDT Ltd.]]></authorname>
 		<authoremail><![CDATA[support@itdt.ru]]></authoremail>
 		<datecreated/>
