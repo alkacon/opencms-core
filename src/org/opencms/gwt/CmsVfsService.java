@@ -28,6 +28,7 @@
 package org.opencms.gwt;
 
 import org.opencms.ade.galleries.CmsPreviewService;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -77,6 +78,7 @@ import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsLoaderException;
@@ -103,6 +105,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.text.DateFormat;
@@ -141,9 +144,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
-
     /** Initialize the preview mime types. */
     static {
         CollectionUtils.addAll(m_previewMimeTypes, (new String[] {
@@ -153,6 +153,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             "application/mspowerpoint",
             "application/zip"}));
     }
+
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>
@@ -289,12 +292,12 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Loads the data needed for editing the properties of a resource.<p>
-     * 
-     * @param cms the CMS context 
-     * @param id the structure id of the resource 
-     * @return the data needed for editing the properties 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context
+     * @param id the structure id of the resource
+     * @return the data needed for editing the properties
+     *
+     * @throws CmsException if something goes wrong
      */
     public static CmsPropertiesBean loadPropertyData(CmsObject cms, CmsUUID id) throws CmsException {
 
@@ -322,6 +325,17 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         mergedConfig.putAll(defaultProperties);
         mergedConfig.putAll(propertyConfig);
         propertyConfig = mergedConfig;
+
+        // Resolve macros in the property configuration
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.setCmsObject(cms);
+        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().getCurrentUser());
+        CmsMultiMessages multimessages = new CmsMultiMessages(settings.getLocale());
+        multimessages.addMessages(OpenCms.getWorkplaceManager().getMessages(settings.getLocale()));
+        resolver.setMessages(multimessages);
+        resolver.setKeepEmptyMacros(true);
+        propertyConfig = CmsXmlContentPropertyHelper.resolveMacrosInProperties(propertyConfig, resolver);
+
         result.setPropertyDefinitions(new LinkedHashMap<String, CmsXmlContentProperty>(propertyConfig));
         try {
             cms.getRequestContext().setSiteRoot("");
@@ -370,13 +384,13 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Gets page information of a resource and adds it to the given list info bean.<p>
-     * 
+     *
      * @param cms the CMS context
      * @param resource the resource
      * @param listInfo the list info bean to add the information to
-     * 
+     *
      * @return the list info bean
-     * 
+     *
      * @throws CmsException if the resource info can not be read
      */
     protected static CmsListInfoBean addPageInfo(CmsObject cms, CmsResource resource, CmsListInfoBean listInfo)
@@ -416,10 +430,10 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Converts CmsProperty objects to CmsClientProperty objects.<p>
-     * 
-     * @param properties a list of server-side properties 
-     * 
-     * @return a map of client-side properties 
+     *
+     * @param properties a list of server-side properties
+     *
+     * @return a map of client-side properties
      */
     protected static Map<String, CmsClientProperty> convertProperties(List<CmsProperty> properties) {
 
@@ -437,10 +451,10 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Helper method to get the default property configuration for the given resource type.<p>
-     * 
-     * @param typeName the name of the resource type 
-     * 
-     * @return the default property configuration for the given type 
+     *
+     * @param typeName the name of the resource type
+     *
+     * @return the default property configuration for the given type
      */
     protected static Map<String, CmsXmlContentProperty> getDefaultPropertiesForType(String typeName) {
 
@@ -469,12 +483,12 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Internal method for computing the default property configurations for a list of structure ids.<p>
-     * 
-     * @param cms the cms context 
-     * @param structureIds the structure ids for which we want the default property configurations 
-     * @return a map from the given structure ids to their default property configurations 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the cms context
+     * @param structureIds the structure ids for which we want the default property configurations
+     * @return a map from the given structure ids to their default property configurations
+     *
+     * @throws CmsException if something goes wrong
      */
     protected static Map<CmsUUID, Map<String, CmsXmlContentProperty>> internalGetDefaultProperties(
         CmsObject cms,
@@ -1429,10 +1443,10 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Adds additional info items for broken links.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param resource the resource from which the additional infos should be read 
-     * @param result the result in which to store the additional info 
+     *
+     * @param cms the CMS context to use
+     * @param resource the resource from which the additional infos should be read
+     * @param result the result in which to store the additional info
      */
     private void addBrokenLinkAdditionalInfo(CmsObject cms, CmsResource resource, CmsBrokenLinkBean result) {
 
@@ -1457,14 +1471,14 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Creates a bean representing a historical resource version.<p>
-     * 
+     *
      * @param cms the current CMS context
      * @param historyRes the historical resource
      * @param offline true if this resource was read from the offline project
-     * @param maxVersion the largest version number found  
-     *  
-     * @return the bean representing the historical resource  
-     * @throws CmsException if something goes wrong 
+     * @param maxVersion the largest version number found
+     *
+     * @return the bean representing the historical resource
+     * @throws CmsException if something goes wrong
      */
     private CmsHistoryResourceBean createHistoryResourceBean(
         CmsObject cms,
@@ -1549,11 +1563,11 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Converts a date to a date bean.<p>
-     * 
-     * @param date the date to convert 
+     *
+     * @param date the date to convert
      * @param locale the locale to use for the conversion
-     * 
-     * @return the date bean 
+     *
+     * @return the date bean
      */
     private CmsClientDateBean formatDate(long date, Locale locale) {
 
@@ -1688,7 +1702,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             }
         }
 
-        // now convert multimap representation to parent/child representation 
+        // now convert multimap representation to parent/child representation
         for (CmsBrokenLinkBean parent : resultMap.keySet()) {
             for (CmsBrokenLinkBean child : resultMap.get(parent)) {
                 parent.addChild(child);
@@ -1754,7 +1768,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
      *
      * @return the list of resources which link to the given id
      *
-     * @throws CmsException if something goes wrong 
+     * @throws CmsException if something goes wrong
      */
     private List<CmsResource> getLinkSources(CmsObject cms, CmsResource resource, HashSet<CmsUUID> deleteIds)
     throws CmsException {
@@ -1792,7 +1806,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /**
      * Returns the preview info for the given resource.<p>
      *
-     *@param cms the CMS context 
+     *@param cms the CMS context
      * @param resource the resource
      * @param locale the requested locale
      *
