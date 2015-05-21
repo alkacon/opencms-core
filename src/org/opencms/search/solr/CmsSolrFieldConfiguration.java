@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * The search field implementation for Solr.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
@@ -134,7 +134,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * Appends the Solr specific search fields to the document.<p>
-     * 
+     *
      * @see org.opencms.search.fields.I_CmsSearchFieldAppdender#appendFields(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
      */
     @Override
@@ -160,7 +160,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * Returns all configured Solr fields.<p>
-     * 
+     *
      * @return all configured Solr fields
      */
     public Map<String, CmsSolrField> getSolrFields() {
@@ -170,7 +170,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * Adds the additional fields to the configuration, if they are not null.<p>
-     * 
+     *
      * @param additionalFields the additional fields to add
      */
     protected void addAdditionalFields(List<CmsSolrField> additionalFields) {
@@ -241,7 +241,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                             }
                         }
                     } else {
-                        // this is not a localized content field, just perform the regular mapping 
+                        // this is not a localized content field, just perform the regular mapping
                         mapResult = mapping.getStringValue(
                             cms,
                             resource,
@@ -250,7 +250,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                             propertiesSearched);
                     }
                     if (mapResult != null) {
-                        // append the found mapping result to text content of this field 
+                        // append the found mapping result to text content of this field
                         if (text.length() > 0) {
                             text.append('\n');
                         }
@@ -441,10 +441,29 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                     null,
                     CmsSearchField.BOOST_DEFAULT), prop.getValue());
 
-                // Also write the property using the dynamic field '_s' in order to prevent tokenization 
-                // of the property. The resulting field is named '<property>_prop_s'. 
+                // Also write the property using the dynamic field '_s' in order to prevent tokenization
+                // of the property. The resulting field is named '<property>_prop_s'.
                 document.addSearchField(new CmsSolrField(prop.getName()
                     + CmsSearchField.FIELD_DYNAMIC_PROPERTIES
+                    + "_s", null, null, null, CmsSearchField.BOOST_DEFAULT), prop.getValue());
+            }
+        }
+
+        for (CmsProperty prop : properties) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop.getValue())) {
+                document.addSearchField(
+                    new CmsSolrField(
+                        prop.getName() + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT,
+                        null,
+                        null,
+                        null,
+                        CmsSearchField.BOOST_DEFAULT),
+                    prop.getValue());
+
+                // Also write the property using the dynamic field '_s' in order to prevent tokenization
+                // of the property. The resulting field is named '<property>_prop_nosearch_s'.
+                document.addSearchField(new CmsSolrField(prop.getName()
+                    + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT
                     + "_s", null, null, null, CmsSearchField.BOOST_DEFAULT), prop.getValue());
             }
         }
@@ -453,18 +472,18 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * Retrieves the locales for an content, that is whether an XML content nor an XML page.<p>
-     * 
+     *
      * Uses following strategy:
      * <ul>
      * <li>first by file name</li>
      * <li>then by detection and</li>
      * <li>otherwise take the first configured default locale for this resource</li>
      * </ul>
-     *  
+     *
      * @param cms the current CmsObject
      * @param resource the resource to get the content locales for
      * @param extraction the extraction result
-     * 
+     *
      * @return the determined locales for the given resource
      */
     protected List<Locale> getContentLocales(CmsObject cms, CmsResource resource, I_CmsExtractionResult extraction) {
@@ -493,10 +512,10 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * Returns the search field mappings declared within the XSD.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resource the resource
-     * 
+     *
      * @return the fields to map
      */
     protected Set<CmsSearchField> getXSDMappings(CmsObject cms, CmsResource resource) {
@@ -582,9 +601,9 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     /**
      * Returns <code>true</code> if at least one of the index sources uses a VFS indexer that is able
      * to index locale dependent resources.<p>
-     * 
+     *
      * TODO This should be improved somehow
-     * 
+     *
      * @return <code>true</code> if this field configuration should resolve locale dependencies
      */
     private boolean hasLocaleDependencies() {
