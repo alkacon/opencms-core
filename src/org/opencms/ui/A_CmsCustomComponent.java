@@ -50,5 +50,4 @@ public abstract class A_CmsCustomComponent extends CustomComponent {
 
         return ((CmsUIServlet)VaadinServlet.getCurrent()).getCmsObject();
     }
-
 }

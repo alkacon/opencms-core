@@ -1,0 +1,6 @@
+<module>
+	<!-- Inherit the default widget set -->
+	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+	<source path="client" />
+	<source path="shared" />
+</module>

@@ -62,10 +62,10 @@ public class CmsWorkplaceLoginHandler implements I_CmsResourceInit {
     public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
     throws CmsResourceInitException {
 
-        // only do something if the resource was not found 
         if (resource != null) {
             return resource;
         }
+
         String uri = cms.getRequestContext().getUri();
         // check if the resource starts with the LOGIN_HANDLER
         if (!uri.startsWith(LOGIN_HANDLER)) {

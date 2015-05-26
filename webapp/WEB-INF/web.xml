@@ -98,6 +98,19 @@
             <param-value>org.opencms.workplace.CmsWorkplaceUI</param-value>
         </init-param>
     </servlet>
+
+     <servlet>
+
+        <description>
+            Login servlet.
+        </description>
+        <servlet-name>CmsLoginServlet</servlet-name>
+        <servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
+        <init-param>
+            <param-name>UI</param-name>
+            <param-value>org.opencms.ui.login.CmsLoginUI</param-value>
+        </init-param>
+    </servlet>
     
     <servlet-mapping>
         <servlet-name>OpenCmsServlet</servlet-name>
@@ -113,6 +126,11 @@
     <servlet-mapping>
         <servlet-name>CmsUIServlet</servlet-name>
         <url-pattern>/VAADIN/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>CmsLoginServlet</servlet-name>
+        <url-pattern>/opencms-login/*</url-pattern>
     </servlet-mapping>
     
     <servlet-mapping>

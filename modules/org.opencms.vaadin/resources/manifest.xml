@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>9.7.x</opencms_version>
+		<createdate>Wed, 20 May 2015 09:26:53 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<module>
+		<name>org.opencms.vaadin</name>
+		<nicename/>
+		<class/>
+		<description><![CDATA[org.opencms.vaadin]]></description>
+		<version>10.0</version>
+		<authorname/>
+		<authoremail/>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints>
+       		<exportpoint uri="/system/modules/org.opencms.vaadin/resources/" destination="VAADIN/widgetsets/"/>
+		</exportpoints>
+		<resources>
+			<resource uri="/system/modules/org.opencms.vaadin/"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>f3bf73b1-fd32-11e4-8a20-59f071904ee9</uuidstructure>
+			<datelastmodified>Mon, 18 May 2015 07:53:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 May 2015 07:53:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>f5b4b43d-fd32-11e4-8a20-59f071904ee9</uuidstructure>
+			<datelastmodified>Mon, 18 May 2015 07:53:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 May 2015 07:53:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.vaadin</destination>
+			<type>folder</type>
+			<uuidstructure>35a32985-fed2-11e4-b7e3-59f071904ee9</uuidstructure>
+			<datelastmodified>Wed, 20 May 2015 09:25:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 May 2015 09:25:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.vaadin/resources</destination>
+			<type>folder</type>
+			<uuidstructure>35b88647-fed2-11e4-b7e3-59f071904ee9</uuidstructure>
+			<datelastmodified>Wed, 20 May 2015 09:25:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 May 2015 09:25:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.vaadin/resources/org.opencms.ui.WidgetSet</destination>
+			<type>folder</type>
+			<uuidstructure> ae3d1a31-2b4f-4fc8-a518-62ede426144e</uuidstructure>
+			<datelastmodified>Wed, 20 May 2015 09:25:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 May 2015 09:25:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+	</files>
+</export>

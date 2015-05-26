@@ -245,10 +245,41 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
+				<property>
+					<name>cache</name>
+					<value>bypass</value>
+				</property>
+				
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/login/index-old.html</source>
+			<destination>system/login/index-old.html</destination>
+			<type>jsp</type>
+			<uuidstructure> 649ee03e-0346-42b1-8c20-fad4308175c9</uuidstructure>
+			<uuidresource>a2960c86-9fa9-447b-92f6-0a7f3f59fddd</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:25:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms login page]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
 		<file>
 			<destination>system/login/useragreement</destination>
 			<type>folder</type>

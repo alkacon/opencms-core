@@ -25,44 +25,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui;
+package org.opencms.ui.client.login;
 
-import org.opencms.file.CmsObject;
-import org.opencms.main.CmsUIServlet;
-
-import java.util.Locale;
-
-import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.UI;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.user.client.DOM;
 
 /**
- * Abstract UI class providing access to the OpenCms context.<p>
+ * Password field for use by the login dialog.<p>
  */
-public abstract class A_CmsUI extends UI {
-
-    /** Serial version id. */
-    private static final long serialVersionUID = 989182479322461838L;
-
-    private Locale m_locale = Locale.ENGLISH;
+public class CmsPasswordField extends A_CmsLoginField {
 
     /**
-     * Returns the current UI.<p>
-     * 
-     * @return the current UI
+     * Creates a new instance.<p>
      */
-    public static A_CmsUI get() {
+    public CmsPasswordField() {
 
-        return (A_CmsUI)(UI.getCurrent());
-    }
-
-    /**
-     * Returns the current cms context.<p>
-     *
-     * @return the current cms context
-     */
-    public static CmsObject getCmsObject() {
-
-        return ((CmsUIServlet)VaadinServlet.getCurrent()).getCmsObject();
+        super(DOM.getElementById("hidden-password") != null
+        ? DOM.getElementById("hidden-password")
+        : Document.get().createPasswordInputElement());
     }
 
 }

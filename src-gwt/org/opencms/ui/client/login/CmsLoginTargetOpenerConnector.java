@@ -25,44 +25,45 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui;
+package org.opencms.ui.client.login;
 
-import org.opencms.file.CmsObject;
-import org.opencms.main.CmsUIServlet;
+import org.opencms.ui.shared.login.I_CmsLoginTargetRpc;
 
-import java.util.Locale;
-
-import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.UI;
+import com.vaadin.client.ui.AbstractComponentConnector;
+import com.vaadin.shared.ui.Connect;
 
 /**
- * Abstract UI class providing access to the OpenCms context.<p>
+ * Connector for the login target opener widget.<p>
  */
-public abstract class A_CmsUI extends UI {
+@Connect(org.opencms.ui.login.CmsLoginTargetOpener.class)
+public class CmsLoginTargetOpenerConnector extends AbstractComponentConnector {
 
-    /** Serial version id. */
-    private static final long serialVersionUID = 989182479322461838L;
-
-    private Locale m_locale = Locale.ENGLISH;
+    /** Default version id. */
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Returns the current UI.<p>
-     * 
-     * @return the current UI
+     * Creates a new instance.<p>
      */
-    public static A_CmsUI get() {
+    public CmsLoginTargetOpenerConnector() {
 
-        return (A_CmsUI)(UI.getCurrent());
+        registerRpc(I_CmsLoginTargetRpc.class, new I_CmsLoginTargetRpc() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void openTarget(String target, String user, String password) {
+
+                getWidget().openTarget(target, user, password);
+            }
+        });
     }
 
     /**
-     * Returns the current cms context.<p>
-     *
-     * @return the current cms context
+     * @see com.vaadin.client.ui.AbstractComponentConnector#getWidget()
      */
-    public static CmsObject getCmsObject() {
+    @Override
+    public CmsLoginTargetOpener getWidget() {
 
-        return ((CmsUIServlet)VaadinServlet.getCurrent()).getCmsObject();
+        return (CmsLoginTargetOpener)(super.getWidget());
     }
 
 }

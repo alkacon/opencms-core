@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	<meta name="package-mapping" content="w:org.opencms.ui.login" />
+  </head>
+  <body>
+  	<v-vertical-layout>
+  		<v-image _id="m_logo" />
+	    <v-form-layout> 
+	    	<w-cms-login-user-field _id="m_userField" caption="%(key.GUI_LOGIN_USERNAME_0)" />
+	    	<w-cms-login-password-field _id="m_passwordField" caption="%(key.GUI_LOGIN_PASSWORD_0)" />
+	    	<w-cms-login-ou-selector _id="m_ouSelect" caption="%(key.GUI_LOGIN_ORGUNIT_0)"/>
+	    	<v-option-group _id="m_securityField" caption="%(key.GUI_LOGIN_SECURITY_0)" visible="%(showSecure)" />
+  		    <v-button _id="m_loginButton">%(key.GUI_LOGIN_BUTTON_0)</v-button> 
+	    <v-form-layout>
+	    <v-label _id="m_copyright" />
+    </v-vertical-layout>
+  </body>
+</html>

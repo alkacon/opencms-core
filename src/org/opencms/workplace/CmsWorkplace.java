@@ -1305,7 +1305,7 @@ public abstract class CmsWorkplace {
      */
     public Locale getLocale() {
 
-        return m_settings.getUserSettings().getLocale();
+        return getSettings().getUserSettings().getLocale();
     }
 
     /**

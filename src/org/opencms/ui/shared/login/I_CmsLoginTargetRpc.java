@@ -25,44 +25,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui;
+package org.opencms.ui.shared.login;
 
-import org.opencms.file.CmsObject;
-import org.opencms.main.CmsUIServlet;
-
-import java.util.Locale;
-
-import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.UI;
+import com.vaadin.shared.communication.ClientRpc;
 
 /**
- * Abstract UI class providing access to the OpenCms context.<p>
+ * Client RPC interface for opening a login target.<p>
  */
-public abstract class A_CmsUI extends UI {
-
-    /** Serial version id. */
-    private static final long serialVersionUID = 989182479322461838L;
-
-    private Locale m_locale = Locale.ENGLISH;
+public interface I_CmsLoginTargetRpc extends ClientRpc {
 
     /**
-     * Returns the current UI.<p>
+     * Opens a login target.<p>
      * 
-     * @return the current UI
+     * @param target the login target 
+     * @param user the user name 
+     * @param password the password 
      */
-    public static A_CmsUI get() {
-
-        return (A_CmsUI)(UI.getCurrent());
-    }
-
-    /**
-     * Returns the current cms context.<p>
-     *
-     * @return the current cms context
-     */
-    public static CmsObject getCmsObject() {
-
-        return ((CmsUIServlet)VaadinServlet.getCurrent()).getCmsObject();
-    }
+    void openTarget(String target, String user, String password);
 
 }

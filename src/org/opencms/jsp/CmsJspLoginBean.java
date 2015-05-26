@@ -28,6 +28,7 @@
 package org.opencms.jsp;
 
 import org.opencms.db.CmsLoginMessage;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
@@ -85,6 +86,87 @@ public class CmsJspLoginBean extends CmsJspActionElement {
 
         super();
         init(context, req, res);
+    }
+
+    public static void logLoginException(
+        CmsRequestContext requestContext,
+        String userName,
+        CmsException currentLoginException) {
+
+        if (currentLoginException instanceof CmsAuthentificationException) {
+
+            // the authentication of the user failed
+            if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2 == currentLoginException.getMessageContainer().getKey()) {
+
+                // the user has been disabled
+                LOG.warn(Messages.get().getBundle().key(
+                    Messages.LOG_LOGIN_FAILED_DISABLED_3,
+                    userName,
+                    requestContext.addSiteRoot(requestContext.getUri()),
+                    requestContext.getRemoteAddress()));
+
+            } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == currentLoginException.getMessageContainer().getKey()) {
+
+                // the user has been disabled
+                LOG.warn(Messages.get().getBundle().key(
+                    Messages.LOG_LOGIN_FAILED_TEMP_DISABLED_5,
+                    new Object[] {
+                        userName,
+                        requestContext.addSiteRoot(requestContext.getUri()),
+                        requestContext.getRemoteAddress(),
+                        currentLoginException.getMessageContainer().getArgs()[2],
+                        currentLoginException.getMessageContainer().getArgs()[3]}));
+
+            } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_2 == currentLoginException.getMessageContainer().getKey()) {
+
+                // the requested user does not exist in the database
+                LOG.warn(Messages.get().getBundle().key(
+                    Messages.LOG_LOGIN_FAILED_NO_USER_3,
+                    userName,
+                    requestContext.addSiteRoot(requestContext.getUri()),
+                    requestContext.getRemoteAddress()));
+
+            } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == currentLoginException.getMessageContainer().getKey()) {
+
+                // logins have been disabled by the administration
+                long endTime = CmsLoginMessage.DEFAULT_TIME_END;
+                if (OpenCms.getLoginManager().getLoginMessage() != null) {
+                    endTime = OpenCms.getLoginManager().getLoginMessage().getTimeEnd();
+                }
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.LOG_LOGIN_FAILED_WITH_MESSAGE_4,
+                    new Object[] {
+                        userName,
+                        requestContext.addSiteRoot(requestContext.getUri()),
+                        requestContext.getRemoteAddress(),
+                        new Date(endTime)}));
+
+            } else {
+
+                // the user exists, so the password must have been wrong
+                CmsMessageContainer message = Messages.get().container(
+                    Messages.LOG_LOGIN_FAILED_3,
+                    userName,
+                    requestContext.addSiteRoot(requestContext.getUri()),
+                    requestContext.getRemoteAddress());
+                if (OpenCms.getDefaultUsers().isUserAdmin(userName)) {
+                    // someone tried to log in as "Admin", log this in a higher channel
+                    LOG.error(message.key());
+                } else {
+                    LOG.warn(message.key());
+                }
+            }
+        } else {
+            // the error was database related, there may be an issue with the setup 
+            // write the exception to the log as well
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.LOG_LOGIN_FAILED_DB_REASON_3,
+                    userName,
+                    requestContext.addSiteRoot(requestContext.getUri()),
+                    requestContext.getRemoteAddress()),
+                currentLoginException);
+        }
     }
 
     /**
@@ -211,81 +293,8 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             if (session != null) {
                 session.invalidate();
             }
-
-            if (m_loginException instanceof CmsAuthentificationException) {
-
-                // the authentication of the user failed
-                if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2 == m_loginException.getMessageContainer().getKey()) {
-
-                    // the user has been disabled
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_LOGIN_FAILED_DISABLED_3,
-                        userName,
-                        getRequestContext().addSiteRoot(getRequestContext().getUri()),
-                        getRequestContext().getRemoteAddress()));
-
-                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == m_loginException.getMessageContainer().getKey()) {
-
-                    // the user has been disabled
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_LOGIN_FAILED_TEMP_DISABLED_5,
-                        new Object[] {
-                            userName,
-                            getRequestContext().addSiteRoot(getRequestContext().getUri()),
-                            getRequestContext().getRemoteAddress(),
-                            m_loginException.getMessageContainer().getArgs()[2],
-                            m_loginException.getMessageContainer().getArgs()[3]}));
-
-                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_2 == m_loginException.getMessageContainer().getKey()) {
-
-                    // the requested user does not exist in the database
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_LOGIN_FAILED_NO_USER_3,
-                        userName,
-                        getRequestContext().addSiteRoot(getRequestContext().getUri()),
-                        getRequestContext().getRemoteAddress()));
-
-                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == m_loginException.getMessageContainer().getKey()) {
-
-                    // logins have been disabled by the administration
-                    long endTime = CmsLoginMessage.DEFAULT_TIME_END;
-                    if (OpenCms.getLoginManager().getLoginMessage() != null) {
-                        endTime = OpenCms.getLoginManager().getLoginMessage().getTimeEnd();
-                    }
-                    LOG.info(Messages.get().getBundle().key(
-                        Messages.LOG_LOGIN_FAILED_WITH_MESSAGE_4,
-                        new Object[] {
-                            userName,
-                            getRequestContext().addSiteRoot(getRequestContext().getUri()),
-                            getRequestContext().getRemoteAddress(),
-                            new Date(endTime)}));
-
-                } else {
-
-                    // the user exists, so the password must have been wrong
-                    CmsMessageContainer message = Messages.get().container(
-                        Messages.LOG_LOGIN_FAILED_3,
-                        userName,
-                        getRequestContext().addSiteRoot(getRequestContext().getUri()),
-                        getRequestContext().getRemoteAddress());
-                    if (OpenCms.getDefaultUsers().isUserAdmin(userName)) {
-                        // someone tried to log in as "Admin", log this in a higher channel
-                        LOG.error(message.key());
-                    } else {
-                        LOG.warn(message.key());
-                    }
-                }
-            } else {
-                // the error was database related, there may be an issue with the setup 
-                // write the exception to the log as well
-                LOG.error(
-                    Messages.get().getBundle().key(
-                        Messages.LOG_LOGIN_FAILED_DB_REASON_3,
-                        userName,
-                        getRequestContext().addSiteRoot(getRequestContext().getUri()),
-                        getRequestContext().getRemoteAddress()),
-                    m_loginException);
-            }
+            CmsException currentLoginException = m_loginException;
+            logLoginException(getRequestContext(), userName, currentLoginException);
         }
     }
 

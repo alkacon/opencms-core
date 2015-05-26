@@ -45,6 +45,10 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsCustomLoginException;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.ui.login.CmsLoginUI;
+import org.opencms.ui.login.CmsLoginUI.Parameters;
+import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUriSplitter;
@@ -204,6 +208,262 @@ public class CmsLogin extends CmsJspLoginBean {
     }
 
     /**
+     * Gets the copyright information HTML.<p>
+     * 
+     * @param locale the locale for which to get the copyright info 
+     * 
+     * @return the copyright info HTML 
+     */
+    public static String getCopyrightHtml(Locale locale) {
+
+        StringBuffer html = new StringBuffer();
+        html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
+        html.append("<a href=\"http://www.opencms.org\" target=\"_blank\">OpenCms</a> ");
+        html.append(Messages.get().getBundle(locale).key(Messages.GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0));
+        html.append("</div>\n");
+        html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
+        html.append(Messages.get().getBundle(locale).key(Messages.GUI_LOGIN_TRADEMARKS_0));
+        html.append("</div>\n");
+        html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
+        html.append("&copy; 2002 - 2015 Alkacon Software GmbH. ");
+        html.append(Messages.get().getBundle(locale).key(Messages.GUI_LOGIN_RIGHTS_RESERVED_0));
+        html.append("</div>\n");
+        return html.toString();
+    }
+
+    /**
+     * Returns the direct edit path from the user settings, or <code>null</code> if not set.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param userSettings the user settings
+     * 
+     * @return the direct edit path
+     */
+    public static String getDirectEditPath(CmsObject cms, CmsUserSettings userSettings) {
+
+        if (userSettings.getStartView().equals(CmsWorkplace.VIEW_DIRECT_EDIT)) {
+
+            try {
+                CmsObject cloneCms = OpenCms.initCmsObject(cms);
+                cloneCms.getRequestContext().setSiteRoot(userSettings.getStartSite());
+                String projectName = userSettings.getStartProject();
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(projectName)) {
+                    cloneCms.getRequestContext().setCurrentProject(cloneCms.readProject(projectName));
+                }
+                String folder = userSettings.getStartFolder();
+                CmsResource targetRes = cloneCms.readDefaultFile(folder);
+                if (targetRes != null) {
+                    return cloneCms.getSitePath(targetRes);
+                }
+            } catch (Exception e) {
+                LOG.debug(e);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the list of OUs which should be selectable in the login dialog.<p>
+     * 
+     * @param cms the CMS context to use 
+     * @param predefOu the predefined OU 
+     * 
+     * @return the list of organizational units for the OU selector 
+     */
+    public static List<CmsOrganizationalUnit> getOrgUnitsForLoginDialog(CmsObject cms, String predefOu) {
+
+        List<CmsOrganizationalUnit> result = new ArrayList<CmsOrganizationalUnit>();
+        try {
+            if (predefOu == null) {
+                result.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ""));
+                result.addAll(OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, "", true));
+                Iterator<CmsOrganizationalUnit> itOus = result.iterator();
+                while (itOus.hasNext()) {
+                    CmsOrganizationalUnit ou = itOus.next();
+                    if (ou.hasFlagHideLogin() || ou.hasFlagWebuser()) {
+                        itOus.remove();
+                    }
+                }
+            } else {
+                result.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, predefOu));
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return result;
+
+    }
+
+    /**
+     * Gets the window title for a given locale.<p>
+     * 
+     * @param locale the locale 
+     * @return the window title 
+     */
+    public static String getTitle(Locale locale) {
+
+        return Messages.get().getBundle(locale).key(Messages.GUI_LOGIN_TITLE_0)
+            + "OpenCms "
+            + OpenCms.getSystemInfo().getVersionNumber();
+    }
+
+    /** 
+     * Initializes the site and project for a CMS context after login, and returns the workplace settings for the corresponding user.<p>
+     * 
+     * @param cms the CMS context which should be initialized 
+     * @return the workplace set
+     */
+    public static CmsWorkplaceSettings initSiteAndProject(CmsObject cms) {
+
+        CmsWorkplaceSettings workplaceSettings = CmsWorkplace.initWorkplaceSettings(cms, null, false);
+        String startSite = CmsWorkplace.getStartSiteRoot(cms, workplaceSettings);
+        // switch to the preferred site
+        workplaceSettings.setSite(startSite);
+        cms.getRequestContext().setSiteRoot(startSite);
+        // store the workplace settings
+        CmsUserSettings settings = workplaceSettings.getUserSettings();
+        // get the direct edit path
+
+        try {
+            CmsProject project = cms.readProject(settings.getStartProject());
+            if (OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, project.getOuFqn(), false).contains(project)) {
+                // user has access to the project, set this as current project
+                workplaceSettings.setProject(project.getUuid());
+                cms.getRequestContext().setCurrentProject(project);
+            }
+        } catch (CmsException e) {
+            // unable to set the startup project, bad but not critical
+            LOG.warn(
+                Messages.get().getBundle().key(
+                    Messages.LOG_LOGIN_NO_STARTUP_PROJECT_2,
+                    cms.getRequestContext().getCurrentUser().getName(),
+                    settings.getStartProject()),
+                e);
+        }
+        return workplaceSettings;
+    }
+
+    /**
+     * Sets the cookie data.<p>
+     * 
+     * @param pcType the pctype value 
+     * @param username the username value 
+     * @param oufqn the oufqn value
+     *   
+     * @param request the current request 
+     * @param response the current response 
+     */
+    public static void setCookieData(
+        String pcType,
+        String username,
+        String oufqn,
+        HttpServletRequest request,
+        HttpServletResponse response) {
+
+        // set the PC type cookie only if security dialog is enabled
+        if (OpenCms.getLoginManager().isEnableSecurity() && CmsStringUtil.isNotEmpty(pcType)) {
+            Cookie pcTypeCookie = getCookie(request, COOKIE_PCTYPE);
+            pcTypeCookie.setValue(pcType);
+            setCookie(pcTypeCookie, false, request, response);
+        }
+
+        // only store user name and OU cookies on private PC types
+        if (PCTYPE_PRIVATE.equals(pcType)) {
+            // set the user name cookie
+            Cookie userNameCookie = getCookie(request, COOKIE_USERNAME);
+            userNameCookie.setValue(username);
+            setCookie(userNameCookie, false, request, response);
+
+            // set the organizational unit cookie
+            Cookie ouFqnCookie = getCookie(request, COOKIE_OUFQN);
+            ouFqnCookie.setValue(oufqn);
+            setCookie(ouFqnCookie, false, request, response);
+        } else if (OpenCms.getLoginManager().isEnableSecurity() && PCTYPE_PUBLIC.equals(pcType)) {
+            // delete user name and organizational unit cookies 
+            Cookie userNameCookie = getCookie(request, COOKIE_USERNAME);
+            setCookie(userNameCookie, true, request, response);
+            Cookie ouFqnCookie = getCookie(request, COOKIE_OUFQN);
+            setCookie(ouFqnCookie, true, request, response);
+
+        }
+    }
+
+    /**
+     * Checks that the user name and password are not empty, and returns an error message if they are.<p>
+     * 
+     * @param username the user name 
+     * @param password the password
+     * 
+     * @return the error message, or null if the user name and password are OK 
+     */
+    public static CmsMessageContainer validateUserAndPasswordNotEmpty(String username, String password) {
+
+        boolean userEmpty = CmsStringUtil.isEmpty(username);
+        boolean passwordEmpty = CmsStringUtil.isEmpty(password);
+
+        // login was requested
+        if (userEmpty && passwordEmpty) {
+            return Messages.get().container(Messages.GUI_LOGIN_NO_DATA_0);
+        } else if (userEmpty) {
+            return Messages.get().container(Messages.GUI_LOGIN_NO_NAME_0);
+        } else if (passwordEmpty) {
+            return Messages.get().container(Messages.GUI_LOGIN_NO_PASSWORD_0);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the cookie with the given name, if not cookie is found a new one is created.<p>
+     * 
+     * @param request the current request 
+     * @param name the name of the cookie
+     * 
+     * @return the cookie
+     */
+    protected static Cookie getCookie(HttpServletRequest request, String name) {
+
+        Cookie[] cookies = request.getCookies();
+        for (int i = 0; (cookies != null) && (i < cookies.length); i++) {
+            if (name.equalsIgnoreCase(cookies[i].getName())) {
+                return cookies[i];
+            }
+        }
+        return new Cookie(name, "");
+    }
+
+    /**
+     * Sets the cookie in the response.<p>
+     * 
+     * @param cookie the cookie to set
+     * @param delete flag to determine if the cookir should be deleted
+     * @param request the current request
+     * @param response the current response 
+     */
+    protected static void setCookie(
+        Cookie cookie,
+        boolean delete,
+        HttpServletRequest request,
+        HttpServletResponse response) {
+
+        if (request.getAttribute(PARAM_PREDEF_OUFQN) != null) {
+            // prevent the use of cookies if using a direct ou login url
+            return;
+        }
+        int maxAge = 0;
+        if (!delete) {
+            // set the expiration date of the cookie to six months from today
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.add(Calendar.MONTH, 6);
+            maxAge = (int)((cal.getTimeInMillis() - System.currentTimeMillis()) / 1000);
+        }
+        cookie.setMaxAge(maxAge);
+        // set the path
+        cookie.setPath(CmsStringUtil.joinPaths(OpenCms.getStaticExportManager().getVfsPrefix(), "/system/login"));
+        // set the cookie
+        response.addCookie(cookie);
+    }
+
+    /**
      * Returns the HTML code for selecting an organizational unit.<p>
      * 
      * @return the HTML code for selecting an organizational unit
@@ -318,15 +578,17 @@ public class CmsLogin extends CmsJspLoginBean {
             m_requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
         }
 
+        if (shouldUseNewLogin()
+            && (getRequest().getParameter("logout") == null)
+            && getCmsObject().getRequestContext().getCurrentUser().isGuestUser()) {
+            return displayVaadinLoginDialog(m_locale);
+        }
+
         if (Boolean.valueOf(m_actionLogin).booleanValue()) {
-            // login was requested
-            if ((m_username == null) && (m_password == null)) {
-                m_message = Messages.get().container(Messages.GUI_LOGIN_NO_DATA_0);
-            } else if (m_username == null) {
-                m_message = Messages.get().container(Messages.GUI_LOGIN_NO_NAME_0);
-            } else if (m_password == null) {
-                m_message = Messages.get().container(Messages.GUI_LOGIN_NO_PASSWORD_0);
-            } else if ((m_username != null) && (m_password != null)) {
+            CmsMessageContainer emptyValidation = validateUserAndPasswordNotEmpty(m_username, m_password);
+            if (emptyValidation != null) {
+                m_message = emptyValidation;
+            } else {
 
                 // try to login with the given user information
                 login((m_oufqn == null ? CmsOrganizationalUnit.SEPARATOR : m_oufqn) + m_username, m_password);
@@ -335,36 +597,9 @@ public class CmsLogin extends CmsJspLoginBean {
                     // the login was successful
                     m_action = ACTION_LOGIN;
 
-                    CmsWorkplaceSettings workplaceSettings = CmsWorkplace.initWorkplaceSettings(cms, null, false);
-                    String startSite = CmsWorkplace.getStartSiteRoot(cms, workplaceSettings);
-                    // switch to the preferred site
-                    workplaceSettings.setSite(startSite);
-                    cms.getRequestContext().setSiteRoot(startSite);
-                    // store the workplace settings
-                    getRequest().getSession().setAttribute(
-                        CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
-                        workplaceSettings);
-                    CmsUserSettings settings = workplaceSettings.getUserSettings();
-                    // get the direct edit path
-                    m_directEditPath = getDirectEditPath(settings);
-
-                    try {
-                        CmsProject project = cms.readProject(settings.getStartProject());
-                        if (OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, project.getOuFqn(), false).contains(
-                            project)) {
-                            // user has access to the project, set this as current project
-                            workplaceSettings.setProject(project.getUuid());
-                            cms.getRequestContext().setCurrentProject(project);
-                        }
-                    } catch (CmsException e) {
-                        // unable to set the startup project, bad but not critical
-                        LOG.warn(
-                            Messages.get().getBundle().key(
-                                Messages.LOG_LOGIN_NO_STARTUP_PROJECT_2,
-                                m_username,
-                                settings.getStartProject()),
-                            e);
-                    }
+                    CmsWorkplaceSettings settings = initSiteAndProject(cms);
+                    getRequest().getSession().setAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS, settings);
+                    m_directEditPath = getDirectEditPath(cms, settings.getUserSettings());
                 } else {
                     // there was an error during login
 
@@ -397,12 +632,12 @@ public class CmsLogin extends CmsJspLoginBean {
         } else if (Boolean.valueOf(m_actionLogout).booleanValue()) {
             m_action = ACTION_LOGOUT;
             // store the workplace window data
-            Cookie wpDataCookie = getCookie(COOKIE_WP_DATA);
+            Cookie wpDataCookie = getCookie(getRequest(), COOKIE_WP_DATA);
             String wpData = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_WPDATA);
             if (wpData != null) {
                 wpData = CmsEncoder.escapeXml(wpData);
                 wpDataCookie.setValue(wpData);
-                setCookie(wpDataCookie, false);
+                setCookie(wpDataCookie, false, getRequest(), getResponse());
             }
             // after logout this will automatically redirect to the login form again
             logout();
@@ -447,14 +682,65 @@ public class CmsLogin extends CmsJspLoginBean {
                 if (session != null) {
                     session.invalidate();
                 }
-                setCookieData();
+                setCookieData(getRequest(), getResponse());
             } else {
                 // successfully logged in, so set the cookie
-                setCookieData();
+                setCookieData(getRequest(), getResponse());
             }
         }
 
         return displayLoginForm();
+    }
+
+    /**
+     * Returns the initial HTML for the Vaadin based login dialog.<p>
+     * 
+     * @param locale the locale 
+     * 
+     * @return the initial page HTML for the Vaadin login dialog 
+     */
+    public String displayVaadinLoginDialog(Locale locale) {
+
+        CmsLoginUI.Parameters params = new Parameters(m_pcType, m_oufqn, m_locale, CmsRequestUtil.getNotEmptyParameter(
+            getRequest(),
+            CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE));
+        //        HttpServletRequest request = (HttpServletRequest)(getJspContext().getRequest());
+        getJspContext().getSession().setAttribute(CmsLoginUI.INIT_DATA_SESSION_ATTR, params);
+        try {
+            byte[] pageBytes = CmsFileUtil.readFully(getClass().getClassLoader().getResourceAsStream(
+                "org/opencms/ui/login/login-page.html"));
+            String page = new String(pageBytes, "UTF-8");
+            CmsMacroResolver resolver = new CmsMacroResolver();
+            String context = OpenCms.getSystemInfo().getContextPath();
+            String vaadinDir = CmsStringUtil.joinPaths(context, "VAADIN/");
+            String vaadinServlet = CmsStringUtil.joinPaths(context, "opencms-login/");
+            String vaadinBootstrap = CmsStringUtil.joinPaths(context, "VAADIN/vaadinBootstrap.js");
+            String autocomplete = ((m_pcType == null) || m_pcType.equals(CmsLogin.PCTYPE_PRIVATE)) ? "on" : "off";
+
+            String cmsLogo = OpenCms.getSystemInfo().getContextPath()
+                + CmsWorkplace.RFS_PATH_RESOURCES
+                + "commons/login_logo.png";
+
+            resolver.addMacro("vaadinDir", vaadinDir);
+            resolver.addMacro("vaadinServlet", vaadinServlet);
+            resolver.addMacro("vaadinBootstrap", vaadinBootstrap);
+            resolver.addMacro("cmsLogo", cmsLogo);
+            resolver.addMacro("autocomplete", autocomplete);
+            resolver.addMacro("title", getTitle(m_locale));
+            if ((m_pcType == null) || m_pcType.equals(CmsLogin.PCTYPE_PRIVATE)) {
+                resolver.addMacro(
+                    "hiddenPasswordField",
+                    "      <input type=\"password\" id=\"hidden-password\" name=\"ocPword\" autocomplete=\"%(autocomplete)\" >");
+            }
+            if (m_username != null) {
+                resolver.addMacro("predefUser", "value=\"" + CmsEncoder.escapeXml(m_username) + "\"");
+            }
+            page = resolver.resolveMacros(page);
+            return page;
+        } catch (Exception e) {
+            System.out.println("Error");
+            return "<!--Error-->";
+        }
     }
 
     /**
@@ -463,7 +749,7 @@ public class CmsLogin extends CmsJspLoginBean {
     public void getCookieData() {
 
         // get the PC type cookie
-        Cookie pcTypeCookie = getCookie(COOKIE_PCTYPE);
+        Cookie pcTypeCookie = getCookie(getRequest(), COOKIE_PCTYPE);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(pcTypeCookie.getValue())) {
             // only set the data if needed
             if (m_pcType == null) {
@@ -476,7 +762,7 @@ public class CmsLogin extends CmsJspLoginBean {
         // get other cookies only on private PC types (or if security option is disabled)
         if ((m_pcType == null) || PCTYPE_PRIVATE.equals(m_pcType)) {
             // get the user name cookie
-            Cookie userNameCookie = getCookie(COOKIE_USERNAME);
+            Cookie userNameCookie = getCookie(getRequest(), COOKIE_USERNAME);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userNameCookie.getValue())) {
                 // only set the data if needed
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_username)) {
@@ -491,7 +777,7 @@ public class CmsLogin extends CmsJspLoginBean {
                 m_username = null;
             }
             // get the organizational unit cookie
-            Cookie ouFqnCookie = getCookie(COOKIE_OUFQN);
+            Cookie ouFqnCookie = getCookie(getRequest(), COOKIE_OUFQN);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouFqnCookie.getValue())) {
                 // only set the data if needed
                 if (m_oufqn == null) {
@@ -568,36 +854,14 @@ public class CmsLogin extends CmsJspLoginBean {
     }
 
     /**
-     * Sets the login cookies.<p>
+     * Sets the cookie data.<p>
+     * 
+     * @param request the current request 
+     * @param response the current response 
      */
-    public void setCookieData() {
+    public void setCookieData(HttpServletRequest request, HttpServletResponse response) {
 
-        // set the PC type cookie only if security dialog is enabled
-        if (OpenCms.getLoginManager().isEnableSecurity() && CmsStringUtil.isNotEmpty(m_pcType)) {
-            Cookie pcTypeCookie = getCookie(COOKIE_PCTYPE);
-            pcTypeCookie.setValue(m_pcType);
-            setCookie(pcTypeCookie, false);
-        }
-
-        // only store user name and OU cookies on private PC types
-        if (PCTYPE_PRIVATE.equals(m_pcType)) {
-            // set the user name cookie
-            Cookie userNameCookie = getCookie(COOKIE_USERNAME);
-            userNameCookie.setValue(m_username);
-            setCookie(userNameCookie, false);
-
-            // set the organizational unit cookie
-            Cookie ouFqnCookie = getCookie(COOKIE_OUFQN);
-            ouFqnCookie.setValue(m_oufqn);
-            setCookie(ouFqnCookie, false);
-        } else if (OpenCms.getLoginManager().isEnableSecurity() && PCTYPE_PUBLIC.equals(m_pcType)) {
-            // delete user name and organizational unit cookies 
-            Cookie userNameCookie = getCookie(COOKIE_USERNAME);
-            setCookie(userNameCookie, true);
-            Cookie ouFqnCookie = getCookie(COOKIE_OUFQN);
-            setCookie(ouFqnCookie, true);
-
-        }
+        setCookieData(m_pcType, m_username, m_oufqn, request, response);
     }
 
     /**
@@ -942,7 +1206,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
         html.append("function openWorkplace(url, name) {\n");
 
-        Cookie wpDataCookie = getCookie(COOKIE_WP_DATA);
+        Cookie wpDataCookie = getCookie(getRequest(), COOKIE_WP_DATA);
         boolean useCookieData = false;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(wpDataCookie.getValue())) {
             String[] winValues = CmsStringUtil.splitAsArray(wpDataCookie.getValue(), '|');
@@ -1021,9 +1285,7 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("<!DOCTYPE html>\n");
         html.append("<html><head>\n");
         html.append("<title>");
-
-        html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_TITLE_0));
-        html.append("OpenCms " + OpenCms.getSystemInfo().getVersionNumber());
+        html.append(getTitle(m_locale));
 
         html.append("</title>\n");
 
@@ -1297,18 +1559,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
         html.append("</td></tr></table>\n");
         html.append("</td></tr></table>\n");
-
-        html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
-        html.append("<a href=\"http://www.opencms.org\" target=\"_blank\">OpenCms</a> ");
-        html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0));
-        html.append("</div>\n");
-        html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
-        html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_TRADEMARKS_0));
-        html.append("</div>\n");
-        html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
-        html.append("&copy; 2002 - 2015 Alkacon Software GmbH. ");
-        html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_RIGHTS_RESERVED_0));
-        html.append("</div>\n");
+        html.append(getCopyrightHtml(m_locale));
 
         html.append("<noscript>\n");
         html.append("<div style=\"text-align: center; font-size: 14px; border: 2px solid black; margin: 50px; padding: 20px; background-color: red; color: white; white-space: nowrap;\"><b>");
@@ -1324,24 +1575,6 @@ public class CmsLogin extends CmsJspLoginBean {
     }
 
     /**
-     * Returns the cookie with the given name, if not cookie is found a new one is created.<p>
-     * 
-     * @param name the name of the cookie
-     * 
-     * @return the cookie
-     */
-    protected Cookie getCookie(String name) {
-
-        Cookie[] cookies = getRequest().getCookies();
-        for (int i = 0; (cookies != null) && (i < cookies.length); i++) {
-            if (name.equalsIgnoreCase(cookies[i].getName())) {
-                return cookies[i];
-            }
-        }
-        return new Cookie(name, "");
-    }
-
-    /**
      * Returns all organizational units in the system.<p>
      * 
      * @return a list of {@link CmsOrganizationalUnit} objects
@@ -1349,24 +1582,7 @@ public class CmsLogin extends CmsJspLoginBean {
     protected List<CmsOrganizationalUnit> getOus() {
 
         if (m_ous == null) {
-            m_ous = new ArrayList<CmsOrganizationalUnit>();
-            try {
-                if (getPreDefOuFqn() == null) {
-                    m_ous.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), ""));
-                    m_ous.addAll(OpenCms.getOrgUnitManager().getOrganizationalUnits(getCmsObject(), "", true));
-                    Iterator<CmsOrganizationalUnit> itOus = m_ous.iterator();
-                    while (itOus.hasNext()) {
-                        CmsOrganizationalUnit ou = itOus.next();
-                        if (ou.hasFlagHideLogin() || ou.hasFlagWebuser()) {
-                            itOus.remove();
-                        }
-                    }
-                } else {
-                    m_ous.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), m_oufqn));
-                }
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
+            m_ous = getOrgUnitsForLoginDialog(getCmsObject(), getPreDefOuFqn());
         }
         return m_ous;
     }
@@ -1390,59 +1606,8 @@ public class CmsLogin extends CmsJspLoginBean {
         return (String)getRequest().getAttribute(PARAM_PREDEF_OUFQN);
     }
 
-    /**
-     * Sets the cookie in the response.<p>
-     * 
-     * @param cookie the cookie to set
-     * @param delete flag to determine if the cookir should be deleted
-     */
-    protected void setCookie(Cookie cookie, boolean delete) {
+    private boolean shouldUseNewLogin() {
 
-        if (getRequest().getAttribute(PARAM_PREDEF_OUFQN) != null) {
-            // prevent the use of cookies if using a direct ou login url
-            return;
-        }
-        int maxAge = 0;
-        if (!delete) {
-            // set the expiration date of the cookie to six months from today
-            GregorianCalendar cal = new GregorianCalendar();
-            cal.add(Calendar.MONTH, 6);
-            maxAge = (int)((cal.getTimeInMillis() - System.currentTimeMillis()) / 1000);
-        }
-        cookie.setMaxAge(maxAge);
-        // set the path
-        cookie.setPath(link("/system/login"));
-        // set the cookie
-        getResponse().addCookie(cookie);
-    }
-
-    /**
-     * Returns the direct edit path from the user settings, or <code>null</code> if not set.<p>
-     * 
-     * @param userSettings the user settings
-     * 
-     * @return the direct edit path
-     */
-    private String getDirectEditPath(CmsUserSettings userSettings) {
-
-        if (userSettings.getStartView().equals(CmsWorkplace.VIEW_DIRECT_EDIT)) {
-
-            try {
-                CmsObject cloneCms = OpenCms.initCmsObject(getCmsObject());
-                cloneCms.getRequestContext().setSiteRoot(userSettings.getStartSite());
-                String projectName = userSettings.getStartProject();
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(projectName)) {
-                    cloneCms.getRequestContext().setCurrentProject(cloneCms.readProject(projectName));
-                }
-                String folder = userSettings.getStartFolder();
-                CmsResource targetRes = cloneCms.readDefaultFile(folder);
-                if (targetRes != null) {
-                    return cloneCms.getSitePath(targetRes);
-                }
-            } catch (Exception e) {
-                LOG.debug(e);
-            }
-        }
-        return null;
+        return true;
     }
 }

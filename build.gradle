@@ -2,6 +2,8 @@ import org.apache.tools.ant.filters.ReplaceTokens
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
+//apply from: 'http://plugins.jasoft.fi/vaadin.plugin?version=0.9.8'
+
 sourceCompatibility = java_target_version
 targetCompatibility = java_target_version
 
@@ -160,7 +162,7 @@ sourceSets.testGwt.compileClasspath += files("$buildDir/classes/modules") { buil
 
 project.ext.componentsRuntimeClassPath=configurations.componentsRuntime
 componentsRuntimeClassPath += files("${project.buildDir}/libs/opencms-components.jar") { builtBy 'componentsJar' }
-
+ 
 task copyDeps(type: Copy) {
     from configurations.distribution
     into "${buildDir}/deps"
@@ -222,12 +224,14 @@ jar {
 
     include 'org/opencms/**'
     include 'com/**'
-    exclude '**/*.html'
+    exclude '**/package.html'
+    exclude '**/overview.html'
     exclude '**/.gitignore'
 
     metaInf {  from("${projectDir}/webapp/WEB-INF/opencms.tld") }
 
     doLast {
+        println "aaaaaaaa" 
         if (tasks.findByPath('tomcatUpdate')!=null&&gradle.taskGraph.hasTask(tasks['tomcatUpdate'])){
             println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
             copy {

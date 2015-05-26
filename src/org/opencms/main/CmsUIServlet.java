@@ -123,6 +123,8 @@ public class CmsUIServlet extends VaadinServlet {
         try {
             OpenCmsCore.getInstance().initCmsContextForUI(request, response, this);
             super.service(request, response);
+            OpenCms.getSessionManager().updateSessionInfo(getCmsObject(), request);
+
         } catch (CmsRoleViolationException rv) {
             // don't log these into the error channel
             LOG.debug(rv.getLocalizedMessage(), rv);

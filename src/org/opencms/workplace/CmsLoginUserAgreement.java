@@ -264,6 +264,16 @@ public class CmsLoginUserAgreement extends CmsDialog {
     }
 
     /**
+     * Returns the absolute path in the OpenCms VFS to the user agreement configuration file.<p>
+     * 
+     * @return the absolute path in the OpenCms VFS to the user agreement configuration file
+     */
+    public String getConfigurationVfsPath() {
+
+        return VFS_PATH_CONFIGFOLDER + getLocale().toString() + "/configuration.html";
+    }
+
+    /**
      * Returns the originally requested workplace resource path parameter.<p>
      *
      * @return the originally requested workplace resource path parameter
@@ -331,9 +341,11 @@ public class CmsLoginUserAgreement extends CmsDialog {
                 }
             } catch (Exception e) {
                 // error when trying to determine if user agreement should be shown
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_USERAGREEMENT_SHOW_1,
-                    getConfigurationContent().getFile().getRootPath()), e);
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_USERAGREEMENT_SHOW_1,
+                        getConfigurationContent().getFile().getRootPath()),
+                    e);
             }
 
         }
@@ -460,23 +472,9 @@ public class CmsLoginUserAgreement extends CmsDialog {
     }
 
     /**
-     * Returns the absolute path in the OpenCms VFS to the user agreement configuration file.<p>
-     * 
-     * @return the absolute path in the OpenCms VFS to the user agreement configuration file
+     * Initializes the 'accepted' data from the current user.<p>
      */
-    public String getConfigurationVfsPath() {
-
-        return VFS_PATH_CONFIGFOLDER + getLocale().toString() + "/configuration.html";
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    @Override
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
+    protected void initAcceptData() {
 
         // read the current users agreement values       
         CmsUser user = getCms().getRequestContext().getCurrentUser();
@@ -491,6 +489,18 @@ public class CmsLoginUserAgreement extends CmsDialog {
                 LOG.error(e);
             }
         }
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    @Override
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+
+        initAcceptData();
 
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);

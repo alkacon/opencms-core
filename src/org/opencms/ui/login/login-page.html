@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+        content="text/html; charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible"
+        content="IE=9;chrome=1" />
+        
+  <style type="text/css">
+  	.vaadinParent .vaadinBox { 
+   		position: absolute;
+ 		left: 0;
+ 		right: 0;
+ 		top:0;
+ 		bottom: 0;
+ }
+  	
+  	.hidden-form {
+  		display: none;  
+  	}
+  	
+ 
+  </style>
+
+  <title>%(title)</title>
+</head>
+
+<body>
+  <!-- Loads the Vaadin widget set, etc. -->
+  <script type="text/javascript"
+          src="%(vaadinBootstrap)"></script>
+          
+  <form class="hidden-form">
+  	<input type="text" id="hidden-username" name="ocUname" %(predefUser) >
+  	%(hiddenPasswordField)
+<!--   	<input type="password" id="hidden-password" name="ocPword" autocomplete="%(autocomplete)" > -->
+  </form>          
+
+  <!-- GWT requires an invisible history frame. It is   -->
+  <!-- needed for page/fragment history in the browser. -->
+  <iframe tabindex="-1" id="__gwt_historyFrame"
+          style="position: absolute; width: 0; height: 0;
+                 border: 0; overflow: hidden"
+          src="javascript:false"></iframe>  
+  
+  <form class="vaadinParent">
+ 	
+  
+  <div id="login-app" class="v-app vaadinBox">
+    <!-- Optional placeholder for the loading indicator -->
+    <div class=" v-app-loading"></div>
+    <!-- Alternative fallback text -->
+    <noscript>You have to enable javascript in your browser to
+              use an application built with Vaadin.</noscript>
+  </div>
+  </form>
+  
+  <script type="text/javascript">//<![CDATA[
+    if (!window.vaadin)
+        alert("Failed to load the bootstrap JavaScript: "+
+              "VAADIN/vaadinBootstrap.js");
+
+    /* The UI Configuration */
+	vaadin.initApplication("login-app", {
+	    "browserDetailsUrl": "%(vaadinServlet)",
+	    "serviceUrl": "%(vaadinServlet)",
+	    "widgetset": "org.opencms.ui.WidgetSet",
+	    "theme": "reindeer",
+	    "versionInfo": {"vaadinVersion": "7.4.2"},
+	    "vaadinDir": "%(vaadinDir)",
+	    "heartbeatInterval": 300,
+	    "debug": false,
+	    "standalone": false,
+	    "authErrMsg": {
+	        "message": "Take note of any unsaved data, "+
+	                   "and <u>click here<\/u> to continue.",
+	        "caption": "Authentication problem"
+	    },
+	    "comErrMsg": {
+	        "message": "Take note of any unsaved data, "+
+	                   "and <u>click here<\/u> to continue.",
+	        "caption": "Communication problem"
+	    },
+	    "sessExpMsg": {
+	        "message": "Take note of any unsaved data, "+
+	                   "and <u>click here<\/u> to continue.",
+	        "caption": "Session Expired"
+	    }
+	});//]] >
+  </script>
+</body>
+</html>

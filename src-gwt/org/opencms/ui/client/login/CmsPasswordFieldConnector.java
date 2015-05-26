@@ -25,44 +25,29 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui;
+package org.opencms.ui.client.login;
 
-import org.opencms.file.CmsObject;
-import org.opencms.main.CmsUIServlet;
+import org.opencms.ui.login.CmsLoginPasswordField;
 
-import java.util.Locale;
-
-import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.UI;
+import com.vaadin.client.ui.textfield.TextFieldConnector;
+import com.vaadin.shared.ui.Connect;
 
 /**
- * Abstract UI class providing access to the OpenCms context.<p>
+ * Connector for the password field.<p>
  */
-public abstract class A_CmsUI extends UI {
+@Connect(CmsLoginPasswordField.class)
+public class CmsPasswordFieldConnector extends TextFieldConnector {
 
     /** Serial version id. */
-    private static final long serialVersionUID = 989182479322461838L;
-
-    private Locale m_locale = Locale.ENGLISH;
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Returns the current UI.<p>
-     * 
-     * @return the current UI
+     * @see com.vaadin.client.ui.textfield.TextFieldConnector#getWidget()
      */
-    public static A_CmsUI get() {
+    @Override
+    public CmsPasswordField getWidget() {
 
-        return (A_CmsUI)(UI.getCurrent());
-    }
-
-    /**
-     * Returns the current cms context.<p>
-     *
-     * @return the current cms context
-     */
-    public static CmsObject getCmsObject() {
-
-        return ((CmsUIServlet)VaadinServlet.getCurrent()).getCmsObject();
+        return (CmsPasswordField)super.getWidget();
     }
 
 }

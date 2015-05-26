@@ -95,6 +95,7 @@ import org.opencms.site.CmsSiteMatcher;
 import org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
+import org.opencms.ui.login.CmsLoginUI;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -1401,6 +1402,7 @@ public final class OpenCmsCore {
             // initialize the formatter configuration
             CmsFormatterConfiguration.initialize(adminCms);
             CmsPersistentLoginTokenHandler.setAdminCms(adminCms);
+            CmsLoginUI.setAdminCmsObject(adminCms);
             //m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
             m_adeManager = new CmsADEManager(adminCms, m_memoryMonitor, systemConfiguration);
             m_templateContextManager = new CmsTemplateContextManager(adminCms);
