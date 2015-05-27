@@ -149,13 +149,14 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
 
         // initialize some variables
-        Map<String, String> items = new HashMap<String, String>();
+        Map<Locale, Map<String, String>> items = new HashMap<Locale, Map<String, String>>();
+        Map<String, String> fieldMappings = new HashMap<String, String>();
         StringBuffer locales = new StringBuffer();
         Locale resourceLocale = index.getLocaleForResource(cms, resource, xmlContent.getLocales());
-        String defaultContent = null;
 
         // loop over the locales of the content
         for (Locale locale : xmlContent.getLocales()) {
+            Map<String, String> localeItems = new HashMap<String, String>();
             StringBuffer textContent = new StringBuffer();
             // store the locales of the content as space separated field
             locales.append(locale.toString());
@@ -184,8 +185,7 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
 
                 // put the extraction to the items and to the textual content
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                    // add the extracted value to the items and use the "/locale/xpath" as key
-                    items.put(CmsXmlUtils.concatXpath(locale.toString(), xpath), extracted);
+                    localeItems.put(xpath, extracted);
                 }
                 if (value.getContentDefinition().getContentHandler().isSearchable(value)
                     && CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
@@ -218,8 +218,9 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                                         // if field is not title, it must be description
                                         fieldName = CmsSearchField.FIELD_DESCRIPTION;
                                     }
-                                    items.put(CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, locale)
-                                        + "_s", extracted);
+                                    fieldMappings.put(
+                                        CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, locale) + "_s",
+                                        extracted);
                                 }
                             } else if (mapping.equals(MAPPING_GALLERY_NAME)) {
                                 galleryNameTemplate = value.getPlainText(cms);
@@ -265,7 +266,7 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
             if (!hasTitleMapping) {
                 // in case no title mapping present, use the title property for all locales
                 String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-                items.put(
+                fieldMappings.put(
                     CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_TITLE_UNSTORED, locale)
                         + "_s",
                     title);
@@ -285,7 +286,7 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                     + ", resulting in gallery name '"
                     + galleryName
                     + "'");
-                items.put(
+                fieldMappings.put(
                     CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_TITLE_UNSTORED, locale)
                         + "_s",
                     galleryName);
@@ -294,18 +295,17 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
             // handle the textual content
             if (textContent.length() > 0) {
                 // add the textual content with a localized key to the items
-                String key = CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_CONTENT, locale);
-                items.put(key, textContent.toString());
+                //String key = CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_CONTENT, locale);
+                //items.put(key, textContent.toString());
                 // use the default locale of this resource as general text content for the extraction result
-                if (resourceLocale.equals(locale)) {
-                    defaultContent = textContent.toString();
-                }
+                localeItems.put(I_CmsExtractionResult.ITEM_CONTENT, textContent.toString());
             }
+            items.put(locale, localeItems);
         }
 
         // add the locales that have been indexed for this document as item and return the extraction result
-        items.put(CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString().trim());
-        return new CmsExtractionResult(defaultContent, items);
+        // fieldMappings.put(CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString().trim());
+        return new CmsExtractionResult(resourceLocale, items, fieldMappings);
     }
 
     /**
@@ -331,12 +331,8 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                 // only use the locales of the resource itself, not the ones of the detail containers page
                 containersExtractionResult.getContentItems().remove(CmsSearchField.FIELD_RESOURCE_LOCALES);
                 ex.add(containersExtractionResult);
-                ex.add(extractXmlContent(cms, resource, index));
-                result = CmsSolrDocumentContainerPage.merge(
-                    cms,
-                    resource,
-                    ex,
-                    (CmsSolrFieldConfiguration)index.getFieldConfiguration());
+                result = extractXmlContent(cms, resource, index);
+                result = result.merge(ex);
             } else {
                 result = extractXmlContent(cms, resource, index);
             }

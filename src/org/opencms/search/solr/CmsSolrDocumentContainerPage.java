@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,6 @@ import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
-import org.opencms.search.fields.CmsSearchField;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
@@ -47,17 +46,14 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
- * Lucene document factory class to extract index data from a resource 
+ * Lucene document factory class to extract index data from a resource
  * of type <code>CmsResourceTypeContainerPage</code>.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
@@ -67,7 +63,7 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
 
     /**
      * Creates a new instance of this lucene document factory.<p>
-     * 
+     *
      * @param name name of the document type
      */
     public CmsSolrDocumentContainerPage(String name) {
@@ -76,54 +72,8 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
     }
 
     /**
-     * Merges the given list of extraction results into a single one.<p>
-     * 
-     * @param cms the CMS object to use
-     * @param resource the indexed resource
-     * 
-     * @param all the extraction result objects to merge
-     * @param conf the Solr field configuration
-     * 
-     * @return the merged result
-     */
-    protected static I_CmsExtractionResult merge(
-        CmsObject cms,
-        CmsResource resource,
-        List<I_CmsExtractionResult> all,
-        CmsSolrFieldConfiguration conf) {
-
-        StringBuffer content = new StringBuffer();
-        Map<String, String> items = new HashMap<String, String>();
-        Set<CmsSearchField> fields = new HashSet<CmsSearchField>();
-
-        for (I_CmsExtractionResult ex : all) {
-            if (ex.getContent() != null) {
-                content.append(ex.getContent());
-            }
-            if (ex.getContentItems() != null) {
-                for (Entry<String, String> item : ex.getContentItems().entrySet()) {
-                    String key = item.getKey();
-                    String value = item.getValue();
-                    if (items.containsKey(key) && (items.get(key) != null)) {
-                        if (!items.get(key).equals(value)) {
-                            items.put(key, items.get(key) + " " + value);
-                        }
-                    } else {
-                        items.put(key, value);
-                    }
-                }
-            }
-            Set<CmsSearchField> mappedFields = conf.getXSDMappings(cms, resource);
-            if (mappedFields != null) {
-                fields.addAll(mappedFields);
-            }
-        }
-        return new CmsExtractionResult(content.toString(), items);
-    }
-
-    /**
      * Returns the raw text content of a VFS resource of type <code>CmsResourceTypeContainerPage</code>.<p>
-     * 
+     *
      * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
      */
     @Override
@@ -155,9 +105,19 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                     }
                 }
             }
-            // we have to overwrite the resource locales with the one from this container page
-            ex = merge(cms, resource, all, (CmsSolrFieldConfiguration)index.getFieldConfiguration());
-            ex.getContentItems().put(CmsSearchField.FIELD_RESOURCE_LOCALES, locale.toString());
+            // we have to overwrite the resource and content locales with the one from this container page
+            // TODO: Is this really the wanted behavior? It seems to be done like this before.
+            Map<String, String> fieldMappings = new HashMap<String, String>(1);
+            // Add to each container page the contents in all available locales,
+            // in case one containerpage is used in multiple languages.
+            List<Locale> localesAvailable = OpenCms.getLocaleManager().getAvailableLocales(cms, resource);
+            Map<Locale, Map<String, String>> multilingualValues = new HashMap<Locale, Map<String, String>>(
+                localesAvailable.size());
+            for (Locale localeAvailable : localesAvailable) {
+                multilingualValues.put(localeAvailable, new HashMap<String, String>());
+            }
+            ex = new CmsExtractionResult(locale, multilingualValues, fieldMappings);
+            ex = ex.merge(all);
             return ex;
         } catch (Exception e) {
             throw new CmsIndexException(

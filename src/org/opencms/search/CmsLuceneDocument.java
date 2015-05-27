@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -88,17 +89,6 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
     /** Holds the score for this document. */
     private float m_score;
 
-    /**
-     * Public constructor.<p>
-     * 
-     * @param doc the Lucene document
-     */
-    public CmsLuceneDocument(Document doc) {
-
-        m_doc = doc;
-        m_fields = new HashMap<String, Field>();
-    }
-
     static {
         STORED_ANALYSED_TYPE = new FieldType();
         STORED_ANALYSED_TYPE.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
@@ -136,12 +126,23 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
     }
 
     /**
+     * Public constructor.<p>
+     *
+     * @param doc the Lucene document
+     */
+    public CmsLuceneDocument(Document doc) {
+
+        m_doc = doc;
+        m_fields = new HashMap<String, Field>();
+    }
+
+    /**
      * Generate a list of date terms for the optimized date range search.<p>
-     * 
+     *
      * @param date the date for get the date terms for
-     * 
+     *
      * @return a list of date terms for the optimized date range search
-     * 
+     *
      * @see CmsSearchIndex#getDateRangeSpan(long, long)
      */
     public static String getDateTerms(long date) {
@@ -204,9 +205,9 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
     }
 
     /**
-     * @see org.opencms.search.I_CmsSearchDocument#addContentLocales(java.util.List)
+     * @see org.opencms.search.I_CmsSearchDocument#addContentLocales(java.util.Collection)
      */
-    public void addContentLocales(List<Locale> locales) {
+    public void addContentLocales(Collection<Locale> locales) {
 
         // Lucene documents are not localized by defualt: Nothing to do here
     }
@@ -252,9 +253,9 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
     }
 
     /**
-     * @see org.opencms.search.I_CmsSearchDocument#addResourceLocales(java.util.List)
+     * @see org.opencms.search.I_CmsSearchDocument#addResourceLocales(java.util.Collection)
      */
-    public void addResourceLocales(List<Locale> locales) {
+    public void addResourceLocales(Collection<Locale> locales) {
 
         // A default lucene document has only one locale.
     }
@@ -454,7 +455,7 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
 
     /**
      * Adds a field to this document.<p>
-     * 
+     *
      * @param f the field to add
      */
     private void add(Field f) {

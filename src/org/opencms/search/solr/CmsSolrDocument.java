@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,7 +66,7 @@ import org.apache.solr.schema.TrieDateField;
 
 /**
  * A search document implementation for Solr indexes.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSolrDocument implements I_CmsSearchDocument {
@@ -85,7 +85,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
 
     /**
      * Public constructor to create a encapsulate a Solr document.<p>
-     * 
+     *
      * @param doc the Solr document
      */
     public CmsSolrDocument(SolrDocument doc) {
@@ -96,7 +96,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
 
     /**
      * Public constructor to create a encapsulate a Solr document.<p>
-     * 
+     *
      * @param doc the Solr document
      */
     public CmsSolrDocument(SolrInputDocument doc) {
@@ -134,9 +134,9 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     }
 
     /**
-     * @see org.opencms.search.I_CmsSearchDocument#addContentLocales(java.util.List)
+     * @see org.opencms.search.I_CmsSearchDocument#addContentLocales(java.util.Collection)
      */
-    public void addContentLocales(List<Locale> locales) {
+    public void addContentLocales(Collection<Locale> locales) {
 
         if ((locales != null) && !locales.isEmpty()) {
             for (Locale locale : locales) {
@@ -159,7 +159,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
 
     /**
      * Adds the given document dependency to this document.<p>
-     * 
+     *
      * @param cms the current CmsObject
      * @param resDeps the dependency
      */
@@ -198,7 +198,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
 
     /**
      * Adds a multi-valued field.<p>
-     * 
+     *
      * @param fieldName the field name to put the values in
      * @param values the values to put in the field
      */
@@ -226,9 +226,9 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
     }
 
     /**
-     * @see org.opencms.search.I_CmsSearchDocument#addResourceLocales(java.util.List)
+     * @see org.opencms.search.I_CmsSearchDocument#addResourceLocales(java.util.Collection)
      */
-    public void addResourceLocales(List<Locale> locales) {
+    public void addResourceLocales(Collection<Locale> locales) {
 
         if ((locales != null) && !locales.isEmpty()) {
             for (Locale locale : locales) {
@@ -429,7 +429,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
 
     /**
      * Returns the Solr document.<p>
-     * 
+     *
      * @return the Solr document
      */
     public SolrDocument getSolrDocument() {
@@ -455,7 +455,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
 
     /**
      * Sets the id of this document.<p>
-     * 
+     *
      * @param structureId the structure id to use
      */
     public void setId(CmsUUID structureId) {

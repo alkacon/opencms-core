@@ -609,14 +609,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     private Map<String, VisibilityConfiguration> m_visibilityConfigurations;
 
     /**
-     * Creates a new instance of the default XML content handler.<p>
-     */
-    public CmsDefaultXmlContentHandler() {
-
-        init();
-    }
-
-    /**
      * Static initializer for caching the default appinfo validation schema.<p>
      */
     static {
@@ -647,12 +639,20 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * Creates a new instance of the default XML content handler.<p>
+     */
+    public CmsDefaultXmlContentHandler() {
+
+        init();
+    }
+
+    /**
      * Copies a given CMS context and set the copy's site root to '/'.<p>
-     *  
-     * @param cms the CMS context to copy 
-     * @return the copy 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context to copy
+     * @return the copy
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsObject createRootCms(CmsObject cms) throws CmsException {
 
@@ -1402,7 +1402,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         // resolve the file mappings
         CmsMappingResolutionContext mappingContext = new CmsMappingResolutionContext();
         mappingContext.setCmsObject(cms);
-        // pass the mapping context as a request context attribute to preserve interface compatibility 
+        // pass the mapping context as a request context attribute to preserve interface compatibility
         cms.getRequestContext().setAttribute(ATTR_MAPPING_RESOLUTION_CONTEXT, mappingContext);
         content.resolveMappings(cms);
         // ensure all property or permission mappings of deleted optional values are removed
@@ -1569,7 +1569,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param elementName the element name to map
      * @param defaultValue the default value to use
-     * @param resolveMacrosValue the value of the 'resolveMacros' attribute 
+     * @param resolveMacrosValue the value of the 'resolveMacros' attribute
      *
      * @throws CmsXmlException in case an unknown element name is used
      */
@@ -1588,7 +1588,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         String xpath = CmsXmlUtils.createXpath(elementName, 1);
         m_defaultValues.put(xpath, defaultValue);
 
-        // macros are resolved by default 
+        // macros are resolved by default
         if ((resolveMacrosValue != null) && !Boolean.parseBoolean(resolveMacrosValue)) {
             m_nonMacroResolvableDefaults.add(xpath);
         }
@@ -2037,7 +2037,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Initializes the editor change handlers.<p>
-     * 
+     *
      * @param element the editorchangehandlers node of the app info
      */
     protected void initEditorChangeHandlers(Element element) {
@@ -2455,7 +2455,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
                     // if no mapping was defined yet, create a mapping for the element itself
                     if ((field.getMappings() == null) || field.getMappings().isEmpty()) {
-                        String param = CmsXmlUtils.concatXpath(locale.toString(), elementName);
+                        String param = locale.toString() + "|" + elementName;
                         CmsSearchFieldMapping map = new CmsSearchFieldMapping(CmsSearchFieldMappingType.ITEM, param);
                         field.addMapping(map);
                     }
@@ -2861,12 +2861,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Resolves those mappings for which no content value exists and useDefault is set to true.<p>
-     *  
-     * @param cms the CMS context to use 
-     * @param file the content file 
-     * @param content the content object 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context to use
+     * @param file the content file
+     * @param content the content object
+     *
+     * @throws CmsException if something goes wrong
      */
     protected void resolveDefaultMappings(CmsObject cms, CmsFile file, CmsXmlContent content) throws CmsException {
 
@@ -3283,7 +3283,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Creates a search field mapping for the given mapping element and the locale.<p>
-     * 
+     *
      * @param contentDefinition the content definition
      * @param element the mapping element configured in the schema
      * @param locale the locale
@@ -3304,7 +3304,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             case 0: // content
             case 3: // item
                 // localized
-                String param = CmsXmlUtils.concatXpath(locale.toString(), element.getStringValue());
+                String param = locale.toString() + "|" + element.getStringValue();
                 fieldMapping = new CmsSearchFieldMapping(type, param);
                 break;
             case 1: // property
@@ -3341,10 +3341,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Utility method to return a path fragment.<p>
-     * 
+     *
      * @param pathElements the path elements
      * @param begin the begin index
-     * 
+     *
      * @return the path
      */
     private String getSubPath(String[] pathElements, int begin) {
@@ -3371,13 +3371,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         }
     }
 
-    /** 
+    /**
      * Checks if the given mapping has the 'useDefault' flag set to true.<p>
-     * 
-     * @param path the mapping path 
-     * @param mapping the mapping type 
-     * 
-     * @return true if 'useDefault' is enabled for this mapping 
+     *
+     * @param path the mapping path
+     * @param mapping the mapping type
+     *
+     * @return true if 'useDefault' is enabled for this mapping
      */
     private boolean isMappingUsingDefault(String path, String mapping) {
 
@@ -3387,16 +3387,16 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /**
      * Helper method which does most of the mapping resolution work.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param content the content object 
-     * @param valuePath the xpath of the value 
-     * @param valueIsSimple true if this is a simple value 
-     * @param valueIndex the index of the value 
-     * @param valueLocale the locale of the value 
-     * @param originalStringValue the value as a string 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context to use
+     * @param content the content object
+     * @param valuePath the xpath of the value
+     * @param valueIsSimple true if this is a simple value
+     * @param valueIndex the index of the value
+     * @param valueLocale the locale of the value
+     * @param originalStringValue the value as a string
+     *
+     * @throws CmsException if something goes wrong
      */
     private void resolveMapping(
         CmsObject cms,

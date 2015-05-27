@@ -64,9 +64,9 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -85,10 +85,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     private static final Log LOG = CmsLog.getLog(CmsSolrFieldConfiguration.class);
 
     /** The content locale for the indexed document is stored in order to save performance. */
-    private List<Locale> m_contentLocales;
-
-    /** The gallery fields. */
-    private Set<CmsSolrField> m_multiLocaleFields = new HashSet<CmsSolrField>();
+    private Collection<Locale> m_contentLocales;
 
     /** A list of Solr fields. */
     private Map<String, CmsSolrField> m_solrFields = new HashMap<String, CmsSolrField>();
@@ -252,10 +249,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                     String mapResult = null;
                     if ((field.getLocale() != null) && mapping.getType().equals(CmsSearchFieldMappingType.CONTENT)) {
                         // this is a localized content field, try to retrieve the localized content extraction
-                        String key = CmsSearchFieldConfiguration.getLocaleExtendedName(
-                            CmsSearchField.FIELD_CONTENT,
-                            field.getLocale());
-                        mapResult = extractionResult.getContentItems().get(key);
+                        mapResult = extractionResult.getContent(field.getLocale());
                         if (mapResult == null) {
                             // no localized content extracted
                             if (!(CmsResourceTypeXmlContent.isXmlContent(resource) || CmsResourceTypeXmlPage.isXmlPage(resource))) {
@@ -276,15 +270,14 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                             properties,
                             propertiesSearched);
                     }
+                    if (text.length() > 0) {
+                        text.append('\n');
+                    }
                     if (mapResult != null) {
-                        // append the found mapping result to text content of this field
-                        if (text.length() > 0) {
-                            text.append('\n');
-                        }
                         text.append(mapResult);
                     } else if (mapping.getDefaultValue() != null) {
                         // no mapping result found, but a default is configured
-                        text.append("\n" + mapping.getDefaultValue());
+                        text.append(mapping.getDefaultValue());
                     }
                 } else if (mapping.getStringValue(cms, resource, extractionResult, properties, propertiesSearched) != null) {
                     String value = mapping.getStringValue(
@@ -353,6 +346,16 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                 properties,
                 propertiesSearched);
         }
+
+        // append field mappings directly stored in the extraction result
+        if (null != extractionResult) {
+            Map<String, String> fieldMappings = extractionResult.getFieldMappings();
+            for (String fieldName : fieldMappings.keySet()) {
+                String value = fieldMappings.get(fieldName);
+                CmsSolrField f = new CmsSolrField(fieldName, null, null, null, 0);
+                document.addSearchField(f, value);
+            }
+        }
         return document;
     }
 
@@ -411,31 +414,10 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         List<CmsProperty> propertiesSearched) {
 
         // append the resource locales
-        List<String> itemLocales = null;
-        List<Locale> resourceLocales = new ArrayList<Locale>();
-        if ((extraction != null)
-            && (extraction.getContentItems() != null)
-            && (extraction.getContentItems().get(CmsSearchField.FIELD_RESOURCE_LOCALES) != null)) {
-            // XMl content or page
-            String localesAsString = extraction.getContentItems().get(CmsSearchField.FIELD_RESOURCE_LOCALES);
-            itemLocales = CmsStringUtil.splitAsList(localesAsString, ' ');
-            for (String locale : itemLocales) {
-                resourceLocales.add(new Locale(locale));
-                // Write the value for each multilingual field into locale-aware Solr fields (e.g.
-                // "title_<locale>_s").
-                for (CmsSolrField sf : m_multiLocaleFields) {
-                    String effFieldName = CmsSearchFieldConfiguration.getLocaleExtendedName(sf.getName(), locale)
-                        + "_s";
-                    String value = extraction.getContentItems().get(effFieldName);
-                    CmsSolrField f = new CmsSolrField(effFieldName, null, null, null, 0);
-                    document.addSearchField(f, value);
-
-                    effFieldName = CmsSearchFieldConfiguration.getLocaleExtendedName(sf.getName(), locale) + "_txt";
-                    value = extraction.getContentItems().get(effFieldName);
-                    f = new CmsSolrField(effFieldName, null, null, null, 0);
-                    document.addSearchField(f, value);
-                }
-            }
+        Collection<Locale> resourceLocales = new ArrayList<Locale>();
+        if ((extraction != null) && (!extraction.getLocales().isEmpty())) {
+            resourceLocales = extraction.getLocales();
+            m_contentLocales = resourceLocales;
         } else {
             // For all other resources add all default locales
             resourceLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
@@ -470,20 +452,10 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                     }
                 }
             }
-
+            m_contentLocales = getContentLocales(cms, resource, extraction);
         }
 
         document.addResourceLocales(resourceLocales);
-
-        // append the content locales
-        m_contentLocales = new ArrayList<Locale>();
-        if (itemLocales != null) {
-            // XML content or page
-            m_contentLocales = resourceLocales;
-        } else {
-            // for all other try to determine the locales
-            m_contentLocales = getContentLocales(cms, resource, extraction);
-        }
         document.addContentLocales(m_contentLocales);
 
         // append document dependencies if configured
@@ -684,17 +656,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
         sfield = new CmsSolrField(CmsSearchField.FIELD_SEARCH_CHANNEL, null, null, null, 0);
         m_solrFields.put(sfield.getName(), sfield);
-
-        /*
-         * Add multi-locale fields without mapping, filled in appendLocales
-         */
-        sfield = new CmsSolrField(CmsSearchField.FIELD_TITLE_UNSTORED, null, null, null, 0);
-        m_multiLocaleFields.add(sfield);
-        m_solrFields.put(sfield.getName(), sfield);
-
-        sfield = new CmsSolrField(CmsSearchField.FIELD_DESCRIPTION, null, null, null, 0);
-        m_solrFields.put(sfield.getName(), sfield);
-        m_multiLocaleFields.add(sfield);
 
         /*
          * Fields with mapping

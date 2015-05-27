@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,14 +43,15 @@ import org.opencms.xml.CmsXmlUtils;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.lucene.document.DateTools;
 
 /**
  * Describes a mapping of a piece of content from an OpenCms VFS resource to a field of a search index.<p>
- * 
- * @since 7.0.0 
+ *
+ * @since 7.0.0
  */
 public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
 
@@ -85,7 +86,7 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
 
     /**
      * Public constructor for a new search field mapping.<p>
-     * 
+     *
      * @param type the type to use, see {@link #setType(CmsSearchFieldMappingType)}
      * @param param the mapping parameter, see {@link #setParam(String)}
      */
@@ -98,9 +99,9 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
 
     /**
      * Returns the default expiration date, meaning the resource never expires.<p>
-     * 
+     *
      * @return the default expiration date
-     * 
+     *
      * @throws ParseException if something goes wrong parsing the default date string
      */
     public static Date getDefaultDateExpired() throws ParseException {
@@ -113,7 +114,7 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
 
     /**
      * Two mappings are equal if the type and the parameter is equal.<p>
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -175,7 +176,17 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
                 break;
             case 3: // item (retrieve value for the given XPath from the content items)
                 if ((extractionResult != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
-                    content = getContentItemForXPath(extractionResult.getContentItems(), getParam());
+                    String[] paramParts = getParam().split("\\|");
+                    Map<String, String> localizedContentItems = null;
+                    String xpath = null;
+                    if (paramParts.length > 1) {
+                        localizedContentItems = extractionResult.getContentItems(new Locale(paramParts[0].trim()));
+                        xpath = paramParts[1].trim();
+                    } else {
+                        localizedContentItems = extractionResult.getContentItems();
+                        xpath = paramParts[0].trim();
+                    }
+                    content = getContentItemForXPath(localizedContentItems, xpath);
                 }
                 break;
             case 5: // attribute
@@ -294,7 +305,7 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
 
     /**
      * The hash code depends on the type and the parameter.<p>
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -360,10 +371,10 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
 
     /**
      * Returns a "\n" separated String of values for the given XPath if according content items can be found.<p>
-     * 
+     *
      * @param contentItems the content items to get the value from
      * @param xpath the short XPath parameter to get the value for
-     * 
+     *
      * @return a "\n" separated String of element values found in the content items for the given XPath
      */
     private String getContentItemForXPath(Map<String, String> contentItems, String xpath) {
