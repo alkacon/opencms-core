@@ -161,7 +161,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         //        System.out.println(resource.getName() + ":   " + extractionResult.getContentItems().keySet());
         //        System.out.println(resource.getName() + ":   " + extractionResult.getContentItems().get("title_en_s"));
         //        System.out.println("-----------------------------------");
-
         //        if (resource.isInternal()
         //            || resource.isFolder()
         //            || resource.isTemporaryFile()
@@ -523,6 +522,25 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                     + "_s", null, null, null, CmsSearchField.BOOST_DEFAULT), prop.getValue());
             }
         }
+
+        for (CmsProperty prop : properties) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop.getValue())) {
+                document.addSearchField(
+                    new CmsSolrField(
+                        prop.getName() + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT,
+                        null,
+                        null,
+                        null,
+                        CmsSearchField.BOOST_DEFAULT),
+                    prop.getValue());
+
+                // Also write the property using the dynamic field '_s' in order to prevent tokenization
+                // of the property. The resulting field is named '<property>_prop_nosearch_s'.
+                document.addSearchField(new CmsSolrField(prop.getName()
+                    + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT
+                    + "_s", null, null, null, CmsSearchField.BOOST_DEFAULT), prop.getValue());
+            }
+        }
         return document;
     }
 
@@ -590,6 +608,29 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     }
 
     /**
+     * Returns the search field mappings declared within the XSD that should be applied to the container page.<p>
+     *
+     * @param cms the CmsObject
+     * @param resource the resource
+     *
+     * @return the fields to map
+     */
+    protected Set<CmsSearchField> getXSDMappingsForPage(CmsObject cms, CmsResource resource) {
+
+        try {
+            if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
+                if ((handler != null) && !handler.getSearchFieldsForPage().isEmpty()) {
+                    return handler.getSearchFieldsForPage();
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    /**
      * Adds additional fields to this field configuration.<p>
      */
     private void addAdditionalFields() {
@@ -645,7 +686,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         m_solrFields.put(sfield.getName(), sfield);
 
         /*
-         * Add multi-locale fields without mapping, filled in appendLocales 
+         * Add multi-locale fields without mapping, filled in appendLocales
          */
         sfield = new CmsSolrField(CmsSearchField.FIELD_TITLE_UNSTORED, null, null, null, 0);
         m_multiLocaleFields.add(sfield);
@@ -656,7 +697,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         m_multiLocaleFields.add(sfield);
 
         /*
-         * Fields with mapping 
+         * Fields with mapping
          */
         sfield = new CmsSolrField(CmsSearchField.FIELD_STATE, null, null, null, 0);
         CmsSearchFieldMapping map = new CmsSearchFieldMapping(
@@ -709,29 +750,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
         getFields().clear();
         getFields().addAll(m_solrFields.values());
-    }
-    
-    /**
-     * Returns the search field mappings declared within the XSD that should be applied to the container page.<p>
-     *
-     * @param cms the CmsObject
-     * @param resource the resource
-     *
-     * @return the fields to map
-     */
-    protected Set<CmsSearchField> getXSDMappingsForPage(CmsObject cms, CmsResource resource) {
-
-        try {
-            if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-                I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
-                if ((handler != null) && !handler.getSearchFieldsForPage().isEmpty()) {
-                    return handler.getSearchFieldsForPage();
-                }
-            }
-        } catch (CmsException e) {
-            LOG.error(e.getMessage(), e);
-        }
-        return null;
     }
 
     /**

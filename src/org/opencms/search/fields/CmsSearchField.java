@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import org.apache.lucene.uninverting.UninvertingReader.Type;
 
 /**
  * A abstract implementation for a search field.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSearchField implements Serializable {
@@ -95,8 +95,11 @@ public class CmsSearchField implements Serializable {
     /** Name of the dynamic exact field. */
     public static final String FIELD_DYNAMIC_EXACT = "_exact";
 
-    /** Name of the dynamic property field. */
+    /** Name of the dynamic property field (searched properties). */
     public static final String FIELD_DYNAMIC_PROPERTIES = "_prop";
+
+    /** Name of the dynamic property field (non-searched properties). */
+    public static final String FIELD_DYNAMIC_PROPERTIES_DIRECT = "_dprop";
 
     /** The name of the dynamic field that stores the shortened value of the content field in order to save performance. */
     public static final String FIELD_EXCERPT = "_excerpt";
@@ -113,8 +116,8 @@ public class CmsSearchField implements Serializable {
     /** The field name for the link. */
     public static final String FIELD_LINK = "link";
 
-    /** 
-     * Name of the field that usually combines all document "meta" information, 
+    /**
+     * Name of the field that usually combines all document "meta" information,
      * that is the values of the "Title", "Keywords" and "Description" properties (optional).
      */
     public static final String FIELD_META = "meta";
@@ -137,9 +140,9 @@ public class CmsSearchField implements Serializable {
     /** The default text field prefix. */
     public static final String FIELD_PREFIX_TEXT = "text_";
 
-    /** 
-     * Name of the field that contains the (optional) document priority, 
-     * which can be used to boost the document in the result list (hardcoded). 
+    /**
+     * Name of the field that contains the (optional) document priority,
+     * which can be used to boost the document in the result list (hardcoded).
      */
     public static final String FIELD_PRIORITY = "priority";
 
@@ -167,16 +170,16 @@ public class CmsSearchField implements Serializable {
     /** Name of the field that contains the general text of a resource and also serves as prefix. */
     public static final String FIELD_TEXT = "text";
 
-    /** 
-     * Name of the field that usually contains the value of the "Title" property of the document 
+    /**
+     * Name of the field that usually contains the value of the "Title" property of the document
      * as a keyword used for sorting and also for retrieving the title text (optional).
-     * 
+     *
      * Please note: This field should NOT be used for searching. Use {@link #FIELD_TITLE_UNSTORED} instead.<p>
      */
     public static final String FIELD_TITLE = "title-key";
 
-    /** 
-     * Name of the field that usually contains the value of the "Title" property of the document 
+    /**
+     * Name of the field that usually contains the value of the "Title" property of the document
      * in an analyzed form used for searching in the title (optional).
      */
     public static final String FIELD_TITLE_UNSTORED = "title";
@@ -248,11 +251,11 @@ public class CmsSearchField implements Serializable {
 
     /**
      * Creates a new search field.<p>
-     * 
+     *
      * @param name the name of the field, see {@link #setName(String)}
      * @param defaultValue the default value to use, see {@link #setDefaultValue(String)}
      * @param boost the boost factor, see {@link #setBoost(float)}
-     * 
+     *
      */
     public CmsSearchField(String name, String defaultValue, float boost) {
 
@@ -315,7 +318,7 @@ public class CmsSearchField implements Serializable {
 
     /**
      * Adds a new field mapping to the internal list of mappings.<p>
-     * 
+     *
      * @param mapping the mapping to add
      */
     public void addMapping(I_CmsSearchFieldMapping mapping) {
@@ -325,7 +328,7 @@ public class CmsSearchField implements Serializable {
 
     /**
      * Two fields are equal if the name of the Lucene field is equal.<p>
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -340,8 +343,8 @@ public class CmsSearchField implements Serializable {
     /**
      * Returns the boost factor of this field.<p>
      *
-     * The boost factor is a Lucene function that controls the "importance" of a field in the 
-     * search result ranking. The default is <code>1.0</code>. A lower boost factor will make the field 
+     * The boost factor is a Lucene function that controls the "importance" of a field in the
+     * search result ranking. The default is <code>1.0</code>. A lower boost factor will make the field
      * less important for the result ranking, a higher value will make it more important.<p>
      *
      * @return the boost factor of this field
@@ -365,9 +368,9 @@ public class CmsSearchField implements Serializable {
 
     /**
      * Returns the String value state of this field if it is indexed (and possibly tokenized) in the index.<p>
-     * 
+     *
      * <b>IMPORTANT:</b> Not supported by Solr
-     * 
+     *
      * @return the String value state of this field if it is indexed (and possibly tokenized) in the index
      */
     public String getIndexed() {
@@ -377,7 +380,7 @@ public class CmsSearchField implements Serializable {
 
     /**
      * Returns the mappings for this field.<p>
-     * 
+     *
      * @return the mappings for this field
      */
     public List<I_CmsSearchFieldMapping> getMappings() {
@@ -397,7 +400,7 @@ public class CmsSearchField implements Serializable {
 
     /**
      * The hash code for a field is based only on the field name.<p>
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -420,7 +423,7 @@ public class CmsSearchField implements Serializable {
      * Returns <code>true</code> if this fields content is used in the search result excerpt.<p>
      *
      * @return <code>true</code> if this fields content is used in the search result excerpt
-     * 
+     *
      * @see #isStored()
      */
     public boolean isInExcerpt() {
@@ -444,12 +447,12 @@ public class CmsSearchField implements Serializable {
     /**
      * Sets the boost factor for this field.<p>
      *
-     * The boost factor is a Lucene function that controls the "importance" of a field in the 
-     * search result ranking. The default is <code>1.0</code>. A lower boost factor will make the field 
+     * The boost factor is a Lucene function that controls the "importance" of a field in the
+     * search result ranking. The default is <code>1.0</code>. A lower boost factor will make the field
      * less important for the result ranking, a higher value will make it more important.<p>
-     * 
-     * <b>Use with caution:</b> You should only use this if you fully understand the concept behind 
-     * boost factors. Otherwise it is likely that your result rankings will be worse then with 
+     *
+     * <b>Use with caution:</b> You should only use this if you fully understand the concept behind
+     * boost factors. Otherwise it is likely that your result rankings will be worse then with
      * the default values.<p>
      *
      * @param boost the boost factor to set
@@ -464,9 +467,9 @@ public class CmsSearchField implements Serializable {
 
     /**
      * Sets the boost factor for this field from a String value.<p>
-     * 
+     *
      * @param boostAsString the boost factor to set
-     * 
+     *
      * @see #setBoost(float)
      */
     public void setBoost(String boostAsString) {
@@ -493,7 +496,7 @@ public class CmsSearchField implements Serializable {
     }
 
     /**
-     * Controls if the content of this field is indexed (and possibly tokenized) in the Lucene index.<p> 
+     * Controls if the content of this field is indexed (and possibly tokenized) in the Lucene index.<p>
      *
      * @param indexed the indexed to set
      */

@@ -28,6 +28,7 @@
 package org.opencms.jsp.search.result;
 
 import org.opencms.file.CmsObject;
+import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerMain;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.solr.CmsSolrResultList;
@@ -41,6 +42,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.FacetField.Count;
 
 /** Wrapper for the whole search result. Also allowing to access the search form controller. */
 public class CmsSearchResultWrapper implements I_SearchResultWrapper {
@@ -61,6 +63,8 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     final I_CmsSearchControllerMain m_controller;
     /** Map from field facet names to the facets as given by the search result. */
     private Map<String, FacetField> m_fieldFacetMap;
+    /** Map from facet names to the facet entries checked, but not part of the result. */
+    private Map<String, List<String>> m_missingFacetEntryMap;
     /** Map with the facet items of the query facet and their counts. */
     private Map<String, Integer> m_facetQuery;
     /** CmsObject. */
@@ -179,6 +183,43 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     public Float getMaxScore() {
 
         return m_maxScore;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getMissingSelectedFieldFacetEntries()
+     */
+    @Override
+    public Map<String, List<String>> getMissingSelectedFieldFacetEntries() {
+
+        if (m_missingFacetEntryMap == null) {
+            m_missingFacetEntryMap = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                @Override
+                public Object transform(final Object fieldName) {
+
+                    FacetField facetResult = m_solrResultList.getFacetField(fieldName.toString());
+                    I_CmsSearchControllerFacetField facetController = m_controller.getFieldFacets().getFieldFacetController().get(
+                        fieldName.toString());
+                    List<String> result = new ArrayList<String>();
+
+                    if (null != facetController) {
+
+                        List<String> checkedEntries = facetController.getState().getCheckedEntries();
+                        List<String> returnedValues = new ArrayList<String>(facetResult.getValues().size());
+                        for (Count value : facetResult.getValues()) {
+                            returnedValues.add(value.getName());
+                        }
+                        for (String checked : checkedEntries) {
+                            if (!returnedValues.contains(checked)) {
+                                result.add(checked);
+                            }
+                        }
+                    }
+                    return result;
+                }
+            });
+        }
+        return m_missingFacetEntryMap;
     }
 
     /**

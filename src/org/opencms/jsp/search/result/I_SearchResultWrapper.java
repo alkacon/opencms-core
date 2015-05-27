@@ -78,6 +78,11 @@ public interface I_SearchResultWrapper {
      */
     Float getMaxScore();
 
+    /** Returns for the specified facet (key) the selected facet entries that are not part of the returned facet entries are provided (value).
+     * @return For the specified facet (key) the selected facet entries that are not part of the returned facet entries are provided (value).
+     */
+    Map<String, List<String>> getMissingSelectedFieldFacetEntries();
+
     /** Returns the number of resources that where found.
      * @return The number of resources that where found.
      */
