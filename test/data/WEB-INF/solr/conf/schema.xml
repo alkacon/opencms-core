@@ -272,6 +272,7 @@
    <dynamicField name="*_excerpt"    type="text_general" indexed="true"  stored="true" termVectors="on" termPositions="on" termOffsets="on" />
    <dynamicField name="*_exact"      type="string"       indexed="true"  stored="false"/>
    <dynamicField name="*_prop"       type="text_general" indexed="true"  stored="true"/>
+   <dynamicField name="*_dprop"      type="text_general" indexed="true"  stored="true"/>
    <dynamicField name="*_i"          type="int"          indexed="true"  stored="true"/>
    <dynamicField name="*_s"          type="string"       indexed="true"  stored="true"/>
    <dynamicField name="*_l"          type="long"         indexed="true"  stored="true"/>
