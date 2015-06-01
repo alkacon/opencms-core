@@ -30,6 +30,7 @@ package org.opencms.jsp;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.CmsElementUtil;
+import org.opencms.ade.containerpage.CmsModelGroupHelper;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
@@ -510,7 +511,12 @@ public class CmsJspTagContainer extends BodyTagSupport {
                         pageResource = cms.readResource(requestUri);
                     }
                     CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource, req);
-                    containerPage = xmlContainerPage.getContainerPage(cms);
+                    CmsModelGroupHelper modelHelper = new CmsModelGroupHelper(
+                        cms,
+                        OpenCms.getADEManager().lookupConfiguration(cms, cms.getRequestContext().getRootUri()),
+                        getSessionCache(cms),
+                        CmsContainerpageService.isEditingModelGroups(cms, pageResource));
+                    containerPage = modelHelper.readModelGroups(xmlContainerPage.getContainerPage(cms));
                     standardContext.setPage(containerPage);
                 }
                 CmsResource detailContent = standardContext.getDetailContent();
@@ -1053,7 +1059,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
             if (formatter != null) {
                 // use structure id as the instance id to enable use of nested containers
                 Map<String, String> settings = new HashMap<String, String>();
-                settings.put(CmsContainerElementBean.ELEMENT_INSTANCE_ID, detailContent.getStructureId().toString());
+                settings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, detailContent.getStructureId().toString());
                 // create element bean
                 element = new CmsContainerElementBean(
                     detailContent.getStructureId(),

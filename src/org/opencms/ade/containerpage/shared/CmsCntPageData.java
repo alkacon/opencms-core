@@ -123,8 +123,8 @@ public final class CmsCntPageData implements IsSerializable {
     /** True if the container page is a model page. */
     private boolean m_isModelPage;
 
-    /** True if the page is used for container models. */
-    private boolean m_isContainerModel;
+    /** True if the page is used for model groups. */
+    private boolean m_isModelGroup;
 
     /** The element reuse mode. */
     private ElementReuseMode m_reuseMode;
@@ -163,7 +163,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @param elementView the current element view
      * @param reuseMode the element reuse mode 
      * @param isModelPage true if this is a model page 
-     * @param isContainerModel true if the page is used for container models
+     * @param isModelGroup true if the page is used for model groups
      */
     public CmsCntPageData(
         String noEditReason,
@@ -182,7 +182,7 @@ public final class CmsCntPageData implements IsSerializable {
         CmsUUID elementView,
         ElementReuseMode reuseMode,
         boolean isModelPage,
-        boolean isContainerModel) {
+        boolean isModelGroup) {
 
         m_noEditReason = noEditReason;
         m_requestParams = requestParams;
@@ -200,7 +200,7 @@ public final class CmsCntPageData implements IsSerializable {
         m_elementView = elementView;
         m_reuseMode = reuseMode;
         m_isModelPage = isModelPage;
-        m_isContainerModel = isContainerModel;
+        m_isModelGroup = isModelGroup;
     }
 
     /**
@@ -361,16 +361,6 @@ public final class CmsCntPageData implements IsSerializable {
         return m_templateContextInfo;
     }
 
-    /**
-     * Returns if the page is used for container models.<p>
-     * 
-     * @return true if the page is used for container models
-     */
-    public boolean isContainerModel() {
-
-        return m_isContainerModel;
-    }
-
     /** 
      * Returns true if small elements should be editable initially.<p>
      * 
@@ -379,6 +369,16 @@ public final class CmsCntPageData implements IsSerializable {
     public boolean isEditSmallElementsInitially() {
 
         return m_editSmallElementsInitially;
+    }
+
+    /**
+     * Returns if the page is used for model groups.<p>
+     * 
+     * @return true if the page is used for model groups
+     */
+    public boolean isModelGroup() {
+
+        return m_isModelGroup;
     }
 
     /** 

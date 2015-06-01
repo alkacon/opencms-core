@@ -79,8 +79,8 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
     /** The parent model flag. */
     private boolean m_isParentModel;
 
-    /** The container model flag. */
-    private boolean m_isContainerModel;
+    /** The model group flag. */
+    private boolean m_isModelGroup;
 
     /** The disabled flag. */
     private boolean m_disabled;
@@ -88,14 +88,14 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
     /**
      * Creates the fake model page tree item used as a root for the tree view.<p>
      * 
-     * @param isContainerModel in case of a container model page 
+     * @param isModelGroup in case of a model group page 
      * @param title the title
      * @param subTitle the sub title
      */
-    public CmsModelPageTreeItem(boolean isContainerModel, String title, String subTitle) {
+    public CmsModelPageTreeItem(boolean isModelGroup, String title, String subTitle) {
 
         super(true);
-        m_isContainerModel = isContainerModel;
+        m_isModelGroup = isModelGroup;
         CmsListInfoBean infoBean = new CmsListInfoBean(title, subTitle, null);
         CmsListItemWidget content = new CmsListItemWidget(infoBean);
         content.setIcon(CmsIconUtil.getResourceIconClasses("modelpage", false));
@@ -106,13 +106,13 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
      * Constructor.<p>
      * 
      * @param modelpage the model page
-     * @param isContainerModel in case of a container model page
+     * @param isModelGroup in case of a model group page
      * @param isParentModel the parent model flag
      */
-    public CmsModelPageTreeItem(CmsModelPageEntry modelpage, boolean isContainerModel, boolean isParentModel) {
+    public CmsModelPageTreeItem(CmsModelPageEntry modelpage, boolean isModelGroup, boolean isParentModel) {
 
         super(true);
-        m_isContainerModel = isContainerModel;
+        m_isModelGroup = isModelGroup;
         initContent(createListWidget(modelpage));
         m_entryId = modelpage.getStructureId();
         m_isParentModel = isParentModel;
@@ -122,15 +122,15 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
     /**
      * Creates the fake model page tree item used as a root for the tree view.<p>
      * 
-     * @param isContainerModel in case of a container model page
+     * @param isModelGroup in case of a model group page
      * @param title the title
      * @param subTitle the sub title
      * 
      * @return the root tree item 
      */
-    public static CmsModelPageTreeItem createRootItem(boolean isContainerModel, String title, String subTitle) {
+    public static CmsModelPageTreeItem createRootItem(boolean isModelGroup, String title, String subTitle) {
 
-        return new CmsModelPageTreeItem(isContainerModel, title, subTitle);
+        return new CmsModelPageTreeItem(isModelGroup, title, subTitle);
     }
 
     /**
@@ -155,16 +155,6 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
     }
 
     /**
-     * Returns whether the entry represents a container model page.<p>
-     * 
-     * @return <code>true</code> if the entry represents a container model page
-     */
-    public boolean isContainerModel() {
-
-        return m_isContainerModel;
-    }
-
-    /**
      * Returns if the model page entry is disabled.<p>
      * 
      * @return <code>true</code> if the model page entry is disabled
@@ -172,6 +162,16 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
     public boolean isDisabled() {
 
         return m_disabled;
+    }
+
+    /**
+     * Returns whether the entry represents a model group page.<p>
+     * 
+     * @return <code>true</code> if the entry represents a model group page
+     */
+    public boolean isModelGroup() {
+
+        return m_isModelGroup;
     }
 
     /**
@@ -260,12 +260,12 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
         infoBean.setTitle(title);
         CmsListItemWidget result = new CmsModelPageListItemWidget(infoBean);
         result.setIcon(CmsIconUtil.getResourceIconClasses("modelpage", modelPage.getRootPath(), false));
-        if (m_isContainerModel || CmsEditModelPageMenuEntry.checkVisible(modelPage.getStructureId())) {
+        if (m_isModelGroup || CmsEditModelPageMenuEntry.checkVisible(modelPage.getStructureId())) {
             result.addIconClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
 
-                    CmsEditModelPageMenuEntry.editModelPage(modelPage.getSitePath(), isContainerModel());
+                    CmsEditModelPageMenuEntry.editModelPage(modelPage.getSitePath(), isModelGroup());
                 }
             });
         }

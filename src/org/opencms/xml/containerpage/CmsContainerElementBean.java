@@ -28,6 +28,7 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.ade.configuration.CmsADEManager;
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -55,9 +56,6 @@ import java.util.Map;
  * @since 8.0
  */
 public class CmsContainerElementBean implements Cloneable {
-
-    /** The element instance id settings key. */
-    public static final String ELEMENT_INSTANCE_ID = "element_instance_id";
 
     /** Flag indicating if a new element should be created replacing the given one on first edit of a container-page. */
     private final boolean m_createNew;
@@ -114,8 +112,8 @@ public class CmsContainerElementBean implements Cloneable {
         Map<String, String> newSettings = (individualSettings == null
         ? new HashMap<String, String>()
         : new HashMap<String, String>(individualSettings));
-        if (!newSettings.containsKey(ELEMENT_INSTANCE_ID)) {
-            newSettings.put(ELEMENT_INSTANCE_ID, new CmsUUID().toString());
+        if (!newSettings.containsKey(CmsContainerElement.ELEMENT_INSTANCE_ID)) {
+            newSettings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, new CmsUUID().toString());
         }
         m_individualSettings = Collections.unmodifiableMap(newSettings);
         String clientId = m_elementId.toString();
@@ -374,7 +372,7 @@ public class CmsContainerElementBean implements Cloneable {
      */
     public String getInstanceId() {
 
-        return m_individualSettings.get(ELEMENT_INSTANCE_ID);
+        return m_individualSettings.get(CmsContainerElement.ELEMENT_INSTANCE_ID);
     }
 
     /**
@@ -484,6 +482,11 @@ public class CmsContainerElementBean implements Cloneable {
         }
     }
 
+    public boolean isCopyModel() {
+
+        return Boolean.valueOf(getIndividualSettings().get(CmsContainerElement.USE_AS_COPY_MODEL)).booleanValue();
+    }
+
     /**
      * Returns if a new element should be created replacing the given one on first edit of a container-page.<p>
      *
@@ -539,6 +542,16 @@ public class CmsContainerElementBean implements Cloneable {
         return m_inMemoryOnly;
     }
 
+    public boolean isModelGroup() {
+
+        return Boolean.parseBoolean(m_individualSettings.get(CmsContainerElement.IS_MODEL_GROUP));
+    }
+
+    public boolean isModelGroupAlwaysReplace() {
+
+        return Boolean.parseBoolean(m_individualSettings.get(CmsContainerElement.IS_MODEL_GROUP_ALWAYS_REPLACE));
+    }
+
     /**
      * Returns if the element resource is released and not expired.<p>
      *
@@ -565,7 +578,7 @@ public class CmsContainerElementBean implements Cloneable {
     public void removeInstanceId() {
 
         Map<String, String> newSettings = new HashMap<String, String>(m_individualSettings);
-        newSettings.remove(ELEMENT_INSTANCE_ID);
+        newSettings.remove(CmsContainerElement.ELEMENT_INSTANCE_ID);
         m_individualSettings = Collections.unmodifiableMap(newSettings);
         String clientId = m_elementId.toString();
         if (!m_individualSettings.isEmpty()) {

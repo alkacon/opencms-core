@@ -63,6 +63,19 @@ public class CmsContainerElement implements IsSerializable {
     /** The container id marking the edit menus. */
     public static final String MENU_CONTAINER_ID = "cms_edit_menu_container";
 
+    /** The element instance id settings key. */
+    public static final String ELEMENT_INSTANCE_ID = "element_instance_id";
+
+    public static final String MODEL_GROUP_ID = "model_group_id";
+
+    /** The is model group element setting key. */
+    public static final String IS_MODEL_GROUP = "is_model_group";
+
+    public static final String USE_AS_COPY_MODEL = "use_as_copy_model";
+
+    /** The is model group always replace element setting key. */
+    public static final String IS_MODEL_GROUP_ALWAYS_REPLACE = "is_model_group_always_replace";
+
     /** The element client id. */
     private String m_clientId;
 
@@ -102,8 +115,10 @@ public class CmsContainerElement implements IsSerializable {
     /** The title. */
     private String m_title;
 
-    /** True if the element is a container model. */
-    private boolean m_isContainerModel;
+    /** True if the element is a model group. */
+    private boolean m_isModelGroup;
+
+    private boolean m_isModelGroupAlwaysReplace;
 
     /**
      * Default constructor.<p>
@@ -136,6 +151,8 @@ public class CmsContainerElement implements IsSerializable {
         result.m_subTitle = m_subTitle;
         result.m_title = m_title;
         result.m_elementView = m_elementView;
+        result.m_isModelGroup = m_isModelGroup;
+        result.m_isModelGroupAlwaysReplace = m_isModelGroupAlwaysReplace;
         return result;
 
     }
@@ -253,16 +270,6 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
-     * Returns if the element is a container model.<p>
-     * 
-     * @return <code>true</code> if the element is a container model
-     */
-    public boolean isContainerModel() {
-
-        return m_isContainerModel;
-    }
-
-    /**
      * Reads the 'create new' status of the element.<p>
      * 
      * When the page containing the element is used a model page, this flag determines whether a copy of the element 
@@ -293,6 +300,21 @@ public class CmsContainerElement implements IsSerializable {
     public boolean isInheritContainer() {
 
         return INHERIT_CONTAINER_TYPE_NAME.equals(m_resourceType);
+    }
+
+    /**
+     * Returns if the element is a model group.<p>
+     * 
+     * @return <code>true</code> if the element is a model group
+     */
+    public boolean isModelGroup() {
+
+        return m_isModelGroup;
+    }
+
+    public boolean isModelGroupAlwaysReplace() {
+
+        return m_isModelGroupAlwaysReplace;
     }
 
     /**
@@ -336,16 +358,6 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
-     * Set if the element is a container model.<p>
-     * 
-     * @param isContainerModel <code>true</code> if the element is a container model
-     */
-    public void setContainerModel(boolean isContainerModel) {
-
-        m_isContainerModel = isContainerModel;
-    }
-
-    /**
      * Sets the 'create new' status of the element.<p>
      * 
      * @param createNew the new 'create new' status 
@@ -383,6 +395,21 @@ public class CmsContainerElement implements IsSerializable {
     public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
 
         m_inheritanceInfo = inheritanceInfo;
+    }
+
+    /**
+     * Set if the element is a model group.<p>
+     * 
+     * @param isModelGroup <code>true</code> if the element is a model group
+     */
+    public void setModelGroup(boolean isModelGroup) {
+
+        m_isModelGroup = isModelGroup;
+    }
+
+    public void setModelGroupAlwaysReplace(boolean alwaysReplace) {
+
+        m_isModelGroupAlwaysReplace = alwaysReplace;
     }
 
     /**

@@ -38,21 +38,21 @@ public class CmsCreateModelPageDialog extends A_CmsNewModelPageDialog {
     /** The controller. */
     private CmsSitemapController m_controller;
 
-    /** The container model flag. */
-    private boolean m_isContainerModel;
+    /** The model group flag. */
+    private boolean m_isModelGroup;
 
     /** 
      * Constructor.<p>
      * 
      * @param controller the controller
-     * @param isContainerModel in case of a container model page
+     * @param isModelGroup in case of a model group page
      */
-    public CmsCreateModelPageDialog(CmsSitemapController controller, boolean isContainerModel) {
+    public CmsCreateModelPageDialog(CmsSitemapController controller, boolean isModelGroup) {
 
-        super(isContainerModel
-        ? Messages.get().key(Messages.GUI_CREATE_CONTAINER_MODEL_PAGE_DIALOG_TITLE_0)
+        super(isModelGroup
+        ? Messages.get().key(Messages.GUI_CREATE_MODEL_GROUP_PAGE_DIALOG_TITLE_0)
         : Messages.get().key(Messages.GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0), null);
-        m_isContainerModel = isContainerModel;
+        m_isModelGroup = isModelGroup;
         m_controller = controller;
     }
 
@@ -66,7 +66,7 @@ public class CmsCreateModelPageDialog extends A_CmsNewModelPageDialog {
             m_titleInput.getFormValueAsString(),
             m_descriptionInput.getFormValueAsString(),
             null,
-            m_isContainerModel);
+            m_isModelGroup);
         hide();
     }
 

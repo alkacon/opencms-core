@@ -375,7 +375,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
                     assertEquals(expected.getIndividualSettings().size(), element.getIndividualSettings().size());
                     for (Entry<String, String> settingsEntry : element.getIndividualSettings().entrySet()) {
                         // all settings but the instance id should be the same
-                        if (!settingsEntry.getKey().equals(CmsContainerElementBean.ELEMENT_INSTANCE_ID)) {
+                        if (!settingsEntry.getKey().equals(CmsContainerElement.ELEMENT_INSTANCE_ID)) {
                             assertEquals(
                                 expected.getIndividualSettings().get(settingsEntry.getKey()),
                                 settingsEntry.getValue());

@@ -152,8 +152,8 @@ import com.google.common.collect.Sets;
  */
 public class CmsContainerpageService extends CmsGwtService implements I_CmsContainerpageService {
 
-    /** The container model pages path fragment. */
-    public static final String CONTAINER_MODEL_PATH_FRAGMENT = "/.content/.containermodels/";
+    /** The model group pages path fragment. */
+    public static final String MODEL_GROUP_PATH_FRAGMENT = "/.content/.modelgroups/";
 
     /** The source container page id settings key. */
     public static final String SOURCE_CONTAINERPAGE_ID_SETTING = "source_containerpage_id";
@@ -268,37 +268,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * Checks whether the given resource is of the type container model.<p>
-     * 
-     * @param cms the cms context
-     * @param resource the resource to check
-     * @param modelPageId the model page id
-     * 
-     * @return <code>true</code> if the given resource is of the type container model
-     */
-    public static boolean isContainerModelResource(CmsObject cms, CmsResource resource, CmsUUID modelPageId) {
-
-        boolean result = false;
-        try {
-            CmsRelation relation = getContainerModelRelation(cms, resource);
-            result = (relation != null) && relation.getTargetId().equals(modelPageId);
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-        return result;
-    }
-
-    /**
-     * Checks whether the current page is a container model page.<p>
+     * Checks whether the current page is a model group page.<p>
      * 
      * @param cms the CMS context
      * @param containerPage the current page
      * 
-     * @return <code>true</code> if the current page is a container model page
+     * @return <code>true</code> if the current page is a model group page
      */
-    public static boolean isEditingContainerModels(CmsObject cms, CmsResource containerPage) {
+    public static boolean isEditingModelGroups(CmsObject cms, CmsResource containerPage) {
 
-        return (CmsResource.getParentFolder(containerPage.getRootPath()).endsWith(CONTAINER_MODEL_PATH_FRAGMENT) && OpenCms.getRoleManager().hasRole(
+        return (CmsResource.getParentFolder(containerPage.getRootPath()).endsWith(MODEL_GROUP_PATH_FRAGMENT) && OpenCms.getRoleManager().hasRole(
             cms,
             CmsRole.DEVELOPER));
     }
@@ -324,47 +303,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             srv.clearThreadStorage();
         }
         return result;
-    }
-
-    /**
-     * Checks whether the given resource is of the type container model.<p>
-     * 
-     * @param cms the cms context
-     * @param resource the resource to check
-     * 
-     * @return <code>true</code> if the given resource is of the type container model
-     */
-    protected static boolean isContainerModelResource(CmsObject cms, CmsResource resource) {
-
-        boolean result = false;
-        try {
-            CmsRelation relation = getContainerModelRelation(cms, resource);
-            result = relation != null;
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-        return result;
-    }
-
-    /**
-     * Returns the container model relation of the given resource
-     * 
-     * @param cms the cms context
-     * @param resource the resource
-     * 
-     * @return the relation
-     * 
-     * @throws CmsException if reading the relation fails
-     */
-    private static CmsRelation getContainerModelRelation(CmsObject cms, CmsResource resource) throws CmsException {
-
-        List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.relationsFromStructureId(
-            resource.getStructureId()).filterType(CmsRelationType.CONTAINER_MODEL));
-        if (!relations.isEmpty()) {
-            return relations.get(0);
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -711,11 +649,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             elementBean.initResource(cms);
 
             // make sure to keep the element instance id
-            if (!settings.containsKey(CmsContainerElementBean.ELEMENT_INSTANCE_ID)
-                && elementBean.getIndividualSettings().containsKey(CmsContainerElementBean.ELEMENT_INSTANCE_ID)) {
+            if (!settings.containsKey(CmsContainerElement.ELEMENT_INSTANCE_ID)
+                && elementBean.getIndividualSettings().containsKey(CmsContainerElement.ELEMENT_INSTANCE_ID)) {
                 settings.put(
-                    CmsContainerElementBean.ELEMENT_INSTANCE_ID,
-                    elementBean.getIndividualSettings().get(CmsContainerElementBean.ELEMENT_INSTANCE_ID));
+                    CmsContainerElement.ELEMENT_INSTANCE_ID,
+                    elementBean.getIndividualSettings().get(CmsContainerElement.ELEMENT_INSTANCE_ID));
             }
 
             elementBean = CmsContainerElementBean.cloneWithSettings(
@@ -777,6 +715,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             Set<String> disabledTypes = new HashSet<String>();
             final Set<String> typesAtTheEndOfTheList = Sets.newHashSet();
             for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
+                boolean isModelGroup = CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(typeConfig.getTypeName());
                 try {
                     AddMenuVisibility visibility = typeConfig.getAddMenuVisibility(elementView);
 
@@ -784,14 +723,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                         continue;
                     }
 
-                    if (visibility == AddMenuVisibility.fromOtherView) {
+                    if (isModelGroup || (visibility == AddMenuVisibility.fromOtherView)) {
                         typesAtTheEndOfTheList.add(typeConfig.getTypeName());
                     }
 
                     if (typeConfig.checkViewable(cms, uri)) {
                         String typeName = typeConfig.getTypeName();
                         I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(typeName);
-                        if (!config.hasFormatters(cms, resType, containers)) {
+                        if (!isModelGroup && !config.hasFormatters(cms, resType, containers)) {
                             disabledTypes.add(typeName);
                         }
                         resourceTypes.add(resType);
@@ -1039,7 +978,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 getSessionCache().getElementView(),
                 reuseMode,
                 isModelPage,
-                isEditingContainerModels(cms, containerPage));
+                isEditingModelGroups(cms, containerPage));
         } catch (Throwable e) {
             error(e);
         }
@@ -1133,11 +1072,17 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsContainerElementBean elementBean = getCachedElement(clientId, pageResource.getRootPath());
             elementBean.initResource(cms);
             // make sure to keep the element instance id
-            if (!settings.containsKey(CmsContainerElementBean.ELEMENT_INSTANCE_ID)
-                && elementBean.getIndividualSettings().containsKey(CmsContainerElementBean.ELEMENT_INSTANCE_ID)) {
+            if (!settings.containsKey(CmsContainerElement.ELEMENT_INSTANCE_ID)
+                && elementBean.getIndividualSettings().containsKey(CmsContainerElement.ELEMENT_INSTANCE_ID)) {
                 settings.put(
-                    CmsContainerElementBean.ELEMENT_INSTANCE_ID,
-                    elementBean.getIndividualSettings().get(CmsContainerElementBean.ELEMENT_INSTANCE_ID));
+                    CmsContainerElement.ELEMENT_INSTANCE_ID,
+                    elementBean.getIndividualSettings().get(CmsContainerElement.ELEMENT_INSTANCE_ID));
+            }
+            // make sure to keep the model group id
+            if (elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID)) {
+                settings.put(
+                    CmsContainerElement.MODEL_GROUP_ID,
+                    elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_ID));
             }
             elementBean = CmsContainerElementBean.cloneWithSettings(
                 elementBean,
@@ -1430,45 +1375,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * Collects the container model structure.<p>
-     * 
-     * @param modelInstanceId the model instance id
-     * @param replaceModelId the local instance id
-     * @param containerByParent the container model page containers by parent instance id
-     * 
-     * @return the collected containers
-     */
-    private List<CmsContainerBean> collectModelStructure(
-        String modelInstanceId,
-        String replaceModelId,
-        Map<String, List<CmsContainerBean>> containerByParent) {
-
-        List<CmsContainerBean> result = new ArrayList<CmsContainerBean>();
-
-        if (containerByParent.containsKey(modelInstanceId)) {
-            for (CmsContainerBean container : containerByParent.get(modelInstanceId)) {
-                List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
-                for (CmsContainerElementBean element : container.getElements()) {
-                    CmsContainerElementBean copyElement = initNewInstanceId(element);
-                    elements.add(copyElement);
-                    result.addAll(collectModelStructure(
-                        element.getInstanceId(),
-                        copyElement.getInstanceId(),
-                        containerByParent));
-                }
-                String adjustedName = replaceModelId + container.getName().substring(modelInstanceId.length());
-                result.add(new CmsContainerBean(
-                    adjustedName,
-                    container.getType(),
-                    replaceModelId,
-                    container.getMaxElements(),
-                    elements));
-            }
-        }
-        return result;
-    }
-
-    /**
      * Converts the given setting values according to the setting configuration of the given resource.<p>
      * 
      * @param resource the resource
@@ -1502,116 +1408,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             return changedSettings;
         } finally {
             cms.getRequestContext().setLocale(origLocale);
-        }
-    }
-
-    /**
-     * Creates new resources for elements marked with create as new.<p>
-     * 
-     * @param cms the cms context
-     * @param modelContainers the model containers
-     * @param uriParam the page uri
-     * @param locale the content locale
-     * 
-     * @return the updated model containers
-     * 
-     * @throws CmsException in case something goes wrong
-     */
-    private List<CmsContainerBean> createNewElementsForContainerModel(
-        CmsObject cms,
-        List<CmsContainerBean> modelContainers,
-        String uriParam,
-        Locale locale) throws CmsException {
-
-        CmsADEConfigData configData = getConfigData(cms.addSiteRoot(uriParam));
-        Map<CmsUUID, CmsResource> newResources = new HashMap<CmsUUID, CmsResource>();
-        CmsObject cloneCms = OpenCms.initCmsObject(cms);
-        cloneCms.getRequestContext().setLocale(locale);
-        for (CmsContainerBean container : modelContainers) {
-            for (CmsContainerElementBean element : container.getElements()) {
-                if (element.isCreateNew() && !newResources.containsKey(element.getId())) {
-                    element.initResource(cms);
-                    String typeName = OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName();
-                    CmsResourceTypeConfig typeConfig = configData.getResourceType(typeName);
-                    if (typeConfig == null) {
-                        throw new IllegalArgumentException("Can not copy template model element '"
-                            + element.getResource().getRootPath()
-                            + "' because the resource type '"
-                            + typeName
-                            + "' is not available in this sitemap.");
-                    }
-                    CmsResource newResource = typeConfig.createNewElement(
-                        cloneCms,
-                        element.getResource(),
-                        CmsResource.getParentFolder(cms.addSiteRoot(uriParam)));
-                    newResources.put(element.getId(), newResource);
-                }
-            }
-        }
-        if (!newResources.isEmpty()) {
-            List<CmsContainerBean> updatedContainers = new ArrayList<CmsContainerBean>();
-            for (CmsContainerBean container : modelContainers) {
-                List<CmsContainerElementBean> updatedElements = new ArrayList<CmsContainerElementBean>();
-                for (CmsContainerElementBean element : container.getElements()) {
-                    if (newResources.containsKey(element.getId())) {
-                        CmsContainerElementBean newBean = new CmsContainerElementBean(
-                            newResources.get(element.getId()).getStructureId(),
-                            element.getFormatterId(),
-                            element.getIndividualSettings(),
-                            false);
-                        updatedElements.add(newBean);
-                    } else {
-                        updatedElements.add(element);
-                    }
-                }
-                CmsContainerBean updatedContainer = new CmsContainerBean(
-                    container.getName(),
-                    container.getType(),
-                    container.getParentInstanceId(),
-                    container.getMaxElements(),
-                    updatedElements);
-                updatedContainers.add(updatedContainer);
-            }
-            modelContainers = updatedContainers;
-        }
-        return modelContainers;
-    }
-
-    /**
-     * Adds container-model-relations from all container model content elements to this container page.<p>
-     * 
-     * @param containerpage the container page resource
-     * @param containers the container page containers
-     */
-    private void ensureContainerModelRelations(CmsResource containerpage, List<CmsContainer> containers) {
-
-        for (CmsContainer container : containers) {
-            for (CmsContainerElement element : container.getElements()) {
-                try {
-                    CmsContainerElementBean elementBean = getCachedElement(
-                        element.getClientId(),
-                        containerpage.getRootPath());
-                    elementBean.initResource(getCmsObject());
-                    if (element.isContainerModel()) {
-                        try {
-
-                            CmsRelation relation = getContainerModelRelation(getCmsObject(), elementBean.getResource());
-                            if (relation == null) {
-                                setContainerModelRelation(getCmsObject(), containerpage, elementBean.getResource());
-                            }
-                        } catch (CmsException e) {
-                            LOG.error(e.getLocalizedMessage(), e);
-                        }
-                    } else {
-                        CmsRelation relation = getContainerModelRelation(getCmsObject(), elementBean.getResource());
-                        if ((relation != null) && relation.getTargetId().equals(containerpage.getStructureId())) {
-                            removeContainerModelRelation(getCmsObject(), containerpage, elementBean.getResource());
-                        }
-                    }
-                } catch (Exception e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
         }
     }
 
@@ -1813,31 +1609,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * Returns the container model page if available.<p>
-     * 
-     * @param cms the cms context
-     * @param element the model resource
-     * 
-     * @return the container model page
-     * 
-     * @throws CmsException in case reading the resource fails
-     */
-    private CmsContainerPageBean getContainerModelPage(CmsObject cms, CmsResource element) throws CmsException {
-
-        CmsContainerPageBean result = null;
-        CmsRelation relation = getContainerModelRelation(cms, element);
-        if (relation != null) {
-            CmsResource modelPage = cms.readResource(relation.getTargetId());
-            if (CmsResourceTypeXmlContainerPage.isContainerPage(modelPage)) {
-                CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(modelPage));
-                result = xmlCnt.getContainerPage(cms);
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Returns the requested container-page resource.<p>
      * 
      * @param cms the current cms object
@@ -1913,8 +1684,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         }
 
         if (CmsContainerElement.MENU_CONTAINER_ID.equals(dndOriginContainer)) {
-            // this indicates the element is added to the page and not being repositioned, check for container model data
-            pageBean = prepareforContainerModelContent(cms, idMapping, pageBean, uriParam, locale);
+            // this indicates the element is added to the page and not being repositioned, check for model group data
+            CmsModelGroupHelper modelHelper = new CmsModelGroupHelper(
+                cms,
+                getConfigData(uriParam),
+                getSessionCache(),
+                isEditingModelGroups(cms, page));
+            pageBean = modelHelper.prepareforModelGroupContent(idMapping, pageBean, locale);
         }
 
         CmsElementUtil elemUtil = new CmsElementUtil(
@@ -2293,20 +2069,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * Initializes a new instance id for the given container element.<p>
-     * 
-     * @param element the container element
-     * 
-     * @return the new element instance
-     */
-    private CmsContainerElementBean initNewInstanceId(CmsContainerElementBean element) {
-
-        Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
-        settings.put(CmsContainerElementBean.ELEMENT_INSTANCE_ID, new CmsUUID().toString());
-        return CmsContainerElementBean.cloneWithSettings(element, settings);
-    }
-
-    /**
      * Initializes request attributes using data from the RPC context.<p>
      * 
      * @param context the RPC context 
@@ -2417,131 +2179,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * Adds the model container elements to the page.<p>
-     * 
-     * @param cms the cms context
-     * @param elements the requested elements
-     * @param page the page
-     * @param uriParam the page uri
-     * @param locale the content locale
-     * 
-     * @return the adjusted page
-     * 
-     * @throws CmsException in case something goes wrong
-     */
-    private CmsContainerPageBean prepareforContainerModelContent(
-        CmsObject cms,
-        Map<String, CmsContainerElementBean> elements,
-        CmsContainerPageBean page,
-        String uriParam,
-        Locale locale) throws CmsException {
-
-        for (Entry<String, CmsContainerElementBean> entry : elements.entrySet()) {
-            CmsContainerElementBean element = entry.getValue();
-            CmsContainerPageBean modelPage = null;
-            String modelInstanceId = null;
-            boolean foundInstance = false;
-            if (isContainerModelResource(cms, element.getResource())) {
-                modelPage = getContainerModelPage(cms, element.getResource());
-            } else {
-                // here we need to make sure to remove the source container page setting and to set a new element instance id
-
-                Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
-                String source = settings.get(SOURCE_CONTAINERPAGE_ID_SETTING);
-                settings.remove(SOURCE_CONTAINERPAGE_ID_SETTING);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(source)) {
-                    try {
-                        CmsUUID sourceId = new CmsUUID(source);
-                        CmsResource sourcePage = cms.readResource(sourceId);
-                        if (CmsResourceTypeXmlContainerPage.isContainerPage(sourcePage)) {
-                            CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(
-                                cms,
-                                cms.readFile(sourcePage));
-                            modelPage = xmlCnt.getContainerPage(cms);
-                            modelInstanceId = element.getInstanceId();
-                        }
-                    } catch (Exception e) {
-                        LOG.info(e.getLocalizedMessage(), e);
-                    }
-                    settings.remove(CmsContainerElementBean.ELEMENT_INSTANCE_ID);
-                    element = CmsContainerElementBean.cloneWithSettings(element, settings);
-                }
-            }
-
-            if (modelPage != null) {
-
-                Map<String, List<CmsContainerBean>> containerByParent = new HashMap<String, List<CmsContainerBean>>();
-
-                for (CmsContainerBean container : modelPage.getContainers().values()) {
-                    if (container.getParentInstanceId() != null) {
-                        if (!containerByParent.containsKey(container.getParentInstanceId())) {
-                            containerByParent.put(container.getParentInstanceId(), new ArrayList<CmsContainerBean>());
-                        }
-                        containerByParent.get(container.getParentInstanceId()).add(container);
-                    }
-                    if (!foundInstance) {
-                        for (CmsContainerElementBean child : container.getElements()) {
-                            if (modelInstanceId == null) {
-                                if (child.getId().equals(element.getId())) {
-                                    modelInstanceId = child.getInstanceId();
-                                    foundInstance = true;
-                                    // we also want to keep the settings of the container model
-                                    Map<String, String> settings = new HashMap<String, String>(
-                                        child.getIndividualSettings());
-                                    settings.remove(CmsContainerElementBean.ELEMENT_INSTANCE_ID);
-                                    element = CmsContainerElementBean.cloneWithSettings(element, settings);
-                                    break;
-                                }
-                            } else {
-                                if (modelInstanceId.equals(child.getInstanceId())) {
-                                    foundInstance = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                if (foundInstance && containerByParent.containsKey(modelInstanceId)) {
-                    List<CmsContainerBean> modelContainers = collectModelStructure(
-                        modelInstanceId,
-                        element.getInstanceId(),
-                        containerByParent);
-
-                    modelContainers = createNewElementsForContainerModel(cms, modelContainers, uriParam, locale);
-                    modelContainers.addAll(page.getContainers().values());
-                    page = new CmsContainerPageBean(modelContainers);
-                }
-
-            }
-            // update the entry element value, as the settings will have changed
-            entry.setValue(element);
-            // also update the session cache
-            getSessionCache().setCacheContainerElement(element.editorHash(), element);
-        }
-        return page;
-    }
-
-    /**
-     * Removes a container model relation.<p>
-     * 
-     * @param cms the CMS context
-     * @param containerPage the container page
-     * @param containerModel the container model content
-     * 
-     * @throws CmsException in case something goes wrong
-     */
-    private void removeContainerModelRelation(CmsObject cms, CmsResource containerPage, CmsResource containerModel)
-    throws CmsException {
-
-        ensureLock(containerModel);
-        cms.deleteRelationsFromResource(
-            containerModel,
-            CmsRelationFilter.relationsToStructureId(containerPage.getStructureId()).filterType(
-                CmsRelationType.CONTAINER_MODEL));
-        tryUnlock(containerModel);
-    }
-
-    /**
      * Saves the given containers to the container page resource.<p>
      * 
      * @param cms the cms context
@@ -2558,11 +2195,19 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         List<CmsContainer> containers) throws CmsException {
 
         CmsContainerPageBean page = generateContainerPageForContainers(containers, containerpage.getRootPath());
+
+        CmsModelGroupHelper modelHelper = new CmsModelGroupHelper(
+            getCmsObject(),
+            getConfigData(containerpage.getRootPath()),
+            getSessionCache(),
+            isEditingModelGroups(cms, containerpage));
+        if (isEditingModelGroups(cms, containerpage)) {
+            page = modelHelper.saveModelGroups(page);
+        } else {
+            page = modelHelper.removeModelGroupContainers(page);
+        }
         CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(containerpageUri));
         xmlCnt.save(cms, page);
-        if (isEditingContainerModels(cms, containerpage)) {
-            ensureContainerModelRelations(containerpage, containers);
-        }
     }
 
     /**
@@ -2591,23 +2236,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         byte[] content = document.marshal();
         file.setContents(content);
         cms.writeFile(file);
-    }
-
-    /**
-     * Sets a container model relation.<p>
-     * 
-     * @param cms the CMS context
-     * @param containerPage the container page
-     * @param containerModel the container model content
-     * 
-     * @throws CmsException in case something goes wrong
-     */
-    private void setContainerModelRelation(CmsObject cms, CmsResource containerPage, CmsResource containerModel)
-    throws CmsException {
-
-        ensureLock(containerModel);
-        cms.addRelationToResource(containerModel, containerPage, CmsRelationType.CONTAINER_MODEL.getName());
-        tryUnlock(containerModel);
     }
 
     /**

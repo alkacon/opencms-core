@@ -32,12 +32,12 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * Wraps the model page and container model info into one object.<p>
+ * Wraps the model page and model group info into one object.<p>
  */
 public class CmsModelInfo implements IsSerializable {
 
-    /** The container model info. */
-    private List<CmsModelPageEntry> m_containerModels;
+    /** The model group info. */
+    private List<CmsModelPageEntry> m_modelGroups;
 
     /** The model page info. */
     private List<CmsModelPageEntry> m_modelPages;
@@ -50,16 +50,16 @@ public class CmsModelInfo implements IsSerializable {
      * 
      * @param modelPages the model pages
      * @param parentModelPages the global model pages
-     * @param containerModels the container models
+     * @param modelGroups the model groups
      */
     public CmsModelInfo(
         List<CmsModelPageEntry> modelPages,
         List<CmsModelPageEntry> parentModelPages,
-        List<CmsModelPageEntry> containerModels) {
+        List<CmsModelPageEntry> modelGroups) {
 
         m_modelPages = modelPages;
         m_parentModelPages = parentModelPages;
-        m_containerModels = containerModels;
+        m_modelGroups = modelGroups;
     }
 
     /**
@@ -71,13 +71,13 @@ public class CmsModelInfo implements IsSerializable {
     }
 
     /**
-     * Returns the container model info.<p>
+     * Returns the model group info.<p>
      * 
-     * @return the container model info
+     * @return the model group info
      */
-    public List<CmsModelPageEntry> getContainerModels() {
+    public List<CmsModelPageEntry> getModelGroups() {
 
-        return m_containerModels;
+        return m_modelGroups;
     }
 
     /**

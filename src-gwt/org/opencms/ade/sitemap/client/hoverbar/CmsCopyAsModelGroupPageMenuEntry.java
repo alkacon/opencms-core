@@ -37,9 +37,9 @@ import org.opencms.util.CmsUUID;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** 
- * Context menu entry for copying a model page to be used as a container model page.<p>
+ * Context menu entry for copying a model page to be used as a model group page.<p>
  */
-public class CmsCopyAsContainerModelPageMenuEntry extends A_CmsSitemapMenuEntry {
+public class CmsCopyAsModelGroupPageMenuEntry extends A_CmsSitemapMenuEntry {
 
     /** The instance of the dialog for copying a model page. */
     CmsCopyModelPageDialog m_dialog;
@@ -49,10 +49,10 @@ public class CmsCopyAsContainerModelPageMenuEntry extends A_CmsSitemapMenuEntry 
      * 
      * @param hoverbar the hoverbar 
      */
-    public CmsCopyAsContainerModelPageMenuEntry(CmsSitemapHoverbar hoverbar) {
+    public CmsCopyAsModelGroupPageMenuEntry(CmsSitemapHoverbar hoverbar) {
 
         super(hoverbar);
-        setLabel(Messages.get().key(Messages.GUI_COPY_AS_CONTAINER_MODEL_PAGE_0));
+        setLabel(Messages.get().key(Messages.GUI_COPY_AS_MODEL_GROUP_PAGE_0));
         setActive(true);
     }
 

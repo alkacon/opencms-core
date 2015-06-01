@@ -44,13 +44,13 @@ public class CmsCopyModelPageDialog extends A_CmsNewModelPageDialog {
      * Constructor.<p>
      * 
      * @param infoBean the list info bean to display in the dialog 
-     * @param isContainerModel if copying as container model
+     * @param isModelGroup if copying as model group
      * @param callback the callback to call with the title entered by the user 
      */
-    public CmsCopyModelPageDialog(CmsListInfoBean infoBean, boolean isContainerModel, AsyncCallback<String> callback) {
+    public CmsCopyModelPageDialog(CmsListInfoBean infoBean, boolean isModelGroup, AsyncCallback<String> callback) {
 
-        super(isContainerModel
-        ? Messages.get().key(Messages.GUI_COPY_AS_CONTAINER_MODEL_PAGE_DIALOG_TITLE_0)
+        super(isModelGroup
+        ? Messages.get().key(Messages.GUI_COPY_AS_MODEL_GROUP_PAGE_DIALOG_TITLE_0)
         : Messages.get().key(Messages.GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0), infoBean);
         m_callback = callback;
     }

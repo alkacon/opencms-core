@@ -416,15 +416,15 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         String title,
         String description,
         CmsUUID copyId,
-        boolean isContainerModel) throws CmsRpcException {
+        boolean isModelGroup) throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
             CmsResource rootResource = cms.readResource(entryPointUri);
             CmsModelPageHelper helper = new CmsModelPageHelper(getCmsObject(), rootResource);
             CmsResource page;
-            if (isContainerModel) {
-                page = helper.createContainerModelPage(title, description, copyId);
+            if (isModelGroup) {
+                page = helper.createModelGroupPage(title, description, copyId);
             } else {
                 page = helper.createPageInModelFolder(title, description, copyId);
                 String configPath = CmsStringUtil.joinPaths(entryPointUri, ".content/.config");

@@ -430,13 +430,13 @@ public class CmsSitemapController implements I_CmsSitemapController {
      * @param title the title of the model page 
      * @param description the description of the model page 
      * @param copyId the structure id of the resource which should be used as a copy model for the new page
-     * @param isContainerModel in case of a container model page
+     * @param isModelGroup in case of a model group page
      */
     public void createNewModelPage(
         final String title,
         final String description,
         final CmsUUID copyId,
-        final boolean isContainerModel) {
+        final boolean isModelGroup) {
 
         CmsRpcAction<CmsModelPageEntry> action = new CmsRpcAction<CmsModelPageEntry>() {
 
@@ -445,7 +445,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
                 start(200, true);
 
-                getService().createNewModelPage(getEntryPoint(), title, description, copyId, isContainerModel, this);
+                getService().createNewModelPage(getEntryPoint(), title, description, copyId, isModelGroup, this);
 
             }
 
@@ -453,7 +453,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
             protected void onResponse(final CmsModelPageEntry result) {
 
                 stop(false);
-                if (isContainerModel) {
+                if (isModelGroup) {
                     CmsSitemapView.getInstance().displayNewModelPage(result, true);
                 } else {
                     loadNewElementInfo(new AsyncCallback<Void>() {

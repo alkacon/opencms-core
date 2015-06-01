@@ -205,8 +205,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     /** Model page data beans for the model page mode. */
     private Map<CmsUUID, CmsModelPageEntry> m_modelPageData = Maps.newHashMap();
 
-    /** The container model pages root entry. */
-    private CmsModelPageTreeItem m_containerModelRoot;
+    /** The model group pages root entry. */
+    private CmsModelPageTreeItem m_modelGroupRoot;
 
     /** Root tree item for the model page mode. */
     private CmsModelPageTreeItem m_modelPageRoot;
@@ -535,19 +535,19 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             }
         }
         m_modelPageRoot.setOpen(true);
-        m_containerModelRoot = CmsModelPageTreeItem.createRootItem(
+        m_modelGroupRoot = CmsModelPageTreeItem.createRootItem(
             true,
-            Messages.get().key(Messages.GUI_CONTAINER_MODEL_PAGE_TREE_ROOT_TITLE_0),
-            Messages.get().key(Messages.GUI_CONTAINER_MODEL_PAGE_TREE_ROOT_SUBTITLE_0));
-        CmsHoverbarCreateModelPageButton createContainerModelButton = new CmsHoverbarCreateModelPageButton(true);
-        CmsSitemapHoverbar containerModelHoverbar = CmsSitemapHoverbar.installOn(
+            Messages.get().key(Messages.GUI_MODEL_GROUP_PAGE_TREE_ROOT_TITLE_0),
+            Messages.get().key(Messages.GUI_MODEL_GROUP_PAGE_TREE_ROOT_SUBTITLE_0));
+        CmsHoverbarCreateModelPageButton createModelGroupButton = new CmsHoverbarCreateModelPageButton(true);
+        CmsSitemapHoverbar modelGroupHoverbar = CmsSitemapHoverbar.installOn(
             m_controller,
-            m_containerModelRoot,
-            Collections.<Widget> singleton(createContainerModelButton));
-        containerModelHoverbar.setAlwaysVisible();
-        createContainerModelButton.setHoverbar(containerModelHoverbar);
-        m_modelPageTree.add(m_containerModelRoot);
-        for (CmsModelPageEntry entry : modelPageData.getContainerModels()) {
+            m_modelGroupRoot,
+            Collections.<Widget> singleton(createModelGroupButton));
+        modelGroupHoverbar.setAlwaysVisible();
+        createModelGroupButton.setHoverbar(modelGroupHoverbar);
+        m_modelPageTree.add(m_modelGroupRoot);
+        for (CmsModelPageEntry entry : modelPageData.getModelGroups()) {
             CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(entry, true, false);
             CmsSitemapHoverbar.installOn(
                 m_controller,
@@ -556,9 +556,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 entry.getSitePath(),
                 entry.getSitePath() != null);
             m_modelPageTreeItems.put(entry.getStructureId(), treeItem);
-            m_containerModelRoot.addChild(treeItem);
+            m_modelGroupRoot.addChild(treeItem);
         }
-        m_containerModelRoot.setOpen(true);
+        m_modelGroupRoot.setOpen(true);
 
     }
 
@@ -597,11 +597,11 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
      * Adds a new model page to the model page view.<p>
      * 
      * @param modelPageData the data for the new model page 
-     * @param isContainerModel in case of a container model page
+     * @param isModelGroup in case of a model group page
      */
-    public void displayNewModelPage(CmsModelPageEntry modelPageData, boolean isContainerModel) {
+    public void displayNewModelPage(CmsModelPageEntry modelPageData, boolean isModelGroup) {
 
-        CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(modelPageData, isContainerModel, false);
+        CmsModelPageTreeItem treeItem = new CmsModelPageTreeItem(modelPageData, isModelGroup, false);
         CmsSitemapHoverbar.installOn(
             m_controller,
             treeItem,
@@ -609,8 +609,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             modelPageData.getSitePath(),
             modelPageData.getSitePath() != null);
         m_modelPageTreeItems.put(modelPageData.getStructureId(), treeItem);
-        if (isContainerModel) {
-            m_containerModelRoot.addChild(treeItem);
+        if (isModelGroup) {
+            m_modelGroupRoot.addChild(treeItem);
         } else {
             m_modelPageRoot.addChild(treeItem);
         }

@@ -28,6 +28,8 @@
 package org.opencms.jsp;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.containerpage.CmsContainerpageService;
+import org.opencms.ade.containerpage.CmsModelGroupHelper;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
@@ -42,6 +44,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
@@ -64,6 +67,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
@@ -795,6 +799,12 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             }
             CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource, req);
             containerPage = xmlContainerPage.getContainerPage(cms);
+            CmsModelGroupHelper modelHelper = new CmsModelGroupHelper(cms, OpenCms.getADEManager().lookupConfiguration(
+                cms,
+                cms.getRequestContext().getRootUri()), CmsADESessionCache.getCache(
+                (HttpServletRequest)(pageContext.getRequest()),
+                cms), CmsContainerpageService.isEditingModelGroups(cms, pageResource));
+            containerPage = modelHelper.readModelGroups(xmlContainerPage.getContainerPage(cms));
             standardContext.setPage(containerPage);
         }
         return standardContext;

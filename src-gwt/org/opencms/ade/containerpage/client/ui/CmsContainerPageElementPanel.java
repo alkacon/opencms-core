@@ -85,6 +85,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class CmsContainerPageElementPanel extends AbsolutePanel
 implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
+    public static final String PROP_IS_MODEL_GROUP = "is_model_group";
+
     /** Highlighting border for this element. */
     protected CmsHighlightingBorder m_highlighting;
 
@@ -97,8 +99,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /** The elements client id. */
     private String m_clientId;
 
-    /** The container model status. */
-    private boolean m_containerModel;
+    /** The model group status. */
+    private boolean m_modelGroup;
 
     /** The 'create new' flag. */
     private boolean m_createNew;
@@ -187,7 +189,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * @param hasWritePermission indicates if the current user has write permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      * @param disableNewEditor flag to disable the new editor for this element 
-     * @param containerModel the container model status
+     * @param modelGroup the model group status
      * @param elementView the element view of the element 
      */
     public CmsContainerPageElementPanel(
@@ -204,7 +206,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         boolean hasWritePermission,
         boolean releasedAndNotExpired,
         boolean disableNewEditor,
-        boolean containerModel,
+        boolean modelGroup,
         CmsUUID elementView) {
 
         super(element);
@@ -217,12 +219,13 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         m_hasSettings = hasSettings;
         m_parent = parent;
         m_disableNewEditor = disableNewEditor;
-        m_containerModel = containerModel;
+        m_modelGroup = modelGroup;
         setViewPermission(hasViewPermission);
         setWritePermission(hasWritePermission);
         setReleasedAndNotExpired(releasedAndNotExpired);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
         m_elementView = elementView;
+        getElement().setPropertyBoolean(PROP_IS_MODEL_GROUP, modelGroup);
     }
 
     /**
@@ -415,6 +418,20 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         return new CmsUUID(CmsContainerpageController.getServerId(m_clientId));
     }
 
+    public boolean hasModelGroupParent() {
+
+        boolean result = false;
+        Element parent = getElement().getParentElement();
+        while (parent != null) {
+            if (parent.getPropertyBoolean(PROP_IS_MODEL_GROUP)) {
+                result = true;
+                break;
+            }
+            parent = parent.getParentElement();
+        }
+        return result;
+    }
+
     /**
      * Returns true if the element has settings to edit.<p>
      * 
@@ -527,16 +544,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         }
     }
 
-    /**
-     * Returns whether the element is used as a container model.<p>
-     *  
-     * @return <code>true</code> if the element is used as a container model
-     */
-    public boolean isContainerModel() {
-
-        return m_containerModel;
-    }
-
     /** 
      * Checks if this element has 'createNew' status, i.e. will be copied when using this page as a model for a new container page.<p>
      * 
@@ -545,6 +552,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public boolean isCreateNew() {
 
         return m_createNew;
+    }
+
+    /**
+     * Returns whether the element is used as a model group.<p>
+     *  
+     * @return <code>true</code> if the element is used as a model group
+     */
+    public boolean isModelGroup() {
+
+        return m_modelGroup;
     }
 
     /**
@@ -642,16 +659,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     }
 
     /**
-     * Sets the container model status.<p>
-     * 
-     * @param containerModel the container model status
-     */
-    public void setContainerModel(boolean containerModel) {
-
-        m_containerModel = containerModel;
-    }
-
-    /**
      * Sets the 'create new' status of the element.<p>
      * 
      * @param createNew the new value for the 'create new' status 
@@ -696,6 +703,17 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
 
         m_inheritanceInfo = inheritanceInfo;
+    }
+
+    /**
+     * Sets the model group status.<p>
+     * 
+     * @param modelGroup the model group status
+     */
+    public void setModelGroup(boolean modelGroup) {
+
+        m_modelGroup = modelGroup;
+        getElement().setPropertyBoolean(PROP_IS_MODEL_GROUP, modelGroup);
     }
 
     /**

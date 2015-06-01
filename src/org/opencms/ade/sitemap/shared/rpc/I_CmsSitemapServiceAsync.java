@@ -105,7 +105,7 @@ public interface I_CmsSitemapServiceAsync {
      * @param title the title for the model page 
      * @param description the description for the model page 
      * @param copyId the structure id of the resource to copy to create a new model page; if null, the model page is created as an empty container page
-     * @param isContainerModel <code>true</code> to create a new container model page
+     * @param isModelGroup <code>true</code> to create a new model group page
      * @param resultCallback the callback for the result 
      */
     void createNewModelPage(
@@ -113,7 +113,7 @@ public interface I_CmsSitemapServiceAsync {
         String title,
         String description,
         CmsUUID copyId,
-        boolean isContainerModel,
+        boolean isModelGroup,
         AsyncCallback<CmsModelPageEntry> resultCallback);
 
     /**

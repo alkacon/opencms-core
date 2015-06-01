@@ -606,6 +606,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 }
                 if ((container != m_initialDropTarget)
                     && !container.isDetailView()
+                    && (m_controller.getData().isModelGroup() || !container.hasModelGroupParent())
                     && (elementData.getContents().get(container.getContainerId()) != null)) {
 
                     Element placeholder = null;

@@ -184,10 +184,10 @@ public final class Messages {
     public static final String GUI_CONFIRM_LEAVING_TITLE_0 = "GUI_CONFIRM_LEAVING_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CONTAINER_MODEL_PAGE_TREE_ROOT_SUBTITLE_0 = "GUI_CONTAINER_MODEL_PAGE_TREE_ROOT_SUBTITLE_0";
+    public static final String GUI_MODEL_GROUP_PAGE_TREE_ROOT_SUBTITLE_0 = "GUI_MODEL_GROUP_PAGE_TREE_ROOT_SUBTITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CONTAINER_MODEL_PAGE_TREE_ROOT_TITLE_0 = "GUI_CONTAINER_MODEL_PAGE_TREE_ROOT_TITLE_0";
+    public static final String GUI_MODEL_GROUP_PAGE_TREE_ROOT_TITLE_0 = "GUI_MODEL_GROUP_PAGE_TREE_ROOT_TITLE_0";
 
     /**  Message constant for key in the resource bundle. */
     public static final String GUI_CONTEXTMENU_CATEGORY_MODE_0 = "GUI_CONTEXTMENU_CATEGORY_MODE_0";
@@ -202,22 +202,22 @@ public final class Messages {
     public static final String GUI_DISABLED_PAGE_0 = "GUI_DISABLED_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_COPY_AS_CONTAINER_MODEL_PAGE_0 = "GUI_COPY_AS_CONTAINER_MODEL_PAGE_0";
+    public static final String GUI_COPY_AS_MODEL_GROUP_PAGE_0 = "GUI_COPY_AS_MODEL_GROUP_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_COPY_AS_CONTAINER_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_COPY_AS_CONTAINER_MODEL_PAGE_DIALOG_TITLE_0";
+    public static final String GUI_COPY_AS_MODEL_GROUP_PAGE_DIALOG_TITLE_0 = "GUI_COPY_AS_MODEL_GROUP_PAGE_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0 = "GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CREATE_CONTAINER_MODEL_PAGE_BUTTON_TITLE_0 = "GUI_CREATE_CONTAINER_MODEL_PAGE_BUTTON_TITLE_0";
+    public static final String GUI_CREATE_MODEL_GROUP_PAGE_BUTTON_TITLE_0 = "GUI_CREATE_MODEL_GROUP_PAGE_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CREATE_CONTAINER_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_CREATE_CONTAINER_MODEL_PAGE_DIALOG_TITLE_0";
+    public static final String GUI_CREATE_MODEL_GROUP_PAGE_DIALOG_TITLE_0 = "GUI_CREATE_MODEL_GROUP_PAGE_DIALOG_TITLE_0";
 
     /**  Message constant for key in the resource bundle. */
     public static final String GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0 = "GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0";
@@ -277,10 +277,10 @@ public final class Messages {
     public static final String GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0 = "GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDIT_CONTAINER_MODELS_CONFIRM_TITLE_0 = "GUI_EDIT_CONTAINER_MODELS_CONFIRM_TITLE_0";
+    public static final String GUI_EDIT_MODEL_GROUPS_CONFIRM_TITLE_0 = "GUI_EDIT_MODEL_GROUPS_CONFIRM_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDIT_CONTAINER_MODEL_CONFIRM_CONTENT_0 = "GUI_EDIT_CONTAINER_MODEL_CONFIRM_CONTENT_0";
+    public static final String GUI_EDIT_MODEL_GROUP_CONFIRM_CONTENT_0 = "GUI_EDIT_MODEL_GROUP_CONFIRM_CONTENT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_MODELPAGE_CONTEXTMENU_0 = "GUI_EDIT_MODELPAGE_CONTEXTMENU_0";

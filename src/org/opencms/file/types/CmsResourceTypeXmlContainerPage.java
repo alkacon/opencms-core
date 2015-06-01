@@ -80,6 +80,8 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     /** The resource type name for inherited container references.  */
     public static final String INHERIT_CONTAINER_TYPE_NAME = "inheritance_group";
 
+    public static final String MODEL_GROUP_TYPE_NAME = "modelgroup";
+
     /** The name of this resource type. */
     public static final String RESOURCE_TYPE_NAME = "containerpage";
 
@@ -238,7 +240,7 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
     @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
-        if (!RESOURCE_TYPE_NAME.equals(name)) {
+        if (!RESOURCE_TYPE_NAME.equals(name) && !MODEL_GROUP_TYPE_NAME.equals(name)) {
             // default resource type MUST have default name
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
@@ -246,15 +248,7 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
                 RESOURCE_TYPE_NAME,
                 name));
         }
-        int typeId = Integer.valueOf(id).intValue();
-        if ((containerPageTypeId > 0) && (containerPageTypeId != typeId)) {
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_RESOURCE_TYPE_ALREADY_CONFIGURED_3,
-                this.getClass().getName(),
-                RESOURCE_TYPE_NAME,
-                name));
-        }
-        super.initConfiguration(RESOURCE_TYPE_NAME, id, className);
+        super.initConfiguration(name, id, className);
     }
 
     /**

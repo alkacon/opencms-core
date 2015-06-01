@@ -80,9 +80,6 @@ public final class CmsRelationType implements Serializable {
     /** String constant for "WEAK" relations. */
     private static final String VALUE_WEAK = "WEAK";
 
-    /** Constant for container model relation. */
-    public static final CmsRelationType CONTAINER_MODEL = new CmsRelationType(11, "CONTAINER_MODEL", false, false);
-
     /** Constant for the category of an <code>OpenCmsVfsFile</code>. */
     public static final CmsRelationType CATEGORY = new CmsRelationType(9, "CATEGORY", false, false);
 
@@ -130,8 +127,7 @@ public final class CmsRelationType implements Serializable {
         EMBEDDED_OBJECT,
         OU_RESOURCE,
         CATEGORY,
-        XSD,
-        CONTAINER_MODEL};
+        XSD};
 
     /** Flag to indicate if the relations of this type are parsed from the content or not. */
     private final boolean m_defInContent;

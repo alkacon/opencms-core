@@ -1187,34 +1187,6 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns if the current element is a container model.<p>
-     * 
-     * @return <code>true</code> if the current element is a container model
-     */
-    public boolean isContainerModelElement() {
-
-        return (m_element != null)
-            && !m_element.isInMemoryOnly()
-            && isContainerModelPage()
-            && CmsContainerpageService.isContainerModelResource(
-                m_cms,
-                m_element.getResource(),
-                getContainerPage().getStructureId());
-    }
-
-    /**
-     * Returns if the current page is used to manage container models.<p>
-     * 
-     * @return <code>true</code> if the current page is used to manage container models
-     */
-    public boolean isContainerModelPage() {
-
-        CmsResource page = getContainerPage();
-        return (page != null) && CmsContainerpageService.isEditingContainerModels(m_cms, page);
-
-    }
-
-    /**
      * Returns <code>true</code in case a detail page is available for the current element.<p>
      * 
      * @return <code>true</code in case a detail page is available for the current element
@@ -1256,6 +1228,28 @@ public final class CmsJspStandardContextBean {
     public boolean isEdited() {
 
         return m_edited;
+    }
+
+    /**
+     * Returns if the current element is a model group.<p>
+     * 
+     * @return <code>true</code> if the current element is a model group
+     */
+    public boolean isModelGroupElement() {
+
+        return (m_element != null) && !m_element.isInMemoryOnly() && isModelGroupPage() && m_element.isModelGroup();
+    }
+
+    /**
+     * Returns if the current page is used to manage model groups.<p>
+     * 
+     * @return <code>true</code> if the current page is used to manage model groups
+     */
+    public boolean isModelGroupPage() {
+
+        CmsResource page = getContainerPage();
+        return (page != null) && CmsContainerpageService.isEditingModelGroups(m_cms, page);
+
     }
 
     /**

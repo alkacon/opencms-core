@@ -259,13 +259,13 @@ public final class Messages {
     public static final String GUI_CREATE_NEW_LABEL_0 = "GUI_CREATE_NEW_LABEL_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_USE_AS_CONTAINER_MODEL_LABEL_0 = "GUI_USE_AS_CONTAINER_MODEL_LABEL_0";
+    public static final String GUI_USE_AS_MODEL_GROUP_LABEL_0 = "GUI_USE_AS_MODEL_GROUP_LABEL_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CONTAINER_MODEL_DISABLED_PARENT_0 = "GUI_CONTAINER_MODEL_DISABLED_PARENT_0";
+    public static final String GUI_MODEL_GROUP_DISABLED_PARENT_0 = "GUI_MODEL_GROUP_DISABLED_PARENT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CONTAINER_MODEL_DISABLED_CHILD_0 = "GUI_CONTAINER_MODEL_DISABLED_CHILD_0";
+    public static final String GUI_MODEL_GROUP_DISABLED_CHILD_0 = "GUI_MODEL_GROUP_DISABLED_CHILD_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

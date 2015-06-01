@@ -44,20 +44,20 @@ public class CmsHoverbarCreateModelPageButton extends CmsPushButton {
     /** The hover bar. */
     CmsSitemapHoverbar m_hoverbar;
 
-    /** The container model flag. */
-    private boolean m_isContainerModel;
+    /** The model group flag. */
+    private boolean m_isModelGroup;
 
     /**
      * Constructor.<p>
      * 
-     * @param isContainerModel in case of a container model page
+     * @param isModelGroup in case of a model group page
      */
-    public CmsHoverbarCreateModelPageButton(boolean isContainerModel) {
+    public CmsHoverbarCreateModelPageButton(boolean isModelGroup) {
 
-        m_isContainerModel = isContainerModel;
+        m_isModelGroup = isModelGroup;
         setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.style().addIcon());
-        setTitle(isContainerModel
-        ? Messages.get().key(Messages.GUI_CREATE_CONTAINER_MODEL_PAGE_BUTTON_TITLE_0)
+        setTitle(isModelGroup
+        ? Messages.get().key(Messages.GUI_CREATE_MODEL_GROUP_PAGE_BUTTON_TITLE_0)
         : Messages.get().key(Messages.GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0));
         setButtonStyle(ButtonStyle.IMAGE, null);
         addClickHandler(new ClickHandler() {
@@ -92,7 +92,7 @@ public class CmsHoverbarCreateModelPageButton extends CmsPushButton {
 
         CmsCreateModelPageDialog dialog = new CmsCreateModelPageDialog(
             CmsSitemapView.getInstance().getController(),
-            m_isContainerModel);
+            m_isModelGroup);
         dialog.center();
     }
 

@@ -604,11 +604,7 @@ public class CmsElementUtil {
         result.setHasSettings(hasSettings(m_cms, elementBean.getResource()));
         result.setPermissionInfo(permissionInfo);
         result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
-        result.setContainerModel(CmsContainerpageService.isEditingContainerModels(m_cms, m_page)
-            && CmsContainerpageService.isContainerModelResource(
-                m_cms,
-                elementBean.getResource(),
-                m_page.getStructureId()));
+        result.setModelGroup(elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID));
         return result;
     }
 

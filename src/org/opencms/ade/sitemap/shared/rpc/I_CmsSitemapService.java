@@ -107,7 +107,7 @@ public interface I_CmsSitemapService extends RemoteService {
      * @param title the title for the model page 
      * @param description the description for the model page 
      * @param copyId the structure id of the resource to copy to create a new model page; if null, the model page is created as an empty container page
-     * @param isContainerModel <code>true</code> to create a new container model page
+     * @param isModelGroup <code>true</code> to create a new model group page
      *   
      * @return a bean representing the created model page 
      * @throws CmsRpcException if something goes wrong 
@@ -117,7 +117,7 @@ public interface I_CmsSitemapService extends RemoteService {
         String title,
         String description,
         CmsUUID copyId,
-        boolean isContainerModel) throws CmsRpcException;
+        boolean isModelGroup) throws CmsRpcException;
 
     /**
      * Creates a sub-sitemap of the given sitemap starting from the given entry.<p>

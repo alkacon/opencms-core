@@ -71,9 +71,9 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
      * Opens the editor for a model page menu entry.<p>
      * 
      * @param resourcePath the resource path of the model page
-     * @param isContainerModel if the given entry is a container model page
+     * @param isModelGroup if the given entry is a model group page
      */
-    public static void editModelPage(final String resourcePath, boolean isContainerModel) {
+    public static void editModelPage(final String resourcePath, boolean isModelGroup) {
 
         I_CmsConfirmDialogHandler handler = new I_CmsConfirmDialogHandler() {
 
@@ -99,9 +99,9 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
         };
         String dialogTitle;
         String dialogContent;
-        if (isContainerModel) {
-            dialogTitle = Messages.get().key(Messages.GUI_EDIT_CONTAINER_MODELS_CONFIRM_TITLE_0);
-            dialogContent = Messages.get().key(Messages.GUI_EDIT_CONTAINER_MODEL_CONFIRM_CONTENT_0);
+        if (isModelGroup) {
+            dialogTitle = Messages.get().key(Messages.GUI_EDIT_MODEL_GROUPS_CONFIRM_TITLE_0);
+            dialogContent = Messages.get().key(Messages.GUI_EDIT_MODEL_GROUP_CONFIRM_CONTENT_0);
         } else {
             dialogTitle = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_TITLE_0);
             dialogContent = Messages.get().key(Messages.GUI_EDIT_MODELPAGE_CONFIRM_CONTENT_0);

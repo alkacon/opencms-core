@@ -302,7 +302,11 @@
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_master_config.xsd
 				</param>
 			</type>
-			
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage"
+				name="modelgroup" id="314">
+				<param name="formatter_gallery_preview">/system/workplace/editors/ade/container-preview-formatter.jsp
+				</param>
+			</type>
 			
 			
 		</resourcetypes>
@@ -722,6 +726,18 @@
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER"
 						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="modelgroup" key="fileicon.modelgroup"
+				icon="containerpage.png" bigicon="containerpage_big.png" reference="containerpage">
+				<newresource
+					uri="newresource_xmlcontent.jsp?newresourcetype=modelgroup"
+					order="50" autosetnavigation="false" autosettitle="false"
+					info="desc.modelgroup" />
+				<accesscontrol>
+					<accessentry principal="ROLE.ELEMENT_AUTHOR"
+						permissions="+r+v" />
+					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
 		</explorertypes>

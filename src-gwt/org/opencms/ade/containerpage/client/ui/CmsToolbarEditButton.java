@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
+import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.I_CmsButton;
@@ -60,7 +61,9 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
         CmsElementOptionButton button = super.createOptionForElement(element);
         button.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
         button.addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(element.getNoEditReason())) {
+        if (!CmsContainerpageController.get().getData().isModelGroup() && element.isModelGroup()) {
+            button.disable("");
+        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(element.getNoEditReason())) {
             if (element.hasWritePermission()
                 && !((element instanceof CmsGroupContainerElementPanel) && ((CmsGroupContainerElementPanel)element).isInheritContainer())) {
                 // if the user has write permissions, the lock report dialog will be accessible through this button

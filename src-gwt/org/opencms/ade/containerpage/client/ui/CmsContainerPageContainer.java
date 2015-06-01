@@ -465,6 +465,20 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         return m_ownPosition;
     }
 
+    public boolean hasModelGroupParent() {
+
+        boolean result = false;
+        Element parent = getElement().getParentElement();
+        while (parent != null) {
+            if (parent.getPropertyBoolean(CmsContainerPageElementPanel.PROP_IS_MODEL_GROUP)) {
+                result = true;
+                break;
+            }
+            parent = parent.getParentElement();
+        }
+        return result;
+    }
+
     /**
      * @see org.opencms.gwt.client.dnd.I_CmsNestedDropTarget#hasDnDChildren()
      */

@@ -156,7 +156,7 @@ public class CmsModelPageHelper {
     }
 
     /**
-     * Creates a new container model page.<p>
+     * Creates a new model group page.<p>
      * 
      * @param name the page name
      * @param description the page description
@@ -166,10 +166,10 @@ public class CmsModelPageHelper {
      * 
      * @throws CmsException in case something goes wrong
      */
-    public CmsResource createContainerModelPage(String name, String description, CmsUUID copyId) throws CmsException {
+    public CmsResource createModelGroupPage(String name, String description, CmsUUID copyId) throws CmsException {
 
         CmsResource modelFolder = ensureModelFolder(m_rootResource, true);
-        String pattern = "containermodel_%(number).html";
+        String pattern = "modelgroup_%(number).html";
         String newFilePath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(
             m_cms,
             CmsStringUtil.joinPaths(modelFolder.getRootPath(), pattern),
@@ -283,16 +283,16 @@ public class CmsModelPageHelper {
      * Tries to either read or create the default folder for model pages in the current sitemap, and returns it.<p>
      * 
      * @param rootResource the root of the sitemap 
-     * @param isContainerModel <code>true</code> if a container model folder is requested 
+     * @param isModelGroup <code>true</code> if a model group folder is requested 
      * 
      * @return the folder resource
      *  
      * @throws CmsException if something goes wrong 
      */
-    public CmsResource ensureModelFolder(CmsResource rootResource, boolean isContainerModel) throws CmsException {
+    public CmsResource ensureModelFolder(CmsResource rootResource, boolean isModelGroup) throws CmsException {
 
-        String modelFolderPath = CmsStringUtil.joinPaths(m_adeConfig.getBasePath(), isContainerModel
-        ? CmsContainerpageService.CONTAINER_MODEL_PATH_FRAGMENT
+        String modelFolderPath = CmsStringUtil.joinPaths(m_adeConfig.getBasePath(), isModelGroup
+        ? CmsContainerpageService.MODEL_GROUP_PATH_FRAGMENT
         : ".content/.templates");
         try {
             CmsResource result = m_cms.readFolder(modelFolderPath);
@@ -311,20 +311,20 @@ public class CmsModelPageHelper {
     }
 
     /**
-     * Returns the local container model pages.<p>
+     * Returns the local model group pages.<p>
      * 
-     * @return the container model pages
+     * @return the model group pages
      */
-    public List<CmsModelPageEntry> getContainerModels() {
+    public List<CmsModelPageEntry> getModelGroups() {
 
         List<CmsModelPageEntry> result = new ArrayList<CmsModelPageEntry>();
-        String containerModelFolderPath = CmsStringUtil.joinPaths(
+        String modelGroupFolderPath = CmsStringUtil.joinPaths(
             m_adeConfig.getBasePath(),
-            CmsContainerpageService.CONTAINER_MODEL_PATH_FRAGMENT);
-        if (m_cms.existsResource(containerModelFolderPath)) {
+            CmsContainerpageService.MODEL_GROUP_PATH_FRAGMENT);
+        if (m_cms.existsResource(modelGroupFolderPath)) {
             try {
                 List<CmsResource> modelResources = m_cms.readResources(
-                    containerModelFolderPath,
+                    modelGroupFolderPath,
                     CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(OpenCms.getResourceManager().getResourceType(
                         CmsResourceTypeXmlContainerPage.getStaticTypeName())),
                     false);
@@ -348,7 +348,7 @@ public class CmsModelPageHelper {
      */
     public CmsModelInfo getModelInfo() {
 
-        return new CmsModelInfo(getModelPages(), getParentModelPages(), getContainerModels());
+        return new CmsModelInfo(getModelPages(), getParentModelPages(), getModelGroups());
     }
 
     /** 

@@ -294,7 +294,7 @@ public final class CmsContainerpageController {
             element.setClientId(elementWidget.getId());
             element.setResourceType(elementWidget.getNewType());
             element.setCreateNew(elementWidget.isCreateNew());
-            element.setContainerModel(elementWidget.isContainerModel());
+            element.setModelGroup(elementWidget.isModelGroup());
             element.setSitePath(elementWidget.getSitePath());
             element.setNewEditorDisabled(elementWidget.isNewEditorDisabled());
             m_currentElements.add(element);
@@ -373,7 +373,7 @@ public final class CmsContainerpageController {
             element.setClientId(elementWidget.getId());
             element.setResourceType(elementWidget.getNewType());
             element.setCreateNew(elementWidget.isCreateNew());
-            element.setContainerModel(elementWidget.isContainerModel());
+            element.setModelGroup(elementWidget.isModelGroup());
             element.setSitePath(elementWidget.getSitePath());
             element.setNewEditorDisabled(elementWidget.isNewEditorDisabled());
             m_currentElements.add(element);
@@ -1820,16 +1820,16 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Returns if the given element has a container model child.<p>
+     * Returns if the given element has a model group child.<p>
      *  
      * @param elementWidget the element
      * 
-     * @return <code>true</code> if the given element has a container model child
+     * @return <code>true</code> if the given element has a model group child
      */
-    public boolean hasContainerModelChild(CmsContainerPageElementPanel elementWidget) {
+    public boolean hasModelGroupChild(CmsContainerPageElementPanel elementWidget) {
 
         boolean result = false;
-        for (CmsContainerPageElementPanel model : collectContainerModels()) {
+        for (CmsContainerPageElementPanel model : collectModelGroups()) {
             if ((model != elementWidget) && elementWidget.getElement().isOrHasChild(model.getElement())) {
                 result = true;
                 break;
@@ -1839,16 +1839,16 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Returns if the given element has a container model parent.<p>
+     * Returns if the given element has a model group parent.<p>
      *  
      * @param elementWidget the element
      * 
-     * @return <code>true</code> if the given element has a container model parent
+     * @return <code>true</code> if the given element has a model group parent
      */
-    public boolean hasContainerModelParent(CmsContainerPageElementPanel elementWidget) {
+    public boolean hasModelGroupParent(CmsContainerPageElementPanel elementWidget) {
 
         boolean result = false;
-        for (CmsContainerPageElementPanel model : collectContainerModels()) {
+        for (CmsContainerPageElementPanel model : collectModelGroups()) {
             if ((model != elementWidget) && model.getElement().isOrHasChild(elementWidget.getElement())) {
                 result = true;
                 break;
@@ -2476,7 +2476,7 @@ public final class CmsContainerpageController {
                 }
             }
             replacer.setCreateNew(containerElement.isCreateNew());
-            replacer.setContainerModel(containerElement.isContainerModel());
+            replacer.setModelGroup(containerElement.isModelGroup());
             if (isGroupcontainerEditing() && (containerElement.getInheritanceInfo() != null)) {
                 // in case of inheritance container editing, keep the inheritance info
                 replacer.setInheritanceInfo(containerElement.getInheritanceInfo());
@@ -2502,6 +2502,7 @@ public final class CmsContainerpageController {
     public boolean requiresOptionBar(CmsContainerPageElementPanel element, I_CmsDropContainer dragParent) {
 
         return element.hasViewPermission()
+            && (!element.hasModelGroupParent() || getData().isModelGroup())
             && (m_elementView.equals(element.getElementView()) || isGroupcontainerEditing())
             && isContainerEditable(dragParent);
     }
@@ -3562,19 +3563,19 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Collects all present container model elements.<p>
+     * Collects all present model group elements.<p>
      * 
-     * @return the container model elements
+     * @return the model group elements
      */
-    private List<CmsContainerPageElementPanel> collectContainerModels() {
+    private List<CmsContainerPageElementPanel> collectModelGroups() {
 
         List<CmsContainerPageElementPanel> result = new ArrayList<CmsContainerPageElementPanel>();
-        if (getData().isContainerModel()) {
+        if (getData().isModelGroup()) {
             for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
                 for (Widget w : container) {
                     if (w instanceof CmsContainerPageElementPanel) {
                         CmsContainerPageElementPanel element = (CmsContainerPageElementPanel)w;
-                        if (element.isContainerModel()) {
+                        if (element.isModelGroup()) {
                             result.add(element);
                         }
                     }
