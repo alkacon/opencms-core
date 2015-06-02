@@ -223,7 +223,7 @@
 					<source>solr_source</source>
 				</sources>
 				<param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>
-			</index> -->
+			</index> 
 			<index class="org.opencms.search.solr.CmsSolrIndex">
 				<name>Solr Offline</name>
 				<rebuild>offline</rebuild>
@@ -234,7 +234,7 @@
 					<source>solr_source</source>
 				</sources>
 				<param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>
-			</index>
+			</index> -->
 		</indexes>
 		<indexsources>
 			<indexsource>
