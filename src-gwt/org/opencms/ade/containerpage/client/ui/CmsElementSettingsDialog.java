@@ -39,6 +39,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsMultiCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
@@ -46,6 +47,7 @@ import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsFieldsetFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
+import org.opencms.gwt.client.ui.input.form.CmsFormRow;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -92,6 +94,12 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /** Checkbox to set the 'model group' status. */
     private CmsCheckBox m_modelGroupCheckBox;
+
+    /** The is model group title field. */
+    private CmsTextBox m_modelGroupTitle;
+
+    /** The is model group description field. */
+    private CmsTextBox m_modelGroupDescription;
 
     /** Checkbox to set the use as copy model status. */
     private CmsCheckBox m_useAsCopyModel;
@@ -168,43 +176,59 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 });
                 formatterFieldset.add(m_formatterSelect);
             }
-            if (isDeveloper || isEditableModelGroup) {
-                CmsFieldSet createNewFieldSet = new CmsFieldSet();
-                createNewFieldSet.setLegend(org.opencms.ade.containerpage.client.Messages.get().key(
+            if (isEditableModelGroup) {
+                CmsFieldSet modelGroupFieldSet = new CmsFieldSet();
+                modelGroupFieldSet.setLegend(org.opencms.ade.containerpage.client.Messages.get().key(
                     org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LEGEND_0
 
                 ));
-                createNewFieldSet.getElement().getStyle().setMarginTop(10, Unit.PX);
-                if (isEditableModelGroup) {
-                    m_modelGroupCheckBox = new CmsCheckBox(org.opencms.ade.containerpage.client.Messages.get().key(
-                        org.opencms.ade.containerpage.client.Messages.GUI_USE_AS_MODEL_GROUP_LABEL_0));
-                    m_modelGroupCheckBox.setDisplayInline(false);
-                    m_modelGroupCheckBox.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
-                    createNewFieldSet.add(m_modelGroupCheckBox);
-                    m_modelGroupCheckBox.setChecked(elementWidget.isModelGroup());
-                    if (m_controller.hasModelGroupParent(elementWidget)) {
-                        m_modelGroupCheckBox.disable(org.opencms.ade.containerpage.client.Messages.get().key(
-                            org.opencms.ade.containerpage.client.Messages.GUI_MODEL_GROUP_DISABLED_PARENT_0));
-                    }
-                    if (m_controller.hasModelGroupChild(elementWidget)) {
-                        m_modelGroupCheckBox.disable(org.opencms.ade.containerpage.client.Messages.get().key(
-                            org.opencms.ade.containerpage.client.Messages.GUI_MODEL_GROUP_DISABLED_CHILD_0));
-                    }
-
-                    m_useAsCopyModel = new CmsCheckBox("Use as copy model");
-                    m_useAsCopyModel.setDisplayInline(false);
-                    m_useAsCopyModel.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
-                    m_useAsCopyModel.setChecked(Boolean.valueOf(
-                        elementBean.getSettings().get(CmsContainerElement.USE_AS_COPY_MODEL)).booleanValue());
-                    createNewFieldSet.add(m_useAsCopyModel);
+                modelGroupFieldSet.getElement().getStyle().setMarginTop(10, Unit.PX);
+                m_modelGroupCheckBox = new CmsCheckBox(org.opencms.ade.containerpage.client.Messages.get().key(
+                    org.opencms.ade.containerpage.client.Messages.GUI_USE_AS_MODEL_GROUP_LABEL_0));
+                m_modelGroupCheckBox.setDisplayInline(false);
+                m_modelGroupCheckBox.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
+                modelGroupFieldSet.add(m_modelGroupCheckBox);
+                m_modelGroupCheckBox.setChecked(elementWidget.isModelGroup());
+                if (m_controller.hasModelGroupParent(elementWidget)) {
+                    m_modelGroupCheckBox.disable(org.opencms.ade.containerpage.client.Messages.get().key(
+                        org.opencms.ade.containerpage.client.Messages.GUI_MODEL_GROUP_DISABLED_PARENT_0));
                 }
+                if (m_controller.hasModelGroupChild(elementWidget)) {
+                    m_modelGroupCheckBox.disable(org.opencms.ade.containerpage.client.Messages.get().key(
+                        org.opencms.ade.containerpage.client.Messages.GUI_MODEL_GROUP_DISABLED_CHILD_0));
+                }
+                CmsFormRow titleRow = new CmsFormRow();
+                titleRow.getLabel().setText("Model group title");
+                m_modelGroupTitle = new CmsTextBox();
+                titleRow.getWidgetContainer().add(m_modelGroupTitle);
+                modelGroupFieldSet.add(titleRow);
+
+                CmsFormRow descriptionRow = new CmsFormRow();
+                descriptionRow.getLabel().setText("Model group description");
+                m_modelGroupDescription = new CmsTextBox();
+                descriptionRow.getWidgetContainer().add(m_modelGroupDescription);
+                modelGroupFieldSet.add(descriptionRow);
+
+                if (elementWidget.isModelGroup()) {
+                    m_modelGroupTitle.setFormValueAsString(elementBean.getSettings().get(
+                        CmsContainerElement.MODEL_GROUP_TITLE));
+                    m_modelGroupDescription.setFormValueAsString(elementBean.getSettings().get(
+                        CmsContainerElement.MODEL_GROUP_DESCRIPTION));
+                }
+
+                m_useAsCopyModel = new CmsCheckBox("Use as copy model");
+                m_useAsCopyModel.setDisplayInline(false);
+                m_useAsCopyModel.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
+                m_useAsCopyModel.setChecked(Boolean.valueOf(
+                    elementBean.getSettings().get(CmsContainerElement.USE_AS_COPY_MODEL)).booleanValue());
+                modelGroupFieldSet.add(m_useAsCopyModel);
 
                 m_createNewCheckBox = new CmsCheckBox(org.opencms.ade.containerpage.client.Messages.get().key(
                     org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LABEL_0));
                 m_createNewCheckBox.setDisplayInline(false);
                 m_createNewCheckBox.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
-                createNewFieldSet.add(m_createNewCheckBox);
-                fieldSetPanel.getMainPanel().insert(createNewFieldSet, 1);
+                modelGroupFieldSet.add(m_createNewCheckBox);
+                fieldSetPanel.getMainPanel().insert(modelGroupFieldSet, 1);
                 m_createNewCheckBox.setChecked(elementWidget.isCreateNew());
 
             } else {
@@ -376,7 +400,14 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             m_elementWidget.setCreateNew(m_createNewCheckBox.isChecked());
         }
         if (m_modelGroupCheckBox != null) {
-            fieldValues.put(CmsContainerElement.IS_MODEL_GROUP, Boolean.toString(m_modelGroupCheckBox.isChecked()));
+            boolean modelGroup = m_modelGroupCheckBox.isChecked();
+            fieldValues.put(CmsContainerElement.IS_MODEL_GROUP, Boolean.toString(modelGroup));
+            if (modelGroup) {
+                fieldValues.put(CmsContainerElement.MODEL_GROUP_TITLE, m_modelGroupTitle.getFormValueAsString());
+                fieldValues.put(
+                    CmsContainerElement.MODEL_GROUP_DESCRIPTION,
+                    m_modelGroupDescription.getFormValueAsString());
+            }
         }
         if (m_useAsCopyModel != null) {
             fieldValues.put(CmsContainerElement.USE_AS_COPY_MODEL, Boolean.toString(m_useAsCopyModel.isChecked()));

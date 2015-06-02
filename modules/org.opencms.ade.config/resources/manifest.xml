@@ -729,7 +729,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="modelgroup" key="fileicon.modelgroup"
-				icon="containerpage.png" bigicon="containerpage_big.png" reference="containerpage">
+				icon="containerpage.png" bigicon="containerpage_big.png" reference="xmlcontent">
 				<newresource
 					uri="newresource_xmlcontent.jsp?newresourcetype=modelgroup"
 					order="50" autosetnavigation="false" autosettitle="false"

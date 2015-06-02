@@ -31,6 +31,8 @@ import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -100,6 +102,22 @@ public class CmsModelGroupHelper {
         m_sessionCache = sessionCache;
         m_configData = configData;
         m_isEditingModelGroups = isEditingModelGroups;
+    }
+
+    /**
+     * Creates a new model group resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param configData the configuration data
+     * 
+     * @return the new resource
+     * 
+     * @throws CmsException in case creating the resource fails
+     */
+    public static CmsResource createModelGroup(CmsObject cms, CmsADEConfigData configData) throws CmsException {
+
+        CmsResourceTypeConfig typeConfig = configData.getResourceType(CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
+        return typeConfig.createNewElement(cms, configData.getBasePath());
     }
 
     /**
@@ -365,15 +383,15 @@ public class CmsModelGroupHelper {
                 descendingInstances.addAll(childInstances);
                 CmsResource modelGroup = null;
                 try {
-                    if (modelGroupId == null) {
-                        CmsResourceTypeConfig typeConfig = m_configData.getResourceType(CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
-                        modelGroup = typeConfig.createNewElement(m_cms, m_configData.getBasePath());
-                        modelGroupId = modelGroup.getStructureId().toString();
-                        modelInstances.put(element.getInstanceId(), modelGroupId);
-                    } else {
-                        modelGroup = m_cms.readResource(new CmsUUID(modelGroupId));
-                    }
+                    modelGroup = m_cms.readResource(new CmsUUID(modelGroupId));
                     ensureLock(modelGroup);
+                    String title = element.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_TITLE);
+                    String description = element.getIndividualSettings().get(
+                        CmsContainerElement.MODEL_GROUP_DESCRIPTION);
+                    List<CmsProperty> props = new ArrayList<CmsProperty>();
+                    props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, title));
+                    props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, description, description));
+                    m_cms.writePropertyObjects(modelGroup, props);
                     List<CmsContainerBean> modelContainers = new ArrayList<CmsContainerBean>();
                     CmsContainerElementBean baseElement = element.clone();
                     CmsContainerBean baseContainer = new CmsContainerBean(
@@ -647,6 +665,21 @@ public class CmsModelGroupHelper {
         if (m_isEditingModelGroups || !(baseElement.isCopyModel() && allowCopyModel)) {
             // skip the model id in case of copy models
             settings.put(CmsContainerElement.MODEL_GROUP_ID, element.getId().toString());
+            try {
+                CmsProperty titleProp = m_cms.readPropertyObject(
+                    element.getResource(),
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    false);
+                settings.put(CmsContainerElement.MODEL_GROUP_TITLE, titleProp.getValue());
+                CmsProperty descProp = m_cms.readPropertyObject(
+                    element.getResource(),
+                    CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+                    false);
+                settings.put(CmsContainerElement.MODEL_GROUP_DESCRIPTION, descProp.getValue());
+            } catch (CmsException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         return CmsContainerElementBean.cloneWithSettings(baseElement, settings);
     }

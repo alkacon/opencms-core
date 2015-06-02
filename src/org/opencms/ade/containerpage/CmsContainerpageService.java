@@ -1083,6 +1083,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 settings.put(
                     CmsContainerElement.MODEL_GROUP_ID,
                     elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_ID));
+            } else if (Boolean.valueOf(settings.get(CmsContainerElement.IS_MODEL_GROUP)).booleanValue()
+                && isEditingModelGroups(cms, pageResource)) {
+                CmsResource modelGroup = CmsModelGroupHelper.createModelGroup(
+                    cms,
+                    getConfigData(pageResource.getRootPath()));
+                settings.put(CmsContainerElement.MODEL_GROUP_ID, modelGroup.getStructureId().toString());
             }
             elementBean = CmsContainerElementBean.cloneWithSettings(
                 elementBean,

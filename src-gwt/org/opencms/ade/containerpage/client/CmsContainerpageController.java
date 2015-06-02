@@ -2476,7 +2476,7 @@ public final class CmsContainerpageController {
                 }
             }
             replacer.setCreateNew(containerElement.isCreateNew());
-            replacer.setModelGroup(containerElement.isModelGroup());
+            // replacer.setModelGroup(containerElement.isModelGroup());
             if (isGroupcontainerEditing() && (containerElement.getInheritanceInfo() != null)) {
                 // in case of inheritance container editing, keep the inheritance info
                 replacer.setInheritanceInfo(containerElement.getInheritanceInfo());

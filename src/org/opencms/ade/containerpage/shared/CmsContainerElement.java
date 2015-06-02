@@ -72,6 +72,12 @@ public class CmsContainerElement implements IsSerializable {
     /** The is model group element setting key. */
     public static final String IS_MODEL_GROUP = "is_model_group";
 
+    /** The is model group title element setting key. */
+    public static final String MODEL_GROUP_TITLE = "model_group_title";
+
+    /** The is model group description element setting key. */
+    public static final String MODEL_GROUP_DESCRIPTION = "model_group_description";
+
     /** The use as copy model setting key. */
     public static final String USE_AS_COPY_MODEL = "use_as_copy_model";
 
