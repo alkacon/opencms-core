@@ -465,6 +465,19 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         return m_ownPosition;
     }
 
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsNestedDropTarget#hasDnDChildren()
+     */
+    public boolean hasDnDChildren() {
+
+        return (m_dnDChildren != null) && !m_dnDChildren.isEmpty();
+    }
+
+    /**
+     * Returns whether this container has a model group parent.<p>
+     * 
+     * @return <code>true</code> if this container has a model group parent
+     */
     public boolean hasModelGroupParent() {
 
         boolean result = false;
@@ -477,14 +490,6 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             parent = parent.getParentElement();
         }
         return result;
-    }
-
-    /**
-     * @see org.opencms.gwt.client.dnd.I_CmsNestedDropTarget#hasDnDChildren()
-     */
-    public boolean hasDnDChildren() {
-
-        return (m_dnDChildren != null) && !m_dnDChildren.isEmpty();
     }
 
     /**
@@ -578,8 +583,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      */
     public void onConsumeChildren(List<CmsContainerPageElementPanel> children) {
 
-        // TODO Auto-generated method stub
-
+        // nothing to do
     }
 
     /**

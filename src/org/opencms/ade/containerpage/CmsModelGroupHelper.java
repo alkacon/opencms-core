@@ -40,7 +40,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -60,18 +59,37 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+/**
+ * Handles all model group specific tasks.<p>
+ */
 public class CmsModelGroupHelper {
 
+    /** The name of the container storing the groups base element. */
     public static final String MODEL_GROUP_BASE_CONTAINER = "base_container";
 
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(CmsModelGroupHelper.class);
 
+    /** The current cms context. */
     private CmsObject m_cms;
+
+    /** The session cache instance. */
     private CmsADESessionCache m_sessionCache;
+
+    /** The configuration data of the current container page location. */
     private CmsADEConfigData m_configData;
+
+    /** Indicating the edit model groups mode. */
     private boolean m_isEditingModelGroups;
 
+    /**
+     * Constructor.<p>
+     * 
+     * @param cms the current cms context
+     * @param configData the configuration data
+     * @param sessionCache the session cache
+     * @param isEditingModelGroups the edit model groups flag
+     */
     public CmsModelGroupHelper(
         CmsObject cms,
         CmsADEConfigData configData,
@@ -84,23 +102,17 @@ public class CmsModelGroupHelper {
         m_isEditingModelGroups = isEditingModelGroups;
     }
 
+    /**
+     * Returns if the given resource is a model group resource.<p>
+     * 
+     * @param resource the resource
+     * 
+     * @return <code>true</code> if the given resource is a model group resource
+     */
     public static boolean isModelGroupResource(CmsResource resource) {
 
         return CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(OpenCms.getResourceManager().getResourceType(
             resource).getTypeName());
-    }
-
-    public List<CmsContainerBean> getDescendingContainers(String instanceId, CmsContainerPageBean page) {
-
-        Map<String, List<CmsContainerBean>> containersByParent = getContainerByParent(page);
-        Set<String> descendingInstances = collectDescendingInstances(instanceId, containersByParent);
-        List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
-        for (String descending : descendingInstances) {
-            if (containersByParent.containsKey(descending)) {
-                containers.addAll(containersByParent.get(descending));
-            }
-        }
-        return containers;
     }
 
     /**
@@ -278,6 +290,13 @@ public class CmsModelGroupHelper {
         return new CmsContainerPageBean(resultContainers);
     }
 
+    /**
+     * Removes the model group containers.<p>
+     * 
+     * @param page the container page state
+     * 
+     * @return the container page without the model group containers
+     */
     public CmsContainerPageBean removeModelGroupContainers(CmsContainerPageBean page) {
 
         Map<String, List<CmsContainerBean>> containersByParent = getContainerByParent(page);
@@ -324,6 +343,13 @@ public class CmsModelGroupHelper {
         return new CmsContainerPageBean(containers);
     }
 
+    /**
+     * Saves the model groups of the given container page.<p>
+     * 
+     * @param page the container page
+     * 
+     * @return the container page referencing the saved model groups
+     */
     public CmsContainerPageBean saveModelGroups(CmsContainerPageBean page) {
 
         Map<String, List<CmsContainerBean>> containersByParent = getContainerByParent(page);
@@ -402,6 +428,14 @@ public class CmsModelGroupHelper {
 
     }
 
+    /**
+     * Returns the descending instance id's to the given element instance.<p>
+     * 
+     * @param instanceId the instance id
+     * @param containersByParent the container page containers by parent instance id
+     * 
+     * @return the containers
+     */
     private Set<String> collectDescendingInstances(
         String instanceId,
         Map<String, List<CmsContainerBean>> containersByParent) {
@@ -527,6 +561,13 @@ public class CmsModelGroupHelper {
         return modelContainers;
     }
 
+    /**
+     * Locks the given resource.<p>
+     * 
+     * @param resource the resource to lock
+     * 
+     * @throws CmsException in case locking fails
+     */
     private void ensureLock(CmsResource resource) throws CmsException {
 
         CmsUser user = m_cms.getRequestContext().getCurrentUser();
@@ -538,6 +579,13 @@ public class CmsModelGroupHelper {
         }
     }
 
+    /**
+     * Collects the page containers by parent instance id
+     * 
+     * @param page the page
+     * 
+     * @return the containers by parent id
+     */
     private Map<String, List<CmsContainerBean>> getContainerByParent(CmsContainerPageBean page) {
 
         Map<String, List<CmsContainerBean>> containerByParent = new HashMap<String, List<CmsContainerBean>>();
@@ -553,18 +601,43 @@ public class CmsModelGroupHelper {
         return containerByParent;
     }
 
-    private CmsContainerPageBean getContainerPageBean(CmsResource resource) throws CmsXmlException, CmsException {
+    /**
+     * Unmarshals the given resource.<p>
+     * 
+     * @param resource the resource
+     * 
+     * @return the container page bean
+     * 
+     * @throws CmsException in case unmarshalling fails
+     */
+    private CmsContainerPageBean getContainerPageBean(CmsResource resource) throws CmsException {
 
         CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(m_cms, m_cms.readFile(resource));
         return xmlCnt.getContainerPage(m_cms);
     }
 
+    /**
+     * Returns the model group base element.<p>
+     * 
+     * @param modelGroupPage the model group page
+     * 
+     * @return the base element
+     */
     private CmsContainerElementBean getModelBaseElement(CmsContainerPageBean modelGroupPage) {
 
         CmsContainerBean container = modelGroupPage.getContainers().get(MODEL_GROUP_BASE_CONTAINER);
         return container != null ? container.getElements().get(0) : null;
     }
 
+    /**
+     * Returns the the element to be rendered as the model group base.<p>
+     * 
+     * @param element the original element
+     * @param baseElement the model group base
+     * @param allowCopyModel if copy models are allowed
+     * 
+     * @return the element
+     */
     private CmsContainerElementBean getModelReplacementElement(
         CmsContainerElementBean element,
         CmsContainerElementBean baseElement,
@@ -592,6 +665,15 @@ public class CmsModelGroupHelper {
         return CmsContainerElementBean.cloneWithSettings(element, settings);
     }
 
+    /**
+     * Returns the model containers.<p>
+     * 
+     * @param modelInstanceId the model instance id
+     * @param localInstanceId the local instance id
+     * @param modelPage the model page bean
+     * 
+     * @return the model group containers
+     */
     private List<CmsContainerBean> readModelContainers(
         String modelInstanceId,
         String localInstanceId,

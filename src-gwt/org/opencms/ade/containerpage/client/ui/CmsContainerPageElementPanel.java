@@ -85,6 +85,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class CmsContainerPageElementPanel extends AbsolutePanel
 implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
+    /** The is model group property key. */
     public static final String PROP_IS_MODEL_GROUP = "is_model_group";
 
     /** Highlighting border for this element. */
@@ -418,6 +419,11 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         return new CmsUUID(CmsContainerpageController.getServerId(m_clientId));
     }
 
+    /**
+     * Returns whether this element has a model group parent.<p>
+     * 
+     * @return <code>true</code> if this element has a model group parent
+     */
     public boolean hasModelGroupParent() {
 
         boolean result = false;

@@ -66,11 +66,13 @@ public class CmsContainerElement implements IsSerializable {
     /** The element instance id settings key. */
     public static final String ELEMENT_INSTANCE_ID = "element_instance_id";
 
+    /** The model group id setting key. */
     public static final String MODEL_GROUP_ID = "model_group_id";
 
     /** The is model group element setting key. */
     public static final String IS_MODEL_GROUP = "is_model_group";
 
+    /** The use as copy model setting key. */
     public static final String USE_AS_COPY_MODEL = "use_as_copy_model";
 
     /** The is model group always replace element setting key. */
@@ -118,6 +120,7 @@ public class CmsContainerElement implements IsSerializable {
     /** True if the element is a model group. */
     private boolean m_isModelGroup;
 
+    /** The model group always replace flag. */
     private boolean m_isModelGroupAlwaysReplace;
 
     /**
@@ -312,6 +315,11 @@ public class CmsContainerElement implements IsSerializable {
         return m_isModelGroup;
     }
 
+    /**
+     * Returns if all instances of this element should be replaced within a model group.<p>
+     * 
+     * @return <code>true</code> if all instances of this element should be replaced within a model group
+     */
     public boolean isModelGroupAlwaysReplace() {
 
         return m_isModelGroupAlwaysReplace;
@@ -407,6 +415,11 @@ public class CmsContainerElement implements IsSerializable {
         m_isModelGroup = isModelGroup;
     }
 
+    /**
+     * Sets if all instances of this element should be replaced within a model group.<p>
+     * 
+     * @param alwaysReplace if all instances of this element should be replaced within a model group
+     */
     public void setModelGroupAlwaysReplace(boolean alwaysReplace) {
 
         m_isModelGroupAlwaysReplace = alwaysReplace;

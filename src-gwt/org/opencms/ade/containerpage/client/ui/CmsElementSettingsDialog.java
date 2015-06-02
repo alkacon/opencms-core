@@ -93,6 +93,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     /** Checkbox to set the 'model group' status. */
     private CmsCheckBox m_modelGroupCheckBox;
 
+    /** Checkbox to set the use as copy model status. */
     private CmsCheckBox m_useAsCopyModel;
 
     /** The element data bean. */
