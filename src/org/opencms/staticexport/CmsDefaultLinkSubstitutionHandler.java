@@ -444,27 +444,29 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
         // absolute URI (i.e. URI has a scheme component like http:// ...)
         if (uri.isAbsolute()) {
-            CmsSiteMatcher matcher = new CmsSiteMatcher(targetUri);
-            if (OpenCms.getSiteManager().isMatching(matcher)) {
+            CmsSiteMatcher targetMatcher = new CmsSiteMatcher(targetUri);
+            if (OpenCms.getSiteManager().isMatching(targetMatcher)
+                || targetMatcher.equals(cms.getRequestContext().getRequestMatcher())) {
 
                 path = CmsLinkManager.removeOpenCmsContext(path);
-                boolean isWorkplaceServer = OpenCms.getSiteManager().isWorkplaceRequest(matcher);
+                boolean isWorkplaceServer = OpenCms.getSiteManager().isWorkplaceRequest(targetMatcher)
+                    || targetMatcher.equals(cms.getRequestContext().getRequestMatcher());
                 if (isWorkplaceServer) {
-                    String pathForCurrentSite = cms.getRequestContext().addSiteRoot(path);
-                    String pathForMatchedSite = cms.getRequestContext().addSiteRoot(
-                        OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(),
-                        path);
-                    String siteRootFromPath = OpenCms.getSiteManager().getSiteRoot(path);
-                    String originalSiteRoot = cms.getRequestContext().getSiteRoot();
-                    String selectedPath = pathForCurrentSite;
-                    if (siteRootFromPath != null) {
+                    String selectedPath;
+                    if (OpenCms.getSiteManager().getSiteRoot(path) != null) {
                         selectedPath = CmsStringUtil.joinPaths("/", path);
                     } else {
+                        // set selectedPath with the path for the current site
+                        selectedPath = cms.getRequestContext().addSiteRoot(path);
+                        String pathForMatchedSite = cms.getRequestContext().addSiteRoot(
+                            OpenCms.getSiteManager().matchSite(targetMatcher).getSiteRoot(),
+                            path);
+                        String originalSiteRoot = cms.getRequestContext().getSiteRoot();
                         try {
                             cms.getRequestContext().setSiteRoot("");
                             // the path for the current site normally is preferred, but if it doesn't exist and the path for the matched site
                             // does exist, then use the path for the matched site
-                            if (!cms.existsResource(pathForCurrentSite, CmsResourceFilter.ALL)
+                            if (!cms.existsResource(selectedPath, CmsResourceFilter.ALL)
                                 && cms.existsResource(pathForMatchedSite, CmsResourceFilter.ALL)) {
                                 selectedPath = pathForMatchedSite;
                             }
@@ -476,7 +478,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 } else {
                     // add the site root of the matching site
                     return cms.getRequestContext().addSiteRoot(
-                        OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(),
+                        OpenCms.getSiteManager().matchSite(targetMatcher).getSiteRoot(),
                         path + suffix);
                 }
             } else {

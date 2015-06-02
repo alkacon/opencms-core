@@ -30,6 +30,7 @@ package org.opencms.file;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -77,6 +78,7 @@ public final class CmsRequestContext {
     /** File name translator. */
     private CmsResourceTranslator m_fileTranslator;
 
+    /** The secure request flag. */
     private boolean m_isSecureRequest;
 
     /** The locale used by this request context. */
@@ -103,12 +105,16 @@ public final class CmsRequestContext {
     /** The current user. */
     private CmsUser m_user;
 
+    /** the matcher for the current request, that is the host part of the URI from the original http request. */
+    private CmsSiteMatcher m_requestMatcher;
+
     /**
      * Constructs a new request context.<p>
      * 
      * @param user the current user
      * @param project the current project
      * @param requestedUri the requested OpenCms VFS URI
+     * @param requestMatcher the matcher for the current request, that is the host part of the URI from the original http request
      * @param siteRoot the users current site root
      * @param isSecureRequest true if this is a secure request
      * @param locale the users current locale 
@@ -123,6 +129,7 @@ public final class CmsRequestContext {
         CmsUser user,
         CmsProject project,
         String requestedUri,
+        CmsSiteMatcher requestMatcher,
         String siteRoot,
         boolean isSecureRequest,
         Locale locale,
@@ -137,6 +144,7 @@ public final class CmsRequestContext {
         m_user = user;
         m_currentProject = project;
         m_uri = requestedUri;
+        m_requestMatcher = requestMatcher;
         m_isSecureRequest = isSecureRequest;
         setSiteRoot(siteRoot);
         m_locale = locale;
@@ -385,6 +393,16 @@ public final class CmsRequestContext {
     public String getRemoteAddress() {
 
         return m_remoteAddr;
+    }
+
+    /** 
+     * Returns the matcher for the current request, that is the host part of the URI from the original http request.<p>
+     * 
+     * @return the matcher for the current request, that is the host part of the URI from the original http request
+     */
+    public CmsSiteMatcher getRequestMatcher() {
+
+        return m_requestMatcher;
     }
 
     /**

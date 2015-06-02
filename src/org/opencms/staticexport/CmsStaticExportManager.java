@@ -564,6 +564,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             cms.getRequestContext().getCurrentUser(),
             cms.getRequestContext().getCurrentProject(),
             vfsName,
+            cms.getRequestContext().getRequestMatcher(),
             siteRoot,
             usesSecureSite,
             i18nInfo.getLocale(),

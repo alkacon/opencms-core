@@ -442,6 +442,7 @@ public class CmsSessionManager {
             user,
             userProject,
             null,
+            cms.getRequestContext().getRequestMatcher(),
             userSiteRoot,
             cms.getRequestContext().isSecureRequest(),
             null,

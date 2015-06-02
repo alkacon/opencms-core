@@ -108,6 +108,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -5080,6 +5081,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             readUser(dbc1, OpenCms.getDefaultUsers().getUserAdmin()),
             readProject(dbc1, CmsProject.ONLINE_PROJECT_ID),
             null,
+            CmsSiteMatcher.DEFAULT_MATCHER,
             "",
             false,
             null,

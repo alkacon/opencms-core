@@ -34,6 +34,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.site.CmsSiteMatcher;
 
 import java.util.Locale;
 
@@ -99,6 +100,9 @@ public class CmsContextInfo {
     /** The user name to create the context with. */
     private String m_userName;
 
+    /** the matcher for the current request, that is the host part of the URI from the original http request. */
+    private CmsSiteMatcher m_requestMatcher;
+
     /**
      * Creates a new instance, initializing the variables with some reasonable default values.<p>
      * 
@@ -119,6 +123,7 @@ public class CmsContextInfo {
         setProjectName(CmsProject.ONLINE_PROJECT_NAME);
         setRequestedUri("/");
         setSiteRoot("/");
+        setRequestMatcher(OpenCms.getSiteManager().getWorkplaceSiteMatcher());
         setLocaleName(CmsLocaleManager.getDefaultLocale().toString());
         setEncoding(OpenCms.getSystemInfo().getDefaultEncoding());
         setRemoteAddr(CmsContextInfo.LOCALHOST);
@@ -137,6 +142,7 @@ public class CmsContextInfo {
         setProjectName(requestContext.getCurrentProject().getName());
         setRequestedUri(requestContext.getUri());
         setSiteRoot(requestContext.getSiteRoot());
+        setRequestMatcher(requestContext.getRequestMatcher());
         setLocale(requestContext.getLocale());
         setEncoding(requestContext.getEncoding());
         setRemoteAddr(requestContext.getRemoteAddress());
@@ -152,6 +158,7 @@ public class CmsContextInfo {
      * @param user the user to create the context with
      * @param project the project to create the context with
      * @param requestedUri the request URI to create the context with
+     * @param requestMatcher the matcher for the current request, that is the host part of the URI from the original http request
      * @param siteRoot the site root to create the context with
      * @param isSecureRequest if this a secure request
      * @param locale the locale to create the context with
@@ -164,6 +171,7 @@ public class CmsContextInfo {
         CmsUser user,
         CmsProject project,
         String requestedUri,
+        CmsSiteMatcher requestMatcher,
         String siteRoot,
         boolean isSecureRequest,
         Locale locale,
@@ -177,6 +185,7 @@ public class CmsContextInfo {
         m_project = project;
         setProjectName(m_project.getName());
         setRequestedUri(requestedUri);
+        setRequestMatcher(requestMatcher);
         setSiteRoot(siteRoot);
         setIsSecureRequest(isSecureRequest);
         setLocale(locale);
@@ -345,6 +354,16 @@ public class CmsContextInfo {
     public String getRequestedUri() {
 
         return m_requestedUri;
+    }
+
+    /** 
+     * Returns the matcher for the current request, that is the host part of the URI from the original http request.<p>
+     * 
+     * @return the matcher for the current request, that is the host part of the URI from the original http request
+     */
+    public CmsSiteMatcher getRequestMatcher() {
+
+        return m_requestMatcher;
     }
 
     /**
@@ -528,6 +547,16 @@ public class CmsContextInfo {
 
         checkFrozen();
         m_requestedUri = requestedUri;
+    }
+
+    /** 
+     * Sets the matcher for the current request, that is the host part of the URI from the original http request.<p>
+     * 
+     * @param requestMatcher the matcher for the current request
+     */
+    public void setRequestMatcher(CmsSiteMatcher requestMatcher) {
+
+        m_requestMatcher = requestMatcher;
     }
 
     /**

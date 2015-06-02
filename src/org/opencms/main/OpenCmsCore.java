@@ -91,6 +91,7 @@ import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
+import org.opencms.site.CmsSiteMatcher;
 import org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
@@ -2433,6 +2434,7 @@ public final class OpenCmsCore {
             user,
             project,
             contextInfo.getRequestedUri(),
+            contextInfo.getRequestMatcher(),
             contextInfo.getSiteRoot(),
             contextInfo.isSecureRequest(),
             contextInfo.getLocale(),
@@ -2480,6 +2482,7 @@ public final class OpenCmsCore {
         String requestedResource = null;
         Long requestTimeAttr = null;
         String remoteAddr;
+        CmsSiteMatcher requestMatcher;
 
         boolean isSecureRequest = false;
 
@@ -2501,9 +2504,14 @@ public final class OpenCmsCore {
                 requestTimeAttr = (Long)session.getAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
             }
             isSecureRequest = OpenCms.getSiteManager().usesSecureSite(request);
+
+            // create the request matcher
+            requestMatcher = new CmsSiteMatcher(request.getRequestURL().toString());
         } else {
             // if no request is available, the IP is always set to localhost
             remoteAddr = CmsContextInfo.LOCALHOST;
+            // also the request matcher is always the workplace server
+            requestMatcher = OpenCms.getSiteManager().getWorkplaceSiteMatcher();
         }
         if (requestedResource == null) {
             // path info can still be null
@@ -2553,6 +2561,7 @@ public final class OpenCmsCore {
             user,
             project,
             requestedResource,
+            requestMatcher,
             siteRoot,
             isSecureRequest,
             i18nInfo.getLocale(),
