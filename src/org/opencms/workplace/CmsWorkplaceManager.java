@@ -310,7 +310,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         // important to set this to null to avoid unnecessary overhead during configuration phase
         m_explorerTypeSettings = null;
-        CacheBuilder cb = CacheBuilder.newBuilder().expireAfterWrite(2, TimeUnit.MINUTES).concurrencyLevel(3);
+        CacheBuilder<Object, Object> cb = CacheBuilder.newBuilder().expireAfterWrite(2, TimeUnit.MINUTES).concurrencyLevel(
+            3);
         m_workplaceServerUserChecks = cb.build();
 
     }
@@ -577,7 +578,10 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public void checkWorkplaceRequest(HttpServletRequest request, CmsObject cms) {
 
         try {
-            if (!OpenCms.getSiteManager().isWorkplaceRequest(request)) {
+            if ((OpenCms.getSiteManager().getSites().size() > 1)
+                && !OpenCms.getSiteManager().isWorkplaceRequest(request)) {
+                // this is a multi site-configuration, but not a request to the configured Workplace site
+
                 CmsUser user = cms.getRequestContext().getCurrentUser();
                 // to limit the number of times broadcast is called for a user, we use an expiring cache
                 // with the user name as  key 
