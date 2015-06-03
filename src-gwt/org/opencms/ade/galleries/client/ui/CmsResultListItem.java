@@ -78,13 +78,13 @@ public class CmsResultListItem extends CmsListItem {
         resultItem.addAdditionalInfo(Messages.get().key(Messages.GUI_PREVIEW_LABEL_PATH_0), resultItem.getPath());
         CmsResultItemWidget resultItemWidget = new CmsResultItemWidget(resultItem);
         ImageTile imageTile = resultItemWidget.getImageTile();
-        if (imageTile != null) {
-            imageTile.setDraggable(this);
-            imageTile.addMouseDownHandler(dndHandler);
-        }
         resultItemWidget.setUnselectable();
         initContent(resultItemWidget);
         if (dndHandler != null) {
+            if (imageTile != null) {
+                imageTile.setDraggable(this);
+                imageTile.addMouseDownHandler(dndHandler);
+            }
             setId(resultItem.getClientId());
             if (resultItem.getTitle() != null) {
                 setName(resultItem.getTitle().toLowerCase().replace("/", "-").replace(" ", "_"));
