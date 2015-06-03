@@ -601,8 +601,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /**
      * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#saveValue(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
-    public String saveValue(String contentId, String contentPath, String locale, String newValue)
+    public String saveValue(String contentId, String contentPath, String localeString, String newValue)
     throws CmsRpcException {
+
+        OpenCms.getLocaleManager();
+        Locale locale = CmsLocaleManager.getLocale(localeString);
 
         try {
             CmsObject cms = getCmsObject();
@@ -610,8 +613,15 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             ensureLock(element);
             CmsFile elementFile = cms.readFile(element);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, elementFile);
-            I_CmsXmlContentValue value = content.getValue(contentPath, CmsLocaleManager.getLocale(locale));
+            I_CmsXmlContentValue value = content.getValue(contentPath, locale);
             value.setStringValue(cms, newValue);
+            for (I_CmsXmlContentEditorChangeHandler handler : content.getContentDefinition().getContentHandler().getEditorChangeHandlers()) {
+                Set<String> handlerScopes = evaluateScope(handler.getScope(), content.getContentDefinition());
+                if (handlerScopes.contains(contentPath)) {
+                    handler.handleChange(cms, content, locale, Collections.singletonList(contentPath));
+                }
+            }
+            content.synchronizeLocaleIndependentValues(cms, Collections.<String> emptyList(), locale);
             byte[] newData = content.marshal();
             elementFile.setContents(newData);
             cms.writeFile(elementFile);
