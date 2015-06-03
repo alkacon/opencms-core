@@ -123,7 +123,7 @@ public class CmsContextInfo {
         setProjectName(CmsProject.ONLINE_PROJECT_NAME);
         setRequestedUri("/");
         setSiteRoot("/");
-        setRequestMatcher(OpenCms.getSiteManager().getWorkplaceSiteMatcher());
+        setRequestMatcher(CmsSiteMatcher.DEFAULT_MATCHER);
         setLocaleName(CmsLocaleManager.getDefaultLocale().toString());
         setEncoding(OpenCms.getSystemInfo().getDefaultEncoding());
         setRemoteAddr(CmsContextInfo.LOCALHOST);
