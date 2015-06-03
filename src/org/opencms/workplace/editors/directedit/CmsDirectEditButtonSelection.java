@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,16 +30,16 @@ package org.opencms.workplace.editors.directedit;
 /**
  * Constants to indicate which direct edit buttons should be displayed for a direct edit resource
  * if the user has the permissions.<p>
- * 
+ *
  * The actual permission check is done later using {@link CmsDirectEditPermissions}.<p>
- * 
+ *
  * This button selection is used internally to indicate the buttons that <i>may</i> be displayed.
  * Usually, for an XmlPage only the "edit" button is displayed, while for an XmlContent
- * there may be an "edit", "delete" or "new" button.<p> 
- * 
+ * there may be an "edit", "delete" or "new" button.<p>
+ *
  * Currently there are only constants for thouse button combinations that are actually used
  * in practice. These are {@link #EDIT}, {@link #EDIT_DELETE} and {@link #EDIT_DELETE_NEW}.<p>
- * 
+ *
  * @since 6.2.3
  */
 public final class CmsDirectEditButtonSelection {
@@ -49,6 +49,9 @@ public final class CmsDirectEditButtonSelection {
 
     /** Constant to indicate "show the edit and the delete button". */
     public static final CmsDirectEditButtonSelection EDIT_DELETE = new CmsDirectEditButtonSelection(true, true, false);
+
+    /** Constant to indicate "show the edit and the delete button". */
+    public static final CmsDirectEditButtonSelection EDIT_NEW = new CmsDirectEditButtonSelection(true, false, true);
 
     /** Constant to indicate "show the edit, the delete and the new button". */
     public static final CmsDirectEditButtonSelection EDIT_DELETE_NEW = new CmsDirectEditButtonSelection(
@@ -81,8 +84,8 @@ public final class CmsDirectEditButtonSelection {
     private String m_stringValue;
 
     /**
-     * Hides the public constructor.<p> 
-     * 
+     * Hides the public constructor.<p>
+     *
      * @param showEdit if <code>true</code> then the "edit" button should be displayed
      * @param showDelete if <code>true</code> then the "delete" button should be displayed
      * @param showNew if <code>true</code> then the "new" button should be displayed
@@ -126,7 +129,7 @@ public final class CmsDirectEditButtonSelection {
 
     /**
      * Returns the selected edit options as a String in the form <code>edit|delete|new</code>.<p>
-     * 
+     *
      * @return the selected edit options as a String
      */
     @Override
