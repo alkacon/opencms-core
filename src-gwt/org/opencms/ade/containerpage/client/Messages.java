@@ -106,7 +106,16 @@ public final class Messages {
     public static final String GUI_CONFIRM_REMOVAL_TEXT_0 = "GUI_CONFIRM_REMOVAL_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_ELEMENT_0 = "GUI_COPY_ELEMENT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_MODEL_TITLE_WRAPPER_1 = "GUI_COPY_MODEL_TITLE_WRAPPER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_NEW_LABEL_0 = "GUI_CREATE_NEW_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_NEW_LEGEND_0 = "GUI_CREATE_NEW_LEGEND_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_LEAVE_NOT_SAVED_0 = "GUI_DIALOG_LEAVE_NOT_SAVED_0";
@@ -137,9 +146,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_SMALL_ELEMENTS_0 = "GUI_EDIT_SMALL_ELEMENTS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SELECT_ELEMENT_VIEW_0 = "GUI_SELECT_ELEMENT_VIEW_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FORMATTERS_LEGEND_0 = "GUI_FORMATTERS_LEGEND_0";
@@ -178,6 +184,21 @@ public final class Messages {
     public static final String GUI_LOCK_FAIL_0 = "GUI_LOCK_FAIL_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_GROUP_DESCRIPTION_0 = "GUI_MODEL_GROUP_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_GROUP_DISABLED_CHILD_0 = "GUI_MODEL_GROUP_DISABLED_CHILD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_GROUP_DISABLED_PARENT_0 = "GUI_MODEL_GROUP_DISABLED_PARENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_GROUP_TITLE_0 = "GUI_MODEL_GROUP_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_GROUP_USE_AS_COPY_MODEL_0 = "GUI_MODEL_GROUP_USE_AS_COPY_MODEL_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NO_SETTINGS_0 = "GUI_NO_SETTINGS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -211,6 +232,18 @@ public final class Messages {
     public static final String GUI_PROPERTY_DIALOG_TITLE_0 = "GUI_PROPERTY_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_REUSE_ELEMENT_0 = "GUI_REUSE_ELEMENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECT_COPY_OR_REUSE_CAPTION_0 = "GUI_SELECT_COPY_OR_REUSE_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECT_COPY_OR_REUSE_TEXT_0 = "GUI_SELECT_COPY_OR_REUSE_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECT_ELEMENT_VIEW_0 = "GUI_SELECT_ELEMENT_VIEW_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SELECT_FORMATTER_LABEL_0 = "GUI_SELECT_FORMATTER_LABEL_0";
 
     /** Message constant for key in the resource bundle. */
@@ -237,35 +270,11 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_INHERITED_FROM_1 = "GUI_TITLE_INHERITED_FROM_1";
 
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.clientmessages";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SELECT_COPY_OR_REUSE_TEXT_0 = "GUI_SELECT_COPY_OR_REUSE_TEXT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SELECT_COPY_OR_REUSE_CAPTION_0 = "GUI_SELECT_COPY_OR_REUSE_CAPTION_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_COPY_ELEMENT_0 = "GUI_COPY_ELEMENT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_REUSE_ELEMENT_0 = "GUI_REUSE_ELEMENT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CREATE_NEW_LEGEND_0 = "GUI_CREATE_NEW_LEGEND_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CREATE_NEW_LABEL_0 = "GUI_CREATE_NEW_LABEL_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USE_AS_MODEL_GROUP_LABEL_0 = "GUI_USE_AS_MODEL_GROUP_LABEL_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODEL_GROUP_DISABLED_PARENT_0 = "GUI_MODEL_GROUP_DISABLED_PARENT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODEL_GROUP_DISABLED_CHILD_0 = "GUI_MODEL_GROUP_DISABLED_CHILD_0";
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.clientmessages";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

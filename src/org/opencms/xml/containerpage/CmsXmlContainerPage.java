@@ -27,6 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.containerpage.CmsModelGroupHelper;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -335,7 +336,15 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         Map<String, CmsContainerElementBean> pageElements = new HashMap<String, CmsContainerElementBean>();
         for (CmsContainerBean container : containers) {
             for (CmsContainerElementBean element : container.getElements()) {
-                pageElements.put(element.getInstanceId(), element);
+                try {
+                    element.initResource(cms);
+
+                    if (!CmsModelGroupHelper.isModelGroupResource(element.getResource())) {
+                        pageElements.put(element.getInstanceId(), element);
+                    }
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
             }
         }
         Iterator<CmsContainerBean> cntIt = containers.iterator();

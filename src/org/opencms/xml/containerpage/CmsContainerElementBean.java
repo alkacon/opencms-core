@@ -116,12 +116,7 @@ public class CmsContainerElementBean implements Cloneable {
             newSettings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, new CmsUUID().toString());
         }
         m_individualSettings = Collections.unmodifiableMap(newSettings);
-        String clientId = m_elementId.toString();
-        if (!m_individualSettings.isEmpty()) {
-            int hash = m_individualSettings.toString().hashCode();
-            clientId += CmsADEManager.CLIENT_ID_SEPERATOR + hash;
-        }
-        m_editorHash = clientId;
+        m_editorHash = m_elementId.toString() + getSettingsHash();
         m_createNew = createNew;
     }
 
@@ -185,11 +180,17 @@ public class CmsContainerElementBean implements Cloneable {
      */
     public static CmsContainerElementBean cloneWithSettings(CmsContainerElementBean source, Map<String, String> settings) {
 
+        boolean createNew = source.m_createNew;
+        if (settings.containsKey(CmsContainerElement.CREATE_AS_NEW)) {
+            createNew = Boolean.valueOf(settings.get(CmsContainerElement.CREATE_AS_NEW)).booleanValue();
+            settings = new HashMap<String, String>(settings);
+            settings.remove(CmsContainerElement.CREATE_AS_NEW);
+        }
         CmsContainerElementBean result = new CmsContainerElementBean(
             source.m_elementId,
             source.m_formatterId,
             settings,
-            source.m_createNew);
+            createNew);
         result.m_resource = source.m_resource;
         result.m_sitePath = source.m_sitePath;
         result.m_inMemoryOnly = source.m_inMemoryOnly;
@@ -482,6 +483,11 @@ public class CmsContainerElementBean implements Cloneable {
         }
     }
 
+    /**
+     * Returns if the given element should be used as a copy model.<p>
+     * 
+     * @return <code>true</code> if the given element should be used as a copy model
+     */
     public boolean isCopyModel() {
 
         return Boolean.valueOf(getIndividualSettings().get(CmsContainerElement.USE_AS_COPY_MODEL)).booleanValue();
@@ -542,11 +548,21 @@ public class CmsContainerElementBean implements Cloneable {
         return m_inMemoryOnly;
     }
 
+    /**
+     * Returns if the given element is a model group.<p>
+     * 
+     * @return <code>true</code> if the given element is a model group
+     */
     public boolean isModelGroup() {
 
         return Boolean.parseBoolean(m_individualSettings.get(CmsContainerElement.IS_MODEL_GROUP));
     }
 
+    /**
+     * Returns if all instances of this element should be replaced within a copy model.<p>
+     * 
+     * @return <code>true</code> if all instances of this element should be replaced within a copy model
+     */
     public boolean isModelGroupAlwaysReplace() {
 
         return Boolean.parseBoolean(m_individualSettings.get(CmsContainerElement.IS_MODEL_GROUP_ALWAYS_REPLACE));
@@ -580,12 +596,7 @@ public class CmsContainerElementBean implements Cloneable {
         Map<String, String> newSettings = new HashMap<String, String>(m_individualSettings);
         newSettings.remove(CmsContainerElement.ELEMENT_INSTANCE_ID);
         m_individualSettings = Collections.unmodifiableMap(newSettings);
-        String clientId = m_elementId.toString();
-        if (!m_individualSettings.isEmpty()) {
-            int hash = m_individualSettings.toString().hashCode();
-            clientId += CmsADEManager.CLIENT_ID_SEPERATOR + hash;
-        }
-        m_editorHash = clientId;
+        m_editorHash = m_elementId.toString() + getSettingsHash();
     }
 
     /**
@@ -646,8 +657,8 @@ public class CmsContainerElementBean implements Cloneable {
      */
     private String getSettingsHash() {
 
-        if (!m_individualSettings.isEmpty()) {
-            int hash = m_individualSettings.toString().hashCode();
+        if (!m_individualSettings.isEmpty() || m_createNew) {
+            int hash = (m_individualSettings.toString() + m_createNew).hashCode();
             return CmsADEManager.CLIENT_ID_SEPERATOR + hash;
         }
         return "";

@@ -81,6 +81,9 @@ public class CmsContainerElement implements IsSerializable {
     /** The use as copy model setting key. */
     public static final String USE_AS_COPY_MODEL = "use_as_copy_model";
 
+    /** The create as new setting key. */
+    public static final String CREATE_AS_NEW = "create_as_new";
+
     /** The is model group always replace element setting key. */
     public static final String IS_MODEL_GROUP_ALWAYS_REPLACE = "is_model_group_always_replace";
 
