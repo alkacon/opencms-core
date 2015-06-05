@@ -124,6 +124,7 @@ public class CmsEntityObserver implements ValueChangeHandler<CmsEntity> {
             String previousValue = m_scopeValues.get(scope);
             if (((scopeValue != null) && !scopeValue.equals(previousValue))
                 || ((scopeValue == null) && (previousValue != null))) {
+                m_scopeValues.put(scope, scopeValue);
                 // the value within this scope has changed, notify all listeners
                 if (m_changeListeners.containsKey(scope)) {
                     System.out.println("calling listeners on changed scope " + scope);
@@ -131,7 +132,6 @@ public class CmsEntityObserver implements ValueChangeHandler<CmsEntity> {
                         safeExecuteChangeListener(entity, changeListener);
                     }
                 }
-                m_scopeValues.put(scope, scopeValue);
             }
         }
     }

@@ -186,7 +186,7 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
 
         m_rnd = new Random();
         CmsUserSettings settings = new CmsUserSettings(cms);
-        m_messages = new CmsMessages(Messages.get().getBundleName(), settings.getLocale());
+        m_messages = new CmsMessages(org.opencms.workplace.editors.Messages.get().getBundleName(), settings.getLocale());
         m_editButtonStyle = settings.getEditorButtonStyle();
     }
 
