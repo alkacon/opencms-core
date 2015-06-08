@@ -55,6 +55,7 @@ import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.CmsJspTagEdit;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -983,8 +984,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param parentPath the parent path
      * @param entity the entity
      * @param contentLocale the content locale
-     * 
-     * @return the set of xpaths of simple fields in the XML content which were set by this method 
+     *
+     * @return the set of xpaths of simple fields in the XML content which were set by this method
      */
     private Set<String> addEntityAttributes(
         CmsObject cms,
@@ -1006,7 +1007,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param parentPath the parent path
      * @param entity the entity
      * @param contentLocale the content locale
-     * @param fieldsSet set to store which fields were set in the XML content 
+     * @param fieldsSet set to store which fields were set in the XML content
      */
     private void addEntityAttributes(
         CmsObject cms,
@@ -1095,13 +1096,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Evaluates any wildcards in the given scope and returns all allowed permutations of it.<p>
-     * 
+     *
      * a path like Paragraph* /Image should result in Paragraph[0]/Image, Paragraph[1]/Image and Paragraph[2]/Image
      * in case max occurrence for Paragraph is 3
-     * 
+     *
      * @param scope the scope
      * @param definition the content definition
-     * 
+     *
      * @return the evaluate scope permutations
      */
     private Set<String> evaluateScope(String scope, CmsXmlContentDefinition definition) {
@@ -1246,9 +1247,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the change handler scopes.<p>
-     * 
+     *
      * @param definition the content definition
-     * 
+     *
      * @return the scopes
      */
     private Set<String> getChangeHandlerScopes(CmsXmlContentDefinition definition) {
@@ -1264,12 +1265,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the XML content document.<p>
-     * 
+     *
      * @param file the resource file
      * @param fromCache <code>true</code> to use the cached document
-     * 
+     *
      * @return the content document
-     * 
+     *
      * @throws CmsXmlException if reading the XML fails
      */
     private CmsXmlContent getContentDocument(CmsFile file, boolean fromCache) throws CmsXmlException {
@@ -1315,7 +1316,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the session cache.<p>
-     * 
+     *
      * @return the session cache
      */
     private CmsADESessionCache getSessionCache() {
@@ -1534,14 +1535,27 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             modelFile = getCmsObject().getSitePath(
                 getCmsObject().readResource(modelFileId, CmsResourceFilter.IGNORE_EXPIRATION));
         }
-        String newFileName = A_CmsResourceCollector.createResourceForCollector(
-            getCmsObject(),
-            newLink,
-            locale,
-            sitePath,
-            modelFile,
-            mode,
-            postCreateHandler);
+        String newFileName = null;
+        if ((null != newLink) && newLink.startsWith(CmsJspTagEdit.NEW_LINK_IDENTIFIER)) {
+
+            newFileName = CmsJspTagEdit.createResource(
+                getCmsObject(),
+                newLink,
+                locale,
+                sitePath,
+                modelFile,
+                mode,
+                postCreateHandler);
+        } else {
+            newFileName = A_CmsResourceCollector.createResourceForCollector(
+                getCmsObject(),
+                newLink,
+                locale,
+                sitePath,
+                modelFile,
+                mode,
+                postCreateHandler);
+        }
         CmsResource resource = getCmsObject().readResource(newFileName, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsFile file = getCmsObject().readFile(resource);
         CmsXmlContent content = getContentDocument(file, false);
@@ -1619,7 +1633,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param cms the cms context
      * @param structureId the structure id
      * @param content the XML content
-     * @param fieldNames if not null, only validation errors in paths from this set will be added to the validation result 
+     * @param fieldNames if not null, only validation errors in paths from this set will be added to the validation result
      *
      * @return the validation result
      */

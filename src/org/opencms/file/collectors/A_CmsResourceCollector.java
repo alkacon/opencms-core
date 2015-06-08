@@ -184,7 +184,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
      *
      * @return a post-create handler instance
      */
-    private static I_CmsCollectorPostCreateHandler getPostCreateHandler(String name) {
+    public static I_CmsCollectorPostCreateHandler getPostCreateHandler(String name) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
             return new CmsDefaultPostCreateHandler();

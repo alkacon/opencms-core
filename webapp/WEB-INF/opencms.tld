@@ -1182,6 +1182,81 @@
 
     <tag>
         <description><![CDATA[
+            The tag can be used to place edit buttons around some HTML fragment. It allows to edit, add or delete XML contents.
+            Typically it is used in the contexts of lists, e.g., news lists, where each list entry should be editable.           
+        ]]></description>
+        <name>edit</name>
+        <tag-class>org.opencms.jsp.CmsJspTagEdit</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description><![CDATA[
+              <p>The UUID of the resource that should be edited. If not provided, the tag can still be used to create new resources (XML contents).</p>
+              <em>Default: <code>null</code>.</em>
+            ]]></description>
+            <name>uuid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>        
+        <attribute>
+            <description><![CDATA[
+              <p>If set to <code>true</code> the "Create" option is added to the edit buttons - provided that the attribute
+              <code>uuid</code> is specified.
+              Newly created resources have the same type as the resource specified via attribute <code>uuid</code>.
+              If <code>createType</code> is specified, <code>create</code> has no influence at all.</p>
+              <em>Default: <code>false</code>.</em>
+            ]]></description>
+            <name>create</name>
+            <required>false</required>              
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+              <p>The type of resources (XML contents) that should be created, specified via the resource type name.</p>
+              <em>Default: The type of the resource specified via the attribute <code>uuid</code>, or, if no resource is specified <code>null</code>.</em>
+            ]]></description>
+            <name>createType</name>
+            <required>false</required>                     
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+              <p>The location where newly created contents are stored is read from sitemap configurations.
+              <code>creationSiteMap</code> specifies the sitemap from which the configuration should be used. Provide the (site-relative) path to a folder in the (sub)sitemap.</p>
+              <em>Default: The (sub)sitemap of the currently requested URI.
+            ]]></description>
+            <name>creationSiteMap</name>
+            <required>false</required>                    
+            <rtexprvalue>true</rtexprvalue>            
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+              <p>If set to <code>true</code>, the "Delete" option is added to the edit buttons - provided that the attribute
+              <code>uuid</code> specifies the resource to edit/delete.</p>
+              <em>Default: <code>false</code></em>
+            ]]></description>
+            <name>delete</name>
+            <required>false</required>                    
+            <rtexprvalue>true</rtexprvalue>            
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+              The fully qualified class name of a <code>org.opencms.file.collectors.I_CmsCollectorPostCreateHandler</code> that
+              is called when a new resource is created via the tag.
+            ]]></description>
+            <name>postCreateHandler</name>
+            <required>false</required>                    
+            <rtexprvalue>true</rtexprvalue>            
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description><![CDATA[
             This tag is used to enable the direct edit functionality.</P>
             It is placed in the header of a none-container-page template for most use cases.</P>
             An exeception is the use with attribute <code>editEmpty</code>, which is the last none-deprecated use case.</P>
