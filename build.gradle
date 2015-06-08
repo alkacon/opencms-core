@@ -224,13 +224,13 @@ jar {
 
     include 'org/opencms/**'
     include 'com/**'
-    include 'META-INF/**'
     exclude '**/package.html'
     exclude '**/overview.html'
     exclude '**/.gitignore'
 
     metaInf {  
         from("${projectDir}/webapp/WEB-INF/opencms.tld") 
+        from("${projectDir}/webapp/WEB-INF/classes/META-INF") 
     }
 
     doLast {
@@ -761,6 +761,7 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
         // exclude the database drivers
         exclude '**/setup/**/*.jar'
         exclude '**/update/**'
+        exclude '**/classes/META-INF/**'
         exclude '**/*.html'
         exclude '**/*.properties'
         exclude '**/*.txt'
@@ -768,6 +769,7 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
     }
     from ("${projectDir}/webapp"){
         exclude '**/update/**'
+        exclude '**/classes/META-INF/**'
         include '**/*.html'
         include '**/*.properties'
         include '**/*.txt'

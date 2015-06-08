@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry excluding="META-INF/|data/|ehcache.xml" kind="src" path="test"/>
+	<classpathentry excluding="data/|ehcache.xml" kind="src" path="test"/>
 	<classpathentry kind="src" path="src-modules"/>
 	<classpathentry kind="src" path="src-setup"/>
 	<classpathentry kind="src" path="src-components"/>
