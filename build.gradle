@@ -224,14 +224,16 @@ jar {
 
     include 'org/opencms/**'
     include 'com/**'
+    include 'META-INF/**'
     exclude '**/package.html'
     exclude '**/overview.html'
     exclude '**/.gitignore'
 
-    metaInf {  from("${projectDir}/webapp/WEB-INF/opencms.tld") }
+    metaInf {  
+        from("${projectDir}/webapp/WEB-INF/opencms.tld") 
+    }
 
     doLast {
-        println "aaaaaaaa" 
         if (tasks.findByPath('tomcatUpdate')!=null&&gradle.taskGraph.hasTask(tasks['tomcatUpdate'])){
             println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
             copy {
