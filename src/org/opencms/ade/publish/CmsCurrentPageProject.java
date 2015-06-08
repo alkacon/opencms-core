@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -140,7 +140,7 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                             CmsResourceFilter.IGNORE_EXPIRATION);
                         result.add(detailContentPage);
                     } catch (CmsVfsResourceNotFoundException e) {
-                        // ignore 
+                        // ignore
                     } catch (CmsException e) {
                         LOG.error(e.getLocalizedMessage(), e);
                     }
@@ -167,6 +167,26 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                             }
                         }
                     }
+
+                    String collectorItemsStr = options.getParameters().get(CmsPublishOptions.PARAM_COLLECTOR_ITEMS);
+                    if (collectorItemsStr != null) {
+                        for (String token : collectorItemsStr.split(",")) {
+                            try {
+                                if (CmsUUID.isValidUUID(token)) {
+                                    CmsResource collectorRes = cms.readResource(
+                                        new CmsUUID(token),
+                                        CmsResourceFilter.ALL);
+                                    if (!collectorRes.getState().isUnchanged()) {
+                                        result.add(collectorRes);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                LOG.error(
+                                    "Error processing collector item " + token + ": " + e.getLocalizedMessage(),
+                                    e);
+                            }
+                        }
+                    }
                 }
                 return result;
 
@@ -174,10 +194,10 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
 
             /**
              * Gets the  publish list provider for the given collector.<p>
-             * 
-             * @param collector the collector 
-             * 
-             * @return the publish list provider 
+             *
+             * @param collector the collector
+             *
+             * @return the publish list provider
              */
             public I_CmsCollectorPublishListProvider getCollectorPublishListProvider(I_CmsResourceCollector collector) {
 
