@@ -141,7 +141,12 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
         OpenCms.getWorkplaceAppManager().loadApps();
         Navigator navigator = new Navigator(this, new Navigator.UriFragmentManager(getPage()), this);
         navigator.addProvider(this);
-        showHome();
+        String fragment = getPage().getUriFragment();
+        if (fragment != null) {
+            navigator.navigateTo(fragment);
+        } else {
+            showHome();
+        }
     }
 
 }
