@@ -53,6 +53,7 @@ import org.opencms.main.CmsLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -248,7 +249,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     @Override
     public Map<String, I_CmsSearchConfigurationFacetField> parseFieldFacets() {
 
-        final Map<String, I_CmsSearchConfigurationFacetField> facetConfigs = new HashMap<String, I_CmsSearchConfigurationFacetField>();
+        final Map<String, I_CmsSearchConfigurationFacetField> facetConfigs = new LinkedHashMap<String, I_CmsSearchConfigurationFacetField>();
         try {
             final JSONArray fieldFacets = m_configObject.getJSONArray(JSON_KEY_FIELD_FACETS);
             for (int i = 0; i < fieldFacets.length(); i++) {
