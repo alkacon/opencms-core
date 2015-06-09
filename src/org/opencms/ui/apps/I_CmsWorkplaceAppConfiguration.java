@@ -31,16 +31,50 @@ import org.opencms.file.CmsObject;
 
 import java.util.Locale;
 
+import com.vaadin.server.Resource;
+
+/**
+ * Contains the configuration of a single workplace app.<p>
+ */
 public interface I_CmsWorkplaceAppConfiguration {
 
+    /**
+     * Returns a new app instance.<p>
+     * 
+     * @return a new app instance
+     */
     I_CmsWorkplaceApp getAppInstance();
 
+    /**
+     * Returns the app path. Used to dispplay the apps in a hierarchical order and as a unique id.<p>
+     * 
+     * @return the app path
+     */
     String getAppPath();
 
-    String getIcon();
+    /**
+     * Returns the app icon resource.<p>
+     * 
+     * @return the icon resource
+     */
+    Resource getIcon();
 
+    /**
+     * Returns the display name of the app.<p>
+     * 
+     * @param locale the user locale
+     * 
+     * @return the app name
+     */
     String getName(Locale locale);
 
+    /**
+     * Returns the visibility status of the app for the given user context.<p>
+     * 
+     * @param cms the user context
+     * 
+     * @return the visibility status
+     */
     CmsAppVisibilityStatus getVisibility(CmsObject cms);
 
 }

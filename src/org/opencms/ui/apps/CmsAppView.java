@@ -33,38 +33,34 @@ import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.Sizeable;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
+/**
+ * Displays the selected app.<p>
+ */
 public class CmsAppView implements View, I_CmsComponentFactory {
 
-    class AppViewComponent extends CustomComponent {
+    /** The serial version id. */
+    private static final long serialVersionUID = -8128528863875050216L;
 
-        public AppViewComponent(I_CmsWorkplaceApp app) {
-
-            HorizontalSplitPanel hp = new HorizontalSplitPanel();
-            hp.setSplitPosition(300, Sizeable.UNITS_PIXELS);
-            Component menu = createMenu();
-            hp.setFirstComponent(menu);
-            hp.setSecondComponent(app);
-
-            setCompositionRoot(hp);
-            hp.setHeight("100%");
-            setHeight("100%");
-        }
-    }
-
+    /** The app configuration. */
     private I_CmsWorkplaceAppConfiguration m_appConfig;
 
+    /** The current app. */
     private I_CmsWorkplaceApp m_app;
 
+    /**
+     * Constructor.<p>
+     * 
+     * @param appConfig the app configuration
+     */
     public CmsAppView(I_CmsWorkplaceAppConfiguration appConfig) {
 
         m_appConfig = appConfig;
@@ -80,11 +76,19 @@ public class CmsAppView implements View, I_CmsComponentFactory {
 
         if (m_app == null) {
             m_app = m_appConfig.getAppInstance();
-            return new AppViewComponent(m_app);
+            CmsAppViewLayout layout = new CmsAppViewLayout();
+            layout.setMenu(createMenu());
+
+            layout.addStyleName(ValoTheme.UI_WITH_MENU);
+            layout.getAppContainer().addComponent(m_app);
+            return layout;
         }
         return null;
     }
 
+    /**
+     * @see com.vaadin.navigator.View#enter(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+     */
     public void enter(ViewChangeEvent event) {
 
         String newState = event.getParameters();
@@ -94,21 +98,39 @@ public class CmsAppView implements View, I_CmsComponentFactory {
         m_app.onStateChange(newState);
     }
 
+    /**
+     * Creates the menu component.<p>
+     * 
+     * @return the menu
+     */
     protected Component createMenu() {
 
-        VerticalLayout result = new VerticalLayout();
-        result.addComponent(new Label("Menu"));
-        Button homeButton = new Button("Home");
-        result.addComponent(homeButton);
-        homeButton.addClickListener(new ClickListener() {
+        CssLayout menu = new CssLayout();
+        final Label title = new Label("<h3>OpenCms <strong>"
+            + m_appConfig.getName(getWorkplaceUi().getLocale())
+            + "</strong></h3>", ContentMode.HTML);
+        title.setSizeUndefined();
+        title.addStyleName("valo-menu-title");
+        menu.addComponent(title);
+        CssLayout menuItemsLayout = new CssLayout();
+        menuItemsLayout.setPrimaryStyleName("valo-menuitems");
+        menu.addComponent(menuItemsLayout);
+        CmsAppWorkplaceUi ui = (CmsAppWorkplaceUi)A_CmsUI.get();
+        for (final I_CmsMenuItem item : ui.getMenuItems()) {
+            Button button = new Button(item.getDisplayName(getWorkplaceUi().getLocale()), item.getIcon());
+            button.setPrimaryStyleName("valo-menu-item");
+            menuItemsLayout.addComponent(button);
+            button.addClickListener(new ClickListener() {
 
-            public void buttonClick(ClickEvent event) {
+                private static final long serialVersionUID = 1L;
 
-                CmsAppWorkplaceUi ui = getWorkplaceUi();
-                ui.showHome();
-            }
-        });
-        return result;
+                public void buttonClick(ClickEvent event) {
 
+                    item.executeAction();
+                }
+            });
+        }
+
+        return menu;
     }
 }

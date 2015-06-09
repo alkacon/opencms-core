@@ -32,17 +32,32 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsComponentFactory;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
 import com.vaadin.navigator.ViewProvider;
+import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Component;
 
+/**
+ * The workplace ui.<p>
+ */
+@Theme("valo")
 public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvider {
 
     private I_CmsWorkplaceAppConfiguration m_currentApp;
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -5606711048683809028L;
+
+    /** The home view path. */
     public static final String VIEW_HOME = "home";
 
     public void changeCurrentAppState(String state) {
@@ -53,6 +68,36 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
             + NavigationState.PARAM_SEPARATOR
             + state;
         getPage().setUriFragment(newFragment, false);
+    }
+
+    /**
+     * Returns the menu items.<p>
+     * 
+     * @return the menu items
+     */
+    public List<I_CmsMenuItem> getMenuItems() {
+
+        List<I_CmsMenuItem> items = new ArrayList<I_CmsMenuItem>();
+        items.add(new I_CmsMenuItem() {
+
+            public void executeAction() {
+
+                CmsAppWorkplaceUi ui = (CmsAppWorkplaceUi)A_CmsUI.get();
+                ui.showHome();
+            }
+
+            public String getDisplayName(Locale locale) {
+
+                // TODO Auto-generated method stub
+                return "Home";
+            }
+
+            public Resource getIcon() {
+
+                return FontAwesome.HOME;
+            }
+        });
+        return items;
     }
 
     public View getView(String viewName) {

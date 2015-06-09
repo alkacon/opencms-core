@@ -31,6 +31,8 @@ import org.opencms.file.CmsObject;
 
 import java.util.Locale;
 
+import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Resource;
 import com.vaadin.ui.Label;
 
 public class MyApp implements I_CmsWorkplaceAppConfiguration {
@@ -59,10 +61,9 @@ public class MyApp implements I_CmsWorkplaceAppConfiguration {
         return "myapp";
     }
 
-    public String getIcon() {
+    public Resource getIcon() {
 
-        // TODO Auto-generated method stub
-        return null;
+        return FontAwesome.USER;
     }
 
     public String getName(Locale locale) {

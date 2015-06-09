@@ -27,41 +27,33 @@
 
 package org.opencms.ui.apps;
 
-import org.opencms.file.CmsObject;
-
 import java.util.Locale;
 
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 
-public class AppConfiguration implements I_CmsWorkplaceAppConfiguration {
+/**
+ * Workplace view menu item.<p>
+ */
+public interface I_CmsMenuItem {
 
-    public I_CmsWorkplaceApp getAppInstance() {
+    /**
+     * Executes the item action.<p>
+     */
+    void executeAction();
 
-        // TODO Auto-generated method stub
-        return null;
-    }
+    /**
+     * Returns the item display name.<p>
+     * 
+     * @param locale the user locale
+     * 
+     * @return the display name
+     */
+    String getDisplayName(Locale locale);
 
-    public String getAppPath() {
-
-        return "/";
-    }
-
-    public Resource getIcon() {
-
-        return FontAwesome.AMBULANCE;
-    }
-
-    public String getName(Locale locale) {
-
-        // TODO Auto-generated method stub
-        return "testApp1";
-    }
-
-    public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
-
-        // TODO Auto-generated method stub
-        return new CmsAppVisibilityStatus(false, false, "visible");
-    }
-
+    /**
+     * Return the item icon.<p>
+     * 
+     * @return the icon
+     */
+    Resource getIcon();
 }

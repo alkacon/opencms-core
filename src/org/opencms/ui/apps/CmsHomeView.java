@@ -35,6 +35,7 @@ import java.util.Locale;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Resource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -71,7 +72,10 @@ public class CmsHomeView extends CssLayout implements View {
                 ui.showApp(appConfig);
             }
         });
+        Resource icon = appConfig.getIcon();
+        if (icon != null) {
+            button.setIcon(icon);
+        }
         return button;
     }
-
 }
