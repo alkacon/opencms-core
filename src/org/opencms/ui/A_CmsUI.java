@@ -30,8 +30,6 @@ package org.opencms.ui;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsUIServlet;
 
-import java.util.Locale;
-
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
@@ -42,8 +40,6 @@ public abstract class A_CmsUI extends UI {
 
     /** Serial version id. */
     private static final long serialVersionUID = 989182479322461838L;
-
-    private Locale m_locale = Locale.ENGLISH;
 
     /**
      * Returns the current UI.<p>
@@ -64,5 +60,4 @@ public abstract class A_CmsUI extends UI {
 
         return ((CmsUIServlet)VaadinServlet.getCurrent()).getCmsObject();
     }
-
 }

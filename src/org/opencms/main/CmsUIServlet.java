@@ -28,10 +28,6 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsObject;
-import org.opencms.gwt.CmsCoreService;
-import org.opencms.gwt.CmsPrefetchSerializationPolicy;
-import org.opencms.gwt.shared.CmsCoreData;
-import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsRequestUtil;
 
@@ -45,14 +41,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
-import org.jsoup.nodes.DataNode;
-import org.jsoup.nodes.Element;
-import org.jsoup.parser.Tag;
-
-import com.google.gwt.user.server.rpc.RPC;
-import com.vaadin.server.BootstrapFragmentResponse;
-import com.vaadin.server.BootstrapListener;
-import com.vaadin.server.BootstrapPageResponse;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.SessionInitListener;
 import com.vaadin.server.VaadinServlet;
@@ -169,43 +157,46 @@ public class CmsUIServlet extends VaadinServlet {
 
             public void sessionInit(SessionInitEvent event) {
 
-                event.getSession().addBootstrapListener(new BootstrapListener() {
-
-                    private static final long serialVersionUID = -6249561809984101044L;
-
-                    public void modifyBootstrapFragment(BootstrapFragmentResponse response) {
-
-                        // nothing to do
-                    }
-
-                    public void modifyBootstrapPage(BootstrapPageResponse response) {
-
-                        CmsObject cms = ((CmsUIServlet)getCurrent()).getCmsObject();
-                        // inserting prefetched data into the page
-                        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-                        response.getDocument().head().appendElement("meta").attr("name", "gwt:property").attr(
-                            "content",
-                            wpLocale.toString());
-                        try {
-                            response.getDocument().head().appendElement("meta").attr("name", CmsCoreData.DICT_NAME).attr(
-                                "content",
-                                RPC.encodeResponseForSuccess(
-                                    I_CmsCoreService.class.getMethod("prefetch"),
-                                    CmsCoreService.prefetch((HttpServletRequest)response.getRequest()),
-                                    CmsPrefetchSerializationPolicy.instance()));
-                        } catch (Exception e) {
-                            LOG.error(e.getLocalizedMessage(), e);
-                        }
-
-                        // inserting client messages into the page
-                        Element script = new Element(Tag.valueOf("script"), "").attr("type", "text/javascript");
-                        response.getDocument().head().appendChild(script);
-                        script.appendChild(new DataNode("//<![CDATA[\n"
-                            + org.opencms.gwt.ClientMessages.get().export(wpLocale, false)
-                            + "\n//]]>", script.baseUri()));
-
-                    }
-                });
+                // set the locale to the users workplace locale
+                Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(
+                    ((CmsUIServlet)getCurrent()).getCmsObject());
+                event.getSession().setLocale(wpLocale);
+                //                event.getSession().addBootstrapListener(new BootstrapListener() {
+                //
+                //                    private static final long serialVersionUID = -6249561809984101044L;
+                //
+                //                    public void modifyBootstrapFragment(BootstrapFragmentResponse response) {
+                //
+                //                        // nothing to do
+                //                    }
+                //
+                //                    public void modifyBootstrapPage(BootstrapPageResponse response) {
+                //
+                //                        CmsObject cms = ((CmsUIServlet)getCurrent()).getCmsObject();
+                //                        // inserting prefetched data into the page
+                //                        response.getDocument().head().appendElement("meta").attr("name", "gwt:property").attr(
+                //                            "content",
+                //                            wpLocale.toString());
+                //                        try {
+                //                            response.getDocument().head().appendElement("meta").attr("name", CmsCoreData.DICT_NAME).attr(
+                //                                "content",
+                //                                RPC.encodeResponseForSuccess(
+                //                                    I_CmsCoreService.class.getMethod("prefetch"),
+                //                                    CmsCoreService.prefetch((HttpServletRequest)response.getRequest()),
+                //                                    CmsPrefetchSerializationPolicy.instance()));
+                //                        } catch (Exception e) {
+                //                            LOG.error(e.getLocalizedMessage(), e);
+                //                        }
+                //
+                //                        // inserting client messages into the page
+                //                        Element script = new Element(Tag.valueOf("script"), "").attr("type", "text/javascript");
+                //                        response.getDocument().head().appendChild(script);
+                //                        script.appendChild(new DataNode("//<![CDATA[\n"
+                //                            + org.opencms.gwt.ClientMessages.get().export(wpLocale, false)
+                //                            + "\n//]]>", script.baseUri()));
+                //
+                //                    }
+                //                });
             }
         });
     }
