@@ -15,6 +15,7 @@
 # do a 'No Assume unchanged' first.
 #
 /bin
+/test-bin
 /.project
 /.settings/*
 /test/data/WEB-INF/index
