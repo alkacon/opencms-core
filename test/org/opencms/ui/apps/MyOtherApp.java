@@ -24,24 +24,33 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
 
+import java.util.Locale;
+
+import com.vaadin.ui.Label;
 
 public class MyOtherApp implements I_CmsWorkplaceAppConfiguration {
 
+    public static class MyOtherAppComponent extends Label implements I_CmsWorkplaceApp {
+
+        public MyOtherAppComponent() {
+
+            super("MyOtherApp");
+        }
+    }
+
     public I_CmsWorkplaceApp getAppInstance() {
 
-        // TODO Auto-generated method stub
-        return null;
+        return new MyOtherAppComponent();
     }
 
     public String getAppPath() {
 
-        // TODO Auto-generated method stub
-        return null;
+        return "myotherapp";
     }
 
     public String getIcon() {
@@ -56,10 +65,14 @@ public class MyOtherApp implements I_CmsWorkplaceAppConfiguration {
         return null;
     }
 
+    public String getName(Locale locale) {
+
+        return "myotherapp";
+    }
+
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        // TODO Auto-generated method stub
-        return null;
+        return new CmsAppVisibilityStatus(true, true, "");
     }
 
 }

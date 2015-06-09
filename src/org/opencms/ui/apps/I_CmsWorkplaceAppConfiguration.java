@@ -29,6 +29,8 @@ package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
 
+import java.util.Locale;
+
 public interface I_CmsWorkplaceAppConfiguration {
 
     I_CmsWorkplaceApp getAppInstance();
@@ -37,7 +39,7 @@ public interface I_CmsWorkplaceAppConfiguration {
 
     String getIcon();
 
-    String getName();
+    String getName(Locale locale);
 
     CmsAppVisibilityStatus getVisibility(CmsObject cms);
 

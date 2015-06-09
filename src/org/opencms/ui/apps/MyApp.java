@@ -29,18 +29,28 @@ package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
 
+import java.util.Locale;
+
+import com.vaadin.ui.Label;
+
 public class MyApp implements I_CmsWorkplaceAppConfiguration {
+
+    public static class MyAppComponent extends Label implements I_CmsWorkplaceApp {
+
+        public MyAppComponent() {
+
+            super("MyApp");
+        }
+    }
 
     public I_CmsWorkplaceApp getAppInstance() {
 
-        // TODO Auto-generated method stub
-        return null;
+        return new MyAppComponent();
     }
 
     public String getAppPath() {
 
-        // TODO Auto-generated method stub
-        return null;
+        return "myapp";
     }
 
     public String getIcon() {
@@ -49,16 +59,14 @@ public class MyApp implements I_CmsWorkplaceAppConfiguration {
         return null;
     }
 
-    public String getName() {
+    public String getName(Locale locale) {
 
-        // TODO Auto-generated method stub
-        return "test";
+        return "myapp";
     }
 
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        // TODO Auto-generated method stub
-        return null;
+        return new CmsAppVisibilityStatus(true, true, null);
     }
 
 }

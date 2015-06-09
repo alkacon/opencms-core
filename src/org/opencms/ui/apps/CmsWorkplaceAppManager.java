@@ -28,33 +28,91 @@
 package org.opencms.ui.apps;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
+
+import com.google.common.collect.Maps;
 
 public class CmsWorkplaceAppManager {
 
-    private ServiceLoader<I_CmsWorkplaceAppConfiguration> m_appLoader;
+    public static class NavigationState {
 
-    private List<I_CmsWorkplaceAppConfiguration> m_appConfigurations;
+        public static final String PARAM_SEPARATOR = "$";
 
-    public CmsWorkplaceAppManager() {
+        private String m_viewName = "";
+        private String m_params = "";
 
-        m_appLoader = ServiceLoader.load(I_CmsWorkplaceAppConfiguration.class);
+        public NavigationState(String stateString) {
+
+            if (stateString.startsWith("!")) {
+                stateString = stateString.substring(1);
+            }
+            int separatorPos = stateString.indexOf(PARAM_SEPARATOR);
+            if (separatorPos > 0) {
+                m_viewName = stateString.substring(0, separatorPos);
+                m_params = stateString.substring(separatorPos + 1);
+            } else {
+                m_viewName = stateString;
+            }
+        }
+
+        String getParams() {
+
+            return m_params;
+        }
+
+        String getViewName() {
+
+            return m_viewName;
+
+        }
     }
 
-    public List<I_CmsWorkplaceAppConfiguration> getWorkplaceApps() {
+    private ServiceLoader<I_CmsWorkplaceAppConfiguration> m_appLoader;
 
-        if (m_appConfigurations == null) {
-            List<I_CmsWorkplaceAppConfiguration> appConfigurations = new ArrayList<I_CmsWorkplaceAppConfiguration>();
-            Iterator<I_CmsWorkplaceAppConfiguration> configs = m_appLoader.iterator();
-            while (configs.hasNext()) {
-                appConfigurations.add(configs.next());
-            }
-            m_appConfigurations = Collections.unmodifiableList(appConfigurations);
+    private Map<String, I_CmsWorkplaceAppConfiguration> m_appsById = Maps.newHashMap();
+
+    public static List<I_CmsWorkplaceAppConfiguration> loadAppsUsingServiceLoader() {
+
+        List<I_CmsWorkplaceAppConfiguration> appConfigurations = new ArrayList<I_CmsWorkplaceAppConfiguration>();
+        Iterator<I_CmsWorkplaceAppConfiguration> configs = ServiceLoader.load(I_CmsWorkplaceAppConfiguration.class).iterator();
+        while (configs.hasNext()) {
+            appConfigurations.add(configs.next());
         }
-        return m_appConfigurations;
+        return appConfigurations;
+    }
+
+    public void addAppConfigurations(Collection<I_CmsWorkplaceAppConfiguration> appConfigs) {
+
+        for (I_CmsWorkplaceAppConfiguration appConfig : appConfigs) {
+            m_appsById.put(appConfig.getAppPath(), appConfig);
+        }
+    }
+
+    public I_CmsWorkplaceAppConfiguration getAppConfiguration(String viewName) {
+
+        return m_appsById.get(viewName);
+    }
+
+    public Collection<I_CmsWorkplaceAppConfiguration> getWorkplaceApps() {
+
+        return m_appsById.values();
+    }
+
+    public void loadApps() {
+
+        m_appsById.clear();
+        addAppConfigurations(loadDefaultApps());
+        addAppConfigurations(loadAppsUsingServiceLoader());
+    }
+
+    protected Collection<I_CmsWorkplaceAppConfiguration> loadDefaultApps() {
+
+        return Arrays.<I_CmsWorkplaceAppConfiguration> asList(new MyApp());
     }
 
 }

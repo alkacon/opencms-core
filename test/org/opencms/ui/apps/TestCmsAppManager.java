@@ -30,7 +30,7 @@ package org.opencms.ui.apps;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
-import java.util.List;
+import java.util.Collection;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -93,7 +93,7 @@ public class TestCmsAppManager extends OpenCmsTestCase {
     public void testCollectAppConfigurations() throws Exception {
 
         CmsWorkplaceAppManager manager = new CmsWorkplaceAppManager();
-        List<I_CmsWorkplaceAppConfiguration> configs = manager.getWorkplaceApps();
+        Collection<I_CmsWorkplaceAppConfiguration> configs = manager.getWorkplaceApps();
 
         assertTrue("Should find apps", !configs.isEmpty());
     }

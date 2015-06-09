@@ -95,6 +95,7 @@ import org.opencms.site.CmsSiteMatcher;
 import org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
+import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.login.CmsLoginUI;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -185,6 +186,8 @@ public final class OpenCmsCore {
 
     /** The object used for resolving database user credentials. */
     private I_CmsCredentialsResolver m_credentialsResolver;
+
+    private CmsWorkplaceAppManager m_workplaceAppManager;
 
     /** List of configured directory default file names. */
     private List<String> m_defaultFiles;
@@ -367,6 +370,11 @@ public final class OpenCmsCore {
                 new Integer(m_instance.getRunLevel()),
                 errorCondition.key()));
         }
+    }
+
+    public CmsWorkplaceAppManager getWorkplaceAppManager() {
+
+        return m_workplaceAppManager;
     }
 
     /**
@@ -1405,6 +1413,8 @@ public final class OpenCmsCore {
             CmsLoginUI.setAdminCmsObject(adminCms);
             //m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
             m_adeManager = new CmsADEManager(adminCms, m_memoryMonitor, systemConfiguration);
+            m_workplaceAppManager = new CmsWorkplaceAppManager();
+            m_workplaceAppManager.loadApps();
             m_templateContextManager = new CmsTemplateContextManager(adminCms);
             m_workflowManager = systemConfiguration.getWorkflowManager();
             if (m_workflowManager == null) {
