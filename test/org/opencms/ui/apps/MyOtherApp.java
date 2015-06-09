@@ -61,6 +61,11 @@ public class MyOtherApp implements I_CmsWorkplaceAppConfiguration {
         return "myotherapp";
     }
 
+    public String getHelpText(Locale locale) {
+
+        return null;
+    }
+
     public Resource getIcon() {
 
         return FontAwesome.AMBULANCE;

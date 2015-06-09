@@ -61,6 +61,11 @@ public class MyApp implements I_CmsWorkplaceAppConfiguration {
         return "myapp";
     }
 
+    public String getHelpText(Locale locale) {
+
+        return "The quick brown fox jumps over the lazy dog.";
+    }
+
     public Resource getIcon() {
 
         return FontAwesome.USER;

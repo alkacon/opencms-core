@@ -52,6 +52,8 @@ public interface I_CmsWorkplaceAppConfiguration {
      */
     String getAppPath();
 
+    String getHelpText(Locale locale);
+
     /**
      * Returns the app icon resource.<p>
      * 

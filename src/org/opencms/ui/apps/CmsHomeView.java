@@ -76,6 +76,8 @@ public class CmsHomeView extends CssLayout implements View {
         if (icon != null) {
             button.setIcon(icon);
         }
+        String helpText = appConfig.getHelpText(locale);
+        button.setDescription(helpText);
         return button;
     }
 }
