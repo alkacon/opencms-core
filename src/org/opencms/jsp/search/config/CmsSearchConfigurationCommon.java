@@ -39,6 +39,8 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     private final String m_queryParam;
     /** The request parameter for the last query. */
     private final String m_lastQueryParam;
+    /** A flag, indicating if special query characters should be escaped in the query string */
+    private final boolean m_escapeQueryChars;
     /** The request parameter send to indicate that this is not the first load of the search form. */
     private final String m_reloadedParam;
     /** A modifier for the search query. */
@@ -59,6 +61,7 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     /** Constructor for the common search configuration, where all configuration parameters are provided.
      * @param queryParam The query request param used by the search form.
      * @param lastQueryParam The last-query request param used by the search form.
+     * @param escapeQueryChars A flag, indicating if special query characters in the query string should be escaped (default <code>true</code>).
      * @param reloadedParam The first-call request param used by the search form.
      * @param seachForEmptyQuery A flag, indicating if the empty query should be interpreted as "*:*" or if no search should be performed.
      * @param ignoreQuery A flag, indicating if the query param's values should be used for Solr query generation.
@@ -71,6 +74,7 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     public CmsSearchConfigurationCommon(
         final String queryParam,
         final String lastQueryParam,
+        final Boolean escapeQueryChars,
         final String reloadedParam,
         final Boolean seachForEmptyQuery,
         final Boolean ignoreQuery,
@@ -82,6 +86,7 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
 
         m_queryParam = queryParam;
         m_lastQueryParam = lastQueryParam;
+        m_escapeQueryChars = escapeQueryChars != null ? escapeQueryChars.booleanValue() : true;
         m_reloadedParam = reloadedParam;
         m_searchForEmptyQuery = seachForEmptyQuery != null ? seachForEmptyQuery.booleanValue() : false;
         m_ignoreQuery = ignoreQuery != null ? ignoreQuery.booleanValue() : false;
@@ -99,6 +104,14 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     public Map<String, String> getAdditionalParameters() {
 
         return m_additionalParameters;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon#getEscapeQueryChars()
+     */
+    public boolean getEscapeQueryChars() {
+
+        return m_escapeQueryChars;
     }
 
     /**

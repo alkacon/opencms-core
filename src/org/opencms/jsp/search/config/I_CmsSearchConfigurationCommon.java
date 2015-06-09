@@ -37,6 +37,11 @@ public interface I_CmsSearchConfigurationCommon {
      */
     Map<String, String> getAdditionalParameters();
 
+    /** Returns a flag, indicating if special query characters (e.g., ":", "(", "[" ...) should be escaped in the query string.
+     * @return A flag, indicating if special query characters (e.g., ":", "(", "[" ...) should be escaped in the query string.
+     */
+    boolean getEscapeQueryChars();
+
     /** Returns the extra params given to Solr.
      * @return The extra params given to Solr - in format "p1=v1&p2=v2".
      */

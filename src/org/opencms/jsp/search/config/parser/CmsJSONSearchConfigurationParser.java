@@ -72,6 +72,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** A JSON key. */
     private static final String JSON_KEY_LAST_QUERYPARAM = "lastqueryparam";
     /** A JSON key. */
+    private static final String JSON_KEY_ESCAPE_QUERY_CHARACTERS = "escapequerychars";
+    /** A JSON key. */
     private static final String JSON_KEY_RELOADED_PARAM = "reloadedparam";
     /** A JSON key. */
     private static final String JSON_KEY_SEARCH_FOR_EMPTY_QUERY = "searchforemptyquery";
@@ -211,6 +213,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         return new CmsSearchConfigurationCommon(
             getQueryParam(),
             getLastQueryParam(),
+            parseOptionalBooleanValue(m_configObject, JSON_KEY_ESCAPE_QUERY_CHARACTERS),
             getFirstCallParam(),
             getSearchForEmtpyQuery(),
             getIgnoreQuery(),
