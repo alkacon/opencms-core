@@ -28,9 +28,12 @@
 package org.opencms.ui.apps;
 
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.I_CmsComponentFactory;
+import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -40,25 +43,55 @@ import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-public class CmsAppView extends CustomComponent implements View {
+public class CmsAppView implements View, I_CmsComponentFactory {
+
+    class AppViewComponent extends CustomComponent {
+
+        public AppViewComponent(I_CmsWorkplaceApp app) {
+
+            HorizontalSplitPanel hp = new HorizontalSplitPanel();
+            hp.setSplitPosition(300, Sizeable.UNITS_PIXELS);
+            Component menu = createMenu();
+            hp.setFirstComponent(menu);
+            hp.setSecondComponent(app);
+
+            setCompositionRoot(hp);
+            hp.setHeight("100%");
+            setHeight("100%");
+        }
+    }
 
     private I_CmsWorkplaceAppConfiguration m_appConfig;
+
+    private I_CmsWorkplaceApp m_app;
 
     public CmsAppView(I_CmsWorkplaceAppConfiguration appConfig) {
 
         m_appConfig = appConfig;
-        HorizontalSplitPanel hp = new HorizontalSplitPanel();
-        Component menu = createMenu();
-        hp.setFirstComponent(menu);
-        hp.setSecondComponent(appConfig.getAppInstance());
+    }
 
-        setCompositionRoot(hp);
-        hp.setHeight("100%");
-        setHeight("100%");
+    public static CmsAppWorkplaceUi getWorkplaceUi() {
+
+        CmsAppWorkplaceUi ui = (CmsAppWorkplaceUi)A_CmsUI.get();
+        return ui;
+    }
+
+    public Component createComponent() {
+
+        if (m_app == null) {
+            m_app = m_appConfig.getAppInstance();
+            return new AppViewComponent(m_app);
+        }
+        return null;
     }
 
     public void enter(ViewChangeEvent event) {
 
+        String newState = event.getParameters();
+        if (newState.startsWith(NavigationState.PARAM_SEPARATOR)) {
+            newState = newState.substring(1);
+        }
+        m_app.onStateChange(newState);
     }
 
     protected Component createMenu() {
@@ -71,7 +104,7 @@ public class CmsAppView extends CustomComponent implements View {
 
             public void buttonClick(ClickEvent event) {
 
-                CmsAppWorkplaceUi ui = (CmsAppWorkplaceUi)A_CmsUI.get();
+                CmsAppWorkplaceUi ui = getWorkplaceUi();
                 ui.showHome();
             }
         });

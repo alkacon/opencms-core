@@ -25,12 +25,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps;
+package org.opencms.ui;
 
 import com.vaadin.ui.Component;
 
-public interface I_CmsWorkplaceApp extends Component {
+public interface I_CmsComponentFactory {
 
-    public void onStateChange(String state);
+    Component createComponent();
 
 }

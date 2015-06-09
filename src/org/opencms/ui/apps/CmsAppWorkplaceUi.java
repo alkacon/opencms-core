@@ -29,6 +29,7 @@ package org.opencms.ui.apps;
 
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.I_CmsComponentFactory;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 
 import com.vaadin.navigator.Navigator;
@@ -40,7 +41,19 @@ import com.vaadin.ui.Component;
 
 public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvider {
 
+    private I_CmsWorkplaceAppConfiguration m_currentApp;
+
     public static final String VIEW_HOME = "home";
+
+    public void changeCurrentAppState(String state) {
+
+        String newFragment = "!"
+            + getViewName(getPage().getUriFragment())
+            + "/"
+            + NavigationState.PARAM_SEPARATOR
+            + state;
+        getPage().setUriFragment(newFragment, false);
+    }
 
     public View getView(String viewName) {
 
@@ -73,17 +86,24 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
 
     public void showView(View view) {
 
-        setContent((Component)view);
+        Component component = null;
+        if (view instanceof I_CmsComponentFactory) {
+            component = ((I_CmsComponentFactory)view).createComponent();
+        } else if (view instanceof Component) {
+            component = (Component)view;
+        }
+        if (component != null) {
+            setContent(component);
+        }
     }
 
     @Override
     protected void init(VaadinRequest request) {
 
         OpenCms.getWorkplaceAppManager().loadApps();
-
         Navigator navigator = new Navigator(this, new Navigator.UriFragmentManager(getPage()), this);
         navigator.addProvider(this);
-        navigator.navigateTo("home");
+        showHome();
     }
 
 }

@@ -41,6 +41,12 @@ public class MyApp implements I_CmsWorkplaceAppConfiguration {
 
             super("MyApp");
         }
+
+        public void onStateChange(String state) {
+
+            // TODO Auto-generated method stub
+
+        }
     }
 
     public I_CmsWorkplaceApp getAppInstance() {

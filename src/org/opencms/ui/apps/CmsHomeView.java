@@ -54,7 +54,6 @@ public class CmsHomeView extends CssLayout implements View {
                 addComponent(appIcon);
             }
         }
-
     }
 
     public void enter(ViewChangeEvent event) {

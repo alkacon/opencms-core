@@ -58,6 +58,9 @@ public class CmsWorkplaceAppManager {
             } else {
                 m_viewName = stateString;
             }
+            if (m_viewName.endsWith("/")) {
+                m_viewName = m_viewName.substring(0, m_viewName.length() - 1);
+            }
         }
 
         String getParams() {
