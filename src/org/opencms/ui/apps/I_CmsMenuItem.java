@@ -29,7 +29,7 @@ package org.opencms.ui.apps;
 
 import java.util.Locale;
 
-import com.vaadin.server.Resource;
+import com.vaadin.ui.Component;
 
 /**
  * Workplace view menu item.<p>
@@ -37,23 +37,11 @@ import com.vaadin.server.Resource;
 public interface I_CmsMenuItem {
 
     /**
-     * Executes the item action.<p>
-     */
-    void executeAction();
-
-    /**
-     * Returns the item display name.<p>
+     * Returns the item ui component.<p>
      * 
      * @param locale the user locale
      * 
-     * @return the display name
+     * @return the component
      */
-    String getDisplayName(Locale locale);
-
-    /**
-     * Return the item icon.<p>
-     * 
-     * @return the icon
-     */
-    Resource getIcon();
+    Component getItemComponent(Locale locale);
 }

@@ -34,9 +34,6 @@ import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
@@ -72,6 +69,9 @@ public class CmsAppView implements View, I_CmsComponentFactory {
         return ui;
     }
 
+    /**
+     * @see org.opencms.ui.I_CmsComponentFactory#createComponent()
+     */
     public Component createComponent() {
 
         if (m_app == null) {
@@ -116,19 +116,10 @@ public class CmsAppView implements View, I_CmsComponentFactory {
         menuItemsLayout.setPrimaryStyleName("valo-menuitems");
         menu.addComponent(menuItemsLayout);
         CmsAppWorkplaceUi ui = (CmsAppWorkplaceUi)A_CmsUI.get();
-        for (final I_CmsMenuItem item : ui.getMenuItems()) {
-            Button button = new Button(item.getDisplayName(getWorkplaceUi().getLocale()), item.getIcon());
+        for (I_CmsMenuItem item : ui.getMenuItems()) {
+            Component button = item.getItemComponent(getWorkplaceUi().getLocale());
             button.setPrimaryStyleName("valo-menu-item");
             menuItemsLayout.addComponent(button);
-            button.addClickListener(new ClickListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void buttonClick(ClickEvent event) {
-
-                    item.executeAction();
-                }
-            });
         }
 
         return menu;

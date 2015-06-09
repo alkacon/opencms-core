@@ -42,7 +42,6 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
 import com.vaadin.navigator.ViewProvider;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Component;
 
@@ -78,7 +77,7 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
     public List<I_CmsMenuItem> getMenuItems() {
 
         List<I_CmsMenuItem> items = new ArrayList<I_CmsMenuItem>();
-        items.add(new I_CmsMenuItem() {
+        items.add(new A_CmsMenuItem("", FontAwesome.HOME) {
 
             public void executeAction() {
 
@@ -86,15 +85,9 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
                 ui.showHome();
             }
 
-            public String getDisplayName(Locale locale) {
+            protected String getLabel(Locale locale) {
 
-                // TODO Auto-generated method stub
                 return "Home";
-            }
-
-            public Resource getIcon() {
-
-                return FontAwesome.HOME;
             }
         });
         return items;
