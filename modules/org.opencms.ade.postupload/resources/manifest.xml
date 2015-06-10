@@ -1,172 +1,193 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <export>
-  <info>
-    <creator>Admin</creator>
+	<info>
+		<creator>Admin</creator>
     <opencms_version>9.0.0</opencms_version>
     <createdate>Mon, 09 Jul 2012 08:33:01 GMT</createdate>
-    <infoproject>Offline</infoproject>
-    <export_version>7</export_version>
-  </info>
-  <module>
-    <name>org.opencms.ade.postupload</name>
-    <nicename><![CDATA[OpenCms 9 post-upload dialog]]></nicename>
-    <group>OpenCms ADE</group>
-    <class/>
-    <description><![CDATA[This module provides a dialog for editing the configured default properties of a file after uploading it.<br>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<module>
+		<name>org.opencms.ade.postupload</name>
+		<nicename><![CDATA[OpenCms 9 post-upload dialog]]></nicename>
+		<group>OpenCms ADE</group>
+		<class/>
+		<description><![CDATA[This module provides a dialog for editing the configured default properties of a file after uploading it.<br>
 <i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
-    <version>9.5.0</version>
-    <authorname/>
-    <authoremail/>
-    <datecreated/>
-    <userinstalled/>
-    <dateinstalled/>
-    <dependencies>
-      <dependency name="org.opencms.ade.config" version="9.0.0"/>
-    </dependencies>
-    <exportpoints>
-      <exportpoint uri="/system/modules/org.opencms.ade.postupload/resources/" destination="resources/ade/"/>
-    </exportpoints>
-    <resources>
-      <resource uri="/system/modules/org.opencms.ade.postupload/"/>
-    </resources>
-  </module>
-  <files>
-    <file>
-      <destination>system</destination>
-      <type>folder</type>
+		<version>9.5.1</version>
+		<authorname/>
+		<authoremail/>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies>
+			<dependency name="org.opencms.ade.config" version="9.0.0"/>
+		</dependencies>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.ade.postupload/resources/" destination="resources/ade/"/>
+		</exportpoints>
+		<resources>
+			<resource uri="/system/modules/org.opencms.ade.postupload/"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
       <uuidstructure>a3a72feb-a0f5-11e1-b4cc-9d057d88828d</uuidstructure>
       <datelastmodified>Fri, 18 May 2012 14:27:47 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
+			<userlastmodified>Admin</userlastmodified>
       <datecreated>Fri, 18 May 2012 14:27:47 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol>
-        <accessentry>
-          <uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-          <flags>514</flags>
-          <permissionset>
-            <allowed>1</allowed>
-            <denied>0</denied>
-          </permissionset>
-        </accessentry>
-      </accesscontrol>
-    </file>
-    <file>
-      <destination>system/modules</destination>
-      <type>folder</type>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
       <uuidstructure>a49a68c7-a0f5-11e1-b4cc-9d057d88828d</uuidstructure>
       <datelastmodified>Fri, 18 May 2012 14:27:48 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
+			<userlastmodified>Admin</userlastmodified>
       <datecreated>Fri, 18 May 2012 14:27:48 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol>
-        <accessentry>
-          <uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-          <flags>514</flags>
-          <permissionset>
-            <allowed>5</allowed>
-            <denied>0</denied>
-          </permissionset>
-        </accessentry>
-      </accesscontrol>
-    </file>
-    <file>
-      <destination>system/modules/org.opencms.ade.postupload</destination>
-      <type>folder</type>
-      <uuidstructure>09fc5e87-c4e3-11e1-8bdc-9d057d88828d</uuidstructure>
-      <datelastmodified>Tue, 03 Jul 2012 07:45:20 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 03 Jul 2012 07:45:20 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <destination>system/modules/org.opencms.ade.postupload/pages</destination>
-      <type>folder</type>
-      <uuidstructure>62821ccb-c4e3-11e1-8bdc-9d057d88828d</uuidstructure>
-      <datelastmodified>Tue, 03 Jul 2012 07:47:48 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 03 Jul 2012 07:47:48 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <source>system/modules/org.opencms.ade.postupload/pages/postupload.jsp</source>
-      <destination>system/modules/org.opencms.ade.postupload/pages/postupload.jsp</destination>
-      <type>jsp</type>
-      <uuidstructure>8b5d8dfd-c4e3-11e1-8bdc-9d057d88828d</uuidstructure>
-      <uuidresource>8b5d8dfe-c4e3-11e1-8bdc-9d057d88828d</uuidresource>
-      <datelastmodified>Tue, 03 Jul 2012 07:50:38 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 03 Jul 2012 07:48:57 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties>
-        <property type="shared">
-          <name>export</name>
-          <value><![CDATA[false]]></value>
-        </property>
-      </properties>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <source>system/modules/org.opencms.ade.postupload/pages/postupload_useconfig.jsp</source>
-      <destination>system/modules/org.opencms.ade.postupload/pages/postupload_useconfig.jsp</destination>
-      <type>jsp</type>
-      <uuidstructure>ea643811-375c-4b14-ad4c-3df748f88ea2</uuidstructure>
-      <uuidresource>f782375a-1c07-4a01-ba1b-64595e157658</uuidresource>
-      <datelastmodified>Tue, 03 Jul 2012 07:50:38 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 03 Jul 2012 07:48:57 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties>
-        <property type="shared">
-          <name>export</name>
-          <value><![CDATA[false]]></value>
-        </property>
-      </properties>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <destination>system/modules/org.opencms.ade.postupload/resources</destination>
-      <type>folder</type>
-      <uuidstructure>17e66189-c4e3-11e1-8bdc-9d057d88828d</uuidstructure>
-      <datelastmodified>Tue, 03 Jul 2012 07:45:43 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 03 Jul 2012 07:45:43 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-    <file>
-      <destination>system/modules/org.opencms.ade.postupload/resources/postupload</destination>
-      <type>folder</type>
-      <uuidstructure>aebaff9b-6026-4609-be22-60d19c195638</uuidstructure>
-      <datelastmodified>Tue, 03 Jul 2012 07:45:43 GMT</datelastmodified>
-      <userlastmodified>Admin</userlastmodified>
-      <datecreated>Tue, 03 Jul 2012 07:45:43 GMT</datecreated>
-      <usercreated>Admin</usercreated>
-      <flags>0</flags>
-      <properties/>
-      <relations/>
-      <accesscontrol/>
-    </file>
-  </files>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.postupload</destination>
+			<type>folder</type>
+			<uuidstructure>09fc5e87-c4e3-11e1-8bdc-9d057d88828d</uuidstructure>
+			<datelastmodified>Tue, 03 Jul 2012 07:45:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 Jul 2012 07:45:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.postupload/pages</destination>
+			<type>folder</type>
+			<uuidstructure>62821ccb-c4e3-11e1-8bdc-9d057d88828d</uuidstructure>
+			<datelastmodified>Tue, 03 Jul 2012 07:47:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 Jul 2012 07:47:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.postupload/pages/postupload.jsp</source>
+			<destination>system/modules/org.opencms.ade.postupload/pages/postupload.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>8b5d8dfd-c4e3-11e1-8bdc-9d057d88828d</uuidstructure>
+			<uuidresource>8b5d8dfe-c4e3-11e1-8bdc-9d057d88828d</uuidresource>
+			<datelastmodified>Tue, 03 Jul 2012 07:50:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 Jul 2012 07:48:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.postupload/pages/postupload_basicproperties.jsp</source>
+			<destination>system/modules/org.opencms.ade.postupload/pages/postupload_basicproperties.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>0da00905-0f45-11e5-b81f-e9e4a966f961</uuidstructure>
+			<uuidresource>0da00906-0f45-11e5-b81f-e9e4a966f961</uuidresource>
+			<datelastmodified>Wed, 10 Jun 2015 07:46:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 10 Jun 2015 07:48:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.postupload/pages/postupload_useconfig.jsp</source>
+			<destination>system/modules/org.opencms.ade.postupload/pages/postupload_useconfig.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>ea643811-375c-4b14-ad4c-3df748f88ea2</uuidstructure>
+			<uuidresource>f782375a-1c07-4a01-ba1b-64595e157658</uuidresource>
+			<datelastmodified>Tue, 03 Jul 2012 07:50:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 Jul 2012 07:48:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.postupload/resources</destination>
+			<type>folder</type>
+			<uuidstructure>17e66189-c4e3-11e1-8bdc-9d057d88828d</uuidstructure>
+			<datelastmodified>Tue, 03 Jul 2012 07:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 Jul 2012 07:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.postupload/resources/postupload</destination>
+			<type>folder</type>
+			<uuidstructure>aebaff9b-6026-4609-be22-60d19c195638</uuidstructure>
+			<datelastmodified>Tue, 03 Jul 2012 07:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 03 Jul 2012 07:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
 </export>

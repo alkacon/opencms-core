@@ -18,7 +18,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
  * Provides a dialog.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsUploadPropertyDialog {
@@ -137,7 +137,7 @@ public class CmsUploadPropertyDialog {
 
     /**
      * Returns <code>true</code> if we are currently in the explorer mode.<p>
-     * 
+     *
      * @return <code>true</code> if we are currently in the explorer mode
      */
     public native boolean isExplorerMode() /*-{
@@ -150,7 +150,7 @@ public class CmsUploadPropertyDialog {
 
     /**
      * Returns if the dialog is in iFrame mode.<p>
-     * 
+     *
      * @return <code>true</code> if the dialog is in iFrame mode
      */
     public boolean isIFrameMode() {
@@ -179,7 +179,7 @@ public class CmsUploadPropertyDialog {
 
     /**
      * Adds a close "button" to the top of the popup.<p>
-     * 
+     *
      * @param cmd the command that should be executed when the close button is clicked
      */
     public void setCloseCmd(final Command cmd) {
@@ -189,9 +189,9 @@ public class CmsUploadPropertyDialog {
 
     /**
      * Delegation method.<p>
-     * 
+     *
      * @param height the height
-     * 
+     *
      * @see org.opencms.gwt.client.ui.CmsFrameDialog#setHeight(int)
      */
     public void setHeight(int height) {
@@ -202,9 +202,9 @@ public class CmsUploadPropertyDialog {
 
     /**
      * Delegation method.<p>
-     * 
+     *
      * @param title the title
-     * 
+     *
      * @see org.opencms.gwt.client.ui.CmsFrameDialog#setTitle(java.lang.String)
      */
     public void setTitle(String title) {
@@ -214,9 +214,9 @@ public class CmsUploadPropertyDialog {
 
     /**
      * Delegation method.<p>
-     * 
+     *
      * @param width the width
-     * 
+     *
      * @see org.opencms.gwt.client.ui.CmsFrameDialog#setWidth(int)
      */
     public void setWidth(int width) {
@@ -299,7 +299,7 @@ public class CmsUploadPropertyDialog {
 
     /**
      * Returns the dialog service instance.<p>
-     * 
+     *
      * @return the dialog service instance
      */
     protected I_CmsPostUploadDialogServiceAsync getDialogService() {
@@ -315,7 +315,7 @@ public class CmsUploadPropertyDialog {
     /**
      * Retrieves the resource information from the server,
      * creates a the dialogs content and puts the content into the mainpanel.<p>
-     * 
+     *
      * @param uuid the structure id to show the dialog for
      */
     protected void loadDialogBean(final CmsUUID uuid) {
@@ -328,7 +328,11 @@ public class CmsUploadPropertyDialog {
             @Override
             public void execute() {
 
-                getDialogService().load(uuid, m_dialogData.isUsePropertyConfiguration(), this);
+                getDialogService().load(
+                    uuid,
+                    m_dialogData.isUsePropertyConfiguration(),
+                    m_dialogData.isAddBasicProperties(),
+                    this);
             }
 
             /**
@@ -354,7 +358,7 @@ public class CmsUploadPropertyDialog {
 
     /**
      * Updates the dialog.<p>
-     * 
+     *
      * @param result the result
      */
     protected void updateDialog(CmsPostUploadDialogPanelBean result) {

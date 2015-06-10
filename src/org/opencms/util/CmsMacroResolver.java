@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,12 +27,14 @@
 
 package org.opencms.util;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -51,14 +53,14 @@ import org.apache.commons.logging.Log;
 
 /**
  * Resolves macros in the form of <code>%(key)</code> or <code>${key}</code> in an input String.<p>
- * 
- * Starting with OpenCms 7.0, the preferred form of a macro is <code>%(key)</code>. This is to 
+ *
+ * Starting with OpenCms 7.0, the preferred form of a macro is <code>%(key)</code>. This is to
  * avoid conflicts / confusion with the JSP EL, which also uses the <code>${key}</code> syntax.<p>
- * 
+ *
  * The macro names that can be resolved depend of the context objects provided to the resolver
  * using the <code>set...</code> methods.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {
 
@@ -160,12 +162,12 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** Identified for "magic" parameter commands. */
     static final String[] VALUE_NAMES_ARRAY = {"uri", // 0
-        "filename", // 1  
-        "folder", // 2 
-        "default.encoding", // 3  
+        "filename", // 1
+        "folder", // 2
+        "default.encoding", // 3
         "remoteaddress", // 4
         "webapp", // 5
-        "webbasepath", // 6 
+        "webbasepath", // 6
         "version", // 7
         "versionid" // 8
     };
@@ -201,11 +203,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     private Map<String, Factory> m_factories;
 
     /**
-     * Adds macro delimiters to the given input, 
+     * Adds macro delimiters to the given input,
      * for example <code>key</code> becomes <code>%(key)</code>.<p>
-     * 
+     *
      * @param input the input to format as a macro
-     * 
+     *
      * @return the input formatted as a macro
      */
     public static String formatMacro(String input) {
@@ -221,9 +223,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /**
      * Returns <code>true</code> if the given input String if formatted like a macro,
      * that is it starts with <code>{@link I_CmsMacroResolver#MACRO_DELIMITER_OLD} +
-     * {@link I_CmsMacroResolver#MACRO_START_OLD}</code> and ends with 
+     * {@link I_CmsMacroResolver#MACRO_START_OLD}</code> and ends with
      * <code>{@link I_CmsMacroResolver#MACRO_END_OLD}</code>.<p>
-     * 
+     *
      * @param input the input to check for a macro
      * @return <code>true</code> if the given input String if formatted like a macro
      */
@@ -238,10 +240,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /**
      * Returns <code>true</code> if the given input String is a macro equal to the given macro name.<p>
-     * 
+     *
      * @param input the input to check for a macro
      * @param macroName the macro name to check for
-     * 
+     *
      * @return <code>true</code> if the given input String is a macro equal to the given macro name
      */
     public static boolean isMacro(String input, String macroName) {
@@ -254,10 +256,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /**
      * Returns a macro for the given localization key with the given parameters.<p>
-     * 
+     *
      * @param keyName the name of the localized key
      * @param params the optional parameter array
-     * 
+     *
      * @return a macro for the given localization key with the given parameters
      */
     public static String localizedKeyMacro(String keyName, Object[] params) {
@@ -281,7 +283,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /**
      * Factory method to create a new {@link CmsMacroResolver} instance.<p>
-     * 
+     *
      * @return a new instance of a {@link CmsMacroResolver}
      */
     public static CmsMacroResolver newInstance() {
@@ -289,20 +291,38 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         return new CmsMacroResolver();
     }
 
+    /** Returns a new macro resolver that loads message keys from the workplace bundle in the user setting's language.
+     * @param cms the CmsObject.
+     * @return a new macro resolver with messages from the workplace bundle in the current users locale.
+     */
+    public static I_CmsMacroResolver newWorkplaceLocaleResolver(final CmsObject cms) {
+
+        // Resolve macros in the property configuration
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.setCmsObject(cms);
+        CmsUserSettings userSettings = new CmsUserSettings(cms.getRequestContext().getCurrentUser());
+        CmsMultiMessages multimessages = new CmsMultiMessages(userSettings.getLocale());
+        multimessages.addMessages(OpenCms.getWorkplaceManager().getMessages(userSettings.getLocale()));
+        resolver.setMessages(multimessages);
+        resolver.setKeepEmptyMacros(true);
+
+        return resolver;
+    }
+
     /**
      * Resolves the macros in the given input using the provided parameters.<p>
-     * 
+     *
      * A macro in the form <code>%(key)</code> or <code>${key}</code> in the content is replaced with it's assigned value
-     * returned by the <code>{@link I_CmsMacroResolver#getMacroValue(String)}</code> method of the given 
+     * returned by the <code>{@link I_CmsMacroResolver#getMacroValue(String)}</code> method of the given
      * <code>{@link I_CmsMacroResolver}</code> instance.<p>
-     * 
+     *
      * If a macro is found that can not be mapped to a value by the given macro resolver,
      * it is left untouched in the input.<p>
-     * 
+     *
      * @param input the input in which to resolve the macros
      * @param cms the OpenCms user context to use when resolving macros
      * @param messages the message resource bundle to use when resolving macros
-     * 
+     *
      * @return the input with the macros resolved
      */
     public static String resolveMacros(String input, CmsObject cms, CmsMessages messages) {
@@ -316,18 +336,18 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /**
      * Resolves macros in the provided input String using the given macro resolver.<p>
-     * 
+     *
      * A macro in the form <code>%(key)</code> or <code>${key}</code> in the content is replaced with it's assigned value
-     * returned by the <code>{@link I_CmsMacroResolver#getMacroValue(String)}</code> method of the given 
+     * returned by the <code>{@link I_CmsMacroResolver#getMacroValue(String)}</code> method of the given
      * <code>{@link I_CmsMacroResolver}</code> instance.<p>
-     * 
+     *
      * If a macro is found that can not be mapped to a value by the given macro resolver,
      * <code>{@link I_CmsMacroResolver#isKeepEmptyMacros()}</code> controls if the macro is replaced by
      * an empty String, or is left untouched in the input.<p>
-     * 
+     *
      * @param input the input in which to resolve the macros
      * @param resolver the macro resolver to use
-     * 
+     *
      * @return the input with all macros resolved
      */
     public static String resolveMacros(final String input, I_CmsMacroResolver resolver) {
@@ -443,13 +463,13 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     }
 
     /**
-     * Strips the macro delimiters from the given input, 
+     * Strips the macro delimiters from the given input,
      * for example <code>%(key)</code> or <code>${key}</code> becomes <code>key</code>.<p>
-     * 
+     *
      * In case the input is not a macro, <code>null</code> is returned.<p>
-     * 
+     *
      * @param input the input to strip
-     * 
+     *
      * @return the macro stripped from the input, or <code>null</code>
      */
     public static String stripMacro(String input) {
@@ -462,11 +482,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /**
      * Adds a macro whose value will be dynamically generated at macro resolution time.<p>
-     * 
+     *
      * The value will be generated for each occurence of the macro in a string.<p>
-     * 
-     * @param name the name of the macro 
-     * @param factory the macro value generator 
+     *
+     * @param name the name of the macro
+     * @param factory the macro value generator
      */
     public void addDynamicMacro(String name, Factory factory) {
 
@@ -478,7 +498,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /**
      * Adds a customized macro to this macro resolver.<p>
-     * 
+     *
      * @param key the macro to add
      * @param value the value to return if the macro is encountered
      */
@@ -515,7 +535,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
             if (m_jspPageContext.getRequest() != null) {
                 if (macro.startsWith(CmsMacroResolver.KEY_REQUEST_PARAM)) {
-                    // the key is a request parameter  
+                    // the key is a request parameter
                     macro = macro.substring(CmsMacroResolver.KEY_REQUEST_PARAM.length());
                     String result = null;
                     if (m_parameterMap != null) {
@@ -824,10 +844,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /**
      * Resolves the macros in the given input.<p>
-     * 
-     * Calls <code>{@link #resolveMacros(String)}</code> until no more macros can 
-     * be resolved in the input. This way "nested" macros in the input are resolved as well.<p> 
-     * 
+     *
+     * Calls <code>{@link #resolveMacros(String)}</code> until no more macros can
+     * be resolved in the input. This way "nested" macros in the input are resolved as well.<p>
+     *
      * @see org.opencms.util.I_CmsMacroResolver#resolveMacros(java.lang.String)
      */
     public String resolveMacros(String input) {
@@ -851,11 +871,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /**
      * Provides a set of additional macros to this macro resolver.<p>
-     * 
+     *
      * Macros added with {@link #addMacro(String, String)} are added to the same set
-     * 
+     *
      * @param additionalMacros the additional macros to add
-     * 
+     *
      * @return this instance of the macro resolver
      */
     public CmsMacroResolver setAdditionalMacros(Map<String, String> additionalMacros) {
@@ -866,9 +886,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /**
      * Provides an OpenCms user context to this macro resolver, required to resolve certain macros.<p>
-     * 
+     *
      * @param cms the OpenCms user context
-     * 
+     *
      * @return this instance of the macro resolver
      */
     public CmsMacroResolver setCmsObject(CmsObject cms) {
@@ -879,9 +899,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /**
      * Provides a JSP page context to this macro resolver, required to resolve certain macros.<p>
-     * 
+     *
      * @param jspPageContext the JSP page context to use
-     * 
+     *
      * @return this instance of the macro resolver
      */
     public CmsMacroResolver setJspPageContext(PageContext jspPageContext) {
@@ -893,11 +913,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /**
      * Controls of macros that can't be resolved are left unchanged in the input,
      * or are replaced with an empty String.<p>
-     * 
+     *
      * @param keepEmptyMacros the replacement flag to use
-     * 
+     *
      * @return this instance of the macro resolver
-     * 
+     *
      * @see #isKeepEmptyMacros()
      */
     public CmsMacroResolver setKeepEmptyMacros(boolean keepEmptyMacros) {
@@ -907,11 +927,11 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     }
 
     /**
-     * Provides a set of <code>{@link CmsMessages}</code> to this macro resolver, 
+     * Provides a set of <code>{@link CmsMessages}</code> to this macro resolver,
      * required to resolve localized macros.<p>
-     * 
+     *
      * @param messages the message resource bundle to use
-     * 
+     *
      * @return this instance of the macro resolver
      */
     public CmsMacroResolver setMessages(CmsMessages messages) {
@@ -922,7 +942,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /**
      * Sets the parameter map.<p>
-     * 
+     *
      * @param parameterMap the parameter map to set
      */
     public void setParameterMap(Map<String, String[]> parameterMap) {
@@ -932,9 +952,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /**
      * Provides a resource name to this macro resolver, required to resolve certain macros.<p>
-     * 
+     *
      * @param resourceName the resource name to use
-     * 
+     *
      * @return this instance of the macro resolver
      */
     public CmsMacroResolver setResourceName(String resourceName) {

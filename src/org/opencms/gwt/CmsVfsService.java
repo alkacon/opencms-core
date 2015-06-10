@@ -28,7 +28,6 @@
 package org.opencms.gwt;
 
 import org.opencms.ade.galleries.CmsPreviewService;
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -78,7 +77,6 @@ import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsLoaderException;
@@ -327,14 +325,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         propertyConfig = mergedConfig;
 
         // Resolve macros in the property configuration
-        CmsMacroResolver resolver = new CmsMacroResolver();
-        resolver.setCmsObject(cms);
-        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().getCurrentUser());
-        CmsMultiMessages multimessages = new CmsMultiMessages(settings.getLocale());
-        multimessages.addMessages(OpenCms.getWorkplaceManager().getMessages(settings.getLocale()));
-        resolver.setMessages(multimessages);
-        resolver.setKeepEmptyMacros(true);
-        propertyConfig = CmsXmlContentPropertyHelper.resolveMacrosInProperties(propertyConfig, resolver);
+        propertyConfig = CmsXmlContentPropertyHelper.resolveMacrosInProperties(
+            propertyConfig,
+            CmsMacroResolver.newWorkplaceLocaleResolver(cms));
 
         result.setPropertyDefinitions(new LinkedHashMap<String, CmsXmlContentProperty>(propertyConfig));
         try {
