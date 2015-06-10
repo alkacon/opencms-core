@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,10 +57,10 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 /**
- * Lucene document factory class to extract index data from a resource 
+ * Lucene document factory class to extract index data from a resource
  * of type <code>CmsResourceTypeContainerPage</code>.<p>
- * 
- * @since 8.0 
+ *
+ * @since 8.0
  */
 public class CmsDocumentContainerPage extends A_CmsVfsDocument {
 
@@ -69,7 +69,7 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
 
     /**
      * Creates a new instance of this lucene document factory.<p>
-     * 
+     *
      * @param name name of the document type
      */
     public CmsDocumentContainerPage(String name) {
@@ -79,8 +79,8 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
 
     /**
      * Generates a new lucene document instance from contents of the given resource for the provided index.<p>
-     * 
-     * For container pages, we must not cache based on the container page content age, 
+     *
+     * For container pages, we must not cache based on the container page content age,
      * since the content of the included elements may change any time.
      */
     @Override
@@ -107,7 +107,7 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
 
     /**
      * Returns the raw text content of a VFS resource of type <code>CmsResourceTypeContainerPage</code>.<p>
-     * 
+     *
      * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
      */
     public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
@@ -117,7 +117,7 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
         try {
             CmsFile file = readFile(cms, resource);
             CmsXmlContainerPage containerPage = CmsXmlContainerPageFactory.unmarshal(cms, file);
-            Locale locale = index.getLocaleForResource(cms, resource, containerPage.getLocales());
+            Locale locale = index.getLocaleForResource(cms, resource, null);
 
             // initialize return values
             StringBuffer content = new StringBuffer();
