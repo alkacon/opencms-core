@@ -95,7 +95,7 @@ public class CmsPersistenceUnitConfiguration {
      * Public constructor which initialize the object.<p>
      * 
      * @param unitName persistence unit name to be managed 
-     * @param fileName configuration file name 
+     * @param fileName configuration file name (file will be read from class path)
      */
     public CmsPersistenceUnitConfiguration(String unitName, String fileName) {
 
@@ -225,7 +225,7 @@ public class CmsPersistenceUnitConfiguration {
         Document doc = null;
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            File f = new File(fileName);
+            File f = new File(getClass().getClassLoader().getResource(fileName).getFile());
             doc = builder.parse(f);
         } catch (Exception e) {
             e.printStackTrace();

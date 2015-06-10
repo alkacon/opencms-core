@@ -1347,10 +1347,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 // workaround for JUnit test cases, this must not be executed in a test case
 
                 // init persistence configurator
-                String inFileName = m_webAppRfsPath + CmsSystemInfo.FOLDER_WEBINF + CmsSystemInfo.FILE_PERSISTENCE;
                 m_peristenceConfigurator = new CmsPersistenceUnitConfiguration(
                     CmsSqlManager.JPA_PERSISTENCE_UNIT,
-                    inFileName);
+                    CmsSystemInfo.FILE_PERSISTENCE);
                 m_configuration = new CmsParameterConfiguration(m_configRfsPath + CmsSystemInfo.FILE_PROPERTIES);
                 readDatabaseConfig();
             }
