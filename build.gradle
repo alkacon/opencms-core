@@ -90,13 +90,13 @@ configurations {
         transitive = false
         extendsFrom modulesCompile
     }
-    
+
     testGwtCompile{
         description = 'needed to run GWT test cases'
         transitive = false
         extendsFrom gwtCompile
     }
-    
+
     testGwtRuntime{ transitive = false }
 
     setupCompile {
@@ -136,7 +136,7 @@ sourceSets{
         resources.srcDir 'src-modules'
         resources.srcDir 'src-setup'
     }
-    
+
     testGwt {
         java.srcDir 'src-gwt'
         resources.srcDir 'src-gwt'
@@ -162,7 +162,7 @@ sourceSets.testGwt.compileClasspath += files("$buildDir/classes/modules") { buil
 
 project.ext.componentsRuntimeClassPath=configurations.componentsRuntime
 componentsRuntimeClassPath += files("${project.buildDir}/libs/opencms-components.jar") { builtBy 'componentsJar' }
- 
+
 task copyDeps(type: Copy) {
     from configurations.distribution
     into "${buildDir}/deps"
@@ -200,10 +200,10 @@ if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).ex
 
 task enhance << {
     ant.taskdef(
-            name      : 'openjpaenhancer',
-            classpath : sourceSets.modules.compileClasspath.asPath,
-            classname : 'org.apache.openjpa.ant.PCEnhancerTask'
-            )
+    name      : 'openjpaenhancer',
+    classpath : sourceSets.modules.compileClasspath.asPath,
+    classname : 'org.apache.openjpa.ant.PCEnhancerTask'
+    )
 
     ant.openjpaenhancer(classpath : sourceSets.modules.compileClasspath.asPath){
         fileset(dir: "${sourceSets.main.output.classesDir}/org/opencms/db/jpa/persistence"){ exclude(name: '*$*.class') }
@@ -228,9 +228,9 @@ jar {
     exclude '**/overview.html'
     exclude '**/.gitignore'
 
-    metaInf {  
-        from("${projectDir}/webapp/WEB-INF/opencms.tld") 
-        from("${projectDir}/webapp/WEB-INF/classes/META-INF") 
+    metaInf {
+        from("${projectDir}/webapp/WEB-INF/opencms.tld")
+        from("${projectDir}/webapp/WEB-INF/classes/META-INF")
     }
 
     doLast {
@@ -251,7 +251,7 @@ javadoc {
             into "${buildDir}/docs/javadoc/logos"
         }
     }
-    
+
     project.configure(options) {
         memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
         charSet = "UTF-8"
@@ -308,7 +308,7 @@ task javadocModules(type: Javadoc, dependsOn: jar) {
             into "${buildDir}/docs/javadocModules/logos"
         }
     }
-    
+
     project.configure(options) {
         memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
         charSet = "UTF-8"
@@ -347,7 +347,7 @@ task javadocGwt(type: Javadoc, dependsOn: jar) {
             into "${buildDir}/docs/javadocGwt/logos"
         }
     }
-    
+
     project.configure(options) {
         memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
         charSet = "UTF-8"
@@ -390,6 +390,117 @@ task sourcesJarGwt(type: Jar) {
     classifier = 'sources'
     baseName 'opencms-gwt'
 }
+
+task workplaceTheme (type: JavaExec) {
+    doFirst {
+        println '======================================================'
+        println "Building workplace theme"
+        println "Generating $project.buildDir/workplaceThemes/opencms/styles.css"
+        println '======================================================'
+    }
+
+    main = 'com.vaadin.sass.SassCompiler'
+
+    classpath {
+        [
+            sourceSets.main.compileClasspath,
+        ]
+    }
+
+
+    args = [
+        "$projectDir/webapp/workplaceThemes/VAADIN/themes/opencms/styles.scss",
+        "$project.buildDir/workplaceThemes/opencms/styles.css"
+    ]
+    maxHeapSize = max_heap_size
+}
+
+task "gwt_widgetSet" (dependsOn: gwtClasses, type: JavaExec) {
+    ext.buildDir =  project.buildDir.toString()  +"/gwt/widgetSet"
+    ext.extraDir =  project.buildDir.toString() + "/extra/widgetSet"
+    inputs.source sourceSets.gwt.java.srcDirs
+    inputs.dir sourceSets.gwt.output.resourcesDir
+    outputs.dir buildDir
+
+    // Workaround for incremental build (GRADLE-1483)
+    outputs.upToDateSpec = new org.gradle.api.specs.AndSpec()
+
+    doFirst {
+        println '======================================================'
+        println "Building GWT resources for WidgetSet"
+        println '======================================================'
+        // to clean the output directory, delete it first
+        def dir = file(buildDir)
+        if (dir.exists()){
+            delete(dir)
+        }
+        dir.mkdirs()
+    }
+
+    main = 'com.google.gwt.dev.Compiler'
+
+    classpath {
+        [
+            // Java source core
+            sourceSets.main.java.srcDirs,
+            // Java source gwt
+            sourceSets.gwt.java.srcDirs,
+            // Java source modules
+            sourceSets.modules.java.srcDirs,
+            // Generated resources
+            sourceSets.gwt.output.resourcesDir,
+            // Generated classes
+            sourceSets.gwt.output.classesDir,
+            // Dependecies
+            sourceSets.gwt.compileClasspath,
+        ]
+    }
+
+
+    args =
+            [
+                'org.opencms.ui.WidgetSet',
+                // Your GWT module
+                '-war',
+                buildDir,
+                '-logLevel',
+                'INFO',
+                '-localWorkers',
+                '2',
+                '-style',
+                'obfuscated',
+                '-extra',
+                extraDir,
+                '-strict'
+                // '-draftCompile' // Speeds up compile with 25%
+            ]
+    jvmArgs = [ '-Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory']
+    
+
+    maxHeapSize = max_heap_size
+}
+
+task widgetSetJar(type: Jar, dependsOn: [gwt_widgetSet, workplaceTheme]){
+    doFirst {
+        println '======================================================'
+        println "Building WidgetSet Jar"
+        println "including resources from ${project.buildDir}/gwt/widgetSet"
+        println '======================================================'
+    }
+    baseName='opencms-widgetset'
+    archiveName='opencms-widgetset.jar'
+    from ("${projectDir}/webapp/workplaceThemes"){
+        exclude '**/*.scss'
+    }
+    from ("${project.buildDir}/workplaceThemes/"){
+        into 'VAADIN/themes'
+    }
+    from ("${project.buildDir}/gwt/widgetSet"){
+        include 'org.opencms.ui.WidgetSet/**'
+        into 'VAADIN/widgetsets'
+    }
+}
+
 
 task setupJar(dependsOn: jar, type: Jar) {
     from sourceSets.setup.output
@@ -752,7 +863,7 @@ task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('di
     println '======================================================'
 }
 
-task war (dependsOn: [setupJar, allModules], type: Zip){
+task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
 
     archiveName 'opencms.war'
     baseName 'opencms-webapp'
@@ -761,6 +872,7 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
         // exclude the database drivers
         exclude '**/setup/**/*.jar'
         exclude '**/update/**'
+        exclude '**/workplaceThemes/**'
         exclude '**/classes/META-INF/**'
         exclude '**/*.html'
         exclude '**/*.properties'
@@ -769,6 +881,7 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
     }
     from ("${projectDir}/webapp"){
         exclude '**/update/**'
+        exclude '**/workplaceThemes/**'
         exclude '**/classes/META-INF/**'
         include '**/*.html'
         include '**/*.properties'

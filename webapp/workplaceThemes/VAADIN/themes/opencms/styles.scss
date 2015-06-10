@@ -1,0 +1,10 @@
+@import "variables";
+@import "opencms";
+.opencms {
+   @include opencms;
+}
+
+html {
+	width: 100px;
+	min-width: 100%;
+}
