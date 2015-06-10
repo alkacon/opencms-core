@@ -397,6 +397,11 @@ task workplaceTheme (type: JavaExec) {
         println "Building workplace theme"
         println "Generating $project.buildDir/workplaceThemes/opencms/styles.css"
         println '======================================================'
+        def dir = file("$project.buildDir/workplaceThemes/opencms")
+        if (dir.exists()){
+            delete(dir)
+        }
+        dir.mkdirs()
     }
 
     main = 'com.vaadin.sass.SassCompiler'
