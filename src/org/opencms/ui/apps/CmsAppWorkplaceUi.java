@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.vaadin.annotations.Theme;
+import com.vaadin.navigator.NavigationStateManager;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
@@ -48,10 +49,8 @@ import com.vaadin.ui.Component;
 /**
  * The workplace ui.<p>
  */
-@Theme("valo")
+@Theme("opencms")
 public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvider {
-
-    private I_CmsWorkplaceAppConfiguration m_currentApp;
 
     /** The serial version id. */
     private static final long serialVersionUID = -5606711048683809028L;
@@ -59,14 +58,18 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
     /** The home view path. */
     public static final String VIEW_HOME = "home";
 
+    /** The navigation state manager. */
+    private NavigationStateManager m_navigationStateManager;
+
+    /**
+     * Call to add a new browser history entry.<p>
+     * 
+     * @param state the current app view state
+     */
     public void changeCurrentAppState(String state) {
 
-        String newFragment = "!"
-            + getViewName(getPage().getUriFragment())
-            + "/"
-            + NavigationState.PARAM_SEPARATOR
-            + state;
-        getPage().setUriFragment(newFragment, false);
+        String view = getViewName(m_navigationStateManager.getState());
+        m_navigationStateManager.setState(view + NavigationState.PARAM_SEPARATOR + state);
     }
 
     /**
@@ -79,12 +82,14 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
         List<I_CmsMenuItem> items = new ArrayList<I_CmsMenuItem>();
         items.add(new A_CmsMenuItem("", FontAwesome.HOME) {
 
+            @Override
             public void executeAction() {
 
                 CmsAppWorkplaceUi ui = (CmsAppWorkplaceUi)A_CmsUI.get();
                 ui.showHome();
             }
 
+            @Override
             protected String getLabel(Locale locale) {
 
                 return "Home";
@@ -93,6 +98,9 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
         return items;
     }
 
+    /**
+     * @see com.vaadin.navigator.ViewProvider#getView(java.lang.String)
+     */
     public View getView(String viewName) {
 
         if (viewName.startsWith(VIEW_HOME)) {
@@ -106,22 +114,36 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
         return null;
     }
 
+    /**
+     * @see com.vaadin.navigator.ViewProvider#getViewName(java.lang.String)
+     */
     public String getViewName(String viewAndParameters) {
 
         NavigationState state = new NavigationState(viewAndParameters);
         return state.getViewName();
     }
 
+    /**
+     * Navigates to the given app.<p>
+     * 
+     * @param appConfig the app configuration
+     */
     public void showApp(I_CmsWorkplaceAppConfiguration appConfig) {
 
         getNavigator().navigateTo(appConfig.getAppPath());
     }
 
+    /**
+     * Navigates to the home screen.<p>
+     */
     public void showHome() {
 
         getNavigator().navigateTo("home");
     }
 
+    /**
+     * @see com.vaadin.navigator.ViewDisplay#showView(com.vaadin.navigator.View)
+     */
     public void showView(View view) {
 
         Component component = null;
@@ -135,11 +157,15 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
         }
     }
 
+    /**
+     * @see com.vaadin.ui.UI#init(com.vaadin.server.VaadinRequest)
+     */
     @Override
     protected void init(VaadinRequest request) {
 
         OpenCms.getWorkplaceAppManager().loadApps();
-        Navigator navigator = new Navigator(this, new Navigator.UriFragmentManager(getPage()), this);
+        m_navigationStateManager = new Navigator.UriFragmentManager(getPage());
+        Navigator navigator = new Navigator(this, m_navigationStateManager, this);
         navigator.addProvider(this);
         String fragment = getPage().getUriFragment();
         if (fragment != null) {
