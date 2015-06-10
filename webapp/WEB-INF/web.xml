@@ -95,8 +95,13 @@
         <servlet-class>org.opencms.main.CmsUIServlet</servlet-class>
         <init-param>
             <param-name>UI</param-name>
-            <param-value>org.opencms.workplace.CmsWorkplaceUI</param-value>
+            <param-value>org.opencms.ui.apps.CmsAppWorkplaceUi</param-value>
         </init-param>
+        <init-param>
+    		<description>Widget Set to Use</description>
+    		<param-name>widgetset</param-name>
+    		<param-value>org.opencms.ui.WidgetSet</param-value>
+ 		</init-param>
     </servlet>
 
      <servlet>
