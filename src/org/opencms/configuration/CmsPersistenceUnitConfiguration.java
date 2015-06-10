@@ -28,6 +28,7 @@
 package org.opencms.configuration;
 
 import java.io.File;
+import java.io.InputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -225,8 +226,10 @@ public class CmsPersistenceUnitConfiguration {
         Document doc = null;
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            File f = new File(getClass().getClassLoader().getResource(fileName).getFile());
-            doc = builder.parse(f);
+            ClassLoader resourceLoader = Thread.currentThread().getContextClassLoader();
+            InputStream stream = resourceLoader.getResourceAsStream(fileName);
+
+            doc = builder.parse(stream);
         } catch (Exception e) {
             e.printStackTrace();
         }
