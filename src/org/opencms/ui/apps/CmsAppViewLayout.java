@@ -57,7 +57,7 @@ public class CmsAppViewLayout extends HorizontalLayout {
         setSizeFull();
         m_menuArea.setPrimaryStyleName(ValoTheme.MENU_ROOT);
         m_appArea.setPrimaryStyleName("valo-content");
-        m_appArea.addStyleName("v-scollable");
+        m_appArea.addStyleName("v-scrollable");
         m_appArea.setSizeFull();
 
         addComponents(m_menuArea, m_appArea);
