@@ -79,6 +79,30 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
         m_result = result;
     }
 
+    /** Converts a parameter map to the parameter string.
+     * @param parameters the parameter map.
+     * @return the parameter string.
+     */
+    public static String paramMapToString(final Map<String, String[]> parameters) {
+
+        final StringBuffer result = new StringBuffer();
+        for (final String key : parameters.keySet()) {
+            String[] values = parameters.get(key);
+            if (null == values) {
+                result.append(key).append('&');
+            } else {
+                for (final String value : parameters.get(key)) {
+                    result.append(key).append('=').append(value).append('&');
+                }
+            }
+        }
+        // remove last '&'
+        if (result.length() > 0) {
+            result.setLength(result.length() - 1);
+        }
+        return result.toString();
+    }
+
     /**
      * @see org.opencms.jsp.search.result.I_CmsSearchStateParameters#getAddIgnoreFacetLimit()
      */
@@ -355,29 +379,5 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
     public String toString() {
 
         return paramMapToString(m_params);
-    }
-
-    /** Converts a parameter map to the parameter string.
-     * @param parameters the parameter map.
-     * @return the parameter string.
-     */
-    private String paramMapToString(final Map<String, String[]> parameters) {
-
-        final StringBuffer result = new StringBuffer();
-        for (final String key : parameters.keySet()) {
-            String[] values = parameters.get(key);
-            if (null == values) {
-                result.append(key).append('&');
-            } else {
-                for (final String value : parameters.get(key)) {
-                    result.append(key).append('=').append(value).append('&');
-                }
-            }
-        }
-        // remove last '&'
-        if (result.length() > 0) {
-            result.setLength(result.length() - 1);
-        }
-        return result.toString();
     }
 }

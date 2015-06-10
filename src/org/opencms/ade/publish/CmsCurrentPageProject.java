@@ -36,7 +36,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.collectors.I_CmsCollectorPublishListProvider;
-import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.gwt.shared.I_CmsCollectorInfoFactory;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
 import org.opencms.jsp.CmsJspTagContainer;
@@ -155,12 +154,20 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                                     collectorInfoFactory,
                                     I_CmsContentLoadCollectorInfo.class,
                                     entry.getValue());
-                                I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(
-                                    autoBean.as().getCollectorName());
-                                if (collector == null) {
+                                String collectorName = autoBean.as().getCollectorName();
+                                I_CmsCollectorPublishListProvider publishListProvider = null;
+                                if (null != collectorName) { // registered collector
+                                    publishListProvider = OpenCms.getResourceManager().getContentCollector(
+                                        collectorName);
+                                }
+                                if (null == publishListProvider) { // unregistered collector
+                                    String collectorClassName = autoBean.as().getCollectorClass();
+                                    Class<?> collectorClass = Class.forName(collectorClassName);
+                                    publishListProvider = (I_CmsCollectorPublishListProvider)collectorClass.newInstance();
+                                }
+                                if (publishListProvider == null) {
                                     continue;
                                 }
-                                I_CmsCollectorPublishListProvider publishListProvider = getCollectorPublishListProvider(collector);
                                 result.addAll(publishListProvider.getPublishResources(cmsObject, autoBean.as()));
                             } catch (Exception e) {
                                 LOG.error(e.getLocalizedMessage(), e);
@@ -192,23 +199,6 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
 
             }
 
-            /**
-             * Gets the  publish list provider for the given collector.<p>
-             *
-             * @param collector the collector
-             *
-             * @return the publish list provider
-             */
-            public I_CmsCollectorPublishListProvider getCollectorPublishListProvider(I_CmsResourceCollector collector) {
-
-                I_CmsCollectorPublishListProvider provider = null;
-                if (collector instanceof I_CmsCollectorPublishListProvider) {
-                    provider = (I_CmsCollectorPublishListProvider)collector;
-                } else {
-                    provider = new CmsDefaultCollectorPublishListProvider();
-                }
-                return provider;
-            }
         };
     }
 

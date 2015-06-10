@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,6 +37,9 @@ public class CmsContentLoadCollectorInfo implements I_CmsContentLoadCollectorInf
     /** The collector name. */
     private String m_collectorName;
 
+    /** The collector class. */
+    private String m_collectorClass;
+
     /** The collector parameters. */
     private String m_collectorParams;
 
@@ -48,7 +51,15 @@ public class CmsContentLoadCollectorInfo implements I_CmsContentLoadCollectorInf
      */
     public CmsContentLoadCollectorInfo() {
 
-        // do nothing 
+        // do nothing
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo#getCollectorClass()
+     */
+    public String getCollectorClass() {
+
+        return m_collectorClass;
     }
 
     /**
@@ -77,6 +88,15 @@ public class CmsContentLoadCollectorInfo implements I_CmsContentLoadCollectorInf
     public String getId() {
 
         return m_id;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo#setCollectorClass(java.lang.String)
+     */
+    public void setCollectorClass(final String className) {
+
+        m_collectorClass = className;
+
     }
 
     /**

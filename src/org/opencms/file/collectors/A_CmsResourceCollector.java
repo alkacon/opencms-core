@@ -28,12 +28,15 @@
 package org.opencms.file.collectors;
 
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
+import org.opencms.ade.publish.CmsCollectorPublishListHelper;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -44,8 +47,10 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -283,6 +288,20 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
     public int getOrder() {
 
         return m_order;
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsCollectorPublishListProvider#getPublishResources(org.opencms.file.CmsObject, org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo)
+     */
+    public Set<CmsResource> getPublishResources(final CmsObject cms, final I_CmsContentLoadCollectorInfo info)
+    throws CmsException {
+
+        int collectorLimit = NumberUtils.toInt(
+            OpenCms.getADEManager().getParameters(cms).get(CmsGwtConstants.COLLECTOR_PUBLISH_LIST_LIMIT),
+            DEFAULT_LIMIT);
+        CmsCollectorPublishListHelper helper = new CmsCollectorPublishListHelper(cms, info, collectorLimit);
+        return helper.getPublishListFiles();
+
     }
 
     /**

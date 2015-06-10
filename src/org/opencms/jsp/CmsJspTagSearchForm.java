@@ -27,9 +27,13 @@
 
 package org.opencms.jsp;
 
+import org.opencms.ade.publish.CmsPublishListHelper;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.collectors.I_CmsCollectorPublishListProvider;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.jsp.search.config.I_CmsSearchConfiguration;
@@ -38,17 +42,26 @@ import org.opencms.jsp.search.config.parser.CmsXMLSearchConfigurationParser;
 import org.opencms.jsp.search.controller.CmsSearchController;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerMain;
 import org.opencms.jsp.search.result.CmsSearchResultWrapper;
+import org.opencms.jsp.search.result.CmsSearchStateParameters;
 import org.opencms.jsp.search.result.I_SearchResultWrapper;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchException;
+import org.opencms.search.CmsSearchResource;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.jsp.JspException;
 
@@ -57,7 +70,7 @@ import org.apache.commons.logging.Log;
 /**
  * This tag is used to easily create a search form for a Solr search within a JSP.
  */
-public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
+public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport implements I_CmsCollectorPublishListProvider {
 
     /**
      * Type for the file formats that can be parsed.
@@ -81,11 +94,23 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 6048771777971251L;
 
+    /** Solr online index. */
+    public static final String SOLR_ONLINE = "Solr Online";
+
+    /** Solr offline index. */
+    public static final String SOLR_OFFLINE = "Solr Offline";
+
     /** The CmsObject for the current user. */
     protected transient CmsObject m_cms;
 
     /** The FlexController for the current request. */
     protected CmsFlexController m_controller;
+
+    /** Number of entries for which content info should be added to allow correct relations in "This page" publish dialog. */
+    private Integer m_addContentInfoForEntries;
+
+    /** Default number of items which are checked for change for the "This page" publish dialog. */
+    public static final int DEFAULT_CONTENTINFO_ROWS = 200;
 
     /** The "configFile" tag attribute. */
     private String m_configFile;
@@ -115,6 +140,56 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
+     * @see org.opencms.file.collectors.I_CmsCollectorPublishListProvider#getPublishResources(org.opencms.file.CmsObject, org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo)
+     */
+    @SuppressWarnings("javadoc")
+    public static Set<CmsResource> getPublishResourcesInternal(CmsObject cms, I_CmsContentLoadCollectorInfo info)
+    throws CmsException {
+
+        CmsSolrIndex solrOnline = OpenCms.getSearchManager().getIndexSolr(SOLR_ONLINE);
+        CmsSolrIndex solrOffline = OpenCms.getSearchManager().getIndexSolr(SOLR_OFFLINE);
+        Set<CmsResource> result = new HashSet<CmsResource>();
+        try {
+            // use "complicated" constructor to allow more than 50 results -> set ignoreMaxResults to true
+            // adjust the CmsObject to prevent unintended filtering of resources
+            CmsSolrResultList offlineResults = solrOffline.search(
+                CmsPublishListHelper.adjustCmsObject(cms, false),
+                new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(info.getCollectorParams())),
+                true);
+            Set<String> offlineIds = new HashSet<String>(offlineResults.size());
+            for (CmsSearchResource offlineResult : offlineResults) {
+                offlineIds.add(offlineResult.getField(CmsSearchField.FIELD_ID));
+            }
+            for (String id : offlineIds) {
+                CmsResource resource = cms.readResource(new CmsUUID(id));
+                if (!(resource.getState().isUnchanged())) {
+                    result.add(resource);
+                }
+            }
+            CmsSolrResultList onlineResults = solrOnline.search(
+                CmsPublishListHelper.adjustCmsObject(cms, true),
+                new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(info.getCollectorParams())),
+                true);
+            Set<String> deletedIds = new HashSet<String>(onlineResults.size());
+            for (CmsSearchResource onlineResult : onlineResults) {
+                String uuid = onlineResult.getField(CmsSearchField.FIELD_ID);
+                if (!offlineIds.contains(uuid)) {
+                    deletedIds.add(uuid);
+                }
+            }
+            for (String uuid : deletedIds) {
+                CmsResource resource = cms.readResource(new CmsUUID(uuid));
+                if (!(resource.getState().isUnchanged())) {
+                    result.add(resource);
+                }
+            }
+        } catch (CmsSearchException e) {
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_TAG_SEARCHFORM_SEARCH_FAILED_0), e);
+        }
+        return result;
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
      */
     @Override
@@ -132,6 +207,7 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
 
         // initialize the content load tag
         init();
+        addContentInfo();
         return EVAL_BODY_INCLUDE;
     }
 
@@ -160,6 +236,14 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
+     * @see org.opencms.file.collectors.I_CmsCollectorPublishListProvider#getPublishResources(org.opencms.file.CmsObject, org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo)
+     */
+    public Set<CmsResource> getPublishResources(CmsObject cms, I_CmsContentLoadCollectorInfo info) throws CmsException {
+
+        return getPublishResourcesInternal(cms, info);
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
     @Override
@@ -172,6 +256,16 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
         m_index = null;
         m_controller = null;
         super.release();
+    }
+
+    /** Setter for "addContentInfo", indicating if content information should be added.
+     * @param doAddInfo The value of the "addContentInfo" attribute of the tag
+     */
+    public void setAddContentInfo(final Boolean doAddInfo) {
+
+        if ((null != doAddInfo) && doAddInfo.booleanValue() && (null != m_addContentInfoForEntries)) {
+            m_addContentInfoForEntries = Integer.valueOf(DEFAULT_CONTENTINFO_ROWS);
+        }
     }
 
     /** Setter for the configuration file.
@@ -188,6 +282,16 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
     public void setConfigString(final String configString) {
 
         m_configString = configString;
+    }
+
+    /** Setter for "contentInfoMaxItems".
+     * @param maxItems number of items to maximally check for alterations.
+     */
+    public void setContentInfoMaxItems(Integer maxItems) {
+
+        if (null != maxItems) {
+            m_addContentInfoForEntries = maxItems;
+        }
     }
 
     /** Setter for the file format.
@@ -242,7 +346,7 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
             // if not successful, use the following default
             if (m_index == null) {
                 m_index = OpenCms.getSearchManager().getIndexSolr(
-                    m_cms.getRequestContext().getCurrentProject().isOnlineProject() ? "Solr Online" : "Solr Offline");
+                    m_cms.getRequestContext().getCurrentProject().isOnlineProject() ? SOLR_ONLINE : SOLR_OFFLINE);
             }
 
             storeAttribute(getVar(), getSearchResults());
@@ -251,6 +355,33 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport {
             LOG.error(e.getLocalizedMessage(), e);
             m_controller.setThrowable(e, m_cms.getRequestContext().getUri());
             throw new JspException(e);
+        }
+    }
+
+    /**
+     * Adds the content info for the collected resources used in the "This page" publish dialog.
+     */
+    private void addContentInfo() {
+
+        if (!m_cms.getRequestContext().getCurrentProject().isOnlineProject()
+            && (null == m_searchController.getCommon().getConfig().getSolrIndex())
+            && (null != m_addContentInfoForEntries)) {
+            String query = m_searchController.generateQuery();
+            Map<String, String[]> queryParamMap = CmsRequestUtil.createParameterMap(query);
+            queryParamMap.put("start", new String[] {"0"});
+            queryParamMap.put("rows", new String[] {m_addContentInfoForEntries.toString()});
+            CmsContentLoadCollectorInfo info = new CmsContentLoadCollectorInfo();
+            info.setCollectorClass(this.getClass().getName());
+            info.setCollectorParams(CmsSearchStateParameters.paramMapToString(queryParamMap));
+            info.setId((new CmsUUID()).getStringValue());
+            if (CmsJspTagEditable.getDirectEditProvider(pageContext) != null) {
+                try {
+                    CmsJspTagEditable.getDirectEditProvider(pageContext).insertDirectEditListMetadata(pageContext, info);
+                } catch (JspException e) {
+                    // TODO: improve + localize error message
+                    LOG.error("Could not write content info.", e);
+                }
+            }
         }
     }
 

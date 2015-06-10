@@ -2150,6 +2150,34 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>            
         </attribute>
+        <attribute>
+            <description><![CDATA[
+              <p>If you do not specify a search index explicitly, so that the tag uses "Solr Offline" and "Solr Online",
+              depending on the current project, the tag allows for detection of changes on resources collected by the
+              search tag  (editing, creation, deletion). If <code>addContentInfo</code> is set to true, these changes are taken into account when publishing
+              changes for the current web page.</p>
+              <p>This feature makes only sense if you use the tag to display (editable) lists of contents. By default,
+              at most (the first) 200 list items are checked for changes. The default can be altered using the attribute
+              <code>contentInfoMaxItems</code></p>
+              <em>Default: <code>false</code></em>.
+              <p><em>Hint:</em>The attribute is ignored if <code>contentInfoMaxItems</code> is specified.</p>
+              
+            ]]></description>
+            <name>addContentInfo</name>
+            <required>false</required>                    
+            <rtexprvalue>true</rtexprvalue>            
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+				Enables detection of changed resources as described for <code>addContentInfo</code>. Additionally, sets
+				the maximal number of investigated resources to the provided value.
+            ]]></description>
+            <name>contentInfoMaxItems</name>
+            <required>false</required>                    
+            <rtexprvalue>true</rtexprvalue>            
+            <type>java.lang.Integer</type>
+        </attribute>        
     </tag>   
      
      <tag>
