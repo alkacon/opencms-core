@@ -73,6 +73,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** XML element name. */
     private static final String XML_ELEMENT_LAST_QUERYPARAM = "LastQueryParam";
     /** XML element name. */
+    private static final String XML_ELEMENT_ESCAPE_QUERY_CHARACTERS = "EscapeQueryCharacters";
+    /** XML element name. */
     private static final String XML_ELEMENT_RELOADED_PARAM = "ReloadedParam";
     /** XML element name. */
     private static final String XML_ELEMENT_SEARCH_FOR_EMPTY_QUERY = "SearchForEmptyQuery";
@@ -213,6 +215,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         return new CmsSearchConfigurationCommon(
             getQueryParam(),
             getLastQueryParam(),
+            parseOptionalBooleanValue(XML_ELEMENT_ESCAPE_QUERY_CHARACTERS),
             getFirstCallParam(),
             getSearchForEmtpyQuery(),
             getIgnoreQuery(),

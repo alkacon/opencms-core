@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,14 +45,18 @@ import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -65,7 +69,7 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creates a new instance.<p> 
+     * Creates a new instance.<p>
      */
     public CmsPostUploadDialogService() {
 
@@ -74,10 +78,10 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
 
     /**
      * Fetches the dialog data.<p>
-     * 
+     *
      * @param request the servlet request
-     *  
-     * @return the dialog data  
+     *
+     * @return the dialog data
      * @throws CmsRpcException if something goes wrong
      */
     public static CmsPostUploadDialogBean prefetch(HttpServletRequest request) throws CmsRpcException {
@@ -95,9 +99,10 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
     }
 
     /**
-     * @see org.opencms.ade.postupload.shared.rpc.I_CmsPostUploadDialogService#load(org.opencms.util.CmsUUID, boolean)
+     * @see org.opencms.ade.postupload.shared.rpc.I_CmsPostUploadDialogService#load(org.opencms.util.CmsUUID, boolean,boolean)
      */
-    public CmsPostUploadDialogPanelBean load(CmsUUID id, boolean useConfiguration) throws CmsRpcException {
+    public CmsPostUploadDialogPanelBean load(CmsUUID id, boolean useConfiguration, boolean addBasicProperties)
+    throws CmsRpcException {
 
         try {
             CmsResource res = getCmsObject().readResource(id);
@@ -119,10 +124,10 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
             listInfo.setResourceType(typeName);
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
 
-            List<String> defaultproperties = settings.getProperties();
+            List<String> defaultProperties = settings.getProperties();
             while (properties.isEmpty() && !CmsStringUtil.isEmptyOrWhitespaceOnly(settings.getReference())) {
                 settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(settings.getReference());
-                defaultproperties = settings.getProperties();
+                defaultProperties = settings.getProperties();
             }
 
             Map<String, CmsXmlContentProperty> propertyDefinitions = new LinkedHashMap<String, CmsXmlContentProperty>();
@@ -149,7 +154,13 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
 
             CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(getCmsObject(), res.getRootPath());
             Map<String, CmsXmlContentProperty> propertyConfiguration = configData.getPropertyConfigurationAsMap();
-            for (String propertyName : defaultproperties) {
+
+            Set<String> propertiesToShow = new HashSet<String>();
+            propertiesToShow.addAll(defaultProperties);
+            if (addBasicProperties) {
+                propertiesToShow.addAll(propertyConfiguration.keySet());
+            }
+            for (String propertyName : propertiesToShow) {
                 CmsXmlContentProperty propDef = null;
                 if (useConfiguration) {
                     propDef = propertyConfiguration.get(propertyName);
@@ -179,12 +190,16 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
                 }
             }
 
+            propertyDefinitions = CmsXmlContentPropertyHelper.resolveMacrosInProperties(
+                propertyDefinitions,
+                CmsMacroResolver.newWorkplaceLocaleResolver(getCmsObject()));
+
             result.setPropertyDefinitions(propertyDefinitions);
             result.setProperties(clientProperties);
             return result;
         } catch (CmsException e) {
             error(e);
-            return null; // will never be reached 
+            return null; // will never be reached
         }
     }
 
@@ -223,7 +238,7 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
             return new CmsPostUploadDialogBean(uuids);
         } catch (CmsException e) {
             error(e);
-            return null; // will never be reached 
+            return null; // will never be reached
         }
     }
 

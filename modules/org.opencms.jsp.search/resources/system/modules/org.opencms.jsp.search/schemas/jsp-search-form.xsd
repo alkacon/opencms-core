@@ -26,6 +26,7 @@
 			<xsd:element name="QueryModifier" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="QueryParam" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="LastQueryParam" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="EscapeQueryCharacters" type="OpenCmsBoolean" minOccurs="0" />
 			<xsd:element name="ReloadedParam" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="ExtraSolrParams" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="AdditionalRequestParams" type="OpenCmsAdditionalParamConfig" minOccurs="0" maxOccurs="unbounded" />
@@ -51,6 +52,7 @@
 			<defaults>
 				<default element="Title" value="%(key.default.JspSearchFormConfig.Title)" />
 				<default element="IgnoreQuery" value="true" />
+				<default element="EscapeQueryCharacters" value="true" />
 			</defaults>
 			<layouts/>
 			<validationrules/>
@@ -61,6 +63,7 @@
 				<searchsetting element="Index" searchcontent="false" />
 				<searchsetting element="QueryParam" searchcontent="false" />
 				<searchsetting element="LastQueryParam" searchcontent="false" />
+				<searchsetting element="EscapeQueryCharacters" searchcontent="false" />
 				<searchsetting element="ExtraSolrParams" searchcontent="false" />
 				<searchsetting element="AdditionalRequestParams" searchcontent="false" />
 				<searchsetting element="PageParam" searchcontent="false" />

@@ -53,6 +53,7 @@ import org.opencms.main.CmsLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +71,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     private static final String JSON_KEY_QUERYPARAM = "queryparam";
     /** A JSON key. */
     private static final String JSON_KEY_LAST_QUERYPARAM = "lastqueryparam";
+    /** A JSON key. */
+    private static final String JSON_KEY_ESCAPE_QUERY_CHARACTERS = "escapequerychars";
     /** A JSON key. */
     private static final String JSON_KEY_RELOADED_PARAM = "reloadedparam";
     /** A JSON key. */
@@ -210,6 +213,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         return new CmsSearchConfigurationCommon(
             getQueryParam(),
             getLastQueryParam(),
+            parseOptionalBooleanValue(m_configObject, JSON_KEY_ESCAPE_QUERY_CHARACTERS),
             getFirstCallParam(),
             getSearchForEmtpyQuery(),
             getIgnoreQuery(),
@@ -248,7 +252,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     @Override
     public Map<String, I_CmsSearchConfigurationFacetField> parseFieldFacets() {
 
-        final Map<String, I_CmsSearchConfigurationFacetField> facetConfigs = new HashMap<String, I_CmsSearchConfigurationFacetField>();
+        final Map<String, I_CmsSearchConfigurationFacetField> facetConfigs = new LinkedHashMap<String, I_CmsSearchConfigurationFacetField>();
         try {
             final JSONArray fieldFacets = m_configObject.getJSONArray(JSON_KEY_FIELD_FACETS);
             for (int i = 0; i < fieldFacets.length(); i++) {

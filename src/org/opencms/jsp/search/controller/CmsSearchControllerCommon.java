@@ -34,6 +34,8 @@ import org.opencms.jsp.search.state.I_CmsSearchStateCommon;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.solr.client.solrj.util.ClientUtils;
+
 /** Search controller for the common search options. */
 public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
 
@@ -71,9 +73,13 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
 
         final StringBuffer query = new StringBuffer();
         if (!m_config.getIgnoreQueryParam()) {
-            String queryString = m_state.getQuery().isEmpty() && m_config.getSearchForEmptyQueryParam()
-            ? "*"
-            : m_state.getQuery();
+            String queryString = m_state.getQuery();
+            if (m_config.getEscapeQueryChars()) {
+                queryString = ClientUtils.escapeQueryChars(queryString);
+            }
+            if (queryString.isEmpty() && m_config.getSearchForEmptyQueryParam()) {
+                queryString = "*";
+            }
             query.append("&q=").append(m_config.getModifiedQuery(queryString));
         }
 

@@ -67,6 +67,14 @@
       <Value><![CDATA[Der Request-Parameter über den die letzte Suchanfrage übermittelt wird. Default: lq.]]></Value>
     </Message>
     <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.EscapeQueryCharacters]]></Key>
+      <Value><![CDATA[Suchanfrage mit Escape-Zeichen versehen]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.EscapeQueryCharacters.help]]></Key>
+      <Value><![CDATA[Ist diese Option angeklickt oder nicht gesetzt, werden in der Suchanfrage, welche durch den Suchanfragen-Request-Paramter übermittelt wird, spezielle Solr-Query-Zeichen (z.B., ":", "(", "[") mit Escape-Zeichen versehen.]]></Value>
+    </Message>
+    <Message>
       <Key><![CDATA[label.JspSearchFormConfig.ReloadedParam]]></Key>
       <Value><![CDATA[Request-Parameter: wiederholt geladen]]></Value>
     </Message>
@@ -519,6 +527,14 @@
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.LastQueryParam.help]]></Key>
       <Value><![CDATA[The request parameter sent to transmit the last query string. Default: lq.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.EscapeQueryCharacters]]></Key>
+      <Value><![CDATA[Escape query characters]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.JspSearchFormConfig.EscapeQueryCharacters.help]]></Key>
+      <Value><![CDATA[If this option is set to true (or not set at all), the special Solr query characters (e.g., ":", "(", "[") will be escaped in the query string provided via the query request parameter.]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.JspSearchFormConfig.ReloadedParam]]></Key>
