@@ -125,6 +125,14 @@ public class CmsLoginForm extends VerticalLayout {
             }
 
         });
+        addAttachListener(new AttachListener() {
+
+            @SuppressWarnings("synthetic-access")
+            public void attach(AttachEvent event) {
+
+                m_userField.focus();
+            }
+        });
 
     }
 
