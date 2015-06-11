@@ -33,15 +33,17 @@ import java.util.Locale;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 
 public class MyApp implements I_CmsWorkplaceAppConfiguration {
 
-    public static class MyAppComponent extends Label implements I_CmsWorkplaceApp {
+    public static class MyAppComponent extends CustomComponent implements I_CmsWorkplaceApp {
 
         public MyAppComponent() {
 
-            super("MyApp");
+            setCompositionRoot(new Label("Hello world"));
+
         }
 
         public void onStateChange(String state) {
@@ -51,12 +53,17 @@ public class MyApp implements I_CmsWorkplaceAppConfiguration {
         }
     }
 
+    public String getAppCategory() {
+
+        return "test";
+    }
+
     public I_CmsWorkplaceApp getAppInstance() {
 
         return new MyAppComponent();
     }
 
-    public String getAppPath() {
+    public String getId() {
 
         return "myapp";
     }
@@ -74,6 +81,12 @@ public class MyApp implements I_CmsWorkplaceAppConfiguration {
     public String getName(Locale locale) {
 
         return "myapp";
+    }
+
+    public int getOrder() {
+
+        // TODO Auto-generated method stub
+        return 0;
     }
 
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {

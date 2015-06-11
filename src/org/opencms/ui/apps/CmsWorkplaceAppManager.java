@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class CmsWorkplaceAppManager {
@@ -78,6 +79,7 @@ public class CmsWorkplaceAppManager {
     private ServiceLoader<I_CmsWorkplaceAppConfiguration> m_appLoader;
 
     private Map<String, I_CmsWorkplaceAppConfiguration> m_appsById = Maps.newHashMap();
+    private List<CmsAppCategory> m_appCategories = Lists.newArrayList();
 
     public static List<I_CmsWorkplaceAppConfiguration> loadAppsUsingServiceLoader() {
 
@@ -92,13 +94,18 @@ public class CmsWorkplaceAppManager {
     public void addAppConfigurations(Collection<I_CmsWorkplaceAppConfiguration> appConfigs) {
 
         for (I_CmsWorkplaceAppConfiguration appConfig : appConfigs) {
-            m_appsById.put(appConfig.getAppPath(), appConfig);
+            m_appsById.put(appConfig.getId(), appConfig);
         }
     }
 
     public I_CmsWorkplaceAppConfiguration getAppConfiguration(String viewName) {
 
         return m_appsById.get(viewName);
+    }
+
+    public List<CmsAppCategory> getCategories() {
+
+        return m_appCategories;
     }
 
     public Collection<I_CmsWorkplaceAppConfiguration> getWorkplaceApps() {
@@ -109,6 +116,12 @@ public class CmsWorkplaceAppManager {
     public void loadApps() {
 
         m_appsById.clear();
+        if (m_appCategories == null) {
+            m_appCategories = Lists.newArrayList();
+        }
+        m_appCategories.clear();
+        CmsAppCategory c1 = new CmsAppCategory("test", null, 0, 0, null);
+        m_appCategories.addAll(Arrays.asList(c1));
         addAppConfigurations(loadDefaultApps());
         addAppConfigurations(loadAppsUsingServiceLoader());
     }

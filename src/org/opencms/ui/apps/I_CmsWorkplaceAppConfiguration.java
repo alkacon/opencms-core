@@ -39,6 +39,13 @@ import com.vaadin.server.Resource;
 public interface I_CmsWorkplaceAppConfiguration {
 
     /**
+     * Gets the id of the app category in which this app should be displayed (null for the root category).
+     *  
+     * @return the app category id 
+     */
+    String getAppCategory();
+
+    /**
      * Returns a new app instance.<p>
      * 
      * @return a new app instance
@@ -46,12 +53,12 @@ public interface I_CmsWorkplaceAppConfiguration {
     I_CmsWorkplaceApp getAppInstance();
 
     /**
-     * Returns the app path. Used to dispplay the apps in a hierarchical order and as a unique id.<p>
+     * Gets the help text for the app in the given locale.<p>
      * 
-     * @return the app path
+     * @param locale the locale to use 
+     * 
+     * @return the help text 
      */
-    String getAppPath();
-
     String getHelpText(Locale locale);
 
     /**
@@ -62,6 +69,13 @@ public interface I_CmsWorkplaceAppConfiguration {
     Resource getIcon();
 
     /**
+     * Returns the unique app id.
+     * 
+     * @return the app id
+     */
+    String getId();
+
+    /**
      * Returns the display name of the app.<p>
      * 
      * @param locale the user locale
@@ -69,6 +83,13 @@ public interface I_CmsWorkplaceAppConfiguration {
      * @return the app name
      */
     String getName(Locale locale);
+
+    /**
+     * Gets an integer used to sort apps in a category.<p>
+     * 
+     * @return the integer used as a sort key
+     */
+    int getOrder();
 
     /**
      * Returns the visibility status of the app for the given user context.<p>

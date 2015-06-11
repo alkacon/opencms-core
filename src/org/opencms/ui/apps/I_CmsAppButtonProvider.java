@@ -27,58 +27,10 @@
 
 package org.opencms.ui.apps;
 
-import org.opencms.file.CmsObject;
+import com.vaadin.ui.Component;
 
-import java.util.Locale;
+public interface I_CmsAppButtonProvider {
 
-import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Resource;
-
-public class AppConfiguration implements I_CmsWorkplaceAppConfiguration {
-
-    public String getAppCategory() {
-
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public I_CmsWorkplaceApp getAppInstance() {
-
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String getId() {
-
-        return "/";
-    }
-
-    public String getHelpText(Locale locale) {
-
-        return null;
-    }
-
-    public Resource getIcon() {
-
-        return FontAwesome.AMBULANCE;
-    }
-
-    public String getName(Locale locale) {
-
-        // TODO Auto-generated method stub
-        return "testApp1";
-    }
-
-    public int getOrder() {
-
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
-
-        // TODO Auto-generated method stub
-        return new CmsAppVisibilityStatus(false, false, "visible");
-    }
+    Component createAppButton(I_CmsWorkplaceAppConfiguration appConfig);
 
 }

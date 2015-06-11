@@ -39,15 +39,14 @@ import com.vaadin.server.Resource;
  */
 public class MyTestAppConfig implements I_CmsWorkplaceAppConfiguration {
 
+    public String getAppCategory() {
+
+        return "test";
+    }
+
     public I_CmsWorkplaceApp getAppInstance() {
 
         return new MyTestApp();
-    }
-
-    public String getAppPath() {
-
-        // TODO Auto-generated method stub
-        return "testing/mytestapp";
     }
 
     public String getHelpText(Locale locale) {
@@ -62,10 +61,22 @@ public class MyTestAppConfig implements I_CmsWorkplaceAppConfiguration {
         return FontAwesome.FIGHTER_JET;
     }
 
+    public String getId() {
+
+        // TODO Auto-generated method stub
+        return "mytestapp";
+    }
+
     public String getName(Locale locale) {
 
         // TODO Auto-generated method stub
         return "My test app";
+    }
+
+    public int getOrder() {
+
+        // TODO Auto-generated method stub
+        return 0;
     }
 
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {

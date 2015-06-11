@@ -130,7 +130,7 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
      */
     public void showApp(I_CmsWorkplaceAppConfiguration appConfig) {
 
-        getNavigator().navigateTo(appConfig.getAppPath());
+        getNavigator().navigateTo(appConfig.getId());
     }
 
     /**

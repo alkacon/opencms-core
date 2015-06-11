@@ -31,8 +31,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 
+import java.util.List;
 import java.util.Locale;
 
+import com.google.common.collect.Lists;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Resource;
@@ -42,19 +44,35 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 
-public class CmsHomeView extends CssLayout implements View {
+public class CmsHomeView extends CssLayout implements View, I_CmsAppButtonProvider {
 
     public CmsHomeView() {
 
-        Locale locale = A_CmsUI.get().getLocale();
         CmsObject cms = A_CmsUI.getCmsObject();
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        List<I_CmsWorkplaceAppConfiguration> visibleApps = Lists.newArrayList();
         for (I_CmsWorkplaceAppConfiguration appConfig : OpenCms.getWorkplaceAppManager().getWorkplaceApps()) {
             CmsAppVisibilityStatus status = appConfig.getVisibility(cms);
             if (status.isVisible()) {
-                Component appIcon = createAppIconWidget(appConfig, locale);
-                addComponent(appIcon);
+                visibleApps.add(appConfig);
             }
         }
+        CmsAppHierarchyBuilder hierarchyBuilder = new CmsAppHierarchyBuilder();
+        for (I_CmsWorkplaceAppConfiguration app : visibleApps) {
+            hierarchyBuilder.addAppConfiguration(app);
+        }
+        for (CmsAppCategory category : OpenCms.getWorkplaceAppManager().getCategories()) {
+            hierarchyBuilder.addCategory(category);
+        }
+        CmsAppHierarchyPanel hierarchyPanel = new CmsAppHierarchyPanel(this);
+        hierarchyPanel.fill(hierarchyBuilder.buildHierarchy(), locale);
+        addComponent(hierarchyPanel);
+        setWidth("100%");
+    }
+
+    public Component createAppButton(I_CmsWorkplaceAppConfiguration appConfig) {
+
+        return createAppIconWidget(appConfig, getLocale());
     }
 
     public void enter(ViewChangeEvent event) {

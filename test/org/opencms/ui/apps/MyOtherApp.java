@@ -51,14 +51,15 @@ public class MyOtherApp implements I_CmsWorkplaceAppConfiguration {
         }
     }
 
+    public String getAppCategory() {
+
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     public I_CmsWorkplaceApp getAppInstance() {
 
         return new MyOtherAppComponent();
-    }
-
-    public String getAppPath() {
-
-        return "myotherapp";
     }
 
     public String getHelpText(Locale locale) {
@@ -71,6 +72,11 @@ public class MyOtherApp implements I_CmsWorkplaceAppConfiguration {
         return FontAwesome.AMBULANCE;
     }
 
+    public String getId() {
+
+        return "myotherapp";
+    }
+
     public String getName() {
 
         // TODO Auto-generated method stub
@@ -80,6 +86,12 @@ public class MyOtherApp implements I_CmsWorkplaceAppConfiguration {
     public String getName(Locale locale) {
 
         return "myotherapp";
+    }
+
+    public int getOrder() {
+
+        // TODO Auto-generated method stub
+        return 0;
     }
 
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
