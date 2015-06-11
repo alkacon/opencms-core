@@ -7,6 +7,8 @@ dependencies {
     compile group: 'com.vaadin', name: 'vaadin-client', version: '7.4.2'
     compile group: 'com.vaadin', name: 'vaadin-client-compiler', version: '7.4.2'
     compile group: 'com.vaadin', name: 'vaadin-sass-compiler', version: '0.9.12' 
+    compile group: 'org.w3c.css', name: 'sac', version: '1.3'
+    compile group: 'com.vaadin.external.flute', name: 'flute', version: '1.3.0.gg2'
     compile(group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA'){
         artifact {
             name = 'validation-api'
