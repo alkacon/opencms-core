@@ -34,6 +34,7 @@ import org.opencms.acacia.shared.CmsType;
 import java.util.List;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.junit.client.GWTTestCase;
@@ -242,18 +243,19 @@ public class EntityBackendTest extends GWTTestCase {
      */
     public void testSelectors() {
 
-        Document.get().getBody().setInnerHTML(
-            "<div about='http://testEntity'><div property='" + ATTRIBUTE_NAME + "'>my value</div></div>");
+        assertTrue("Document should be available", Document.get() != null);
+        assertTrue("Document body should be available", Document.get().getBody() != null);
+        Element div = Document.get().createDivElement();
+        div.setAttribute("about", "http://testEntity");
+        Element innerDiv = Document.get().createDivElement();
+        innerDiv.setInnerText("my value");
+        innerDiv.setAttribute("property", ATTRIBUTE_NAME);
+        div.appendChild(innerDiv);
+        Document.get().getBody().appendChild(div);
         List<com.google.gwt.dom.client.Element> elements = getBackendInstance().getAttributeElements(
             "http://testEntity",
             ATTRIBUTE_NAME,
             null);
-        assertNotNull(elements);
-        assertEquals(1, elements.size());
-        assertEquals("my value", elements.get(0).getInnerText());
-        Document.get().getBody().setInnerHTML(
-            "<div about='http://testEntity' property='" + ATTRIBUTE_NAME + "'>my value</div>");
-        elements = getBackendInstance().getAttributeElements("http://testEntity", ATTRIBUTE_NAME, null);
         assertNotNull(elements);
         assertEquals(1, elements.size());
         assertEquals("my value", elements.get(0).getInnerText());
