@@ -1195,7 +1195,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         try {
             CmsObject cms = OpenCms.initCmsObject(getCmsObject());
-            cms.getRequestContext().setSiteRoot("/");
+            cms.getRequestContext().setSiteRoot("");
             if (cms.existsResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION)) {
                 CmsResource resource = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
                 tryUnlock(resource);
