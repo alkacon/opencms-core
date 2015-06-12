@@ -28,16 +28,26 @@
 package org.opencms.test;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.DispatcherType;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 /**
  * Very incomplete implementation of <code>HttpServletRequest</code> for testing.<p>
@@ -51,6 +61,16 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
     public OpenCmsTestServletRequest() {
 
         // noop
+    }
+
+    public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    public AsyncContext getAsyncContext() {
+
+        throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -121,6 +141,11 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
      * @see javax.servlet.http.HttpServletRequest#getDateHeader(java.lang.String)
      */
     public long getDateHeader(String arg0) {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    public DispatcherType getDispatcherType() {
 
         throw new RuntimeException("Not implemented");
     }
@@ -243,6 +268,16 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
      * @see javax.servlet.ServletRequest#getParameterValues(java.lang.String)
      */
     public String[] getParameterValues(String arg0) {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    public Part getPart(String name) throws IOException, ServletException {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    public Collection<Part> getParts() throws IOException, ServletException {
 
         throw new RuntimeException("Not implemented");
     }
@@ -385,6 +420,11 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
         throw new RuntimeException("Not implemented");
     }
 
+    public ServletContext getServletContext() {
+
+        throw new RuntimeException("Not implemented");
+    }
+
     /**
      * @see javax.servlet.http.HttpServletRequest#getServletPath()
      */
@@ -413,6 +453,16 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
      * @see javax.servlet.http.HttpServletRequest#getUserPrincipal()
      */
     public Principal getUserPrincipal() {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    public boolean isAsyncStarted() {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    public boolean isAsyncSupported() {
 
         throw new RuntimeException("Not implemented");
     }
@@ -467,6 +517,16 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
         throw new RuntimeException("Not implemented");
     }
 
+    public void login(String username, String password) throws ServletException {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    public void logout() throws ServletException {
+
+        throw new RuntimeException("Not implemented");
+    }
+
     /**
      * @see javax.servlet.ServletRequest#removeAttribute(java.lang.String)
      */
@@ -487,6 +547,17 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
      * @see javax.servlet.ServletRequest#setCharacterEncoding(java.lang.String)
      */
     public void setCharacterEncoding(String arg0) {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    public AsyncContext startAsync() throws IllegalStateException {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse)
+    throws IllegalStateException {
 
         throw new RuntimeException("Not implemented");
     }

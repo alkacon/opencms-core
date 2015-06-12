@@ -28,6 +28,7 @@
 package org.opencms.test;
 
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
@@ -148,6 +149,21 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
         throw new RuntimeException("Not implemented");
     }
 
+    public String getHeader(String name) {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    public Collection<String> getHeaderNames() {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    public Collection<String> getHeaders(String name) {
+
+        throw new RuntimeException("Not implemented");
+    }
+
     /**
      * @see javax.servlet.ServletResponse#getLocale()
      */
@@ -160,6 +176,11 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
      * @see javax.servlet.ServletResponse#getOutputStream()
      */
     public ServletOutputStream getOutputStream() {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    public int getStatus() {
 
         throw new RuntimeException("Not implemented");
     }
