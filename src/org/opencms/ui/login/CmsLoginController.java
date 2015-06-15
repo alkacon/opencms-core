@@ -36,10 +36,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.login.CmsLoginUI.Parameters;
+import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsFrameset;
-import org.opencms.workplace.CmsLogin;
 import org.opencms.workplace.CmsLoginUserAgreement;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -179,7 +178,7 @@ public class CmsLoginController {
     private I_CmsLoginUI m_ui;
 
     /** The parameters collected when the login app was opened. */
-    private Parameters m_params;
+    private LoginParameters m_params;
 
     /** The administrator CMS context. */
     private CmsObject m_adminCms;
@@ -190,7 +189,7 @@ public class CmsLoginController {
      * @param adminCms the admin cms context 
      * @param params the parameters for the UI 
      */
-    public CmsLoginController(CmsObject adminCms, Parameters params) {
+    public CmsLoginController(CmsObject adminCms, LoginParameters params) {
 
         m_params = params;
         m_adminCms = adminCms;
@@ -227,7 +226,7 @@ public class CmsLoginController {
 
         String user = m_ui.getUser();
         String password = m_ui.getPassword();
-        CmsMessageContainer message = CmsLogin.validateUserAndPasswordNotEmpty(user, password);
+        CmsMessageContainer message = CmsLoginHelper.validateUserAndPasswordNotEmpty(user, password);
         CmsLoginMessage loginMessage = OpenCms.getLoginManager().getLoginMessage();
         String storedMessage = null;
         if ((loginMessage != null) && !loginMessage.isLoginCurrentlyForbidden() && loginMessage.isEnabled()) {
@@ -257,9 +256,9 @@ public class CmsLoginController {
                     storedMessage,
                     currentCms.getRequestContext().getCurrentUser());
             }
-            CmsWorkplaceSettings settings = CmsLogin.initSiteAndProject(currentCms);
+            CmsWorkplaceSettings settings = CmsLoginHelper.initSiteAndProject(currentCms);
 
-            CmsLogin.setCookieData(
+            CmsLoginHelper.setCookieData(
                 pcType,
                 user,
                 ou,
@@ -268,23 +267,10 @@ public class CmsLoginController {
             VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
                 CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
                 settings);
-            UserAgreementHelper userAgreementHelper = new UserAgreementHelper(currentCms, settings);
-            boolean showUserAgreement = userAgreementHelper.isShowUserAgreement();
-            String userAgreementTarget = null;
+
             String loginTarget = getLoginTarget(currentCms, settings);
-            if (showUserAgreement) {
-                userAgreementTarget = userAgreementHelper.getConfigurationVfsPath()
-                    + "?"
-                    + CmsLoginUserAgreement.PARAM_WPRES
-                    + "="
-                    + loginTarget;
-            }
-            if (userAgreementTarget != null) {
-                loginTarget = userAgreementTarget;
-            }
-            CmsLoginTargetInfo targetInfo = new CmsLoginTargetInfo(OpenCms.getLinkManager().substituteLink(
-                currentCms,
-                loginTarget), user, password);
+
+            CmsLoginTargetInfo targetInfo = new CmsLoginTargetInfo(loginTarget, user, password);
             m_ui.openLoginTarget(targetInfo);
 
         } catch (Exception e) {
@@ -305,11 +291,11 @@ public class CmsLoginController {
     public void onInit() {
 
         boolean loggedIn = !A_CmsUI.getCmsObject().getRequestContext().getCurrentUser().isGuestUser();
-        m_ui.setSelectableOrgUnits(CmsLogin.getOrgUnitsForLoginDialog(A_CmsUI.getCmsObject(), null));
+        m_ui.setSelectableOrgUnits(CmsLoginHelper.getOrgUnitsForLoginDialog(A_CmsUI.getCmsObject(), null));
         if (loggedIn) {
             m_ui.showAlreadyLoggedIn();
         } else {
-            m_ui.showLoginView(m_params.getPreselectedOu());
+            m_ui.showLoginView(m_params.getOufqn());
         }
 
     }
@@ -325,7 +311,7 @@ public class CmsLoginController {
     }
 
     /**
-     * Gets the login target.<p>
+     * Gets the login target link.<p>
      * 
      * @param currentCms the current CMS context 
      * @param settings the workplace settings 
@@ -334,16 +320,30 @@ public class CmsLoginController {
     protected String getLoginTarget(CmsObject currentCms, CmsWorkplaceSettings settings) {
 
         m_params.getLocale();
-        String directEditPath = CmsLogin.getDirectEditPath(currentCms, settings.getUserSettings());
-        String result = "";
-        if (m_params.getRequestedResource() != null) {
-            result = m_params.getRequestedResource();
-        } else if (directEditPath != null) {
-            result = directEditPath;
+        String directEditPath = CmsLoginHelper.getDirectEditPath(currentCms, settings.getUserSettings());
+        String target = "";
+        if (m_params.getRequestedWorkplaceApp() != null) {
+            target = m_params.getRequestedWorkplaceApp();
         } else {
-            result = CmsFrameset.JSP_WORKPLACE_URI;
+            if (m_params.getRequestedResource() != null) {
+                target = m_params.getRequestedResource();
+            } else if (directEditPath != null) {
+                target = directEditPath;
+            } else {
+                target = CmsFrameset.JSP_WORKPLACE_URI;
+            }
+            UserAgreementHelper userAgreementHelper = new UserAgreementHelper(currentCms, settings);
+            boolean showUserAgreement = userAgreementHelper.isShowUserAgreement();
+            if (showUserAgreement) {
+                target = userAgreementHelper.getConfigurationVfsPath()
+                    + "?"
+                    + CmsLoginUserAgreement.PARAM_WPRES
+                    + "="
+                    + target;
+            }
+            target = OpenCms.getLinkManager().substituteLink(currentCms, target);
         }
-        return result;
+        return target;
     }
 
     /** 

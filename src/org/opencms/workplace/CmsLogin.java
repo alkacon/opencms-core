@@ -46,9 +46,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsCustomLoginException;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.login.CmsLoginUI;
-import org.opencms.ui.login.CmsLoginUI.Parameters;
-import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUriSplitter;
@@ -193,18 +190,7 @@ public class CmsLogin extends CmsJspLoginBean {
         // this page must never be cached
         res.setDateHeader(CmsRequestUtil.HEADER_LAST_MODIFIED, System.currentTimeMillis());
         CmsRequestUtil.setNoCacheHeaders(res);
-
-        // divine the best locale from the users browser settings
-        CmsAcceptLanguageHeaderParser parser = new CmsAcceptLanguageHeaderParser(
-            req,
-            OpenCms.getWorkplaceManager().getDefaultLocale());
-        List<Locale> acceptedLocales = parser.getAcceptedLocales();
-        List<Locale> workplaceLocales = OpenCms.getWorkplaceManager().getLocales();
-        m_locale = OpenCms.getLocaleManager().getFirstMatchingLocale(acceptedLocales, workplaceLocales);
-        if (m_locale == null) {
-            // no match found - use OpenCms default locale
-            m_locale = OpenCms.getWorkplaceManager().getDefaultLocale();
-        }
+        m_locale = getLocaleForRequest(req);
     }
 
     /**
@@ -464,6 +450,28 @@ public class CmsLogin extends CmsJspLoginBean {
     }
 
     /**
+     * Returns the best matching locale for the given request.<p>
+     * 
+     * @param req the request
+     * 
+     * @return the locale
+     */
+    private static Locale getLocaleForRequest(HttpServletRequest req) {
+
+        CmsAcceptLanguageHeaderParser parser = new CmsAcceptLanguageHeaderParser(
+            req,
+            OpenCms.getWorkplaceManager().getDefaultLocale());
+        List<Locale> acceptedLocales = parser.getAcceptedLocales();
+        List<Locale> workplaceLocales = OpenCms.getWorkplaceManager().getLocales();
+        Locale locale = OpenCms.getLocaleManager().getFirstMatchingLocale(acceptedLocales, workplaceLocales);
+        if (locale == null) {
+            // no match found - use OpenCms default locale
+            locale = OpenCms.getWorkplaceManager().getDefaultLocale();
+        }
+        return locale;
+    }
+
+    /**
      * Returns the HTML code for selecting an organizational unit.<p>
      * 
      * @return the HTML code for selecting an organizational unit
@@ -510,6 +518,11 @@ public class CmsLogin extends CmsJspLoginBean {
         }
 
         CmsObject cms = getCmsObject();
+        if (shouldUseNewLogin()
+            && (getRequest().getParameter("logout") == null)
+            && cms.getRequestContext().getCurrentUser().isGuestUser()) {
+            return CmsLoginUI.displayVaadinLoginDialog(cms, getRequest());
+        }
 
         m_message = null;
         if (cms.getRequestContext().getCurrentUser().isGuestUser()) {
@@ -533,6 +546,7 @@ public class CmsLogin extends CmsJspLoginBean {
                 // if security option is disabled, just set PC type to "private" to get common login dialog
                 m_pcType = PCTYPE_PRIVATE;
             }
+
             // try to get some info from a cookie
             getCookieData();
 
@@ -576,12 +590,6 @@ public class CmsLogin extends CmsJspLoginBean {
         if (m_requestedResource == null) {
             // no resource was requested, use default workplace URI
             m_requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
-        }
-
-        if (shouldUseNewLogin()
-            && (getRequest().getParameter("logout") == null)
-            && getCmsObject().getRequestContext().getCurrentUser().isGuestUser()) {
-            return displayVaadinLoginDialog(m_locale);
         }
 
         if (Boolean.valueOf(m_actionLogin).booleanValue()) {
@@ -690,57 +698,6 @@ public class CmsLogin extends CmsJspLoginBean {
         }
 
         return displayLoginForm();
-    }
-
-    /**
-     * Returns the initial HTML for the Vaadin based login dialog.<p>
-     * 
-     * @param locale the locale 
-     * 
-     * @return the initial page HTML for the Vaadin login dialog 
-     */
-    public String displayVaadinLoginDialog(Locale locale) {
-
-        CmsLoginUI.Parameters params = new Parameters(m_pcType, m_oufqn, m_locale, CmsRequestUtil.getNotEmptyParameter(
-            getRequest(),
-            CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE));
-        //        HttpServletRequest request = (HttpServletRequest)(getJspContext().getRequest());
-        getJspContext().getSession().setAttribute(CmsLoginUI.INIT_DATA_SESSION_ATTR, params);
-        try {
-            byte[] pageBytes = CmsFileUtil.readFully(getClass().getClassLoader().getResourceAsStream(
-                "org/opencms/ui/login/login-page.html"));
-            String page = new String(pageBytes, "UTF-8");
-            CmsMacroResolver resolver = new CmsMacroResolver();
-            String context = OpenCms.getSystemInfo().getContextPath();
-            String vaadinDir = CmsStringUtil.joinPaths(context, "VAADIN/");
-            String vaadinServlet = CmsStringUtil.joinPaths(context, "opencms-login/");
-            String vaadinBootstrap = CmsStringUtil.joinPaths(context, "VAADIN/vaadinBootstrap.js");
-            String autocomplete = ((m_pcType == null) || m_pcType.equals(CmsLogin.PCTYPE_PRIVATE)) ? "on" : "off";
-
-            String cmsLogo = OpenCms.getSystemInfo().getContextPath()
-                + CmsWorkplace.RFS_PATH_RESOURCES
-                + "commons/login_logo.png";
-
-            resolver.addMacro("vaadinDir", vaadinDir);
-            resolver.addMacro("vaadinServlet", vaadinServlet);
-            resolver.addMacro("vaadinBootstrap", vaadinBootstrap);
-            resolver.addMacro("cmsLogo", cmsLogo);
-            resolver.addMacro("autocomplete", autocomplete);
-            resolver.addMacro("title", getTitle(m_locale));
-            if ((m_pcType == null) || m_pcType.equals(CmsLogin.PCTYPE_PRIVATE)) {
-                resolver.addMacro(
-                    "hiddenPasswordField",
-                    "      <input type=\"password\" id=\"hidden-password\" name=\"ocPword\" autocomplete=\"%(autocomplete)\" >");
-            }
-            if (m_username != null) {
-                resolver.addMacro("predefUser", "value=\"" + CmsEncoder.escapeXml(m_username) + "\"");
-            }
-            page = resolver.resolveMacros(page);
-            return page;
-        } catch (Exception e) {
-            System.out.println("Error");
-            return "<!--Error-->";
-        }
     }
 
     /**

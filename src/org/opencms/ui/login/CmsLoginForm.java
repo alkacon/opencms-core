@@ -30,10 +30,8 @@ package org.opencms.ui.login;
 import elemental.events.KeyboardEvent.KeyCode;
 
 import org.opencms.i18n.CmsMessages;
-import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.workplace.CmsLogin;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.List;
@@ -105,7 +103,7 @@ public class CmsLoginForm extends VerticalLayout {
         m_securityField.addItem("private");
         m_securityField.setValue(pctype);
         m_copyright.setContentMode(ContentMode.HTML);
-        m_copyright.setValue(CmsLogin.getCopyrightHtml(locale));
+        m_copyright.setValue(CmsLoginHelper.getCopyrightHtml(locale));
 
         m_securityField.setItemCaption(
             "private",
@@ -113,9 +111,7 @@ public class CmsLoginForm extends VerticalLayout {
         m_securityField.setItemCaption("public", messages.key(org.opencms.workplace.Messages.GUI_LOGIN_PCTYPE_PUBLIC_0));
         setWidth("700px");
 
-        m_logo.setSource(new ExternalResource(OpenCms.getSystemInfo().getContextPath()
-            + CmsWorkplace.RFS_PATH_RESOURCES
-            + "commons/login_logo.png"));
+        m_logo.setSource(new ExternalResource(CmsWorkplace.getResourceUri("commons/login_logo.png")));
         setComponentAlignment(m_logo, Alignment.MIDDLE_CENTER);
         m_loginButton.setClickShortcut(KeyCode.ENTER);
         m_loginButton.addClickListener(new ClickListener() {

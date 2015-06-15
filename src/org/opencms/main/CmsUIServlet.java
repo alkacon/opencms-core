@@ -29,6 +29,7 @@ package org.opencms.main;
 
 import org.opencms.file.CmsObject;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.ui.login.CmsLoginUI;
 import org.opencms.util.CmsRequestUtil;
 
 import java.io.IOException;
@@ -41,9 +42,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
+
+import com.vaadin.server.BootstrapFragmentResponse;
+import com.vaadin.server.BootstrapListener;
+import com.vaadin.server.BootstrapPageResponse;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.SessionInitListener;
+import com.vaadin.server.UIClassSelectionEvent;
+import com.vaadin.server.UIProvider;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.UI;
 
 /**
  * Servlet for workplace UI requests.<p>
@@ -54,11 +64,36 @@ public class CmsUIServlet extends VaadinServlet {
     /** The static log object for this class. */
     static final Log LOG = CmsLog.getLog(CmsUIServlet.class);
 
+    /** The login UI provider, overrides the default UI to display the login dialog when required. */
+    static final UIProvider loginUiProvider = new UIProvider() {
+
+        private static final long serialVersionUID = 9154828335594149982L;
+
+        @Override
+        public Class<? extends UI> getUIClass(UIClassSelectionEvent event) {
+
+            if (shouldShowLogin()) {
+                return CmsLoginUI.class;
+            }
+            return null;
+        }
+    };
+
     /** Serialization id. */
     private static final long serialVersionUID = 8119684308154724518L;
 
     /** The current CMS context. */
     private ThreadLocal<CmsObject> m_perThreadCmsObject;
+
+    /**
+     * Returns whether the login dialog should be shown.<p>
+     * 
+     * @return <code>true</code> if the login dialog should be shown
+     */
+    static boolean shouldShowLogin() {
+
+        return ((CmsUIServlet)getCurrent()).getCmsObject().getRequestContext().getCurrentUser().isGuestUser();
+    }
 
     /**
      * Returns the current cms context.<p>
@@ -155,48 +190,37 @@ public class CmsUIServlet extends VaadinServlet {
 
             private static final long serialVersionUID = -3191245142912338247L;
 
-            public void sessionInit(SessionInitEvent event) {
+            public void sessionInit(final SessionInitEvent event) {
 
                 // set the locale to the users workplace locale
                 Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(
                     ((CmsUIServlet)getCurrent()).getCmsObject());
                 event.getSession().setLocale(wpLocale);
-                //                event.getSession().addBootstrapListener(new BootstrapListener() {
-                //
-                //                    private static final long serialVersionUID = -6249561809984101044L;
-                //
-                //                    public void modifyBootstrapFragment(BootstrapFragmentResponse response) {
-                //
-                //                        // nothing to do
-                //                    }
-                //
-                //                    public void modifyBootstrapPage(BootstrapPageResponse response) {
-                //
-                //                        CmsObject cms = ((CmsUIServlet)getCurrent()).getCmsObject();
-                //                        // inserting prefetched data into the page
-                //                        response.getDocument().head().appendElement("meta").attr("name", "gwt:property").attr(
-                //                            "content",
-                //                            wpLocale.toString());
-                //                        try {
-                //                            response.getDocument().head().appendElement("meta").attr("name", CmsCoreData.DICT_NAME).attr(
-                //                                "content",
-                //                                RPC.encodeResponseForSuccess(
-                //                                    I_CmsCoreService.class.getMethod("prefetch"),
-                //                                    CmsCoreService.prefetch((HttpServletRequest)response.getRequest()),
-                //                                    CmsPrefetchSerializationPolicy.instance()));
-                //                        } catch (Exception e) {
-                //                            LOG.error(e.getLocalizedMessage(), e);
-                //                        }
-                //
-                //                        // inserting client messages into the page
-                //                        Element script = new Element(Tag.valueOf("script"), "").attr("type", "text/javascript");
-                //                        response.getDocument().head().appendChild(script);
-                //                        script.appendChild(new DataNode("//<![CDATA[\n"
-                //                            + org.opencms.gwt.ClientMessages.get().export(wpLocale, false)
-                //                            + "\n//]]>", script.baseUri()));
-                //
-                //                    }
-                //                });
+                event.getSession().addUIProvider(loginUiProvider);
+                event.getSession().addBootstrapListener(new BootstrapListener() {
+
+                    private static final long serialVersionUID = -6249561809984101044L;
+
+                    public void modifyBootstrapFragment(BootstrapFragmentResponse response) {
+
+                        // nothing to do
+                    }
+
+                    public void modifyBootstrapPage(BootstrapPageResponse response) {
+
+                        if (shouldShowLogin()) {
+                            try {
+                                CmsObject cms = ((CmsUIServlet)getCurrent()).getCmsObject();
+                                String html = CmsLoginUI.generateLoginHtmlFragment(cms, response.getRequest());
+                                Element el = new Element(Tag.valueOf("div"), "").html(html);
+                                response.getDocument().body().appendChild(el);
+                            } catch (IOException e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                        }
+
+                    }
+                });
             }
         });
     }
