@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	  	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  </head>
+  <body>
+  	<v-css-layout>
+ 		<v-vertical-layout>
+	  		<v-panel :middle :center width="800px">
+		  		<v-vertical-layout margin spacing>
+		  			<v-vertical-layout _id="m_resourceInfoBox">
+		  				
+		  			</v-vertical-layout>
+		  			<v-form-layout>
+
+		  				<v-horizontal-layout caption="Date released" spacing>
+		  					<o-cms-date-field _id="m_releasedField" />
+		  					<v-check-box caption="Reset" _id="m_resetReleased" :middle />
+		  				</v-horizontal-layout>
+		  				
+		  				<v-horizontal-layout caption="Date expired" spacing>
+		  					<o-cms-date-field _id="m_expiredField" />
+		  					<v-check-box caption="Reset" _id="m_resetExpired" :middle />
+		  				</v-horizontal-layout>
+		  				
+		  				<v-check-box _id="m_subresourceModificationField" caption="Modify all subfolders/files" />
+		  				
+		  			</v-form-layout>
+		  			<v-horizontal-layout spacing :right width="250px">
+		  				<v-button _id="m_okButton" :expand="1" size-full>OK</v-button>
+		  				<v-button _id="m_cancelButton" :expand="1" size-full>Cancel</v-button>
+		  			</v-horizontal-layout>
+		  		</v-vertical-layout>
+	  		</v-panel>
+  		</v-vertical-layout>
+    </v-css-layout>
+  </body>
+</html>

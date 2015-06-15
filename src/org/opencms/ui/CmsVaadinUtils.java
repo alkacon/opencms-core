@@ -126,6 +126,13 @@ public final class CmsVaadinUtils {
      * @param designPath the design path
      * @param messages the messages
      * @param macros the macros
+     *
+     * Helper method for reading a Vaadin UI design file and using the OpenCms macro resolver for localization.<p>
+     *
+     * @param component the component whose design to read
+     * @param designPath the path to the design file
+     * @param messages the message bundle to use for localization in the design (may be null)
+     * @param macros other macros to substitute in the macro design (may be null)
      */
     protected static void readAndLocalizeDesign(
         Component component,
@@ -152,10 +159,15 @@ public final class CmsVaadinUtils {
 
                 }
             };
-            for (Map.Entry<String, String> entry : macros.entrySet()) {
-                resolver.addMacro(entry.getKey(), entry.getValue());
+
+            if (macros != null) {
+                for (Map.Entry<String, String> entry : macros.entrySet()) {
+                    resolver.addMacro(entry.getKey(), entry.getValue());
+                }
             }
-            resolver.setMessages(messages);
+            if (messages != null) {
+                resolver.setMessages(messages);
+            }
             String resolvedDesign = resolver.resolveMacros(design);
             Design.read(new ByteArrayInputStream(resolvedDesign.getBytes(encoding)), component);
         } catch (IOException e) {

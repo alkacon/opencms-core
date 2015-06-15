@@ -32,9 +32,8 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
-import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockActionRecord;
-import org.opencms.lock.CmsLockActionRecord.LockChange;
+import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -306,26 +305,7 @@ public class CmsGwtService extends RemoteServiceServlet {
     protected CmsLockActionRecord ensureLock(CmsResource resource) throws CmsException {
 
         CmsObject cms = getCmsObject();
-        LockChange change = LockChange.unchanged;
-        List<CmsResource> blockingResources = cms.getBlockingLockedResources(resource);
-        if ((blockingResources != null) && !blockingResources.isEmpty()) {
-            throw new CmsException(
-                Messages.get().container(
-                    Messages.ERR_RESOURCE_HAS_BLOCKING_LOCKED_CHILDREN_1,
-                    cms.getSitePath(resource)));
-        }
-        CmsUser user = cms.getRequestContext().getCurrentUser();
-        CmsLock lock = cms.getLock(resource);
-        if (!lock.isOwnedBy(user)) {
-            cms.lockResourceTemporary(resource);
-            change = LockChange.locked;
-            lock = cms.getLock(resource);
-        } else if (!lock.isOwnedInProjectBy(user, cms.getRequestContext().getCurrentProject())) {
-            cms.changeLock(resource);
-            change = LockChange.changed;
-            lock = cms.getLock(resource);
-        }
-        return new CmsLockActionRecord(lock, change);
+        return CmsLockUtil.ensureLock(cms, resource);
     }
 
     /**

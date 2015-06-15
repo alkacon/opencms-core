@@ -32,6 +32,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsComponentFactory;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 import org.opencms.ui.components.CmsScrollPositionCss;
+import org.opencms.util.CmsStringUtil;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.NavigationStateManager;
@@ -39,6 +40,7 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
 import com.vaadin.navigator.ViewProvider;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Component;
 
@@ -65,14 +67,30 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
     }
 
     /**
+     * Gets the current UI instance.<p>
+     *
+     * @return the current UI instance
+     */
+    public static CmsAppWorkplaceUi get() {
+
+        return (CmsAppWorkplaceUi)A_CmsUI.get();
+    }
+
+    /**
      * Call to add a new browser history entry.<p>
      *
      * @param state the current app view state
      */
     public void changeCurrentAppState(String state) {
 
-        String view = getViewName(m_navigationStateManager.getState());
-        m_navigationStateManager.setState(view + NavigationState.PARAM_SEPARATOR + state);
+        String completeState = m_navigationStateManager.getState();
+        String view = getViewName(completeState);
+        String newCompleteState = view;
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
+            newCompleteState += NavigationState.PARAM_SEPARATOR + state;
+        }
+        m_navigationStateManager.setState(newCompleteState);
+
     }
 
     /**
@@ -142,6 +160,9 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
         Navigator navigator = new Navigator(this, m_navigationStateManager, this);
         navigator.addProvider(this);
         String fragment = getPage().getUriFragment();
+
+        getPage().getStyles().add(new ExternalResource("/opencms/VAADIN/themes/contextmenu/contextmenu.css"));
+
         if (fragment != null) {
             navigator.navigateTo(fragment);
         } else {

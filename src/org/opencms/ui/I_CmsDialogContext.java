@@ -25,39 +25,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps;
+package org.opencms.ui;
 
-public class CmsAppVisibilityStatus {
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 
-    public static final CmsAppVisibilityStatus ACTIVE = new CmsAppVisibilityStatus(true, true, null);
-    public static final CmsAppVisibilityStatus INVISIBLE = new CmsAppVisibilityStatus(false, true, null);
+import java.util.List;
 
-    private boolean m_visible;
+public interface I_CmsDialogContext {
 
-    private boolean m_active;
+    public void onError(Throwable error);
 
-    private String m_helpText;
+    public void onFinish(Object result);
 
-    public CmsAppVisibilityStatus(boolean visible, boolean active, String helpText) {
+    CmsObject getCms();
 
-        m_visible = visible;
-        m_active = active;
-        m_helpText = helpText;
-    }
-
-    public String getHelpText() {
-
-        return m_helpText;
-    }
-
-    public boolean isActive() {
-
-        return m_active;
-    }
-
-    public boolean isVisible() {
-
-        return m_visible;
-    }
+    List<CmsResource> getResources();
 
 }

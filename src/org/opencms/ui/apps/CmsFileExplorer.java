@@ -34,14 +34,24 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.I_CmsContextMenuBuilder;
+import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsToolBar;
+import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
+import org.vaadin.peter.contextmenu.ContextMenu;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener;
+
+import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
@@ -61,11 +71,37 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class CmsFileExplorer implements I_CmsWorkplaceApp {
 
+    /**
+     * Context menu builder for explorer.<p>
+     */
+    protected class MenuBuilder implements I_CmsContextMenuBuilder {
+
+        public void buildContextMenu(Set<CmsUUID> structureIds, ContextMenu menu) {
+
+            ContextMenuItem availability = menu.addItem("Availability");
+            availability.addItemClickListener(new ContextMenuItemClickListener() {
+
+                public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+
+                    I_CmsDialogContext context = createDialogContext();
+                    CmsAvailabilityDialog availability = new CmsAvailabilityDialog(context);
+                    m_savedExplorerState = CmsAppWorkplaceUi.get().getNavigator().getState();
+                    CmsAppWorkplaceUi.get().changeCurrentAppState("availability");
+                    m_appContext.setAppContent(availability);
+                }
+            });
+
+        }
+    }
+
     /** The files and folder resource filter. */
     private static final CmsResourceFilter FILES_N_FOLDERS = CmsResourceFilter.ONLY_VISIBLE;
 
     /** The folders resource filter. */
     private static final CmsResourceFilter FOLDERS = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder();
+
+    /** Saved explorer state used by dialogs after they have finished. */
+    protected String m_savedExplorerState = "";
 
     /** The table containing the contents of the current folder. */
     private CmsFileTable m_fileTable;
@@ -82,12 +118,16 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
     /** The info path. */
     private Label m_infoPath;
 
+    /** The UI context. */
+    private I_CmsAppUIContext m_appContext;
+
     /**
      * Constructor.<p>
      */
     public CmsFileExplorer() {
         m_fileTable = new CmsFileTable();
         m_fileTable.setSizeFull();
+        m_fileTable.setMenuBuilder(new MenuBuilder() /**/);
         m_fileTree = new Tree();
         m_fileTree.setSizeFull();
         m_fileTree.setItemCaptionPropertyId("resourceName");
@@ -136,6 +176,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
      */
     public void initUI(I_CmsAppUIContext context) {
 
+        m_appContext = context;
         context.setMenuContent(m_fileTree);
         context.setAppContent(m_fileTable);
         context.setAppInfo(m_info);
@@ -214,6 +255,52 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
                 container.removeItemRecursively(childId);
             }
         }
+    }
+
+    /**
+     * Creates the dialog context for dialogs opened from the context menu.<p>
+     *
+     * @return the dialog context
+     */
+    protected I_CmsDialogContext createDialogContext() {
+
+        Set<CmsUUID> selected = m_fileTable.getValue();
+        final List<CmsResource> resources = Lists.newArrayList();
+        for (CmsUUID id : selected) {
+            try {
+                CmsResource res = A_CmsUI.getCmsObject().readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+                resources.add(res);
+            } catch (CmsException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        }
+
+        return new I_CmsDialogContext() {
+
+            public CmsObject getCms() {
+
+                return A_CmsUI.getCmsObject();
+            }
+
+            public List<CmsResource> getResources() {
+
+                return resources;
+            }
+
+            public void onError(Throwable error) {
+
+                CmsAppWorkplaceUi.get().getNavigator().navigateTo(m_savedExplorerState);
+            }
+
+            public void onFinish(Object result) {
+
+                CmsAppWorkplaceUi.get().getNavigator().navigateTo(m_savedExplorerState);
+            }
+
+        };
+
     }
 
     /**

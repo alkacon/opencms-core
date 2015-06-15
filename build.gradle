@@ -35,6 +35,9 @@ repositories {
         }
     }
     mavenCentral()
+    maven { 
+    	url "http://maven.vaadin.com/vaadin-addons"
+    }
 }
 
 if (!project.hasProperty('max_heap_size')){
@@ -423,7 +426,8 @@ task workplaceTheme (type: JavaExec) {
 
     classpath {
         [
-            sourceSets.main.compileClasspath,
+            sourceSets.main.compileClasspath
+ 
         ]
     }
 

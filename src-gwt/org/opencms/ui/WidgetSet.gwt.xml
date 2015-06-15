@@ -1,6 +1,7 @@
 <module>
 	<!-- Inherit the default widget set -->
 	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+	<inherits name="org.vaadin.peter.contextmenu.ContextmenuWidgetset" />
 	<source path="client" />
 	<source path="shared" />
 </module>

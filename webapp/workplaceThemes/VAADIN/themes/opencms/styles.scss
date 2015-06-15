@@ -4,8 +4,13 @@
 
 @include opencmsfont;
 
+/* styles for addons */ 
+@import "../../../VAADIN/themes/contextmenu/contextmenu.scss";
+
+
 .opencms {
    @include opencms;
+   @include contextmenu;
 }
 
 html {

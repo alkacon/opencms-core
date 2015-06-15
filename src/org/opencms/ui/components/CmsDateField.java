@@ -25,39 +25,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps;
+package org.opencms.ui.components;
 
-public class CmsAppVisibilityStatus {
+import com.vaadin.shared.ui.datefield.Resolution;
+import com.vaadin.ui.PopupDateField;
 
-    public static final CmsAppVisibilityStatus ACTIVE = new CmsAppVisibilityStatus(true, true, null);
-    public static final CmsAppVisibilityStatus INVISIBLE = new CmsAppVisibilityStatus(false, true, null);
+public class CmsDateField extends PopupDateField {
 
-    private boolean m_visible;
+    public CmsDateField() {
+        super();
+        setResolution(Resolution.MINUTE);
+        String parseError = "** Invalid date!";
+        setParseErrorMessage(parseError);
 
-    private boolean m_active;
-
-    private String m_helpText;
-
-    public CmsAppVisibilityStatus(boolean visible, boolean active, String helpText) {
-
-        m_visible = visible;
-        m_active = active;
-        m_helpText = helpText;
-    }
-
-    public String getHelpText() {
-
-        return m_helpText;
-    }
-
-    public boolean isActive() {
-
-        return m_active;
-    }
-
-    public boolean isVisible() {
-
-        return m_visible;
     }
 
 }

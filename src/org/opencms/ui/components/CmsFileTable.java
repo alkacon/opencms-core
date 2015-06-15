@@ -34,6 +34,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsCustomComponent;
+import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -43,10 +44,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.vaadin.peter.contextmenu.ContextMenu;
+
+import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.RowHeaderMode;
@@ -59,11 +68,14 @@ public class CmsFileTable extends A_CmsCustomComponent {
     /** The serial version id. */
     private static final long serialVersionUID = 5460048685141699277L;
 
+    private I_CmsContextMenuBuilder m_menuBuilder;
+
     /** The table used to display the resource data. */
     private Table m_fileTable;
 
     /** The resource data container. */
     private IndexedContainer m_container;
+    private ContextMenu m_menu;
 
     /**
      * Default constructor.<p>
@@ -89,10 +101,43 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_fileTable.setSelectable(true);
         m_fileTable.setMultiSelect(true);
 
-        m_fileTable.setColumnHeader("typeIcon", "");
+        m_fileTable.setColumnHeader("typeIcon", "i");
         m_fileTable.setColumnHeader("resourceName", "Name");
         m_fileTable.setColumnHeader("title", "Title");
         m_fileTable.setColumnHeader("resourceType", "Resource type");
+        m_fileTable.addItemClickListener(new ItemClickListener() {
+
+            public void itemClick(ItemClickEvent event) {
+
+                System.out.println("hallo!");
+
+                if (event.getButton().equals(MouseButton.RIGHT)) {
+                    Set<CmsUUID> selection = (Set<CmsUUID>)m_fileTable.getValue();
+                    if (selection == null) {
+                        m_fileTable.select(event.getItemId());
+                    } else if (!selection.contains(event.getItemId())) {
+                        m_fileTable.setValue(null);
+                        m_fileTable.select(event.getItemId());
+                    }
+
+                }
+            }
+        });
+        m_menu = new ContextMenu();
+        m_fileTable.addValueChangeListener(new ValueChangeListener() {
+
+            public void valueChange(ValueChangeEvent event) {
+
+                Set<CmsUUID> selectedIds = (Set<CmsUUID>)event.getProperty().getValue();
+                if ((selectedIds != null) && !selectedIds.isEmpty()) {
+                    m_menu.removeAllItems();
+                    m_menuBuilder.buildContextMenu(selectedIds, m_menu);
+                }
+            }
+        });
+
+        m_menu.setAsTableContextMenu(m_fileTable);
+
     }
 
     /**
@@ -135,5 +180,22 @@ public class CmsFileTable extends A_CmsCustomComponent {
     public Set<CmsUUID> getSelectedIds() {
 
         return (Set<CmsUUID>)m_fileTable.getValue();
+    }
+
+    public Set<CmsUUID> getValue() {
+
+        return (Set<CmsUUID>)m_fileTable.getValue();
+    }
+
+    public void setMenuBuilder(I_CmsContextMenuBuilder builder) {
+
+        m_menuBuilder = builder;
+    }
+
+    List<CmsResource> getSelectedItems() {
+
+        List<CmsResource> result = Lists.newArrayList();
+        return result;
+
     }
 }
