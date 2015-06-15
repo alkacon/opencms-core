@@ -115,6 +115,11 @@
             <param-name>UI</param-name>
             <param-value>org.opencms.ui.login.CmsLoginUI</param-value>
         </init-param>
+        <init-param>
+    		<description>Widget Set to Use</description>
+    		<param-name>widgetset</param-name>
+    		<param-value>org.opencms.ui.WidgetSet</param-value>
+ 		</init-param>
     </servlet>
     
     <servlet-mapping>
