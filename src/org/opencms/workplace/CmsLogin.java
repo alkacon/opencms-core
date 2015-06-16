@@ -1565,6 +1565,6 @@ public class CmsLogin extends CmsJspLoginBean {
 
     private boolean shouldUseNewLogin() {
 
-        return true;
+        return false;
     }
 }
