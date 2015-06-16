@@ -374,7 +374,7 @@ public class CmsContainerElementBean implements Cloneable {
      */
     public String getInstanceId() {
 
-        return m_individualSettings.get(CmsContainerElement.ELEMENT_INSTANCE_ID);
+        return getIndividualSettings().get(CmsContainerElement.ELEMENT_INSTANCE_ID);
     }
 
     /**
@@ -454,7 +454,7 @@ public class CmsContainerElementBean implements Cloneable {
             }
         }
         if (m_settings == null) {
-            m_settings = new HashMap<String, String>(m_individualSettings);
+            m_settings = new HashMap<String, String>(getIndividualSettings());
         }
         // redo on every init call to ensure sitepath is calculated for current site
         m_sitePath = cms.getSitePath(m_resource);
@@ -470,12 +470,12 @@ public class CmsContainerElementBean implements Cloneable {
 
         Map<String, String> mergedSettings;
         if (formatterBean == null) {
-            mergedSettings = CmsXmlContentPropertyHelper.mergeDefaults(cms, m_resource, m_individualSettings);
+            mergedSettings = CmsXmlContentPropertyHelper.mergeDefaults(cms, m_resource, getIndividualSettings());
         } else {
             mergedSettings = CmsXmlContentPropertyHelper.mergeDefaults(
                 cms,
                 formatterBean.getSettings(),
-                m_individualSettings);
+                getIndividualSettings());
         }
         if (m_settings == null) {
             m_settings = mergedSettings;
@@ -556,7 +556,8 @@ public class CmsContainerElementBean implements Cloneable {
      */
     public boolean isModelGroup() {
 
-        ModelGroupState state = ModelGroupState.evaluate(m_individualSettings.get(CmsContainerElement.MODEL_GROUP_STATE));
+        ModelGroupState state = ModelGroupState.evaluate(getIndividualSettings().get(
+            CmsContainerElement.MODEL_GROUP_STATE));
         return state == ModelGroupState.isModelGroup;
     }
 
@@ -567,7 +568,7 @@ public class CmsContainerElementBean implements Cloneable {
      */
     public boolean isModelGroupAlwaysReplace() {
 
-        return Boolean.parseBoolean(m_individualSettings.get(CmsContainerElement.IS_MODEL_GROUP_ALWAYS_REPLACE));
+        return Boolean.parseBoolean(getIndividualSettings().get(CmsContainerElement.IS_MODEL_GROUP_ALWAYS_REPLACE));
     }
 
     /**
@@ -659,8 +660,8 @@ public class CmsContainerElementBean implements Cloneable {
      */
     private String getSettingsHash() {
 
-        if (!m_individualSettings.isEmpty() || m_createNew) {
-            int hash = (m_individualSettings.toString() + m_createNew).hashCode();
+        if (!getIndividualSettings().isEmpty() || m_createNew) {
+            int hash = (getIndividualSettings().toString() + m_createNew).hashCode();
             return CmsADEManager.CLIENT_ID_SEPERATOR + hash;
         }
         return "";
