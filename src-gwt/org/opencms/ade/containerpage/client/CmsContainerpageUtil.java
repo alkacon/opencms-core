@@ -480,6 +480,7 @@ public class CmsContainerpageUtil {
             elementData.isReleasedAndNotExpired(),
             elementData.isNewEditorDisabled(),
             elementData.isModelGroup(),
+            elementData.isWasModelGroup(),
             elementData.getElementView());
         dragElement.setCreateNew(elementData.isCreateNew());
         if (m_controller.requiresOptionBar(dragElement, dragParent)) {

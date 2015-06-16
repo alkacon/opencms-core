@@ -39,6 +39,41 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsContainerElement implements IsSerializable {
 
+    /** The model group states. */
+    public static enum ModelGroupState {
+        /** Is model group state. */
+        isModelGroup,
+
+        /** No model group what so ever. */
+        noGroup,
+
+        /** Former copy model group. */
+        wasModelGroup;
+
+        /**
+         * Evaluates the given state string.<p>
+         * 
+         * @param state the state
+         * 
+         * @return the model group state
+         */
+        public static ModelGroupState evaluate(String state) {
+
+            ModelGroupState result = null;
+            if (state != null) {
+                try {
+                    result = ModelGroupState.valueOf(state);
+                } catch (IllegalArgumentException e) {
+                    // ignore
+                }
+            }
+            if (result == null) {
+                result = noGroup;
+            }
+            return result;
+        }
+    }
+
     /** HTML class used to identify containers. */
     public static final String CLASS_CONTAINER = "cms_ade_container";
 
@@ -54,38 +89,38 @@ public class CmsContainerElement implements IsSerializable {
     /** HTML class used to identify group container elements. */
     public static final String CLASS_GROUP_CONTAINER_ELEMENT_MARKER = "cms_ade_groupcontainer";
 
+    /** The create as new setting key. */
+    public static final String CREATE_AS_NEW = "create_as_new";
+
+    /** The element instance id settings key. */
+    public static final String ELEMENT_INSTANCE_ID = "element_instance_id";
+
     /** The group container resource type name. */
     public static final String GROUP_CONTAINER_TYPE_NAME = "groupcontainer";
 
     /** The resource type name for inherited container references.  */
     public static final String INHERIT_CONTAINER_TYPE_NAME = "inheritance_group";
 
+    /** The is model group always replace element setting key. */
+    public static final String IS_MODEL_GROUP_ALWAYS_REPLACE = "is_model_group_always_replace";
+
     /** The container id marking the edit menus. */
     public static final String MENU_CONTAINER_ID = "cms_edit_menu_container";
 
-    /** The element instance id settings key. */
-    public static final String ELEMENT_INSTANCE_ID = "element_instance_id";
+    /** The is model group description element setting key. */
+    public static final String MODEL_GROUP_DESCRIPTION = "model_group_description";
 
     /** The model group id setting key. */
     public static final String MODEL_GROUP_ID = "model_group_id";
 
     /** The is model group element setting key. */
-    public static final String IS_MODEL_GROUP = "is_model_group";
+    public static final String MODEL_GROUP_STATE = "model_group_state";
 
     /** The is model group title element setting key. */
     public static final String MODEL_GROUP_TITLE = "model_group_title";
 
-    /** The is model group description element setting key. */
-    public static final String MODEL_GROUP_DESCRIPTION = "model_group_description";
-
     /** The use as copy model setting key. */
     public static final String USE_AS_COPY_MODEL = "use_as_copy_model";
-
-    /** The create as new setting key. */
-    public static final String CREATE_AS_NEW = "create_as_new";
-
-    /** The is model group always replace element setting key. */
-    public static final String IS_MODEL_GROUP_ALWAYS_REPLACE = "is_model_group_always_replace";
 
     /** The element client id. */
     private String m_clientId;
@@ -101,6 +136,12 @@ public class CmsContainerElement implements IsSerializable {
 
     /** The inheritance info for this element. */
     private CmsInheritanceInfo m_inheritanceInfo;
+
+    /** True if the element is a model group. */
+    private boolean m_isModelGroup;
+
+    /** The model group always replace flag. */
+    private boolean m_isModelGroupAlwaysReplace;
 
     /** Flag indicating a new element. */
     private boolean m_new;
@@ -126,11 +167,8 @@ public class CmsContainerElement implements IsSerializable {
     /** The title. */
     private String m_title;
 
-    /** True if the element is a model group. */
-    private boolean m_isModelGroup;
-
-    /** The model group always replace flag. */
-    private boolean m_isModelGroupAlwaysReplace;
+    /** The former copy model status. */
+    private boolean m_wasModelGroup;
 
     /**
      * Default constructor.<p>
@@ -164,6 +202,7 @@ public class CmsContainerElement implements IsSerializable {
         result.m_title = m_title;
         result.m_elementView = m_elementView;
         result.m_isModelGroup = m_isModelGroup;
+        result.m_wasModelGroup = m_wasModelGroup;
         result.m_isModelGroupAlwaysReplace = m_isModelGroupAlwaysReplace;
         return result;
 
@@ -365,6 +404,16 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
+     * Returns the former copy model status.<p>
+     * 
+     * @return the former copy model status
+     */
+    public boolean isWasModelGroup() {
+
+        return m_wasModelGroup;
+    }
+
+    /**
      * Sets the client id.<p>
      *
      * @param clientId the client id to set
@@ -512,5 +561,10 @@ public class CmsContainerElement implements IsSerializable {
     public void setTitle(String title) {
 
         m_title = title;
+    }
+
+    public void setWasModelGroup(boolean wasModelGroup) {
+
+        m_wasModelGroup = wasModelGroup;
     }
 }

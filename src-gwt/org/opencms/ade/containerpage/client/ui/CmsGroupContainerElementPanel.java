@@ -127,6 +127,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
             releasedAndNotExpired,
             true,
             false,
+            false,
             elementView);
         m_resourceType = resourceType;
     }

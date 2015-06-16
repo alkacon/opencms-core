@@ -800,8 +800,8 @@ public class CmsDNDHandler implements MouseDownHandler {
              */
             public void execute() {
 
-                target.onDrop(draggable);
                 controller.onDrop(draggable, target, CmsDNDHandler.this);
+                target.onDrop(draggable);
                 draggable.onDrop(target);
                 clear();
             }

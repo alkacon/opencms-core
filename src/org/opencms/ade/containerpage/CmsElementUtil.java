@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
 import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
@@ -605,6 +606,8 @@ public class CmsElementUtil {
         result.setPermissionInfo(permissionInfo);
         result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
         result.setModelGroup(elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID));
+        result.setWasModelGroup(elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_STATE)
+            && (ModelGroupState.evaluate(elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_STATE)) == ModelGroupState.wasModelGroup));
         return result;
     }
 

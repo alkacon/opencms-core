@@ -40,6 +40,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementReuseMode;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
@@ -1078,17 +1079,33 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsContainerElement.ELEMENT_INSTANCE_ID,
                     elementBean.getIndividualSettings().get(CmsContainerElement.ELEMENT_INSTANCE_ID));
             }
-            // make sure to keep the model group id
-            if (elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID)) {
-                settings.put(
-                    CmsContainerElement.MODEL_GROUP_ID,
-                    elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_ID));
-            } else if (Boolean.valueOf(settings.get(CmsContainerElement.IS_MODEL_GROUP)).booleanValue()
-                && isEditingModelGroups(cms, pageResource)) {
-                CmsResource modelGroup = CmsModelGroupHelper.createModelGroup(
-                    cms,
-                    getConfigData(pageResource.getRootPath()));
-                settings.put(CmsContainerElement.MODEL_GROUP_ID, modelGroup.getStructureId().toString());
+            if (isEditingModelGroups(cms, pageResource)) {
+                if ((ModelGroupState.evaluate(settings.get(CmsContainerElement.MODEL_GROUP_STATE)) == ModelGroupState.isModelGroup)) {
+                    // make sure to keep the model group id
+                    if (elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID)) {
+                        settings.put(
+                            CmsContainerElement.MODEL_GROUP_ID,
+                            elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_ID));
+                    } else {
+                        // no model group resource assigned yet, create it
+                        CmsResource modelGroup = CmsModelGroupHelper.createModelGroup(
+                            cms,
+                            getConfigData(pageResource.getRootPath()));
+                        settings.put(CmsContainerElement.MODEL_GROUP_ID, modelGroup.getStructureId().toString());
+                    }
+                }
+            } else {
+                if (elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID)) {
+                    // make sure to keep the model group id
+                    settings.put(
+                        CmsContainerElement.MODEL_GROUP_ID,
+                        elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_ID));
+                }
+                if (elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_STATE)) {
+                    settings.put(
+                        CmsContainerElement.MODEL_GROUP_STATE,
+                        elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_STATE));
+                }
             }
             elementBean = CmsContainerElementBean.cloneWithSettings(
                 elementBean,

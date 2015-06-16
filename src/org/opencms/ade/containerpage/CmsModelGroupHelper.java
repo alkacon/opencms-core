@@ -30,6 +30,7 @@ package org.opencms.ade.containerpage;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -376,7 +377,7 @@ public class CmsModelGroupHelper {
         for (CmsContainerElementBean element : page.getElements()) {
             String modelGroupId = null;
             if (element.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID)
-                || Boolean.valueOf(element.getIndividualSettings().get(CmsContainerElement.IS_MODEL_GROUP)).booleanValue()) {
+                || element.isModelGroup()) {
                 modelGroupId = element.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_ID);
                 modelInstances.put(element.getInstanceId(), modelGroupId);
                 Set<String> childInstances = collectDescendingInstances(element.getInstanceId(), containersByParent);
@@ -677,9 +678,10 @@ public class CmsModelGroupHelper {
                     false);
                 settings.put(CmsContainerElement.MODEL_GROUP_DESCRIPTION, descProp.getValue());
             } catch (CmsException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.error(e.getLocalizedMessage(), e);
             }
+        } else if (baseElement.isCopyModel()) {
+            settings.put(CmsContainerElement.MODEL_GROUP_STATE, ModelGroupState.wasModelGroup.name());
         }
         return CmsContainerElementBean.cloneWithSettings(baseElement, settings);
     }

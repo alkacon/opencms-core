@@ -1198,6 +1198,43 @@ public final class CmsContainerpageController {
 
     }
 
+    /**
+     * Replaces all element instances of the original element with the new element within the former copy model.<p>
+     * 
+     * @param originalElementId the original element id
+     * @param modelGroupParent the model group parent element
+     * @param elementData the replace element data
+     */
+    public void executeCopyModelReplace(
+        String originalElementId,
+        Element modelGroupParent,
+        CmsContainerElementData elementData) {
+
+        String serverId = getServerId(originalElementId);
+        for (CmsContainerPageContainer cont : m_targetContainers.values()) {
+            if (modelGroupParent.isOrHasChild(cont.getElement())) {
+                // look for instances of the original element
+                for (Widget child : cont) {
+                    if ((child instanceof CmsContainerPageElementPanel)
+                        && ((CmsContainerPageElementPanel)child).getId().startsWith(serverId)) {
+                        CmsContainerPageElementPanel replacer = null;
+                        String elementContent = elementData.getContents().get(cont.getContainerId());
+                        if ((elementContent != null) && (elementContent.trim().length() > 0)) {
+                            try {
+                                replacer = getContainerpageUtil().createElement(elementData, cont);
+                                cont.insert(replacer, cont.getWidgetIndex(child));
+                                child.removeFromParent();
+                                initializeSubContainers(replacer);
+                            } catch (Exception e) {
+                                //ignore
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /** 
      * Fires an event on the core event bus.<p>
      * 

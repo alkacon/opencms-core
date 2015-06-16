@@ -88,6 +88,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /** The is model group property key. */
     public static final String PROP_IS_MODEL_GROUP = "is_model_group";
 
+    /** The former copy model property. */
+    public static final String PROP_WAS_MODEL_GROUP = "was_model_group";
+
     /** Highlighting border for this element. */
     protected CmsHighlightingBorder m_highlighting;
 
@@ -99,9 +102,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /** The elements client id. */
     private String m_clientId;
-
-    /** The model group status. */
-    private boolean m_modelGroup;
 
     /** The 'create new' flag. */
     private boolean m_createNew;
@@ -131,6 +131,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /** The inheritance info for this element. */
     private CmsInheritanceInfo m_inheritanceInfo;
+
+    /** The model group status. */
+    private boolean m_modelGroup;
 
     /** The is new element type. */
     private String m_newType;
@@ -168,6 +171,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      **/
     private boolean m_viewPermission;
 
+    /** The former copy model status. */
+    private boolean m_wasModelGroup;
+
     /** 
      * Indicates if the current user has write permissions on the element resource. 
      * Without write permissions, the element can not be edited. 
@@ -191,6 +197,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      * @param disableNewEditor flag to disable the new editor for this element 
      * @param modelGroup the model group status
+     * @param wasModelGroup in case of a former copy model group
      * @param elementView the element view of the element 
      */
     public CmsContainerPageElementPanel(
@@ -208,6 +215,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         boolean releasedAndNotExpired,
         boolean disableNewEditor,
         boolean modelGroup,
+        boolean wasModelGroup,
         CmsUUID elementView) {
 
         super(element);
@@ -221,12 +229,14 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         m_parent = parent;
         m_disableNewEditor = disableNewEditor;
         m_modelGroup = modelGroup;
+        m_wasModelGroup = wasModelGroup;
         setViewPermission(hasViewPermission);
         setWritePermission(hasWritePermission);
         setReleasedAndNotExpired(releasedAndNotExpired);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
         m_elementView = elementView;
         getElement().setPropertyBoolean(PROP_IS_MODEL_GROUP, modelGroup);
+        getElement().setPropertyBoolean(PROP_WAS_MODEL_GROUP, wasModelGroup);
     }
 
     /**

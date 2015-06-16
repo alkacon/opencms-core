@@ -442,11 +442,47 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
+     * In case of a former copy model, and a max elements setting of one, the id of the overflowing element is returned.<p>
+     * 
+     * @return the overflowing element id or <code>null</code>
+     */
+    public String getCopyModelReplaceId() {
+
+        String result = null;
+        if ((m_containerData.getMaxElements() == 1)
+            && (m_overflowingElement != null)
+            && (m_overflowingElement instanceof CmsContainerPageElementPanel)
+            && (getFormerModelGroupParent() != null)) {
+            result = ((CmsContainerPageElementPanel)m_overflowingElement).getId();
+        }
+        return result;
+    }
+
+    /**
      * @see org.opencms.gwt.client.dnd.I_CmsNestedDropTarget#getDnDChildren()
      */
     public List<I_CmsDropTarget> getDnDChildren() {
 
         return m_dnDChildren;
+    }
+
+    /**
+     * Returns whether this container has a model group parent.<p>
+     * 
+     * @return <code>true</code> if this container has a model group parent
+     */
+    public Element getFormerModelGroupParent() {
+
+        Element result = null;
+        Element parent = getElement().getParentElement();
+        while (parent != null) {
+            if (parent.getPropertyBoolean(CmsContainerPageElementPanel.PROP_WAS_MODEL_GROUP)) {
+                result = parent;
+                break;
+            }
+            parent = parent.getParentElement();
+        }
+        return result;
     }
 
     /**

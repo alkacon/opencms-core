@@ -29,6 +29,7 @@ package org.opencms.xml.containerpage;
 
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -555,7 +556,8 @@ public class CmsContainerElementBean implements Cloneable {
      */
     public boolean isModelGroup() {
 
-        return Boolean.parseBoolean(m_individualSettings.get(CmsContainerElement.IS_MODEL_GROUP));
+        ModelGroupState state = ModelGroupState.evaluate(m_individualSettings.get(CmsContainerElement.MODEL_GROUP_STATE));
+        return state == ModelGroupState.isModelGroup;
     }
 
     /**

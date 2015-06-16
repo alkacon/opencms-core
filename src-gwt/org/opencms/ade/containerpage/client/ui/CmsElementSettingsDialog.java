@@ -31,6 +31,7 @@ import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -399,7 +400,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         }
         if (m_modelGroupCheckBox != null) {
             boolean modelGroup = m_modelGroupCheckBox.isChecked();
-            fieldValues.put(CmsContainerElement.IS_MODEL_GROUP, Boolean.toString(modelGroup));
+            fieldValues.put(CmsContainerElement.MODEL_GROUP_STATE, (modelGroup
+            ? ModelGroupState.isModelGroup
+            : ModelGroupState.noGroup).name());
             if (modelGroup) {
                 fieldValues.put(CmsContainerElement.MODEL_GROUP_TITLE, m_modelGroupTitle.getFormValueAsString());
                 fieldValues.put(

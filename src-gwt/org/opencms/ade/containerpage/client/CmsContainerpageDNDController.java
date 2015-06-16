@@ -304,14 +304,14 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 try {
 
                     CmsContainerPageElementPanel containerElement = null;
+                    CmsContainerElementData elementData = null;
                     if (m_isNew) {
                         // for new content elements dragged from the gallery menu, the given id contains the resource type name
-                        containerElement = m_controller.getContainerpageUtil().createElement(
-                            m_controller.getCachedElement(m_draggableId),
-                            container);
+                        elementData = m_controller.getCachedElement(m_draggableId);
+                        containerElement = m_controller.getContainerpageUtil().createElement(elementData, container);
                         containerElement.setNewType(CmsContainerpageController.getServerId(m_draggableId));
                     } else {
-                        CmsContainerElementData elementData = m_controller.getCachedElement(m_draggableId);
+                        elementData = m_controller.getCachedElement(m_draggableId);
                         hasWritePermissions = elementData.hasWritePermission();
                         if ((elementData.getDndId() != null)
                             && (null != m_controller.getCachedElement(elementData.getDndId()))) {
@@ -328,6 +328,16 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         container.add(containerElement);
                     } else {
                         container.insert(containerElement, container.getPlaceholderIndex());
+                    }
+                    if (container instanceof CmsContainerPageContainer) {
+                        // check for the copy model group replace all instances case
+                        String copyModelReplaceId = ((CmsContainerPageContainer)container).getCopyModelReplaceId();
+                        if (copyModelReplaceId != null) {
+                            m_controller.executeCopyModelReplace(
+                                copyModelReplaceId,
+                                ((CmsContainerPageContainer)container).getFormerModelGroupParent(),
+                                elementData);
+                        }
                     }
                     // changes are only relevant to the container page if not group-container editing
                     changedContainerpage = !m_controller.isGroupcontainerEditing();
