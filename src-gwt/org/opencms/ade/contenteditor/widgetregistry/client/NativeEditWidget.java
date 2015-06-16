@@ -48,46 +48,54 @@ public final class NativeEditWidget extends JavaScriptObject {
      * Wraps a GWT edit widget instance to be used from within another GWT module.<p>
      * 
      * @param widget the widget to wrap
+     * @param isFormWidget in case of a form widget
      * 
      * @return the wrapping native java script object
      */
-    public static native NativeEditWidget wrapWidget(I_CmsEditWidget widget)/*-{
-                                                                         var nat = {
-                                                                         instance : widget
-                                                                         };
-                                                                         nat.getElement = function() {
-                                                                         return this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::asWidget()().@com.google.gwt.user.client.ui.Widget::getElement()();
-                                                                         }
-                                                                         nat.isActive = function() {
-                                                                         return this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::isActive()();
-                                                                         }
-                                                                         nat.setActive = function(active) {
-                                                                         return this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::setActive(Z)(active);
-                                                                         }
-                                                                         nat.getValue = function() {
-                                                                         return this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::getValue()();
-                                                                         }
-                                                                         nat.setValue = function(value, fireEvent) {
-                                                                         this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::setValue(Ljava/lang/String;Z)(value, fireEvent);
-                                                                         }
-                                                                         nat.onAttachWidget = function() {
-                                                                         this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::onAttachWidget()();
-                                                                         }
-                                                                         nat.onChange = function() {
-                                                                         if (this.onChangeCommand != null) {
-                                                                         this.onChangeCommand();
-                                                                         }
-                                                                         };
-                                                                         nat.onFocus = function() {
-                                                                         if (this.onFocusCommand != null) {
-                                                                         this.onFocusCommand();
-                                                                         }
-                                                                         };
-                                                                         var nativeHandler = @org.opencms.ade.contenteditor.widgetregistry.client.NativeEditWidget::getNativeHandler(Lorg/opencms/ade/contenteditor/widgetregistry/client/NativeEditWidget;)(nat);
-                                                                         widget.@org.opencms.acacia.client.widgets.I_CmsEditWidget::addValueChangeHandler(Lcom/google/gwt/event/logical/shared/ValueChangeHandler;)(nativeHandler);
-                                                                         widget.@org.opencms.acacia.client.widgets.I_CmsEditWidget::addFocusHandler(Lcom/google/gwt/event/dom/client/FocusHandler;)(nativeHandler);
-                                                                         return nat;
-                                                                         }-*/;
+    public static native NativeEditWidget wrapWidget(I_CmsEditWidget widget, boolean isFormWidget)/*-{
+                                                                                                  var nat = {
+                                                                                                  instance : widget
+                                                                                                  };
+                                                                                                  nat.getElement = function() {
+                                                                                                  return this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::asWidget()().@com.google.gwt.user.client.ui.Widget::getElement()();
+                                                                                                  }
+                                                                                                  nat.isActive = function() {
+                                                                                                  return this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::isActive()();
+                                                                                                  }
+                                                                                                  nat.setActive = function(active) {
+                                                                                                  return this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::setActive(Z)(active);
+                                                                                                  }
+                                                                                                  nat.getValue = function() {
+                                                                                                  return this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::getValue()();
+                                                                                                  }
+                                                                                                  nat.setValue = function(value, fireEvent) {
+                                                                                                  this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::setValue(Ljava/lang/String;Z)(value, fireEvent);
+                                                                                                  }
+                                                                                                  if (isFormWidget) {
+                                                                                                  nat.setWidgetInfo = function(label, help){
+                                                                                                  this.instance.@org.opencms.acacia.client.widgets.I_CmsFormEditWidget::setWidgetInfo(Ljava/lang/String;Ljava/lang/String;)(label,help);
+                                                                                                  }
+                                                                                                  } else {
+                                                                                                      nat.setWidgetInfo=function(){}
+                                                                                                  }
+                                                                                                  nat.onAttachWidget = function() {
+                                                                                                  this.instance.@org.opencms.acacia.client.widgets.I_CmsEditWidget::onAttachWidget()();
+                                                                                                  }
+                                                                                                  nat.onChange = function() {
+                                                                                                  if (this.onChangeCommand != null) {
+                                                                                                  this.onChangeCommand();
+                                                                                                  }
+                                                                                                  };
+                                                                                                  nat.onFocus = function() {
+                                                                                                  if (this.onFocusCommand != null) {
+                                                                                                  this.onFocusCommand();
+                                                                                                  }
+                                                                                                  };
+                                                                                                  var nativeHandler = @org.opencms.ade.contenteditor.widgetregistry.client.NativeEditWidget::getNativeHandler(Lorg/opencms/ade/contenteditor/widgetregistry/client/NativeEditWidget;)(nat);
+                                                                                                  widget.@org.opencms.acacia.client.widgets.I_CmsEditWidget::addValueChangeHandler(Lcom/google/gwt/event/logical/shared/ValueChangeHandler;)(nativeHandler);
+                                                                                                  widget.@org.opencms.acacia.client.widgets.I_CmsEditWidget::addFocusHandler(Lcom/google/gwt/event/dom/client/FocusHandler;)(nativeHandler);
+                                                                                                  return nat;
+                                                                                                  }-*/;
 
     /**
      * Returns an event handler that delegates to a native java script object.<p>
@@ -162,4 +170,14 @@ public final class NativeEditWidget extends JavaScriptObject {
     protected native void setValue(String value, boolean fireEvent)/*-{
                                                                    this.setValue(value, fireEvent);
                                                                    }-*/;
+
+    /**
+     * Sets the widget label and help text.<p>
+     * 
+     * @param label the widget label text
+     * @param help the widget help text
+     */
+    protected native void setWidgetInfo(String label, String help)/*-{
+                                                                  this.setWidgetInfo(label, help);
+                                                                  }-*/;
 }

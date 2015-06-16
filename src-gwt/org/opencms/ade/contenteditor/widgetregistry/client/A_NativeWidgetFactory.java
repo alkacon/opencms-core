@@ -28,7 +28,7 @@
 package org.opencms.ade.contenteditor.widgetregistry.client;
 
 import org.opencms.acacia.client.I_CmsWidgetFactory;
-import org.opencms.acacia.client.widgets.I_CmsEditWidget;
+import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
 
 import com.google.gwt.dom.client.Element;
 
@@ -88,8 +88,8 @@ public abstract class A_NativeWidgetFactory implements I_CmsWidgetFactory {
      */
     private NativeEditWidget createNativeWidget(String configuration) {
 
-        I_CmsEditWidget widget = createFormWidget(configuration);
-        return NativeEditWidget.wrapWidget(widget);
+        I_CmsFormEditWidget widget = createFormWidget(configuration);
+        return NativeEditWidget.wrapWidget(widget, true);
     }
 
     /**
@@ -102,7 +102,7 @@ public abstract class A_NativeWidgetFactory implements I_CmsWidgetFactory {
      */
     private NativeEditWidget createNativeWrapedElement(String configuration, Element element) {
 
-        return NativeEditWidget.wrapWidget(createInlineWidget(configuration, element));
+        return NativeEditWidget.wrapWidget(createInlineWidget(configuration, element), false);
     }
 
 }
