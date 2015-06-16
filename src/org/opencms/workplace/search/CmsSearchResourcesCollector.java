@@ -35,6 +35,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
+import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
@@ -276,8 +277,10 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
             List<String> resources = getResourceNamesFromParam(params);
             String[] searchRoots = new String[resources.size()];
             resources.toArray(searchRoots);
-            for (int i = 0; i < searchRoots.length; i++) {
-                searchRoots[i] = getWp().getCms().addSiteRoot(searchRoots[i]);
+            if (CmsGallerySearchIndex.GALLERY_INDEX_NAME.equals(m_searchBean.getIndex())) {
+                for (int i = 0; i < searchRoots.length; i++) {
+                    searchRoots[i] = getWp().getCms().addSiteRoot(searchRoots[i]);
+                }
             }
             m_searchBean.setSearchRoots(searchRoots);
         } else {
