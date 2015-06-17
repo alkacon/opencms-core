@@ -449,6 +449,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/locales/ru/messages/org/opencms/ade/postupload/messages_ru.properties</source>
+			<destination>system/workplace/locales/ru/messages/org/opencms/ade/postupload/messages_ru.properties</destination>
+			<type>plain</type>
+			<uuidstructure>66064ccb-14d0-11e5-8cf5-01bfaccbe1c9</uuidstructure>
+			<uuidresource>66064ccc-14d0-11e5-8cf5-01bfaccbe1c9</uuidresource>
+			<datelastmodified>Wed, 17 Jun 2015 09:08:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 17 Jun 2015 09:08:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/ru/messages/org/opencms/ade/publish</destination>
 			<type>folder</type>
 			<uuidstructure>4ec81f27-6f45-11e1-a62b-6192c87e77fb</uuidstructure>
@@ -2148,6 +2163,34 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/locales/ru/messages/org/opencms/workplace/editors/directedit</destination>
+			<type>folder</type>
+			<uuidstructure>3d32cad4-14d0-11e5-8cf5-01bfaccbe1c9</uuidstructure>
+			<datelastmodified>Wed, 17 Jun 2015 09:07:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 17 Jun 2015 09:07:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/ru/messages/org/opencms/workplace/editors/directedit/messages_ru.properties</source>
+			<destination>system/workplace/locales/ru/messages/org/opencms/workplace/editors/directedit/messages_ru.properties</destination>
+			<type>plain</type>
+			<uuidstructure>4a49c667-14d0-11e5-8cf5-01bfaccbe1c9</uuidstructure>
+			<uuidresource>4a49c668-14d0-11e5-8cf5-01bfaccbe1c9</uuidresource>
+			<datelastmodified>Wed, 17 Jun 2015 09:07:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 17 Jun 2015 09:07:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/ru/messages/org/opencms/workplace/explorer</destination>
 			<type>folder</type>
 			<uuidstructure>0913b3ea-5bc0-11e1-a475-6192c87e77fb</uuidstructure>
@@ -3037,6 +3080,21 @@
 			<datelastmodified>Tue, 16 Apr 2013 14:02:21 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 16 Apr 2013 14:02:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/ru/messages/org/opencms/xml/adeconfig/xmlvfsbundle_messages_ru.properties</source>
+			<destination>system/workplace/locales/ru/messages/org/opencms/xml/adeconfig/xmlvfsbundle_messages_ru.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2ab29de1-14d0-11e5-8cf5-01bfaccbe1c9</uuidstructure>
+			<uuidresource>2ab29de2-14d0-11e5-8cf5-01bfaccbe1c9</uuidresource>
+			<datelastmodified>Wed, 17 Jun 2015 09:06:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 17 Jun 2015 09:06:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
