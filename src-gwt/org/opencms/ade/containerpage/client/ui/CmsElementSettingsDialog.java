@@ -93,18 +93,6 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     /** Checkbox to set the 'createNew' status. */
     private CmsCheckBox m_createNewCheckBox;
 
-    /** Checkbox to set the 'model group' status. */
-    private CmsCheckBox m_modelGroupCheckBox;
-
-    /** The is model group title field. */
-    private CmsTextBox m_modelGroupTitle;
-
-    /** The is model group description field. */
-    private CmsTextBox m_modelGroupDescription;
-
-    /** Checkbox to set the use as copy model status. */
-    private CmsCheckBox m_useAsCopyModel;
-
     /** The element data bean. */
     private CmsContainerElementData m_elementBean;
 
@@ -114,8 +102,23 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     /** The formatter select widget. */
     private CmsSelectBox m_formatterSelect;
 
+    /** The break up model group checkbox. */
+    private CmsCheckBox m_modelGroupBreakUp;
+
+    /** Checkbox to set the 'model group' status. */
+    private CmsCheckBox m_modelGroupCheckBox;
+
+    /** The is model group description field. */
+    private CmsTextBox m_modelGroupDescription;
+
+    /** The is model group title field. */
+    private CmsTextBox m_modelGroupTitle;
+
     /** The element setting values. */
     private Map<String, String> m_settings;
+
+    /** Checkbox to set the use as copy model status. */
+    private CmsCheckBox m_useAsCopyModel;
 
     /**
      * Constructor.<p>
@@ -231,6 +234,19 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 modelGroupFieldSet.add(m_createNewCheckBox);
                 fieldSetPanel.getMainPanel().insert(modelGroupFieldSet, 1);
                 m_createNewCheckBox.setChecked(elementBean.isCreateNew());
+            } else if (elementWidget.isModelGroup()) {
+                CmsFieldSet modelGroupFieldSet = new CmsFieldSet();
+                modelGroupFieldSet.setLegend(org.opencms.ade.containerpage.client.Messages.get().key(
+                    org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LEGEND_0
+
+                ));
+                modelGroupFieldSet.getElement().getStyle().setMarginTop(10, Unit.PX);
+                m_modelGroupBreakUp = new CmsCheckBox(org.opencms.ade.containerpage.client.Messages.get().key(
+                    org.opencms.ade.containerpage.client.Messages.GUI_MODEL_GROUP_BREAK_UP_0));
+                m_modelGroupBreakUp.setDisplayInline(false);
+                m_modelGroupBreakUp.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
+                modelGroupFieldSet.add(m_modelGroupBreakUp);
+                fieldSetPanel.getMainPanel().insert(modelGroupFieldSet, 1);
             }
 
             if (m_contextInfo.shouldShowElementTemplateContextSelection()) {
@@ -412,6 +428,10 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         }
         if (m_useAsCopyModel != null) {
             fieldValues.put(CmsContainerElement.USE_AS_COPY_MODEL, Boolean.toString(m_useAsCopyModel.isChecked()));
+        }
+
+        if ((m_modelGroupBreakUp != null) && m_modelGroupBreakUp.isChecked()) {
+            fieldValues.put(CmsContainerElement.MODEL_GROUP_STATE, ModelGroupState.noGroup.name());
         }
 
         final Map<String, String> filteredFieldValues = new HashMap<String, String>();

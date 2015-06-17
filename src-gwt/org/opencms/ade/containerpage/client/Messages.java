@@ -184,6 +184,9 @@ public final class Messages {
     public static final String GUI_LOCK_FAIL_0 = "GUI_LOCK_FAIL_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_GROUP_BREAK_UP_0 = "GUI_MODEL_GROUP_BREAK_UP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MODEL_GROUP_DESCRIPTION_0 = "GUI_MODEL_GROUP_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
