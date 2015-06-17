@@ -15,7 +15,7 @@
 		<class>org.opencms.ugc.CmsUgcModuleAction</class>
 		<description><![CDATA[<p>User generated content API</p>
 								<p><i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>9.5.0</version>
+		<version>9.5.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail />
 		<datecreated />
