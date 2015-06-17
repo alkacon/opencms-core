@@ -1400,6 +1400,9 @@ tasks.withType(JavaCompile) {
 }
 tasks.withType(Javadoc) {
     options.addStringOption("sourcepath", "")
+    if (JavaVersion.current().isJava8Compatible()) {
+    	options.addStringOption("Xdoclint:none", "-quiet")
+    }
 }
 
 
