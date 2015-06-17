@@ -592,8 +592,8 @@ public class CmsJspNavBuilder {
         for (CmsJspNavElement ne : curnav) {
             // add the navigation entry to the result list
             list.add(ne);
-            // check if navigation entry is a folder and below the max level -> if so, get the navigation from this folder as well
-            if (ne.isFolderLink() && (noLimit || (ne.getNavTreeLevel() < endLevel))) {
+            // check if navigation entry is a folder or navigation level and below the max level -> if so, get the navigation from this folder as well
+            if ((ne.isFolderLink() || ne.isNavigationLevel()) && (noLimit || (ne.getNavTreeLevel() < endLevel))) {
                 List<CmsJspNavElement> subnav = getSiteNavigation(m_cms.getSitePath(ne.getResource()), endLevel);
                 // copy the result of the subfolder to the result list
                 list.addAll(subnav);
