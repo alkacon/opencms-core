@@ -417,6 +417,20 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
+     * Returns the resource type name.<p>
+     * 
+     * @return the type name
+     */
+    public String getTypeName() {
+
+        if (getResource() != null) {
+            return OpenCms.getResourceManager().getResourceType(getResource()).getTypeName();
+        } else {
+            return "unknown";
+        }
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
