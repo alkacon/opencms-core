@@ -43,6 +43,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange.ChangeType;
 import org.opencms.ade.sitemap.shared.CmsSitemapClipboardData;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.ade.sitemap.shared.I_CmsSitemapController;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapServiceAsync;
@@ -55,9 +56,6 @@ import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem.LoadState;
 import org.opencms.gwt.client.util.CmsDebugLog;
-import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsDomUtil.Method;
-import org.opencms.gwt.client.util.CmsDomUtil.Target;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
@@ -77,7 +75,6 @@ import java.util.Set;
 
 import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Command;
@@ -85,7 +82,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Sitemap editor controller.<p>
@@ -1525,17 +1521,15 @@ public class CmsSitemapController implements I_CmsSitemapController {
      */
     public void openSiteMap(String sitePath) {
 
-        Map<String, String> parameter = new HashMap<String, String>();
-        parameter.put(CmsCoreData.PARAM_PATH, sitePath);
-        parameter.put(CmsCoreData.PARAM_RETURNCODE, getData().getReturnCode());
-        parameter.put(CmsSitemapData.PARAM_EDITOR_MODE, CmsSitemapView.getInstance().getEditorMode().toString());
-        FormElement form = CmsDomUtil.generateHiddenForm(
-            CmsCoreProvider.get().link(CmsCoreProvider.get().getUri()),
-            Method.post,
-            Target.TOP,
-            parameter);
-        RootPanel.getBodyElement().appendChild(form);
-        form.submit();
+        Window.Location.replace(CmsCoreProvider.get().link(CmsCoreProvider.get().getUri())
+            + "?"
+            + CmsCoreData.PARAM_PATH
+            + "="
+            + sitePath
+            + "&"
+            + CmsCoreData.PARAM_RETURNCODE
+            + "="
+            + getData().getReturnCode());
     }
 
     /**
@@ -1655,6 +1649,31 @@ public class CmsSitemapController implements I_CmsSitemapController {
         }
         return props;
 
+    }
+
+    /**
+     * Sets the editor mode in the user session.<p>
+     * 
+     * @param editorMode the editor mode
+     */
+    public void setEditorModeInSession(final EditorMode editorMode) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                getService().setEditorMode(editorMode, this);
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                // nothing to do
+
+            }
+        };
+        action.execute();
     }
 
     /**

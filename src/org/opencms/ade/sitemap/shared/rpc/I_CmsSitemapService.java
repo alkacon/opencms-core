@@ -36,6 +36,7 @@ import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
@@ -281,6 +282,15 @@ public interface I_CmsSitemapService extends RemoteService {
      */
     @SynchronizedRpcRequest
     CmsSitemapChange saveSync(String sitemapUri, CmsSitemapChange change) throws CmsRpcException;
+
+    /**
+     * Sets the editor mode in the current user session.<p>
+     * 
+     * @param editorMode the editor mode to set
+     * 
+     * @throws CmsRpcException in case something goes wrong
+     */
+    void setEditorMode(EditorMode editorMode) throws CmsRpcException;
 
     /**
      * Updates the alias editor status.<p>

@@ -1123,6 +1123,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         if (editorMode != m_editorMode) {
             m_editorMode = editorMode;
+            m_controller.setEditorModeInSession(m_editorMode);
             switch (m_editorMode) {
                 case galleries:
                     m_tree.getElement().getStyle().setDisplay(Display.NONE);

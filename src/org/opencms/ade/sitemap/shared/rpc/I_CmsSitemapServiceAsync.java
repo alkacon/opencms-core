@@ -36,6 +36,7 @@ import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
 import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
+import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationReply;
 import org.opencms.gwt.shared.alias.CmsAliasEditValidationRequest;
 import org.opencms.gwt.shared.alias.CmsAliasImportResult;
@@ -244,6 +245,14 @@ public interface I_CmsSitemapServiceAsync {
      */
     @SynchronizedRpcRequest
     void saveSync(String sitemapUri, CmsSitemapChange change, AsyncCallback<CmsSitemapChange> callback);
+
+    /**
+     * Sets the editor mode in the current user session.<p>
+     * 
+     * @param editorMode the editor mode to set
+     * @param callback the asynchronous callback 
+     */
+    void setEditorMode(EditorMode editorMode, AsyncCallback<Void> callback);
 
     /**
      * Updates the alias editor status.<p>

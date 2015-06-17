@@ -28,6 +28,7 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.ade.configuration.CmsElementView;
+import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.configuration.preferences.CmsElementViewPreference;
 import org.opencms.file.CmsObject;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
@@ -67,6 +68,9 @@ public final class CmsADESessionCache {
 
     /** The ADE recent list. */
     private List<CmsContainerElementBean> m_recentLists;
+
+    /** The sitemap editor mode. */
+    private EditorMode m_sitemapEditorMode;
 
     /** Template bean cache. */
     private Map<String, TemplateBean> m_templateBeanCache = new HashMap<String, TemplateBean>();
@@ -183,6 +187,16 @@ public final class CmsADESessionCache {
     }
 
     /**
+     * returns the sitemap editor mode.<p>
+     * 
+     * @return the sitemap editor mode
+     */
+    public EditorMode getSitemapEditorMode() {
+
+        return m_sitemapEditorMode;
+    }
+
+    /**
      * Gets the cached template bean for a given container page uri.<p>
      * 
      * @param uri the container page uri 
@@ -274,6 +288,16 @@ public final class CmsADESessionCache {
     public void setElementView(CmsUUID elementView) {
 
         m_elementView = elementView;
+    }
+
+    /**
+     * Sets the sitemap editor mode.<p>
+     * 
+     * @param sitemapEditorMode the sitemap editor mode
+     */
+    public void setSitemapEditorMode(EditorMode sitemapEditorMode) {
+
+        m_sitemapEditorMode = sitemapEditorMode;
     }
 
     /**

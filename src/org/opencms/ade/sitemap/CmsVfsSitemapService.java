@@ -121,6 +121,7 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
@@ -806,14 +807,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             List<CmsListInfoBean> subsitemapFolderTypeInfos = collectSitemapTypeInfos(cms, configData);
 
             // evaluate the editor mode
-            EditorMode editorMode = EditorMode.navigation;
-            String modeParam = getRequest().getParameter(CmsSitemapData.PARAM_EDITOR_MODE);
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(modeParam)) {
-                try {
-                    editorMode = EditorMode.valueOf(modeParam);
-                } catch (Exception e) {
-                    // ignore
-                }
+            EditorMode editorMode = CmsADESessionCache.getCache(getRequest(), getCmsObject()).getSitemapEditorMode();
+            if (editorMode == null) {
+                editorMode = EditorMode.navigation;
             }
 
             result = new CmsSitemapData(
@@ -912,6 +908,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     public CmsSitemapChange saveSync(String entryPoint, CmsSitemapChange change) throws CmsRpcException {
 
         return save(entryPoint, change);
+    }
+
+    /**
+     * @see org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService#setEditorMode(org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode)
+     */
+    public void setEditorMode(EditorMode editorMode) {
+
+        CmsADESessionCache.getCache(getRequest(), getCmsObject()).setSitemapEditorMode(editorMode);
     }
 
     /**

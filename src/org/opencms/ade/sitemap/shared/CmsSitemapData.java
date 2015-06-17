@@ -64,9 +64,6 @@ public class CmsSitemapData implements IsSerializable {
     /** Name of the used js variable. */
     public static final String DICT_NAME = "org_opencms_ade_sitemap";
 
-    /** The editor mode parameter name. */
-    public static final String PARAM_EDITOR_MODE = "editormode";
-
     /** The URL of the JSP used to import aliases. */
     private String m_aliasImportUrl;
 
