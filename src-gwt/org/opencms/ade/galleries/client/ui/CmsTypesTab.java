@@ -136,17 +136,22 @@ public class CmsTypesTab extends A_CmsListTab {
     /** The switch to enable/disable the full type list. */
     private Widget m_typeModeToggle;
 
+    /** Custom widget to display in the top bar of the types tab. */
+    private Widget m_additionalTypeTabControl;
+
     /**
      * Constructor.<p>
      * 
      * @param tabHandler the tab handler 
      * @param dndHandler the drag and drop handler
+     * @param additionalControl an additional custom widget that can be displayed in the top bar  
      */
-    public CmsTypesTab(CmsTypesTabHandler tabHandler, CmsDNDHandler dndHandler) {
+    public CmsTypesTab(CmsTypesTabHandler tabHandler, CmsDNDHandler dndHandler, Widget additionalControl) {
 
         super(GalleryTabId.cms_tab_types);
         m_tabHandler = tabHandler;
         m_dndHandler = dndHandler;
+        m_additionalTypeTabControl = additionalControl;
         init();
     }
 
@@ -292,6 +297,9 @@ public class CmsTypesTab extends A_CmsListTab {
         toggleContainer.add(typeToggle);
         toggleContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().typeModeSwitch());
         m_options.add(toggleContainer);
+        if (m_additionalTypeTabControl != null) {
+            m_options.add(m_additionalTypeTabControl);
+        }
         typeToggle.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 
             public void onValueChange(ValueChangeEvent<Boolean> event) {

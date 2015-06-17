@@ -41,6 +41,7 @@ import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
 import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Factory class to create gallery dialog with or without parameter.<p>
@@ -71,6 +72,11 @@ public final class CmsGalleryFactory {
 
                 // TODO: Auto-generated method stub
                 return true;
+            }
+
+            public Widget getAdditionalTypeTabControl() {
+
+                return null;
             }
 
             public I_CmsAutoHider getAutoHideParent() {

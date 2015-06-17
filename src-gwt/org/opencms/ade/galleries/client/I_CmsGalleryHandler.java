@@ -32,6 +32,8 @@ import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
+import com.google.gwt.user.client.ui.Widget;
+
 /**
  * A handler interface which allows the gallery dialog to interact with the context it is used in, e.g. the container page editor.
  */
@@ -47,6 +49,13 @@ public interface I_CmsGalleryHandler {
      * @return false if DnD should be prohibited for the element, else true 
      */
     boolean filterDnd(CmsResultItemBean resultBean);
+
+    /** 
+     * Gets an additional widget to display in the type tab.<p>
+     * 
+     * @return the additional widget to display 
+     */
+    Widget getAdditionalTypeTabControl();
 
     /**
      * Gets the auto-hide parent.<p>

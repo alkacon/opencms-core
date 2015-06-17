@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The gallery dialog popup.<p>
@@ -91,6 +92,15 @@ public class CmsGalleryPopup extends CmsPopup implements I_CmsGalleryHandler {
     public boolean filterDnd(CmsResultItemBean resultBean) {
 
         return true;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.I_CmsGalleryHandler#getAdditionalTypeTabControl()
+     */
+    public Widget getAdditionalTypeTabControl() {
+
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /**

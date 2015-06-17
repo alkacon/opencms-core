@@ -1974,7 +1974,7 @@ public final class CmsContainerpageController {
             m_contentEditorHandler.openEditorForHistory(historyToken);
         }
 
-        updateGalleryData();
+        updateGalleryData(null);
     }
 
     /**
@@ -2902,8 +2902,9 @@ public final class CmsContainerpageController {
      * Sets the element view.<p>
      * 
      * @param elementView the element view
+     * @param nextAction the action to execute after setting the view 
      */
-    public void setElementView(final CmsUUID elementView) {
+    public void setElementView(final CmsUUID elementView, Runnable nextAction) {
 
         m_elementView = elementView;
         CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
@@ -2922,7 +2923,7 @@ public final class CmsContainerpageController {
         };
         action.execute();
         reinitializeButtons();
-        updateGalleryData();
+        updateGalleryData(nextAction);
     }
 
     /**
@@ -3355,7 +3356,7 @@ public final class CmsContainerpageController {
                 public void run() {
 
                     m_galleryUpdateTimer = null;
-                    updateGalleryData();
+                    updateGalleryData(null);
                 }
             };
             m_galleryUpdateTimer.schedule(50);
@@ -3488,8 +3489,10 @@ public final class CmsContainerpageController {
     /**
      * Updates the gallery data according to the current element view and the editable containers.<p>
      * This method should only be called from the gallery update timer to avoid unnecessary requests.<p>
+     * 
+     * @param nextAction the action to execute after updating the gallery data 
      */
-    void updateGalleryData() {
+    void updateGalleryData(final Runnable nextAction) {
 
         CmsRpcAction<CmsGalleryDataBean> dataAction = new CmsRpcAction<CmsGalleryDataBean>() {
 
@@ -3508,6 +3511,9 @@ public final class CmsContainerpageController {
             protected void onResponse(CmsGalleryDataBean result) {
 
                 m_handler.m_editor.getAdd().updateGalleryData(result);
+                if (nextAction != null) {
+                    nextAction.run();
+                }
             }
         };
         dataAction.execute();

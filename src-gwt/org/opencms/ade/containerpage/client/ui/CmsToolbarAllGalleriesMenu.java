@@ -52,6 +52,7 @@ import org.opencms.gwt.shared.CmsGwtConstants;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The gallery tool-bar menu.<p>
@@ -149,6 +150,11 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
                 public boolean filterDnd(CmsResultItemBean resultBean) {
 
                     return CmsGwtConstants.TYPE_IMAGE.equals(resultBean.getType());
+                }
+
+                public Widget getAdditionalTypeTabControl() {
+
+                    return null;
                 }
 
                 public I_CmsAutoHider getAutoHideParent() {

@@ -271,7 +271,10 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         for (i = 0; i < tabIds.length; i++) {
             switch (tabIds[i]) {
                 case cms_tab_types:
-                    m_typesTab = new CmsTypesTab(new CmsTypesTabHandler(controller), m_dndHandler);
+                    m_typesTab = new CmsTypesTab(
+                        new CmsTypesTabHandler(controller),
+                        m_dndHandler,
+                        m_galleryHandler.getAdditionalTypeTabControl());
                     m_typesTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_typesTab, Messages.get().key(Messages.GUI_TAB_TITLE_TYPES_0));
                     break;

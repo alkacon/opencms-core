@@ -53,6 +53,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.FontStyle;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The gallery tool-bar menu.<p>
@@ -89,6 +90,14 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
             } else {
                 return true;
             }
+        }
+
+        /**
+         * @see org.opencms.ade.galleries.client.I_CmsGalleryHandler#getAdditionalTypeTabControl()
+         */
+        public Widget getAdditionalTypeTabControl() {
+
+            return CmsContainerpageController.get().getHandler().createViewSelectorForGalleryDialog();
         }
 
         /**

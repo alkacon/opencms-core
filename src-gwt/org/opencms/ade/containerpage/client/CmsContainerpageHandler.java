@@ -62,6 +62,7 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
@@ -90,6 +91,8 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
@@ -278,6 +281,43 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         CmsContextMenuEntry entry = createRawMenuEntry(structureId, action);
         decorateMenuEntry(entry, name, checked);
         return entry;
+    }
+
+    /** 
+     * Creates a select box used to switch between views from the gallery dialog.<p>
+     * 
+     * @return the created select box 
+     */
+    public CmsSelectBox createViewSelectorForGalleryDialog() {
+
+        List<CmsElementViewInfo> elementViews = m_controller.getData().getElementViews();
+        if (elementViews.size() <= 1) {
+            return null;
+        }
+        CmsUUID currentView = m_controller.getElementView();
+        Map<String, String> options = Maps.newHashMap();
+        for (CmsElementViewInfo view : elementViews) {
+            options.put("" + view.getElementViewId(), view.getTitle());
+        }
+        CmsSelectBox result = new CmsSelectBox(options);
+        result.setFormValueAsString(currentView.toString());
+        result.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+            public void onValueChange(ValueChangeEvent<String> event) {
+
+                m_editor.getAdd().setActive(false);
+                setElementView(new CmsUUID(event.getValue()), new Runnable() {
+
+                    public void run() {
+
+                        m_editor.getAdd().setActive(true);
+                    }
+                });
+            }
+        });
+        result.getElement().getStyle().setWidth(160, Unit.PX);
+
+        return result;
     }
 
     /**
@@ -1340,10 +1380,11 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * Sets the element view.<p>
      * 
      * @param elementView the element view
+     * @param nextAction the action to execute after setting the view 
      */
-    protected void setElementView(CmsUUID elementView) {
+    protected void setElementView(CmsUUID elementView, Runnable nextAction) {
 
-        m_controller.setElementView(elementView);
+        m_controller.setElementView(elementView, nextAction);
     }
 
     /**
@@ -1367,7 +1408,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 I_CmsContextMenuHandler innerHandler,
                 CmsContextMenuEntryBean bean) {
 
-                setElementView(elementView.getElementViewId());
+                setElementView(elementView.getElementViewId(), null);
             }
 
             public A_CmsContextMenuItem getItemWidget(
