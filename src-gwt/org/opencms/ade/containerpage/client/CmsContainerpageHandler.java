@@ -64,8 +64,6 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.CmsDomUtil.Method;
-import org.opencms.gwt.client.util.CmsDomUtil.Target;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsClientVariantInfo;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
@@ -87,7 +85,6 @@ import java.util.Map;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
-import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -423,13 +420,15 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
             public void execute() {
 
-                Map<String, String> parameter = new HashMap<String, String>();
-                parameter.put(CmsCoreData.PARAM_PATH, CmsContainerpageController.getCurrentUri());
-                parameter.put(CmsCoreData.PARAM_RETURNCODE, m_controller.getReturnCode());
-                FormElement form = CmsDomUtil.generateHiddenForm(sitemapUri, Method.post, Target.TOP, parameter);
-                RootPanel.getBodyElement().appendChild(form);
-                form.submit();
-
+                Window.Location.replace(sitemapUri
+                    + "?"
+                    + CmsCoreData.PARAM_PATH
+                    + "="
+                    + CmsContainerpageController.getCurrentUri()
+                    + "&"
+                    + CmsCoreData.PARAM_RETURNCODE
+                    + "="
+                    + m_controller.getReturnCode());
             }
 
         };
