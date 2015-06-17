@@ -756,13 +756,24 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
         // exclude the database drivers
         exclude '**/setup/**/*.jar'
         exclude '**/update/**'
+        exclude '**/solr/**'
+        exclude '**/spellcheck/**'
         exclude '**/*.html'
         exclude '**/*.properties'
         exclude '**/*.txt'
         exclude '**/*.xml'
     }
+    
+    // copy SOLR config files separately to avoid the replace filter corrupting them
+    from ("${projectDir}/webapp"){
+        include '**/solr/**'
+        include '**/spellcheck/**'
+    }
+    
     from ("${projectDir}/webapp"){
         exclude '**/update/**'
+        exclude '**/solr/**'
+        exclude '**/spellcheck/**'
         include '**/*.html'
         include '**/*.properties'
         include '**/*.txt'
