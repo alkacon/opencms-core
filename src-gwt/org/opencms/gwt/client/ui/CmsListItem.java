@@ -79,7 +79,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             setImageClass(I_CmsImageBundle.INSTANCE.style().moveIcon());
             setButtonStyle(ButtonStyle.TRANSPARENT, null);
             setTitle(Messages.get().key(Messages.GUI_TOOLBAR_MOVE_TO_0));
-            addStyleName("cmsMoveHandle");
+            addStyleName(MOVE_HANDLE_MARKER_CLASS);
             m_draggable = draggable;
         }
 
@@ -92,6 +92,9 @@ public class CmsListItem extends Composite implements I_CmsListItem {
         }
 
     }
+
+    /** The CSS class to mark the move handle. */
+    public static final String MOVE_HANDLE_MARKER_CLASS = "cmsMoveHandle";
 
     /** The width of a checkbox. */
     private static final int CHECKBOX_WIDTH = 20;
@@ -679,7 +682,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
      */
     protected int moveHandleLeft(Element elem) {
 
-        return CmsDomUtil.getElementsByClass("cmsMoveHandle", elem).get(0).getAbsoluteLeft();
+        return CmsDomUtil.getElementsByClass(MOVE_HANDLE_MARKER_CLASS, elem).get(0).getAbsoluteLeft();
     }
 
     /**
