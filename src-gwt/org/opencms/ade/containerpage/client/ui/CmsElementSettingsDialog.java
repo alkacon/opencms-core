@@ -185,7 +185,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 modelGroupFieldSet.getElement().getStyle().setMarginTop(10, Unit.PX);
 
                 if (isEditableModelGroup
-                    && !m_controller.hasModelGroupParent(elementWidget)
+                    && !elementWidget.hasModelGroupParent()
                     && !m_controller.hasModelGroupChild(elementWidget)) {
                     m_modelGroupCheckBox = new CmsCheckBox(org.opencms.ade.containerpage.client.Messages.get().key(
                         org.opencms.ade.containerpage.client.Messages.GUI_USE_AS_MODEL_GROUP_LABEL_0));

@@ -1876,25 +1876,6 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Returns if the given element has a model group parent.<p>
-     *  
-     * @param elementWidget the element
-     * 
-     * @return <code>true</code> if the given element has a model group parent
-     */
-    public boolean hasModelGroupParent(CmsContainerPageElementPanel elementWidget) {
-
-        boolean result = false;
-        for (CmsContainerPageElementPanel model : collectModelGroups()) {
-            if ((model != elementWidget) && model.getElement().isOrHasChild(elementWidget.getElement())) {
-                result = true;
-                break;
-            }
-        }
-        return result;
-    }
-
-    /**
      * Returns if the page has changed.<p>
      * 
      * @return <code>true</code> if the page has changed
@@ -2083,6 +2064,7 @@ public final class CmsContainerpageController {
             && hasActiveSelection()
             && m_elementView.equals(element.getElementView())
             && isContainerEditable(dragParent)
+            && (getData().isModelGroup() || !element.hasModelGroupParent())
             && (!(dragParent instanceof CmsGroupContainerElementPanel) || isGroupcontainerEditing());
     }
 
@@ -3468,7 +3450,8 @@ public final class CmsContainerpageController {
 
         List<CmsContainer> containers = new ArrayList<CmsContainer>();
         for (CmsContainer container : m_containers.values()) {
-            if (isContainerEditable(m_targetContainers.get(container.getName()))) {
+            if ((m_targetContainers.get(container.getName()) != null)
+                && isContainerEditable(m_targetContainers.get(container.getName()))) {
                 containers.add(container);
             }
         }
