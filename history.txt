@@ -15,6 +15,18 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 9.5.2
+* Fixed issue #315 with workplace search not working when selecting specific site
+* Fixed issue #312 with modified mysql create tables to support innodb
+* Fixed issue #278 with mangled javadocs when compiling with JDK 8
+* Fixed issue #236 with wrong localization of "Direct Edit" in the workplace's preferences "Start with view" drop down
+* Fixed issues #320 and #313 with the demo's standard tabs formatter
+- Added Czech localization (pull request #255)
+- Added Japanese localization
+- Updated Spanish localization (pull request #235) 
+- Updated Russian localization (pull request #316)
+- Add use pages to javadocs (pull request #311)
+
 OpenCms 9.5.1 - March 2, 2015
 ! Added "DependentSelectWidget" that obtains values depending on other content fields.    
 ! Added alternative login handler to authorize users with a cookie.
