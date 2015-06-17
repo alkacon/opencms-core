@@ -445,14 +445,17 @@ public final class CmsContentEditor extends CmsEditorBase {
      * Sets all annotated child elements editable.<p>
      *
      * @param element the element
+     * @param serverId the editable resource structure id
      * @param editable <code>true</code> to enable editing
      *
      * @return <code>true</code> if the element had editable elements
      */
-    public static boolean setEditable(Element element, boolean editable) {
+    public static boolean setEditable(Element element, String serverId, boolean editable) {
 
         I_CmsLayoutBundle.INSTANCE.editorCss().ensureInjected();
-        NodeList<Element> children = CmsDomUtil.querySelectorAll("[property^=\"opencms://\"]", element);
+        NodeList<Element> children = CmsDomUtil.querySelectorAll("[property^=\"opencms://\"][about*=\""
+            + serverId
+            + "\"]", element);
         if (children.getLength() > 0) {
             for (int i = 0; i < children.getLength(); i++) {
                 Element child = children.getItem(i);

@@ -515,7 +515,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_noEditReason)
             && !m_disableNewEditor
-            && CmsContentEditor.setEditable(getElement(), true)) {
+            && CmsContentEditor.setEditable(getElement(), CmsContainerpageController.getServerId(m_clientId), true)) {
             if (m_editorClickHandlerRegistration != null) {
                 m_editorClickHandlerRegistration.removeHandler();
             }
@@ -656,7 +656,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      */
     public void removeInlineEditor() {
 
-        CmsContentEditor.setEditable(getElement(), false);
+        CmsContentEditor.setEditable(getElement(), CmsContainerpageController.getServerId(m_clientId), false);
         removeEditorHandler();
     }
 
