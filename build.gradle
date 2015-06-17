@@ -211,6 +211,8 @@ task enhance << {
     }
 }
 
+def externalVersionProps = file("${buildDir}/../version.properties");
+
 jar {
     it.dependsOn enhance
     manifest {
@@ -227,6 +229,14 @@ jar {
     exclude '**/package.html'
     exclude '**/overview.html'
     exclude '**/.gitignore'
+    
+    if (externalVersionProps.exists()){
+        exclude 'org/opencms/main/version.properties'
+        from ("${buildDir}/.."){
+            include 'version.properties'
+            into 'org/opencms/main'
+        }
+    }
 
     metaInf {
         from("${projectDir}/webapp/WEB-INF/opencms.tld")

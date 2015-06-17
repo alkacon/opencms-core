@@ -35,18 +35,9 @@ OPENCMS_BUILD_SYSTEM="${OpenCmsBuildSystem:-Jenkins}"
 # be replaced by a dynamically generated version that contains
 # more detailed information about the build.
 # 
-if [ -d "$WORKSPACE/opencms" ]; then
-    OUTPUT_BASE="$WORKSPACE/opencms"
-else 
-    OUTPUT_BASE="$WORKSPACE/opencms-core"
-fi
+OUTPUT_BASE="$WORKSPACE"
 
-if [ ! -d "$OUTPUT_BASE" ]; then
-    echo "Error: Workspace '$OUTPUT_BASE' not found!"
-    exit 1 
-fi
-
-OUTPUT_FILE="$OUTPUT_BASE/src/org/opencms/main/version.properties"
+OUTPUT_FILE="$OUTPUT_BASE/version.properties"
 
 #
 # Variables set by the CI/build system.
