@@ -31,20 +31,15 @@ import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.configuration.preferences.CmsElementViewPreference;
 import org.opencms.file.CmsObject;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
-import org.opencms.main.OpenCms;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsXmlContent;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.collections.list.NodeCachingLinkedList;
 
 /**
  * ADE's session cache.<p>
@@ -64,9 +59,6 @@ public final class CmsADESessionCache {
 
     /** Flag which controls whether small elements should be shown. */
     private boolean m_isEditSmallElements;
-
-    /** The ADE recent list. */
-    private List<CmsContainerElementBean> m_recentLists;
 
     /** Template bean cache. */
     private Map<String, TemplateBean> m_templateBeanCache = new HashMap<String, TemplateBean>();
@@ -88,13 +80,6 @@ public final class CmsADESessionCache {
         // container element cache
         Map<String, CmsContainerElementBean> lruMapCntElem = new HashMap<String, CmsContainerElementBean>();
         m_containerElements = Collections.synchronizedMap(lruMapCntElem);
-
-        // ADE recent lists
-        int maxElems = 10;
-        maxElems = OpenCms.getADEManager().getRecentListMaxSize(cms.getRequestContext().getCurrentUser());
-        List<CmsContainerElementBean> adeRecentList = CmsCollectionsGenericWrapper.list(new NodeCachingLinkedList(
-            maxElems));
-        m_recentLists = Collections.synchronizedList(adeRecentList);
 
         // XML content cache, used during XML content edit
         m_xmlContents = Collections.synchronizedMap(new HashMap<CmsUUID, CmsXmlContent>());
@@ -173,16 +158,6 @@ public final class CmsADESessionCache {
     }
 
     /**
-     * Returns the cached recent list.<p>
-     * 
-     * @return the cached recent list
-     */
-    public List<CmsContainerElementBean> getRecentList() {
-
-        return m_recentLists;
-    }
-
-    /**
      * Gets the cached template bean for a given container page uri.<p>
      * 
      * @param uri the container page uri 
@@ -229,20 +204,6 @@ public final class CmsADESessionCache {
     public void setCacheContainerElement(String key, CmsContainerElementBean containerElement) {
 
         m_containerElements.put(key, containerElement);
-    }
-
-    /**
-     * Caches the given recent list.<p>
-     * 
-     * @param list the recent list to cache
-     */
-    public void setCacheRecentList(List<CmsContainerElementBean> list) {
-
-        m_recentLists.clear();
-        m_recentLists.addAll(list);
-        for (CmsContainerElementBean element : m_recentLists) {
-            setCacheContainerElement(element.editorHash(), element);
-        }
     }
 
     /**
