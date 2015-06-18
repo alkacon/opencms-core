@@ -407,6 +407,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
             OpenCms.getADEManager().getSitemapConfigurationType().getTypeId(),
             data.getBytes(),
             Collections.<CmsProperty> emptyList());
+        waitForUpdate(false);
         assertEquals(
             "/shared",
             CmsFileUtil.removeTrailingSeparator(OpenCms.getADEManager().getSubSiteRoot(cms, "/shared")));
@@ -440,6 +441,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
                 OpenCms.getADEManager().getModuleConfigurationType().getTypeId(),
                 data.getBytes(),
                 Collections.<CmsProperty> emptyList());
+            waitForUpdate(false);
             String parentFolderType = OpenCms.getADEManager().getOfflineCache().getState().getParentFolderType(
                 "/sites/default/.content/a1/foo");
             assertEquals("a", parentFolderType);
