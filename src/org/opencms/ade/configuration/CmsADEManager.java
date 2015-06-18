@@ -124,15 +124,6 @@ public class CmsADEManager {
         notInitialized
     }
 
-    /** User additional info key constant. */
-    public static final String ADDINFO_ADE_FAVORITE_LIST_SIZE = "ADE_FAVORITE_LIST_SIZE";
-
-    /** User additional info key constant. */
-    public static final String ADDINFO_ADE_RECENT_LIST_SIZE = "ADE_RECENT_LIST_SIZE";
-
-    /** User additional info key constant. */
-    public static final String ADDINFO_ADE_SEARCH_PAGE_SIZE = "ADE_SEARCH_PAGE_SIZE";
-
     /** The client id separator. */
     public static final String CLIENT_ID_SEPERATOR = "#";
 
@@ -141,6 +132,7 @@ public class CmsADEManager {
 
     /** The name of the sitemap configuration file type. */
     public static final String CONFIG_FOLDER_TYPE = "content_folder";
+
     /** The path for sitemap configuration files relative from the base path. */
     public static final String CONFIG_SUFFIX = "/"
         + CmsADEManager.CONTENT_FOLDER_NAME
@@ -153,11 +145,8 @@ public class CmsADEManager {
     /** The content folder name. */
     public static final String CONTENT_FOLDER_NAME = ".content";
 
-    /** Default favorite list size constant. */
-    public static final int DEFAULT_FAVORITE_LIST_SIZE = 10;
-
-    /** Default recent list size constant. */
-    public static final int DEFAULT_RECENT_LIST_SIZE = 10;
+    /** Default favorite/recent list size constant. */
+    public static final int DEFAULT_ELEMENT_LIST_SIZE = 25;
 
     /** The name of the element view configuration file type. */
     public static final String ELEMENT_VIEW_TYPE = "elementview";
@@ -681,22 +670,6 @@ public class CmsADEManager {
         }
 
         return recentList;
-    }
-
-    /**
-     * Gets the maximum length of the recent list.<p>
-     * 
-     * @param user the user for which to get the maximum length 
-     * 
-     * @return the maximum recent list size for the user 
-     */
-    public int getRecentListMaxSize(CmsUser user) {
-
-        Integer maxElems = (Integer)user.getAdditionalInfo(ADDINFO_ADE_RECENT_LIST_SIZE);
-        if (maxElems == null) {
-            maxElems = new Integer(DEFAULT_RECENT_LIST_SIZE);
-        }
-        return maxElems.intValue();
     }
 
     /**
@@ -1266,10 +1239,11 @@ public class CmsADEManager {
     private void saveElementList(CmsObject cms, List<CmsContainerElementBean> elementList, String listKey)
     throws CmsException {
 
-        // limit the favorite list size to 100 entries to avoid the additional info size limit
-        while (elementList.size() > 100) {
-            elementList.remove(elementList.size() - 1);
+        // limit the favorite list size to avoid the additional info size limit
+        if (elementList.size() > DEFAULT_ELEMENT_LIST_SIZE) {
+            elementList = elementList.subList(0, DEFAULT_ELEMENT_LIST_SIZE);
         }
+
         JSONArray data = new JSONArray();
 
         Set<String> excludedSettings = new HashSet<String>();
