@@ -1096,7 +1096,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 }
             } else {
                 // in case of model group state set to 'noGroup', the group will be dissolved and former group id forgotten
-                if (!(ModelGroupState.noGroup == ModelGroupState.evaluate(settings.get(CmsContainerElement.MODEL_GROUP_STATE)))) {
+                if (!(settings.containsKey(CmsContainerElement.MODEL_GROUP_STATE) && (ModelGroupState.noGroup == ModelGroupState.evaluate(settings.get(CmsContainerElement.MODEL_GROUP_STATE))))) {
                     if (elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID)) {
                         // make sure to keep the model group id
                         settings.put(

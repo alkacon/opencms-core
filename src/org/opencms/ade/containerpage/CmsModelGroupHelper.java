@@ -680,6 +680,14 @@ public class CmsModelGroupHelper {
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
+            if (allowCopyModel) {
+                // transfer all other settings
+                for (Entry<String, String> settingEntry : baseElement.getIndividualSettings().entrySet()) {
+                    if (!settings.containsKey(settingEntry.getKey())) {
+                        settings.put(settingEntry.getKey(), settingEntry.getValue());
+                    }
+                }
+            }
         } else if (baseElement.isCopyModel()) {
             settings.put(CmsContainerElement.MODEL_GROUP_STATE, ModelGroupState.wasModelGroup.name());
         }
