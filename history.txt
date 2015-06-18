@@ -18,11 +18,11 @@ Legend:
 OpenCms 9.5.2
 
 * Fixed issue #315 with workplace search not working when selecting specific site
-* Fixed issue #312 with modified mysql create tables to support innodb
+* Fixed issue #312 with modified mysql create tables to support innodb (fix provided by Enrico Marongiu)
 * Fixed issue #278 with mangled javadocs when compiling with JDK 8
-* Fixed issue #236 with wrong localization of "Direct Edit" in the workplace's preferences "Start with view" drop down
+* Fixed issue #236 with wrong localization of "Direct Edit" in the workplace's preferences "Start with view" drop down (fix provided by rohtake)  
 * Fixed issues #320 and #313 with the demo's standard tabs formatter
-* Fixed setup with JPA supported DBMSs (pull request #314).
+* Fixed setup with JPA supported DBMSs (pull request #314 from Smyatkin Maxim).
 * Fixed bug where the list of types in the container page editor's 'Add' menu was not updated after making changes to nested containers in the page.
 * Fixed bug where the lock information for locked images was copied into the title attribute when selecting images in the WYSIWYG editor.
 * Fixed bug with toolbar being blocked by an overlay when using the model selection dialog in the page editor.
@@ -45,11 +45,11 @@ OpenCms 9.5.2
 - Changed HtmlWidget to list styles from the content stylesheet in the style select box.
 - Improved long load times for VfsFileWidget (and other widgets based on the gallery dialog) which occurred when the editor field using the widget already contained a path to a file in a folder with a large number of other files.
 - Improved 'This page' option in publish dialog to show changed contents of detail containers.
-- Added Czech localization (pull request #255)
-- Added Japanese localization
-- Updated Spanish localization (pull request #235) 
-- Updated Russian localization (pull request #316)
-- Add use pages to javadocs (pull request #311)
+- Added Czech localization (pull request #255, provided by Filip Kratochvil)
+- Added Japanese localization (provided by Yuta Aoki)
+- Updated Spanish localization (pull request #235, provided by Sergio Raposo Vargas) 
+- Updated Russian localization (pull request #316, provided by Iliya Makarov)
+- Add use pages to javadocs (pull request #311, provided by Alberto Gallardo)
 
 
 
