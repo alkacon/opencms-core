@@ -31,7 +31,9 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -62,9 +64,15 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
     public void execute() {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        CmsAvailabilityDialog dialog = new CmsAvailabilityDialog(
-            entry.getId(),
-            CmsSitemapView.getInstance().getIconForEntry(entry));
+        CmsUUID editId = null;
+        if ((CmsSitemapView.getInstance().getEditorMode() == EditorMode.navigation)
+            && (entry.getDefaultFileId() != null)) {
+            editId = entry.getDefaultFileId();
+        } else {
+            editId = entry.getId();
+        }
+        CmsAvailabilityDialog dialog = new CmsAvailabilityDialog(editId, CmsSitemapView.getInstance().getIconForEntry(
+            entry));
         dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
 
             public void onClose(CloseEvent<PopupPanel> event) {

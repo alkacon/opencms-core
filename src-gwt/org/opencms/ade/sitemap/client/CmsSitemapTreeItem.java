@@ -34,6 +34,7 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
+import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.I_CmsDragHandle;
@@ -368,7 +369,8 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     private static void setAdditionalStyles(CmsClientSitemapEntry entry, CmsListItemWidget itemWidget) {
 
-        if (!entry.isResleasedAndNotExpired()) {
+        if (!entry.isResleasedAndNotExpired()
+            || ((CmsSitemapView.getInstance().getEditorMode() == EditorMode.navigation) && !entry.isDefaultFileReleased())) {
             itemWidget.getContentPanel().addStyleName(
                 I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().expiredOrNotReleased());
         } else {
@@ -661,7 +663,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     public void updateEditorMode() {
 
-        getListItemWidget().setIcon(CmsSitemapView.getInstance().getIconForEntry(getSitemapEntry()));
+        CmsClientSitemapEntry entry = getSitemapEntry();
+        getListItemWidget().setIcon(CmsSitemapView.getInstance().getIconForEntry(entry));
+        setAdditionalStyles(entry, getListItemWidget());
         for (Widget child : m_children) {
             if (child instanceof CmsSitemapTreeItem) {
                 ((CmsSitemapTreeItem)child).updateEditorMode();

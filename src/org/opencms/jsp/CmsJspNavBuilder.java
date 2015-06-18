@@ -675,6 +675,19 @@ public class CmsJspNavBuilder {
             List<CmsProperty> properties = m_cms.readPropertyObjects(resource, false);
             propertiesMap = CmsProperty.toMap(properties);
             if (resource.isFolder()) {
+                if (resourceFilter.equals(CmsResourceFilter.DEFAULT)
+                    && !NAVIGATION_LEVEL_FOLDER.equals(propertiesMap.get(CmsPropertyDefinition.PROPERTY_DEFAULT_FILE))) {
+                    try {
+                        CmsResource defaultFile = m_cms.readDefaultFile(resource, resourceFilter);
+                        if ((defaultFile != null)
+                            && !defaultFile.isReleasedAndNotExpired(m_cms.getRequestContext().getRequestTime())) {
+                            // do not show navigation entries for unreleased or expired resources
+                            return null;
+                        }
+                    } catch (CmsException e) {
+                        // may happen if permissions are not sufficient can be ignored
+                    }
+                }
                 if (!sitePath.endsWith("/")) {
                     sitePath = sitePath + "/";
                 }
@@ -691,7 +704,7 @@ public class CmsJspNavBuilder {
             }
         } catch (Exception e) {
             // may happen if permissions are not sufficient
-            LOG.error(e.getLocalizedMessage(), e);
+            LOG.warn(e.getLocalizedMessage(), e);
             return null;
         }
 

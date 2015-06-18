@@ -50,8 +50,7 @@ OpenCms 9.5.2
 - Updated Spanish localization (pull request #235, provided by Sergio Raposo Vargas) 
 - Updated Russian localization (pull request #316, provided by Iliya Makarov)
 - Add use pages to javadocs (pull request #311, provided by Alberto Gallardo)
-
-
+- Improved availability handling in conjunction with the sitemap editor and navigation builder
 
 OpenCms 9.5.1 - March 2, 2015
 ! Added "DependentSelectWidget" that obtains values depending on other content fields.    
