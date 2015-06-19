@@ -16,40 +16,41 @@ Legend:
 - General comment
 
 OpenCms 9.5.2
-* Fixed issue #278 with mangled javadocs when compiling with JDK 8
-* Fixed issue #236 with wrong localization of "Direct Edit" in the workplace's preferences "Start with view" drop down (fix provided by rohtake)
-* Fixed issue #304 to resolve some XSS vulnerabilities
-* Fixed issue #312 with modified mysql create tables to support innodb (fix provided by Enrico Marongiu)
+! Added Japanese localization (provided by Yuta Aoki).
+! Added Czech localization (pull request #255, provided by Filip Kratochvil).
+- Demo template updated to Bootstrap 3.3.5.
+- Updated Spanish localization (pull request #235, provided by Sergio Raposo Vargas).
+- Updated Russian localization (pull request #316, provided by Iliya Makarov).
+- Add use pages to Javadocs (pull request #311, provided by Alberto Gallardo).
+- Changed HtmlWidget to list styles from the content CSS in the style select box.
+- Improved loading times for VfsFileWidget (and other widgets based on the gallery dialog).
+- Improved 'This page' option in publish dialog to show changed contents of detail containers.
+- Improved availability handling in conjunction with the sitemap editor and navigation builder.
+* Fixed issue #278 with mangled javadocs when compiling with JDK 8.
+* Fixed issue #236 with wrong localization of "Direct Edit" in the workplace's preferences "Start with view" drop down (provided by rohtake).
+* Fixed issue #304 to resolve some XSS vulnerabilities.
+* Fixed issue #312 with modified MySQL create tables to support innodb (provided by Enrico Marongiu).
 * Fixed setup with JPA supported DBMSs (pull request #314 from Smyatkin Maxim).
-* Fixed issue #315 with workplace search not working when selecting specific site
-* Fixed issues #320 and #313 with the demo's standard tabs formatter
-* Fixed bug where the list of types in the container page editor's 'Add' menu was not updated after making changes to nested containers in the page.
-* Fixed bug where the lock information for locked images was copied into the title attribute when selecting images in the WYSIWYG editor.
-* Fixed bug with toolbar being blocked by an overlay when using the model selection dialog in the page editor.
-* Fixed bug in the publish dialog where sometimes publishing resources in the root folder would cause an error.
-* Fixed stack overflow error caused by incomplete preference configuration after running the updater 
-* Fixed bug with message bundle caching which sometimes caused XML message bundles (xmlvfsbundle) to not be found.
-* Fixed bug where links in an error page for a request to a secure server referred to the non-secure server instead of the secure server.
-* Fixed bug with workplace search not working for indexes other than the Gallery index.
+* Fixed issue #315 with workplace search not working when selecting specific site.
+* Fixed issues #320 and #313 with the demo pages standard tabs formatter.
+* Fixed issue where the list of types in the container page editor's 'Add' menu was not updated after changes to nested containers in the page.
+* Fixed issue where the lock information for locked images was copied into the title attribute when selecting images in the WYSIWYG editor.
+* Fixed issue with the toolbar being blocked by an overlay when using the model selection dialog in the page editor.
+* Fixed issue in the publish dialog where sometimes publishing resources in the root folder caused an error.
+* Fixed stack overflow error caused by incomplete preference configuration after running the updater. 
+* Fixed issue with message bundle caching where sometimes XML message bundles were not found.
+* Fixed issue where links in an error page for a request to a secure server referred to the non-secure server instead to the secure server.
+* Fixed issue with workplace search not working for indexes other than the Gallery index.
 * Fixed issue where detail container pages failed to be unlocked after editing.
-* Fixed bug with Lucene index for containerpages where content for locales other than "en" was not indexed.
-* Fixed problem where registering change listeners in custom content editor widgets could cause a stack overflow.
+* Fixed issue with Lucene index for container pages where content for locales other than "en" was not indexed.
+* Fixed issue where registering change listeners in custom content editor widgets could cause a stack overflow.
 * Fixed doctype for workplace dialogs to avoid compatibility mode in IE.
 * Fixed corrupted images in updater.
-* Fixed issue where the resource info dialog crashed when reading a relation whose source does not exist anymore.
-* Fixed bug where the category folder name configured on /system/categories was ignored by the sitemap editor's category editing mode.
+* Fixed issue where the resource info dialog crashed when reading a relation whose source did not exist anymore.
+* Fixed issue where the category folder name configured on /system/categories was ignored by the sitemap editor's category editing mode.
 * Fixed IE browser mode issue which sometimes caused problems with the upload dialog.
 * Fixed some XSS issues in the workplace.
 * Fixed issue with legacy direct edit text button provider not showing localized messages.
-- Updated Spanish localization (pull request #235, provided by Sergio Raposo Vargas)
-- Added Czech localization (pull request #255, provided by Filip Kratochvil)
-- Add use pages to javadocs (pull request #311, provided by Alberto Gallardo)
-- Updated Russian localization (pull request #316, provided by Iliya Makarov)
-- Added Japanese localization (provided by Yuta Aoki)
-- Changed HtmlWidget to list styles from the content stylesheet in the style select box.
-- Improved long load times for VfsFileWidget (and other widgets based on the gallery dialog) which occurred when the editor field using the widget already contained a path to a file in a folder with a large number of other files.
-- Improved 'This page' option in publish dialog to show changed contents of detail containers.
-- Improved availability handling in conjunction with the sitemap editor and navigation builder
 
 OpenCms 9.5.1 - March 2, 2015
 ! Added "DependentSelectWidget" that obtains values depending on other content fields.    
