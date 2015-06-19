@@ -1127,7 +1127,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/fr.js
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/fr_FR.js
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/fr.js
 			</destination>
