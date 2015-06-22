@@ -1361,6 +1361,10 @@ if (project.hasProperty('publish_repository')){
 }
 
 install {
+	doFirst {
+		println "Installing artifact for version $version"
+	}
+
     repositories {
         mavenInstaller {
             addFilter('core'){artifact, file ->
