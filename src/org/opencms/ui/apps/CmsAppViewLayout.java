@@ -27,19 +27,36 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.workplace.CmsWorkplace;
+
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Responsive;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
+import com.vaadin.ui.declarative.Design;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The layout used within the app view.<p>
  */
-public class CmsAppViewLayout extends HorizontalLayout {
+public class CmsAppViewLayout extends CssLayout {
 
     /** The serial version id. */
     private static final long serialVersionUID = -290796815149968830L;
+
+    /** Toolbar items left. */
+    private HorizontalLayout m_itemsLeft;
+
+    /** Toolbar items right. */
+    private HorizontalLayout m_itemsRight;
+
+    /** OpenCms logo. */
+    private Image m_logo;
 
     /** The app area. */
     private CssLayout m_appArea;
@@ -52,16 +69,11 @@ public class CmsAppViewLayout extends HorizontalLayout {
      */
     public CmsAppViewLayout() {
 
-        m_appArea = new CssLayout();
-        m_menuArea = new CssLayout();
-        setSizeFull();
-        m_menuArea.setPrimaryStyleName(ValoTheme.MENU_ROOT);
-        m_appArea.setPrimaryStyleName("valo-content");
-        m_appArea.addStyleName("v-scrollable");
-        m_appArea.setSizeFull();
-
-        addComponents(m_menuArea, m_appArea);
-        setExpandRatio(m_appArea, 1);
+        Design.read("AppView.html", this);
+        Responsive.makeResponsive(this);
+        m_logo.setSource(new ExternalResource(CmsWorkplace.getResourceUri("commons/login_logo.png")));
+        m_itemsLeft.addComponent(new Button(FontAwesome.BOMB));
+        m_itemsRight.addComponent(new Button(FontAwesome.BEER));
     }
 
     /**

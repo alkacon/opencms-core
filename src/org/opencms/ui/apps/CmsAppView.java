@@ -37,7 +37,6 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Displays the selected app.<p>
@@ -63,6 +62,11 @@ public class CmsAppView implements View, I_CmsComponentFactory {
         m_appConfig = appConfig;
     }
 
+    /**
+     * Returns the workplace UI.<p>
+     * 
+     * @return the workplace UI
+     */
     public static CmsAppWorkplaceUi getWorkplaceUi() {
 
         CmsAppWorkplaceUi ui = (CmsAppWorkplaceUi)A_CmsUI.get();
@@ -79,7 +83,6 @@ public class CmsAppView implements View, I_CmsComponentFactory {
             CmsAppViewLayout layout = new CmsAppViewLayout();
             layout.setMenu(createMenu());
 
-            layout.addStyleName(ValoTheme.UI_WITH_MENU);
             layout.getAppContainer().addComponent(m_app);
             return layout;
         }

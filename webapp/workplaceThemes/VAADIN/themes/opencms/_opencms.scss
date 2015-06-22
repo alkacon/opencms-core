@@ -1,35 +1,86 @@
 @mixin opencms {
   @include valo;
-
-  #themeSelect {
-    position: fixed;
-    z-index: 1000;
-    top: 0;
-    right: 0;
-    padding: 0 10px;
-    background-color: darken($v-app-background-color, 5%);
-    background-color: rgba(darken($v-app-background-color, 5%), .9);
-    color: valo-font-color($v-app-background-color);
-    border-radius: 0 0 0 $v-border-radius;
-
-    &:before {
-      content: "Theme:";
+  .cmslogin-parent .cmslogin-box { 
+    position: absolute;
+	left: 0;
+	right: 0;
+	top:0;
+	bottom: 0;
+  }
+  
+  .opencms-responsive{
+  	.opencms-main{
+    	width: 1200px;
     }
-
-    select {
-      background: transparent;
-      color: inherit;
-      border: none;
-      display: inline-block;
+    .opencms-toolbar-inner{
+  		width: 1200px;
+  	}
+  	.opencms-toolbar-items-left, .opencms-toolbar-items-right{
+  		width: 500px;
+  		margin: 10px 0;
+  	}
+  }
+  
+  .opencms-responsive[width-range~="0-1000px"]{
+  	.opencms-main{
+    	width: 800px;
     }
+    .opencms-toolbar-inner{
+  		width: 800px;
+  	}
+  	.opencms-toolbar-items-left, .opencms-toolbar-items-right{
+  		width: 300px;
+  	}
+  }
+  
+  .opencms-responsive[width-range~="1001-1250px"]{
+  	.opencms-main{
+    	width: 1000px;
+    }
+    .opencms-toolbar-inner{
+  		width: 1000px;
+  	}
+  	.opencms-toolbar-items-left, .opencms-toolbar-items-right{
+  		width: 400px;
+  	}
   }
 
-  .v-ui {
-    @include width-range($max: 800px) {
-      #themeSelect {
-        top: $v-unit-size;
-      }
-    }
+  	
+  .cmslogin-hidden-form {
+  	display: none;  
+  }
+  
+  .opencms-main{
+    display: block;
+    margin: 30px auto;
+  }
+
+  .opencms-toolbar-outer{
+  	width: 100%;
+  	display: block;
+  	background: linear-gradient(to bottom, #ffffff 0%,#f3f3f3 50%,#ededed 51%,#ffffff 100%);
+  	background: -moz-linear-gradient(to bottom, #ffffff 0%,#f3f3f3 50%,#ededed 51%,#ffffff 100%);
+  	height: 60px;
+  	text-align: center;
+  	border-bottom: valo-border($border: $v-border, $color: #f3f3f3, $strength: 1);
+  }
+  
+  .opencms-toolbar-inner{
+  	margin: 0 auto;
+  }
+  
+  .opencms-toolbar-logo{
+  	margin: 5px auto;
+  }  
+  
+  .opencms-toolbar-items-left{
+  	float: left;
+  	text-align: left;
+  }
+  
+  .opencms-toolbar-items-right{
+  	float: right;
+  	text-align: right;
   }
 
   $color1: hsl(220, 5%, 38%);
