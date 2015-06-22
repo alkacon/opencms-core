@@ -141,4 +141,13 @@ public class CmsDetailPageInfo implements Serializable {
 
         return m_uri;
     }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return "" + m_type + ":" + m_id + m_uri;
+    }
 }

@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.CmsADEConfigData.DetailInfo;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -192,6 +193,22 @@ public class CmsADEConfigCacheState {
         }
 
         return new CmsADEConfigCacheState(m_cms, newSitemapConfigs, newModuleConfigs, newElementViews);
+    }
+
+    /**
+     * Gets the detail page information for everything.<p>
+     *
+     * @param cms the current CMS context
+     * @return the list containing all detail information
+     */
+    public List<DetailInfo> getDetailInfosForSubsites(CmsObject cms) {
+
+        List<DetailInfo> result = Lists.newArrayList();
+        for (CmsADEConfigDataInternal configData : m_siteConfigurationsByPath.values()) {
+            List<DetailInfo> infosForSubsite = wrap(configData).getDetailInfos(cms);
+            result.addAll(infosForSubsite);
+        }
+        return result;
     }
 
     /**

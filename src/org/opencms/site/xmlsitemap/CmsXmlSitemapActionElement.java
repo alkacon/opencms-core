@@ -159,7 +159,7 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
             CmsXmlSeoConfiguration.SEO_FILE_TYPE);
         List<CmsResource> seoFiles = cms.readResources(
             "/",
-            CmsResourceFilter.DEFAULT_FILES.addRequireVisible().addRequireType(seoFileType.getTypeId()));
+            CmsResourceFilter.DEFAULT_FILES.addRequireVisible().addRequireType(seoFileType));
         for (CmsResource seoFile : seoFiles) {
             try {
                 CmsXmlSeoConfiguration seoFileConfig = new CmsXmlSeoConfiguration();

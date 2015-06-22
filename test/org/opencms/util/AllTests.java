@@ -75,6 +75,7 @@ public final class AllTests {
         suite.addTest(new TestSuite(TestCmsXmlSaxWriter.class));
         suite.addTest(new TestSuite(TestValidFilename.class));
         suite.addTest(new TestSuite(TestCmsManyToOneMap.class));
+        suite.addTest(new TestSuite(TestCmsPathMap.class));
         //$JUnit-END$
         return suite;
     }

@@ -33,6 +33,9 @@ import org.opencms.i18n.CmsEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * A bean which represents an entry in an XML sitemap for SEO purposes.<p>
@@ -51,11 +54,17 @@ public class CmsXmlSitemapUrlBean {
     /** The last modification date. */
     private Date m_lastModified;
 
+    /** The locale for which the bean has been created (only used for detail pages). */
+    private Locale m_locale;
+
     /** The original resource. */
     private CmsResource m_origResource;
 
     /** The priority. */
     private double m_priority;
+
+    /** The subsite for which the bean has been created (only used for detail pages). */
+    private String m_subsite;
 
     /** The URL. */
     private String m_url;
@@ -71,6 +80,7 @@ public class CmsXmlSitemapUrlBean {
     public CmsXmlSitemapUrlBean(String url, long lastModified, String changeFrequency, double priority) {
 
         m_url = url;
+
         if (lastModified >= 0) {
             m_lastModified = new Date(lastModified);
         }
@@ -133,6 +143,16 @@ public class CmsXmlSitemapUrlBean {
     }
 
     /**
+     * Returns the locale.<p>
+     *
+     * @return the locale
+     */
+    public Locale getLocale() {
+
+        return m_locale;
+    }
+
+    /**
      * Gets the original resource belonging to the link.<p>
      *
      * In case this is a link to a detail page, the resource will be the resource displayed on the detail page
@@ -152,6 +172,16 @@ public class CmsXmlSitemapUrlBean {
     public double getPriority() {
 
         return m_priority;
+    }
+
+    /**
+     * Returns the subsite.<p>
+     *
+     * @return the subsite
+     */
+    public String getSubsite() {
+
+        return m_subsite;
     }
 
     /**
@@ -175,6 +205,16 @@ public class CmsXmlSitemapUrlBean {
     }
 
     /**
+     * Sets the locale.<p>
+     *
+     * @param locale the locale to set
+     */
+    public void setLocale(Locale locale) {
+
+        m_locale = locale;
+    }
+
+    /**
      * Sets the original resource.<p>
      *
      * @param resource the original resource
@@ -182,6 +222,25 @@ public class CmsXmlSitemapUrlBean {
     public void setOriginalResource(CmsResource resource) {
 
         m_origResource = resource;
+    }
+
+    /**
+     * Sets the subsite.<p>
+     *
+     * @param subsite the subsite to set
+     */
+    public void setSubsite(String subsite) {
+
+        m_subsite = subsite;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return m_url + "   [" + ReflectionToStringBuilder.toString(this) + "]";
     }
 
     /**

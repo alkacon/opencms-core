@@ -215,6 +215,29 @@ public class CmsXmlSitemapGenerator {
     }
 
     /**
+     * Gets the page priority from a list of properties.<p>
+     *
+     * If the page priority can't be found among the properties, -1 will be returned.<p>
+     *
+     * @param properties the properties of a resource
+     *
+     * @return the page priority read from the properties, or -1
+     */
+    protected static double getPriority(List<CmsProperty> properties) {
+
+        CmsProperty prop = CmsProperty.get(CmsPropertyDefinition.PROPERTY_XMLSITEMAP_PRIORITY, properties);
+        if (prop.isNullProperty()) {
+            return -1.0;
+        }
+        try {
+            double result = Double.parseDouble(prop.getValue().trim());
+            return result;
+        } catch (NumberFormatException e) {
+            return -1.0;
+        }
+    }
+
+    /**
      * Removes files marked as internal from a resource list.<p>
      *
      * @param resources the list which should be replaced
@@ -227,29 +250,6 @@ public class CmsXmlSitemapGenerator {
             if (resource.isInternal()) {
                 iter.remove();
             }
-        }
-    }
-
-    /**
-     * Gets the page priority from a list of properties.<p>
-     *
-     * If the page priority can't be found among the properties, -1 will be returned.<p>
-     *
-     * @param properties the properties of a resource
-     *
-     * @return the page priority read from the properties, or -1
-     */
-    private static double getPriority(List<CmsProperty> properties) {
-
-        CmsProperty prop = CmsProperty.get(CmsPropertyDefinition.PROPERTY_XMLSITEMAP_PRIORITY, properties);
-        if (prop.isNullProperty()) {
-            return -1.0;
-        }
-        try {
-            double result = Double.parseDouble(prop.getValue().trim());
-            return result;
-        } catch (NumberFormatException e) {
-            return -1.0;
         }
     }
 
@@ -340,6 +340,38 @@ public class CmsXmlSitemapGenerator {
     public void setComputeContainerPageDates(boolean computeContainerPageDates) {
 
         m_computeContainerPageDates = computeContainerPageDates;
+    }
+
+    /**
+     * Adds the detail page links for a given page to the results.<p>
+     *
+     * @param containerPage the container page resource
+     * @param locale the locale of the container page
+     *
+     * @throws CmsException if something goes wrong
+     */
+    protected void addDetailLinks(CmsResource containerPage, Locale locale) throws CmsException {
+
+        List<I_CmsResourceType> types = getDetailTypesForPage(containerPage);
+        for (I_CmsResourceType type : types) {
+            List<CmsResource> resourcesForType = getDetailResources(type);
+            for (CmsResource detailRes : resourcesForType) {
+                if (!isValidDetailPageCombination(containerPage, locale, detailRes)) {
+                    continue;
+                }
+                List<CmsProperty> detailProps = m_guestCms.readPropertyObjects(detailRes, true);
+                String detailLink = getDetailLink(containerPage, detailRes, locale);
+                detailLink = CmsFileUtil.removeTrailingSeparator(detailLink);
+                CmsXmlSitemapUrlBean detailUrlBean = new CmsXmlSitemapUrlBean(
+                    detailLink,
+                    detailRes.getDateLastModified(),
+                    getChangeFrequency(detailProps),
+                    getPriority(detailProps));
+                detailUrlBean.setOriginalResource(detailRes);
+                detailUrlBean.setDetailPageResource(containerPage);
+                addResult(detailUrlBean, 2);
+            }
+        }
     }
 
     /**
@@ -603,38 +635,6 @@ public class CmsXmlSitemapGenerator {
     }
 
     /**
-     * Adds the detail page links for a given page to the results.<p>
-     *
-     * @param containerPage the container page resource
-     * @param locale the locale of the container page
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private void addDetailLinks(CmsResource containerPage, Locale locale) throws CmsException {
-
-        List<I_CmsResourceType> types = getDetailTypesForPage(containerPage);
-        for (I_CmsResourceType type : types) {
-            List<CmsResource> resourcesForType = getDetailResources(type);
-            for (CmsResource detailRes : resourcesForType) {
-                if (!isValidDetailPageCombination(containerPage, locale, detailRes)) {
-                    continue;
-                }
-                List<CmsProperty> detailProps = m_guestCms.readPropertyObjects(detailRes, true);
-                String detailLink = getDetailLink(containerPage, detailRes, locale);
-                detailLink = CmsFileUtil.removeTrailingSeparator(detailLink);
-                CmsXmlSitemapUrlBean detailUrlBean = new CmsXmlSitemapUrlBean(
-                    detailLink,
-                    detailRes.getDateLastModified(),
-                    getChangeFrequency(detailProps),
-                    getPriority(detailProps));
-                detailUrlBean.setOriginalResource(detailRes);
-                detailUrlBean.setDetailPageResource(containerPage);
-                addResult(detailUrlBean, 2);
-            }
-        }
-    }
-
-    /**
      * Gets all resources from the folder tree beneath the base folder or the shared folder which have a given type.<p>
      *
      * @param type the type to filter by
@@ -648,7 +648,7 @@ public class CmsXmlSitemapGenerator {
         String typeName = type.getTypeName();
         if (!m_detailResources.containsKey(typeName)) {
             List<CmsResource> result = new ArrayList<CmsResource>();
-            CmsResourceFilter filter = CmsResourceFilter.DEFAULT_FILES.addRequireType(type.getTypeId());
+            CmsResourceFilter filter = CmsResourceFilter.DEFAULT_FILES.addRequireType(type);
             List<CmsResource> siteFiles = m_guestCms.readResources(m_siteRoot, filter, true);
             result.addAll(siteFiles);
             String shared = CmsFileUtil.removeTrailingSeparator(OpenCms.getSiteManager().getSharedFolder());
@@ -702,6 +702,7 @@ public class CmsXmlSitemapGenerator {
                 m_pageAliasesBelowBaseFolderByStructureId.put(aliasId, alias);
             }
         }
+
     }
 
     /**

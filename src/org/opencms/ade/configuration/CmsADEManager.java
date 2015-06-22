@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.CmsADEConfigData.DetailInfo;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.ade.containerpage.inherited.CmsContainerConfigurationCache;
@@ -337,6 +338,18 @@ public class CmsADEManager {
     public CmsDetailNameCache getDetailIdCache(boolean online) {
 
         return online ? m_onlineDetailIdCache : m_offlineDetailIdCache;
+    }
+
+    /**
+     * Gets the detail page information for  everything.<p>
+     *
+     * @param cms the current CMS context
+     *
+     * @return the list with all the detail page information
+     */
+    public List<DetailInfo> getDetailInfo(CmsObject cms) {
+
+        return getCacheState(isOnline(cms)).getDetailInfosForSubsites(cms);
     }
 
     /**

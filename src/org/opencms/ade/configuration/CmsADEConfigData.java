@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Optional;
@@ -70,6 +71,103 @@ import com.google.common.collect.Sets;
  * A class which represents the accessible configuration data at a given point in a sitemap.<p>
  */
 public class CmsADEConfigData {
+
+    /**
+     * Bean which contains the detail information for a single sub-sitemap and resource type.<p>
+     *
+     * This includes both  information about the detail page itself, as well as the path of the folder
+     * which is used to store that content type in this subsitemap.<p>
+     *
+     */
+    public class DetailInfo {
+
+        /** The base path of the sitemap configuration where this information originates from. */
+        private String m_basePath;
+
+        /** The information about the detail page info itself. */
+        private CmsDetailPageInfo m_detailPageInfo;
+
+        /** The content folder path. */
+        private String m_folderPath;
+
+        /** The detail type. */
+        private String m_type;
+
+        /**
+         * Creates a new instance.<p>
+         *
+         * @param folderPath the content folder path
+         * @param detailPageInfo the detail page information
+         * @param type the detail type
+         * @param basePath the base path of the sitemap configuration
+         */
+        public DetailInfo(String folderPath, CmsDetailPageInfo detailPageInfo, String type, String basePath) {
+            m_folderPath = folderPath;
+            m_detailPageInfo = detailPageInfo;
+            m_type = type;
+            m_basePath = basePath;
+
+        }
+
+        /**
+         * Gets the base path of the sitemap configuration from which this information is coming.<p>
+         *
+         * @return the base path
+         */
+        public String getBasePath() {
+
+            return m_basePath;
+        }
+
+        /**
+         * Gets the detail page information.<p>
+         *
+         * @return the detail page information
+         */
+        public CmsDetailPageInfo getDetailPageInfo() {
+
+            return m_detailPageInfo;
+        }
+
+        /**
+         * Gets the content folder path.<p>
+         *
+         * @return the content folder path
+         */
+        public String getFolderPath() {
+
+            return m_folderPath;
+        }
+
+        /**
+         * Gets the detail type.<p>
+         *
+         * @return the detail type
+         */
+        public String getType() {
+
+            return m_type;
+        }
+
+        /**
+         * Sets the base path.<p>
+         *
+         * @param basePath the new base path value
+         */
+        public void setBasePath(String basePath) {
+
+            m_basePath = basePath;
+        }
+
+        /**
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+
+            return ReflectionToStringBuilder.toString(this);
+        }
+    }
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEConfigData.class);
@@ -304,6 +402,32 @@ public class CmsADEConfigData {
             return null;
         }
         return modelPages.get(0);
+    }
+
+    /**
+     * Gets the detail information for this sitemap config data object.<p>
+     *
+     * @param cms the CMS context
+     * @return the list of detail information
+     */
+    public List<DetailInfo> getDetailInfos(CmsObject cms) {
+
+        List<DetailInfo> result = Lists.newArrayList();
+        List<CmsDetailPageInfo> detailPages = getAllDetailPages(true);
+        Collections.reverse(detailPages); // make sure primary detail pages come later in the list and override other detail pages for the same type
+        Map<String, CmsDetailPageInfo> primaryDetailPageMapByType = Maps.newHashMap();
+        for (CmsDetailPageInfo pageInfo : detailPages) {
+            primaryDetailPageMapByType.put(pageInfo.getType(), pageInfo);
+        }
+        for (CmsResourceTypeConfig typeConfig : getResourceTypes()) {
+            String typeName = typeConfig.getTypeName();
+            if (!typeConfig.getFolderOrName().isPageRelative() && primaryDetailPageMapByType.containsKey(typeName)) {
+                String folderPath = typeConfig.getFolderPath(cms, null);
+                CmsDetailPageInfo pageInfo = primaryDetailPageMapByType.get(typeName);
+                result.add(new DetailInfo(folderPath, pageInfo, typeName, getBasePath()));
+            }
+        }
+        return result;
     }
 
     /**
@@ -728,8 +852,7 @@ public class CmsADEConfigData {
             if (!getCms().existsResource(contentFolder)) {
                 getCms().createResource(
                     contentFolder,
-                    OpenCms.getResourceManager().getResourceType(
-                        CmsResourceTypeFolder.getStaticTypeName()).getTypeId());
+                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()));
             }
         }
     }
