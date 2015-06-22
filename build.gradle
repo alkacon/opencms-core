@@ -9,8 +9,16 @@ targetCompatibility = java_target_version
 
 // use the same properties file as the OpenCms core does for the version information
 // please note that in a Jenkins CI build, this properties file should be dynamically generated
+def externalVersionProps = file("${buildDir}/../version.properties");
+def propFile;
+if (externalVersionProps.exists()){
+	propFile=externalVersionProps
+}else{
+	propFile=file("$projectDir/src/org/opencms/main/version.properties")
+}
+
 Properties vprops = new Properties()
-vprops.load(new FileInputStream("$projectDir/src/org/opencms/main/version.properties"))
+vprops.load(new FileInputStream(propFile))
 version = vprops['version.number']
 
 // alternative variable name for the case where the version variable is used for something else, e.g. javadoc
@@ -210,8 +218,6 @@ task enhance << {
         config(propertiesFile: "${projectDir}/webapp/WEB-INF/classes/META-INF/persistence.xml")
     }
 }
-
-def externalVersionProps = file("${buildDir}/../version.properties");
 
 jar {
     it.dependsOn enhance
