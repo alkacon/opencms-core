@@ -15,7 +15,8 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 9.5.2 - June 22, 2015
+OpenCms 9.5.2 - June 24, 2015
+! Search settings in XSD: Allow mapping of Solr fields to containerpages.
 ! Added Japanese localization (provided by Yuta Aoki).
 ! Added Czech localization (provided by Filip Kratochvil).
 - Improved loading times for VfsFileWidget (and other widgets based on the gallery dialog).
