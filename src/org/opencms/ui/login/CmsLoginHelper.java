@@ -311,7 +311,10 @@ public class CmsLoginHelper extends CmsJspLoginBean {
      * 
      * @return the login parameters
      */
-    public static LoginParameters getLoginParameters(CmsObject cms, HttpServletRequest request) {
+    public static LoginParameters getLoginParameters(
+        CmsObject cms,
+        HttpServletRequest request,
+        boolean workplaceUiRequest) {
 
         String actionLogout = CmsRequestUtil.getNotEmptyParameter(request, PARAM_ACTION_LOGOUT);
 
@@ -354,12 +357,11 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         String requestedResource = CmsRequestUtil.getNotEmptyParameter(
             request,
             CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
-        if (requestedResource == null) {
+        if (workplaceUiRequest && (requestedResource == null)) {
+            requestedWorkplaceApp = request.getRequestURL().toString();
+        } else if (requestedResource == null) {
             // no resource was requested, use default workplace URI
             requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
-        } else if (!requestedResource.contains("/opencms-login/") && !requestedResource.contains("/system/login/")) {
-            requestedWorkplaceApp = requestedResource;
-            requestedResource = null;
         }
         Locale locale = getLocaleForRequest(request);
 

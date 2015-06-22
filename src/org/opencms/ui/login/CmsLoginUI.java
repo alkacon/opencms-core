@@ -188,7 +188,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
      */
     public static String displayVaadinLoginDialog(CmsObject cms, HttpServletRequest request) {
 
-        CmsLoginHelper.LoginParameters params = CmsLoginHelper.getLoginParameters(cms, request);
+        CmsLoginHelper.LoginParameters params = CmsLoginHelper.getLoginParameters(cms, request, false);
         request.getSession().setAttribute(CmsLoginUI.INIT_DATA_SESSION_ATTR, params);
         try {
             byte[] pageBytes = CmsFileUtil.readFully(Thread.currentThread().getContextClassLoader().getResourceAsStream(
@@ -240,7 +240,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     public static String generateLoginHtmlFragment(CmsObject cms, VaadinRequest request) throws IOException {
 
         //   Parameters params = CmsLoginHelper.getLoginParameters(cms, (HttpServletRequest)request, request.getLocale());
-        LoginParameters parameters = CmsLoginHelper.getLoginParameters(cms, (HttpServletRequest)request);
+        LoginParameters parameters = CmsLoginHelper.getLoginParameters(cms, (HttpServletRequest)request, true);
         request.getWrappedSession().setAttribute(CmsLoginUI.INIT_DATA_SESSION_ATTR, parameters);
         byte[] pageBytes;
 
