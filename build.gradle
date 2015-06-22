@@ -6,14 +6,17 @@ apply plugin: 'signing'
 
 sourceCompatibility = java_target_version
 targetCompatibility = java_target_version
+buildDir = build_directory
 
 // use the same properties file as the OpenCms core does for the version information
 // please note that in a Jenkins CI build, this properties file should be dynamically generated
 def externalVersionProps = file("${buildDir}/../version.properties");
 def propFile;
 if (externalVersionProps.exists()){
+	println "Using external version properties file: $externalVersionProps"
 	propFile=externalVersionProps
 }else{
+	println 'Using internal version properties file'
 	propFile=file("$projectDir/src/org/opencms/main/version.properties")
 }
 
@@ -24,7 +27,6 @@ version = vprops['version.number']
 // alternative variable name for the case where the version variable is used for something else, e.g. javadoc
 ext.ocmsVersion = version
 
-buildDir = build_directory
 repositories {
     mavenLocal()
     if (project.hasProperty('additional_repositories')){
