@@ -1,3 +1,41 @@
 $v-app-loading-text: "Default OpenCms";
 
 @import "../valo/valo";
+
+// Main colors
+
+$alkacon-red:       #b31b34;
+$alkacon-blue:      #144382; // for print this is #003082;
+$alkacon-orange:    #ffa826; // for print this is #ffb340;
+$alkacon-gray:      #a8adb4; 
+
+$white:             #fff;
+$black:             #000;
+$blue:              $alkacon-blue;
+$blue-light:        #2197db; // handmade looks better
+$blue-lighter:      lighten($blue-light, 42%);
+$blue-dark:         darken($blue, 10%);
+$blue-darker:       darken($blue, 15%);
+$red:               $alkacon-red;
+$red-light:         #ff264a; // handmade looks better
+$red-lighter:       lighten($red-light, 37%);
+$red-dark:          darken($red, 9%);
+$red-darker:        darken($red, 21%);
+$orange:            $alkacon-orange;
+$orange-light:      lighten($orange, 15%);
+$orange-lighter:    lighten($orange, 30%);
+$orange-dark:       darken($orange, 8%);
+$orange-darker:     darken($orange, 16%);
+$cyan:              #1bb39a; // complementary color
+$gray:              $alkacon-gray;
+$gray-lighter:      lighten($gray, 30%);
+$gray-light:        lighten($gray, 21%);
+$gray-dark:         darken($gray, 15%);
+$gray-darker:       darken($gray, 35%); 
+
+$blue-cyan:         mix($blue, $cyan);
+$violet:            mix($blue, $red);
+$brown:             mix($blue, $orange);
+$red-orange:        mix($red, $orange);
+$red-cyan:          mix($red, $cyan);
+$green:             mix($orange, $cyan);
