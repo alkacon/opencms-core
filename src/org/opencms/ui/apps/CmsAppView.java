@@ -33,10 +33,9 @@ import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.UI;
 
 /**
  * Displays the selected app.<p>
@@ -81,8 +80,9 @@ public class CmsAppView implements View, I_CmsComponentFactory {
         if (m_app == null) {
             m_app = m_appConfig.getAppInstance();
             CmsAppViewLayout layout = new CmsAppViewLayout();
+            layout.setMenuTitle("Menu title");
             layout.setMenu(createMenu());
-
+            layout.setAppTitle(m_appConfig.getName(UI.getCurrent().getLocale()));
             layout.getAppContainer().addComponent(m_app);
             return layout;
         }
@@ -109,12 +109,7 @@ public class CmsAppView implements View, I_CmsComponentFactory {
     protected Component createMenu() {
 
         CssLayout menu = new CssLayout();
-        final Label title = new Label("<h3>OpenCms <strong>"
-            + m_appConfig.getName(getWorkplaceUi().getLocale())
-            + "</strong></h3>", ContentMode.HTML);
-        title.setSizeUndefined();
-        title.addStyleName("valo-menu-title");
-        menu.addComponent(title);
+
         CssLayout menuItemsLayout = new CssLayout();
         menuItemsLayout.setPrimaryStyleName("valo-menuitems");
         menu.addComponent(menuItemsLayout);

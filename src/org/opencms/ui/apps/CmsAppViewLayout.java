@@ -27,19 +27,12 @@
 
 package org.opencms.ui.apps;
 
-import org.opencms.workplace.CmsWorkplace;
-
-import com.vaadin.server.ExternalResource;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Responsive;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.declarative.Design;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The layout used within the app view.<p>
@@ -49,20 +42,20 @@ public class CmsAppViewLayout extends CssLayout {
     /** The serial version id. */
     private static final long serialVersionUID = -290796815149968830L;
 
-    /** Toolbar items left. */
-    private HorizontalLayout m_itemsLeft;
-
-    /** Toolbar items right. */
-    private HorizontalLayout m_itemsRight;
-
-    /** OpenCms logo. */
-    private Image m_logo;
+    /** The toolbar. */
+    private CmsToolBar m_toolbar;
 
     /** The app area. */
     private CssLayout m_appArea;
 
     /** The menu area. */
     private CssLayout m_menuArea;
+
+    /** The menu title. */
+    private CssLayout m_menuTitle;
+
+    /** The app title. */
+    private CssLayout m_appTitle;
 
     /**
      * Constructor.<p>
@@ -71,9 +64,6 @@ public class CmsAppViewLayout extends CssLayout {
 
         Design.read("AppView.html", this);
         Responsive.makeResponsive(this);
-        m_logo.setSource(new ExternalResource(CmsWorkplace.getResourceUri("commons/login_logo.png")));
-        m_itemsLeft.addComponent(new Button(FontAwesome.BOMB));
-        m_itemsRight.addComponent(new Button(FontAwesome.BEER));
     }
 
     /**
@@ -87,13 +77,34 @@ public class CmsAppViewLayout extends CssLayout {
     }
 
     /**
+     * Sets the app title.<p>
+     * 
+     * @param title the title
+     */
+    public void setAppTitle(String title) {
+
+        m_appTitle.removeAllComponents();
+        m_appTitle.addComponent(new Label(title));
+    }
+
+    /**
      * Sets the menu component.<p>
      * 
      * @param menu the menu
      */
     public void setMenu(Component menu) {
 
-        menu.addStyleName(ValoTheme.MENU_PART);
         m_menuArea.addComponent(menu);
+    }
+
+    /**
+     * Sets the menu title.<p>
+     * 
+     * @param title the title
+     */
+    public void setMenuTitle(String title) {
+
+        m_menuTitle.removeAllComponents();
+        m_menuTitle.addComponent(new Label(title));
     }
 }
