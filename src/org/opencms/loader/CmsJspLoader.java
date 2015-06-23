@@ -75,7 +75,9 @@ import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -199,6 +201,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
     /** A map from taglib names to their URIs. */
     private Map<String, String> m_taglibs = Maps.newHashMap();
+
+    /** Lock used to prevent JSP repository from being accessed while it is purged. The read lock is needed for accessing the JSP repository, the write lock is needed for purging it. */
+    private ReentrantReadWriteLock m_purgeLock = new ReentrantReadWriteLock(true);
 
     /**
      * The constructor of the class is empty, the initial instance will be
@@ -509,18 +514,24 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
             // get the Flex controller
             CmsFlexController controller = getController(cms, file, req, res, streaming, true);
-            if (bypass || controller.isForwardMode()) {
-                // initialize the standard contex bean to be available for all requests
-                CmsJspStandardContextBean.getInstance(controller.getCurrentRequest());
-                // once in forward mode, always in forward mode (for this request)
-                controller.setForwardMode(true);
-                // bypass Flex cache for this page, update the JSP first if necessary
-                String target = updateJsp(file, controller, new HashSet<String>());
-                // dispatch to external JSP
-                req.getRequestDispatcher(target).forward(controller.getCurrentRequest(), res);
-            } else {
-                // Flex cache not bypassed, dispatch to internal JSP
-                dispatchJsp(controller);
+            Lock lock = m_purgeLock.readLock();
+            try {
+                lock.lock();
+                if (bypass || controller.isForwardMode()) {
+                    // initialize the standard contex bean to be available for all requests
+                    CmsJspStandardContextBean.getInstance(controller.getCurrentRequest());
+                    // once in forward mode, always in forward mode (for this request)
+                    controller.setForwardMode(true);
+                    // bypass Flex cache for this page, update the JSP first if necessary            
+                    String target = updateJsp(file, controller, new HashSet<String>());
+                    // dispatch to external JSP
+                    req.getRequestDispatcher(target).forward(controller.getCurrentRequest(), res);
+                } else {
+                    // Flex cache not bypassed, dispatch to internal JSP  
+                    dispatchJsp(controller);
+                }
+            } finally {
+                lock.unlock();
             }
 
             // remove the controller from the request if not forwarding
@@ -632,17 +643,24 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res)
     throws ServletException, IOException, CmsLoaderException {
 
-        CmsFlexController controller = CmsFlexController.getController(req);
-        // get JSP target name on "real" file system
-        String target = updateJsp(resource, controller, new HashSet<String>(8));
-        // important: Indicate that all output must be buffered
-        controller.getCurrentResponse().setOnlyBuffering(true);
-        // initialize the standard contex bean to be available for all requests
-        CmsJspStandardContextBean.getInstance(controller.getCurrentRequest());
-        // dispatch to external file
-        controller.getCurrentRequest().getRequestDispatcherToExternal(cms.getSitePath(resource), target).include(
-            req,
-            res);
+        Lock lock = m_purgeLock.readLock();
+        try {
+            lock.lock();
+
+            CmsFlexController controller = CmsFlexController.getController(req);
+            // get JSP target name on "real" file system
+            String target = updateJsp(resource, controller, new HashSet<String>(8));
+            // important: Indicate that all output must be buffered
+            controller.getCurrentResponse().setOnlyBuffering(true);
+            // initialize the standard contex bean to be available for all requests
+            CmsJspStandardContextBean.getInstance(controller.getCurrentRequest());
+            // dispatch to external file
+            controller.getCurrentRequest().getRequestDispatcherToExternal(cms.getSitePath(resource), target).include(
+                req,
+                res);
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -655,6 +673,31 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_FLEX_CACHE_0));
         }
+    }
+
+    /** 
+     * Triggers an asynchronous purge of the JSP repository.<p>
+     *  
+     * @param afterPurgeAction the action to execute after purging 
+     */
+    public void triggerPurge(final Runnable afterPurgeAction) {
+
+        OpenCms.getExecutor().execute(new Runnable() {
+
+            @SuppressWarnings("synthetic-access")
+            public void run() {
+
+                WriteLock lock = m_purgeLock.writeLock();
+                try {
+                    lock.lock();
+                    doPurge(afterPurgeAction);
+                } catch (Exception e) {
+                    LOG.error("Error while purging jsp repository: " + e.getLocalizedMessage(), e);
+                } finally {
+                    lock.unlock();
+                }
+            }
+        });
     }
 
     /**
@@ -1024,6 +1067,35 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         }
 
         return result;
+    }
+
+    /** 
+     * Purges the JSP repository.<p<
+     * 
+     * @param afterPurgeAction the action to execute after purging 
+     */
+    protected void doPurge(Runnable afterPurgeAction) {
+
+        if (LOG.isInfoEnabled()) {
+            LOG.info(org.opencms.flex.Messages.get().getBundle().key(
+                org.opencms.flex.Messages.LOG_FLEXCACHE_WILL_PURGE_JSP_REPOSITORY_0));
+        }
+
+        File d;
+        d = new File(getJspRepository() + CmsFlexCache.REPOSITORY_ONLINE + File.separator);
+        CmsFileUtil.purgeDirectory(d);
+
+        d = new File(getJspRepository() + CmsFlexCache.REPOSITORY_OFFLINE + File.separator);
+        CmsFileUtil.purgeDirectory(d);
+        if (afterPurgeAction != null) {
+            afterPurgeAction.run();
+        }
+
+        if (LOG.isInfoEnabled()) {
+            LOG.info(org.opencms.flex.Messages.get().getBundle().key(
+                org.opencms.flex.Messages.LOG_FLEXCACHE_PURGED_JSP_REPOSITORY_0));
+        }
+
     }
 
     /**

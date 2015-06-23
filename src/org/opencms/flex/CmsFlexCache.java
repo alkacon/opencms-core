@@ -36,10 +36,8 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsCollectionsGenericWrapper;
-import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -267,7 +265,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                     I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
                     I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR});
         }
-
+        
         if (LOG.isInfoEnabled()) {
             LOG.info(
                 Messages.get().getBundle().key(
@@ -838,23 +836,17 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     private synchronized void purgeJspRepository() {
 
-        if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_WILL_PURGE_JSP_REPOSITORY_0));
-        }
-
-        File d;
         CmsJspLoader cmsJspLoader = (CmsJspLoader)OpenCms.getResourceManager().getLoader(
             CmsJspLoader.RESOURCE_LOADER_ID);
-        d = new File(cmsJspLoader.getJspRepository() + REPOSITORY_ONLINE + File.separator);
-        CmsFileUtil.purgeDirectory(d);
 
-        d = new File(cmsJspLoader.getJspRepository() + REPOSITORY_OFFLINE + File.separator);
-        CmsFileUtil.purgeDirectory(d);
+        cmsJspLoader.triggerPurge(new Runnable() {
 
-        clear();
-        if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_PURGED_JSP_REPOSITORY_0));
-        }
+            @SuppressWarnings("synthetic-access")
+            public void run() {
+
+                clear();
+            }
+        });
     }
 
     /**
