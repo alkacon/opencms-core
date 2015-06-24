@@ -38,6 +38,7 @@ import com.google.common.collect.Lists;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Resource;
+import com.vaadin.server.Responsive;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -47,6 +48,10 @@ import com.vaadin.ui.CssLayout;
 public class CmsHomeView extends CssLayout implements View, I_CmsAppButtonProvider {
 
     public CmsHomeView() {
+
+        Responsive.makeResponsive(this);
+        addStyleName("opencms-responsive");
+        addComponent(new CmsToolBar());
 
         CmsObject cms = A_CmsUI.getCmsObject();
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
@@ -64,22 +69,14 @@ public class CmsHomeView extends CssLayout implements View, I_CmsAppButtonProvid
         for (CmsAppCategory category : OpenCms.getWorkplaceAppManager().getCategories()) {
             hierarchyBuilder.addCategory(category);
         }
+
         CmsAppHierarchyPanel hierarchyPanel = new CmsAppHierarchyPanel(this);
         hierarchyPanel.fill(hierarchyBuilder.buildHierarchy(), locale);
         addComponent(hierarchyPanel);
         setWidth("100%");
     }
 
-    public Component createAppButton(I_CmsWorkplaceAppConfiguration appConfig) {
-
-        return createAppIconWidget(appConfig, getLocale());
-    }
-
-    public void enter(ViewChangeEvent event) {
-
-    }
-
-    protected Component createAppIconWidget(final I_CmsWorkplaceAppConfiguration appConfig, final Locale locale) {
+    public static Component createAppIconWidget(final I_CmsWorkplaceAppConfiguration appConfig, Locale locale) {
 
         Button button = new Button(appConfig.getName(locale));
         button.addClickListener(new ClickListener() {
@@ -97,5 +94,14 @@ public class CmsHomeView extends CssLayout implements View, I_CmsAppButtonProvid
         String helpText = appConfig.getHelpText(locale);
         button.setDescription(helpText);
         return button;
+    }
+
+    public Component createAppButton(I_CmsWorkplaceAppConfiguration appConfig) {
+
+        return createAppIconWidget(appConfig, getLocale());
+    }
+
+    public void enter(ViewChangeEvent event) {
+
     }
 }
