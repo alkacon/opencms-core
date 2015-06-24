@@ -64,6 +64,8 @@ public class CmsAppViewLayout extends CssLayout {
 
         Design.read("AppView.html", this);
         Responsive.makeResponsive(this);
+        // setting the width to 100% within the java code is required by the responsive resize listeners
+        setWidth("100%");
     }
 
     /**
