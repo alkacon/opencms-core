@@ -27,7 +27,6 @@
   	.opencms-toolbar{
   		.opencms-toolbar-items-left, .opencms-toolbar-items-right{
   			width: 500px;
-  			margin: 10px 0;
   		}
   	}
   }
@@ -44,7 +43,7 @@
   	
   	.opencms-toolbar{
   		.opencms-toolbar-items-left, .opencms-toolbar-items-right{
-  			width: 300px;
+  			width: 250px;
   		}
   	}
   }
@@ -62,7 +61,7 @@
   	
   	.opencms-toolbar{
   		.opencms-toolbar-items-left, .opencms-toolbar-items-right{
-  			width: 400px;
+  			width: 350px;
   		}
   	}
   }
@@ -126,14 +125,20 @@
   	.opencms-toolbar-items-left{
   		float: left;
   		text-align: left;
+  		margin: 10px 0;
   	}
   
   	.opencms-toolbar-items-right{
   		float: right;
   		text-align: right;
+  		margin: 10px 0;
   	}
   }
   
+  .v-popupview-popup-opencms-navigator-dropdown{
+  	margin-top: 50px !important;
+  	margin-left: -10px !important;
+  }
   
   
   
