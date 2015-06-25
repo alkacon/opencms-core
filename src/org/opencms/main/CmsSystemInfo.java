@@ -119,7 +119,8 @@ public class CmsSystemInfo {
     public static final String CONFIG_FOLDER_PROPERTY = "opencms.config";
 
     /** Relative path to persistence.xml file. */
-    public static final String FILE_PERSISTENCE = File.separatorChar
+    public static final String FILE_PERSISTENCE = "classes"
+        + File.separatorChar
         + "META-INF"
         + File.separatorChar
         + "persistence.xml";
@@ -186,6 +187,9 @@ public class CmsSystemInfo {
 
     /** The absolute path to the "packages" folder (in the "real" file system). */
     private String m_packagesRfsPath;
+
+    /** The absolute path to the persistence.xml file (in the "real" file system). */
+    private String m_persistenceFileRfsPath;
 
     /** True if detail contents are restricted to detail pages from the same site. */
     private boolean m_restrictDetailContents;
@@ -480,6 +484,19 @@ public class CmsSystemInfo {
             m_packagesRfsPath = getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.FOLDER_PACKAGES);
         }
         return m_packagesRfsPath;
+    }
+
+    /**
+     * Returns the absolute path to the "persistence.xml" file (in the "real" file system).<p>
+     * 
+     * @return the absolute path to the "persistence.xml" configuration file
+     */
+    public String getPersistenceFileRfsPath() {
+
+        if (m_persistenceFileRfsPath == null) {
+            m_persistenceFileRfsPath = getAbsoluteRfsPathRelativeToWebInf(FILE_PERSISTENCE);
+        }
+        return m_persistenceFileRfsPath;
     }
 
     /**
