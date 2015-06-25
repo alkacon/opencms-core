@@ -119,7 +119,10 @@ public class CmsSystemInfo {
     public static final String CONFIG_FOLDER_PROPERTY = "opencms.config";
 
     /** Relative path to persistence.xml file. */
-    public static final String FILE_PERSISTENCE = "META-INF" + File.separatorChar + "persistence.xml";
+    public static final String FILE_PERSISTENCE = File.separatorChar
+        + "META-INF"
+        + File.separatorChar
+        + "persistence.xml";
 
     /** The name of the opencms.properties file. */
     public static final String FILE_PROPERTIES = "opencms.properties";
