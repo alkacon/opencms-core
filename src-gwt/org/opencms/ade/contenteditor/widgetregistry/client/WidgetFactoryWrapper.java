@@ -28,7 +28,6 @@
 package org.opencms.ade.contenteditor.widgetregistry.client;
 
 import org.opencms.acacia.client.I_CmsWidgetFactory;
-import org.opencms.acacia.client.widgets.CmsFormWidgetWrapper;
 import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
 
@@ -52,7 +51,15 @@ public final class WidgetFactoryWrapper extends JavaScriptObject implements I_Cm
      */
     public I_CmsFormEditWidget createFormWidget(String configuration) {
 
-        return new CmsFormWidgetWrapper(new WidgetWrapper(createNativeWidget(configuration)));
+        return new WidgetWrapper(createNativeWidget(configuration));
+    }
+
+    /**
+     * @see org.opencms.acacia.client.I_CmsWidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.dom.client.Element)
+     */
+    public I_CmsEditWidget createInlineWidget(String configuration, Element element) {
+
+        return new WidgetWrapper(createNativeWrapedElement(configuration, element));
     }
 
     /**
@@ -63,14 +70,6 @@ public final class WidgetFactoryWrapper extends JavaScriptObject implements I_Cm
     public native String getName()/*-{
                                   return this.widgetName;
                                   }-*/;
-
-    /**
-     * @see org.opencms.acacia.client.I_CmsWidgetFactory#createInlineWidget(java.lang.String, com.google.gwt.dom.client.Element)
-     */
-    public I_CmsEditWidget createInlineWidget(String configuration, Element element) {
-
-        return new WidgetWrapper(createNativeWrapedElement(configuration, element));
-    }
 
     /**
      * Creates a native java script widget.<p>

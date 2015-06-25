@@ -1194,14 +1194,15 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      */
     public String unlock(String sitePath) throws CmsRpcException {
 
-        CmsObject cms = getCmsObject();
         try {
+            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+            cms.getRequestContext().setSiteRoot("");
             if (cms.existsResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION)) {
                 CmsResource resource = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
                 tryUnlock(resource);
             }
         } catch (CmsException e) {
-            return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+            return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()));
         } catch (Throwable e) {
             error(e);
         }

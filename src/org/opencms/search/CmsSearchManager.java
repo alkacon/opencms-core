@@ -2222,9 +2222,45 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         Set<CmsResource> elementGroups = new HashSet<CmsResource>();
         Set<CmsResource> containerPages = new HashSet<CmsResource>();
-        for (CmsPublishedResource pubRes : updateResources) {
-            try {
-                if (OpenCms.getResourceManager().getResourceType(pubRes.getType()) instanceof CmsResourceTypeXmlContent) {
+        int containerPageTypeId = -1;
+        try {
+            containerPageTypeId = CmsResourceTypeXmlContainerPage.getContainerPageTypeId();
+        } catch (CmsLoaderException e) {
+            // will happen during setup, when container page type is not available yet
+            LOG.info(e.getLocalizedMessage(), e);
+        }
+        if (containerPageTypeId != -1) {
+            for (CmsPublishedResource pubRes : updateResources) {
+                try {
+                    if (OpenCms.getResourceManager().getResourceType(pubRes.getType()) instanceof CmsResourceTypeXmlContent) {
+                        CmsRelationFilter filter = CmsRelationFilter.relationsToStructureId(pubRes.getStructureId());
+                        filter.filterStrong();
+                        List<CmsRelation> relations = adminCms.readRelations(filter);
+                        for (CmsRelation relation : relations) {
+                            CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
+                            if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
+                                containerPages.add(res);
+                                if (CmsJspTagContainer.isDetailContainersPage(adminCms, adminCms.getSitePath(res))) {
+                                    addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
+                                }
+                            } else if (OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName().equals(
+                                CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
+                                elementGroups.add(res);
+                            }
+                        }
+                    }
+                    if (containerPageTypeId == pubRes.getType()) {
+                        addDetailContent(
+                            adminCms,
+                            containerPages,
+                            adminCms.getRequestContext().removeSiteRoot(pubRes.getRootPath()));
+                    }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            for (CmsResource pubRes : elementGroups) {
+                try {
                     CmsRelationFilter filter = CmsRelationFilter.relationsToStructureId(pubRes.getStructureId());
                     filter.filterStrong();
                     List<CmsRelation> relations = adminCms.readRelations(filter);
@@ -2235,49 +2271,21 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             if (CmsJspTagContainer.isDetailContainersPage(adminCms, adminCms.getSitePath(res))) {
                                 addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
                             }
-                        } else if (OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName().equals(
-                            CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
-                            elementGroups.add(res);
                         }
                     }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
-                if (CmsResourceTypeXmlContainerPage.getContainerPageTypeId() == pubRes.getType()) {
-                    addDetailContent(
-                        adminCms,
-                        containerPages,
-                        adminCms.getRequestContext().removeSiteRoot(pubRes.getRootPath()));
+            }
+            // add all found container pages as published resource objects to the list
+            for (CmsResource page : containerPages) {
+                CmsPublishedResource pubCont = new CmsPublishedResource(page);
+                if (!updateResources.contains(pubCont)) {
+                    // ensure container page is added only once
+                    updateResources.add(pubCont);
                 }
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
             }
         }
-        for (CmsResource pubRes : elementGroups) {
-            try {
-                CmsRelationFilter filter = CmsRelationFilter.relationsToStructureId(pubRes.getStructureId());
-                filter.filterStrong();
-                List<CmsRelation> relations = adminCms.readRelations(filter);
-                for (CmsRelation relation : relations) {
-                    CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
-                    if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
-                        containerPages.add(res);
-                        if (CmsJspTagContainer.isDetailContainersPage(adminCms, adminCms.getSitePath(res))) {
-                            addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
-                        }
-                    }
-                }
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
-        // add all found container pages as published resource objects to the list
-        for (CmsResource page : containerPages) {
-            CmsPublishedResource pubCont = new CmsPublishedResource(page);
-            if (!updateResources.contains(pubCont)) {
-                // ensure container page is added only once
-                updateResources.add(pubCont);
-            }
-        }
-
         return updateResources;
     }
 

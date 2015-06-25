@@ -547,6 +547,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
                 OpenCms.getADEManager().getModuleConfigurationType().getTypeId(),
                 data.getBytes(),
                 Collections.<CmsProperty> emptyList());
+            waitForUpdate(false);
             String parentFolderType = OpenCms.getADEManager().getOfflineCache().getState().getParentFolderType(
                 "/sites/default/.content/a1/foo");
             assertEquals("a", parentFolderType);

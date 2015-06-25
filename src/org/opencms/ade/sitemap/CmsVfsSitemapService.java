@@ -2858,6 +2858,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             defaultFileProps = getClientProperties(cms, defaultFileResource, false);
             clientEntry.setDefaultFileId(defaultFileResource.getStructureId());
             clientEntry.setDefaultFileType(OpenCms.getResourceManager().getResourceType(defaultFileResource.getTypeId()).getTypeName());
+            clientEntry.setDefaultFileReleased(defaultFileResource.isReleasedAndNotExpired(System.currentTimeMillis()));
         } else {
             defaultFileProps = new HashMap<String, CmsClientProperty>();
         }

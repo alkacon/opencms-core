@@ -15,27 +15,26 @@
 		<class/>
 		<description><![CDATA[This module provides a dialog for editing the configured default properties of a file after uploading it.<br>
 <i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
-		<version>9.5.1</version>
-		<authorname/>
-		<authoremail/>
-		<datecreated/>
-		<userinstalled/>
-		<dateinstalled/>
-		<dependencies>
-			<dependency name="org.opencms.ade.config" version="9.0.0"/>
-		</dependencies>
-		<exportpoints>
-			<exportpoint uri="/system/modules/org.opencms.ade.postupload/resources/" destination="resources/ade/"/>
-		</exportpoints>
-		<resources>
-			<resource uri="/system/modules/org.opencms.ade.postupload/"/>
-		</resources>
-		<parameters/>
-	</module>
-	<files>
-		<file>
-			<destination>system</destination>
-			<type>folder</type>
+    <version>9.5.2</version>
+    <authorname/>
+    <authoremail/>
+    <datecreated/>
+    <userinstalled/>
+    <dateinstalled/>
+    <dependencies>
+      <dependency name="org.opencms.ade.config" version="9.0.0"/>
+    </dependencies>
+    <exportpoints>
+      <exportpoint uri="/system/modules/org.opencms.ade.postupload/resources/" destination="resources/ade/"/>
+    </exportpoints>
+    <resources>
+      <resource uri="/system/modules/org.opencms.ade.postupload/"/>
+    </resources>
+  </module>
+  <files>
+    <file>
+      <destination>system</destination>
+      <type>folder</type>
       <uuidstructure>a3a72feb-a0f5-11e1-b4cc-9d057d88828d</uuidstructure>
       <datelastmodified>Fri, 18 May 2012 14:27:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>

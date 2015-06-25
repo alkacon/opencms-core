@@ -592,8 +592,8 @@ public class CmsJspNavBuilder {
         for (CmsJspNavElement ne : curnav) {
             // add the navigation entry to the result list
             list.add(ne);
-            // check if navigation entry is a folder and below the max level -> if so, get the navigation from this folder as well
-            if (ne.isFolderLink() && (noLimit || (ne.getNavTreeLevel() < endLevel))) {
+            // check if navigation entry is a folder or navigation level and below the max level -> if so, get the navigation from this folder as well
+            if ((ne.isFolderLink() || ne.isNavigationLevel()) && (noLimit || (ne.getNavTreeLevel() < endLevel))) {
                 List<CmsJspNavElement> subnav = getSiteNavigation(m_cms.getSitePath(ne.getResource()), endLevel);
                 // copy the result of the subfolder to the result list
                 list.addAll(subnav);
@@ -675,6 +675,19 @@ public class CmsJspNavBuilder {
             List<CmsProperty> properties = m_cms.readPropertyObjects(resource, false);
             propertiesMap = CmsProperty.toMap(properties);
             if (resource.isFolder()) {
+                if (resourceFilter.equals(CmsResourceFilter.DEFAULT)
+                    && !NAVIGATION_LEVEL_FOLDER.equals(propertiesMap.get(CmsPropertyDefinition.PROPERTY_DEFAULT_FILE))) {
+                    try {
+                        CmsResource defaultFile = m_cms.readDefaultFile(resource, resourceFilter);
+                        if ((defaultFile != null)
+                            && !defaultFile.isReleasedAndNotExpired(m_cms.getRequestContext().getRequestTime())) {
+                            // do not show navigation entries for unreleased or expired resources
+                            return null;
+                        }
+                    } catch (CmsException e) {
+                        // may happen if permissions are not sufficient can be ignored
+                    }
+                }
                 if (!sitePath.endsWith("/")) {
                     sitePath = sitePath + "/";
                 }
@@ -691,7 +704,7 @@ public class CmsJspNavBuilder {
             }
         } catch (Exception e) {
             // may happen if permissions are not sufficient
-            LOG.error(e.getLocalizedMessage(), e);
+            LOG.warn(e.getLocalizedMessage(), e);
             return null;
         }
 

@@ -169,6 +169,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** The VFS path. */
     private String m_vfsPath;
 
+    /** The default file is released and not expired flag. */
+    private boolean m_defaultFileReleased;
+
     /**
      * Constructor.<p>
      */
@@ -176,6 +179,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         m_subEntries = new ArrayList<CmsClientSitemapEntry>();
         m_entryType = EntryType.folder;
+        m_defaultFileReleased = true;
     }
 
     /**
@@ -526,6 +530,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns the default file is released and not expired flag.<p>
+     *
+     * @return the default file is released and not expired flag
+     */
+    public boolean isDefaultFileReleased() {
+
+        return m_defaultFileReleased;
+    }
+
+    /**
      * Returns if the current lock state allows editing.<p>
      * 
      * @return <code>true</code> if the resource is editable
@@ -759,6 +773,16 @@ public class CmsClientSitemapEntry implements IsSerializable {
     public void setDefaultFileProperties(Map<String, CmsClientProperty> properties) {
 
         m_defaultFileProperties = properties;
+    }
+
+    /**
+     * Sets the default file is released and not expired flag.<p>
+     *
+     * @param defaultFileReleased the default file is released and not expired flag to set
+     */
+    public void setDefaultFileReleased(boolean defaultFileReleased) {
+
+        m_defaultFileReleased = defaultFileReleased;
     }
 
     /**
@@ -1096,6 +1120,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setDateExpired(source.getDateExpired());
         setDateReleased(source.getDateReleased());
         setResleasedAndNotExpired(source.isResleasedAndNotExpired());
+        setDefaultFileReleased(source.isDefaultFileReleased());
         setAliases(source.getAliases());
         setRedirectTarget(source.getRedirectTarget());
         setResourceState(source.getResourceState());

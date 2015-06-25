@@ -284,6 +284,7 @@ javadoc {
         windowTitle="OpenCms Core API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
+        use="true"
     }
 }
 
@@ -897,14 +898,25 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
         exclude '**/update/**'
         exclude '**/workplaceThemes/**'
         exclude '**/classes/META-INF/**'
+        exclude '**/solr/**'
+        exclude '**/spellcheck/**'
         exclude '**/*.html'
         exclude '**/*.properties'
         exclude '**/*.txt'
         exclude '**/*.xml'
     }
+    
+    // copy SOLR config files separately to avoid the replace filter corrupting them
+    from ("${projectDir}/webapp"){
+        include '**/solr/**'
+        include '**/spellcheck/**'
+    }
+    
     from ("${projectDir}/webapp"){
         exclude '**/update/**'
         exclude '**/workplaceThemes/**'
+        exclude '**/solr/**'
+        exclude '**/spellcheck/**'
         include '**/*.html'
         include '**/*.properties'
         include '**/*.txt'
@@ -1544,10 +1556,7 @@ tasks.withType(JavaCompile) {
 }
 tasks.withType(Javadoc) {
     options.addStringOption("sourcepath", "")
+    if (JavaVersion.current().isJava8Compatible()) {
+    	options.addStringOption("Xdoclint:none", "-quiet")
+    }
 }
-
-
-        
-
-
-

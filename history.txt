@@ -15,6 +15,45 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 9.5.2 - June 24, 2015
+! Added Japanese localization (provided by Yuta Aoki).
+! Added Czech localization (provided by Filip Kratochvil).
+! Added additional search settings in XSD for mapping of Solr fields to container pages.
+- Improved loading times for VfsFileWidget (and other widgets based on the gallery dialog).
+- Changed HtmlWidget to list styles from the content CSS in the style select box.
+- Demo template updated to Bootstrap 3.3.5.
+- Updated Spanish localization (provided by Sergio Raposo Vargas).
+- Updated Russian localization (provided by Iliya Makarov).
+- Add use pages to Javadocs (provided by Alberto Gallardo).
+- Improved 'This page' option in publish dialog to show changed contents of detail containers.
+- Improved availability handling in conjunction with the sitemap editor and navigation builder.
+* Fixed issue #236 with wrong localization of "Direct Edit" in the workplace's preferences (provided by rohtake).
+* Fixed issue #278 with mangled javadocs when compiling with JDK 8.
+* Fixed issue #304 to resolve some XSS vulnerabilities.
+* Fixed issue #312 with modified MySQL create tables to support innodb (provided by Enrico Marongiu).
+* Fixed issue #313 with the demo pages tabs formatter not working online.
+* Fixed issue #314 regarding setup with JPA supported DBMSs (provided by Smyatkin Maxim).
+* Fixed issue #315 with workplace search not working when selecting a specific site.
+* Fixed issue #320 with the demo pages tabs (duplicate of #313).
+* Fixed a number of XSS issues in the workplace.
+* Fixed issue where the types in the container page editor's 'Add' menu were not updated after changes to nested containers.
+* Fixed issue where the information for locked images was copied to the title attribute in the WYSIWYG editor.
+* Fixed issue with the toolbar being blocked by an overlay when using the model selection dialog in the page editor.
+* Fixed issue in the publish dialog where sometimes publishing resources in the root folder caused an error.
+* Fixed stack overflow error caused by incomplete preference configuration after running the updater.
+* Fixed issue with message bundle caching where sometimes XML message bundles were not found.
+* Fixed issue with secure server links on error pages referred to the non-secure server instead to the secure server..
+* Fixed issue with workplace search not working for indexes other than the Gallery index.
+* Fixed issue where detail container pages failed to be unlocked after editing.
+* Fixed issue with Lucene index for container pages where content for locales other than "en" was not indexed.
+* Fixed issue where registering change listeners in custom content editor widgets could cause a stack overflow.
+* Fixed doctype for workplace dialogs to avoid compatibility mode in IE.
+* Fixed corrupted images in updater.
+* Fixed issue where the resource info dialog crashed when reading a relation whose source did not exist anymore.
+* Fixed issue where the category folder name configured on /system/categories was ignored by the sitemap editor.
+* Fixed IE browser mode issue which sometimes caused problems with the upload dialog.
+* Fixed issue with legacy direct edit text button provider not showing localized messages.
+
 OpenCms 9.5.1 - March 2, 2015
 ! Added "DependentSelectWidget" that obtains values depending on other content fields.    
 ! Added alternative login handler to authorize users with a cookie.

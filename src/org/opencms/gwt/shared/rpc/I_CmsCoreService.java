@@ -317,13 +317,13 @@ public interface I_CmsCoreService extends RemoteService {
     /**
      * Unlocks the given resource.<p>
      * 
-     * @param sitePath the site path of the resource to unlock   
+     * @param rootPath the root path of the resource to unlock   
      * 
      * @return <code>null</code> if successful, an error message if not 
      * 
      * @throws CmsRpcException if something goes wrong 
      */
-    String unlock(String sitePath) throws CmsRpcException;
+    String unlock(String rootPath) throws CmsRpcException;
 
     /**
      * Performs a batch of validations and returns the results.<p>

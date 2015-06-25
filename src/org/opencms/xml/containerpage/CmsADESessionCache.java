@@ -162,6 +162,7 @@ public final class CmsADESessionCache {
     }
 
     /**
+    <<<<<<< HEAD
      * returns the sitemap editor mode.<p>
      * 
      * @return the sitemap editor mode
@@ -172,6 +173,8 @@ public final class CmsADESessionCache {
     }
 
     /**
+    =======
+    >>>>>>> refs/remotes/origin/branch_9_5_x
      * Gets the cached template bean for a given container page uri.<p>
      * 
      * @param uri the container page uri 
