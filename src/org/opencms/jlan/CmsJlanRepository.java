@@ -216,6 +216,7 @@ public class CmsJlanRepository implements I_CmsRepository {
     public CmsObjectWrapper getCms(SrvSession session, TreeConnection connection) throws CmsException {
 
         String userName = session.getClientInformation().getUserName();
+        userName = CmsJlanUsers.translateUser(userName);
         CmsContextInfo contextInfo = new CmsContextInfo(m_cms.getRequestContext());
         contextInfo.setUserName(userName);
         CmsObject newCms = OpenCms.initCmsObject(m_cms, contextInfo);

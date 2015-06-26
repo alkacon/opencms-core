@@ -58,6 +58,7 @@ public class CmsRepositoryAccessControl extends AccessControl {
     public int allowsAccess(SrvSession session, SharedDevice device, AccessControlManager manager) {
 
         String user = session.getClientInformation().getUserName();
+        user = CmsJlanUsers.translateUser(user);
         if (m_repository.allowAccess(user)) {
             return AccessControl.Default;
         } else {
