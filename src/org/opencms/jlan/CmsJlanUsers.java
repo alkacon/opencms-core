@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -53,8 +54,14 @@ import org.springframework.extensions.config.ConfigElement;
  */
 public class CmsJlanUsers implements UsersInterface {
 
+    /** The default OU separator to use if none is configured. */
+    public static final String DEFAULT_OU_SEPARATOR = "___";
+
     /** The additional info key for the MD4 password hash. */
     public static final String JLAN_HASH = "jlan_hash";
+
+    /** Name of the runtime property used to configure the OU separator for CIFS login. */
+    public static final String PARAM_JLAN_OU_SEPARATOR = "jlan.ou.separator";
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJlanUsers.class);
@@ -91,14 +98,37 @@ public class CmsJlanUsers implements UsersInterface {
         }
     }
 
+    /** 
+     * Translates user names by replacing a custom OU separator with the standard OU separator '/'.
+     * 
+     * This is needed because either JLAN or the client cuts off the part before the slash during authentication,
+     * so OpenCms never gets to see it. So if we want CIFS authentication for users from non-root OUs, we need to use
+     * a different separator.<p>
+     *       
+     * @param name the user name to translate 
+     * 
+     * @return the translated user name 
+     */
+    public static final String translateUser(String name) {
+
+        String ouSeparator = (String)(OpenCms.getRuntimeProperty(PARAM_JLAN_OU_SEPARATOR));
+        if (ouSeparator == null) {
+            ouSeparator = DEFAULT_OU_SEPARATOR;
+        }
+        String result = name;
+        result = result.replace(ouSeparator, "/");
+        return result;
+    }
+
     /**
      * @see org.alfresco.jlan.server.auth.UsersInterface#getUserAccount(java.lang.String)
      */
     public UserAccount getUserAccount(String userName) {
 
         try {
+            userName = translateUser(userName);
             CmsUser user = m_adminCms.readUser(userName);
-            UserAccount account = new UserAccount(user.getName(), "");
+            UserAccount account = new UserAccount(userName, "");
             Object jlanHash = user.getAdditionalInfo(JLAN_HASH);
             if (jlanHash != null) {
                 account.setMD4Password((byte[])jlanHash);
@@ -119,5 +149,4 @@ public class CmsJlanUsers implements UsersInterface {
 
         // do nothing
     }
-
 }
