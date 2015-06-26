@@ -204,10 +204,6 @@ task javadocJarComponents(type: Jar, dependsOn: javadocComponents) {
     baseName 'opencms-components'
 }
 
-if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
-    task tomcatUpdate { doFirst { println "All generated Jar files will be copied to the configured lib folder." } }
-}
-
 task enhance << {
     ant.taskdef(
     name      : 'openjpaenhancer',
@@ -722,7 +718,7 @@ allModuleNames.split(',').each{ moduleName ->
             }
 
             doLast {
-                if (tasks.findByPath('tomcatUpdate')!=null&&gradle.taskGraph.hasTask(tomcatUpdate)){
+                if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
                     println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
                     copy {
                         from  "${project.buildDir}/libs/${archiveName}"
