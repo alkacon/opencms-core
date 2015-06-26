@@ -252,6 +252,17 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Constructor in case no page context is available.<p>
+     * 
+     * @param cms the current user context
+     * @param session the session
+     */
+    public CmsWorkplace(CmsObject cms, HttpSession session) {
+
+        initWorkplaceMembers(cms, session);
+    }
+
+    /**
      * Public constructor with JSP variables.<p>
      * 
      * @param context the JSP page context
@@ -1970,43 +1981,54 @@ public abstract class CmsWorkplace {
 
         if (jsp != null) {
             m_jsp = jsp;
-            m_cms = m_jsp.getCmsObject();
-            m_session = m_jsp.getRequest().getSession();
+            initWorkplaceMembers(m_jsp.getCmsObject(), m_jsp.getRequest().getSession());
+        }
+    }
 
-            // check role
-            try {
-                checkRole();
-            } catch (CmsRoleViolationException e) {
-                throw new CmsIllegalStateException(e.getMessageContainer(), e);
-            }
+    /**
+     * Initializes this workplace class instance.<p>
+     * 
+     * @param cms the user context
+     * @param session the session
+     */
+    protected void initWorkplaceMembers(CmsObject cms, HttpSession session) {
 
-            // get / create the workplace settings 
-            m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+        m_cms = cms;
+        m_session = session;
+        // check role
+        try {
+            checkRole();
+        } catch (CmsRoleViolationException e) {
+            throw new CmsIllegalStateException(e.getMessageContainer(), e);
+        }
 
-            if (m_settings == null) {
-                // create the settings object
-                m_settings = new CmsWorkplaceSettings();
-                m_settings = initWorkplaceSettings(m_cms, m_settings, false);
+        // get / create the workplace settings 
+        m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
 
-                storeSettings(m_session, m_settings);
-            }
+        if (m_settings == null) {
+            // create the settings object
+            m_settings = new CmsWorkplaceSettings();
+            m_settings = initWorkplaceSettings(m_cms, m_settings, false);
 
-            // initialize messages            
-            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(getLocale());
-            // generate a new multi messages object and add the messages from the workplace
-            m_messages = new CmsMultiMessages(getLocale());
-            m_messages.addMessages(messages);
-            initMessages();
+            storeSettings(m_session, m_settings);
+        }
 
+        // initialize messages            
+        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(getLocale());
+        // generate a new multi messages object and add the messages from the workplace
+        m_messages = new CmsMultiMessages(getLocale());
+        m_messages.addMessages(messages);
+        initMessages();
+
+        if (m_jsp != null) {
             // check request for changes in the workplace settings
             initWorkplaceRequestValues(m_settings, m_jsp.getRequest());
-
-            // set cms context accordingly
-            initWorkplaceCmsContext(m_settings, m_cms);
-
-            // timewarp reset logic
-            initTimeWarp(m_settings.getUserSettings(), m_session);
         }
+        // set cms context accordingly
+        initWorkplaceCmsContext(m_settings, m_cms);
+
+        // timewarp reset logic
+        initTimeWarp(m_settings.getUserSettings(), m_session);
     }
 
     /**

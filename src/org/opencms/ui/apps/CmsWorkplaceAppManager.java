@@ -27,6 +27,11 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.main.OpenCms;
+import org.opencms.workplace.tools.CmsTool;
+import org.opencms.workplace.tools.CmsToolManager;
+import org.opencms.workplace.tools.I_CmsToolHandler;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -121,14 +126,31 @@ public class CmsWorkplaceAppManager {
         }
         m_appCategories.clear();
         CmsAppCategory c1 = new CmsAppCategory("test", null, 0, 0, null);
-        m_appCategories.addAll(Arrays.asList(c1));
+        m_appCategories.addAll(Arrays.asList(c1, new CmsAppCategory("Legacy", null, 1, 0, null)));
         addAppConfigurations(loadDefaultApps());
         addAppConfigurations(loadAppsUsingServiceLoader());
+        addAppConfigurations(loadLegacyApps());
     }
 
     protected Collection<I_CmsWorkplaceAppConfiguration> loadDefaultApps() {
 
         return Arrays.<I_CmsWorkplaceAppConfiguration> asList(new MyApp(), new MyTestAppConfig());
+    }
+
+    private Collection<I_CmsWorkplaceAppConfiguration> loadLegacyApps() {
+
+        List<I_CmsWorkplaceAppConfiguration> configs = new ArrayList<I_CmsWorkplaceAppConfiguration>();
+
+        List<CmsTool> tools = OpenCms.getWorkplaceManager().getToolManager().getToolHandlers();
+        for (CmsTool tool : tools) {
+            I_CmsToolHandler handler = tool.getHandler();
+            String path = handler.getPath();
+            // only collecting first path level tools
+            if ((path.length() > 1) && (path.indexOf(CmsToolManager.TOOLPATH_SEPARATOR, 1) < 0)) {
+                configs.add(new CmsLegacyAppConfiguration(handler));
+            }
+        }
+        return configs;
     }
 
 }

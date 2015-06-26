@@ -44,6 +44,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.UI;
 
 public class CmsHomeView extends CssLayout implements View, I_CmsAppButtonProvider {
 
@@ -98,7 +99,7 @@ public class CmsHomeView extends CssLayout implements View, I_CmsAppButtonProvid
 
     public Component createAppButton(I_CmsWorkplaceAppConfiguration appConfig) {
 
-        return createAppIconWidget(appConfig, getLocale());
+        return createAppIconWidget(appConfig, UI.getCurrent().getLocale());
     }
 
     public void enter(ViewChangeEvent event) {

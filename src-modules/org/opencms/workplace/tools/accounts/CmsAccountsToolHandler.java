@@ -153,8 +153,8 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             }
         }
         if (!getLink().equals(ASSIGN_FILE)) {
-            wp.getJsp().getRequest().getSession().removeAttribute(A_CmsOrgUnitUsersList.ORGUNIT_USERS);
-            wp.getJsp().getRequest().getSession().removeAttribute(A_CmsOrgUnitUsersList.NOT_ORGUNIT_USERS);
+            wp.getSession().removeAttribute(A_CmsOrgUnitUsersList.ORGUNIT_USERS);
+            wp.getSession().removeAttribute(A_CmsOrgUnitUsersList.NOT_ORGUNIT_USERS);
         }
 
         if (getLink().equals(DELETE_FILE)) {
