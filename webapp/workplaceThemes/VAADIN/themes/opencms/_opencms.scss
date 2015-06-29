@@ -167,9 +167,13 @@
   .v-popupview-popup-opencms-navigator-dropdown{
   	margin-top: 50px !important;
   	margin-left: -10px !important;
+  	max-height: 80%;
+    overflow: auto !important;
   }
   
-  
+  .v-popupview-popup-opencms-navigator-dropdown .popupContent{
+  	max-width: 400px;
+  }
   
   
   
@@ -187,6 +191,10 @@
   	display: none;  
   }
   
+  /* fixes tooltip issues */
+  .v-tooltip {
+  	z-index: 20001 !important;
+  }
   
   /* valo demo styles - will be removed later */
 

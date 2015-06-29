@@ -98,7 +98,7 @@ public class CmsToolBar extends CssLayout {
         Locale locale = UI.getCurrent().getLocale();
         HorizontalLayout layout = new HorizontalLayout();
         layout.addStyleName("wrapping");
-        layout.setSpacing(true);
+        //    layout.setSpacing(true);
         layout.setMargin(true);
         for (I_CmsWorkplaceAppConfiguration appConfig : OpenCms.getWorkplaceAppManager().getWorkplaceApps()) {
             CmsAppVisibilityStatus status = appConfig.getVisibility(cms);
