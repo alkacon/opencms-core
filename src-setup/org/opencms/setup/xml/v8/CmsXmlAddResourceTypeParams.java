@@ -8,7 +8,7 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import org.dom4j.Node;
 
 /**
  * Adds the new parameters of resource type.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlAddResourceTypeParams extends A_CmsXmlVfs {
@@ -74,7 +74,10 @@ public class CmsXmlAddResourceTypeParams extends A_CmsXmlVfs {
                     document,
                     xpath + "/@" + I_CmsXmlConfiguration.A_NAME,
                     "formatter_gallery_preview");
-                CmsSetupXmlHelper.setValue(document, xpath, "/system/workplace/editors/ade/image-preview-formatter.jsp");
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath,
+                    "/system/workplace/editors/ade/image-preview-formatter.jsp");
                 return true;
             } else if (xpath.equals(getXPathsToUpdate().get(1))) {
                 CmsSetupXmlHelper.setValue(
@@ -195,7 +198,8 @@ public class CmsXmlAddResourceTypeParams extends A_CmsXmlVfs {
             m_xpaths.add(xp.toString().replace("{0}", org.opencms.file.types.CmsResourceTypePlain.class.getName()));
             m_xpaths.add(xp.toString().replace("{0}", org.opencms.file.types.CmsResourceTypeBinary.class.getName()));
             m_xpaths.add(xp.toString().replace("{0}", org.opencms.file.types.CmsResourceTypePointer.class.getName()));
-            m_xpaths.add(xp.toString().replace("{0}", org.opencms.file.types.CmsResourceTypeXmlContent.class.getName()));
+            m_xpaths.add(
+                xp.toString().replace("{0}", org.opencms.file.types.CmsResourceTypeXmlContent.class.getName()));
             // "/opencms/vfs/resources/resourcetypes/type[@class='org.opencms.file.types.CmsResourceTypeBinary']/param[@name='{0}']";
             xp = new StringBuffer(256);
             xp.append("/").append(CmsConfigurationManager.N_ROOT);

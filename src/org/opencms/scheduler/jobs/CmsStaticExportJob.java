@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,10 +45,10 @@ import javax.servlet.ServletException;
 
 /**
  * A schedulable OpenCms job to write a complete static export (e.g. nightly exports).<p>
- * 
+ *
  * This job does not have any parameters.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsStaticExportJob implements I_CmsScheduledJob {
 
@@ -76,9 +76,10 @@ public class CmsStaticExportJob implements I_CmsScheduledJob {
             // append runtime statistics to the report
             if (report != null) {
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_STAT_0));
-                report.println(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_STAT_DURATION_1,
-                    report.formatRuntime()));
+                report.println(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_STAT_DURATION_1,
+                        report.formatRuntime()));
                 report.println(Messages.get().container(Messages.RPT_STATICEXPORT_END_0), I_CmsReport.FORMAT_HEADLINE);
             }
         }

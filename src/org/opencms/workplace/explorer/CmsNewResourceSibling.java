@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,14 +52,14 @@ import org.apache.commons.logging.Log;
 
 /**
  * The new resource sibling dialog handles the creation of a new sibling in the VFS.<p>
- * 
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/newresource_sibling.html
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsNewResourceSibling extends CmsNewResourcePointer {
 
@@ -74,7 +74,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsNewResourceSibling(CmsJspActionElement jsp) {
@@ -84,7 +84,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -96,7 +96,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
 
     /**
      * Creates the new sibling of a resource.<p>
-     * 
+     *
      * @throws JspException if inclusion of error dialog fails
      */
     @Override
@@ -112,7 +112,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
                 targetName = "";
             }
 
-            // create the sibling                        
+            // create the sibling
             String storedSiteRoot = null;
             try {
                 if (OpenCms.getSiteManager().getSiteRoot(targetName) != null) {
@@ -173,11 +173,11 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
 
     /**
      * Forwards to the property dialog if the resourceeditprops parameter is true.<p>
-     * 
+     *
      * If the parameter is not true, the dialog will be closed.<p>
      * If the sibling of the new resource is locked, the paramter will be ignored as properties
      * cannot be created in this case.<p>
-     * 
+     *
      * @throws IOException if forwarding to the property dialog fails
      * @throws ServletException if forwarding to the property dialog fails
      * @throws JspException if an inclusion fails
@@ -212,7 +212,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
 
     /**
      * Returns the current explorer path for use in Javascript of new sibling dialog.<p>
-     * 
+     *
      * @return the current explorer path
      */
     public String getCurrentPath() {
@@ -226,7 +226,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
 
     /**
      * Returns the keep properties request parameter value.<p>
-     * 
+     *
      * @return the keep properties request parameter value
      */
     public String getParamKeepProperties() {
@@ -236,7 +236,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
 
     /**
      * Sets the keep properties request parameter value.<p>
-     * 
+     *
      * @param keepProperties the keep properties request parameter value
      */
     public void setParamKeepProperties(String keepProperties) {
@@ -254,14 +254,14 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_OK.equals(getParamAction())) {
             setAction(ACTION_OK);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for new resource dialog     
+            // build title for new resource dialog
             setParamTitle(key(Messages.GUI_NEWRESOURCE_SIBLING_0));
         }
     }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -105,7 +105,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Constructor for model file informations object.<p>
-     * 
+     *
      * @param modelInfos the model file informations
      * @param newLink the new link
      * @param referenceId the reference resource structure id
@@ -125,12 +125,12 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param entities the locale specific entities of the content
      * @param configurations the attribute configurations
      * @param externalWidgetConfigurations the external widget configurations
-     * @param complexWidgetData the complex widget configurations 
+     * @param complexWidgetData the complex widget configurations
      * @param types the types
      * @param tabInfos the tab information
      * @param locale the content locale
@@ -143,7 +143,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
      * @param sitePath the site path
      * @param resourceType the resource type name
      * @param performedAutocorrection flag indicating the current content has an invalid XML structure and was auto corrected
-     * @param autoUnlock false if the editor should not unlock resources automatically in standalone mode 
+     * @param autoUnlock false if the editor should not unlock resources automatically in standalone mode
      * @param editorChangeScopes the editor change handler scopes
      */
     public CmsContentDefinition(
@@ -193,9 +193,9 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Returns the UUID according to the given entity id.<p>
-     * 
+     *
      * @param entityId the entity id
-     * 
+     *
      * @return the entity id
      */
     public static CmsUUID entityIdToUuid(String entityId) {
@@ -208,9 +208,9 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Extracts the locale from the entity id.<p>
-     * 
+     *
      * @param entityId the entity id
-     * 
+     *
      * @return the locale
      */
     public static String getLocaleFromId(String entityId) {
@@ -223,10 +223,10 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Returns the value for the given XPath expression.<p>
-     *  
+     *
      * @param entity the entity
      * @param path the path
-     * 
+     *
      * @return the value
      */
     public static String getValueForPath(CmsEntity entity, String path) {
@@ -267,7 +267,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Transfers values from the original entity to the given target entity.<p>
-     * 
+     *
      * @param original the original entity
      * @param target the target entity
      * @param transferAttributes the attributes to consider for the value transfer
@@ -296,7 +296,8 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
                             target.addAttributeValue(attributeName, value);
                         }
                         if (considerDefaults) {
-                            for (int i = attribute.getValueCount(); i < entityType.getAttributeMinOccurrence(attributeName); i++) {
+                            for (int i = attribute.getValueCount(); i < entityType.getAttributeMinOccurrence(
+                                attributeName); i++) {
                                 target.addAttributeValue(
                                     attributeName,
                                     attributeConfigurations.get(attributeName).getDefaultValue());
@@ -307,7 +308,8 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
                             target.addAttributeValue(attributeName, value);
                         }
                         if (considerDefaults) {
-                            for (int i = attribute.getValueCount(); i < entityType.getAttributeMinOccurrence(attributeName); i++) {
+                            for (int i = attribute.getValueCount(); i < entityType.getAttributeMinOccurrence(
+                                attributeName); i++) {
                                 target.addAttributeValue(
                                     attributeName,
                                     createDefaultValueEntity(attributeType, entityTypes, attributeConfigurations));
@@ -338,8 +340,8 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
                             CmsEntity subTarget = targetAttribute.getComplexValues().get(i);
                             CmsEntity subOriginal = (originalAttribute != null)
                                 && (originalAttribute.getComplexValues().size() > i)
-                            ? originalAttribute.getComplexValues().get(i)
-                            : null;
+                                ? originalAttribute.getComplexValues().get(i)
+                                : null;
                             transferValues(
                                 subOriginal,
                                 subTarget,
@@ -356,10 +358,10 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Returns the entity id according to the given UUID.<p>
-     * 
+     *
      * @param uuid the UUID
      * @param locale the content locale
-     * 
+     *
      * @return the entity id
      */
     public static String uuidToEntityId(CmsUUID uuid, String locale) {
@@ -369,11 +371,11 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Creates an entity object containing the default values configured for it's type.<p>
-     * 
+     *
      * @param entityType the entity type
      * @param entityTypes the entity types
      * @param attributeConfigurations the attribute configurations
-     * 
+     *
      * @return the created entity
      */
     protected static CmsEntity createDefaultValueEntity(
@@ -409,10 +411,10 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
         return m_availableLocales;
     }
 
-    /** 
+    /**
      * Gets the complex widget configurations.<p>
-     * 
-     * @return the complex widget configurations 
+     *
+     * @return the complex widget configurations
      */
     public Map<String, CmsComplexWidgetData> getComplexWidgetData() {
 
@@ -431,7 +433,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Returns the editor change handler scopes.<p>
-     * 
+     *
      * @return the editor change handler scopes
      */
     public Set<String> getEditorChangeScopes() {
@@ -451,7 +453,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Returns the model file informations.<p>
-     * 
+     *
      * @return the model file informations
      */
     public List<CmsModelResourceInfo> getModelInfos() {
@@ -471,7 +473,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Returns the reference resource structure id.<p>
-     * 
+     *
      * @return the reference resource structure id
      */
     public CmsUUID getReferenceResourceId() {
@@ -501,7 +503,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Returns the paths to skip during locale synchronization.<p>
-     * 
+     *
      * @return the paths to skip during locale synchronization
      */
     public Collection<String> getSkipPaths() {
@@ -511,7 +513,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Returns the elements that require a synchronization across all locales.<p>
-     * 
+     *
      * @return the element paths
      */
     public List<String> getSynchronizations() {
@@ -521,7 +523,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Returns the locale synchronization values.<p>
-     * 
+     *
      * @return the locale synchronization values
      */
     public Map<String, String> getSyncValues() {
@@ -541,7 +543,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Returns <code>true</code> if any editor change handlers have been configured for this content type.<p>
-     * 
+     *
      * @return <code>true</code> if any editor change handlers have been configured for this content type.<p>
      */
     public boolean hasEditorChangeHandlers() {
@@ -551,7 +553,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Returns if there are locale synchronized elements configured.<p>
-     * 
+     *
      * @return <code>true</code> if there are locale synchronized elements configured
      */
     public boolean hasSynchronizedElements() {
@@ -561,8 +563,8 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Returns the value of the acacia-unlock configuration option.<p>
-     * 
-     * @return the value of the acacia-unlock configuration option 
+     *
+     * @return the value of the acacia-unlock configuration option
      */
     public boolean isAutoUnlock() {
 
@@ -581,7 +583,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Returns true if the direct edit flag is set, which means that the editor was opened from the classic direct edit mode.<p>
-     * 
+     *
      * @return true if the direct edit flag is set
      */
     public boolean isDirectEdit() {
@@ -591,7 +593,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
 
     /**
      * Returns if the model file informations are present, in this case no additional data is contained.<p>
-     * 
+     *
      * @return <code>true</code> if the definition contains the model file informations
      */
     public boolean isModelInfo() {
@@ -619,9 +621,9 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
         m_deleteOnCancel = deleteOnCancel;
     }
 
-    /** 
+    /**
      * Sets the value of the direct edit flag.<p>
-     * 
+     *
      * @param isDirectEdit the new value for the direct edit flag
      */
     public void setDirectEdit(boolean isDirectEdit) {

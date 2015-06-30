@@ -189,7 +189,9 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         //        }
 
         boolean excludeFromIndex = false;
-        String propValue = CmsProperty.get(CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE, propertiesSearched).getValue();
+        String propValue = CmsProperty.get(
+            CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
+            propertiesSearched).getValue();
         excludeFromIndex = Boolean.valueOf(propValue).booleanValue();
         if (!excludeFromIndex && (propValue != null)) {
             // property value was neither "true" nor null, must check for "all"
@@ -197,7 +199,8 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                 || CmsSolrIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_SOLR.equalsIgnoreCase(propValue.trim());
         }
 
-        if (resource.getRootPath().startsWith("/system") || (CmsResourceTypeJsp.getJSPTypeId() == resource.getTypeId())) {
+        if (resource.getRootPath().startsWith("/system")
+            || (CmsResourceTypeJsp.getJSPTypeId() == resource.getTypeId())) {
             document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_CHANNEL), "gallery");
         } else {
             document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_CHANNEL), "content");
@@ -252,7 +255,8 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                         mapResult = extractionResult.getContent(field.getLocale());
                         if (mapResult == null) {
                             // no localized content extracted
-                            if (!(CmsResourceTypeXmlContent.isXmlContent(resource) || CmsResourceTypeXmlPage.isXmlPage(resource))) {
+                            if (!(CmsResourceTypeXmlContent.isXmlContent(resource)
+                                || CmsResourceTypeXmlPage.isXmlPage(resource))) {
                                 // the resource is no XML content nor an XML page
                                 if ((m_contentLocales != null) && m_contentLocales.contains(field.getLocale())) {
                                     // the resource to get the extracted content for has the locale of this field,
@@ -279,7 +283,12 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                         // no mapping result found, but a default is configured
                         text.append(mapping.getDefaultValue());
                     }
-                } else if (mapping.getStringValue(cms, resource, extractionResult, properties, propertiesSearched) != null) {
+                } else if (mapping.getStringValue(
+                    cms,
+                    resource,
+                    extractionResult,
+                    properties,
+                    propertiesSearched) != null) {
                     String value = mapping.getStringValue(
                         cms,
                         resource,
@@ -480,18 +489,25 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
         for (CmsProperty prop : propertiesSearched) {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop.getValue())) {
-                document.addSearchField(new CmsSolrField(
-                    prop.getName() + CmsSearchField.FIELD_DYNAMIC_PROPERTIES,
-                    null,
-                    null,
-                    null,
-                    CmsSearchField.BOOST_DEFAULT), prop.getValue());
+                document.addSearchField(
+                    new CmsSolrField(
+                        prop.getName() + CmsSearchField.FIELD_DYNAMIC_PROPERTIES,
+                        null,
+                        null,
+                        null,
+                        CmsSearchField.BOOST_DEFAULT),
+                    prop.getValue());
 
                 // Also write the property using the dynamic field '_s' in order to prevent tokenization
                 // of the property. The resulting field is named '<property>_prop_s'.
-                document.addSearchField(new CmsSolrField(prop.getName()
-                    + CmsSearchField.FIELD_DYNAMIC_PROPERTIES
-                    + "_s", null, null, null, CmsSearchField.BOOST_DEFAULT), prop.getValue());
+                document.addSearchField(
+                    new CmsSolrField(
+                        prop.getName() + CmsSearchField.FIELD_DYNAMIC_PROPERTIES + "_s",
+                        null,
+                        null,
+                        null,
+                        CmsSearchField.BOOST_DEFAULT),
+                    prop.getValue());
             }
         }
 
@@ -508,9 +524,14 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
 
                 // Also write the property using the dynamic field '_s' in order to prevent tokenization
                 // of the property. The resulting field is named '<property>_prop_nosearch_s'.
-                document.addSearchField(new CmsSolrField(prop.getName()
-                    + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT
-                    + "_s", null, null, null, CmsSearchField.BOOST_DEFAULT), prop.getValue());
+                document.addSearchField(
+                    new CmsSolrField(
+                        prop.getName() + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT + "_s",
+                        null,
+                        null,
+                        null,
+                        CmsSearchField.BOOST_DEFAULT),
+                    prop.getValue());
             }
         }
         return document;
@@ -627,7 +648,8 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             null,
             null,
             CmsSearchField.BOOST_DEFAULT);
-        solrField.addMapping(new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, CmsSearchField.FIELD_CONTENT));
+        solrField.addMapping(
+            new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, CmsSearchField.FIELD_CONTENT));
         m_solrFields.put(solrField.getName(), solrField);
         for (Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
             solrField = new CmsSolrField(
@@ -636,9 +658,8 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                 locale,
                 null,
                 CmsSearchField.BOOST_DEFAULT);
-            solrField.addMapping(new CmsSearchFieldMapping(
-                CmsSearchFieldMappingType.CONTENT,
-                CmsSearchField.FIELD_CONTENT));
+            solrField.addMapping(
+                new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, CmsSearchField.FIELD_CONTENT));
             m_solrFields.put(solrField.getName(), solrField);
         }
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,18 +57,18 @@ import org.apache.commons.logging.Log;
 
 /**
  * A container for all new/changed/deteled Cms resources that are published together.<p>
- * 
- * Only classes inside the org.opencms.db package can add or remove elements to or from this list. 
- * This allows the OpenCms API to pass the list around between classes, but with restricted access to 
+ *
+ * Only classes inside the org.opencms.db package can add or remove elements to or from this list.
+ * This allows the OpenCms API to pass the list around between classes, but with restricted access to
  * create this list.<p>
- * 
+ *
  * To create a publish list, one of the public constructors must be used in order to set the basic operation mode
  * (project publish or direct publish).
  * After this, use <code>{@link org.opencms.db.CmsDriverManager#fillPublishList(CmsDbContext, CmsPublishList)}</code>
  * to fill the actual values of the publish list.<p>
- * 
+ *
  * @since 6.0.0
- * 
+ *
  * @see org.opencms.db.CmsDriverManager#fillPublishList(CmsDbContext, CmsPublishList)
  */
 public class CmsPublishList implements Externalizable {
@@ -128,7 +128,7 @@ public class CmsPublishList implements Externalizable {
     private boolean m_publishSubResources;
 
     /**
-     * Empty constructor.<p> 
+     * Empty constructor.<p>
      */
     public CmsPublishList() {
 
@@ -137,7 +137,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Constructs a publish list for a list of direct publish resources.<p>
-     * 
+     *
      * @param all no redundant resource are filtered out
      * @param directPublishResources a list of <code>{@link CmsResource}</code> instances to be published directly
      * @param directPublishSiblings indicates if all siblings of the selected resources should be published
@@ -149,7 +149,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Constructs a publish list for a given project.<p>
-     * 
+     *
      * @param project the project to publish, this should always be the id of the current project
      */
     public CmsPublishList(CmsProject project) {
@@ -159,7 +159,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Constructs a publish list for a single direct publish resource.<p>
-     * 
+     *
      * @param directPublishResource a VFS resource to be published directly
      * @param publishSiblings indicates if all siblings of the selected resources should be published
      */
@@ -170,7 +170,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Constructs a publish list for a list of direct publish resources.<p>
-     * 
+     *
      * @param directPublishResources a list of <code>{@link CmsResource}</code> instances to be published directly
      * @param publishSiblings indicates if all siblings of the selected resources should be published
      */
@@ -181,19 +181,22 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Constructs a publish list for a list of direct publish resources.<p>
-     * 
+     *
      * @param directPublishResources a list of <code>{@link CmsResource}</code> instances to be published directly
      * @param publishSiblings indicates if all siblings of the selected resources should be published
      * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
      */
-    public CmsPublishList(List<CmsResource> directPublishResources, boolean publishSiblings, boolean publishSubResources) {
+    public CmsPublishList(
+        List<CmsResource> directPublishResources,
+        boolean publishSiblings,
+        boolean publishSubResources) {
 
         this(null, directPublishResources, publishSiblings, publishSubResources, false);
     }
 
     /**
      * Internal constructor for a publish list.<p>
-     * 
+     *
      * @param project the project to publish
      * @param directPublishResources the list of direct publish resources
      * @param publishSiblings indicates if all siblings of the selected resources should be published
@@ -217,7 +220,8 @@ public class CmsPublishList implements Externalizable {
         if (directPublishResources != null) {
             if (!all) {
                 // reduce list of folders to minimum
-                m_directPublishResources = Collections.unmodifiableList(CmsFileUtil.removeRedundantResources(directPublishResources));
+                m_directPublishResources = Collections.unmodifiableList(
+                    CmsFileUtil.removeRedundantResources(directPublishResources));
             } else {
                 m_directPublishResources = Collections.unmodifiableList(directPublishResources);
             }
@@ -225,9 +229,9 @@ public class CmsPublishList implements Externalizable {
     }
 
     /**
-     * Returns a list of all resources in the publish list, 
+     * Returns a list of all resources in the publish list,
      * including folders and files.<p>
-     * 
+     *
      * @return a list of {@link CmsResource} objects
      */
     public List<CmsResource> getAllResources() {
@@ -243,7 +247,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Returns a list of folder resources with the deleted state.<p>
-     * 
+     *
      * @return a list of folder resources with the deleted state
      */
     public List<CmsResource> getDeletedFolderList() {
@@ -257,10 +261,10 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Returns the list of resources that should be published for a "direct" publish operation.<p>
-     * 
+     *
      * Will return <code>null</code> if this publish list was not initialized for a "direct publish" but
      * for a project publish.<p>
-     * 
+     *
      * @return the list of resources that should be published for a "direct" publish operation, or <code>null</code>
      */
     public List<CmsResource> getDirectPublishResources() {
@@ -274,7 +278,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Returns an unmodifiable list of the files in this publish list.<p>
-     * 
+     *
      * @return the list with the files in this publish list
      */
     public List<CmsResource> getFileList() {
@@ -288,7 +292,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Returns an unmodifiable list of the new/changed folders in this publish list.<p>
-     * 
+     *
      * @return the list with the new/changed folders in this publish list
      */
     public List<CmsResource> getFolderList() {
@@ -303,7 +307,7 @@ public class CmsPublishList implements Externalizable {
     /**
      * Returns the id of the project that should be published, or <code>-1</code> if this publish list
      * is initialized for a "direct publish" operation.<p>
-     * 
+     *
      * @return the id of the project that should be published, or <code>-1</code>
      */
     public CmsUUID getProjectId() {
@@ -313,7 +317,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Returns the publish history Id for this publish list.<p>
-     * 
+     *
      * @return the publish history Id
      */
     public CmsUUID getPublishHistoryId() {
@@ -323,9 +327,9 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Gets the list of moved folders which are not subfolders of other moved folders in the publish list.<p>
-     * @param cms the current cms context 
-     * @return the moved folders which are not subfolders of other moved folders in the publish list  
-     * @throws CmsException if something goes wrong 
+     * @param cms the current cms context
+     * @return the moved folders which are not subfolders of other moved folders in the publish list
+     * @throws CmsException if something goes wrong
      */
     public List<CmsResource> getTopMovedFolders(CmsObject cms) throws CmsException {
 
@@ -336,7 +340,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Checks if this is a publish list is used for a "direct publish" operation.<p>
-     * 
+     *
      * @return true if this is a publish list is used for a "direct publish" operation
      */
     public boolean isDirectPublish() {
@@ -346,7 +350,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Returns <code>true</code> if all siblings of the project resources are to be published.<p>
-     *  
+     *
      * @return <code>true</code> if all siblings of the project resources are to be publisheds
      */
     public boolean isPublishSiblings() {
@@ -356,7 +360,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Returns <code>true</code> if sub-resources in folders should be published (for direct publish only).<p>
-     * 
+     *
      * @return <code>true</code> if sub-resources in folders should be published (for direct publish only)
      */
     public boolean isPublishSubResources() {
@@ -366,8 +370,8 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Returns true if this is a user publish list.<p>
-     * 
-     * @return true if this is a user publish list 
+     *
+     * @return true if this is a user publish list
      */
     public boolean isUserPublishList() {
 
@@ -403,7 +407,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Revives the publish list by populating the internal resource lists with <code>{@link CmsResource}</code> instances.<p>
-     * 
+     *
      * @param cms a cms object used to read the resource instances
      */
     public void revive(CmsObject cms) {
@@ -427,7 +431,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Sets the 'user publish list' flag on this publish list.<p>
-     * 
+     *
      * @param isUserPublishList if true, the list is marked as a user publish list
      */
     public void setUserPublishList(boolean isUserPublishList) {
@@ -437,7 +441,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Returns the number of all resources to be published.<p>
-     * 
+     *
      * @return the number of all resources to be published
      */
     public int size() {
@@ -522,11 +526,11 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Adds a new/changed Cms folder resource to the publish list.<p>
-     * 
+     *
      * @param resource a new/changed Cms folder resource
-     * @param check if set an exception is thrown if the specified resource is unchanged, 
+     * @param check if set an exception is thrown if the specified resource is unchanged,
      *              if not set the resource is ignored
-     * 
+     *
      * @throws IllegalArgumentException if the specified resource is unchanged
      */
     protected void add(CmsResource resource, boolean check) throws IllegalArgumentException {
@@ -534,9 +538,8 @@ public class CmsPublishList implements Externalizable {
         if (check) {
             // it is essential that this method is only visible within the db package!
             if (resource.getState().isUnchanged()) {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_PUBLISH_UNCHANGED_RESOURCE_1,
-                    resource.getRootPath()));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(Messages.ERR_PUBLISH_UNCHANGED_RESOURCE_1, resource.getRootPath()));
             }
         }
         if (resource.isFolder()) {
@@ -562,11 +565,11 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Appends all the given resources to this publish list.<p>
-     * 
+     *
      * @param resources resources to be added to this publish list
-     * @param check if set an exception is thrown if the a resource is unchanged, 
+     * @param check if set an exception is thrown if the a resource is unchanged,
      *              if not set the resource is ignored
-     * 
+     *
      * @throws IllegalArgumentException if one of the resources is unchanged
      */
     protected void addAll(Collection<CmsResource> resources, boolean check) throws IllegalArgumentException {
@@ -580,12 +583,12 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Checks whether the publish list contains all sub-resources of a list of folders.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param folders the folders which should be checked 
+     *
+     * @param cms the current CMS context
+     * @param folders the folders which should be checked
      * @return a folder from the list if one of its sub-resources is not contained in the publish list, otherwise null
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsResource checkContainsSubResources(CmsObject cms, List<CmsResource> folders) throws CmsException {
 
@@ -600,9 +603,9 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Checks if the publish list contains a resource.<p>
-     * 
+     *
      * @param res the resource
-     * @return true if the publish list contains a resource 
+     * @return true if the publish list contains a resource
      */
     protected boolean containsResource(CmsResource res) {
 
@@ -611,11 +614,11 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Checks if the publish list contains all sub-resources of a given folder.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param folder the folder for which the check should be performed 
-     * @return true if the publish list contains all sub-resources of a given folder 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param folder the folder for which the check should be performed
+     * @return true if the publish list contains all sub-resources of a given folder
+     * @throws CmsException if something goes wrong
      */
     protected boolean containsSubResources(CmsObject cms, CmsResource folder) throws CmsException {
 
@@ -630,13 +633,13 @@ public class CmsPublishList implements Externalizable {
     }
 
     /**
-     * Gets the sub-resources of a list of folders which are missing from the publish list.<p> 
-     * 
-     * @param cms the current CMS context 
-     * @param folders the folders which should be checked 
-     * @return a list of missing sub resources 
-     * 
-     * @throws CmsException if something goes wrong 
+     * Gets the sub-resources of a list of folders which are missing from the publish list.<p>
+     *
+     * @param cms the current CMS context
+     * @param folders the folders which should be checked
+     * @return a list of missing sub resources
+     *
+     * @throws CmsException if something goes wrong
      */
     protected List<CmsResource> getMissingSubResources(CmsObject cms, List<CmsResource> folders) throws CmsException {
 
@@ -655,10 +658,10 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Internal method to get the moved folders from the publish list.<p>
-     * 
-     * @param cms the current CMS context 
-     * @return the list of moved folders from the publish list 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @return the list of moved folders from the publish list
+     * @throws CmsException if something goes wrong
      */
     protected List<CmsResource> getMovedFolders(CmsObject cms) throws CmsException {
 
@@ -673,7 +676,7 @@ public class CmsPublishList implements Externalizable {
                     CmsResource onlineResource = cms.readResource(folder.getStructureId());
                     isMoved = !onlineResource.getRootPath().equals(folder.getRootPath());
                 } catch (CmsVfsResourceNotFoundException e) {
-                    // resource not found online, this means it doesn't matter whether it has been moved 
+                    // resource not found online, this means it doesn't matter whether it has been moved
                 } finally {
                     cms.getRequestContext().setCurrentProject(oldProject);
                 }
@@ -686,9 +689,9 @@ public class CmsPublishList implements Externalizable {
     }
 
     /**
-     * Gives the "roots" of a list of folders, i.e. the list of folders which are not descendants of any other folders in the original list 
-     * @param folders the original list of folders 
-     * @return the root folders of the list 
+     * Gives the "roots" of a list of folders, i.e. the list of folders which are not descendants of any other folders in the original list
+     * @param folders the original list of folders
+     * @return the root folders of the list
      */
     protected List<CmsResource> getTopFolders(List<CmsResource> folders) {
 
@@ -740,11 +743,11 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Removes a Cms resource from the publish list.<p>
-     * 
+     *
      * @param resource a Cms resource
-     * 
+     *
      * @return true if this publish list contains the specified resource
-     * 
+     *
      * @see List#remove(java.lang.Object)
      */
     protected boolean remove(CmsResource resource) {
@@ -758,7 +761,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Builds a list of <code>CmsResource</code> instances from a list of resource structure IDs.<p>
-     * 
+     *
      * @param cms a cms object
      * @param uuidList the list of structure IDs
      * @return a list of <code>CmsResource</code> instances
@@ -780,7 +783,7 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Reads a UUID from an object input.<p>
-     * 
+     *
      * @param in the object input
      * @return a UUID
      * @throws IOException
@@ -794,11 +797,11 @@ public class CmsPublishList implements Externalizable {
 
     /**
      * Reads a sequence of UUIDs from an object input and builds a list of <code>CmsResource</code> instances from it.<p>
-     * 
+     *
      * @param in the object input
      * @return a list of <code>{@link CmsResource}</code> instances
-     * 
-     * @throws IOException if something goes wrong 
+     *
+     * @throws IOException if something goes wrong
      */
     private List<CmsUUID> internalReadUUIDList(ObjectInput in) throws IOException {
 

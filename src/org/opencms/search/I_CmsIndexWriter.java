@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,51 +33,51 @@ import java.io.IOException;
 
 /**
  * Abstracts the index writer implementation for the most important index manipulation operations.
- * 
- * @since 8.0.2 
+ *
+ * @since 8.0.2
  */
 public interface I_CmsIndexWriter {
 
     /**
      * Close this IndexWriter.<p>
-     * 
+     *
      * @throws IOException
      */
     void close() throws IOException;
 
     /**
      * Commit all previous operations.<p>
-     * 
+     *
      * @throws IOException
      */
     void commit() throws IOException;
 
     /**
      * Delete a document from the index.<p>
-     * 
+     *
      * @param resource the resource to delete
-     * 
+     *
      * @throws IOException in case something goes wrong
      */
     void deleteDocument(CmsPublishedResource resource) throws IOException;
 
     /**
      * Optimizes the index.<p>
-     * 
+     *
      * Please note that as of Lucene 3.5, the direct use of optimize is discouraged
      * as Lucene apparently is now able to manage the file structure so efficiently that
      * frequent optimizations are not longer required.<p>
-     * 
+     *
      * @throws IOException
      */
     void optimize() throws IOException;
 
     /**
      * Update a document in the index.<p>
-     * 
+     *
      * @param rootPath the root path of the document to update
      * @param document the document to update
-     * 
+     *
      * @throws IOException in case something goes wrong
      */
     void updateDocument(String rootPath, I_CmsSearchDocument document) throws IOException;

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,13 +44,13 @@ import junit.framework.TestSuite;
 
 /**
  * Unit tests for the resource type configuration options.<p>
- * 
+ *
  */
 public class TestConfigurationOptions extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestConfigurationOptions(String arg0) {
@@ -60,7 +60,7 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -93,7 +93,7 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
 
     /**
      * Test copy resources on resource creation .<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCopyResourcesOnCreation() throws Throwable {
@@ -127,7 +127,7 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
 
     /**
      * Test default property creation (from resource type configuration).<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testDefaultPropertyCreation() throws Throwable {

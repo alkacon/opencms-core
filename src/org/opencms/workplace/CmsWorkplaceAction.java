@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import org.opencms.module.CmsModule;
 
 /**
  * The workplace manager class to get the admin CmsObject.<p>
- * 
+ *
  * @since 7.5.0
  */
 public class CmsWorkplaceAction extends A_CmsModuleAction {
@@ -58,7 +58,7 @@ public class CmsWorkplaceAction extends A_CmsModuleAction {
 
     /**
      * Returns the instance of the login manager to use.<p>
-     * 
+     *
      * @return the instance of the login manager to use
      */
     public static synchronized CmsWorkplaceAction getInstance() {
@@ -71,9 +71,9 @@ public class CmsWorkplaceAction extends A_CmsModuleAction {
 
     /**
      * Gets the admin cmsObject.<p>
-     * 
+     *
      * @return Admin cmsObject
-     * 
+     *
      * @throws CmsException is something goes wrong
      */
     public CmsObject getCmsAdminObject() throws CmsException {

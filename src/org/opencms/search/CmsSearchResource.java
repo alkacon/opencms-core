@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ import java.util.List;
 
 /**
  * A resource implementation that combines the Solr document together with a OpenCms VFS resource.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSearchResource extends CmsResource {
@@ -52,10 +52,10 @@ public class CmsSearchResource extends CmsResource {
     private I_CmsSearchDocument m_doc;
 
     /**
-     * Constructor, creates a new file Object from the given resource with 
+     * Constructor, creates a new file Object from the given resource with
      * an empty byte array as file content, if the resource does not
      * implement a file.<p>
-     * 
+     *
      * @param resource the base resource object to create a file from
      * @param doc the search document
      */
@@ -84,7 +84,7 @@ public class CmsSearchResource extends CmsResource {
 
     /**
      * Constructor, creates a new file object.<p>
-     * 
+     *
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param path the filename of this resource
@@ -98,10 +98,10 @@ public class CmsSearchResource extends CmsResource {
      * @param userLastModified the id of the user who did the last modification of this resource
      * @param dateReleased the release date of this resource
      * @param dateExpired the expiration date of this resource
-     * @param linkCount the count of all siblings of this resource 
+     * @param linkCount the count of all siblings of this resource
      * @param length the size of the file content of this resource
-     * @param dateContent the date of the last modification of the content of this resource 
-     * @param version the version number of this resource   
+     * @param dateContent the date of the last modification of the content of this resource
+     * @param version the version number of this resource
      * @param doc the search document
      */
     public CmsSearchResource(
@@ -149,11 +149,11 @@ public class CmsSearchResource extends CmsResource {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * {@link I_CmsSearchDocument#getFieldValueAsDate(String)}
-     * 
+     *
      * @param fieldName the field name to get the value for
-     * 
+     *
      * @return the value
      */
     public Date getDateField(String fieldName) {
@@ -163,7 +163,7 @@ public class CmsSearchResource extends CmsResource {
 
     /**
      * Returns the document.<p>
-     * 
+     *
      * @return the document
      */
     public I_CmsSearchDocument getDocument() {
@@ -173,11 +173,11 @@ public class CmsSearchResource extends CmsResource {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * {@link I_CmsSearchDocument#getFieldValueAsString(String)}
-     * 
+     *
      * @param fieldName the field name to get the value for
-     * 
+     *
      * @return the value
      */
     public String getField(String fieldName) {
@@ -187,11 +187,11 @@ public class CmsSearchResource extends CmsResource {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * {@link I_CmsSearchDocument#getFieldValueAsString(String)}
-     * 
+     *
      * @param fieldName the field name to get the value for
-     * 
+     *
      * @return the value
      */
     public List<String> getMultivaluedField(String fieldName) {
@@ -201,13 +201,13 @@ public class CmsSearchResource extends CmsResource {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * {@link I_CmsSearchDocument#getScore()}
-     * 
+     *
      * Returns the score of this document.<p>
-     * 
+     *
      * @param maxScore the maximum score of this search
-     * 
+     *
      * @return the score
      */
     public int getScore(float maxScore) {

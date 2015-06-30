@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,8 +44,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageDialogTitle() {
 
@@ -54,8 +54,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageFieldsetTitle() {
 
@@ -64,8 +64,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelDateCreated() {
 
@@ -74,8 +74,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelDateExpired() {
 
@@ -84,8 +84,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelDateModified() {
 
@@ -94,8 +94,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelDateReleased() {
 
@@ -104,8 +104,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelLastProject() {
 
@@ -114,8 +114,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelLocales() {
 
@@ -124,8 +124,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelLockOwner() {
 
@@ -134,8 +134,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelLockState() {
 
@@ -144,8 +144,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelNavText() {
 
@@ -154,8 +154,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelPermissions() {
 
@@ -164,8 +164,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelSize() {
 
@@ -174,8 +174,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelState() {
 
@@ -184,8 +184,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelTitle() {
 
@@ -194,8 +194,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelType() {
 
@@ -204,8 +204,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelUserCreated() {
 
@@ -214,8 +214,8 @@ public final class CmsResourceInfoMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public static String messageLabelUserModified() {
 

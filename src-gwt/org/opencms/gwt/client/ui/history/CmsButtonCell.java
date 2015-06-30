@@ -53,7 +53,7 @@ public class CmsButtonCell<T> extends ActionCell<T> {
      * @param title the value for the title attribute of the button
      * @param cssClass the value for the CSS class of the button
      * @param delegate the delegate which should be called when the button is clicked
-     * @param checkActive a predicate to check whether the button should be active 
+     * @param checkActive a predicate to check whether the button should be active
      */
     public CmsButtonCell(
         String title,

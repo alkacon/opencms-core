@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A bean containing the information needed to edit the properties of a resource.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPropertiesBean implements IsSerializable {
@@ -81,13 +81,13 @@ public class CmsPropertiesBean implements IsSerializable {
      */
     public CmsPropertiesBean() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
      * Returns a list of all property names.<p>
-     * 
-     * @return a list of all property names 
+     *
+     * @return a list of all property names
      */
     public List<String> getAllProperties() {
 
@@ -96,8 +96,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Returns a map of the inherited properties.<p>
-     * 
-     * @return a map of inherited properties 
+     *
+     * @return a map of inherited properties
      */
     public Map<String, CmsClientProperty> getInheritedProperties() {
 
@@ -106,8 +106,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Gets a map of the resource's own properties.<p>
-     * 
-     * @return the resource's own properties 
+     *
+     * @return the resource's own properties
      */
     public Map<String, CmsClientProperty> getOwnProperties() {
 
@@ -116,8 +116,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Gets the list info bean for the resource.<p>
-     * 
-     * @return a list info bean 
+     *
+     * @return a list info bean
      */
     public CmsListInfoBean getPageInfo() {
 
@@ -126,8 +126,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Gets a map of the configured properties.<p>
-     * 
-     * @return the configured properties as a map 
+     *
+     * @return the configured properties as a map
      */
     public Map<String, CmsXmlContentProperty> getPropertyDefinitions() {
 
@@ -136,8 +136,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Gets the site path of the resource.<p>
-     * 
-     * @return the site path of the resource 
+     *
+     * @return the site path of the resource
      */
     public String getSitePath() {
 
@@ -146,7 +146,7 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Gets the structure id of the resource.<p>
-     * 
+     *
      * @return the structure id of the resource
      */
     public CmsUUID getStructureId() {
@@ -156,8 +156,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Gets a map of the available templates.<p>
-     * 
-     * @return the available templates 
+     *
+     * @return the available templates
      */
     public Map<String, CmsClientTemplateBean> getTemplates() {
 
@@ -186,8 +186,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * If true, the properties can't be modified.<p>
-     * 
-     * @return true if the properties can't be modified 
+     *
+     * @return true if the properties can't be modified
      */
     public boolean isReadOnly() {
 
@@ -196,8 +196,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Sets the list of property names.<p>
-     * 
-     * @param allProperties the list of property names 
+     *
+     * @param allProperties the list of property names
      */
     public void setAllProperties(List<String> allProperties) {
 
@@ -226,8 +226,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Sets the inherited properties.<p>
-     * 
-     * @param inheritedProperties the inherited properties 
+     *
+     * @param inheritedProperties the inherited properties
      */
     public void setInheritedProperties(Map<String, CmsClientProperty> inheritedProperties) {
 
@@ -236,8 +236,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Sets the resource's own properties.<p>
-     * 
-     * @param ownProperties the resource's own properties 
+     *
+     * @param ownProperties the resource's own properties
      */
     public void setOwnProperties(Map<String, CmsClientProperty> ownProperties) {
 
@@ -246,8 +246,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Sets the page info.<p>
-     * 
-     * @param pageInfo the page info 
+     *
+     * @param pageInfo the page info
      */
     public void setPageInfo(CmsListInfoBean pageInfo) {
 
@@ -256,8 +256,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Sets the property configuration.<p>
-     *  
-     * @param propertyDefinitions the property configuration 
+     *
+     * @param propertyDefinitions the property configuration
      */
     public void setPropertyDefinitions(Map<String, CmsXmlContentProperty> propertyDefinitions) {
 
@@ -266,8 +266,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Sets "readonly mode".<p>
-     * 
-     * @param isReadOnly true if "readonly mode" should be enabled 
+     *
+     * @param isReadOnly true if "readonly mode" should be enabled
      */
     public void setReadOnly(boolean isReadOnly) {
 
@@ -285,8 +285,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Sets the structure id.<p>
-     * 
-     * @param structureId the structure id 
+     *
+     * @param structureId the structure id
      */
     public void setStructureId(CmsUUID structureId) {
 
@@ -295,8 +295,8 @@ public class CmsPropertiesBean implements IsSerializable {
 
     /**
      * Sets the available templates.<p>
-     * 
-     * @param templates the available templates 
+     *
+     * @param templates the available templates
      */
     public void setTemplates(Map<String, CmsClientTemplateBean> templates) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ public class TestCmsFileUtil extends OpenCmsTestCase {
     /**
      * An input stream that provides 24 bytes of data in two chunks, the first of 16 bytes,
      * the second of 8 bytes.<p>
-     * 
+     *
      * This simulates the behavior of calls to <code>available()</code> and <code>read()</code> on
      * buffered file or zip input streams, where the size of the underlying data slightly exceeds the size
      * of the stream's internal buffers.<p>
@@ -54,7 +54,7 @@ public class TestCmsFileUtil extends OpenCmsTestCase {
         private ByteArrayInputStream m_secondChunk;
 
         /**
-         * Input stream implementation that exploits an error with {@link CmsFileUtil#readFully(InputStream)}.<p>  
+         * Input stream implementation that exploits an error with {@link CmsFileUtil#readFully(InputStream)}.<p>
          */
         TestInputStream() {
 
@@ -64,8 +64,8 @@ public class TestCmsFileUtil extends OpenCmsTestCase {
             Arrays.fill(first, (byte)1);
             Arrays.fill(second, (byte)2);
 
-            this.m_firstChunk = new ByteArrayInputStream(first);
-            this.m_secondChunk = new ByteArrayInputStream(second);
+            m_firstChunk = new ByteArrayInputStream(first);
+            m_secondChunk = new ByteArrayInputStream(second);
         }
 
         /**
@@ -95,7 +95,7 @@ public class TestCmsFileUtil extends OpenCmsTestCase {
 
         /**
          * Returns <code>true</code> if this stream was closed.<p>
-         * 
+         *
          * @return <code>true</code> if this stream was closed
          */
         public boolean isClosed() {
@@ -137,8 +137,8 @@ public class TestCmsFileUtil extends OpenCmsTestCase {
 
     /**
      * Test the behavior of {@link CmsFileUtil#readFully(InputStream)}
-     * when the read takes more than one iteration to complete.<p>  
-     *  
+     * when the read takes more than one iteration to complete.<p>
+     *
      * @throws IOException in case the test fails
      */
     public void testMultiPassReadFully() throws IOException {

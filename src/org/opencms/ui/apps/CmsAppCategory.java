@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,11 +36,11 @@ import com.vaadin.server.Resource;
 
 /**
  * Bean representing a category for workplace apps.<p>
- * 
+ *
  * App categories should have a unique id. Nesting of categories is defined by the parent category id of each category.
  * A category whose parent category id is null will be displayed at the root level, and similarly, a workplace app whose
  * category id is null will be displayed at the root level.
- * 
+ *
  */
 public class CmsAppCategory {
 
@@ -67,12 +67,12 @@ public class CmsAppCategory {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param id the category id 
-     * @param parentId the parent category id 
-     * @param order the order 
-     * @param priority the priority 
-     * @param icon the icon 
+     *
+     * @param id the category id
+     * @param parentId the parent category id
+     * @param order the order
+     * @param priority the priority
+     * @param icon the icon
      */
     public CmsAppCategory(String id, String parentId, int order, int priority, Resource icon) {
 
@@ -104,12 +104,12 @@ public class CmsAppCategory {
         return m_id;
     }
 
-    /** 
-     * Gets the user readable name for the category for a given locale.<p>  
-     * 
-     * @param locale the locale for which to get the name 
-     *  
-     * @return the localized name 
+    /**
+     * Gets the user readable name for the category for a given locale.<p>
+     *
+     * @param locale the locale for which to get the name
+     *
+     * @return the localized name
      */
     public String getName(Locale locale) {
 
@@ -150,8 +150,8 @@ public class CmsAppCategory {
 
     /**
      * Gets the source string.<p>
-     * 
-     * @return the source string 
+     *
+     * @return the source string
      */
     public String getSource() {
 
@@ -160,8 +160,8 @@ public class CmsAppCategory {
 
     /**
      * Sets the source string.<p>
-     * 
-     * @param source the source string 
+     *
+     * @param source the source string
      */
     public void setSource(String source) {
 

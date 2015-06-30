@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,7 +50,7 @@ public class CmsPropertySubmitHandler implements I_CmsFormSubmitHandler {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param handler the property editor handler
      */
     public CmsPropertySubmitHandler(I_CmsPropertyEditorHandler handler) {
@@ -69,7 +69,7 @@ public class CmsPropertySubmitHandler implements I_CmsFormSubmitHandler {
         changedPropValues.keySet().retainAll(editedModels);
         List<CmsPropertyModification> propChanges = getPropertyChanges(changedPropValues);
         if (!m_handler.hasEditableName()) {
-            // The root element's name can't be edited 
+            // The root element's name can't be edited
             m_handler.handleSubmit(
                 "",
                 null,
@@ -88,13 +88,13 @@ public class CmsPropertySubmitHandler implements I_CmsFormSubmitHandler {
             reloadMode);
     }
 
-    /** 
+    /**
      * Helper method which retrieves a value for a given key from a map and then deletes the entry for the key.<p>
-     * 
-     * @param map the map from which to retrieve the value 
+     *
+     * @param map the map from which to retrieve the value
      * @param key the key
-     * 
-     * @return the removed value  
+     *
+     * @return the removed value
      */
     protected String getAndRemoveValue(Map<String, String> map, String key) {
 
@@ -107,8 +107,8 @@ public class CmsPropertySubmitHandler implements I_CmsFormSubmitHandler {
 
     /**
      * Converts a map of field values to a list of property changes.<p>
-     * 
-     * @param fieldValues the field values 
+     *
+     * @param fieldValues the field values
      * @return the property changes
      */
     protected List<CmsPropertyModification> getPropertyChanges(Map<String, String> fieldValues) {
@@ -125,12 +125,12 @@ public class CmsPropertySubmitHandler implements I_CmsFormSubmitHandler {
         return result;
     }
 
-    /** 
+    /**
      * Removes the tab suffix from a field id.<p>
-     * 
-     * @param fieldId a field id 
-     * 
-     * @return the field id without the suffix 
+     *
+     * @param fieldId a field id
+     *
+     * @return the field id without the suffix
      */
     protected String removeTabSuffix(String fieldId) {
 
@@ -138,11 +138,11 @@ public class CmsPropertySubmitHandler implements I_CmsFormSubmitHandler {
     }
 
     /**
-     * Removes the tab suffixes from each field id of a collection.<p> 
-     * 
+     * Removes the tab suffixes from each field id of a collection.<p>
+     *
      * @param fieldIds the field ids from which to remove the tab suffix
-     *   
-     * @return a new collection of field ids without tab suffixes 
+     *
+     * @return a new collection of field ids without tab suffixes
      */
     protected Set<String> removeTabSuffixes(Collection<String> fieldIds) {
 
@@ -155,9 +155,9 @@ public class CmsPropertySubmitHandler implements I_CmsFormSubmitHandler {
 
     /**
      * Removes the tab suffixes from the keys of a map.<p>
-     * 
-     * @param fieldValues a map of field values 
-     * 
+     *
+     * @param fieldValues a map of field values
+     *
      * @return a new map of field values, with tab suffixes removed from the keys
      */
     protected Map<String, String> removeTabSuffixes(Map<String, String> fieldValues) {
@@ -173,11 +173,11 @@ public class CmsPropertySubmitHandler implements I_CmsFormSubmitHandler {
 
     /**
      * Check if a field name belongs to one of a given list of properties.<p>
-     * 
-     * @param fieldName the field name 
-     * @param propNames the property names 
-     * 
-     * @return true if the field name matches one of the property names 
+     *
+     * @param fieldName the field name
+     * @param propNames the property names
+     *
+     * @return true if the field name matches one of the property names
      */
     private boolean checkContains(String fieldName, String... propNames) {
 
@@ -191,11 +191,11 @@ public class CmsPropertySubmitHandler implements I_CmsFormSubmitHandler {
 
     /**
      * Returns the reload mode to use for the given changes.<p>
-     * 
-     * @param fieldValues the field values 
+     *
+     * @param fieldValues the field values
      * @param editedFields the set of edited fields
-     * 
-     * @return the reload mode 
+     *
+     * @return the reload mode
      */
     private CmsReloadMode getReloadMode(Map<String, String> fieldValues, Set<String> editedFields) {
 

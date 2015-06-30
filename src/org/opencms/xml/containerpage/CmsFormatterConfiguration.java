@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,10 +61,10 @@ import com.google.common.collect.Sets;
 
 /**
  * Represents a formatter configuration.<p>
- * 
- * A formatter configuration can be either defined in the XML schema XSD of a XML content, 
+ *
+ * A formatter configuration can be either defined in the XML schema XSD of a XML content,
  * or in a special sitemap configuration file.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsFormatterConfiguration {
@@ -128,17 +128,17 @@ public final class CmsFormatterConfiguration {
         /** The container width. */
         private int m_width;
 
-        /** 
+        /**
          * Creates a new matcher instance.<p>
-         * 
-         * @param type the container type 
-         * @param width the container width 
+         *
+         * @param type the container type
+         * @param width the container width
          * @param allowNested if nested containers are allowed
          */
         public MatchesTypeOrWidth(String type, int width, boolean allowNested) {
 
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(type)) {
-                // split with comma and optionally spaces to the left/right of the comma as separator 
+                // split with comma and optionally spaces to the left/right of the comma as separator
                 m_types.addAll(Arrays.asList(type.trim().split(" *, *")));
             }
             m_width = width;
@@ -185,7 +185,7 @@ public final class CmsFormatterConfiguration {
 
     /**
      * Creates a new formatter configuration based on the given list of formatters.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param formatters the list of configured formatters
      */
@@ -202,10 +202,10 @@ public final class CmsFormatterConfiguration {
 
     /**
      * Returns the formatter configuration for the current project based on the given list of formatters.<p>
-     * 
+     *
      * @param cms the current users OpenCms context, required to know which project to read the JSP from
      * @param formatters the list of configured formatters
-     * 
+     *
      * @return the formatter configuration for the current project based on the given list of formatters
      */
     public static CmsFormatterConfiguration create(CmsObject cms, List<I_CmsFormatterBean> formatters) {
@@ -219,9 +219,9 @@ public final class CmsFormatterConfiguration {
 
     /**
      * Initialize the formatter configuration.<p>
-     * 
+     *
      * @param cms an initialized admin OpenCms user context
-     * 
+     *
      * @throws CmsException in case the initialization fails
      */
     public static void initialize(CmsObject cms) throws CmsException {
@@ -238,8 +238,8 @@ public final class CmsFormatterConfiguration {
 
     /**
      * Gets a list of all defined formatters.<p>
-     * 
-     * @return the list of all formatters 
+     *
+     * @return the list of all formatters
      */
     public List<I_CmsFormatterBean> getAllFormatters() {
 
@@ -248,56 +248,53 @@ public final class CmsFormatterConfiguration {
 
     /**
      * Gets the formatters which are available for the given container type and width.<p>
-     * 
-     * @param containerTypes the container types (comma separated) 
-     * @param containerWidth the container width 
+     *
+     * @param containerTypes the container types (comma separated)
+     * @param containerWidth the container width
      * @param allowNested if nested containers are allowed
-     * 
-     * @return the list of available formatters  
+     *
+     * @return the list of available formatters
      */
     public List<I_CmsFormatterBean> getAllMatchingFormatters(
         String containerTypes,
         int containerWidth,
         boolean allowNested) {
 
-        return new ArrayList<I_CmsFormatterBean>(Collections2.filter(m_allFormatters, new MatchesTypeOrWidth(
-            containerTypes,
-            containerWidth,
-            allowNested)));
+        return new ArrayList<I_CmsFormatterBean>(
+            Collections2.filter(m_allFormatters, new MatchesTypeOrWidth(containerTypes, containerWidth, allowNested)));
 
     }
 
     /**
      * Selects the best matching formatter for the provided type and width from this configuration.<p>
-     * 
-     * This method first tries to find the formatter for the provided container type. 
+     *
+     * This method first tries to find the formatter for the provided container type.
      * If this fails, it returns the width based formatter that matched the container width.<p>
-     * 
-     * @param containerTypes the container types (comma separated) 
+     *
+     * @param containerTypes the container types (comma separated)
      * @param containerWidth the container width
      * @param allowNested if nested containers are allowed
-     *  
-     * @return the matching formatter, or <code>null</code> if none was found 
+     *
+     * @return the matching formatter, or <code>null</code> if none was found
      */
     public I_CmsFormatterBean getDefaultFormatter(
         final String containerTypes,
         final int containerWidth,
         final boolean allowNested) {
 
-        Optional<I_CmsFormatterBean> result = Iterables.tryFind(m_allFormatters, new MatchesTypeOrWidth(
-            containerTypes,
-            containerWidth,
-            allowNested));
+        Optional<I_CmsFormatterBean> result = Iterables.tryFind(
+            m_allFormatters,
+            new MatchesTypeOrWidth(containerTypes, containerWidth, allowNested));
         return result.orNull();
     }
 
     /**
      * Selects the best matching schema formatter for the provided type and width from this configuration.<p>
-     * 
-     * @param containerTypes the container types (comma separated) 
+     *
+     * @param containerTypes the container types (comma separated)
      * @param containerWidth the container width
-     *  
-     * @return the matching formatter, or <code>null</code> if none was found 
+     *
+     * @return the matching formatter, or <code>null</code> if none was found
      */
     public I_CmsFormatterBean getDefaultSchemaFormatter(final String containerTypes, final int containerWidth) {
 
@@ -309,43 +306,41 @@ public final class CmsFormatterConfiguration {
 
     /**
      * Gets the detail formatter to use for the given type and container width.<p>
-     * 
-     * @param types the container types (comma separated) 
-     * @param containerWidth the container width 
-     * 
-     * @return the detail formatter to use 
+     *
+     * @param types the container types (comma separated)
+     * @param containerWidth the container width
+     *
+     * @return the detail formatter to use
      */
     public I_CmsFormatterBean getDetailFormatter(String types, int containerWidth) {
 
-        // detail formatters must still match the type or width 
-        Predicate<I_CmsFormatterBean> checkValidDetailFormatter = Predicates.and(new MatchesTypeOrWidth(
-            types,
-            containerWidth,
-            true), new IsDetail());
+        // detail formatters must still match the type or width
+        Predicate<I_CmsFormatterBean> checkValidDetailFormatter = Predicates.and(
+            new MatchesTypeOrWidth(types, containerWidth, true),
+            new IsDetail());
         Optional<I_CmsFormatterBean> result = Iterables.tryFind(m_allFormatters, checkValidDetailFormatter);
         return result.orNull();
     }
 
     /**
      * Gets all detail formatters.<p>
-     * 
-     * @return the detail formatters 
+     *
+     * @return the detail formatters
      */
     public Collection<I_CmsFormatterBean> getDetailFormatters() {
 
-        return Collections.<I_CmsFormatterBean> unmodifiableCollection(Collections2.filter(
-            m_allFormatters,
-            new IsDetail()));
+        return Collections.<I_CmsFormatterBean> unmodifiableCollection(
+            Collections2.filter(m_allFormatters, new IsDetail()));
     }
 
     /**
      * Returns the formatters available for selection for the given container type and width.<p>
-     * 
-     * @param containerTypes the container types (comma separated)  
-     * @param containerWidth the container width 
+     *
+     * @param containerTypes the container types (comma separated)
+     * @param containerWidth the container width
      * @param allowNested if nested containers are allowed
-     * 
-     * @return the list of available formatters  
+     *
+     * @return the list of available formatters
      */
     public Map<String, I_CmsFormatterBean> getFormatterSelection(
         String containerTypes,
@@ -354,10 +349,9 @@ public final class CmsFormatterConfiguration {
 
         Map<String, I_CmsFormatterBean> result = new LinkedHashMap<String, I_CmsFormatterBean>();
         boolean hasSchemaFormatter = false;
-        for (I_CmsFormatterBean formatter : Collections2.filter(m_allFormatters, new MatchesTypeOrWidth(
-            containerTypes,
-            containerWidth,
-            allowNested))) {
+        for (I_CmsFormatterBean formatter : Collections2.filter(
+            m_allFormatters,
+            new MatchesTypeOrWidth(containerTypes, containerWidth, allowNested))) {
             if (formatter.isFromFormatterConfigFile()) {
                 result.put(formatter.getId(), formatter);
             } else if (!hasSchemaFormatter) {
@@ -369,10 +363,10 @@ public final class CmsFormatterConfiguration {
     }
 
     /**
-     * Returns the formatter from this configuration that is to be used for the preview in the ADE gallery GUI, 
+     * Returns the formatter from this configuration that is to be used for the preview in the ADE gallery GUI,
      * or <code>null</code> if there is no preview formatter configured.<p>
-     * 
-     * @return the formatter from this configuration that is to be used for the preview in the ADE gallery GUI, 
+     *
+     * @return the formatter from this configuration that is to be used for the preview in the ADE gallery GUI,
      * or <code>null</code> if there is no preview formatter configured
      */
     public I_CmsFormatterBean getPreviewFormatter() {
@@ -416,14 +410,14 @@ public final class CmsFormatterConfiguration {
     }
 
     /**
-     * Returns the provided <code>true</code> in case this configuration has a formatter 
+     * Returns the provided <code>true</code> in case this configuration has a formatter
      * for the given type / width parameters.<p>
-     * 
-     * @param containerTypes the container types (comma separated)  
+     *
+     * @param containerTypes the container types (comma separated)
      * @param containerWidth the container width
      * @param allowNested if nested containers are allowed
-     *  
-     * @return the provided <code>true</code> in case this configuration has a formatter 
+     *
+     * @return the provided <code>true</code> in case this configuration has a formatter
      *      for the given type / width parameters.
      */
     public boolean hasFormatter(String containerTypes, int containerWidth, boolean allowNested) {
@@ -433,7 +427,7 @@ public final class CmsFormatterConfiguration {
 
     /**
      * Returns <code>true</code> in case there is at least one usable formatter configured in this configuration.<p>
-     * 
+     *
      * @return <code>true</code> in case there is at least one usable formatter configured in this configuration
      */
     public boolean hasFormatters() {
@@ -442,12 +436,12 @@ public final class CmsFormatterConfiguration {
     }
 
     /**
-     * Returns <code>true</code> in case this configuration contains a formatter with the 
+     * Returns <code>true</code> in case this configuration contains a formatter with the
      * provided structure id that has been configured for including the formatted content in the online search.<p>
-     * 
+     *
      * @param formatterStructureId the formatter structure id
-     * 
-     * @return <code>true</code> in case this configuration contains a formatter with the 
+     *
+     * @return <code>true</code> in case this configuration contains a formatter with the
      * provided structure id that has been configured for including the formatted content in the online search
      */
     public boolean isSearchContent(CmsUUID formatterStructureId) {
@@ -481,10 +475,10 @@ public final class CmsFormatterConfiguration {
 
     /**
      * Initializes all formatters of this configuration.<p>
-     * 
-     * It is also checked if the configured JSP root path exists, if not the formatter is removed 
+     *
+     * It is also checked if the configured JSP root path exists, if not the formatter is removed
      * as it is unusable.<p>
-     * 
+     *
      * @param userCms the current users OpenCms context, used for selecting the right project
      * @param adminCms the Admin user context to use for reading the JSP resources
      */
@@ -510,9 +504,10 @@ public final class CmsFormatterConfiguration {
                 }
                 if ((res == null) || !CmsResourceTypeJsp.isJsp(res)) {
                     // the formatter must exist and it must be a JSP
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_FORMATTER_JSP_DONT_EXIST_1,
-                        formatter.getJspRootPath()));
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_FORMATTER_JSP_DONT_EXIST_1,
+                            formatter.getJspRootPath()));
                 } else {
                     formatter.setJspStructureId(res.getStructureId());
                     // res may still be null in case of failure

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,18 +46,18 @@ import org.apache.lucene.search.SimpleCollector;
 
 /**
  * Collects category information during a search process.<p>
- * 
+ *
  * <b>Please note:</b> The calculation of the category count slows down the search time by an order
- * of magnitude. Make sure that you only use this feature if it's really required! 
+ * of magnitude. Make sure that you only use this feature if it's really required!
  * Be especially careful if your search result list can become large (> 1000 documents), since in this case
- * overall system performance will certainly be impacted considerably when calculating the categories.<p> 
- * 
- * @since 6.0.0 
+ * overall system performance will certainly be impacted considerably when calculating the categories.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsSearchCategoryCollector extends SimpleCollector {
 
     /**
-     * Class with an increasing counter to avoid multiple look ups and 
+     * Class with an increasing counter to avoid multiple look ups and
      * object creations when dealing with the category count.<p>
      */
     private static class CmsCategroyCount {
@@ -66,7 +66,7 @@ public class CmsSearchCategoryCollector extends SimpleCollector {
         int m_count;
 
         /**
-         * Creates a new instance with a initial count of 1.<p> 
+         * Creates a new instance with a initial count of 1.<p>
          */
         CmsCategroyCount() {
 
@@ -83,7 +83,7 @@ public class CmsSearchCategoryCollector extends SimpleCollector {
 
         /**
          * Creates an Integer for this count.<p>
-         * 
+         *
          * @return an Integer for this count
          */
         Integer toInteger() {
@@ -109,7 +109,7 @@ public class CmsSearchCategoryCollector extends SimpleCollector {
 
     /**
      * Creates a new category search collector instance.<p>
-     * 
+     *
      * @param searcher the index searcher used
      */
     public CmsSearchCategoryCollector(IndexSearcher searcher) {
@@ -123,7 +123,7 @@ public class CmsSearchCategoryCollector extends SimpleCollector {
     /**
      * Convenience method to format a map of categories in a nice 2 column list, for example
      * for display of debugging output.<p>
-     * 
+     *
      * @param categories the map to format
      * @return the formatted category map
      */
@@ -178,7 +178,7 @@ public class CmsSearchCategoryCollector extends SimpleCollector {
     /**
      * Returns the category count result, the returned map
      * contains Strings (category names) mapped to an Integer (the count).<p>
-     * 
+     *
      * @return the category count result
      */
     public Map<String, Integer> getCategoryCountResult() {

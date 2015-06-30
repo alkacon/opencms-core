@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,10 +56,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The gallery tool-bar menu.<p>
- * 
- * This is used to access all galleries in the system (including download and image galleries), but can not 
+ *
+ * This is used to access all galleries in the system (including download and image galleries), but can not
  * be used to add elements to the container page.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpageHandler> {
@@ -78,7 +78,7 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param handler the container-page handler
      * @param dragHandler the container-page drag handler
      */
@@ -91,10 +91,10 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
 
     /**
      * Creates a new gallery dialog and instantiates the controller for it.<p>
-     * 
-     * @param configuration the gallery configuration 
-     * @param galleryHandler the gallery handler 
-     * 
+     *
+     * @param configuration the gallery configuration
+     * @param galleryHandler the gallery handler
+     *
      * @return the gallery dialog instance
      */
     @SuppressWarnings("unused")
@@ -134,8 +134,8 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
 
     /**
      * Opens the dialog given the loaded gallery configuration.<p>
-     * 
-     * @param configuration the gallery configuration 
+     *
+     * @param configuration the gallery configuration
      */
     protected void openDialog(I_CmsGalleryConfiguration configuration) {
 
@@ -171,8 +171,9 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
 
                     item.setData(DND_MARKER);
                     item.setDndHelperClass("imagedrag");
-                    item.setDndParentClass("imageparent "
-                        + org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
+                    item.setDndParentClass(
+                        "imageparent "
+                            + org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingList());
                     //item.setDragHelperTransformer(DRAG_HELPER_TRANSFORMER);
                 }
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,9 +38,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * This class uses information from the detail page information stored in the sitemap to find the detail page for 
+ * This class uses information from the detail page information stored in the sitemap to find the detail page for
  * a given resource.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
@@ -68,7 +68,7 @@ public class CmsSitemapDetailPageFinder implements I_CmsDetailPageFinder {
         }
 
         if (rootPath.endsWith(".jsp") || rootPath.startsWith(CmsWorkplace.VFS_PATH_WORKPLACE)) {
-            // exclude these for performance reasons 
+            // exclude these for performance reasons
             return null;
         }
         String result = manager.getDetailPage(cms, rootPath, linkSource);

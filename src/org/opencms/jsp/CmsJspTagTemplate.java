@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,8 +47,8 @@ import org.apache.commons.logging.Log;
 /**
  * Used to select various template elements form a JSP template that
  * is included in another file.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsJspTagTemplate extends BodyTagSupport {
 
@@ -72,12 +72,12 @@ public class CmsJspTagTemplate extends BodyTagSupport {
 
     /**
      * Internal action method.<p>
-     * 
+     *
      * @param element the selected element
      * @param elementlist list the list of elements to check
      * @param checkall flag to indicate that all elements should be checked
      * @param checknone flag to indicate that the check is done for nonexisting elements
-     * @param req the current request 
+     * @param req the current request
      * @return boolean <code>true</code> if this element should be inclued, <code>false</code>
      * otherwise
      */
@@ -160,7 +160,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
 
     /**
      * Returns the selected element.<p>
-     * 
+     *
      * @return the selected element
      */
     public String getElement() {
@@ -170,7 +170,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
 
     /**
      * Returns the list of elements to check.<p>
-     * 
+     *
      * @return the list of elements
      */
     public String getIfexists() {
@@ -180,7 +180,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
 
     /**
      * Returns the list of elements to check.<p>
-     * 
+     *
      * @return the list of elements
      */
     public String getIfexistsall() {
@@ -190,7 +190,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
 
     /**
      * Returns the list of elements to check.<p>
-     * 
+     *
      * @return the list of elements
      */
     public String getIfexistsnone() {
@@ -200,7 +200,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
 
     /**
      * Returns the list of elements to check.<p>
-     * 
+     *
      * @return the list of elements
      */
     public String getIfexistsone() {
@@ -220,7 +220,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
 
     /**
      * Sets the element target.<p>
-     * 
+     *
      * @param element the target to set
      */
     public void setElement(String element) {
@@ -232,7 +232,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
 
     /**
      * Sets the list of elements to check.<p>
-     * 
+     *
      * @param elements the list of elements
      */
     public void setIfexists(String elements) {
@@ -246,7 +246,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
 
     /**
      * Sets the list of elements to check.<p>
-     * 
+     *
      * @param elements the list of elements
      */
     public void setIfexistsall(String elements) {
@@ -260,7 +260,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
 
     /**
      * Sets the list of elements to check.<p>
-     * 
+     *
      * @param elements the list of elements
      */
     public void setIfexistsnone(String elements) {
@@ -274,7 +274,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
 
     /**
      * Sets the list of elements to check.<p>
-     * 
+     *
      * @param elements the list of elements
      */
     public void setIfexistsone(String elements) {

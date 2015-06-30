@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import javax.persistence.Query;
 
 /**
  * An interface which represents a parameter value which is going to be used in an SQL prepared statement.<p>
- * 
+ *
  * @since 8.0.0
  */
 
@@ -40,11 +40,11 @@ public interface I_CmsQueryParameter {
 
     /**
      * Implementations of this interface should set the index-th parameter of the prepared statement.<p>
-     * 
-     * @param q the query in which to set the value of a bind variable 
+     *
+     * @param q the query in which to set the value of a bind variable
      * @param index the index of a bind variable
-     * 
-     * @throws PersistenceException if something goes wrong 
+     *
+     * @throws PersistenceException if something goes wrong
      */
     void insertIntoQuery(Query q, int index) throws PersistenceException;
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,9 +44,9 @@ import java.util.Locale;
 /**
  * This is a utility class which provides convenience methods for finding detail page names for resources which include
  * the URL names of the resources themselves.<p>
- * 
+ *
  * @see I_CmsDetailPageFinder
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsDetailPageUtil {
@@ -61,13 +61,13 @@ public final class CmsDetailPageUtil {
 
     /**
      * Gets a list of detail page URIs for the given resource, with its URL name appended.<p>
-     *  
-     * @param cms the current CMS context 
-     * @param res the resource for which the detail pages should be retrieved 
-     * 
-     * @return the list of detail page URIs 
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param res the resource for which the detail pages should be retrieved
+     *
+     * @return the list of detail page URIs
+     *
+     * @throws CmsException if something goes wrong
      */
     public static List<String> getAllDetailPagesWithUrlName(CmsObject cms, CmsResource res) throws CmsException {
 
@@ -90,17 +90,17 @@ public final class CmsDetailPageUtil {
 
     /**
      * Returns either the newest URL name for a structure id, or  the structure id as a string if there is no URL name.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param id the structure id of a resource 
-     * 
-     * @return the best URL name for the structure id 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param id the structure id of a resource
+     *
+     * @return the best URL name for the structure id
+     *
+     * @throws CmsException if something goes wrong
      */
     public static String getBestUrlName(CmsObject cms, CmsUUID id) throws CmsException {
 
-        // this is currently only used for static export 
+        // this is currently only used for static export
         Locale locale = cms.getRequestContext().getLocale();
         List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales();
         String urlName = cms.readBestUrlName(id, locale, defaultLocales);
@@ -112,13 +112,13 @@ public final class CmsDetailPageUtil {
 
     /**
      * Looks up a page by URI (which may be a detail page URI, or a normal VFS uri).<p>
-     * 
+     *
      * @param cms the current CMS context
-     * @param uri the detail page or VFS uri 
-     * 
+     * @param uri the detail page or VFS uri
+     *
      * @return the resource with the given uri
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public static CmsResource lookupPage(CmsObject cms, String uri) throws CmsException {
 
@@ -131,9 +131,10 @@ public final class CmsDetailPageUtil {
             if (detailId != null) {
                 return cms.readResource(detailId);
             }
-            throw new CmsVfsResourceNotFoundException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
-                uri));
+            throw new CmsVfsResourceNotFoundException(
+                org.opencms.db.generic.Messages.get().container(
+                    org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
+                    uri));
         }
     }
 }

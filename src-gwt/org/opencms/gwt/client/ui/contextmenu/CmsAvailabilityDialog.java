@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -72,7 +72,7 @@ import com.google.gwt.user.client.ui.Widget;
  * <li>notification infos
  * </ul>
  * for a given resource.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMenuCommand {
@@ -121,7 +121,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
 
     /**
      * Creates the availability dialog.<p>
-     * 
+     *
      * @param structureId the structure id of the resource to create the dialog for
      */
     public CmsAvailabilityDialog(CmsUUID structureId) {
@@ -132,7 +132,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
 
     /**
      * Creates the availability dialog.<p>
-     * 
+     *
      * @param structureId the structure id of the resource to create the dialog for
      * @param iconClass icon class to override the resource type icon
      */
@@ -155,9 +155,9 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
     }
 
     /**
-     * Returns the context menu command according to 
+     * Returns the context menu command according to
      * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
-     * 
+     *
      * @return the context menu command
      */
     public static I_CmsContextMenuCommand getContextMenuCommand() {
@@ -188,7 +188,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
 
     /**
      * Executes the RPC action to retrieve the bean that stores the information for this dialog.<p>
-     * 
+     *
      * After the information has been retrieved the dialog will be opened.<p>
      */
     public void loadAndShow() {
@@ -220,7 +220,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
 
     /**
      * Checks if the notification interval is a positive integer.<p>
-     * 
+     *
      * @return <code>true</code> if the notification interval is a positive integer
      */
     protected boolean checkNotificationInterval() {
@@ -232,8 +232,8 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
             try {
                 int noti = Integer.parseInt(m_notificationInterval.getText());
                 if (noti < 1) {
-                    m_notificationInterval.setErrorMessage(Messages.get().key(
-                        Messages.GUI_DIALOG_AVAILABILITY_ERR_POS_0));
+                    m_notificationInterval.setErrorMessage(
+                        Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_ERR_POS_0));
                     result = false;
                 } else {
                     m_notificationInterval.setErrorMessage(null);
@@ -248,7 +248,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
 
     /**
      * Returns the content panel.<p>
-     * 
+     *
      * @return the content panel
      */
     protected FlowPanel getPanel() {
@@ -285,7 +285,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
 
     /**
      * This method creates the dialog components.<p>
-     * 
+     *
      * @param dialogBean the bean that stores the dialog information
      */
     protected void showDialog(CmsAvailabilityInfoBean dialogBean) {
@@ -318,15 +318,13 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
         availabilityField.setLegend(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_AVAILABILITY_0));
         m_dateReleased.setAutoHideParent(this);
         FlowPanel dateReleased = createInputCombinationPanel(m_dateReleasedCheck, m_dateReleased);
-        availabilityField.addContent(createTwoColumnRow(
-            Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_RELEASED_DATE_0),
-            dateReleased));
+        availabilityField.addContent(
+            createTwoColumnRow(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_RELEASED_DATE_0), dateReleased));
         addClickHandlerToInputCheckbox(m_dateReleasedCheck, m_dateReleased);
         m_dateExpired.setAutoHideParent(this);
         FlowPanel dateExpired = createInputCombinationPanel(m_dateExpiredCheck, m_dateExpired);
-        availabilityField.addContent(createTwoColumnRow(
-            Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_EXPIRED_DATE_0),
-            dateExpired));
+        availabilityField.addContent(
+            createTwoColumnRow(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_EXPIRED_DATE_0), dateExpired));
         addClickHandlerToInputCheckbox(m_dateExpiredCheck, m_dateExpired);
         availabilityField.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
         m_panel.add(availabilityField);
@@ -354,9 +352,10 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
                 notificationInterval));
             addClickHandlerToNotificationCheckBox();
             if (m_availabilityInfo.isHasSiblings()) {
-                notificationField.addContent(createTwoColumnRow(
-                    Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_MODIFY_SIBLINGS_0),
-                    m_modifySiblings));
+                notificationField.addContent(
+                    createTwoColumnRow(
+                        Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_MODIFY_SIBLINGS_0),
+                        m_modifySiblings));
             }
             notificationField.addContent(createResposibles());
             notificationField.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
@@ -385,7 +384,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
 
     /**
      * Adds a click handler to the checkbox that enables or disables the datebox.<p>
-     * 
+     *
      * @param inputCheckbox the checkbox
      * @param formWidget the datebox
      */
@@ -469,10 +468,10 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
 
     /**
      * Creates a flowpanel with a widget and a checkbox in front of it.<p>
-     * 
-     * @param checkbox the checkbox for the date box 
+     *
+     * @param checkbox the checkbox for the date box
      * @param w the widget behind the checkbox
-     * 
+     *
      * @return the flowpanel with a widget and a checkbox
      */
     private FlowPanel createInputCombinationPanel(CmsCheckBox checkbox, Widget w) {
@@ -489,7 +488,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
 
     /**
      * Creates a flow panel for the responsible users of the current uri.<p>
-     * 
+     *
      * @return the flow panel for responsible users
      */
     private Widget createResposibles() {
@@ -523,10 +522,10 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
 
     /**
      * Creates a two column row used for a field set.<p>
-     * 
+     *
      * @param labelText the label for this row
      * @param w the input widget for this row
-     * 
+     *
      * @return a flow panel that contains the label and the input widget
      */
     private Widget createTwoColumnRow(String labelText, Widget w) {
@@ -636,7 +635,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
             @Override
             public void onResponse(Void result) {
 
-                this.stop(false);
+                stop(false);
                 // close the availability dialog
                 hide();
             }
@@ -646,7 +645,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
 
     /**
      * Validates the users input.<p>
-     * 
+     *
      * @return <code>true</code> if the user input is valid <code>false</code> otherwise
      */
     private boolean validateForm() {

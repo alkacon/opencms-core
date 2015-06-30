@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,10 +42,10 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides the specific constants, members and helper methods to generate the content of the download gallery dialog 
+ * Provides the specific constants, members and helper methods to generate the content of the download gallery dialog
  * used in the XML content editors, WYSIWYG editors and context menu.<p>
- * 
- * @since 7.5.0 
+ *
+ * @since 7.5.0
  */
 public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
 
@@ -71,7 +71,7 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsAjaxDownloadGallery(CmsJspActionElement jsp) {
@@ -82,7 +82,7 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -94,7 +94,7 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
 
     /**
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryItemsTypeId()
-     * 
+     *
      * @return -1 for download gallery type
      */
     @Override
@@ -110,14 +110,14 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
     public int getGalleryTypeId() {
 
         try {
-            this.m_galleryTypeId = OpenCms.getResourceManager().getResourceType(GALLERYTYPE_NAME).getTypeId();
+            m_galleryTypeId = OpenCms.getResourceManager().getResourceType(GALLERYTYPE_NAME).getTypeId();
         } catch (CmsLoaderException e) {
             // resource type not found, log error
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-        return this.m_galleryTypeId;
+        return m_galleryTypeId;
     }
 
     /**
@@ -131,11 +131,11 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
 
     /**
      * Fills the JSON object with the specific information used for download file resource type.<p>
-     * 
+     *
      * <ul>
      * <li><code>mimetype</code>: file mimetype.</li>
      * </ul>
-     * 
+     *
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath)
      *
      */
@@ -166,9 +166,8 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
                 mt = "text/plain";
             } else if (mt.equals("text/html")) {
                 mt = "text/html";
-            } else if (mt.equals("application/zip")
-                || mt.equals("application/x-gzip")
-                || mt.equals("application/x-tar")) {
+            } else
+                if (mt.equals("application/zip") || mt.equals("application/x-gzip") || mt.equals("application/x-tar")) {
                 mt = "application/archiv";
             } else {
                 mt = "unknown/mimetype";

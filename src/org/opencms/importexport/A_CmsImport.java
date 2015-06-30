@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -74,14 +74,14 @@ import org.dom4j.Element;
 
 /**
  * Collection of common used methods for implementing OpenCms Import classes.<p>
- * 
- * This class does not implement a real OpenCms import, real import implementation should be 
+ *
+ * This class does not implement a real OpenCms import, real import implementation should be
  * inherited form this class.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.importexport.I_CmsImport
- * 
+ *
  * @deprecated the import is done starting with {@link CmsImportVersion7} with the digester
  */
 @Deprecated
@@ -296,7 +296,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Converts a given digest to base64 encoding.<p>
-     * 
+     *
      * @param value the digest value in the legacy encoding
      * @return the digest in the new encoding
      */
@@ -316,7 +316,7 @@ public abstract class A_CmsImport implements I_CmsImport {
      *
      * @param parentElement the parent element
      * @param elementName the child element name
-     * 
+     *
      * @return the value of the child node, or null if something went wrong
      */
     public String getChildElementTextValue(Element parentElement, String elementName) {
@@ -346,8 +346,8 @@ public abstract class A_CmsImport implements I_CmsImport {
                 null,
                 false);
 
-            return getVersion() == Integer.parseInt(((Element)docXml.selectNodes(
-                "//" + CmsImportExportManager.N_VERSION).get(0)).getTextTrim());
+            return getVersion() == Integer.parseInt(
+                ((Element)docXml.selectNodes("//" + CmsImportExportManager.N_VERSION).get(0)).getTextTrim());
         } catch (IOException e) {
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_IMPORTEXPORT_ERROR_OPENING_ZIP_ARCHIVE_1,
@@ -371,7 +371,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Checks if the resources is in the list of immutalbe resources. <p>
-     * 
+     *
      * @param translatedName the name of the resource
      * @param immutableResources the list of the immutable resources
      * @return true or false
@@ -381,9 +381,8 @@ public abstract class A_CmsImport implements I_CmsImport {
         boolean resourceNotImmutable = true;
         if (immutableResources.contains(translatedName)) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_IMPORTEXPORT_RESOURCENAME_IMMUTABLE_1,
-                    translatedName));
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_RESOURCENAME_IMMUTABLE_1, translatedName));
             }
             // this resource must not be modified by an import if it already exists
             String storedSiteRoot = m_cms.getRequestContext().getSiteRoot();
@@ -392,12 +391,11 @@ public abstract class A_CmsImport implements I_CmsImport {
                 m_cms.readResource(translatedName);
                 resourceNotImmutable = false;
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_IMPORTEXPORT_IMMUTABLE_FLAG_SET_1,
-                        translatedName));
+                    LOG.debug(
+                        Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_IMMUTABLE_FLAG_SET_1, translatedName));
                 }
             } catch (CmsException e) {
-                // resourceNotImmutable will be true 
+                // resourceNotImmutable will be true
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(
                         Messages.get().getBundle().key(
@@ -414,7 +412,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Cleans up member variables after the import is finished.<p>
-     * 
+     *
      * This is required since there is only one instance for
      * each import version that is kept in memory and reused.<p>
      */
@@ -455,9 +453,8 @@ public abstract class A_CmsImport implements I_CmsImport {
                         String.valueOf(linksSize)),
                     I_CmsReport.FORMAT_NOTE);
                 m_report.print(Messages.get().container(Messages.RPT_CONVERT_LINK_0), I_CmsReport.FORMAT_NOTE);
-                m_report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    key + " "));
+                m_report.print(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, key + " "));
                 m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 try {
@@ -466,14 +463,15 @@ public abstract class A_CmsImport implements I_CmsImport {
                         // check if the pointer target is existing
                         CmsResource target = m_cms.readResource(link);
 
-                        // create a new sibling as CmsResource                         
-                        CmsResource resource = new CmsResource(new CmsUUID(), // structure ID is always a new UUID
+                        // create a new sibling as CmsResource
+                        CmsResource resource = new CmsResource(
+                            new CmsUUID(), // structure ID is always a new UUID
                             target.getResourceId(),
                             key,
                             target.getTypeId(),
                             target.isFolder(),
                             0,
-                            m_cms.getRequestContext().getCurrentProject().getUuid(), // TODO: pass flags from import 
+                            m_cms.getRequestContext().getCurrentProject().getUuid(), // TODO: pass flags from import
                             CmsResource.STATE_NEW,
                             target.getDateCreated(),
                             target.getUserCreated(),
@@ -492,11 +490,12 @@ public abstract class A_CmsImport implements I_CmsImport {
                             I_CmsReport.FORMAT_OK);
 
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().getBundle().key(
-                                Messages.LOG_CONVERT_LINK_DOTS_OK_3,
-                                String.valueOf(i),
-                                String.valueOf(linksSize),
-                                key));
+                            LOG.info(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_CONVERT_LINK_DOTS_OK_3,
+                                    String.valueOf(i),
+                                    String.valueOf(linksSize),
+                                    key));
                         }
                     } else {
                         int pointerId = OpenCms.getResourceManager().getResourceType(
@@ -507,11 +506,12 @@ public abstract class A_CmsImport implements I_CmsImport {
                             I_CmsReport.FORMAT_OK);
 
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().getBundle().key(
-                                Messages.LOG_CONVERT_LINK_OK_3,
-                                String.valueOf(i),
-                                String.valueOf(linksSize),
-                                key));
+                            LOG.info(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_CONVERT_LINK_OK_3,
+                                    String.valueOf(i),
+                                    String.valueOf(linksSize),
+                                    key));
                         }
                     }
                 } catch (CmsException e) {
@@ -562,9 +562,8 @@ public abstract class A_CmsImport implements I_CmsImport {
                     entry = m_importZip.getEntry(filename.substring(1));
                 }
                 if (entry == null) {
-                    throw new ZipException(Messages.get().getBundle().key(
-                        Messages.LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1,
-                        filename));
+                    throw new ZipException(
+                        Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1, filename));
                 }
 
                 InputStream stream = m_importZip.getInputStream(entry);
@@ -582,7 +581,9 @@ public abstract class A_CmsImport implements I_CmsImport {
             m_report.println(fnfe);
         } catch (IOException ioe) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_IMPORTEXPORT_ERROR_READING_FILE_1, filename), ioe);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.ERR_IMPORTEXPORT_ERROR_READING_FILE_1, filename),
+                    ioe);
             }
             m_report.println(ioe);
         }
@@ -592,13 +593,13 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Creates a new access control entry and stores it for later write out.
-     * 
+     *
      * @param res the resource
      * @param id the id of the principal
      * @param allowed the allowed permissions
      * @param denied the denied permissions
      * @param flags the flags
-     * 
+     *
      * @return the created ACE
      */
     protected CmsAccessControlEntry getImportAccessControlEntry(
@@ -618,10 +619,10 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Returns the appropriate locale for the given destination.<p>
-     * 
+     *
      * @param destination the destination path (parent must exist)
      * @param properties the properties to check at first
-     * 
+     *
      * @return the locale
      */
     protected Locale getLocale(String destination, List<CmsProperty> properties) {
@@ -638,7 +639,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Writes already imported access control entries for a given resource.<p>
-     * 
+     *
      * @param resource the resource assigned to the access control entries
      * @param aceList the access control entries to create
      */
@@ -659,12 +660,12 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Imports a single group.<p>
-     * 
+     *
      * @param name the name of the group
      * @param description group description
      * @param flags group flags
      * @param parentgroupName name of the parent group
-     * 
+     *
      * @throws CmsImportExportException if something goes wrong
      */
     protected void importGroup(String name, String description, String flags, String parentgroupName)
@@ -695,9 +696,8 @@ public abstract class A_CmsImport implements I_CmsImport {
             } else {
                 try {
                     m_report.print(Messages.get().container(Messages.RPT_IMPORT_GROUP_0), I_CmsReport.FORMAT_NOTE);
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        name));
+                    m_report.print(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, name));
                     m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                     m_cms.createGroup(name, description, Integer.parseInt(flags), parentgroupName);
                     m_report.println(
@@ -725,7 +725,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Imports the OpenCms groups.<p>
-     * 
+     *
      * @throws CmsImportExportException if something goes wrong
      */
     @SuppressWarnings("unchecked")
@@ -785,17 +785,17 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Imports a single user.<p>
-     * 
+     *
      * @param name user name
      * @param flags user flags
-     * @param password user password 
+     * @param password user password
      * @param firstname firstname of the user
      * @param lastname lastname of the user
      * @param email user email
-     * @param dateCreated creation date 
+     * @param dateCreated creation date
      * @param userInfo user info
      * @param userGroups user groups
-     * 
+     *
      * @throws CmsImportExportException in case something goes wrong
      */
     protected void importUser(
@@ -814,9 +814,8 @@ public abstract class A_CmsImport implements I_CmsImport {
         try {
             try {
                 m_report.print(Messages.get().container(Messages.RPT_IMPORT_USER_0), I_CmsReport.FORMAT_NOTE);
-                m_report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    name));
+                m_report.print(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, name));
                 m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                 m_cms.importUser(
                     id,
@@ -870,7 +869,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Imports the OpenCms users.<p>
-     * 
+     *
      * @throws CmsImportExportException if something goes wrong
      */
     @SuppressWarnings("unchecked")
@@ -959,7 +958,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Initializes all member variables before the import is started.<p>
-     * 
+     *
      * This is required since there is only one instance for
      * each import version that is kept in memory and reused.<p>
      */
@@ -970,10 +969,10 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /**
      * Reads all properties below a specified parent element from the <code>manifest.xml</code>.<p>
-     * 
+     *
      * @param parentElement the current file node
      * @param ignoredPropertyKeys a list of properties to be ignored
-     * 
+     *
      * @return a list with all properties
      */
     protected List<CmsProperty> readPropertiesFromManifest(Element parentElement, List<String> ignoredPropertyKeys) {
@@ -982,10 +981,8 @@ public abstract class A_CmsImport implements I_CmsImport {
         Map<String, CmsProperty> properties = new HashMap<String, CmsProperty>();
         CmsProperty property = null;
         @SuppressWarnings("unchecked")
-        List<Element> propertyElements = parentElement.selectNodes("./"
-            + A_CmsImport.N_PROPERTIES
-            + "/"
-            + A_CmsImport.N_PROPERTY);
+        List<Element> propertyElements = parentElement.selectNodes(
+            "./" + A_CmsImport.N_PROPERTIES + "/" + A_CmsImport.N_PROPERTY);
         Element propertyElement = null;
         String key = null, value = null;
         Attribute attrib = null;

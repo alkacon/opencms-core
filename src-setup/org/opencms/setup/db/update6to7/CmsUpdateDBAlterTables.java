@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,14 +42,14 @@ import java.util.List;
 
 /**
  * This class makes the remaining changes to some tables in order to update them.<p>
- * 
+ *
  * The following tables will be altered
- * 
+ *
  * CMS_ONLINE/OFFLINE_PROPERTYDEF   Add the TYPE column
  * CMS_ONLINE/OFFLINE_RESOURCES     Add the columns DATE_CONTENT and RESOURCE_VERSION
  * CMS_ONLINE/OFFLINE_STRUCTURE     Add the column STRUCTURE_VERSION
  * CMS_PROJECTS                     Drop the column TASK_ID and change the size for the project name
- * 
+ *
  * @since 7.0.0
  */
 public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
@@ -58,13 +58,15 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
     protected static final String[] CMS_OFFLINE_CONTENTS_QUERIES = {"Q_OFFLINE_CONTENTS_DROP_COLUMN"};
 
     /** Constant ArrayList of the queries of the CMS_OFFLINE table.<p> */
-    protected static final List<String> CMS_OFFLINE_CONTENTS_QUERIES_LIST = Collections.unmodifiableList(Arrays.asList(CMS_OFFLINE_CONTENTS_QUERIES));
+    protected static final List<String> CMS_OFFLINE_CONTENTS_QUERIES_LIST = Collections.unmodifiableList(
+        Arrays.asList(CMS_OFFLINE_CONTENTS_QUERIES));
 
     /** Constant array with the ONLINE and OFFLINE PROPERTYDEF tables.<p> */
     protected static final String[] CMS_PROPERTYDEF = {"CMS_OFFLINE_PROPERTYDEF", "CMS_ONLINE_PROPERTYDEF"};
 
     /** Constant ArrayList of the two PROPERTYDEF tables.<p> */
-    protected static final List<String> CMS_PROPERTYDEF_LIST = Collections.unmodifiableList(Arrays.asList(CMS_PROPERTYDEF));
+    protected static final List<String> CMS_PROPERTYDEF_LIST = Collections.unmodifiableList(
+        Arrays.asList(CMS_PROPERTYDEF));
 
     /** Constant array with the ONLINE and OFFLINE RESOURCES tables.<p> */
     protected static final String[] CMS_RESOURCES = {"CMS_OFFLINE_RESOURCES", "CMS_ONLINE_RESOURCES"};
@@ -152,8 +154,8 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
 
     /**
      * Default constructor.<p>
-     * 
-     * @throws IOException if the default sql queries property file could not be read 
+     *
+     * @throws IOException if the default sql queries property file could not be read
      */
     public CmsUpdateDBAlterTables()
     throws IOException {
@@ -177,10 +179,8 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
                 dbCon.updateSqlStatement(query, null, null);
             }
         } else {
-            System.out.println("no column "
-                + COLUMN_CMS_OFFLINE_CONTENTS_CONTENT_ID
-                + " in table "
-                + TABLE_CMS_OFFLINE_CONTENTS);
+            System.out.println(
+                "no column " + COLUMN_CMS_OFFLINE_CONTENTS_CONTENT_ID + " in table " + TABLE_CMS_OFFLINE_CONTENTS);
         }
 
         // Update the CMS_ONLINE/OFFLINE_PROPERTYDEF tables
@@ -198,7 +198,7 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
             }
         }
 
-        // Update the ONLINE/OFFLINE_STRUCTURE 
+        // Update the ONLINE/OFFLINE_STRUCTURE
         // Add the STRUCTURE_VERSION
         for (Iterator<String> it = CMS_STRUCTURE_LIST.iterator(); it.hasNext();) {
             String table = it.next();
@@ -235,11 +235,8 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
                     }
                 }
             } else {
-                System.out.println("column "
-                    + COLUMN_CMS_STRUCTURE_STRUCTURE_VERSION
-                    + " in table "
-                    + table
-                    + " already exists");
+                System.out.println(
+                    "column " + COLUMN_CMS_STRUCTURE_STRUCTURE_VERSION + " in table " + table + " already exists");
             }
         } // end update structure_version
 
@@ -277,7 +274,8 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
                 // add the DATE_CONTENT column
                 dbCon.updateSqlStatement(addDateContent, replacer, null);
             } else {
-                System.out.println("column " + COLUMN_RESOURCES_DATE_CONTENT + " in table " + table + " already exists");
+                System.out.println(
+                    "column " + COLUMN_RESOURCES_DATE_CONTENT + " in table " + table + " already exists");
             }
 
             if (!dbCon.hasTableOrColumn(table, COLUMN_RESOURCES_RESOURCE_VERSION)) {
@@ -310,11 +308,8 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
                     }
                 }
             } else {
-                System.out.println("column "
-                    + COLUMN_RESOURCES_RESOURCE_VERSION
-                    + " in table "
-                    + table
-                    + " already exists");
+                System.out.println(
+                    "column " + COLUMN_RESOURCES_RESOURCE_VERSION + " in table " + table + " already exists");
             }
         }
     }

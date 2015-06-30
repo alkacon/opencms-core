@@ -17,13 +17,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -85,14 +85,14 @@ public class CmsContainerConfigurationWriter {
 
     /**
      * Saves a list of container element beans to a file in the VFS.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param name the name of the configuration to save
-     * @param newOrdering true if a new ordering needs to be saved 
-     * @param pageResource a container page or folder 
+     * @param newOrdering true if a new ordering needs to be saved
+     * @param pageResource a container page or folder
      * @param elements the elements whose data should be saved
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void save(
         CmsObject cms,
@@ -171,13 +171,13 @@ public class CmsContainerConfigurationWriter {
 
     /**
      * Serializes a single container configuration into an XML element.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param name the configuration name 
-     * @param config the configuration bean 
-     * @param parentElement the parent element to which the new element should be attached 
-     * @return the created XML element 
-     * 
+     *
+     * @param cms the current CMS context
+     * @param name the configuration name
+     * @param config the configuration bean
+     * @param parentElement the parent element to which the new element should be attached
+     * @return the created XML element
+     *
      * @throws CmsException
      */
     public Element serializeSingleConfiguration(
@@ -236,12 +236,12 @@ public class CmsContainerConfigurationWriter {
 
     /**
      * Converts a list of container elements into a bean which should be saved to the inherited container configuration.<p>
-     * 
-     * @param newOrdering if true, save a new ordering 
-     * @param elements the elements which should be converted 
-     * @param parentKeys the keys for new elements defined in the parent configurations 
-     * 
-     * @return the bean containing the information from the container elements which should be saved 
+     *
+     * @param newOrdering if true, save a new ordering
+     * @param elements the elements which should be converted
+     * @param parentKeys the keys for new elements defined in the parent configurations
+     *
+     * @return the bean containing the information from the container elements which should be saved
      */
     protected CmsContainerConfiguration createConfigurationBean(
         boolean newOrdering,
@@ -260,7 +260,7 @@ public class CmsContainerConfigurationWriter {
         if (newOrdering) {
             for (CmsContainerElementBean elementBean : elements) {
                 CmsInheritanceInfo info = elementBean.getInheritanceInfo();
-                // remove dangling element references 
+                // remove dangling element references
                 if (parentKeys.contains(info.getKey()) || newElements.containsKey(info.getKey())) {
                     ordering.add(info.getKey());
                 }
@@ -279,12 +279,12 @@ public class CmsContainerConfigurationWriter {
 
     /**
      * Gets the setting configuration of an element.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param resource the resource for which the setting configuration should be returned 
+     *
+     * @param cms the current CMS context
+     * @param resource the resource for which the setting configuration should be returned
      * @return the setting configuration for that element
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected Map<String, CmsXmlContentProperty> getSettingConfiguration(CmsObject cms, CmsResource resource)
     throws CmsException {
@@ -294,14 +294,14 @@ public class CmsContainerConfigurationWriter {
 
     /**
      * Removes an existing inheritance container entry with a given name from the configuration file.<p>
-     * 
+     *
      * This does nothing if no such entry actually exists.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param content the XML content 
-     * @param locale the locale from which to remove the entry 
-     * @param name the name of the entry 
-     * 
+     *
+     * @param cms the current CMS context
+     * @param content the XML content
+     * @param locale the locale from which to remove the entry
+     * @param name the name of the entry
+     *
      */
     protected void removeExistingEntry(CmsObject cms, CmsXmlContent content, Locale locale, String name) {
 
@@ -325,18 +325,18 @@ public class CmsContainerConfigurationWriter {
 
     /**
      * Saves a single container configuration in an XML content object, but doesn't write it to the VFS.<p>
-     * 
-     * If the XML content passed as a parameter is null, a new XML content object will be created 
-     * 
-     * @param cms the current CMS context 
-     * @param content the XML content 
-     * @param locale the locale in which the configuration should be written 
-     * @param name the name of the configuration 
+     *
+     * If the XML content passed as a parameter is null, a new XML content object will be created
+     *
+     * @param cms the current CMS context
+     * @param content the XML content
+     * @param locale the locale in which the configuration should be written
+     * @param name the name of the configuration
      * @param configuration the configuration to write
-     *  
-     * @return the modified or new XML content 
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the modified or new XML content
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsXmlContent saveInContentObject(
         CmsObject cms,

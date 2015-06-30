@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,11 +41,11 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import java.util.Locale;
 import java.util.Map;
 
+import org.dom4j.Element;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.dom4j.Element;
 
 /**
  * Tests the content service for generating serializable XML content entities and type definitions and persisting those entities.<p>
@@ -57,7 +57,7 @@ public class TestCmsContentService extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsContentService(String arg0) {
@@ -67,7 +67,7 @@ public class TestCmsContentService extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -100,8 +100,8 @@ public class TestCmsContentService extends OpenCmsTestCase {
 
     /**
      * Tests the read entity method.<p>
-     * 
-     * @throws Exception if something fails 
+     *
+     * @throws Exception if something fails
      */
     public void testReadEntity() throws Exception {
 
@@ -112,7 +112,9 @@ public class TestCmsContentService extends OpenCmsTestCase {
         String content;
         // unmarshal content definition
         Locale locale = new Locale("en");
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-1.xsd",
+            CmsEncoder.ENCODING_UTF_8);
         CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
         baseTypeName = CmsContentService.getTypeUri(definition);
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-1.xml", CmsEncoder.ENCODING_UTF_8);
@@ -135,8 +137,8 @@ public class TestCmsContentService extends OpenCmsTestCase {
 
     /**
      * Tests the read types method.<p>
-     * 
-     * @throws Exception if something fails 
+     *
+     * @throws Exception if something fails
      */
     public void testReadTypes() throws Exception {
 
@@ -146,7 +148,9 @@ public class TestCmsContentService extends OpenCmsTestCase {
         service.setCms(getCmsObject());
         String content;
         // unmarshal content definition
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-1.xsd",
+            CmsEncoder.ENCODING_UTF_8);
         CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
         baseTypeName = CmsContentService.getTypeUri(definition);
         Map<String, CmsType> registeredTypes = service.readTypes(definition, new Locale("en"));

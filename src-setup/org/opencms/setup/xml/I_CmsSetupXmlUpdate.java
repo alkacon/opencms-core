@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,53 +31,53 @@ import org.opencms.setup.CmsSetupBean;
 
 /**
  * Represent a change to be applied to a xml file.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public interface I_CmsSetupXmlUpdate {
 
     /**
      * Execute the change.<p>
-     * 
+     *
      * @param setupBean the setup bean
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     void execute(CmsSetupBean setupBean) throws Exception;
 
     /**
      * Returns the code to be added OR removed in the xml file.<p>
-     * 
+     *
      * @param setupBean the setup bean
-     * 
+     *
      * @return the code to be changed
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     String getCodeToChange(CmsSetupBean setupBean) throws Exception;
 
     /**
      * Returns the nice name for the change.<p>
-     * 
+     *
      * @return the nice name
      */
     String getName();
 
     /**
      * Returns the affected xml configuration file name.<p>
-     * 
+     *
      * @return the xml file name
      */
     String getXmlFilename();
 
     /**
      * Validates the need to apply this change.<p>
-     * 
+     *
      * @param setupBean the setup bean
-     * 
+     *
      * @return <code>true</code> if needed
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     boolean validate(CmsSetupBean setupBean) throws Exception;
 }

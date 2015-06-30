@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,8 +57,8 @@ import org.dom4j.Element;
 
 /**
  * Manager class for registered OpenCms XML content types and content collectors.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsXmlContentTypeManager {
 
@@ -84,7 +84,7 @@ public class CmsXmlContentTypeManager {
     private Map<String, String> m_widgetDefaultConfigurations;
 
     /**
-     * Creates a new content type manager.<p> 
+     * Creates a new content type manager.<p>
      */
     @SuppressWarnings("unchecked")
     public CmsXmlContentTypeManager() {
@@ -108,7 +108,7 @@ public class CmsXmlContentTypeManager {
 
     /**
      * Returns a statically initialized instance of an XML content type manager (for test cases only).<p>
-     * 
+     *
      * @return a statically initialized instance of an XML content type manager
      */
     public static CmsXmlContentTypeManager createTypeManagerForTestCases() {
@@ -138,11 +138,11 @@ public class CmsXmlContentTypeManager {
 
     /**
      * Adds a XML content schema type class to the registered XML content types.<p>
-     * 
+     *
      * @param clazz the XML content schema type class to add
-     * 
+     *
      * @return the created instance of the XML content schema type
-     * 
+     *
      * @throws CmsXmlException in case the class is not an instance of {@link I_CmsXmlSchemaType}
      */
     public I_CmsXmlSchemaType addContentType(Class<?> clazz) throws CmsXmlException {
@@ -163,7 +163,7 @@ public class CmsXmlContentTypeManager {
 
     /**
      * Adds a new XML content type schema class and XML widget to the manager by class names.<p>
-     * 
+     *
      * @param className class name of the XML content schema type class to add
      * @param defaultWidget class name of the default XML widget class for the added XML content type
      */
@@ -185,15 +185,13 @@ public class CmsXmlContentTypeManager {
         try {
             type = addContentType(classClazz);
         } catch (Exception e) {
-            LOG.error(
-                Messages.get().getBundle().key(
-                    Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1,
-                    classClazz.getName()),
-                e);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1,
+                classClazz.getName()), e);
             return;
         }
 
-        // add the editor widget for the schema type        
+        // add the editor widget for the schema type
         I_CmsWidget widget = getWidget(defaultWidget);
         if (widget == null) {
             LOG.error(Messages.get().getBundle().key(
@@ -207,16 +205,17 @@ public class CmsXmlContentTypeManager {
         m_defaultWidgets.put(type.getTypeName(), widget);
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_ADD_ST_USING_WIDGET_2,
-                type.getTypeName(),
-                widget.getClass().getName()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_ADD_ST_USING_WIDGET_2,
+                    type.getTypeName(),
+                    widget.getClass().getName()));
         }
     }
 
     /**
      * Adds a XML content editor widget class, making this widget available for the XML content editor.<p>
-     * 
+     *
      * @param className the widget class to add
      * @param aliasName the (optional) alias name to use for the widget class
      * @param defaultConfiguration the default configuration of the widget
@@ -249,23 +248,26 @@ public class CmsXmlContentTypeManager {
                 if (CmsStringUtil.isEmpty(defaultConfiguration)) {
                     CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_WIDGET_1, widgetClazz.getName()));
                 } else {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.INIT_ADD_WIDGET_CONFIG_2,
-                        widgetClazz.getName(),
-                        defaultConfiguration));
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(
+                            Messages.INIT_ADD_WIDGET_CONFIG_2,
+                            widgetClazz.getName(),
+                            defaultConfiguration));
                 }
             } else {
                 if (CmsStringUtil.isEmpty(defaultConfiguration)) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.INIT_ADD_WIDGET_ALIAS_2,
-                        widgetClazz.getName(),
-                        aliasName));
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(
+                            Messages.INIT_ADD_WIDGET_ALIAS_2,
+                            widgetClazz.getName(),
+                            aliasName));
                 } else {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.INIT_ADD_WIDGET_ALIAS_CONFIG_3,
-                        widgetClazz.getName(),
-                        aliasName,
-                        defaultConfiguration));
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(
+                            Messages.INIT_ADD_WIDGET_ALIAS_CONFIG_3,
+                            widgetClazz.getName(),
+                            aliasName,
+                            defaultConfiguration));
                 }
             }
         }
@@ -273,15 +275,15 @@ public class CmsXmlContentTypeManager {
 
     /**
      * Returns the XML content handler instance class for the specified class name.<p>
-     * 
-     * Only one instance of an XML content handler class per content definition name will be generated, 
-     * and that instance will be cached and re-used for all operations.<p> 
-     * 
+     *
+     * Only one instance of an XML content handler class per content definition name will be generated,
+     * and that instance will be cached and re-used for all operations.<p>
+     *
      * @param className the name of the XML content handler to return
      * @param schemaLocation the schema location of the XML content definition that handler belongs to
-     *  
+     *
      * @return the XML content handler class
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public I_CmsXmlContentHandler getContentHandler(String className, String schemaLocation) throws CmsXmlException {
@@ -320,10 +322,10 @@ public class CmsXmlContentTypeManager {
     /**
      * Generates an initialized instance of a XML content type definition
      * from the given XML schema element.<p>
-     * 
+     *
      * @param typeElement the element to generate the XML content type definition from
      * @param nestedDefinitions the nested (included) XML content sub-definitions
-     * 
+     *
      * @return an initialized instance of a XML content type definition
      * @throws CmsXmlException in case the element does not describe a valid XML content type definition
      */
@@ -344,16 +346,18 @@ public class CmsXmlContentTypeManager {
         String minOccrs = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_MIN_OCCURS);
 
         if (CmsStringUtil.isEmpty(elementName)) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_EL_MISSING_ATTRIBUTE_2,
-                typeElement.getName(),
-                CmsXmlContentDefinition.XSD_ATTRIBUTE_NAME));
+            throw new CmsXmlException(
+                Messages.get().container(
+                    Messages.ERR_EL_MISSING_ATTRIBUTE_2,
+                    typeElement.getName(),
+                    CmsXmlContentDefinition.XSD_ATTRIBUTE_NAME));
         }
         if (CmsStringUtil.isEmpty(typeName)) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_EL_MISSING_ATTRIBUTE_2,
-                typeElement.getName(),
-                CmsXmlContentDefinition.XSD_ATTRIBUTE_TYPE));
+            throw new CmsXmlException(
+                Messages.get().container(
+                    Messages.ERR_EL_MISSING_ATTRIBUTE_2,
+                    typeElement.getName(),
+                    CmsXmlContentDefinition.XSD_ATTRIBUTE_TYPE));
         }
 
         boolean simpleType = true;
@@ -390,7 +394,7 @@ public class CmsXmlContentTypeManager {
 
     /**
      * Returns the content type registered with the given name, or <code>null</code>.<p>
-     * 
+     *
      * @param typeName the name to look up the content type for
      * @return the content type registered with the given name, or <code>null</code>
      */
@@ -401,11 +405,11 @@ public class CmsXmlContentTypeManager {
 
     /**
      * Returns a fresh XML content handler instance for the specified class name.<p>
-     * 
+     *
      * @param className the name of the XML content handler to return
-     *  
+     *
      * @return the XML content handler class
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public I_CmsXmlContentHandler getFreshContentHandler(String className) throws CmsXmlException {
@@ -426,9 +430,9 @@ public class CmsXmlContentTypeManager {
         return contentHandler;
     }
 
-    /** 
+    /**
      * Returns an alphabetically sorted list of all configured XML content schema types.<p>
-     * 
+     *
      * @return an alphabetically sorted list of all configured XML content schema types
      */
     public List<I_CmsXmlSchemaType> getRegisteredSchemaTypes() {
@@ -439,11 +443,11 @@ public class CmsXmlContentTypeManager {
     }
 
     /**
-     * Returns the alias for the given Widget class name, may be <code>null</code> if no alias is defined for 
+     * Returns the alias for the given Widget class name, may be <code>null</code> if no alias is defined for
      * the class.<p>
-     * 
+     *
      * @param className the name of the widget
-     * @return the alias for the given Widget class name, may be <code>null</code> if no alias is defined for 
+     * @return the alias for the given Widget class name, may be <code>null</code> if no alias is defined for
      * the class
      */
     public String getRegisteredWidgetAlias(String className) {
@@ -460,9 +464,9 @@ public class CmsXmlContentTypeManager {
         return null;
     }
 
-    /** 
+    /**
      * Returns an alphabetically sorted list of the class names of all configured XML widgets.<p>
-     * 
+     *
      * @return an alphabetically sorted list of the class names of all configured XML widgets
      */
     public List<String> getRegisteredWidgetNames() {
@@ -474,7 +478,7 @@ public class CmsXmlContentTypeManager {
 
     /**
      * Returns an initialized widget class by it's class name or by it's alias.<p>
-     *  
+     *
      * @param name the class name or alias name to get the widget for
      * @return the widget instance for the class name
      */
@@ -497,7 +501,7 @@ public class CmsXmlContentTypeManager {
 
     /**
      * Returns the editor widget for the specified XML content type.<p>
-     * 
+     *
      * @param typeName the name of the XML content type to get the widget for
      * @return the editor widget for the specified XML content type
      */
@@ -512,9 +516,9 @@ public class CmsXmlContentTypeManager {
 
     /**
      * Returns the default widget configuration set in <code>opencms-vfs.xml</code> or <code>null</code> if nothing is found.<p>
-     * 
+     *
      * @param widget the widget instance to get the default configuration for
-     * 
+     *
      * @return the default widget configuration
      */
     public String getWidgetDefaultConfiguration(I_CmsWidget widget) {
@@ -524,9 +528,9 @@ public class CmsXmlContentTypeManager {
 
     /**
      * Returns the default widget configuration set in <code>opencms-vfs.xml</code> or <code>null</code> if nothing is found.<p>
-     * 
+     *
      * @param name the class name or alias name to get the default configuration for
-     * 
+     *
      * @return the default widget configuration
      */
     public String getWidgetDefaultConfiguration(String name) {
@@ -544,9 +548,9 @@ public class CmsXmlContentTypeManager {
 
     /**
      * Initializes XML content types managed in this XML content type manager.<p>
-     * 
+     *
      * @param cms an initialized OpenCms user context with "Administrator" role permissions
-     * 
+     *
      * @throws CmsRoleViolationException in case the provided OpenCms user context doea not have "Administrator" role permissions
      */
     public synchronized void initialize(CmsObject cms) throws CmsRoleViolationException {
@@ -561,15 +565,16 @@ public class CmsXmlContentTypeManager {
         CmsXmlEntityResolver.initialize(cms, getSchemaBytes());
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_NUM_ST_INITIALIZED_1,
-                new Integer(m_registeredTypes.size())));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_NUM_ST_INITIALIZED_1,
+                    new Integer(m_registeredTypes.size())));
         }
     }
 
     /**
-     * Returns a byte array to be used as input source for the configured XML content types.<p> 
-     * 
+     * Returns a byte array to be used as input source for the configured XML content types.<p>
+     *
      * @return a byte array to be used as input source for the configured XML content types
      */
     private byte[] getSchemaBytes() {
@@ -596,10 +601,11 @@ public class CmsXmlContentTypeManager {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_PRETTY_PRINT_SCHEMA_BYTES_ERROR_0), e);
         }
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_XML_TYPE_DEFINITION_XSD_2,
-                CmsXmlContentDefinition.XSD_INCLUDE_OPENCMS,
-                schemaStr));
+            LOG.info(
+                Messages.get().getBundle().key(
+                    Messages.LOG_XML_TYPE_DEFINITION_XSD_2,
+                    CmsXmlContentDefinition.XSD_INCLUDE_OPENCMS,
+                    schemaStr));
         }
         try {
             return schemaStr.getBytes(CmsEncoder.ENCODING_UTF_8);

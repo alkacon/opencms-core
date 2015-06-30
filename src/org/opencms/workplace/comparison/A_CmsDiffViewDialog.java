@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,9 +47,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 /**
- * Provides a GUI for the configuration file comparison dialog.<p> 
- * 
- * @since 6.0.0 
+ * Provides a GUI for the configuration file comparison dialog.<p>
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsDiffViewDialog extends CmsDialog {
 
@@ -58,7 +58,7 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     protected A_CmsDiffViewDialog(CmsJspActionElement jsp) {
@@ -69,7 +69,7 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
 
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
-     * 
+     *
      * @throws Exception if writing to the JSP out fails
      */
     public void displayDialog() throws Exception {
@@ -94,18 +94,17 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
         out.println(dialogBlockStart(null));
         out.println("<table cellspacing='0' cellpadding='0' class='xmlTable'>\n<tr><td><pre style='overflow:auto'>");
         try {
-            CmsHtmlDifferenceConfiguration conf = new CmsHtmlDifferenceConfiguration(getMode() == CmsDiffViewMode.ALL
-            ? -1
-            : getLinesBeforeSkip(), getLocale());
+            CmsHtmlDifferenceConfiguration conf = new CmsHtmlDifferenceConfiguration(
+                getMode() == CmsDiffViewMode.ALL ? -1 : getLinesBeforeSkip(),
+                getLocale());
             String diff = Diff.diffAsHtml(getOriginalSource(), getCopySource(), conf);
             if (CmsStringUtil.isNotEmpty(diff)) {
                 out.println(diff);
             } else {
                 // print original source, if there are no differences
-                out.println(wrapLinesWithUnchangedStyle(CmsStringUtil.substitute(
-                    CmsStringUtil.escapeHtml(getOriginalSource()),
-                    "<br/>",
-                    "")));
+                out.println(
+                    wrapLinesWithUnchangedStyle(
+                        CmsStringUtil.substitute(CmsStringUtil.escapeHtml(getOriginalSource()), "<br/>", "")));
             }
         } catch (Exception e) {
             out.print(e);
@@ -120,7 +119,7 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
 
     /**
      * Returns the html code for the buttons 'show only differences' and 'show everything'.<p>
-     * 
+     *
      * @return the html code for the buttons 'show only differences' and 'show everything'
      */
     String getDiffOnlyButtonsHtml() {
@@ -133,12 +132,13 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
             onClick2 += CmsDiffViewMode.DIFF_ONLY;
             onClick1 += "'; document.forms['diff-form'].submit();";
             onClick2 += "'; document.forms['diff-form'].submit();";
-            result.append(getTwoButtonsHtml(
-                CmsDiffViewMode.DIFF_ONLY.getName().key(getLocale()),
-                CmsDiffViewMode.ALL.getName().key(getLocale()),
-                onClick1,
-                onClick2,
-                getMode() == CmsDiffViewMode.DIFF_ONLY));
+            result.append(
+                getTwoButtonsHtml(
+                    CmsDiffViewMode.DIFF_ONLY.getName().key(getLocale()),
+                    CmsDiffViewMode.ALL.getName().key(getLocale()),
+                    onClick1,
+                    onClick2,
+                    getMode() == CmsDiffViewMode.DIFF_ONLY));
         } else {
             // display all text, if there are no differences
             setMode(CmsDiffViewMode.ALL);
@@ -148,43 +148,50 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
 
     /**
      * Returns the html for two buttons, whereby the third parameter determines which one is active.<p>
-     * 
+     *
      * @param label1 the label for the first button
      * @param label2 the label for the second button
      * @param firstActive a flag indicating wheter the first or second button is active
      * @param onClick1 the action to be performed if the first button is clicked
      * @param onClick2 the action to be performed if the second button is clicked
-     * 
+     *
      * @return the html for two buttons, whereby the third parameter determines which one is active
      */
-    public String getTwoButtonsHtml(String label1, String label2, String onClick1, String onClick2, boolean firstActive) {
+    public String getTwoButtonsHtml(
+        String label1,
+        String label2,
+        String onClick1,
+        String onClick2,
+        boolean firstActive) {
 
         StringBuffer result = new StringBuffer();
         if (firstActive) {
-            result.append(A_CmsHtmlIconButton.defaultButtonHtml(
-                CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-                "id",
-                label1,
-                null,
-                true,
-                A_CmsListDialog.ICON_DETAILS_SHOW,
-                null,
-                onClick1));
+            result.append(
+                A_CmsHtmlIconButton.defaultButtonHtml(
+                    CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+                    "id",
+                    label1,
+                    null,
+                    true,
+                    A_CmsListDialog.ICON_DETAILS_SHOW,
+                    null,
+                    onClick1));
             result.append("&nbsp;&nbsp;");
             result.append(deactivatedEmphasizedButtonHtml(label2, A_CmsListDialog.ICON_DETAILS_HIDE));
         } else {
 
             result.append(deactivatedEmphasizedButtonHtml(label1, A_CmsListDialog.ICON_DETAILS_HIDE));
             result.append("&nbsp;&nbsp;");
-            result.append(A_CmsHtmlIconButton.defaultButtonHtml(
-                CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-                "id",
-                label2,
-                null,
-                true,
-                A_CmsListDialog.ICON_DETAILS_SHOW,
-                null,
-                onClick2));
+            result.append(
+                A_CmsHtmlIconButton.defaultButtonHtml(
+                    CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+                    "id",
+                    label2,
+                    null,
+                    true,
+                    A_CmsListDialog.ICON_DETAILS_SHOW,
+                    null,
+                    onClick2));
         }
         result.append("&nbsp;&nbsp;");
         return result.toString();
@@ -192,16 +199,17 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
 
     /**
      * Returns the html code for a deactivated empfasized button.<p>
-     * 
+     *
      * @param name the label of the button
      * @param iconPath the path to the icon
-     * 
+     *
      * @return the html code for a deactivated empfasized button
      */
     public String deactivatedEmphasizedButtonHtml(String name, String iconPath) {
 
         StringBuffer result = new StringBuffer();
-        result.append("<span style='vertical-align:middle;'><img style='width:20px;height:20px;display:inline;vertical-align:middle;text-decoration:none;' src=\'");
+        result.append(
+            "<span style='vertical-align:middle;'><img style='width:20px;height:20px;display:inline;vertical-align:middle;text-decoration:none;' src=\'");
         result.append(CmsWorkplace.getSkinUri());
         result.append(iconPath);
         result.append("\' alt=\'");
@@ -259,21 +267,21 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
 
     /**
      * Returns the text to compare as copy.<p>
-     * 
+     *
      * @return the text to compare as copy
      */
     protected abstract String getCopySource();
 
     /**
      * Returns the number of lines to show before they are skipped.<p>
-     * 
+     *
      * @return the number of lines to show before they are skipped
      */
     protected abstract int getLinesBeforeSkip();
 
     /**
      * Returns the text to compare as original.<p>
-     * 
+     *
      * @return the text to compare as original
      */
     protected abstract String getOriginalSource();
@@ -306,15 +314,15 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
 
     /**
      * Validates the parameters.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     protected abstract void validateParamaters() throws Exception;
 
     /**
-     * 
+     *
      * Returns a diff text wrapped with formatting style.<p>
-     * 
+     *
      * @param diff the text to wrap with CSS formatting
      * @return the text with formatting styles wrapped
      * @throws IOException if something goes wrong

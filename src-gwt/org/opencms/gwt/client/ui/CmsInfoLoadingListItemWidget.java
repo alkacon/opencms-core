@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,18 +45,18 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * This class extends the basic list item widget with the ability to load additional info items
  * asnchronously via RPC.<p>
- * 
- * The loaded additional info items will be displayed after the additional info items contained in the 
- * bean which is passed into the constructor.<p>  
- * 
+ *
+ * The loaded additional info items will be displayed after the additional info items contained in the
+ * bean which is passed into the constructor.<p>
+ *
  * @since 8.0.0
  */
 public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
 
     /**
      * Creates a new list item widget from an info bean.<p>
-     * 
-     * @param infoBean the bean containing the information to display 
+     *
+     * @param infoBean the bean containing the information to display
      */
     public CmsInfoLoadingListItemWidget(CmsListInfoBean infoBean) {
 
@@ -71,8 +71,8 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
 
     /**
      * Sets the loader for additional info items.<p>
-     * 
-     * @param loader the loader for additional info items 
+     *
+     * @param loader the loader for additional info items
      */
     public void setAdditionalInfoLoader(I_CmsAdditionalInfoLoader loader) {
 
@@ -101,8 +101,8 @@ public class CmsInfoLoadingListItemWidget extends CmsListItemWidget {
 
     /**
      * Sets the dynamically loaded additional info items.<p>
-     * 
-     * @param info the dynamically loaded additional info items 
+     *
+     * @param info the dynamically loaded additional info items
      */
     protected void setDynamicInfo(List<AdditionalInfoItem> info) {
 

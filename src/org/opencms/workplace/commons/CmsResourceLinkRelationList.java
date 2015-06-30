@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,8 +57,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * List for resources with relations to a given resource.<p>
- * 
- * @since 6.9.1 
+ *
+ * @since 6.9.1
  */
 public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
 
@@ -85,7 +85,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param isSource indicates if the source resources of the relations are shown in the list
      */
@@ -124,7 +124,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
 
     /**
      * Returns the list to identify the resources with broken links.<p>
-     * 
+     *
      * @return the list to identify the resources with broken links
      */
     public List<String> getBrokenLinks() {
@@ -166,7 +166,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
 
     /**
      * Sets the list to identify the resources with broken links.<p>
-     * 
+     *
      * @param brokenLinks the list to identify the resources with broken links
      */
     public void setBrokenLinks(List<String> brokenLinks) {
@@ -268,7 +268,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
-        // position 3: project state icon, resource is inside or outside current project        
+        // position 3: project state icon, resource is inside or outside current project
         CmsListColumnDefinition projStateIconCol = metadata.getColumnDefinition(LIST_COLUMN_PROJSTATEICON);
         projStateIconCol.removeDirectAction(LIST_ACTION_PROJSTATEICON);
 

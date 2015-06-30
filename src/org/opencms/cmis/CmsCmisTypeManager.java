@@ -123,11 +123,11 @@ public class CmsCmisTypeManager {
 
     /**
      * Creates a new type manager instance.<p>
-     * 
-     * @param adminCms a CMS context with admin privileges 
-     * @param propertyProviders list which will be filled with property providers 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param adminCms a CMS context with admin privileges
+     * @param propertyProviders list which will be filled with property providers
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsCmisTypeManager(CmsObject adminCms, List<I_CmsPropertyProvider> propertyProviders)
     throws CmsException {
@@ -139,20 +139,21 @@ public class CmsCmisTypeManager {
 
     /**
      * Adds the base CMIS property definitions common to folders and documents.<p>
-     * 
-     * @param type the type definition to which the property definitions should be added 
+     *
+     * @param type the type definition to which the property definitions should be added
      */
     private static void addBasePropertyDefinitions(AbstractTypeDefinition type) {
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.BASE_TYPE_ID,
-            "Base Type Id",
-            "Base Type Id",
-            PropertyType.ID,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.BASE_TYPE_ID,
+                "Base Type Id",
+                "Base Type Id",
+                PropertyType.ID,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
         type.addPropertyDefinition(createPropDef(
             PropertyIds.OBJECT_ID,
@@ -184,45 +185,49 @@ public class CmsCmisTypeManager {
             false,
             true));
 
-        type.addPropertyDefinition(queryableAndOrderable(createPropDef(
-            PropertyIds.CREATED_BY,
-            "Created By",
-            "Created By",
-            PropertyType.STRING,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false)));
+        type.addPropertyDefinition(queryableAndOrderable(
+            createPropDef(
+                PropertyIds.CREATED_BY,
+                "Created By",
+                "Created By",
+                PropertyType.STRING,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false)));
 
-        type.addPropertyDefinition(queryableAndOrderable(createPropDef(
-            PropertyIds.CREATION_DATE,
-            "Creation Date",
-            "Creation Date",
-            PropertyType.DATETIME,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false)));
+        type.addPropertyDefinition(queryableAndOrderable(
+            createPropDef(
+                PropertyIds.CREATION_DATE,
+                "Creation Date",
+                "Creation Date",
+                PropertyType.DATETIME,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false)));
 
-        type.addPropertyDefinition(queryableAndOrderable(createPropDef(
-            PropertyIds.LAST_MODIFIED_BY,
-            "Last Modified By",
-            "Last Modified By",
-            PropertyType.STRING,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false)));
+        type.addPropertyDefinition(queryableAndOrderable(
+            createPropDef(
+                PropertyIds.LAST_MODIFIED_BY,
+                "Last Modified By",
+                "Last Modified By",
+                PropertyType.STRING,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false)));
 
-        type.addPropertyDefinition(queryableAndOrderable(createPropDef(
-            PropertyIds.LAST_MODIFICATION_DATE,
-            "Last Modification Date",
-            "Last Modification Date",
-            PropertyType.DATETIME,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false)));
+        type.addPropertyDefinition(queryableAndOrderable(
+            createPropDef(
+                PropertyIds.LAST_MODIFICATION_DATE,
+                "Last Modification Date",
+                "Last Modification Date",
+                PropertyType.DATETIME,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false)));
 
         type.addPropertyDefinition(createPropDef(
             PropertyIds.CHANGE_TOKEN,
@@ -238,20 +243,21 @@ public class CmsCmisTypeManager {
 
     /**
      * Adds CMIS property definitions for documents.<p>
-     * 
-     * @param type the document type 
+     *
+     * @param type the document type
      */
     private static void addDocumentPropertyDefinitions(DocumentTypeDefinitionImpl type) {
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.IS_IMMUTABLE,
-            "Is Immutable",
-            "Is Immutable",
-            PropertyType.BOOLEAN,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.IS_IMMUTABLE,
+                "Is Immutable",
+                "Is Immutable",
+                PropertyType.BOOLEAN,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
         type.addPropertyDefinition(createPropDef(
             PropertyIds.IS_LATEST_VERSION,
@@ -386,20 +392,21 @@ public class CmsCmisTypeManager {
 
     /**
      * Adds folder specific CMIS property definitions.<p>
-     * 
-     * @param type the folder type 
+     *
+     * @param type the folder type
      */
     private static void addFolderPropertyDefinitions(FolderTypeDefinitionImpl type) {
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.PARENT_ID,
-            "Parent Id",
-            "Parent Id",
-            PropertyType.ID,
-            Cardinality.SINGLE,
-            Updatability.READONLY,
-            false,
-            false));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.PARENT_ID,
+                "Parent Id",
+                "Parent Id",
+                PropertyType.ID,
+                Cardinality.SINGLE,
+                Updatability.READONLY,
+                false,
+                false));
 
         type.addPropertyDefinition(createPropDef(
             PropertyIds.ALLOWED_CHILD_OBJECT_TYPE_IDS,
@@ -424,20 +431,21 @@ public class CmsCmisTypeManager {
 
     /**
      * Helper method to add the property definitions specific to relationship types.<p>
-     * 
-     * @param type the type definition to which the property definitions should be added 
+     *
+     * @param type the type definition to which the property definitions should be added
      */
     private static void addRelationPropertyDefinitions(RelationshipTypeDefinitionImpl type) {
 
-        type.addPropertyDefinition(createPropDef(
-            PropertyIds.SOURCE_ID,
-            "Source",
-            "Source",
-            PropertyType.ID,
-            Cardinality.SINGLE,
-            Updatability.ONCREATE,
-            false,
-            true));
+        type.addPropertyDefinition(
+            createPropDef(
+                PropertyIds.SOURCE_ID,
+                "Source",
+                "Source",
+                PropertyType.ID,
+                Cardinality.SINGLE,
+                Updatability.ONCREATE,
+                false,
+                true));
 
         type.addPropertyDefinition(createPropDef(
             PropertyIds.TARGET_ID,
@@ -453,10 +461,10 @@ public class CmsCmisTypeManager {
 
     /**
      * Copies a type definition.<p>
-     * 
+     *
      * @param type the type definition to copy
-     *  
-     * @return the copied type definition 
+     *
+     * @return the copied type definition
      */
     private static TypeDefinition copyTypeDefintion(TypeDefinition type) {
 
@@ -465,17 +473,17 @@ public class CmsCmisTypeManager {
 
     /**
      * Creates a property definition.<p>
-     * 
-     * @param id the property definition id 
-     * @param displayName the property display name 
-     * @param description the property description 
-     * @param datatype the property type 
-     * @param cardinality the property cardinality 
-     * @param updateability the property updatability 
-     * @param inherited the property inheritance status 
-     * @param required true true if the property is required 
-     * 
-     * @return the property definition 
+     *
+     * @param id the property definition id
+     * @param displayName the property display name
+     * @param description the property description
+     * @param datatype the property type
+     * @param cardinality the property cardinality
+     * @param updateability the property updatability
+     * @param inherited the property inheritance status
+     * @param required true true if the property is required
+     *
+     * @return the property definition
      */
     private static AbstractPropertyDefinition<?> createPropDef(
         String id,
@@ -535,10 +543,10 @@ public class CmsCmisTypeManager {
 
     /**
      * Helper method to make a property definition queryable and orderable.<p>
-     * 
-     * @param propDef the property definition 
-     * 
-     * @return the modified property definition 
+     *
+     * @param propDef the property definition
+     *
+     * @return the modified property definition
      */
     private static AbstractPropertyDefinition<?> queryableAndOrderable(AbstractPropertyDefinition<?> propDef) {
 
@@ -549,8 +557,8 @@ public class CmsCmisTypeManager {
 
     /**
      * Gets a list of names of OpenCms property definitions.<p>
-     * 
-     * @return the list of OpenCms property names 
+     *
+     * @return the list of OpenCms property names
      */
     public List<String> getCmsPropertyNames() {
 
@@ -562,12 +570,12 @@ public class CmsCmisTypeManager {
         return result;
     }
 
-    /** 
+    /**
      * Gets the property provider for a given key.<p>
-     * 
-     * @param key the property nme 
-     * 
-     * @return the property provider for the given name, or null if there isn't any 
+     *
+     * @param key the property nme
+     *
+     * @return the property provider for the given name, or null if there isn't any
      */
     public I_CmsPropertyProvider getPropertyProvider(String key) {
 
@@ -584,8 +592,8 @@ public class CmsCmisTypeManager {
 
     /**
      * Gets the list of all property providers.<p>
-     * 
-     * @return the list of property providers 
+     *
+     * @return the list of property providers
      */
     public List<I_CmsPropertyProvider> getPropertyProviders() {
 
@@ -594,9 +602,9 @@ public class CmsCmisTypeManager {
 
     /**
      * Gets a type definition by id.<p>
-     * 
-     * @param typeId the type id 
-     * @return the type definition 
+     *
+     * @param typeId the type id
+     * @return the type definition
      */
     public TypeDefinition getType(String typeId) {
 
@@ -611,17 +619,20 @@ public class CmsCmisTypeManager {
 
     /**
      * Collects the children of a type.<p>
-     * 
-     * @param typeId the id of the type 
-     * @param includePropertyDefinitions true if the property definitions should be included 
-     * @param maxItems the maximum number of items to return 
-     * @param skipCount the number of items to skip 
-     * 
-     * @return the children of the type 
+     *
+     * @param typeId the id of the type
+     * @param includePropertyDefinitions true if the property definitions should be included
+     * @param maxItems the maximum number of items to return
+     * @param skipCount the number of items to skip
+     *
+     * @return the children of the type
      */
     public TypeDefinitionList getTypeChildren(
 
-    String typeId, boolean includePropertyDefinitions, BigInteger maxItems, BigInteger skipCount) {
+        String typeId,
+        boolean includePropertyDefinitions,
+        BigInteger maxItems,
+        BigInteger skipCount) {
 
         refresh();
         TypeDefinitionListImpl result = new TypeDefinitionListImpl(new ArrayList<TypeDefinition>());
@@ -683,10 +694,10 @@ public class CmsCmisTypeManager {
 
     /**
      * Gets the type definition for a given id in the given call context.<p>
-     * 
+     *
      * @param typeId the type id
-     * 
-     * @return the matching type definition  
+     *
+     * @return the matching type definition
      */
     public TypeDefinition getTypeDefinition(String typeId) {
 
@@ -701,16 +712,18 @@ public class CmsCmisTypeManager {
 
     /**
      * Gets the descendants of a type.<p>
-     *  
+     *
      * @param typeId the parent type id
-     * @param depth the depth up to which the descendant types should be collected 
-     * @param includePropertyDefinitions true if the property definitions should be included 
-     * 
-     * @return the descendants of the type 
+     * @param depth the depth up to which the descendant types should be collected
+     * @param includePropertyDefinitions true if the property definitions should be included
+     *
+     * @return the descendants of the type
      */
     public List<TypeDefinitionContainer> getTypeDescendants(
 
-    String typeId, BigInteger depth, boolean includePropertyDefinitions) {
+        String typeId,
+        BigInteger depth,
+        boolean includePropertyDefinitions) {
 
         refresh();
         List<TypeDefinitionContainer> result = new ArrayList<TypeDefinitionContainer>();
@@ -737,10 +750,10 @@ public class CmsCmisTypeManager {
 
     /**
      * Creates the CMIS property definition for an OpenCms resource property definition.<p>
-     * 
-     * @param cmsDef the OpenCms property definition 
-     * 
-     * @return the CMIS property definition 
+     *
+     * @param cmsDef the OpenCms property definition
+     *
+     * @return the CMIS property definition
      */
     PropertyDefinition<?> createOpenCmsPropertyDefinition(CmsPropertyDefinition cmsDef) {
 
@@ -757,8 +770,8 @@ public class CmsCmisTypeManager {
 
     /**
      * Creates the base types.
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     void setup() throws CmsException {
 
@@ -849,7 +862,7 @@ public class CmsCmisTypeManager {
 
     /**
      * Adds the CMIS property definitions corresponding to the OpenCms property definitions to a CMIS type definition.<p>
-     *  
+     *
      * @param type the type to which the property definitions should be added
      */
     private void addCmsPropertyDefinitions(AbstractTypeDefinition type) {
@@ -867,43 +880,45 @@ public class CmsCmisTypeManager {
                 false));
 
         }
-        type.addPropertyDefinition(createPropDef(
-            PROPERTY_RESOURCE_TYPE,
-            "Resource type",
-            "Resource type",
-            PropertyType.STRING,
-            Cardinality.SINGLE,
-            Updatability.ONCREATE,
-            false,
-            true));
+        type.addPropertyDefinition(
+            createPropDef(
+                PROPERTY_RESOURCE_TYPE,
+                "Resource type",
+                "Resource type",
+                PropertyType.STRING,
+                Cardinality.SINGLE,
+                Updatability.ONCREATE,
+                false,
+                true));
     }
 
     /**
      * Helper method for adding property definitions for the dynamic properties.<p>
-     * 
-     * @param type the type definition to which the properties should be added 
+     *
+     * @param type the type definition to which the properties should be added
      */
     private void addProviderPropertyDefinitions(AbstractTypeDefinition type) {
 
         for (I_CmsPropertyProvider provider : m_propertyProviders) {
-            type.addPropertyDefinition(createPropDef(
-                PROPERTY_PREFIX_DYNAMIC + provider.getName(),
-                provider.getName(),
-                provider.getName(),
-                PropertyType.STRING,
-                Cardinality.SINGLE,
-                provider.isWritable() ? Updatability.READWRITE : Updatability.READONLY,
-                false,
-                false));
+            type.addPropertyDefinition(
+                createPropDef(
+                    PROPERTY_PREFIX_DYNAMIC + provider.getName(),
+                    provider.getName(),
+                    provider.getName(),
+                    PropertyType.STRING,
+                    Cardinality.SINGLE,
+                    provider.isWritable() ? Updatability.READWRITE : Updatability.READONLY,
+                    false,
+                    false));
         }
     }
 
     /**
      * Adds a type to collection with inheriting base type properties.
-     * 
+     *
      * @param type the type definition to add
-     * 
-     * @return true if the type definition was added 
+     *
+     * @return true if the type definition was added
      */
     private boolean addType(TypeDefinition type) {
 
@@ -944,8 +959,8 @@ public class CmsCmisTypeManager {
 
     /**
      * Internal method which adds a new type, without adding any property definitions automatically.<p>
-     * 
-     * @param type the type to add 
+     *
+     * @param type the type to add
      */
     private void addTypeInternal(AbstractTypeDefinition type) {
 
@@ -978,7 +993,7 @@ public class CmsCmisTypeManager {
 
     /**
      * Creates a CMIS relationship subtype for a given OpenCms relation type.<p>
-     * 
+     *
      * @param relType the OpenCms relation type
      */
     private void createRelationshipType(CmsRelationType relType) {
@@ -1010,12 +1025,12 @@ public class CmsCmisTypeManager {
 
     /**
      * Collects the descendants of a type.<p>
-     * 
-     * @param depth the depth up to which the descendants should be collected 
-     * @param tc the parent type 
+     *
+     * @param depth the depth up to which the descendants should be collected
+     * @param tc the parent type
      * @param includePropertyDefinitions true if the property definitions should be included
-     *  
-     * @return the descendants of the type 
+     *
+     * @return the descendants of the type
      */
     private TypeDefinitionContainer getTypeDescendants(
         int depth,
@@ -1044,7 +1059,7 @@ public class CmsCmisTypeManager {
         return result;
     }
 
-    /** 
+    /**
      * Refreshes the internal data if the last update was longer ago than the udpate interval.<p>
      */
     private synchronized void refresh() {

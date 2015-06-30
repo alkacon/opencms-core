@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,22 +39,22 @@ import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 
 /**
  * Highlights arbitrary terms, used for generation of search excerpts.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsTermHighlighter {
 
     /**
      * Returns an excerpt of the given document related based on the given index and query.<p>
-     * 
+     *
      * @param doc the content Lucene document to generate the excerpt for
      * @param index the index that has been searched
      * @param params the current search parameters
      * @param query the search query
-     * @param analyzer the analyzer used 
-     * 
+     * @param analyzer the analyzer used
+     *
      * @return an excerpt of the content
-     * 
+     *
      * @throws IOException if something goes wrong
      * @throws InvalidTokenOffsetsException in case of problems with the Lucene tokenizer
      */

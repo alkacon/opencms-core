@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ public class TestProjects extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestProjects(String arg0) {
@@ -61,7 +61,7 @@ public class TestProjects extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -100,7 +100,7 @@ public class TestProjects extends OpenCmsTestCase {
 
     /**
      * Test the "getAllAccessibleProjects" method.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testAccessibleProjects() throws Exception {
@@ -145,7 +145,7 @@ public class TestProjects extends OpenCmsTestCase {
 
     /**
      * Test the "copy resource to project" function.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testCopyResourceToProject() throws Exception {
@@ -190,7 +190,7 @@ public class TestProjects extends OpenCmsTestCase {
 
     /**
      * Test the "createProject" and "deleteProject" methods.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testCreateDeleteProject() throws Exception {
@@ -251,7 +251,7 @@ public class TestProjects extends OpenCmsTestCase {
 
     /**
      * Test the "delete folder in project" function.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testDeleteFolderInProject() throws Exception {
@@ -329,7 +329,7 @@ public class TestProjects extends OpenCmsTestCase {
 
     /**
      * Test the "delete new folder in project" function.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testDeleteNewFolderInProject() throws Exception {
@@ -391,7 +391,7 @@ public class TestProjects extends OpenCmsTestCase {
 
     /**
      * Test the "delete project with resources" function.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testDeleteProjectWithResources() throws Exception {
@@ -460,7 +460,7 @@ public class TestProjects extends OpenCmsTestCase {
 
     /**
      * Test the "move folder in project" function.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testMoveFolderInProject() throws Exception {
@@ -510,7 +510,7 @@ public class TestProjects extends OpenCmsTestCase {
 
     /**
      * Test the "readProjectResources" method.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testReadProjectResources() throws Exception {

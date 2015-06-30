@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,16 +42,16 @@ import org.apache.commons.logging.Log;
 
 /**
  * Selects the dialog which should be displayed by OpenCms depending on the configuration value.<p>
- * 
- * You can define the class of your editor selector in the OpenCms XML configuration files. 
+ *
+ * You can define the class of your editor selector in the OpenCms XML configuration files.
  * The following files use this class:
  * <ul>
  * <li>/jsp/editors/editor_main_html
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.workplace.editors.I_CmsEditorHandler
  */
 public class CmsEditorSelector {
@@ -67,7 +67,7 @@ public class CmsEditorSelector {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsEditorSelector(CmsJspActionElement jsp) {
@@ -78,7 +78,7 @@ public class CmsEditorSelector {
 
     /**
      * Shows the error dialog when no valid editor is found and returns null for the editor URI.<p>
-     * 
+     *
      * @param jsp the instantiated CmsJspActionElement
      * @param t a throwable object, can be null
      */
@@ -90,15 +90,17 @@ public class CmsEditorSelector {
         try {
             wp.includeErrorpage(wp, t);
         } catch (JspException e) {
-            LOG.debug(org.opencms.workplace.commons.Messages.get().getBundle().key(
-                org.opencms.workplace.commons.Messages.LOG_ERROR_INCLUDE_FAILED_1,
-                CmsWorkplace.FILE_DIALOG_SCREEN_ERRORPAGE), e);
+            LOG.debug(
+                org.opencms.workplace.commons.Messages.get().getBundle().key(
+                    org.opencms.workplace.commons.Messages.LOG_ERROR_INCLUDE_FAILED_1,
+                    CmsWorkplace.FILE_DIALOG_SCREEN_ERRORPAGE),
+                e);
         }
     }
 
     /**
      * Returns the uri of the dialog which will be displayed.<p>
-     *  
+     *
      * @return the uri of the property dialog
      */
     public String getSelectedEditorUri() {
@@ -113,7 +115,7 @@ public class CmsEditorSelector {
             // error getting the dialog class, return to file list
             return CmsWorkplace.FILE_EXPLORER_FILELIST;
         }
-        // get the dialog URI from the class defined in the configuration 
+        // get the dialog URI from the class defined in the configuration
         String editorUri = null;
         try {
             editorUri = editorClass.getEditorUri(resource, getJsp());
@@ -129,7 +131,7 @@ public class CmsEditorSelector {
 
     /**
      * Returns the CmsJspActionElement.<p>
-     * 
+     *
      * @return the CmsJspActionElement
      */
     private CmsJspActionElement getJsp() {
@@ -139,7 +141,7 @@ public class CmsEditorSelector {
 
     /**
      * Returns the resource parameter String.<p>
-     * 
+     *
      * @return the resource parameter String
      */
     private String getParamResource() {
@@ -149,7 +151,7 @@ public class CmsEditorSelector {
 
     /**
      * Sets the CmsJspActionElement.<p>
-     * 
+     *
      * @param jsp the CmsJspActionElement
      */
     private void setJsp(CmsJspActionElement jsp) {
@@ -159,7 +161,7 @@ public class CmsEditorSelector {
 
     /**
      * Sets the resource parameter String.<p>
-     * 
+     *
      * @param resource the resource parameter String
      */
     private void setParamResource(String resource) {

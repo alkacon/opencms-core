@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Composite;
 
 /**
  * An option of a select type widget.<p>
- * 
+ *
  * Regarding widget configuration, see <code>{@link org.opencms.acacia.client.widgets.CmsSelectConfigurationParser}</code>.<p>
  */
 public class CmsSelectWidget extends Composite implements I_CmsEditWidget {
@@ -108,7 +108,7 @@ public class CmsSelectWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Represents a value change event.<p>
-     * 
+     *
      */
     public void fireChangeEvent() {
 
@@ -159,7 +159,7 @@ public class CmsSelectWidget extends Composite implements I_CmsEditWidget {
         if (m_active == active) {
             if (active && !m_selectBox.getFormValueAsString().equals(m_externalValue)) {
                 // in case the previously set external value does not match the internal select box value fire change event
-                // this is needed in case the external value didn't match any select option, 
+                // this is needed in case the external value didn't match any select option,
                 // in this case the select box will display the first available value so fire the change to reflect that
                 fireChangeEvent();
             }
@@ -214,7 +214,7 @@ public class CmsSelectWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Helper class for parsing the configuration of the select-box. <p>
-     * 
+     *
      * @param config the configuration string
      * */
     private void parseConfiguration(String config) {
@@ -228,7 +228,7 @@ public class CmsSelectWidget extends Composite implements I_CmsEditWidget {
         m_selectBox.setItems(parser.getOptions());
         //if one entrance is declared for default.
         if (parser.getDefaultValue() != null) {
-            //set the declared value selected. 
+            //set the declared value selected.
             m_selectBox.selectValue(parser.getDefaultValue());
             m_defaultValue = parser.getDefaultValue();
         }

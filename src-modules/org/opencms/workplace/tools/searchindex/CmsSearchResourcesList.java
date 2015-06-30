@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,12 +48,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * A list that displays the search resources of a request parameter given 
- * <code>{@link org.opencms.search.CmsSearchIndexSource}</code> ("indexsource"). 
- * 
- * This list is no stand-alone page but has to be embedded in another dialog 
+ * A list that displays the search resources of a request parameter given
+ * <code>{@link org.opencms.search.CmsSearchIndexSource}</code> ("indexsource").
+ *
+ * This list is no stand-alone page but has to be embedded in another dialog
  * (see <code> {@link org.opencms.workplace.tools.searchindex.A_CmsEmbeddedListDialog}</code>. <p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
@@ -75,7 +75,7 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSearchResourcesList(CmsJspActionElement jsp) {
@@ -85,7 +85,7 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the list name
@@ -97,7 +97,7 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -119,9 +119,9 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -137,7 +137,7 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
     @Override
     public void executeListMultiActions() {
 
-        // view only 
+        // view only
     }
 
     /**
@@ -151,7 +151,7 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
 
     /**
      * Returns the request parameter "indexsource".<p>
-     *  
+     *
      * @return the request parameter "indexsource"
      */
     public String getParamIndexsource() {
@@ -161,11 +161,11 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
 
     /**
      * Sets the request parameter "indexsource". <p>
-     * 
-     * Method intended for workplace-properietary automatic filling of 
+     *
+     * Method intended for workplace-properietary automatic filling of
      * request parameter values to dialogs, not for manual invocation. <p>
-     *  
-     * @param indexsource the request parameter "indexsource" to set 
+     *
+     * @param indexsource the request parameter "indexsource" to set
      */
     public void setParamIndexsource(String indexsource) {
 
@@ -278,9 +278,9 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
     }
 
     /**
-     * Writes the updated search configuration back to the XML 
+     * Writes the updated search configuration back to the XML
      * configuration file and refreshes the complete list.<p>
-     * 
+     *
      * @param refresh if true, the list items are refreshed
      */
     protected void writeConfiguration(boolean refresh) {
@@ -293,8 +293,8 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
     }
 
     /**
-     * Returns the configured resources of the current indexsource. 
-     * 
+     * Returns the configured resources of the current indexsource.
+     *
      * @return the configured resources of the current indexsource
      */
     private List<String> resources() {

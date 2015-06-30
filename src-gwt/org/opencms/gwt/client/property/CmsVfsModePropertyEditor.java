@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -70,7 +70,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The sitemap entry editor class for the VFS mode.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
@@ -101,9 +101,9 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Creates a new sitemap entry editor instance for the VFS mode.<p>
-     * 
-     * @param propConfig the property configuration 
-     * @param handler the sitemap entry editor handler 
+     *
+     * @param propConfig the property configuration
+     * @param handler the sitemap entry editor handler
      */
     public CmsVfsModePropertyEditor(Map<String, CmsXmlContentProperty> propConfig, I_CmsPropertyEditorHandler handler) {
 
@@ -167,9 +167,9 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         }, UPDATE_HEIGHT_INTERVAL);
     }
 
-    /** 
+    /**
      * Sets the "readonly" mode.<p>
-     * 
+     *
      * @param readonly if true, readonly mode will be enabled
      */
     public void setReadOnly(boolean readonly) {
@@ -179,8 +179,8 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Sets the "show resource properties" flag which controls whether the resource value fields should be built.<p>
-     * 
-     * @param showResourceProperties if true, the resource value fields will be build 
+     *
+     * @param showResourceProperties if true, the resource value fields will be build
      */
     public void setShowResourceProperties(boolean showResourceProperties) {
 
@@ -189,7 +189,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Returns the property panel.<p>
-     * 
+     *
      * @return the property panel
      */
     protected CmsPropertyPanel getPropertyPanel() {
@@ -199,8 +199,8 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Method which is called when the tab is switched.<p>
-     * 
-     * @param toTab the tab to which the user is switching 
+     *
+     * @param toTab the tab to which the user is switching
      */
     protected void handleSwitchTab(int toTab) {
 
@@ -250,8 +250,8 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Updates the panel height depending on the content of the current tab.<p>
-     * 
-     * @param dialog the dialog for which the height should be updated 
+     *
+     * @param dialog the dialog for which the height should be updated
      */
     protected void updateHeight(CmsPopup dialog) {
 
@@ -276,12 +276,15 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Builds a single form field.<p>
-     * 
-     * @param ownProps the entry's own properties 
+     *
+     * @param ownProps the entry's own properties
      * @param propName the property name
-     * @param mode the mode which controls which kind of field will be built  
+     * @param mode the mode which controls which kind of field will be built
      */
-    private void buildField(Map<String, CmsClientProperty> ownProps, final String propName, CmsClientProperty.Mode mode) {
+    private void buildField(
+        Map<String, CmsClientProperty> ownProps,
+        final String propName,
+        CmsClientProperty.Mode mode) {
 
         String entryId = m_handler.getId().toString();
         CmsXmlContentProperty propDef = m_propertyConfig.get(propName);
@@ -351,12 +354,12 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Creates a string model which uses a field of a CmsClientProperty for storing its value.<p>
-     * 
-     * @param id the structure id 
-     * @param propName the property id  
+     *
+     * @param id the structure id
+     * @param propName the property id
      * @param isStructure if true, the structure value field should be used, else the resource value field
-     * 
-     *   
+     *
+     *
      * @return the new model object
      */
     private I_CmsStringModel createStringModel(final CmsUUID id, final String propName, final boolean isStructure) {
@@ -421,10 +424,10 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Gets a pair of strings containing the default value to display for a given property and its source.<p>
-     * 
-     * @param prop the property 
-     * @param mode the mode 
-     * 
+     *
+     * @param prop the property
+     * @param mode the mode
+     *
      * @return a pair of the form (defaultValue, origin)
      */
     private CmsPair<String, String> getDefaultValueToDisplay(CmsClientProperty prop, Mode mode) {
@@ -445,10 +448,10 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Creates a string model for a given property path value, and returns the same model if the same path value is passed in.<p>
-     * 
+     *
      * @param pathValue the path value
-     *  
-     * @return the model for that path value 
+     *
+     * @return the model for that path value
      */
     private I_CmsStringModel getStringModel(CmsPathValue pathValue) {
 
@@ -481,10 +484,10 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     }
 
     /**
-     * 
+     *
      * Builds the fields for a given mode.<p>
-     * 
-     * @param mode the mode 
+     *
+     * @param mode the mode
      */
     private void internalBuildFields(Mode mode) {
 
@@ -496,7 +499,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Moves the given property name to the top of the keys if present.<p>
-     * 
+     *
      * @param keys the list of keys
      * @param propertyName the property name to move
      */

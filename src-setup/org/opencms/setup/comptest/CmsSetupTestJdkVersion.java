@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,8 +31,8 @@ import org.opencms.setup.CmsSetupBean;
 
 /**
  * Tests the version of the JDK.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsSetupTestJdkVersion implements I_CmsSetupTest {
 
@@ -63,9 +63,8 @@ public class CmsSetupTestJdkVersion implements I_CmsSetupTest {
 
         if (!supportedJDK) {
             testResult.setRed();
-            testResult.setHelp("OpenCms requires at least Java version "
-                + requiredJDK
-                + " to run. Please update your JDK");
+            testResult.setHelp(
+                "OpenCms requires at least Java version " + requiredJDK + " to run. Please update your JDK");
         } else {
             testResult.setGreen();
         }
@@ -74,10 +73,10 @@ public class CmsSetupTestJdkVersion implements I_CmsSetupTest {
 
     /**
      * Checks if the used JDK is a higher version than the required JDK.<p>
-     * 
+     *
      * @param usedJDK The JDK version in use
      * @param requiredJDK The required JDK version
-     * 
+     *
      * @return true if used JDK version is equal or higher than required JDK version, false otherwise
      */
     private boolean compareJDKVersions(String usedJDK, String requiredJDK) {

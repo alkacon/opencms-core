@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,9 +42,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides an confirm screen for module deletion.<p> 
- * 
- * @since 6.0.0 
+ * Provides an confirm screen for module deletion.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsModulesDelete extends CmsDialog {
 
@@ -62,7 +62,7 @@ public class CmsModulesDelete extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsModulesDelete(CmsJspActionElement jsp) {
@@ -72,7 +72,7 @@ public class CmsModulesDelete extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -84,7 +84,7 @@ public class CmsModulesDelete extends CmsDialog {
 
     /**
      * Performs the re-initialization report, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if including the error JSP element fails
      */
     public void actionReport() throws JspException {
@@ -115,7 +115,7 @@ public class CmsModulesDelete extends CmsDialog {
 
     /**
      * Gets the module parameter.<p>
-     * 
+     *
      * @return the module parameter
      */
     public String getParamModule() {
@@ -123,7 +123,7 @@ public class CmsModulesDelete extends CmsDialog {
         return m_paramModule;
     }
 
-    /** 
+    /**
      * Sets the module parameter.<p>
      * @param paramModule the module parameter
      */
@@ -135,20 +135,21 @@ public class CmsModulesDelete extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_CONFIRMED);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // add the title for the dialog 
+            // add the title for the dialog
             setParamTitle(key(Messages.GUI_DELETEMODULE_ADMIN_TOOL_NAME_0));
         }
     }

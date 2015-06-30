@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * Superclass for all SQL manager implementations.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsSqlManager {
@@ -43,7 +43,7 @@ public class CmsSqlManager {
     private CmsDriverManager m_driverManager;
 
     /**
-     * Protected constructor to allow only subclassing.<p> 
+     * Protected constructor to allow only subclassing.<p>
      */
     protected CmsSqlManager() {
 
@@ -51,21 +51,21 @@ public class CmsSqlManager {
     }
 
     /**
-     * Creates a new SQL manager from the provided driver manager.<p> 
-     * 
-     * @param driverManager the low level database driver manager 
+     * Creates a new SQL manager from the provided driver manager.<p>
+     *
+     * @param driverManager the low level database driver manager
      */
     protected CmsSqlManager(CmsDriverManager driverManager) {
 
         m_driverManager = driverManager;
     }
 
-    /** 
-     * Returns the number of active connections managed by a pool.<p> 
-     * 
-     * @param dbPoolUrl the url of a pool 
-     * @return the number of active connections 
-     * @throws CmsDbException if something goes wrong 
+    /**
+     * Returns the number of active connections managed by a pool.<p>
+     *
+     * @param dbPoolUrl the url of a pool
+     * @return the number of active connections
+     * @throws CmsDbException if something goes wrong
      */
     public int getActiveConnections(String dbPoolUrl) throws CmsDbException {
 
@@ -74,7 +74,7 @@ public class CmsSqlManager {
 
     /**
      * Returns a connection to the database using the given pool identified by its name.<p>
-     * 
+     *
      * @param dbPoolName the pool name
      * @return a database connection
      * @throws SQLException if something goes wrong
@@ -86,7 +86,7 @@ public class CmsSqlManager {
 
     /**
      * Returns a connection to the database using the given pool identified by its full url.<p>
-     * 
+     *
      * @param dbPoolUrl the pool url
      * @return a database connection
      * @throws SQLException if something goes wrong
@@ -98,7 +98,7 @@ public class CmsSqlManager {
 
     /**
      * Returns a list of available database connection pool names.<p>
-     * 
+     *
      * @return a list of database connection pool names
      */
     public List<String> getDbPoolUrls() {
@@ -108,7 +108,7 @@ public class CmsSqlManager {
 
     /**
      * Returns the name of the default database connection pool.<p>
-     * 
+     *
      * @return the name of the default database connection pool
      */
     public String getDefaultDbPoolName() {
@@ -116,12 +116,12 @@ public class CmsSqlManager {
         return CmsDbPool.getDefaultDbPoolName();
     }
 
-    /** 
-     * Returns the number of idle connections managed by a pool.<p> 
-     * 
-     * @param dbPoolUrl the url of a pool 
-     * @return the number of idle connections 
-     * @throws CmsDbException if something goes wrong 
+    /**
+     * Returns the number of idle connections managed by a pool.<p>
+     *
+     * @param dbPoolUrl the url of a pool
+     * @return the number of idle connections
+     * @throws CmsDbException if something goes wrong
      */
     public int getIdleConnections(String dbPoolUrl) throws CmsDbException {
 

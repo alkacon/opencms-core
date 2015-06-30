@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,7 +55,7 @@ public class CmsUgcContent implements IsSerializable {
 
     /**
      * Returns the content values.<p>
-     * 
+     *
      * @return the content values
      */
     public Map<String, String> getContentValues() {
@@ -65,7 +65,7 @@ public class CmsUgcContent implements IsSerializable {
 
     /**
      * Returns  the resource type name.<p>
-     * 
+     *
      * @return the resource type name
      */
     public String getResourceType() {
@@ -75,7 +75,7 @@ public class CmsUgcContent implements IsSerializable {
 
     /**
      * Returns the editing session id.<p>
-     *  
+     *
      * @return the session id
      */
     public CmsUUID getSessionId() {
@@ -85,7 +85,7 @@ public class CmsUgcContent implements IsSerializable {
 
     /**
      * Returns the edited resource site path.<p>
-     * 
+     *
      * @return the site path
      */
     public String getSitePath() {
@@ -93,9 +93,9 @@ public class CmsUgcContent implements IsSerializable {
         return m_sitePath;
     }
 
-    /** 
+    /**
      * Returns the edited resource structure id.<p>
-     * 
+     *
      * @return the structure id
      */
     public CmsUUID getStrucureId() {
@@ -105,7 +105,7 @@ public class CmsUgcContent implements IsSerializable {
 
     /**
      * Sets the content values.<p>
-     * 
+     *
      * @param contentValues the content values
      */
     public void setContentValues(Map<String, String> contentValues) {
@@ -115,7 +115,7 @@ public class CmsUgcContent implements IsSerializable {
 
     /**
      * Sets the resource type name
-     * 
+     *
      * @param resourceType the resource type
      */
     public void setResourceType(String resourceType) {
@@ -125,7 +125,7 @@ public class CmsUgcContent implements IsSerializable {
 
     /**
      * Sets the editing session id.<p>
-     * 
+     *
      * @param sessionId the session id
      */
     public void setSessionId(CmsUUID sessionId) {
@@ -135,7 +135,7 @@ public class CmsUgcContent implements IsSerializable {
 
     /**
      * Sets the site path.<p>
-     * 
+     *
      * @param sitePath the site path
      */
     public void setSitePath(String sitePath) {
@@ -145,7 +145,7 @@ public class CmsUgcContent implements IsSerializable {
 
     /**
      * Sets the structure id.<p>
-     * 
+     *
      * @param strucureId the structure id
      */
     public void setStrucureId(CmsUUID strucureId) {

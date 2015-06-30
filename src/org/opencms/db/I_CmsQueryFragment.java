@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,15 +29,15 @@ package org.opencms.db;
 
 /**
  * An interface for classes which are used to generate SQL statements.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsQueryFragment {
 
     /**
      * Generates the SQL and parameters and sends them to the statement builder .<p>
-     * 
-     * @param builder the statement builder 
+     *
+     * @param builder the statement builder
      */
     void visit(CmsStatementBuilder builder);
 

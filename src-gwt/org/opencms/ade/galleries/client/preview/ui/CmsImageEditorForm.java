@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Simple image tag properties form, use in editor mode only.<p>
- * 
+ *
  * @since 8.0.
  */
 public class CmsImageEditorForm extends Composite {
@@ -185,7 +185,7 @@ public class CmsImageEditorForm extends Composite {
 
             public void onValueChange(ValueChangeEvent<Boolean> event) {
 
-                // if spacing is activated and no previous values present, set '5' as default 
+                // if spacing is activated and no previous values present, set '5' as default
                 if (event.getValue().booleanValue()
                     && CmsStringUtil.isEmptyOrWhitespaceOnly(m_inputHSpace.getFormValueAsString())
                     && CmsStringUtil.isEmptyOrWhitespaceOnly(m_inputVSpace.getFormValueAsString())) {
@@ -209,10 +209,10 @@ public class CmsImageEditorForm extends Composite {
 
     /**
      * Displays the provided image information.<p>
-     * 
+     *
      * @param imageInfo the image information
      * @param imageAttributes the image attributes
-     * @param initialFill flag to indicate that a new image has been selected 
+     * @param initialFill flag to indicate that a new image has been selected
      */
     public void fillContent(CmsImageInfoBean imageInfo, CmsJSONMap imageAttributes, boolean initialFill) {
 
@@ -238,7 +238,7 @@ public class CmsImageEditorForm extends Composite {
 
     /**
      * Adds necessary attributes to the map.<p>
-     * 
+     *
      * @param attributes the attribute map
      * @return the attribute map
      */
@@ -260,7 +260,7 @@ public class CmsImageEditorForm extends Composite {
 
     /**
      * Hides the enhanced image options in this form.<p>
-     * 
+     *
      * @param hide if <code>true</code> the enhanced options will get hidden
      */
     public void hideEnhancedOptions(boolean hide) {
@@ -274,7 +274,7 @@ public class CmsImageEditorForm extends Composite {
 
     /**
      * Handles the click on 'reset copyright' button.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_buttonResetCopyright")
@@ -285,7 +285,7 @@ public class CmsImageEditorForm extends Composite {
 
     /**
      * Handles the click on 'reset title' button.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_buttonResetTitle")
@@ -296,7 +296,7 @@ public class CmsImageEditorForm extends Composite {
 
     /**
      * Resets the value for the given attribute to it's initial value.<p>
-     * 
+     *
      * @param attribute the attribute to reset
      */
     protected void resetValue(Attribute attribute) {

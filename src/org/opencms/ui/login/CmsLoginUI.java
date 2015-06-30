@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,7 +59,7 @@ import com.vaadin.ui.VerticalLayout;
 @Theme("opencms")
 public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
 
-    /** 
+    /**
      * Parameters which are initialized during the initial page load of the login dialog.<p>
      */
     public static class Parameters implements Serializable {
@@ -84,11 +84,11 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param pcType the PC type 
-         * @param preselectedOu the preselected OU 
-         * @param locale the locale 
-         * @param requestedResource the requested resource 
+         *
+         * @param pcType the PC type
+         * @param preselectedOu the preselected OU
+         * @param locale the locale
+         * @param requestedResource the requested resource
          * @param requestedWorkplaceApp the requested workplace app path
          */
         public Parameters(
@@ -105,20 +105,20 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
             m_requestedWorkplaceApp = requestedWorkplaceApp;
         }
 
-        /** 
+        /**
          * Gets the locale.<p>
-         * 
-         * @return the locale 
+         *
+         * @return the locale
          */
         public Locale getLocale() {
 
             return m_locale;
         }
 
-        /** 
+        /**
          * Gets the PC type (private or public).<p>
-         * 
-         * @return the pc type 
+         *
+         * @return the pc type
          */
         public String getPcType() {
 
@@ -128,8 +128,8 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
 
         /**
          * Gets the preselected OU.<p>
-         * 
-         * @return the preselected OU 
+         *
+         * @return the preselected OU
          */
         public String getPreselectedOu() {
 
@@ -138,8 +138,8 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
 
         /**
          * Gets the requested resource path.<p>
-         * 
-         * @return the requested resource path 
+         *
+         * @return the requested resource path
          */
         public String getRequestedResource() {
 
@@ -148,7 +148,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
 
         /**
          * Returns the requested workplace app path.<p>
-         * 
+         *
          * @return the requested workplace app path
          */
         public String getRequestedWorkplaceApp() {
@@ -158,8 +158,8 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
 
     }
 
-    /** 
-     * Attribute used to store initialization data when the UI is first loaded.  
+    /**
+     * Attribute used to store initialization data when the UI is first loaded.
      */
     public static final String INIT_DATA_SESSION_ATTR = "CmsLoginUI_initData";
 
@@ -180,19 +180,20 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
 
     /**
      * Returns the initial HTML for the Vaadin based login dialog.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param request the request
-     * 
-     * @return the initial page HTML for the Vaadin login dialog 
+     *
+     * @return the initial page HTML for the Vaadin login dialog
      */
     public static String displayVaadinLoginDialog(CmsObject cms, HttpServletRequest request) {
 
         CmsLoginHelper.LoginParameters params = CmsLoginHelper.getLoginParameters(cms, request, false);
         request.getSession().setAttribute(CmsLoginUI.INIT_DATA_SESSION_ATTR, params);
         try {
-            byte[] pageBytes = CmsFileUtil.readFully(Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                "org/opencms/ui/login/login-page.html"));
+            byte[] pageBytes = CmsFileUtil.readFully(
+                Thread.currentThread().getContextClassLoader().getResourceAsStream(
+                    "org/opencms/ui/login/login-page.html"));
             String page = new String(pageBytes, "UTF-8");
             CmsMacroResolver resolver = new CmsMacroResolver();
             String context = OpenCms.getSystemInfo().getContextPath();
@@ -229,12 +230,12 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
 
     /**
      * Returns the bootstrap html fragment required to display the login dialog.<p>
-     * 
+     *
      * @param cms the cms context
      * @param request the request
-     * 
+     *
      * @return the html fragment
-     * 
+     *
      * @throws IOException in case reading the html template fails
      */
     public static String generateLoginHtmlFragment(CmsObject cms, VaadinRequest request) throws IOException {
@@ -244,12 +245,13 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
         request.getWrappedSession().setAttribute(CmsLoginUI.INIT_DATA_SESSION_ATTR, parameters);
         byte[] pageBytes;
 
-        pageBytes = CmsFileUtil.readFully(Thread.currentThread().getContextClassLoader().getResourceAsStream(
-            "org/opencms/ui/login/login-fragment.html"));
+        pageBytes = CmsFileUtil.readFully(
+            Thread.currentThread().getContextClassLoader().getResourceAsStream(
+                "org/opencms/ui/login/login-fragment.html"));
 
         String html = new String(pageBytes, "UTF-8");
-        String autocomplete = ((parameters.getPcType() == null) || parameters.getPcType().equals(
-            CmsLoginHelper.PCTYPE_PRIVATE)) ? "on" : "off";
+        String autocomplete = ((parameters.getPcType() == null)
+            || parameters.getPcType().equals(CmsLoginHelper.PCTYPE_PRIVATE)) ? "on" : "off";
         CmsMacroResolver resolver = new CmsMacroResolver();
         resolver.addMacro("autocompplete", autocomplete);
         if ((parameters.getPcType() == null) || parameters.getPcType().equals(CmsLoginHelper.PCTYPE_PRIVATE)) {
@@ -264,10 +266,10 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
         return html;
     }
 
-    /** 
+    /**
      * Sets the admin CMS object.<p>
-     * 
-     * @param cms the admin cms object 
+     *
+     * @param cms the admin cms object
      */
     public static void setAdminCmsObject(CmsObject cms) {
 
@@ -296,7 +298,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
 
     }
 
-    /** 
+    /**
      * @see org.opencms.ui.login.I_CmsLoginUI#getPassword()
      */
     public String getPassword() {
@@ -324,7 +326,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
         return m_loginForm.getUser();
     }
 
-    /** 
+    /**
      * @see org.opencms.ui.login.I_CmsLoginUI#openLoginTarget(org.opencms.ui.login.CmsLoginController.CmsLoginTargetInfo)
      */
     public void openLoginTarget(CmsLoginTargetInfo targetInfo) {
@@ -340,7 +342,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
         m_loginForm.setSelectableOrgUnits(ous);
     }
 
-    /** 
+    /**
      * @see org.opencms.ui.login.I_CmsLoginUI#showAlreadyLoggedIn()
      */
     public void showAlreadyLoggedIn() {

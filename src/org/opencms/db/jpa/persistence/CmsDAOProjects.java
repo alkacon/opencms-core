@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,14 +36,14 @@ import javax.persistence.UniqueConstraint;
 
 /**
  * This data access object represents a project entry inside the table "cms_projects".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
 @Table(name = "CMS_PROJECTS", uniqueConstraints = @UniqueConstraint(columnNames = {
     "PROJECT_OU",
     "PROJECT_NAME",
-    "DATE_CREATED"}))
+    "DATE_CREATED"}) )
 public class CmsDAOProjects {
 
     /** The date created. */
@@ -106,7 +106,7 @@ public class CmsDAOProjects {
 
     /**
      * A public constructor for generating a new project object with an unique id.<p>
-     * 
+     *
      * @param projectId the id
      */
     public CmsDAOProjects(String projectId) {

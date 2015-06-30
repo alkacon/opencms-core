@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides access to the settings of an ADE container element.<p>
- * 
+ *
  * @since 8.0
  */
 public class CmsJspTagElementSetting extends TagSupport {
@@ -68,9 +68,9 @@ public class CmsJspTagElementSetting extends TagSupport {
 
     /**
      * Internal action method.<p>
-     * 
+     *
      * @param req the current request
-     * 
+     *
      * @return a map that contains the element settings
      */
     public static Map<String, String> elementSettingTagAction(ServletRequest req) {
@@ -92,22 +92,26 @@ public class CmsJspTagElementSetting extends TagSupport {
 
     /**
      * Internal action method.<p>
-     * 
+     *
      * @param setting the setting to look up
      * @param defaultValue the default value
      * @param escape if the result String should be HTML escaped or not
      * @param req the current request
-     * 
+     *
      * @return the value of the element setting or <code>null</code> if not found
      */
-    public static String elementSettingTagAction(String setting, String defaultValue, boolean escape, ServletRequest req) {
+    public static String elementSettingTagAction(
+        String setting,
+        String defaultValue,
+        boolean escape,
+        ServletRequest req) {
 
         String value = elementSettingTagAction(req).get(setting);
         if (value == null) {
             value = defaultValue;
         }
         if (escape) {
-            // HTML escape the value 
+            // HTML escape the value
             value = CmsEncoder.escapeHtml(value);
         }
         return value;
@@ -122,7 +126,7 @@ public class CmsJspTagElementSetting extends TagSupport {
 
         ServletRequest req = pageContext.getRequest();
 
-        // This will always be true if the page is called through OpenCms 
+        // This will always be true if the page is called through OpenCms
         if (CmsFlexController.isCmsRequest(req)) {
 
             try {
@@ -145,7 +149,7 @@ public class CmsJspTagElementSetting extends TagSupport {
 
     /**
      * Returns the default value.<p>
-     * 
+     *
      * @return the default value
      */
     public String getDefault() {
@@ -155,7 +159,7 @@ public class CmsJspTagElementSetting extends TagSupport {
 
     /**
      * The value of the escape HTML flag.<p>
-     * 
+     *
      * @return the value of the escape HTML flag
      */
     public String getEscapeHtml() {
@@ -165,7 +169,7 @@ public class CmsJspTagElementSetting extends TagSupport {
 
     /**
      * Returns the selected element setting name.<p>
-     * 
+     *
      * @return the selected element setting name
      */
     public String getName() {
@@ -187,9 +191,9 @@ public class CmsJspTagElementSetting extends TagSupport {
 
     /**
      * Sets the default value.<p>
-     * 
+     *
      * This is used if a selected element setting is not found.<p>
-     * 
+     *
      * @param def the default value
      */
     public void setDefault(String def) {
@@ -201,7 +205,7 @@ public class CmsJspTagElementSetting extends TagSupport {
 
     /**
      * Set the escape HTML flag.<p>
-     * 
+     *
      * @param value must be <code>"true"</code> or <code>"false"</code> (all values other then <code>"true"</code> are
      * considered to be false)
      */
@@ -216,7 +220,7 @@ public class CmsJspTagElementSetting extends TagSupport {
 
     /**
      * Sets the element setting name.<p>
-     * 
+     *
      * @param name the element setting name to set
      */
     public void setName(String name) {

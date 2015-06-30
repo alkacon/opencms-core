@@ -19,15 +19,13 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.workplace.tools.accounts;
-
-import au.com.bytecode.opencsv.CSVWriter;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -69,13 +67,15 @@ import org.apache.commons.logging.Log;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 /**
  * Group dependencies list view.<p>
  */
 public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
 
-    /** 
-     * Helper class for generating the list entries. 
+    /**
+     * Helper class for generating the list entries.
      */
     protected static class ElementGenerator {
 
@@ -88,12 +88,12 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
         /** The generated list entries. */
         private List<String[]> m_entries = new ArrayList<String[]>();
 
-        /** 
+        /**
          * Creates a new instance.<p>
-         * 
-         * @param cms the CMS context to use for file operations 
-         * 
-         * @throws CmsException if something goes wrong 
+         *
+         * @param cms the CMS context to use for file operations
+         *
+         * @throws CmsException if something goes wrong
          */
         public ElementGenerator(CmsObject cms)
         throws CmsException {
@@ -104,10 +104,10 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
 
         /**
          * Generates the list entries.<p>
-         * 
+         *
          * @return a list of string arrays of the form ( name, credential, permissions, path )
-         *  
-         * @throws CmsException if something goes wrong 
+         *
+         * @throws CmsException if something goes wrong
          */
         public List<String[]> generateEntries() throws CmsException {
 
@@ -130,9 +130,12 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
                             String credentials = Messages.get().getBundle(locale).key(
                                 Messages.GUI_CREDENTIAL_GROUP_1,
                                 group.getName());
-                            addEntry(user.getName(), credentials, getAceString(ace),
+                            addEntry(
+                                user.getName(),
+                                credentials,
+                                getAceString(ace),
 
-                            resource.getRootPath());
+                                resource.getRootPath());
 
                         }
                     }
@@ -146,7 +149,7 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
                     false,
                     true);
                 for (CmsRole role : roles) {
-                    // only generate one entry for each role, independent of the number of OUs 
+                    // only generate one entry for each role, independent of the number of OUs
                     if (processedRoles.contains(role.getId())) {
                         continue;
                     } else {
@@ -157,9 +160,12 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
                             String credentials = Messages.get().getBundle(locale).key(
                                 Messages.GUI_CREDENTIAL_ROLE_1,
                                 role.getName(locale));
-                            addEntry(user.getName(), credentials, getAceString(ace),
+                            addEntry(
+                                user.getName(),
+                                credentials,
+                                getAceString(ace),
 
-                            resource.getRootPath());
+                                resource.getRootPath());
 
                         }
                     }
@@ -169,14 +175,14 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
             return m_entries;
         }
 
-        /** 
+        /**
          * Helper method to add the direct ACEs for a principal.<p>
-         * 
-         * @param principalId the principal id 
-         * @param name the principal name 
-         * @param locale the locale 
-         * 
-         * @throws CmsException if something goes wrong 
+         *
+         * @param principalId the principal id
+         * @param name the principal name
+         * @param locale the locale
+         *
+         * @throws CmsException if something goes wrong
          */
         protected void addDirectEntries(CmsUUID principalId, String name, Locale locale) throws CmsException {
 
@@ -190,11 +196,11 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
 
         /**
          * Adds a new entry.<p>
-         * 
-         * @param user the user name 
-         * @param principal the credential name 
-         * @param permissions the permission string 
-         * @param path the resource path 
+         *
+         * @param user the user name
+         * @param principal the credential name
+         * @param permissions the permission string
+         * @param path the resource path
          */
         private void addEntry(String user, String principal, String permissions, String path) {
 
@@ -203,11 +209,11 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
 
         /**
          * Gets the access control entries for a given principal id.<p>
-         * 
-         * @param principalId the principal id 
+         *
+         * @param principalId the principal id
          * @return the access control entries for that principal id
-         * 
-         * @throws CmsException if something goes wrong 
+         *
+         * @throws CmsException if something goes wrong
          */
         private Collection<CmsAccessControlEntry> getAces(CmsUUID principalId) throws CmsException {
 
@@ -223,10 +229,10 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
 
         /**
          * Creates a string representation of an access control entry.<p>
-         * 
-         * @param ace the access control entry 
-         * 
-         * @return the string representation of the access control entry 
+         *
+         * @param ace the access control entry
+         *
+         * @return the string representation of the access control entry
          */
         private String getAceString(CmsAccessControlEntry ace) {
 
@@ -244,12 +250,12 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
 
         }
 
-        /** 
+        /**
          * Reads all resources with a given resource id.<p>
-         * 
-         * @param resourceId the resource id 
-         * @return the resources with the given id 
-         * @throws CmsException if something goes wrong 
+         *
+         * @param resourceId the resource id
+         * @return the resources with the given id
+         * @throws CmsException if something goes wrong
          */
         private List<CmsResource> getResources(CmsUUID resourceId) throws CmsException {
 
@@ -258,10 +264,10 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
 
         /**
          * Gets all users.<p>
-         * 
-         * @return the list of all users 
-         * 
-         * @throws CmsException if something goes wrong 
+         *
+         * @return the list of all users
+         *
+         * @throws CmsException if something goes wrong
          */
         private List<CmsUser> getUsers() throws CmsException {
 
@@ -291,7 +297,7 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsAllPrincipalDependenciesList(CmsJspActionElement jsp) {
@@ -301,7 +307,7 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -313,7 +319,7 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * Protected constructor.<p>
-     * 
+     *
      * @param listId the id of the specialized list
      * @param jsp an initialized JSP action element
      */
@@ -348,8 +354,8 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#decodeParamValue(java.lang.String, java.lang.String)
-     * 
-     * Overridden because we don't want to 'decode' '+' characters for the search 
+     *
+     * Overridden because we don't want to 'decode' '+' characters for the search
      */
     @Override
     protected String decodeParamValue(String paramName, String paramValue) {
@@ -452,11 +458,12 @@ public class CmsAllPrincipalDependenciesList extends A_CmsListDialog {
                 try {
                     CSVWriter csvWriter = new CSVWriter(sw);
                     try {
-                        csvWriter.writeNext(new String[] {
-                            (String)item.get(LIST_COLUMN_USER),
-                            (String)item.get(LIST_COLUMN_CREDENTIAL),
-                            (String)item.get(LIST_COLUMN_PATH),
-                            (String)item.get(LIST_COLUMN_PERMISSIONS)});
+                        csvWriter.writeNext(
+                            new String[] {
+                                (String)item.get(LIST_COLUMN_USER),
+                                (String)item.get(LIST_COLUMN_CREDENTIAL),
+                                (String)item.get(LIST_COLUMN_PATH),
+                                (String)item.get(LIST_COLUMN_PERMISSIONS)});
                     } finally {
                         csvWriter.close();
                     }

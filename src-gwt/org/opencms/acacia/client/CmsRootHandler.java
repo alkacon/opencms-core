@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -83,8 +83,8 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
     /**
      * Ensures attribute handler maps are available up to the specified index.<p>
      * This is required during inline editing, where only a fragment of the handlers data structure is build and used.<p>
-     * 
-     * @param index the index of the currently edited attribute 
+     *
+     * @param index the index of the currently edited attribute
      */
     public void ensureHandlers(int index) {
 
@@ -133,10 +133,10 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
 
     /**
      * Returns the handler for the given id.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param attributeName the attribute name
-     * 
+     *
      * @return the handler
      */
     public CmsAttributeHandler getHandlerById(String entityId, String attributeName) {
@@ -146,9 +146,9 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
 
     /**
      * Returns the attribute handler for the given path.<p>
-     * 
+     *
      * @param pathNames the path names
-     * 
+     *
      * @return the attribute handler
      */
     public CmsAttributeHandler getHandlerByPath(String[] pathNames) {
@@ -159,7 +159,8 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
             String attributeName = pathNames[i];
             int nextIndex = CmsContentDefinition.extractIndex(attributeName);
             attributeName = CmsContentDefinition.removeIndex(attributeName);
-            if ((handler instanceof CmsAttributeHandler) && ((CmsAttributeHandler)handler).getAttributeType().isChoice()) {
+            if ((handler instanceof CmsAttributeHandler)
+                && ((CmsAttributeHandler)handler).getAttributeType().isChoice()) {
                 // in case of a choice attribute, skip to the next level
                 attributeName = CmsType.CHOICE_ATTRIBUTE_NAME;
             }
@@ -171,9 +172,9 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
 
     /**
      * Returns the attribute handler to the given simple path.<p>
-     * 
+     *
      * @param pathNames the simple path elements
-     * 
+     *
      * @return the attribute handler
      */
     public CmsAttributeHandler getHandlersBySimplePath(String[] pathNames) {
@@ -187,7 +188,8 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
                 nextIndex--;
             }
             attributeName = CmsContentDefinition.removeIndex(attributeName);
-            if ((handler instanceof CmsAttributeHandler) && ((CmsAttributeHandler)handler).getAttributeType().isChoice()) {
+            if ((handler instanceof CmsAttributeHandler)
+                && ((CmsAttributeHandler)handler).getAttributeType().isChoice()) {
                 // in case of a choice attribute, skip to the next level
                 attributeName = CmsType.CHOICE_ATTRIBUTE_NAME;
             }
@@ -237,7 +239,7 @@ public class CmsRootHandler implements I_CmsAttributeHandler {
 
     /**
      * Initializes the sub handlers maps for the given value count.<p>
-     * 
+     *
      * @param count the value count
      */
     protected void initHandlers(int count) {

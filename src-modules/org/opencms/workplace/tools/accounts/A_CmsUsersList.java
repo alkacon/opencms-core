@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,8 +67,8 @@ import javax.servlet.ServletException;
 
 /**
  * Main user account management view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsUsersList extends A_CmsListDialog {
 
@@ -161,7 +161,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the list name
@@ -173,11 +173,11 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the list name
-     * @param lazy the lazy flag 
+     * @param lazy the lazy flag
      */
     public A_CmsUsersList(CmsJspActionElement jsp, String listId, CmsMessageContainer listName, boolean lazy) {
 
@@ -186,11 +186,11 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /**
      * This method should handle every defined list multi action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     * 
+     * by comparing <code>{@link #getParamListAction()}</code> with the id
+     * of the action to execute.<p>
+     *
      * @throws CmsRuntimeException to signal that an action is not supported
-     * 
+     *
      */
     @Override
     public void executeListMultiActions() throws CmsRuntimeException {
@@ -299,7 +299,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /**
      * Returns the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @return the organizational unit fqn parameter value
      */
     public String getParamOufqn() {
@@ -309,7 +309,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /**
      * Sets the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @param ouFqn the organizational unit fqn parameter value
      */
     public void setParamOufqn(String ouFqn) {
@@ -359,10 +359,11 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
                         if (group.getOuFqn().equals(getParamOufqn())) {
                             html.append(OpenCms.getWorkplaceManager().translateGroupName(group.getName(), false));
                         } else {
-                            html.append(group.getDisplayName(
-                                getCms(),
-                                getLocale(),
-                                OpenCms.getWorkplaceManager().getGroupNameTranslation()));
+                            html.append(
+                                group.getDisplayName(
+                                    getCms(),
+                                    getLocale(),
+                                    OpenCms.getWorkplaceManager().getGroupNameTranslation()));
                         }
                         if (itGroups.hasNext()) {
                             html.append("<br>");
@@ -412,7 +413,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /**
      * Returns the path the group icon.<p>
-     * 
+     *
      * @return the path to the group icon
      */
     protected abstract String getGroupIcon();
@@ -434,14 +435,15 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         }
         CmsListColumnDefinition colDef = getList().getMetadata().getColumnDefinition(LIST_COLUMN_ROLE);
         if (colDef != null) {
-            colDef.setVisible(!OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).hasFlagWebuser());
+            colDef.setVisible(
+                !OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).hasFlagWebuser());
         }
         return ret;
     }
 
     /**
      * Returns the path the role edit icon.<p>
-     * 
+     *
      * @return the path to the role edit icon
      */
     protected String getRoleIcon() {
@@ -451,9 +453,9 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /**
      * Returns a list of users.<p>
-     * 
+     *
      * @return the list of all users
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected abstract List<CmsUser> getUsers() throws CmsException;
@@ -472,10 +474,10 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /**
      * Makes a list item for a given user.<p>
-     * 
-     * @param user the user 
-     * 
-     * @return the list item 
+     *
+     * @param user the user
+     *
+     * @return the list item
      */
     protected CmsListItem makeListItemForUser(CmsUser user) {
 
@@ -486,11 +488,11 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /**
      * Reads the user.<p>
-     * 
+     *
      * @param name the name of the user to read
-     * 
+     *
      * @return the user
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected abstract CmsUser readUser(String name) throws CmsException;
@@ -611,14 +613,14 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /**
      * Sets the needed delete action(s).<p>
-     * 
+     *
      * @param deleteCol the list column for deletion.
      */
     protected abstract void setDeleteAction(CmsListColumnDefinition deleteCol);
 
     /**
      * Sets the needed edit action(s).<p>
-     * 
+     *
      * @param editCol the list column for edition.
      */
     protected abstract void setEditAction(CmsListColumnDefinition editCol);
@@ -634,12 +636,14 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         userAddressDetails.setAtColumn(LIST_COLUMN_DISPLAY);
         userAddressDetails.setVisible(false);
         userAddressDetails.setShowActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ADDRESS_NAME_0));
-        userAddressDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ADDRESS_HELP_0));
+        userAddressDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ADDRESS_HELP_0));
         userAddressDetails.setHideActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ADDRESS_NAME_0));
-        userAddressDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ADDRESS_HELP_0));
+        userAddressDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ADDRESS_HELP_0));
         userAddressDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_ADDRESS_NAME_0));
-        userAddressDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_ADDRESS_NAME_0)));
+        userAddressDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_USERS_DETAIL_ADDRESS_NAME_0)));
         metadata.addItemDetails(userAddressDetails);
 
         // add user groups details
@@ -651,8 +655,8 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         userGroupsDetails.setHideActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_GROUPS_NAME_0));
         userGroupsDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_GROUPS_HELP_0));
         userGroupsDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_GROUPS_NAME_0));
-        userGroupsDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_GROUPS_NAME_0)));
+        userGroupsDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_USERS_DETAIL_GROUPS_NAME_0)));
         metadata.addItemDetails(userGroupsDetails);
 
         // add user roles details
@@ -664,8 +668,8 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         userRolesDetails.setHideActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ROLES_NAME_0));
         userRolesDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ROLES_HELP_0));
         userRolesDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_ROLES_NAME_0));
-        userRolesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_ROLES_NAME_0)));
+        userRolesDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_USERS_DETAIL_ROLES_NAME_0)));
         metadata.addItemDetails(userRolesDetails);
 
         // makes the list searchable
@@ -684,7 +688,8 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         CmsListMultiAction deleteMultiAction = new CmsListMultiAction(LIST_MACTION_DELETE);
         deleteMultiAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_DELETE_NAME_0));
         deleteMultiAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_DELETE_HELP_0));
-        deleteMultiAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_DELETE_CONF_0));
+        deleteMultiAction.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_USERS_LIST_MACTION_DELETE_CONF_0));
         deleteMultiAction.setIconPath(ICON_MULTI_DELETE);
         metadata.addMultiAction(deleteMultiAction);
 
@@ -700,15 +705,15 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         CmsListMultiAction deactivateUser = new CmsListMultiAction(LIST_MACTION_DEACTIVATE);
         deactivateUser.setName(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_DEACTIVATE_NAME_0));
         deactivateUser.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_DEACTIVATE_HELP_0));
-        deactivateUser.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_USERS_LIST_MACTION_DEACTIVATE_CONF_0));
+        deactivateUser.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_USERS_LIST_MACTION_DEACTIVATE_CONF_0));
         deactivateUser.setIconPath(ICON_MULTI_DEACTIVATE);
         metadata.addMultiAction(deactivateUser);
     }
 
     /**
      * Sets all needed data of the user into the list item object.<p>
-     * 
+     *
      * @param user the user to set the data for
      * @param item the list item object to set the data into
      */
@@ -735,12 +740,15 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /**
      * Adds an "activate" column.<p>
-     * 
-     * @param metadata the list metadata 
-     * @param enable the action for enabling 
-     * @param deactivate the action for disabling 
+     *
+     * @param metadata the list metadata
+     * @param enable the action for enabling
+     * @param deactivate the action for disabling
      */
-    private void addActivateColumn(CmsListMetadata metadata, CmsListDirectAction enable, CmsListDirectAction deactivate) {
+    private void addActivateColumn(
+        CmsListMetadata metadata,
+        CmsListDirectAction enable,
+        CmsListDirectAction deactivate) {
 
         // create column for activation/deactivation
         CmsListColumnDefinition actCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIVATE);
@@ -757,12 +765,15 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /**
      * Adds an "enabled" column.<p>
-     * 
-     * @param metadata the list metadata 
-     * @param enable the list action for enabling 
-     * @param deactivate the list action for disabling 
+     *
+     * @param metadata the list metadata
+     * @param enable the list action for enabling
+     * @param deactivate the list action for disabling
      */
-    private void addEnabledColumn(CmsListMetadata metadata, CmsListDirectAction enable, CmsListDirectAction deactivate) {
+    private void addEnabledColumn(
+        CmsListMetadata metadata,
+        CmsListDirectAction enable,
+        CmsListDirectAction deactivate) {
 
         // create column for activation/deactivation
         CmsListColumnDefinition enaCol = new CmsListColumnDefinition(LIST_COLUMN_ENABLED);
@@ -786,10 +797,10 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /**
      * Creates an "activate" list action.<p>
-     * 
-     * @param id the action id 
-     * 
-     * @return the list action 
+     *
+     * @param id the action id
+     *
+     * @return the list action
      */
     private CmsListDirectAction createActivateAction(String id) {
 
@@ -821,9 +832,9 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /**
      * Creates a "deactivate" list action.<p>
-     * 
-     * @param id the action id 
-     * 
+     *
+     * @param id the action id
+     *
      * @return the list action
      */
     private CmsListDirectAction createDeactivateAction(String id) {

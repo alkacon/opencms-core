@@ -258,8 +258,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         } else {
             for (int i = 0; i < fieldFacets.getElementCount(); i++) {
 
-                final I_CmsSearchConfigurationFacetField config = parseFieldFacet(fieldFacets.getValue(i).getPath()
-                    + "/");
+                final I_CmsSearchConfigurationFacetField config = parseFieldFacet(
+                    fieldFacets.getValue(i).getPath() + "/");
                 if (config != null) {
                     facetConfigs.put(config.getName(), config);
                 }
@@ -283,16 +283,16 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 final String field = parseMandatoryStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_FIELD);
                 final Integer snippets = parseOptionalIntValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_SNIPPETS);
                 final Integer fragsize = parseOptionalIntValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_FRAGSIZE);
-                final String alternateField = parseOptionalStringValue(pathPrefix
-                    + XML_ELEMENT_HIGHLIGHTER_ALTERNATE_FIELD);
-                final Integer maxAlternateFieldLength = parseOptionalIntValue(pathPrefix
-                    + XML_ELEMENT_HIGHLIGHTER_MAX_LENGTH_ALTERNATE_FIELD);
+                final String alternateField = parseOptionalStringValue(
+                    pathPrefix + XML_ELEMENT_HIGHLIGHTER_ALTERNATE_FIELD);
+                final Integer maxAlternateFieldLength = parseOptionalIntValue(
+                    pathPrefix + XML_ELEMENT_HIGHLIGHTER_MAX_LENGTH_ALTERNATE_FIELD);
                 final String pre = parseOptionalStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_SIMPLE_PRE);
                 final String post = parseOptionalStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_SIMPLE_POST);
                 final String formatter = parseOptionalStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_FORMATTER);
                 final String fragmenter = parseOptionalStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_FRAGMENTER);
-                final Boolean useFastVectorHighlighting = parseOptionalBooleanValue(pathPrefix
-                    + XML_ELEMENT_HIGHLIGHTER_FASTVECTORHIGHLIGHTING);
+                final Boolean useFastVectorHighlighting = parseOptionalBooleanValue(
+                    pathPrefix + XML_ELEMENT_HIGHLIGHTER_FASTVECTORHIGHLIGHTING);
                 return new CmsSearchConfigurationHighlighting(
                     field,
                     snippets,
@@ -395,8 +395,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             } catch (final Exception e) {
                 order = null;
             }
-            final String filterQueryModifier = parseOptionalStringValue(pathPrefix
-                + XML_ELEMENT_FACET_FILTERQUERYMODIFIER);
+            final String filterQueryModifier = parseOptionalStringValue(
+                pathPrefix + XML_ELEMENT_FACET_FILTERQUERYMODIFIER);
             final Boolean isAndFacet = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_FACET_ISANDFACET);
             final List<String> preselection = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_PRESELECTION);
             return new CmsSearchConfigurationFacetField(
@@ -659,8 +659,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             return null;
         } else {
             for (int i = 0; i < sortOptions.getElementCount(); i++) {
-                final I_CmsSearchConfigurationSortOption option = parseSortOption(sortOptions.getValue(i).getPath()
-                    + "/");
+                final I_CmsSearchConfigurationSortOption option = parseSortOption(
+                    sortOptions.getValue(i).getPath() + "/");
                 if (option != null) {
                     options.add(option);
                 }

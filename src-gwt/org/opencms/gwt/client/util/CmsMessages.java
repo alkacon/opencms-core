@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,11 +37,11 @@ import java.util.MissingResourceException;
 import com.google.gwt.i18n.client.Dictionary;
 
 /**
- * Reads localized resource Strings from a <code>java.util.ResourceBundle</code> 
+ * Reads localized resource Strings from a <code>java.util.ResourceBundle</code>
  * and provides convenience methods to access the Strings from a template.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.i18n.CmsMessages
  */
 public class CmsMessages {
@@ -63,8 +63,8 @@ public class CmsMessages {
 
     /**
      * Default constructor.<p>
-     * 
-     * @param bundleName the localized bundle name 
+     *
+     * @param bundleName the localized bundle name
      */
     public CmsMessages(String bundleName) {
 
@@ -81,10 +81,10 @@ public class CmsMessages {
 
     /**
      * Helper method for formatting message parameters.<p>
-     * 
+     *
      * @param result the raw message containing placeholders like {0}
      * @param args the parameters to insert into the placeholders
-     *  
+     *
      * @return the formatted message
      */
     public static String formatMessage(String result, Object... args) {
@@ -133,11 +133,11 @@ public class CmsMessages {
 
     /**
      * Formats an unknown key.<p>
-     * 
+     *
      * @param keyName the key to format
-     * 
+     *
      * @return the formatted unknown key
-     * 
+     *
      * @see #isUnknownKey(String)
      */
     public static String formatUnknownKey(String keyName) {
@@ -152,15 +152,15 @@ public class CmsMessages {
     }
 
     /**
-     * Returns <code>true</code> if the provided value matches the scheme 
+     * Returns <code>true</code> if the provided value matches the scheme
      * <code>"??? " + keyName + " ???"</code>, that is the value appears to be an unknown key.<p>
-     * 
+     *
      * Also returns <code>true</code> if the given value is <code>null</code>.<p>
-     * 
+     *
      * @param value the value to check
-     * 
+     *
      * @return true if the value is matches the scheme for unknown keys
-     * 
+     *
      * @see #formatUnknownKey(String)
      */
     public static boolean isUnknownKey(String value) {
@@ -170,10 +170,10 @@ public class CmsMessages {
 
     /**
      * Returns a regular expression for replacement.<p>
-     * 
+     *
      * @param position the parameter number
      * @param options the optional options
-     * 
+     *
      * @return the regular expression for replacement
      */
     private static String getRegEx(int position, String... options) {
@@ -185,11 +185,11 @@ public class CmsMessages {
         return "{" + value + "}";
     }
 
-    /** 
-     * Returns the localized message bundle wrapped in this instance.<p> 
-     * 
+    /**
+     * Returns the localized message bundle wrapped in this instance.<p>
+     *
      * Mainly for API compatibility with the core localization methods.<p>
-     * 
+     *
      * @return the localized message bundle wrapped in this instance
      */
     public CmsMessages getBundle() {
@@ -211,10 +211,10 @@ public class CmsMessages {
      * Returns a formated date String from a Date value,
      * the format being {@link CmsDateTimeUtil.Format#SHORT} and the locale
      * based on this instance.<p>
-     * 
+     *
      * @param date the Date object to format as String
-     * 
-     * @return the formatted date 
+     *
+     * @return the formatted date
      */
     public String getDate(Date date) {
 
@@ -225,11 +225,11 @@ public class CmsMessages {
      * Returns a formated date String from a Date value,
      * the formatting based on the provided option and the locale
      * based on this instance.<p>
-     * 
+     *
      * @param date the Date object to format as String
      * @param format the format to use, see {@link CmsDateTimeUtil.Format} for possible values
-     * 
-     * @return the formatted date 
+     *
+     * @return the formatted date
      */
     public String getDate(Date date, CmsDateTimeUtil.Format format) {
 
@@ -240,10 +240,10 @@ public class CmsMessages {
      * Returns a formated date String from a timestamp value,
      * the format being {@link CmsDateTimeUtil.Format#SHORT} and the locale
      * based on this instance.<p>
-     * 
+     *
      * @param time the time value to format as date
-     * 
-     * @return the formatted date 
+     *
+     * @return the formatted date
      */
     public String getDate(long time) {
 
@@ -254,7 +254,7 @@ public class CmsMessages {
      * Returns a formated date and time String from a Date value,
      * the format being {@link CmsDateTimeUtil.Format#SHORT} and the locale
      * based on this instance.<p>
-     * 
+     *
      * @param date the Date object to format as String
      * @return the formatted date and time
      */
@@ -267,7 +267,7 @@ public class CmsMessages {
      * Returns a formated date and time String from a Date value,
      * the formatting based on the provided option and the locale
      * based on this instance.<p>
-     * 
+     *
      * @param date the Date object to format as String
      * @param format the format to use, see {@link CmsDateTimeUtil.Format} for possible values
      * @return the formatted date and time
@@ -281,7 +281,7 @@ public class CmsMessages {
      * Returns a formated date and time String from a timestamp value,
      * the format being {@link CmsDateTimeUtil.Format#SHORT} and the locale
      * based on this instance.<p>
-     * 
+     *
      * @param time the time value to format as date
      * @return the formatted date and time
      */
@@ -302,14 +302,14 @@ public class CmsMessages {
 
     /**
      * Returns the localized resource string for a given message key.<p>
-     * 
+     *
      * If the key was not found in the bundle, the return value is
-     * <code>"??? " + keyName + " ???"</code>. This will also be returned 
+     * <code>"??? " + keyName + " ???"</code>. This will also be returned
      * if the bundle was not properly initialized first.
-     * 
-     * @param keyName the key for the desired string 
-     * 
-     * @return the resource string for the given key 
+     *
+     * @param keyName the key for the desired string
+     *
+     * @return the resource string for the given key
      */
     public String key(String keyName) {
 
@@ -318,19 +318,19 @@ public class CmsMessages {
 
     /**
      * Returns the localized resource string for a given message key.<p>
-     * 
-     * If the key was not found in the bundle, the return value 
+     *
+     * If the key was not found in the bundle, the return value
      * depends on the setting of the allowNull parameter. If set to false,
      * the return value is always a String in the format
      * <code>"??? " + keyName + " ???"</code>.
-     * If set to true, null is returned if the key is not found. 
-     * This will also be returned 
+     * If set to true, null is returned if the key is not found.
+     * This will also be returned
      * if the bundle was not properly initialized first.
-     * 
-     * @param keyName the key for the desired string 
+     *
+     * @param keyName the key for the desired string
      * @param allowNull if true, 'null' is an allowed return value
-     * 
-     * @return the resource string for the given key 
+     *
+     * @return the resource string for the given key
      */
     public String key(String keyName, boolean allowNull) {
 
@@ -349,18 +349,18 @@ public class CmsMessages {
 
     /**
      * Returns the selected localized message for the initialized resource bundle and locale.<p>
-     * 
+     *
      * If the key was found in the bundle, it will be formatted using
      * a <code>{@link java.text.MessageFormat}</code> using the provided parameters.<p>
-     * 
+     *
      * If the key was not found in the bundle, the return value is
-     * <code>"??? " + keyName + " ???"</code>. This will also be returned 
+     * <code>"??? " + keyName + " ???"</code>. This will also be returned
      * if the bundle was not properly initialized first.
-     * 
+     *
      * @param key the message key
      * @param args the message arguments
-     * 
-     * @return the selected localized message for the initialized resource bundle and locale 
+     *
+     * @return the selected localized message for the initialized resource bundle and locale
      */
     public String key(String key, Object... args) {
 
@@ -382,14 +382,14 @@ public class CmsMessages {
 
     /**
      * Returns the localized resource string for a given message key.<p>
-     * 
-     * If the key was not found in the bundle, the provided default value 
+     *
+     * If the key was not found in the bundle, the provided default value
      * is returned.<p>
-     * 
-     * @param keyName the key for the desired string 
+     *
+     * @param keyName the key for the desired string
      * @param defaultValue the default value in case the key does not exist in the bundle
-     * 
-     * @return the resource string for the given key it it exists, or the given default if not 
+     *
+     * @return the resource string for the given key it it exists, or the given default if not
      */
     public String keyDefault(String keyName, String defaultValue) {
 
@@ -400,26 +400,26 @@ public class CmsMessages {
     /**
      * Returns the localized resource string for a given message key,
      * treating all values appended with "|" as replacement parameters.<p>
-     * 
+     *
      * If the key was found in the bundle, it will be formatted using
      * a <code>{@link java.text.MessageFormat}</code> using the provided parameters.
      * The parameters have to be appended to the key separated by a "|".
      * For example, the keyName <code>error.message|First|Second</code>
      * would use the key <code>error.message</code> with the parameters
-     * <code>First</code> and <code>Second</code>. This would be the same as calling 
+     * <code>First</code> and <code>Second</code>. This would be the same as calling
      * <code>{@link CmsMessages#key(String, Object[])}</code>.<p>
-     * 
-     * If no parameters are appended with "|", this is the same as calling 
+     *
+     * If no parameters are appended with "|", this is the same as calling
      * <code>{@link CmsMessages#key(String)}</code>.<p>
-     * 
+     *
      * If the key was not found in the bundle, the return value is
-     * <code>"??? " + keyName + " ???"</code>. This will also be returned 
+     * <code>"??? " + keyName + " ???"</code>. This will also be returned
      * if the bundle was not properly initialized first.
-     * 
+     *
      * @param keyName the key for the desired string, optionally containing parameters appended with a "|"
-     * 
-     * @return the resource string for the given key 
-     * 
+     *
+     * @return the resource string for the given key
+     *
      * @see #key(String, Object[])
      * @see #key(String)
      */

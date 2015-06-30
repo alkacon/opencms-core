@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -69,7 +69,7 @@ public class CmsModelPageEntry implements IsSerializable {
      */
     public CmsModelPageEntry() {
 
-        // empty default constructor 
+        // empty default constructor
     }
 
     /**
@@ -134,7 +134,7 @@ public class CmsModelPageEntry implements IsSerializable {
 
     /**
      * Returns whether the given page is the default model.<p>
-     * 
+     *
      * @return if the given page is the default model
      */
     public boolean isDefault() {
@@ -144,7 +144,7 @@ public class CmsModelPageEntry implements IsSerializable {
 
     /**
      * Returns if the model page is disabled.<p>
-     * 
+     *
      * @return if the model page is disabled
      */
     public boolean isDisabled() {
@@ -154,7 +154,7 @@ public class CmsModelPageEntry implements IsSerializable {
 
     /**
      * Sets if the given page is the default model.<p>
-     * 
+     *
      * @param defaultl the given page is the default model
      */
     public void setDefault(boolean defaultl) {
@@ -164,7 +164,7 @@ public class CmsModelPageEntry implements IsSerializable {
 
     /**
      * Sets if the model page is disabled.<p>
-     * 
+     *
      * @param disabled if the model page is disabled
      */
     public void setDisabled(boolean disabled) {

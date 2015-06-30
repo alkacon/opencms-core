@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -64,10 +64,10 @@ public class CmsAppHierarchyBuilder {
     /** The logger instance for this tree. */
     private static final Log LOG = CmsLog.getLog(CmsAppHierarchyBuilder.class);
 
-    /** 
+    /**
      * Adds an app configuration.<p>
-     * 
-     * @param appConfig the app configuration to add 
+     *
+     * @param appConfig the app configuration to add
      */
     public void addAppConfiguration(I_CmsWorkplaceAppConfiguration appConfig) {
 
@@ -76,21 +76,21 @@ public class CmsAppHierarchyBuilder {
 
     /**
      * Adds an app category.<p>
-     * 
-     * @param category the app category to add 
+     *
+     * @param category the app category to add
      */
     public void addCategory(CmsAppCategory category) {
 
         m_appCategoryList.add(category);
     }
 
-    /** 
+    /**
      * Builds the tree of categories and apps.<p>
-     * 
+     *
      * This tree will only include those categories which are reachable by following the parent chain of
-     * an available app configuration up to the root category (null). 
-     * 
-     * @return the root node of the tree 
+     * an available app configuration up to the root category (null).
+     *
+     * @return the root node of the tree
      */
     public CmsAppCategoryNode buildHierarchy() {
 
@@ -107,13 +107,13 @@ public class CmsAppHierarchyBuilder {
         m_nodes.clear();
         m_nodes.put(null, m_rootNode);
 
-        // STEP 1: Create a node for each category 
+        // STEP 1: Create a node for each category
 
         for (CmsAppCategory category : m_appCategoryList) {
             m_nodes.put(category.getId(), new CmsAppCategoryNode(category));
         }
 
-        // STEP 2: Assign category nodes to nodes for their parent category 
+        // STEP 2: Assign category nodes to nodes for their parent category
 
         for (CmsAppCategoryNode node : m_nodes.values()) {
             if (node != m_rootNode) {
@@ -121,13 +121,13 @@ public class CmsAppHierarchyBuilder {
             }
         }
 
-        // STEP 3: Assign app configs to category nodes 
+        // STEP 3: Assign app configs to category nodes
 
         for (I_CmsWorkplaceAppConfiguration appConfig : m_appConfigs) {
             addAppConfigToCategory(appConfig);
         }
 
-        // STEP 4: Validate whether there are unused categories / apps 
+        // STEP 4: Validate whether there are unused categories / apps
 
         Set<String> usedNodes = findReachableNodes(m_rootNode, new HashSet<String>());
         if (usedNodes.size() < m_nodes.size()) {
@@ -143,7 +143,7 @@ public class CmsAppHierarchyBuilder {
             LOG.warn("Unused apps: " + unusedApps);
         }
 
-        // STEP 5: Remove parts of the hierarchy which don't contain any apps 
+        // STEP 5: Remove parts of the hierarchy which don't contain any apps
         m_rootNode.removeApplessSubtrees();
 
         // STEP 6: Sort all categories and app configurations for each node
@@ -154,8 +154,8 @@ public class CmsAppHierarchyBuilder {
 
     /**
      * Gets the root node.<p>
-     * 
-     * @return the root node 
+     *
+     * @return the root node
      */
     public CmsAppCategoryNode getRootNode() {
 
@@ -164,19 +164,20 @@ public class CmsAppHierarchyBuilder {
 
     /**
      * Adds an app configuration to the node belonging to its parent category id.<p>
-     * 
-     * @param appConfig the app configuration to add to its parent node 
+     *
+     * @param appConfig the app configuration to add to its parent node
      */
     protected void addAppConfigToCategory(I_CmsWorkplaceAppConfiguration appConfig) {
 
         CmsAppCategoryNode node = m_nodes.get(appConfig.getAppCategory());
         if (node == null) {
-            LOG.error("Missing parent ["
-                + appConfig.getAppCategory()
-                + "] for "
-                + appConfig.getId()
-                + " / "
-                + appConfig.getClass().getName());
+            LOG.error(
+                "Missing parent ["
+                    + appConfig.getAppCategory()
+                    + "] for "
+                    + appConfig.getId()
+                    + " / "
+                    + appConfig.getClass().getName());
         } else {
             node.addAppConfiguration(appConfig);
         }
@@ -184,8 +185,8 @@ public class CmsAppHierarchyBuilder {
 
     /**
      * Adds a category node to the category node belonging to its parent id.<p>
-     * 
-     * @param node the node which should be attached to its parent 
+     *
+     * @param node the node which should be attached to its parent
      */
     protected void addNodeToItsParent(CmsAppCategoryNode node) {
 
@@ -195,12 +196,13 @@ public class CmsAppHierarchyBuilder {
         }
         CmsAppCategoryNode parentNode = m_nodes.get(parentId);
         if (parentNode == null) {
-            LOG.error("Missing parent ["
-                + node.getCategory().getParentId()
-                + "] for ["
-                + node.getCategory().getId()
-                + "] in ["
-                + node.getCategory().getSource());
+            LOG.error(
+                "Missing parent ["
+                    + node.getCategory().getParentId()
+                    + "] for ["
+                    + node.getCategory().getId()
+                    + "] in ["
+                    + node.getCategory().getSource());
         } else {
             parentNode.addChild(node);
         }
@@ -208,11 +210,11 @@ public class CmsAppHierarchyBuilder {
 
     /**
      * Finds the category nodes reachable from a node.<p>
-     * 
-     * @param rootNode the root node 
+     *
+     * @param rootNode the root node
      * @param reachableNodes set used for collecting the reachable nodes
-     *  
-     * @return the set of reachable node ids 
+     *
+     * @return the set of reachable node ids
      */
     private Set<String> findReachableNodes(CmsAppCategoryNode rootNode, HashSet<String> reachableNodes) {
 

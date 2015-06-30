@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,64 +29,64 @@ package org.opencms.cache;
 
 /**
  * Defines the methods which an object being cached by CmsFlexLruCache must implement.<p>
- * 
+ *
  * CmsFlexLruCache is organized as a double linked list, that's why objects implementing this interface
  * need getters/setter for the next/previous nodes in the list of all cached objects.<p>
  *
  * @see CmsLruCache
- * 
+ *
  * @since 6.0.0
  */
 public interface I_CmsLruCacheObject {
-    
-    /** 
+
+    /**
      * Set the next object in the double linked list of all cached objects.<p>
      *
      * @param theNextObject the next object
      */
     void setNextLruObject(I_CmsLruCacheObject theNextObject);
-    
-    /** 
+
+    /**
      * Returns the next object in the double linked list of all cached objects.<p>
      *
      * @return the next object in the double linked list of all cached objects
      */
     I_CmsLruCacheObject getNextLruObject();
-    
-    /** 
+
+    /**
      * Set the previous object in the double linked list of all cached objects.<p>
-     * 
+     *
      * @param thePreviousObject the previous object
      */
     void setPreviousLruObject(I_CmsLruCacheObject thePreviousObject);
-     
-    /** 
+
+    /**
      * Returns the previous object in the double linked list of all cached objects.<p>
-     * 
-     * @return the previous object in the double linked list of all cached objects 
+     *
+     * @return the previous object in the double linked list of all cached objects
      */
     I_CmsLruCacheObject getPreviousLruObject();
-    
-    /** 
+
+    /**
      * Invoked after an object was added to the cache.<p>
      */
     void addToLruCache();
-    
-    /** 
+
+    /**
      * Invoked after the object was removed to the cache.<p>
      */
     void removeFromLruCache();
-    
-    /** 
+
+    /**
      * Returns the cache costs of this object, as for example it's byte size.<p>
-     * 
+     *
      * @return the cache costs of this object
      */
     int getLruCacheCosts();
-    
+
     /**
-     * Returns the Object value.<p> 
-     * 
+     * Returns the Object value.<p>
+     *
      * @return the Object value
      */
     Object getValue();

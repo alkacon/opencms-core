@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,7 +28,7 @@
 package org.opencms.gwt.client.ui.input.form;
 
 /**
- * Abstract handler superclass for forms which have their own dialog.<p> 
+ * Abstract handler superclass for forms which have their own dialog.<p>
  */
 public class CmsDialogFormHandler implements I_CmsFormHandler {
 
@@ -61,8 +61,8 @@ public class CmsDialogFormHandler implements I_CmsFormHandler {
 
     /**
      * Sets the dialog.<p>
-     * 
-     * @param dialog the form dialog 
+     *
+     * @param dialog the form dialog
      */
     public void setDialog(CmsFormDialog dialog) {
 
@@ -71,8 +71,8 @@ public class CmsDialogFormHandler implements I_CmsFormHandler {
 
     /**
      * Sets the form submit handler.<p>
-     * 
-     * @param submitHandler the new form submit handler 
+     *
+     * @param submitHandler the new form submit handler
      */
     public void setSubmitHandler(I_CmsFormSubmitHandler submitHandler) {
 

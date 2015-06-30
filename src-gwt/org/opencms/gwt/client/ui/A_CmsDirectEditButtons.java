@@ -237,7 +237,8 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
             if (m_editableData.isUnreleasedOrExpired()) {
                 m_expiredOverlay = DOM.createDiv();
-                m_expiredOverlay.setClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.directEditCss().expiredListElementOverlay());
+                m_expiredOverlay.setClassName(
+                    org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.directEditCss().expiredListElementOverlay());
                 m_markerTag.getParentElement().insertBefore(m_expiredOverlay, m_markerTag);
             }
 
@@ -265,8 +266,8 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Creates the button for displaying element information.<p>
-     * 
-     * @return the created button 
+     *
+     * @return the created button
      */
     public CmsPushButton createInfoButton() {
 
@@ -389,7 +390,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Returns a map of additional buttons in a map, with the button position as key (buttons will be ordered by their position).<p>
-     *  
+     *
      * @return the map of additional buttons
      */
     protected Map<Integer, CmsPushButton> getAdditionalButtons() {

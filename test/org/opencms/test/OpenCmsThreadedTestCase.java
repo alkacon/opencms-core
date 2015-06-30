@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,9 +33,9 @@ import java.lang.reflect.Method;
 /**
  * Allows to run an {@link org.opencms.test.OpenCmsTestCase} in a separate Thread,
  * for concurrent execution.<p>
- * 
+ *
  * Usually this class is created by a {@link org.opencms.test.OpenCmsThreadedTestCaseSuite}.<p>
- * 
+ *
  * @since 6.5.0
  */
 public class OpenCmsThreadedTestCase extends Thread {
@@ -60,7 +60,7 @@ public class OpenCmsThreadedTestCase extends Thread {
 
     /**
      * Generates a new threaded test case.<p>
-     * 
+     *
      * @param testCase the test case class to use
      * @param method the method to execute on the test case
      * @param parameters the parameter values for the method
@@ -87,7 +87,7 @@ public class OpenCmsThreadedTestCase extends Thread {
 
     /**
      * Returns the total runtime of this thread, or <code>-1</code> if the thread was not run at all.<p>
-     * 
+     *
      * @return the total runtime of this thread, or <code>-1</code> if the thread was not run at all
      */
     public long getRuntime() {

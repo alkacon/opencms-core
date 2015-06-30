@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,10 +49,10 @@ public class CmsWorkflow implements IsSerializable {
 
     /**
      * Creates a new workflow bean instance.<p>
-     * 
-     * @param id the identifier for the workflow type 
-     * @param niceName the nice name for the workflow which is displayed to the user 
-     * @param actions the actions which are possible in this workflow 
+     *
+     * @param id the identifier for the workflow type
+     * @param niceName the nice name for the workflow which is displayed to the user
+     * @param actions the actions which are possible in this workflow
      */
     public CmsWorkflow(String id, String niceName, List<CmsWorkflowAction> actions) {
 
@@ -83,8 +83,8 @@ public class CmsWorkflow implements IsSerializable {
 
     /**
      * Returns the list of actions which are possible in this workflow.<p>
-     * 
-     * @return the actions possible in this workflow 
+     *
+     * @return the actions possible in this workflow
      */
     public List<CmsWorkflowAction> getActions() {
 
@@ -93,8 +93,8 @@ public class CmsWorkflow implements IsSerializable {
 
     /**
      * Gets the workflow identifier.<p>
-     * 
-     * @return the workflow identifier 
+     *
+     * @return the workflow identifier
      */
     public String getId() {
 
@@ -103,8 +103,8 @@ public class CmsWorkflow implements IsSerializable {
 
     /**
      * Gets the user-readable nice name for the workflow.<p>
-     * 
-     * @return the nice name for the workflow 
+     *
+     * @return the nice name for the workflow
      */
     public String getNiceName() {
 

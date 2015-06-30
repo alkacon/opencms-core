@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,10 +36,10 @@ import java.util.Map;
 
 /**
  * Provides information about a single context menu item for a resource type in the OpenCms explorer view.<p>
- * 
+ *
  * An item can be a context menu entry or a separator line.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsExplorerContextMenuItem {
 
@@ -92,7 +92,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Adds a menu sub entry to this context menu item.<p>
-     * 
+     *
      * @param item the entry item to add to this context menu item
      */
     public void addContextMenuEntry(CmsExplorerContextMenuItem item) {
@@ -102,7 +102,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Adds a menu separator to this context menu item.<p>
-     * 
+     *
      * @param item the separator item to add to this context menu item
      */
     public void addContextMenuSeparator(CmsExplorerContextMenuItem item) {
@@ -122,7 +122,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Returns the key for localization.<p>
-     * 
+     *
      * @return the key for localization
      */
     public String getKey() {
@@ -142,8 +142,8 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Gets the parameters for the context menu command.<p>
-     * 
-     * @return the parameter string for the context menu command 
+     *
+     * @return the parameter string for the context menu command
      */
     public String getParams() {
 
@@ -152,7 +152,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Gets the parameters as a map of strings.<p>
-     * 
+     *
      * @return the parameters as a map of strings
      */
     public Map<String, String> getParamsMap() {
@@ -165,7 +165,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Returns the parent context menu entry item of a sub menu item.<p>
-     * 
+     *
      * @return the parent context menu entry item
      */
     public CmsExplorerContextMenuItem getParent() {
@@ -175,7 +175,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Returns the name of the menu rule set.<p>
-     * 
+     *
      * @return the name of the menu rule set
      */
     public String getRule() {
@@ -185,7 +185,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Returns the set of display rules.<p>
-     * 
+     *
      * @return the set of display rules
      */
     public String getRules() {
@@ -195,7 +195,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Returns the sub item entries of this context menu item.<p>
-     * 
+     *
      * @return the sub item entries of this context menu item
      */
     public List<CmsExplorerContextMenuItem> getSubItems() {
@@ -205,7 +205,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Returns the frame target of the current item.<p>
-     * 
+     *
      * @return the frame target of the current item
      */
     public String getTarget() {
@@ -215,7 +215,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Returns the type of the current item.<p>
-     * 
+     *
      * @return the type of the current item
      */
     public String getType() {
@@ -225,7 +225,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Returns the dialog URI of the current item.<p>
-     * 
+     *
      * @return the dialog URI of the current item
      */
     public String getUri() {
@@ -235,7 +235,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Returns if the item is a main item with configured sub items.<p>
-     * 
+     *
      * @return true if the item is a main entry item with configured sub items, otherwise false
      */
     public boolean isParentItem() {
@@ -245,7 +245,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Returns if the item is a sub item.<p>
-     * 
+     *
      * @return true if the item is a sub entry item, otherwise false
      */
     public boolean isSubItem() {
@@ -255,7 +255,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Sets the icon path.<p>
-     * 
+     *
      * @param iconPath the icon path for a menu entry
      */
     public void setIcon(String iconPath) {
@@ -265,7 +265,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Sets the key for localization.<p>
-     * 
+     *
      * @param key the key for localization
      */
     public void setKey(String key) {
@@ -285,8 +285,8 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Sets the parameter string for the context menu command.<p>
-     * 
-     * @param params the parameter string for the context menu command 
+     *
+     * @param params the parameter string for the context menu command
      */
     public void setParams(String params) {
 
@@ -295,7 +295,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Sets the name of the menu rule set.<p>
-     * 
+     *
      * @param rule the name of the menu rule set
      */
     public void setRule(String rule) {
@@ -305,7 +305,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Sets the set of display rules.<p>
-     * 
+     *
      * @param rules the set of display rules
      */
     public void setRules(String rules) {
@@ -315,7 +315,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Sets the frame target of the current item.<p>
-     * 
+     *
      * @param target the frame target of the current item
      */
     public void setTarget(String target) {
@@ -325,7 +325,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Sets the type of the current item.<p>
-     * 
+     *
      * @param type the type of the current item
      */
     public void setType(String type) {
@@ -335,7 +335,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Sets the dialog URI of the current item.<p>
-     * 
+     *
      * @param uri the dialog URI of the current item
      */
     public void setUri(String uri) {
@@ -345,7 +345,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Adds a sub item entry to this context menu item.<p>
-     * 
+     *
      * @param item the item to add to this context menu item
      * @param type the item type to add
      */
@@ -361,7 +361,7 @@ public class CmsExplorerContextMenuItem {
 
     /**
      * Sets the parent context menu item for sub menu items.<p>
-     * 
+     *
      * @param parent the parent context menu item
      */
     protected void setParent(CmsExplorerContextMenuItem parent) {

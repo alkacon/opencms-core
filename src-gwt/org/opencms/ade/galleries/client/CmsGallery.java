@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Gallery Dialog entry class to be open from the vfs tree.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsGallery extends A_CmsEntryPoint {
@@ -46,7 +46,7 @@ public class CmsGallery extends A_CmsEntryPoint {
      * Closes the dialog.<p>
      */
     static native void closeDialog()/*-{
-                                    
+
                                     if (typeof $wnd.closeDialog === 'function'){
                                     $wnd.closeDialog();
                                     }else if ($wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK]){

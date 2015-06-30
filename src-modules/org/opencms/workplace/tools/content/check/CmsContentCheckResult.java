@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,9 +35,9 @@ import java.util.Map;
 /**
  * This class holds the results of the content tests and provides methods to access the collected
  * errors and warnings.<p>
- * 
- * 
- * @since 6.1.2 
+ *
+ *
+ * @since 6.1.2
  */
 public class CmsContentCheckResult {
 
@@ -53,7 +53,7 @@ public class CmsContentCheckResult {
     /** List containing all recouces that collected errors. */
     private List m_errorResources;
 
-    /** 
+    /**
      * Map containing all all collected errors. Resourcenames are used as keys,
      * lists are used as values.
      */
@@ -65,9 +65,9 @@ public class CmsContentCheckResult {
     /** List containing all recouces that collected warnings. */
     private List m_warningResources;
 
-    /** 
+    /**
      * Map containing all all collected warnings. Resourcenames are used as keys,
-     * lists are used as values. 
+     * lists are used as values.
      */
     private Map m_warnings;
 
@@ -95,13 +95,13 @@ public class CmsContentCheckResult {
         List warnings = testResource.getWarnings();
         List errors = testResource.getErrors();
         // add the warnings if there were any
-        if (warnings != null && warnings.size() > 0) {
+        if ((warnings != null) && (warnings.size() > 0)) {
             m_warnings.put(testResource.getResourceName(), warnings);
             m_warningResources.add(testResource.getResource());
             m_warningCheckResources.add(testResource);
         }
         // add the errors if there were any
-        if (errors != null && errors.size() > 0) {
+        if ((errors != null) && (errors.size() > 0)) {
             m_errors.put(testResource.getResourceName(), errors);
             m_errorResources.add(testResource.getResource());
             m_errorCheckResources.add(testResource);
@@ -148,7 +148,7 @@ public class CmsContentCheckResult {
 
     /**
      * Gets a map of all error collected during the content check. <p>
-     * 
+     *
      * The map contains the complete resource root path as keys and a list of errors
      * as values.
      * @return map of collected warnings
@@ -158,10 +158,10 @@ public class CmsContentCheckResult {
         return m_errors;
     }
 
-    /** 
+    /**
      * Gets a list of errors collected during the content check for a given
      * resource.<p>
-     * 
+     *
      * @param resourceName the complete root path of the resource to get the list from
      * @return list of error messages or null if no warnings are found
      */
@@ -190,7 +190,7 @@ public class CmsContentCheckResult {
 
     /**
      * Gets a map of all warnings collected during the content check. <p>
-     * 
+     *
      * The map contains the complete resource root path as keys and a list of warnings
      * as values.
      * @return map of collected warnings
@@ -200,10 +200,10 @@ public class CmsContentCheckResult {
         return m_warnings;
     }
 
-    /** 
+    /**
      * Gets a list of warnings collected during the content check for a given
      * resource.<p>
-     * 
+     *
      * @param resourceName the complete root path of the resource to get the list from
      * @return list of warning messages or null if no warnings are found
      */

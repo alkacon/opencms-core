@@ -6,7 +6,7 @@
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -117,10 +117,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Sitemap editor.<p>
- * 
+ *
  * @since 8.0.0
  */
-public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
+public final class CmsSitemapView extends A_CmsEntryPoint
+implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
     /**
      * The sitemap tree open handler.<p>
@@ -149,15 +150,17 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 target.setOpen(false);
                 getController().getChildren(target.getEntryId(), true, null);
             } else if (!m_initializing
-                && ((target.getChildren().getWidgetCount() > 0) && (((CmsSitemapTreeItem)target.getChild(0)).getLoadState() == CmsLazyTreeItem.LoadState.UNLOADED))) {
+                && ((target.getChildren().getWidgetCount() > 0)
+                    && (((CmsSitemapTreeItem)target.getChild(
+                        0)).getLoadState() == CmsLazyTreeItem.LoadState.UNLOADED))) {
                 // load grand children in advance
                 getController().getChildren(target.getEntryId(), false, null);
             }
         }
 
-        /** 
+        /**
          * Sets the initializing flag.<p>
-         * 
+         *
          * @param initializing the initializing flag
          */
         protected void setInitializing(boolean initializing) {
@@ -247,10 +250,10 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Creates a new tree item from the given sitemap entry.<p>
-     * 
+     *
      * @param entry the sitemap entry
-     * 
-     * @return the new created (still orphan) tree item 
+     *
+     * @return the new created (still orphan) tree item
      */
     public CmsSitemapTreeItem create(CmsClientSitemapEntry entry) {
 
@@ -266,10 +269,10 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Creates a sitemap tree item from a client sitemap entry.<p>
-     * 
-     * @param entry the entry from which the sitemap tree item should be created 
-     * 
-     * @return the new sitemap tree item 
+     *
+     * @param entry the entry from which the sitemap tree item should be created
+     *
+     * @return the new sitemap tree item
      */
     public CmsSitemapTreeItem createSitemapItem(CmsClientSitemapEntry entry) {
 
@@ -289,9 +292,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Displays the category data.<p>
-     * 
-     * @param categoryData the category data 
-     * @param openLocalCategories true if the local category tree should be opened 
+     *
+     * @param categoryData the category data
+     * @param openLocalCategories true if the local category tree should be opened
      */
     public void displayCategoryData(CmsSitemapCategoryData categoryData, final boolean openLocalCategories) {
 
@@ -347,20 +350,21 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                             !(id.isNullUUID()),
                             new I_CmsContextMenuItemProvider() {
 
-                                public List<A_CmsSitemapMenuEntry> createContextMenu(CmsSitemapHoverbar hoverbar2) {
+                            public List<A_CmsSitemapMenuEntry> createContextMenu(CmsSitemapHoverbar hoverbar2) {
 
-                                    List<A_CmsSitemapMenuEntry> result = Lists.newArrayList();
+                                List<A_CmsSitemapMenuEntry> result = Lists.newArrayList();
 
-                                    result.add(new CmsChangeCategoryMenuEntry(hoverbar2));
-                                    result.add(new CmsDeleteCategoryMenuEntry(hoverbar2));
-                                    return result;
-                                }
-                            });
+                                result.add(new CmsChangeCategoryMenuEntry(hoverbar2));
+                                result.add(new CmsDeleteCategoryMenuEntry(hoverbar2));
+                                return result;
+                            }
+                        });
                         if (input == localRoot) {
                             hoverbar.setAlwaysVisible();
                         }
                         CmsPushButton newButton = new CmsPushButton();
-                        newButton.setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.style().addIcon());
+                        newButton.setImageClass(
+                            org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.style().addIcon());
                         newButton.setTitle(Messages.get().key(Messages.GUI_SITEMAP_CONTEXT_MENU_CREATE_CATEGORY_0));
                         newButton.setButtonStyle(ButtonStyle.IMAGE, null);
                         hoverbar.add(newButton);
@@ -378,16 +382,16 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                                     hoverbarId,
                                     new AsyncCallback<CmsCategoryTitleAndName>() {
 
-                                        public void onFailure(Throwable caught) {
+                                    public void onFailure(Throwable caught) {
 
-                                            // do nothing
-                                        }
+                                        // do nothing
+                                    }
 
-                                        public void onSuccess(CmsCategoryTitleAndName result) {
+                                    public void onSuccess(CmsCategoryTitleAndName result) {
 
-                                            controller.createCategory(hoverbarId, result.getTitle(), result.getName());
-                                        }
-                                    });
+                                        controller.createCategory(hoverbarId, result.getTitle(), result.getName());
+                                    }
+                                });
                             }
                         });
                     }
@@ -404,7 +408,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Displays the gallery view.<p>
-     * 
+     *
      * @param galleries the gallery data
      */
     public void displayGalleries(Map<CmsGalleryType, List<CmsGalleryFolderEntry>> galleries) {
@@ -466,10 +470,10 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         }
     }
 
-    /** 
+    /**
      * Displays the model page data in a tree.<p>
-     * 
-     * @param modelPageData the model page data 
+     *
+     * @param modelPageData the model page data
      */
     public void displayModelPages(CmsModelInfo modelPageData) {
 
@@ -564,7 +568,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Displays a newly created gallery folder.<p>
-     * 
+     *
      * @param galleryFolder the gallery folder
      */
     public void displayNewGallery(CmsGalleryFolderEntry galleryFolder) {
@@ -595,8 +599,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Adds a new model page to the model page view.<p>
-     * 
-     * @param modelPageData the data for the new model page 
+     *
+     * @param modelPageData the data for the new model page
      * @param isModelGroup in case of a model group page
      */
     public void displayNewModelPage(CmsModelPageEntry modelPageData, boolean isModelGroup) {
@@ -618,7 +622,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Ensures the given item is visible in the viewport.<p>
-     * 
+     *
      * @param item the item to see
      */
     public void ensureVisible(CmsSitemapTreeItem item) {
@@ -655,9 +659,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Returns the icon class for the given entry depending on the editor mode.<p>
-     * 
+     *
      * @param entry the entry to get the icon for
-     * 
+     *
      * @return the icon CSS class
      */
     public String getIconForEntry(CmsClientSitemapEntry entry) {
@@ -671,8 +675,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
                 iconClass = CmsIconUtil.getResourceIconClasses(
                     m_controller.getDetailPageInfo(entry.getId()).getIconType(),
                     false);
-            } else if (!entry.isSubSitemapType()
-                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())) {
+            } else
+                if (!entry.isSubSitemapType() && CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())) {
                 iconClass = CmsIconUtil.getResourceIconClasses(entry.getDefaultFileType(), false);
             }
         }
@@ -681,10 +685,10 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Gets the model page bean with the given structure id.<p>
-     * 
-     * @param id a structure id 
-     * 
-     * @return the model page bean with the given id 
+     *
+     * @param id a structure id
+     *
+     * @return the model page bean with the given id
      */
     public CmsModelPageEntry getModelPageEntry(CmsUUID id) {
 
@@ -692,12 +696,12 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
     }
 
     /**
-     * Gets the list of descendants of a path and splits it into two lists, one containing the sitemap entries whose children have 
+     * Gets the list of descendants of a path and splits it into two lists, one containing the sitemap entries whose children have
      * already been loaded, and those whose children haven't been loaded.<p>
-     * 
-     * @param path the path for which the open and closed descendants should be returned 
-     * 
-     * @return a pair whose first and second components are lists of open and closed descendant entries of the path, respectively 
+     *
+     * @param path the path for which the open and closed descendants should be returned
+     *
+     * @return a pair whose first and second components are lists of open and closed descendant entries of the path, respectively
      */
     public CmsPair<List<CmsClientSitemapEntry>, List<CmsClientSitemapEntry>> getOpenAndClosedDescendants(String path) {
 
@@ -709,13 +713,15 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             List<CmsClientSitemapEntry> listToAddTo = treeItem.isLoaded() ? openDescendants : closedDescendants;
             listToAddTo.add(entry);
         }
-        return new CmsPair<List<CmsClientSitemapEntry>, List<CmsClientSitemapEntry>>(openDescendants, closedDescendants);
+        return new CmsPair<List<CmsClientSitemapEntry>, List<CmsClientSitemapEntry>>(
+            openDescendants,
+            closedDescendants);
 
     }
 
     /**
      * Gets the sitemap toolbar.<p>
-     * 
+     *
      * @return the sitemap toolbar
      */
     public CmsSitemapToolbar getToolbar() {
@@ -725,7 +731,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Returns the tree.<p>
-     * 
+     *
      * @return the tree
      */
     public CmsLazyTree<CmsSitemapTreeItem> getTree() {
@@ -735,9 +741,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Returns the tree entry with the given path.<p>
-     * 
+     *
      * @param entryId the id of the sitemap entry
-     * 
+     *
      * @return the tree entry with the given path, or <code>null</code> if not found
      */
     public CmsSitemapTreeItem getTreeItem(CmsUUID entryId) {
@@ -747,9 +753,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Returns the tree entry with the given path.<p>
-     * 
+     *
      * @param path the path to look for
-     * 
+     *
      * @return the tree entry with the given path, or <code>null</code> if not found
      */
     public CmsSitemapTreeItem getTreeItem(String path) {
@@ -777,7 +783,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Highlights the sitemap entry with the given path.<p>
-     * 
+     *
      * @param sitePath the sitemap path of the entry to highlight
      */
     public void highlightPath(String sitePath) {
@@ -785,15 +791,17 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         openItemsOnPath(sitePath);
         CmsSitemapTreeItem item = getTreeItem(sitePath);
         if (item != null) {
-            item.highlightTemporarily(1500, isLastPage(item.getSitemapEntry()) ? Background.YELLOW : Background.DEFAULT);
+            item.highlightTemporarily(
+                1500,
+                isLastPage(item.getSitemapEntry()) ? Background.YELLOW : Background.DEFAULT);
         }
     }
 
     /**
      * Returns the disabled state of the given model page entry.<p>
-     * 
+     *
      * @param id the entry id
-     * 
+     *
      * @return the disabled state
      */
     public boolean isDisabledModelPageEntry(CmsUUID id) {
@@ -809,7 +817,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Returns if the current sitemap editor mode is galleries.<p>
-     * 
+     *
      * @return <code>true</code> if the current sitemap editor mode is galleries
      */
     public boolean isGalleryMode() {
@@ -819,9 +827,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Returns if the given entry is a template model page.<p>
-     * 
+     *
      * @param entryId the entry id
-     * 
+     *
      * @return <code>true</code> if the given entry is a template model page
      */
     public boolean isModelPageEntry(CmsUUID entryId) {
@@ -829,10 +837,10 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         return m_modelPageData.containsKey(entryId);
     }
 
-    /** 
+    /**
      * Checks if the sitemap editor is in 'model page mode'.<p>
-     * 
-     * @return true if we are in model page view 
+     *
+     * @return true if we are in model page view
      */
     public boolean isModelPageMode() {
 
@@ -841,7 +849,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Returns if the current sitemap editor mode is navigation.<p>
-     * 
+     *
      * @return <code>true</code> if the current sitemap editor mode is navigation
      */
     public boolean isNavigationMode() {
@@ -851,9 +859,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Returns if the given entry is a template model page inherited from the parent configuration.<p>
-     * 
+     *
      * @param entryId the entry id
-     * 
+     *
      * @return <code>true</code> if the given entry is a template model page
      */
     public boolean isParentModelPageEntry(CmsUUID entryId) {
@@ -863,8 +871,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Returns true if we are not currently displaying the navigation or VFS tree.<p>
-     * 
-     * @return true if we are not currently in navigation or VFS mode 
+     *
+     * @return true if we are not currently in navigation or VFS mode
      */
     public boolean isSpecialMode() {
 
@@ -873,8 +881,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Performs necessary async actions before actually setting the mode.<p>
-     *  
-     * @param mode the mode 
+     *
+     * @param mode the mode
      */
     public void onBeforeSetEditorMode(final EditorMode mode) {
 
@@ -1004,7 +1012,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
         rootPanel.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().root());
         m_treeItems = new HashMap<CmsUUID, CmsSitemapTreeItem>();
-        // controller 
+        // controller
         m_controller = new CmsSitemapController();
         if (m_controller.getData() == null) {
             CmsErrorDialog dialog = new CmsErrorDialog(Messages.get().key(Messages.GUI_ERROR_ON_SITEMAP_LOAD_0), null);
@@ -1051,8 +1059,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         page.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.generalCss().cornerAll());
         rootPanel.add(page);
         // initial content
-        final Label loadingLabel = new Label(org.opencms.gwt.client.Messages.get().key(
-            org.opencms.gwt.client.Messages.GUI_LOADING_0));
+        final Label loadingLabel = new Label(
+            org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_LOADING_0));
         page.add(loadingLabel);
 
         // initialize the tree
@@ -1062,7 +1070,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         m_inNavigationStyle = new CmsStyleVariable(m_tree);
         m_inNavigationStyle.setValue(I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navMode());
         if (m_controller.isEditable()) {
-            // enable drag'n drop 
+            // enable drag'n drop
             CmsDNDHandler dndHandler = new CmsDNDHandler(new CmsSitemapDNDController(m_controller, m_toolbar));
             dndHandler.addTarget(m_tree);
             m_tree.setDNDHandler(dndHandler);
@@ -1090,7 +1098,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
         m_noGalleriesLabel.getElement().setInnerHTML(Messages.get().key(Messages.GUI_NO_GALLERIES_AVAILABLE_0));
         m_noGalleriesLabel.getElement().getStyle().setDisplay(Display.NONE);
         page.add(m_noGalleriesLabel);
-        // draw tree items 
+        // draw tree items
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             public void execute() {
@@ -1103,7 +1111,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Removes deleted entry widget reference.<p>
-     * 
+     *
      * @param entry the entry being deleted
      */
     public void removeDeleted(CmsClientSitemapEntry entry) {
@@ -1186,8 +1194,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Updates the detail page view for a given changed entry.<p>
-     * 
-     * @param entry the entry which was changed 
+     *
+     * @param entry the entry which was changed
      */
     public void updateDetailPageView(CmsClientSitemapEntry entry) {
 
@@ -1202,8 +1210,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Updates the entries whose id is in the given list of ids.<p>
-     * 
-     * @param ids a list of sitemap entry ids 
+     *
+     * @param ids a list of sitemap entry ids
      */
     public void updateEntriesById(Collection<CmsUUID> ids) {
 
@@ -1216,8 +1224,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Updates the disabled state for the given model page.<p>
-     * 
-     * @param entryId the model page id 
+     *
+     * @param entryId the model page id
      * @param disabled the disabled state
      */
     public void updateModelPageDisabledState(CmsUUID entryId, boolean disabled) {
@@ -1231,7 +1239,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Makes sure corresponding sitemap entries are loaded when the gallery tree is opened.<p>
-     *  
+     *
      * @param parent the parent gallery tree item
      */
     protected void ensureEntriesLoaded(CmsGalleryTreeItem parent) {
@@ -1252,8 +1260,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Gets the sitemap tree item widget which represents the root of the current sitemap.<p>
-     * 
-     * @return the root sitemap tree item widget 
+     *
+     * @return the root sitemap tree item widget
      */
     protected CmsSitemapTreeItem getRootItem() {
 
@@ -1262,8 +1270,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Shows/hides the category view.<p>
-     * 
-     * @param visible true if the categories should be made visible 
+     *
+     * @param visible true if the categories should be made visible
      */
     protected void setCategoriesVisible(boolean visible) {
 
@@ -1273,9 +1281,9 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Shows or hides the element for a widget.<p>
-     * 
-     * @param widget the widget to show or hide 
-     * @param visible true if the widget should be shown 
+     *
+     * @param widget the widget to show or hide
+     * @param visible true if the widget should be shown
      */
     protected void setElementVisible(Widget widget, boolean visible) {
 
@@ -1289,8 +1297,8 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Shows or hides the tree for the gallery mode.<p>
-     * 
-     * @param visible true if the tree should be shown 
+     *
+     * @param visible true if the tree should be shown
      */
     protected void setGalleriesVisible(boolean visible) {
 
@@ -1306,20 +1314,20 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Shows or hides the tree for the model page mode.<p>
-     * 
-     * @param visible true if the model pages should be shown 
+     *
+     * @param visible true if the model pages should be shown
      */
     protected void setModelPagesVisible(boolean visible) {
 
         setElementVisible(m_modelPageTree, visible);
     }
 
-    /** 
+    /**
      * Recursively creates the widget tree for a given category bean.<p>
-     * 
+     *
      * @param entry the category bean
-     *  
-     * @return the widget for that category bean, with widgets for its descendants attached 
+     *
+     * @return the widget for that category bean, with widgets for its descendants attached
      */
     CmsTreeItem createCategoryTreeItem(CmsCategoryTreeEntry entry) {
 
@@ -1332,7 +1340,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Builds the tree items initially.<p>
-     * 
+     *
      * @param page the page
      * @param loadingLabel the loading label, will be removed when finished
      */
@@ -1364,7 +1372,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Adds the gallery tree items to the parent.<p>
-     * 
+     *
      * @param parent the parent item
      * @param galleries the gallery folder entries
      */
@@ -1380,7 +1388,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Applies the given change to the gallery view.<p>
-     * 
+     *
      * @param changeEvent the change event
      */
     private void applyChangeToGalleryTree(CmsSitemapChangeEvent changeEvent) {
@@ -1432,14 +1440,14 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             case clipboardOnly:
             case remove:
             default:
-                // nothing to do    
+                // nothing to do
         }
     }
 
-    /** 
+    /**
      * Applies sitemap changes to the model page mode.<p>
-     * 
-     * @param changeEvent the change event to apply to the model page mode 
+     *
+     * @param changeEvent the change event to apply to the model page mode
      */
     private void applyChangeToModelPages(CmsSitemapChangeEvent changeEvent) {
 
@@ -1491,15 +1499,15 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
             case clipboardOnly:
             case remove:
             default:
-                // nothing to do    
+                // nothing to do
         }
     }
 
     /**
      * Create a gallery folder tree item.<p>
-     * 
+     *
      * @param galleryFolder the gallery folder
-     * 
+     *
      * @return the tree item
      */
     private CmsGalleryTreeItem createGalleryFolderItem(CmsGalleryFolderEntry galleryFolder) {
@@ -1516,13 +1524,13 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Helper method to get all sitemap tree items from the root to a given path.<p>
-     * 
+     *
      * For example, if the root item has the site path '/root/', and the value of path is
      * '/root/a/b/', the sitemap tree items corresponding to '/root/', '/root/a/' and '/root/a/b'
      * will be returned (in that order).<p>
-     * 
-     * @param path the path for which the sitemap tree items should be returned 
-     *  
+     *
+     * @param path the path for which the sitemap tree items should be returned
+     *
      * @return the sitemap tree items on the path
      */
     private List<CmsSitemapTreeItem> getItemsOnPath(String path) {
@@ -1555,21 +1563,22 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Checks if the given entry represents the last opened page.<p>
-     * 
+     *
      * @param entry the entry to check
-     * 
+     *
      * @return <code>true</code> if the given entry is the last opened page
      */
     private boolean isLastPage(CmsClientSitemapEntry entry) {
 
-        return ((entry.isInNavigation() && (entry.getId().toString().equals(m_controller.getData().getReturnCode()))) || ((entry.getDefaultFileId() != null) && entry.getDefaultFileId().toString().equals(
-            m_controller.getData().getReturnCode())));
+        return ((entry.isInNavigation() && (entry.getId().toString().equals(m_controller.getData().getReturnCode())))
+            || ((entry.getDefaultFileId() != null)
+                && entry.getDefaultFileId().toString().equals(m_controller.getData().getReturnCode())));
     }
 
     /**
      * Opens all sitemap tree items on a path, except the last one.<p>
-     * 
-     * @param path the path for which all intermediate sitemap items should be opened 
+     *
+     * @param path the path for which all intermediate sitemap items should be opened
      */
     private void openItemsOnPath(String path) {
 
@@ -1581,7 +1590,7 @@ public final class CmsSitemapView extends A_CmsEntryPoint implements I_CmsSitema
 
     /**
      * Updates the entry and it's children's view.<p>
-     * 
+     *
      * @param entry the entry to update
      */
     private void updateAll(CmsClientSitemapEntry entry) {

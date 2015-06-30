@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,10 +32,10 @@ import java.util.List;
 
 /**
  * Manages the configuration of the additional information of users.<p>
- * 
+ *
  * This class reads the settings from the "opencms-workplace.xml" and stores them in member variables.
  * For each setting one or more get methods are provided.<p>
- * 
+ *
  * @since 6.5.6
  */
 public final class CmsWorkplaceUserInfoManager {
@@ -53,7 +53,7 @@ public final class CmsWorkplaceUserInfoManager {
 
     /**
      * Adds the given block.<p>
-     * 
+     *
      * @param block the block to add
      */
     public void addBlock(CmsWorkplaceUserInfoBlock block) {
@@ -63,7 +63,7 @@ public final class CmsWorkplaceUserInfoManager {
 
     /**
      * Returns a list of all configured additional information blocks.<p>
-     * 
+     *
      * @return a list of {@link CmsWorkplaceUserInfoBlock} objects
      */
     public List<CmsWorkplaceUserInfoBlock> getBlocks() {

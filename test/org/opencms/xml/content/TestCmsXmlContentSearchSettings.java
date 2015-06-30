@@ -131,12 +131,8 @@ public class TestCmsXmlContentSearchSettings extends OpenCmsTestCase {
         //        Title: false            NO  OK
         //        Description: true       YES OK Image[1]/Description[1]
         //        ImageAlign: true        NO  OK root is stronger
-        List<String> goods = Arrays.asList(new String[] {
-            "Title[1]",
-            "Description[1]",
-            "Image[1]",
-            "Image[1]/Path[1]",
-            "Image[1]/Description[1]"});
+        List<String> goods = Arrays.asList(
+            new String[] {"Title[1]", "Description[1]", "Image[1]", "Image[1]/Path[1]", "Image[1]/Description[1]"});
 
         List<String> nogoods = new ArrayList<String>();
 

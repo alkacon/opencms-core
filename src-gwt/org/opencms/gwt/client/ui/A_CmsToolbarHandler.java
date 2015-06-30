@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,18 +39,18 @@ import java.util.List;
 
 /**
  * Abstract class which implements the common part of all toolbar handler functionality.<p>
- * 
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
 
     /**
      * Transforms a list of context menu entry beans to a list of context menu entries.<p>
-     * 
+     *
      * @param menuBeans the list of context menu entry beans
-     * @param structureId the id of the resource for which to transform the context menu entries 
-     * 
-     * @return a list of context menu entries 
+     * @param structureId the id of the resource for which to transform the context menu entries
+     *
+     * @return a list of context menu entries
      */
     public List<I_CmsContextMenuEntry> transformEntries(
         List<CmsContextMenuEntryBean> menuBeans,
@@ -68,11 +68,11 @@ public abstract class A_CmsToolbarHandler implements I_CmsToolbarHandler {
 
     /**
      * Creates a single context menu entry from a context menu entry bean.<p>
-     * 
-     * @param structureId the structure id of the resource 
-     * @param bean the context menu entry bean 
-     * 
-     * @return the created context menu entry 
+     *
+     * @param structureId the structure id of the resource
+     * @param bean the context menu entry bean
+     *
+     * @return the created context menu entry
      */
     protected I_CmsContextMenuEntry transformSingleEntry(final CmsUUID structureId, CmsContextMenuEntryBean bean) {
 

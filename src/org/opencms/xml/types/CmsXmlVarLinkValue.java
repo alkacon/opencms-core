@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,8 +48,8 @@ import org.dom4j.Element;
  * Describes the XML content type "OpenCmsVarLink".<p>
  *
  * This type allows a link to either an internal VFS resource, or to an external website.<p>
- * 
- * @since 7.0.0 
+ *
+ * @since 7.0.0
  */
 public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
 
@@ -81,7 +81,7 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
 
     /**
      * Creates a new XML content value of type "OpenCmsVfsFile".<p>
-     * 
+     *
      * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
@@ -94,7 +94,7 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
 
     /**
      * Creates a new schema type descriptor for the type "OpenCmsVfsFile".<p>
-     * 
+     *
      * @param name the name of the XML node containing the value according to the XML schema
      * @param minOccurs minimum number of occurrences of this type according to the XML schema
      * @param maxOccurs maximum number of occurrences of this type according to the XML schema
@@ -131,10 +131,10 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
 
     /**
      * Returns the link object represented by this XML content value.<p>
-     * 
-     * @param cms the cms context, can be <code>null</code> but in this case no link check is performed, 
+     *
+     * @param cms the cms context, can be <code>null</code> but in this case no link check is performed,
      *      and the target is marked as "external"
-     * 
+     *
      * @return the link object represented by this XML content value
      */
     public CmsLink getLink(CmsObject cms) {
@@ -296,9 +296,9 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
 
     /**
      * Creates the String value for this VarLink value element.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
-     * 
+     *
      * @return the String value for this VarLink value element
      */
     private String createStringValue(CmsObject cms) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import org.opencms.gwt.client.util.CmsClientStringUtil;
 
 /**
  * Predefined image format restriction. To be used within the image format tab of the image preview.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
@@ -50,8 +50,8 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
 
     /**
      * Constructor.<p>
-     * 
-     * @param name the format name 
+     *
+     * @param name the format name
      * @param label the label
      * @param config the configuration
      */
@@ -64,9 +64,9 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
 
     /**
      * Returns if given configuration string is valid.<p>
-     * 
+     *
      * @param config configuration string
-     * 
+     *
      * @return <code>true</code> if given configuration string is valid
      */
     public static native boolean isValidConfig(String config)/*-{
@@ -182,7 +182,7 @@ public class CmsImageFormatRestriction implements I_CmsFormatRestriction {
 
     /**
      * Parses the the given configuration string.<p>
-     * 
+     *
      * @param config the configuration
      */
     private void parseConfig(String config) {

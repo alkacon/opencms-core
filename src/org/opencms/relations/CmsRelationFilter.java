@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,8 +37,8 @@ import java.util.Set;
 
 /**
  * A filter to retrieve the relations for a given resource.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public final class CmsRelationFilter implements Cloneable {
 
@@ -71,7 +71,7 @@ public final class CmsRelationFilter implements Cloneable {
 
     /**
      * Private constructor.<p>
-     * 
+     *
      * @param source if set the filter looks for matching targets
      * @param target if set the filter looks for matching sources
      */
@@ -83,10 +83,10 @@ public final class CmsRelationFilter implements Cloneable {
 
     /**
      * Utility method which prepares a filter for relations which point *from* a given structure id.<p>
-     * 
-     * @param structureId the structure id 
-     * 
-     * @return the new relation filter 
+     *
+     * @param structureId the structure id
+     *
+     * @return the new relation filter
      */
     public static CmsRelationFilter relationsFromStructureId(CmsUUID structureId) {
 
@@ -95,10 +95,10 @@ public final class CmsRelationFilter implements Cloneable {
 
     /**
      * Utility method which prepares a filter for relations which point *to* a given structure id.<p>
-     * 
-     * @param structureId the structure id 
-     * 
-     * @return the new relation filter 
+     *
+     * @param structureId the structure id
+     *
+     * @return the new relation filter
      */
     public static CmsRelationFilter relationsToStructureId(CmsUUID structureId) {
 
@@ -121,12 +121,12 @@ public final class CmsRelationFilter implements Cloneable {
 
     /**
      * Returns an extended filter with defined in content type restriction.<p>
-     * 
+     *
      * @return an extended filter with defined in content type restriction
      */
     public CmsRelationFilter filterDefinedInContent() {
 
-        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        CmsRelationFilter filter = (CmsRelationFilter)clone();
         if (filter.m_types.isEmpty()) {
             filter.m_types.addAll(CmsRelationType.getAllDefinedInContent());
         } else {
@@ -137,24 +137,24 @@ public final class CmsRelationFilter implements Cloneable {
 
     /**
      * Returns an extended filter that will extend the result to the given path and all its subresources.<p>
-     * 
+     *
      * @return an extended filter with including subresources
      */
     public CmsRelationFilter filterIncludeChildren() {
 
-        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        CmsRelationFilter filter = (CmsRelationFilter)clone();
         filter.m_includeSubresources = true;
         return filter;
     }
 
     /**
      * Returns an extended filter with internal type restriction.<p>
-     * 
+     *
      * @return an extended filter with internal type restriction
      */
     public CmsRelationFilter filterInternal() {
 
-        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        CmsRelationFilter filter = (CmsRelationFilter)clone();
         if (filter.m_types.isEmpty()) {
             filter.m_types.addAll(CmsRelationType.getAllInternal());
         } else {
@@ -165,12 +165,12 @@ public final class CmsRelationFilter implements Cloneable {
 
     /**
      * Returns an extended filter with not defined in content type restriction.<p>
-     * 
+     *
      * @return an extended filter with not defined in content type restriction
      */
     public CmsRelationFilter filterNotDefinedInContent() {
 
-        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        CmsRelationFilter filter = (CmsRelationFilter)clone();
         if (filter.m_types.isEmpty()) {
             filter.m_types.addAll(CmsRelationType.getAllNotDefinedInContent());
         } else {
@@ -181,23 +181,23 @@ public final class CmsRelationFilter implements Cloneable {
 
     /**
      * Returns an extended filter with the given source relation path restriction.<p>
-     * 
+     *
      * @param path the source relation path to filter
-     *  
+     *
      * @return an extended filter with the given source relation path restriction
      */
     public CmsRelationFilter filterPath(String path) {
 
-        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        CmsRelationFilter filter = (CmsRelationFilter)clone();
         filter.m_path = path;
         return filter;
     }
 
     /**
      * Returns an extended filter with the given resource (path and id) restriction.<p>
-     * 
+     *
      * @param resource the resource to filter
-     *  
+     *
      * @return an extended filter with the given resource (path and id) restriction
      */
     public CmsRelationFilter filterResource(CmsResource resource) {
@@ -209,12 +209,12 @@ public final class CmsRelationFilter implements Cloneable {
 
     /**
      * Returns an extended filter with strong type restriction.<p>
-     * 
+     *
      * @return an extended filter with strong type restriction
      */
     public CmsRelationFilter filterStrong() {
 
-        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        CmsRelationFilter filter = (CmsRelationFilter)clone();
         if (filter.m_types.isEmpty()) {
             filter.m_types.addAll(CmsRelationType.getAllStrong());
         } else {
@@ -227,38 +227,38 @@ public final class CmsRelationFilter implements Cloneable {
      * Returns an extended filter with the given structure id restriction.<p>
      *
      * @param structureId the structure id to filter
-     *  
+     *
      * @return an extended filter with the given structure id restriction
      */
     public CmsRelationFilter filterStructureId(CmsUUID structureId) {
 
-        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        CmsRelationFilter filter = (CmsRelationFilter)clone();
         filter.m_structureId = structureId;
         return filter;
     }
 
     /**
      * Returns an extended filter with the given type restriction.<p>
-     * 
+     *
      * @param type the relation type to filter
-     *  
+     *
      * @return an extended filter with the given type restriction
      */
     public CmsRelationFilter filterType(CmsRelationType type) {
 
-        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        CmsRelationFilter filter = (CmsRelationFilter)clone();
         filter.m_types.add(type);
         return filter;
     }
 
     /**
      * Returns an extended filter with user defined type restriction.<p>
-     * 
+     *
      * @return an extended filter with user defined type restriction
      */
     public CmsRelationFilter filterUserDefined() {
 
-        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        CmsRelationFilter filter = (CmsRelationFilter)clone();
         if (filter.m_types.isEmpty()) {
             filter.m_types.addAll(CmsRelationType.getAllUserDefined());
         } else {
@@ -269,12 +269,12 @@ public final class CmsRelationFilter implements Cloneable {
 
     /**
      * Returns an extended filter with weak type restriction.<p>
-     * 
+     *
      * @return an extended filter with weak type restriction
      */
     public CmsRelationFilter filterWeak() {
 
-        CmsRelationFilter filter = (CmsRelationFilter)this.clone();
+        CmsRelationFilter filter = (CmsRelationFilter)clone();
         if (filter.m_types.isEmpty()) {
             filter.m_types.addAll(CmsRelationType.getAllWeak());
         } else {
@@ -314,8 +314,8 @@ public final class CmsRelationFilter implements Cloneable {
     }
 
     /**
-     * Checks if this filter includes relations defined in the content.<p> 
-     * 
+     * Checks if this filter includes relations defined in the content.<p>
+     *
      * @return <code>true</code> if this filter includes relations defined in the content
      */
     public boolean includesDefinedInContent() {
@@ -335,7 +335,7 @@ public final class CmsRelationFilter implements Cloneable {
 
     /**
      * Returns the include subresources flag.<p>
-     * 
+     *
      * @return if set the filter extends the result to the given path and all its subresources
      */
     public boolean isIncludeSubresources() {
@@ -365,9 +365,9 @@ public final class CmsRelationFilter implements Cloneable {
 
     /**
      * Returns <code>true</code> if the given relation type matches this filter.<p>
-     * 
+     *
      * @param type the relation type to test
-     * 
+     *
      * @return if the given relation type matches this filter
      */
     public boolean matchType(CmsRelationType type) {

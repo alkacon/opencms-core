@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,7 +66,7 @@ public class CmsFormatterConfig implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param id the formatter id
      */
     public CmsFormatterConfig(String id) {
@@ -84,9 +84,9 @@ public class CmsFormatterConfig implements IsSerializable {
 
     /**
      * Returns the formatter configuration settings key for the given container name.<p>
-     * 
+     *
      * @param containerName the container name
-     * 
+     *
      * @return the settings key
      */
     public static String getSettingsKeyForContainer(String containerName) {
@@ -96,7 +96,7 @@ public class CmsFormatterConfig implements IsSerializable {
 
     /**
      * Returns the required CSS resources.<p>
-     * 
+     *
      * @return the CSS resources
      */
     public Set<String> getCssResources() {
@@ -106,7 +106,7 @@ public class CmsFormatterConfig implements IsSerializable {
 
     /**
      * Returns the formatter configuration id.<p>
-     * 
+     *
      * @return the configuration id
      */
     public String getId() {
@@ -116,7 +116,7 @@ public class CmsFormatterConfig implements IsSerializable {
 
     /**
      * Returns the inline CSS.<p>
-     * 
+     *
      * @return the inline CSS
      */
     public String getInlineCss() {
@@ -126,7 +126,7 @@ public class CmsFormatterConfig implements IsSerializable {
 
     /**
      * Returns the formatter root path.<p>
-     * 
+     *
      * @return the formatter root path
      */
     public String getJspRootPath() {
@@ -136,7 +136,7 @@ public class CmsFormatterConfig implements IsSerializable {
 
     /**
      * Returns the formatter label.<p>
-     * 
+     *
      * @return the label
      */
     public String getLabel() {
@@ -146,7 +146,7 @@ public class CmsFormatterConfig implements IsSerializable {
 
     /**
      * Returns the settings configuration.<p>
-     * 
+     *
      * @return the settings configuration
      */
     public Map<String, CmsXmlContentProperty> getSettingConfig() {
@@ -156,7 +156,7 @@ public class CmsFormatterConfig implements IsSerializable {
 
     /**
      * Returns if the formatter has inline CSS.<p>
-     * 
+     *
      * @return <code>true</code> if the formatter has inline CSS
      */
     public boolean hasInlineCss() {
@@ -166,7 +166,7 @@ public class CmsFormatterConfig implements IsSerializable {
 
     /**
      * Sets the required CSS resources.<p>
-     * 
+     *
      * @param cssResources the CSS resources
      */
     public void setCssResources(Set<String> cssResources) {
@@ -176,7 +176,7 @@ public class CmsFormatterConfig implements IsSerializable {
 
     /**
      * Sets the inline CSS.<p>
-     * 
+     *
      * @param inlineCss the inline CSS
      */
     public void setInlineCss(String inlineCss) {
@@ -186,7 +186,7 @@ public class CmsFormatterConfig implements IsSerializable {
 
     /**
      * Sets the formatter root path.<p>
-     * 
+     *
      * @param jspRootPath the formatter root path
      */
     public void setJspRootPath(String jspRootPath) {
@@ -196,7 +196,7 @@ public class CmsFormatterConfig implements IsSerializable {
 
     /**
      * Sets the formatter label.<p>
-     * 
+     *
      * @param label the label
      */
     public void setLabel(String label) {
@@ -206,7 +206,7 @@ public class CmsFormatterConfig implements IsSerializable {
 
     /**
      * Sets the settings configuration.<p>
-     * 
+     *
      * @param settingConfig the settings configuration
      */
     public void setSettingConfig(Map<String, CmsXmlContentProperty> settingConfig) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,10 +44,10 @@ import javax.servlet.jsp.JspException;
 
 /**
  * A base list dialog to select a resource.<p>
- * 
+ *
  * This dialog can be used as part of a wizard based dialog by forwarding to it and after the selection switching back
  * to the wizard. Necessary request parameters have to be passed through.<p>
- * 
+ *
  * @since 6.5.6
  */
 public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
@@ -66,7 +66,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
 
     /**
      * Creates a new select resource list ordered and searchable by name.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -82,7 +82,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -107,9 +107,9 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
 
     /**
      * Override this to set additional parameters before forwarding or to change the forward target.<p>
-     * 
+     *
      * Usually you have to set the "action" parameter to another value before forwarding.<p>
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
     @Override
@@ -124,10 +124,10 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
 
     /**
      * Builds a default button row with a continue and cancel button.<p>
-     * 
+     *
      * Override this to have special buttons for your dialog.<p>
-     * 
-     * @return the button row 
+     *
+     * @return the button row
      */
     public String dialogButtons() {
 
@@ -154,7 +154,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
 
     /**
      * Returns the resource name of the selected resource.<p>
-     * 
+     *
      * @return the resource name of the selected resource or null if no resource was selected
      */
     public String getSelectedResourceName() {
@@ -179,14 +179,14 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
 
     /**
      * Returns the title of the list to display.<p>
-     * 
+     *
      * @return the title of the list to display
      */
     public abstract String getListTitle();
 
     /**
      * Returns the url to forward the parameters after selection.<p>
-     * 
+     *
      * @return the url to forward the parameters after selection
      */
     public abstract String nextUrl();
@@ -298,9 +298,9 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
 
     /**
      * The following columns are visible by default: type icon, resource name, title and last modification date.<p>
-     * 
+     *
      * Override this to set different column visibilities.<p>
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
     @Override

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import org.opencms.util.CmsStringUtil;
 
 /**
  * A custom foot configuration to create a specially designed foot for the OpenCms workplace.<p>
- * 
- * @since 6.9.2 
+ *
+ * @since 6.9.2
  */
 public class CmsWorkplaceCustomFoot {
 
@@ -100,7 +100,7 @@ public class CmsWorkplaceCustomFoot {
 
     /**
      * Returns the background color of the foot frame.<p>
-     * 
+     *
      * @return the background color of the foot frame
      */
     public String getBackgroundColor() {
@@ -110,7 +110,7 @@ public class CmsWorkplaceCustomFoot {
 
     /**
      * Returns the font color of the foot frame.<p>
-     * 
+     *
      * @return the font color of the foot frame
      */
     public String getColor() {
@@ -120,7 +120,7 @@ public class CmsWorkplaceCustomFoot {
 
     /**
      * Returns the additional text of the foot frame.<p>
-     * 
+     *
      * @return the additional text of the foot frame
      */
     public String getText() {
@@ -130,7 +130,7 @@ public class CmsWorkplaceCustomFoot {
 
     /**
      * Returns the text of the foot frame with resolved macros.<p>
-     * 
+     *
      * @param wp the initialized workplace dialog
      * @return the text of the foot frame with resolved macros
      */
@@ -164,7 +164,7 @@ public class CmsWorkplaceCustomFoot {
 
     /**
      * Returns if the default text should be replaced or kept.<p>
-     * 
+     *
      * @return true if the default text should be replaced, otherwise false
      */
     public boolean isReplaceDefault() {
@@ -174,7 +174,7 @@ public class CmsWorkplaceCustomFoot {
 
     /**
      * Sets the background color of the foot frame.<p>
-     * 
+     *
      * @param backgroundColor the background color of the foot frame
      */
     public void setBackgroundColor(String backgroundColor) {
@@ -186,7 +186,7 @@ public class CmsWorkplaceCustomFoot {
 
     /**
      * Sets the font color of the foot frame.<p>
-     * 
+     *
      * @param color the font color of the foot frame
      */
     public void setColor(String color) {
@@ -198,7 +198,7 @@ public class CmsWorkplaceCustomFoot {
 
     /**
      * Sets the additional text of the foot frame.<p>
-     * 
+     *
      * @param text the additional text of the foot frame
      * @param replaceDefault flag indicating if the default text should be replaced or kept
      */

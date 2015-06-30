@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,8 +48,8 @@ import org.dom4j.io.SAXReader;
 
 /**
  * Skeleton for xml update plugins.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
 
@@ -131,13 +131,13 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
 
     /**
      * Executes the adding/updating changes on the given document.<p>
-     * 
+     *
      * Only needs to be overriden if {@link #getXPathsToUpdate()} is not empty.<p>
-     * 
+     *
      * @param document the document to apply the changes to
      * @param xpath the xpath to execute the changes for
      * @param forReal is <code>false</code>, it is only on a empty doc to display the changes to the user
-     * 
+     *
      * @return if something was modified
      */
     protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
@@ -146,8 +146,8 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
     }
 
     /**
-     * Returns a parent path that is common for all nodes to modify.<p> 
-     * 
+     * Returns a parent path that is common for all nodes to modify.<p>
+     *
      * @return common parent path
      */
     protected String getCommonPath() {
@@ -157,7 +157,7 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
 
     /**
      * Returns a list of xpaths for the nodes to remove.<p>
-     * 
+     *
      * @return a list of strings
      */
     protected List<String> getXPathsToRemove() {
@@ -167,7 +167,7 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
 
     /**
      * Returns a list of xpaths for the nodes to add/update.<p>
-     * 
+     *
      * @return a list of strings
      */
     protected List<String> getXPathsToUpdate() {
@@ -177,10 +177,10 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
 
     /**
      * Prepares a new document.<p>
-     * 
+     *
      * @param doc the original document
-     * 
-     * @return a new document 
+     *
+     * @return a new document
      */
     protected Document prepareDoc(Document doc) {
 
@@ -192,7 +192,7 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
 
     /**
      * Updates the given doc inserting the given node corresponding to the given xpath.<p>
-     * 
+     *
      * @param document the original document to update
      * @param newDoc the document to update
      * @param xpath the corresponding xpath
@@ -210,10 +210,10 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
 
     /**
      * Creates a dom4j element from an XML string.<p>
-     * 
-     * @param xml the xml string 
-     * @return the dom4j element 
-     * 
+     *
+     * @param xml the xml string
+     * @return the dom4j element
+     *
      * @throws DocumentException if the XML parsing fails
      */
     public static org.dom4j.Element createElementFromXml(String xml) throws DocumentException {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,8 +28,8 @@
 package org.opencms.file.wrapper;
 
 /**
- * Exception to be used in wrappers for exceptions that you don't want to be logged as errors. It is the responsibility of the calling 
- * code to handle these exceptions differently. 
+ * Exception to be used in wrappers for exceptions that you don't want to be logged as errors. It is the responsibility of the calling
+ * code to handle these exceptions differently.
  */
 public class CmsSilentWrapperException extends RuntimeException {
 
@@ -38,9 +38,9 @@ public class CmsSilentWrapperException extends RuntimeException {
 
     /**
      * Creates a new exception instance.<p>
-     * 
-     * @param e the cause 
-     * 
+     *
+     * @param e the cause
+     *
      */
     public CmsSilentWrapperException(Throwable e) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ import com.vaadin.ui.declarative.Design;
 
 /**
  * Vaadin utility functions.<p>
- * 
+ *
  */
 public final class CmsVaadinUtils {
 
@@ -65,13 +65,13 @@ public final class CmsVaadinUtils {
         return designPath;
     }
 
-    /** 
+    /**
      * Reads the declarative design for a component and localizes it using a messages object.<p>
-     * 
+     *
      * The design will need to be located in the same directory as the component's class and have '.html' as a file extension.
-     *       
-     * @param component the component for which to read the design  
-     * @param messages the message bundle to use for localization 
+     *
+     * @param component the component for which to read the design
+     * @param messages the message bundle to use for localization
      */
     @SuppressWarnings("resource")
     public static void readAndLocalizeDesign(Component component, CmsMessages messages, Map<String, String> macros) {
@@ -83,11 +83,11 @@ public final class CmsVaadinUtils {
     /**
      * Visits all descendants of a given component (including the component itself) and applies a predicate
      * to each.<p>
-     * 
+     *
      * If the predicate returns false for a component, no further descendants will be processed.<p>
-     * 
-     * @param component the component 
-     * @param handler the predicate 
+     *
+     * @param component the component
+     * @param handler the predicate
      */
     public static void visitDescendants(Component component, Predicate<Component> handler) {
 
@@ -127,7 +127,7 @@ public final class CmsVaadinUtils {
                 public String getMacroValue(String macro) {
 
                     String result = super.getMacroValue(macro);
-                    // The macro may contain quotes or angle brackets, so we need to escape the values for insertion into the design file 
+                    // The macro may contain quotes or angle brackets, so we need to escape the values for insertion into the design file
                     return CmsEncoder.escapeXml(result);
 
                 }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -70,20 +70,20 @@ import org.apache.commons.logging.Log;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-/** 
- * Class for generating XML sitemaps for SEO purposes, as described in 
+/**
+ * Class for generating XML sitemaps for SEO purposes, as described in
  * <a href="http://www.sitemaps.org/protocol.html">http://www.sitemaps.org/protocol.html</a>.<p>
  */
 public class CmsXmlSitemapGenerator {
 
-    /** 
+    /**
      * A bean that consists of a sitemap URL bean and a priority score, to determine which of multiple entries with the same
      * URL are to be preferred.<p>
      */
     protected class ResultEntry {
 
         /** Internal priority to determine which of multiple entries with the same URL is used.
-         * Note that this has nothing to do with the priority in the URL bean itself! 
+         * Note that this has nothing to do with the priority in the URL bean itself!
          */
         private int m_priority;
 
@@ -92,10 +92,10 @@ public class CmsXmlSitemapGenerator {
 
         /**
          * Creates a new result entry.<p>
-         * 
+         *
          * @param urlBean the url bean
-         *  
-         * @param priority the internal priority 
+         *
+         * @param priority the internal priority
          */
         public ResultEntry(CmsXmlSitemapUrlBean urlBean, int priority) {
 
@@ -106,18 +106,18 @@ public class CmsXmlSitemapGenerator {
         /**
          * Gets the internal priority used to determine which of multiple entries with the same URL to use.<p>
          * This has nothing to do with the priority defined in the URL beans themselves!
-         * 
-         * @return the internal priority 
+         *
+         * @return the internal priority
          */
         public int getPriority() {
 
             return m_priority;
         }
 
-        /** 
+        /**
          * Gets the URL bean.<p>
-         * 
-         * @return the URL bean 
+         *
+         * @return the URL bean
          */
         public CmsXmlSitemapUrlBean getUrlBean() {
 
@@ -175,10 +175,10 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Creates a new sitemap generator instance.<p>
-     * 
-     * @param folderRootPath the root folder for the XML sitemap to generate 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param folderRootPath the root folder for the XML sitemap to generate
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsXmlSitemapGenerator(String folderRootPath)
     throws CmsException {
@@ -197,12 +197,12 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Gets the change frequency for a sitemap entry from a list of properties.<p>
-     * 
+     *
      * If the change frequency is not defined in the properties, this method will return null.<p>
-     * 
-     * @param properties the properties from which the change frequency should be obtained 
-     * 
-     * @return the change frequency string 
+     *
+     * @param properties the properties from which the change frequency should be obtained
+     *
+     * @return the change frequency string
      */
     protected static String getChangeFrequency(List<CmsProperty> properties) {
 
@@ -216,8 +216,8 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Removes files marked as internal from a resource list.<p>
-     * 
-     * @param resources the list which should be replaced 
+     *
+     * @param resources the list which should be replaced
      */
     protected static void removeInternalFiles(List<CmsResource> resources) {
 
@@ -232,12 +232,12 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Gets the page priority from a list of properties.<p>
-     * 
+     *
      * If the page priority can't be found among the properties, -1 will be returned.<p>
-     * 
-     * @param properties the properties of a resource 
-     * 
-     * @return the page priority read from the properties, or -1 
+     *
+     * @param properties the properties of a resource
+     *
+     * @return the page priority read from the properties, or -1
      */
     private static double getPriority(List<CmsProperty> properties) {
 
@@ -255,10 +255,10 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Generates a list of XML sitemap entry beans for the root folder which has been set in the constructor.<p>
-     * 
+     *
      * @return the list of XML sitemap entries
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsXmlSitemapUrlBean> generateSitemapBeans() throws CmsException {
 
@@ -303,8 +303,8 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Gets the include/exclude configuration of this XML sitemap generator.<p>
-     * 
-     * @return the include/exclude configuration 
+     *
+     * @return the include/exclude configuration
      */
     public CmsPathIncludeExcludeSet getIncludeExcludeSet() {
 
@@ -313,10 +313,10 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Generates a sitemap and formats it as a string.<p>
-     * 
-     * @return the sitemap XML data 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the sitemap XML data
+     *
+     * @throws CmsException if something goes wrong
      */
     public String renderSitemap() throws CmsException {
 
@@ -334,21 +334,21 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Enables or disables computation of container page dates.<p>
-     * 
-     * @param computeContainerPageDates the new value 
+     *
+     * @param computeContainerPageDates the new value
      */
     public void setComputeContainerPageDates(boolean computeContainerPageDates) {
 
         m_computeContainerPageDates = computeContainerPageDates;
     }
 
-    /** 
-     * Adds an URL bean to the internal map of results, but only if there is no existing entry with higher internal priority 
+    /**
+     * Adds an URL bean to the internal map of results, but only if there is no existing entry with higher internal priority
      * than the priority given as an argument.<p>
-     * 
-     * @param result the result URL bean to add 
-     * 
-     * @param resultPriority the internal priority to use for updating the map of results 
+     *
+     * @param result the result URL bean to add
+     *
+     * @param resultPriority the internal priority to use for updating the map of results
      */
     protected void addResult(CmsXmlSitemapUrlBean result, int resultPriority) {
 
@@ -366,22 +366,24 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Computes the container the container page modification date from its referenced contents.<p>
-     *  
-     * @param containerPage the container page 
-     * 
-     * @return the computed modification date 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param containerPage the container page
+     *
+     * @return the computed modification date
+     *
+     * @throws CmsException if something goes wrong
      */
     protected long computeContainerPageModificationDate(CmsResource containerPage) throws CmsException {
 
-        CmsRelationFilter filter = CmsRelationFilter.relationsFromStructureId(containerPage.getStructureId()).filterType(
-            CmsRelationType.XML_STRONG);
+        CmsRelationFilter filter = CmsRelationFilter.relationsFromStructureId(
+            containerPage.getStructureId()).filterType(CmsRelationType.XML_STRONG);
         List<CmsRelation> relations = m_guestCms.readRelations(filter);
         long result = containerPage.getDateLastModified();
         for (CmsRelation relation : relations) {
             try {
-                CmsResource target = relation.getTarget(m_guestCms, CmsResourceFilter.DEFAULT_FILES.addRequireVisible());
+                CmsResource target = relation.getTarget(
+                    m_guestCms,
+                    CmsResourceFilter.DEFAULT_FILES.addRequireVisible());
                 long targetDate = target.getDateLastModified();
                 if (targetDate > result) {
                     result = targetDate;
@@ -401,12 +403,12 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Gets the detail link for a given container page and detail content.<p>
-     * 
-     * @param pageRes the container page 
-     * @param detailRes the detail content 
-     * @param locale the locale for which we want the link 
-     * 
-     * @return the detail page link 
+     *
+     * @param pageRes the container page
+     * @param detailRes the detail content
+     * @param locale the locale for which we want the link
+     *
+     * @return the detail page link
      */
     protected String getDetailLink(CmsResource pageRes, CmsResource detailRes, Locale locale) {
 
@@ -427,10 +429,10 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Gets the types for which a given resource is configured as a detail page.<p>
-     * 
-     * @param resource a resource for which we want to find the detail page types 
-     * 
-     * @return the list of resource types for which the given page is configured as a detail page 
+     *
+     * @param resource a resource for which we want to find the detail page types
+     *
+     * @return the list of resource types for which the given page is configured as a detail page
      */
     protected List<I_CmsResourceType> getDetailTypesForPage(CmsResource resource) {
 
@@ -455,10 +457,10 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Gets the list of pages which should be directly added to the XML sitemap.<p>
-     * 
+     *
      * @return the list of resources which should be directly added to the XML sitemap
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected List<CmsResource> getDirectPages() throws CmsException {
 
@@ -491,11 +493,11 @@ public class CmsXmlSitemapGenerator {
         return result;
     }
 
-    /** 
+    /**
      * Writes the inner node content for an url element to a buffer.<p>
-     * 
+     *
      * @param entry the entry for which the content should be written
-     * @return the inner XML  
+     * @return the inner XML
      */
     protected String getInnerXmlForEntry(CmsXmlSitemapUrlBean entry) {
 
@@ -509,8 +511,8 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Gets the list of pages from the navigation which should be directly added to the XML sitemap.<p>
-     * 
-     * @return the list of pages to add to the XML sitemap 
+     *
+     * @return the list of pages to add to the XML sitemap
      */
     protected List<CmsResource> getNavigationPages() {
 
@@ -537,21 +539,21 @@ public class CmsXmlSitemapGenerator {
         return result;
     }
 
-    /** 
+    /**
      * Gets the opening tag for the urlset element (can be overridden to add e.g. more namespaces.<p>
-     * 
-     * @return the opening tag 
+     *
+     * @return the opening tag
      */
     protected String getUrlSetOpenTag() {
 
         return "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">";
     }
 
-    /** 
+    /**
      * Writes the XML for an URL entry to a buffer.<p>
-     * 
-     * @param entry the XML sitemap entry bean 
-     *  
+     *
+     * @param entry the XML sitemap entry bean
+     *
      * @return an XML representation of this bean
      */
     protected String getXmlForEntry(CmsXmlSitemapUrlBean entry) {
@@ -565,10 +567,10 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Checks whether the given alias is below the base folder.<p>
-     * 
+     *
      * @param alias the alias to check
-     * 
-     * @return true if the alias is below the base folder 
+     *
+     * @return true if the alias is below the base folder
      */
     protected boolean isAliasBelowBaseFolder(CmsAlias alias) {
 
@@ -576,10 +578,10 @@ public class CmsXmlSitemapGenerator {
         return isBelowBaseFolder;
     }
 
-    /** 
+    /**
      * Adds the alias links for a given structure id to the results.<p>
-     * 
-     * @param aliasStructureId the alias target structure id 
+     *
+     * @param aliasStructureId the alias target structure id
      */
     private void addAliasLinks(CmsUUID aliasStructureId) {
 
@@ -602,11 +604,11 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Adds the detail page links for a given page to the results.<p>
-     * 
-     * @param containerPage the container page resource 
-     * @param locale the locale of the container page 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param containerPage the container page resource
+     * @param locale the locale of the container page
+     *
+     * @throws CmsException if something goes wrong
      */
     private void addDetailLinks(CmsResource containerPage, Locale locale) throws CmsException {
 
@@ -634,12 +636,12 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Gets all resources from the folder tree beneath the base folder or the shared folder which have a given type.<p>
-     * 
-     * @param type the type to filter by 
-     * 
+     *
+     * @param type the type to filter by
+     *
      * @return the list of resources with the given type
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     private List<CmsResource> getDetailResources(I_CmsResourceType type) throws CmsException {
 
@@ -661,11 +663,11 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Gets the locale to use for the given resource.<p>
-     * 
-     * @param resource the resource 
-     * @param propertyList the properties of the resource 
-     * 
-     * @return the locale to use for the given resource 
+     *
+     * @param resource the resource
+     * @param propertyList the properties of the resource
+     *
+     * @return the locale to use for the given resource
      */
     private Locale getLocale(CmsResource resource, List<CmsProperty> propertyList) {
 
@@ -674,10 +676,10 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Reads the data necessary for building the sitemap from the VFS and initializes the internal data structures.<p>
-     *  
-     * @param baseSitePath the base site path 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param baseSitePath the base site path
+     *
+     * @throws CmsException if something goes wrong
      */
     private void initializeFileData(String baseSitePath) throws CmsException {
 
@@ -704,12 +706,12 @@ public class CmsXmlSitemapGenerator {
 
     /**
      * Checks whether the page/detail content combination is a valid detail page.<p>
-     * 
-     * @param page the container page 
-     * @param locale the locale 
+     *
+     * @param page the container page
+     * @param locale the locale
      * @param detailRes the detail content resource
-     *  
-     * @return true if this is a valid detail page combination 
+     *
+     * @return true if this is a valid detail page combination
      */
     private boolean isValidDetailPageCombination(CmsResource page, Locale locale, CmsResource detailRes) {
 

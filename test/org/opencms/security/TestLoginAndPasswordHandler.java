@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,23 +39,23 @@ import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
+import com.lambdaworks.crypto.SCryptUtil;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import com.lambdaworks.crypto.SCryptUtil;
-
-/** 
+/**
  * Tests login and password related functions.<p>
- * 
- * 
+ *
+ *
  * @since 6.0
  */
 public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -94,7 +94,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestLoginAndPasswordHandler(String arg0) {
@@ -104,7 +104,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
     /**
      * Tests if the password is digested and stored correctly.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCheckPasswordDigest() throws Throwable {
@@ -122,7 +122,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
         CmsUser adminUser = cms.readUser(adminUsername);
         String adminUserPassword = adminUser.getPassword();
 
-        // change password back, otherwise further tests would fail      
+        // change password back, otherwise further tests would fail
         cms.setPassword(adminUsername, newPassword, "admin");
 
         echo("Digested password: " + newPasswordDigested);
@@ -139,7 +139,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
     /**
      * Tests the login message functions.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testLoginMessage() throws Exception {
@@ -221,7 +221,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
     /**
      * Tests logging in as a user (checking for different kind of exceptions).<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testLoginUser() throws Exception {
@@ -298,7 +298,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
     /**
      * Tests if the password is automatically converted from the old to the new hash algorithm.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPasswordConvesion() throws Throwable {
@@ -331,7 +331,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
     /**
      * Tests the static "validatePassword" method of the password handler.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPasswordValidation() throws Throwable {
@@ -353,7 +353,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
             fail("Invalid password 1*3 validated.");
         }
 
-        // try some valid passwords        
+        // try some valid passwords
         try {
             passwordHandler.validatePassword("zyz*nowski");
         } catch (Exception exc) {
@@ -381,7 +381,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
     /**
      * Tests basic functionality and availability of the SCrypt algorithm.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testSCrypt() throws Throwable {
@@ -449,7 +449,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
     /**
      * Tests the setPassword and resetPassword methods.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testSetResetPassword() throws Throwable {
@@ -464,13 +464,13 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
         // login with the new password
         cms.loginUser(adminUsername, "password1");
 
-        // change password again        
+        // change password again
         cms.setPassword(adminUsername, "password2");
 
         // login with the new password
         cms.loginUser(adminUsername, "password2");
 
-        // change password back, otherwise further tests would fail      
+        // change password back, otherwise further tests would fail
         cms.setPassword(adminUsername, "password2", "admin");
 
         // verify that the password was changed to the expected default
@@ -479,7 +479,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
     /**
      * Tests if the user passwords are imported / set correctly.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testUserDefaultPasswords() throws Exception {

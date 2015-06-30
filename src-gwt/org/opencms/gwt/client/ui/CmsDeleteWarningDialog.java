@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.Command;
 /**
  * A dialog which informs the user that deleting a resource will break links
  * from other resources.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsDeleteWarningDialog extends CmsConfirmDialog {
@@ -60,7 +60,7 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param structureId the structure id of the resource going to be deleted
      */
     public CmsDeleteWarningDialog(CmsUUID structureId) {
@@ -71,7 +71,7 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param sitePath the site-path of the resource going to be deleted
      */
     public CmsDeleteWarningDialog(String sitePath) {
@@ -96,7 +96,7 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
              */
             public void onClose() {
 
-                // do nothing 
+                // do nothing
             }
 
             /**
@@ -116,7 +116,7 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
 
     /**
      * Loads and shows the delete dialog.<p>
-     * 
+     *
      * @param callback the callback that is executed when the resource was deleted (can be <code>null</code>)
      */
     public void loadAndShow(Command callback) {
@@ -139,7 +139,7 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
 
     /**
      * Displays the broken links information.<p>
-     * 
+     *
      * @param brokenLinks the broken links information
      */
     protected void displayBrokenLinks(CmsDeleteResourceBean brokenLinks) {
@@ -160,7 +160,7 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
      */
     protected void onAfterDeletion() {
 
-        // do nothing 
+        // do nothing
 
     }
 
@@ -230,7 +230,7 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
 
     /**
      * Deletes a resource from the vfs.<p>
-     * 
+     *
      * @param structureId the resource structure id
      */
     private void deleteResource(final CmsUUID structureId) {
@@ -261,8 +261,8 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
 
     /**
      * Deletes a resource from the vfs.<p>
-     * 
-     * @param sitePath the resource site path 
+     *
+     * @param sitePath the resource site path
      */
     private void deleteResource(final String sitePath) {
 

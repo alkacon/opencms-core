@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,15 +63,15 @@ import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * Basic text area widget for forms.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsHasInit {
 
     /**
      * Drag and drop event preview handler.<p>
-     * 
+     *
      * To be used while dragging.<p>
      */
     protected class CloseEventPreviewHandler implements NativePreviewHandler {
@@ -205,7 +205,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
     /**
      * Returns the colorfield.<p>
-     * 
+     *
      * @return the colorfield
      */
     public SimplePanel getColorfield() {
@@ -215,7 +215,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
     /**
      * Returns the color value textbox.<p>
-     * 
+     *
      * @return the color value textbox
      * */
     public TextBox getColorValueBox() {
@@ -252,7 +252,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
     /**
      * Returns the text contained in the text area.<p>
-     * 
+     *
      * @return the text in the text area
      */
     public String getText() {
@@ -262,7 +262,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
     /**
      * Returns the color value textboxpanel.<p>
-     * 
+     *
      * @return the color value textboxpanel
      */
     public SimplePanel getTextboxPanel() {
@@ -313,8 +313,8 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
     /**
      * Sets the value of the widget.<p>
-     * 
-     * @param value the new value 
+     *
+     * @param value the new value
      */
     public void setFormValue(Object value) {
 
@@ -340,7 +340,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
     /**
      * Sets the name of the input field.<p>
-     * 
+     *
      * @param name of the input field
      * */
     public void setName(String name) {
@@ -351,7 +351,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
     /**
      * Sets the text in the text area.<p>
-     * 
+     *
      * @param text the new text
      */
     public void setText(String text) {
@@ -384,7 +384,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
     /**
      * Close the popup and store the color value in the colorvalue field.<p>
-     * 
+     *
      */
     protected void closePopup() {
 
@@ -401,7 +401,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
     /**
      * Close the popup and store the old color value in the colorvalue field.<p>
-     * 
+     *
      */
     protected void closePopupDefault() {
 
@@ -524,7 +524,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
 
     /**
      * Checks if the given string is a valid colorvalue.<p>
-     * 
+     *
      * @param colorvalue to check
      * @return true if the value is valid otherwise false
      */

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,9 +45,9 @@ public class CmsGroupContainerSaveResult implements IsSerializable {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param elementData the group container elements 
-     * @param removedElements the removed group container elements 
+     *
+     * @param elementData the group container elements
+     * @param removedElements the removed group container elements
      */
     public CmsGroupContainerSaveResult(
         Map<String, CmsContainerElementData> elementData,
@@ -62,13 +62,13 @@ public class CmsGroupContainerSaveResult implements IsSerializable {
      */
     protected CmsGroupContainerSaveResult() {
 
-        // hidden default constructor for serialization 
+        // hidden default constructor for serialization
     }
 
     /**
      * Gets the group container elements.<p>
-     * 
-     * @return the group container elements 
+     *
+     * @return the group container elements
      */
     public Map<String, CmsContainerElementData> getElementData() {
 
@@ -77,8 +77,8 @@ public class CmsGroupContainerSaveResult implements IsSerializable {
 
     /**
      * Gets the list of removed elements.<p>
-     * 
-     * @return the list of removed elements 
+     *
+     * @return the list of removed elements
      */
     public List<CmsRemovedElementStatus> getRemovedElements() {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,11 +32,11 @@ import org.opencms.i18n.CmsMessageContainer;
 /**
  * A replacement for <code>{@link java.lang.IllegalStateException}</code> to obtain fully
  * localized exception messages for OpenCms.<p>
- * 
- * Please note that this class does not extend <code>{@link java.lang.IllegalStateException}</code> due to 
+ *
+ * Please note that this class does not extend <code>{@link java.lang.IllegalStateException}</code> due to
  * the lack of multiple inheritance for Java.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsIllegalStateException extends CmsRuntimeException {
 
@@ -45,7 +45,7 @@ public class CmsIllegalStateException extends CmsRuntimeException {
 
     /**
      * Creates a new localized Exception.<p>
-     * 
+     *
      * @param container the localized message container to use
      */
     public CmsIllegalStateException(CmsMessageContainer container) {
@@ -55,7 +55,7 @@ public class CmsIllegalStateException extends CmsRuntimeException {
 
     /**
      * Creates a new localized Exception that also containes a root cause.<p>
-     * 
+     *
      * @param container the localized message container to use
      * @param cause the Exception root cause
      */

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
 /**
  * Default implementation of a independent action for a html list.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListIndependentAction extends A_CmsListAction {
 
@@ -44,7 +44,7 @@ public class CmsListIndependentAction extends A_CmsListAction {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id unique id
      */
     public CmsListIndependentAction(String id) {
@@ -54,9 +54,9 @@ public class CmsListIndependentAction extends A_CmsListAction {
 
     /**
      * Help method to resolve the on clic text to use.<p>
-     * 
+     *
      * @param wp the workplace context
-     * 
+     *
      * @return the on clic text
      */
     protected String resolveOnClic(CmsWorkplace wp) {
@@ -91,7 +91,7 @@ public class CmsListIndependentAction extends A_CmsListAction {
 
     /**
      * Returns the default explorer switch action for explorer list dialogs.<p>
-     * 
+     *
      * @return the default explorer switch action
      */
     public static CmsListIndependentAction getDefaultExplorerSwitchAction() {

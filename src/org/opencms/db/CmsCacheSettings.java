@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,7 +29,7 @@ package org.opencms.db;
 
 /**
  * The settings of the OpenCms memory monitor.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsCacheSettings {
@@ -44,7 +44,7 @@ public class CmsCacheSettings {
     private int m_groupCacheSize;
 
     /** The size of the memory monitor's cache for organizational units. */
-    private int m_orgUnitCacheSize = -1; // this configuration entry is optional 
+    private int m_orgUnitCacheSize = -1; // this configuration entry is optional
 
     /** The size of the memory monitor's cache for permission checks. */
     private int m_permissionCacheSize;
@@ -164,7 +164,7 @@ public class CmsCacheSettings {
 
     /**
      * Returns the size of the memory monitor's cache for organizational units.<p>
-     * 
+     *
      * @return the size of the memory monitor's cache for organizational units
      */
     public int getOrgUnitCacheSize() {
@@ -253,7 +253,7 @@ public class CmsCacheSettings {
 
     /**
      * Returns the size of the memory monitor's cache for roles.<p>
-     * 
+     *
      * @return the size of the memory monitor's cache for roles
      */
     public int getRolesCacheSize() {
@@ -426,7 +426,7 @@ public class CmsCacheSettings {
 
     /**
      * Turns a string into an int.<p>
-     * 
+     *
      * @param str the string to be converted
      * @param defaultValue a default value to be returned in case the string could not be parsed or the parsed int value is <= 0
      * @return the int value of the string

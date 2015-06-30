@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,9 +45,9 @@ public final class CmsRestore implements I_CmsHasContextMenuCommand, I_CmsContex
     }
 
     /**
-     * Returns the context menu command according to 
+     * Returns the context menu command according to
      * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
-     * 
+     *
      * @return the context menu command
      */
     public static I_CmsContextMenuCommand getContextMenuCommand() {
@@ -58,7 +58,10 @@ public final class CmsRestore implements I_CmsHasContextMenuCommand, I_CmsContex
     /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#execute(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
      */
-    public void execute(final CmsUUID structureId, final I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+    public void execute(
+        final CmsUUID structureId,
+        final I_CmsContextMenuHandler handler,
+        CmsContextMenuEntryBean bean) {
 
         CmsRestoreDialog restoreDialog = new CmsRestoreDialog(structureId, new Runnable() {
 

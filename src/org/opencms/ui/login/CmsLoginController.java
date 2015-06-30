@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -72,10 +72,10 @@ public class CmsLoginController {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param target the login target 
-         * @param user the user name 
-         * @param password the password 
+         *
+         * @param target the login target
+         * @param user the user name
+         * @param password the password
          */
         public CmsLoginTargetInfo(String target, String user, String password) {
 
@@ -118,7 +118,7 @@ public class CmsLoginController {
 
     /**
      * Helper subclass of CmsLoginUserAgreement which can be used without a page context.<p>
-     * 
+     *
      * This is only used for detecting whether we need to display the user agreement dialog, not for displaying the dialog itself.<p>
      */
     protected class UserAgreementHelper extends CmsLoginUserAgreement {
@@ -131,9 +131,9 @@ public class CmsLoginController {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param cms the replacement CMS context 
-         * @param wpSettings the replacement workplace settings 
+         *
+         * @param cms the replacement CMS context
+         * @param wpSettings the replacement workplace settings
          */
         public UserAgreementHelper(CmsObject cms, CmsWorkplaceSettings wpSettings) {
 
@@ -167,7 +167,7 @@ public class CmsLoginController {
         @Override
         protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
-            // do nothing 
+            // do nothing
         }
     }
 
@@ -185,9 +185,9 @@ public class CmsLoginController {
 
     /***
      * Creates a new instance.<p>
-     * 
-     * @param adminCms the admin cms context 
-     * @param params the parameters for the UI 
+     *
+     * @param adminCms the admin cms context
+     * @param params the parameters for the UI
      */
     public CmsLoginController(CmsObject adminCms, LoginParameters params) {
 
@@ -197,8 +197,8 @@ public class CmsLoginController {
 
     /**
      * Gets the PC type.<p>
-     * 
-     * @return the PC type 
+     *
+     * @return the PC type
      */
     public String getPcType() {
 
@@ -211,8 +211,8 @@ public class CmsLoginController {
 
     /**
      * Returns true if the security option should be displayed in the login dialog.<p>
-     * 
-     * @return true if the security option should be displayed in the login dialog 
+     *
+     * @return true if the security option should be displayed in the login dialog
      */
     public boolean isShowSecure() {
 
@@ -231,7 +231,7 @@ public class CmsLoginController {
         String storedMessage = null;
         if ((loginMessage != null) && !loginMessage.isLoginCurrentlyForbidden() && loginMessage.isEnabled()) {
             storedMessage = loginMessage.getMessage();
-            // If login is forbidden, we will get an error message anyway, so we don't need to store the message here 
+            // If login is forbidden, we will get an error message anyway, so we don't need to store the message here
         }
         if (message != null) {
             String errorMesssage = message.key(m_params.getLocale());
@@ -302,8 +302,8 @@ public class CmsLoginController {
 
     /**
      * Sets the login ui reference.<p>
-     * 
-     * @param ui the login ui 
+     *
+     * @param ui the login ui
      */
     public void setUi(I_CmsLoginUI ui) {
 
@@ -312,10 +312,10 @@ public class CmsLoginController {
 
     /**
      * Gets the login target link.<p>
-     * 
-     * @param currentCms the current CMS context 
-     * @param settings the workplace settings 
-     * @return the login target 
+     *
+     * @param currentCms the current CMS context
+     * @param settings the workplace settings
+     * @return the login target
      */
     protected String getLoginTarget(CmsObject currentCms, CmsWorkplaceSettings settings) {
 
@@ -346,10 +346,10 @@ public class CmsLoginController {
         return target;
     }
 
-    /** 
+    /**
      * Gets the CMS context.<p>
-     * 
-     * @return the CMS context 
+     *
+     * @return the CMS context
      */
     CmsObject getCms() {
 

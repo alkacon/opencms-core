@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ public class CmsAppView implements View, I_CmsComponentFactory {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param appConfig the app configuration
      */
     public CmsAppView(I_CmsWorkplaceAppConfiguration appConfig) {
@@ -63,7 +63,7 @@ public class CmsAppView implements View, I_CmsComponentFactory {
 
     /**
      * Returns the workplace UI.<p>
-     * 
+     *
      * @return the workplace UI
      */
     public static CmsAppWorkplaceUi getWorkplaceUi() {
@@ -103,7 +103,7 @@ public class CmsAppView implements View, I_CmsComponentFactory {
 
     /**
      * Creates the menu component.<p>
-     * 
+     *
      * @return the menu
      */
     protected Component createMenu() {

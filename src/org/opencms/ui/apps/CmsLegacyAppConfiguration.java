@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,7 +48,7 @@ public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param toolHandler the tool handler
      */
     public CmsLegacyAppConfiguration(I_CmsToolHandler toolHandler) {
@@ -77,8 +77,8 @@ public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration
      */
     public String getHelpText(Locale locale) {
 
-        return CmsMacroResolver.newInstance().setMessages(OpenCms.getWorkplaceManager().getMessages(locale)).resolveMacros(
-            m_toolHandler.getHelpText());
+        return CmsMacroResolver.newInstance().setMessages(
+            OpenCms.getWorkplaceManager().getMessages(locale)).resolveMacros(m_toolHandler.getHelpText());
     }
 
     /**
@@ -102,8 +102,8 @@ public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration
      */
     public String getName(Locale locale) {
 
-        return CmsMacroResolver.newInstance().setMessages(OpenCms.getWorkplaceManager().getMessages(locale)).resolveMacros(
-            m_toolHandler.getName());
+        return CmsMacroResolver.newInstance().setMessages(
+            OpenCms.getWorkplaceManager().getMessages(locale)).resolveMacros(m_toolHandler.getName());
     }
 
     /**

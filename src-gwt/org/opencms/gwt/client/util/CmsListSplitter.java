@@ -19,14 +19,13 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.gwt.client.util;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +34,11 @@ import java.util.List;
  * A utility class for partitioning a list of items (each of which has a given size) into one or more batches
  * of consecutive items such that each batch except the last one consists of just enough items to make the total
  * sum of item sizes in the batch greater or equal than a given parameter.<p>
- * 
+ *
  * @param <T> the type of items in the list to be partitioned
- * 
+ *
  * @since 8.0.0
- *  
+ *
  */
 public class CmsListSplitter<T extends I_CmsHasSize> {
 
@@ -54,7 +53,7 @@ public class CmsListSplitter<T extends I_CmsHasSize> {
 
     /**
      * Creates a new instance of a list splitter.<p>
-     * 
+     *
      * @param items the list of items to split
      * @param batchSize the minimum size of the batches (except for the last batch)
      */
@@ -67,10 +66,10 @@ public class CmsListSplitter<T extends I_CmsHasSize> {
 
     /**
      * Gets the next batch of items.<p>
-     * 
+     *
      * This will fail if there are no more items.
-     * 
-     * @return the next batch of items 
+     *
+     * @return the next batch of items
      */
     public List<T> getMore() {
 
@@ -88,8 +87,8 @@ public class CmsListSplitter<T extends I_CmsHasSize> {
 
     /**
      * Returns true if there are more items left.<p>
-     * 
-     * @return true if there are more items left 
+     *
+     * @return true if there are more items left
      */
     public boolean hasMore() {
 

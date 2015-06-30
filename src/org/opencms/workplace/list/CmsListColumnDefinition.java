@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,8 +44,8 @@ import java.util.Locale;
 
 /**
  * Html list column definition.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListColumnDefinition {
 
@@ -99,7 +99,7 @@ public class CmsListColumnDefinition {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id the unique id
      */
     public CmsListColumnDefinition(String id) {
@@ -114,7 +114,7 @@ public class CmsListColumnDefinition {
      * Adds a default Action.<p>
      *
      * A column could have more than one default action if the visibilities are complementary.<p>
-     * 
+     *
      * @param defaultAction the default Action to add
      */
     public void addDefaultAction(CmsListDefaultAction defaultAction) {
@@ -131,7 +131,7 @@ public class CmsListColumnDefinition {
 
     /**
      * Adds a new action to the column.<p>
-     * 
+     *
      * @param listAction the action to add
      */
     public void addDirectAction(I_CmsListDirectAction listAction) {
@@ -144,9 +144,9 @@ public class CmsListColumnDefinition {
 
     /**
      * returns the csv output for a cell.<p>
-     * 
+     *
      * @param item the item to render the cell for
-     * 
+     *
      * @return csv output
      */
     public String csvCell(CmsListItem item) {
@@ -179,7 +179,7 @@ public class CmsListColumnDefinition {
 
     /**
      * Returns the csv output for a column header.<p>
-     * 
+     *
      * @return csv header
      */
     public String csvHeader() {
@@ -202,9 +202,9 @@ public class CmsListColumnDefinition {
 
     /**
      * Returns a default action by id.<p>
-     * 
+     *
      * @param actionId the id of the action
-     * 
+     *
      * @return the action if found or null
      */
     public CmsListDefaultAction getDefaultAction(String actionId) {
@@ -247,9 +247,9 @@ public class CmsListColumnDefinition {
 
     /**
      * Returns a direct action by id.<p>
-     * 
+     *
      * @param actionId the id of the action
-     * 
+     *
      * @return the action if found or null
      */
     public I_CmsListDirectAction getDirectAction(String actionId) {
@@ -282,7 +282,7 @@ public class CmsListColumnDefinition {
 
     /**
      * Returns all direct actions.<p>
-     * 
+     *
      * @return a list of <code>{@link I_CmsListDirectAction}</code>s.
      */
     public List<I_CmsListDirectAction> getDirectActions() {
@@ -302,7 +302,7 @@ public class CmsListColumnDefinition {
 
     /**
      * Returns the customized help Text.<p>
-     * 
+     *
      * if <code>null</code> a default help text indicating the sort actions is used.<p>
      *
      * @return the customized help Text
@@ -326,9 +326,9 @@ public class CmsListColumnDefinition {
      * Returns the comparator, used for sorting.<p>
      *
      * if no comparator was set, the default list item comparator is used.<p>
-     * 
+     *
      * @return the comparator
-     * 
+     *
      * @see CmsListItemDefaultComparator
      */
     public I_CmsListItemComparator getListItemComparator() {
@@ -368,10 +368,10 @@ public class CmsListColumnDefinition {
 
     /**
      * returns the html for a cell.<p>
-     * 
+     *
      * @param item the item to render the cell for
      * @param isPrintable if the list is to be printed
-     * 
+     *
      * @return html code
      */
     public String htmlCell(CmsListItem item, boolean isPrintable) {
@@ -422,9 +422,9 @@ public class CmsListColumnDefinition {
 
     /**
      * Returns the html code for a column header.<p>
-     * 
+     *
      * @param list the list to generate the header code for
-     * 
+     *
      * @return html code
      */
     public String htmlHeader(CmsHtmlList list) {
@@ -483,18 +483,19 @@ public class CmsListColumnDefinition {
                 sortArrow = "<img src='" + CmsWorkplace.getSkinUri() + ICON_UP + "' alt=''>&nbsp;";
             }
         }
-        html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-            id,
-            id,
-            getName().key(locale),
-            helpText,
-            list.isPrintable() ? false : isSorteable(),
-            null,
-            null,
-            onClic,
-            false,
-            sortArrow));
+        html.append(
+            A_CmsHtmlIconButton.defaultButtonHtml(
+                CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+                id,
+                id,
+                getName().key(locale),
+                helpText,
+                list.isPrintable() ? false : isSorteable(),
+                null,
+                null,
+                onClic,
+                false,
+                sortArrow));
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && (getWidth().indexOf('%') < 0)) {
             html.append("\t</div>\n");
         }
@@ -544,9 +545,9 @@ public class CmsListColumnDefinition {
 
     /**
      * Removes the default action from this column by id.<p>
-     * 
+     *
      * @param actionId the id of the action to remove
-     * 
+     *
      * @return the action if found or <code>null</code>
      */
     public CmsListDefaultAction removeDefaultAction(String actionId) {
@@ -564,9 +565,9 @@ public class CmsListColumnDefinition {
 
     /**
      * Removes a direct action from this column by id.<p>
-     * 
+     *
      * @param actionId the id of the action to remove
-     * 
+     *
      * @return the action if found or <code>null</code>
      */
     public I_CmsListDirectAction removeDirectAction(String actionId) {
@@ -652,11 +653,11 @@ public class CmsListColumnDefinition {
 
     /**
      * Indicates if the current column is sorteable or not.<p>
-     * 
+     *
      * if <code>true</code> a default list item comparator is used.<p>
-     * 
+     *
      * if <code>false</code> any previously set list item comparator is removed.<p>
-     * 
+     *
      * @param sorteable the sorteable flag
      */
     public void setSorteable(boolean sorteable) {
@@ -725,7 +726,7 @@ public class CmsListColumnDefinition {
 
     /**
      * Sets the id of the list.<p>
-     * 
+     *
      * @param listId the id of the list
      */
     /*package*/void setListId(String listId) {

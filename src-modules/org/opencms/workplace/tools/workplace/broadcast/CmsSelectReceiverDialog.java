@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,8 +57,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog to select the receiver of a new message.<p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public class CmsSelectReceiverDialog extends CmsWidgetDialog {
 
@@ -85,7 +85,7 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSelectReceiverDialog(CmsJspActionElement jsp) {
@@ -95,7 +95,7 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -116,8 +116,9 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
         boolean isEmail = (getParamMsgtype() != null) && getParamMsgtype().equals(MSGTYPE_EMAIL);
 
         if ((m_groups == null) || m_groups.isEmpty()) {
-            setCommitErrors(Collections.singletonList((Throwable)new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_NO_SELECTED_GROUP_0))));
+            setCommitErrors(
+                Collections.singletonList((Throwable)new CmsIllegalStateException(
+                    Messages.get().container(Messages.ERR_NO_SELECTED_GROUP_0))));
             return;
         }
 
@@ -145,8 +146,9 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
         }
 
         if (!hasUser) {
-            setCommitErrors(Collections.singletonList((Throwable)new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_NO_SELECTED_RECEIVERS_0))));
+            setCommitErrors(
+                Collections.singletonList((Throwable)new CmsIllegalStateException(
+                    Messages.get().container(Messages.ERR_NO_SELECTED_RECEIVERS_0))));
             return;
         }
 
@@ -162,9 +164,15 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
                 new String[] {CmsToolManager.linkForToolPath(getJsp(), "/workplace/broadcast")});
 
             if (isEmail) {
-                getToolManager().jspForwardPage(this, "/system/workplace/admin/workplace/groups_send_email.jsp", params);
+                getToolManager().jspForwardPage(
+                    this,
+                    "/system/workplace/admin/workplace/groups_send_email.jsp",
+                    params);
             } else {
-                getToolManager().jspForwardPage(this, "/system/workplace/admin/workplace/groups_send_popup.jsp", params);
+                getToolManager().jspForwardPage(
+                    this,
+                    "/system/workplace/admin/workplace/groups_send_popup.jsp",
+                    params);
             }
         } catch (Throwable t) {
             errors.add(t);
@@ -272,7 +280,7 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
                 // create a new list
                 m_groups = new ArrayList<String>();
             } else {
-                // this is not the initial call, get the message info object from session  
+                // this is not the initial call, get the message info object from session
                 m_groups = (List<String>)getDialogObject();
             }
         } catch (Exception e) {

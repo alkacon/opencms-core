@@ -227,9 +227,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 try {
                     setPostProcessor((I_CmsSolrPostSearchProcessor)Class.forName(value).newInstance());
                 } catch (Exception e) {
-                    CmsException ex = new CmsException(Messages.get().container(
-                        Messages.LOG_SOLR_ERR_POST_PROCESSOR_NOT_EXIST_1,
-                        value), e);
+                    CmsException ex = new CmsException(
+                        Messages.get().container(Messages.LOG_SOLR_ERR_POST_PROCESSOR_NOT_EXIST_1, value),
+                        e);
                     LOG.error(ex.getMessage(), ex);
                 }
             }
@@ -632,8 +632,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
             }
 
             // create and return the result
-            core = m_solr instanceof EmbeddedSolrServer ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(
-                getName()) : null;
+            core = m_solr instanceof EmbeddedSolrServer
+            ? ((EmbeddedSolrServer)m_solr).getCoreContainer().getCore(getName())
+            : null;
 
             SolrQueryResponse solrQueryResponse = new SolrQueryResponse();
             solrQueryResponse.setAllValues(queryResponse.getResponse());
@@ -646,7 +647,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
             writeResp(res, solrQueryRequest, solrQueryResponse);
 
         } catch (Exception e) {
-            throw new CmsSearchException(Messages.get().container(Messages.LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1, q), e);
+            throw new CmsSearchException(
+                Messages.get().container(Messages.LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1, q),
+                e);
         } finally {
             if (solrQueryRequest != null) {
                 solrQueryRequest.close();
@@ -767,10 +770,12 @@ public class CmsSolrIndex extends CmsSearchIndex {
             try {
                 OpenCms.getRoleManager().checkRole(cms, CmsRole.ELEMENT_AUTHOR);
             } catch (CmsRoleViolationException e) {
-                throw new CmsSearchException(Messages.get().container(
-                    Messages.LOG_SOLR_ERR_SEARCH_PERMISSION_VIOLATION_2,
-                    getName(),
-                    cms.getRequestContext().getCurrentUser()), e);
+                throw new CmsSearchException(
+                    Messages.get().container(
+                        Messages.LOG_SOLR_ERR_SEARCH_PERMISSION_VIOLATION_2,
+                        getName(),
+                        cms.getRequestContext().getCurrentUser()),
+                    e);
             }
         }
     }
@@ -1050,9 +1055,10 @@ public class CmsSolrIndex extends CmsSearchIndex {
                         new Long(solrTime),
                         new Long(processTime),
                         new Long(result.getHighlightEndTime() != 0 ? result.getHighlightEndTime() - startTime : 0)};
-                    LOG.debug(query.toString()
-                        + "\n"
-                        + Messages.get().getBundle().key(Messages.LOG_SOLR_SEARCH_EXECUTED_5, logParams));
+                    LOG.debug(
+                        query.toString()
+                            + "\n"
+                            + Messages.get().getBundle().key(Messages.LOG_SOLR_SEARCH_EXECUTED_5, logParams));
                 }
                 if (response != null) {
                     writeResp(response, solrQueryRequest, solrQueryResponse);
@@ -1067,9 +1073,11 @@ public class CmsSolrIndex extends CmsSearchIndex {
             }
             return result;
         } catch (Exception e) {
-            throw new CmsSearchException(Messages.get().container(
-                Messages.LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1,
-                CmsEncoder.decode(query.toString())), e);
+            throw new CmsSearchException(
+                Messages.get().container(
+                    Messages.LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1,
+                    CmsEncoder.decode(query.toString())),
+                e);
         } finally {
 
             // re-set thread to previous priority

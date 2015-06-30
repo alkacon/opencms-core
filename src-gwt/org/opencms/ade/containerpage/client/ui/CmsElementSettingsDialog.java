@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -122,7 +122,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the container page controller
      * @param elementWidget the element panel
      * @param elementBean the element data bean
@@ -159,8 +159,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 CmsFieldSet formatterFieldset = new CmsFieldSet();
                 // insert as first field-set after the element info box
                 fieldSetPanel.getMainPanel().insert(formatterFieldset, 1);
-                formatterFieldset.setLegend(org.opencms.ade.containerpage.client.Messages.get().key(
-                    org.opencms.ade.containerpage.client.Messages.GUI_FORMATTERS_LEGEND_0));
+                formatterFieldset.setLegend(
+                    org.opencms.ade.containerpage.client.Messages.get().key(
+                        org.opencms.ade.containerpage.client.Messages.GUI_FORMATTERS_LEGEND_0));
                 formatterFieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
                 LinkedHashMap<String, String> formatters = new LinkedHashMap<String, String>();
                 m_formatterSelect = new CmsSelectBox();
@@ -181,8 +182,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             }
             if (m_controller.getData().isModelPage() || isEditableModelGroup) {
                 CmsFieldSet modelGroupFieldSet = new CmsFieldSet();
-                modelGroupFieldSet.setLegend(org.opencms.ade.containerpage.client.Messages.get().key(
-                    org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LEGEND_0
+                modelGroupFieldSet.setLegend(
+                    org.opencms.ade.containerpage.client.Messages.get().key(
+                        org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LEGEND_0
 
                 ));
                 modelGroupFieldSet.getElement().getStyle().setMarginTop(10, Unit.PX);
@@ -190,8 +192,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 if (isEditableModelGroup
                     && !elementWidget.hasModelGroupParent()
                     && !m_controller.hasModelGroupChild(elementWidget)) {
-                    m_modelGroupCheckBox = new CmsCheckBox(org.opencms.ade.containerpage.client.Messages.get().key(
-                        org.opencms.ade.containerpage.client.Messages.GUI_USE_AS_MODEL_GROUP_LABEL_0));
+                    m_modelGroupCheckBox = new CmsCheckBox(
+                        org.opencms.ade.containerpage.client.Messages.get().key(
+                            org.opencms.ade.containerpage.client.Messages.GUI_USE_AS_MODEL_GROUP_LABEL_0));
                     m_modelGroupCheckBox.setDisplayInline(false);
                     m_modelGroupCheckBox.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
                     modelGroupFieldSet.add(m_modelGroupCheckBox);
@@ -213,22 +216,25 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                     modelGroupFieldSet.add(descriptionRow);
 
                     if (elementWidget.isModelGroup()) {
-                        m_modelGroupTitle.setFormValueAsString(elementBean.getSettings().get(
-                            CmsContainerElement.MODEL_GROUP_TITLE));
-                        m_modelGroupDescription.setFormValueAsString(elementBean.getSettings().get(
-                            CmsContainerElement.MODEL_GROUP_DESCRIPTION));
+                        m_modelGroupTitle.setFormValueAsString(
+                            elementBean.getSettings().get(CmsContainerElement.MODEL_GROUP_TITLE));
+                        m_modelGroupDescription.setFormValueAsString(
+                            elementBean.getSettings().get(CmsContainerElement.MODEL_GROUP_DESCRIPTION));
                     }
 
-                    m_useAsCopyModel = new CmsCheckBox(org.opencms.ade.containerpage.client.Messages.get().key(
-                        org.opencms.ade.containerpage.client.Messages.GUI_MODEL_GROUP_USE_AS_COPY_MODEL_0));
+                    m_useAsCopyModel = new CmsCheckBox(
+                        org.opencms.ade.containerpage.client.Messages.get().key(
+                            org.opencms.ade.containerpage.client.Messages.GUI_MODEL_GROUP_USE_AS_COPY_MODEL_0));
                     m_useAsCopyModel.setDisplayInline(false);
                     m_useAsCopyModel.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
-                    m_useAsCopyModel.setChecked(Boolean.valueOf(
-                        elementBean.getSettings().get(CmsContainerElement.USE_AS_COPY_MODEL)).booleanValue());
+                    m_useAsCopyModel.setChecked(
+                        Boolean.valueOf(
+                            elementBean.getSettings().get(CmsContainerElement.USE_AS_COPY_MODEL)).booleanValue());
                     modelGroupFieldSet.add(m_useAsCopyModel);
                 }
-                m_createNewCheckBox = new CmsCheckBox(org.opencms.ade.containerpage.client.Messages.get().key(
-                    org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LABEL_0));
+                m_createNewCheckBox = new CmsCheckBox(
+                    org.opencms.ade.containerpage.client.Messages.get().key(
+                        org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LABEL_0));
                 m_createNewCheckBox.setDisplayInline(false);
                 m_createNewCheckBox.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
                 modelGroupFieldSet.add(m_createNewCheckBox);
@@ -236,13 +242,15 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 m_createNewCheckBox.setChecked(elementBean.isCreateNew());
             } else if (elementWidget.isModelGroup()) {
                 CmsFieldSet modelGroupFieldSet = new CmsFieldSet();
-                modelGroupFieldSet.setLegend(org.opencms.ade.containerpage.client.Messages.get().key(
-                    org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LEGEND_0
+                modelGroupFieldSet.setLegend(
+                    org.opencms.ade.containerpage.client.Messages.get().key(
+                        org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LEGEND_0
 
                 ));
                 modelGroupFieldSet.getElement().getStyle().setMarginTop(10, Unit.PX);
-                m_modelGroupBreakUp = new CmsCheckBox(org.opencms.ade.containerpage.client.Messages.get().key(
-                    org.opencms.ade.containerpage.client.Messages.GUI_MODEL_GROUP_BREAK_UP_0));
+                m_modelGroupBreakUp = new CmsCheckBox(
+                    org.opencms.ade.containerpage.client.Messages.get().key(
+                        org.opencms.ade.containerpage.client.Messages.GUI_MODEL_GROUP_BREAK_UP_0));
                 m_modelGroupBreakUp.setDisplayInline(false);
                 m_modelGroupBreakUp.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
                 modelGroupFieldSet.add(m_modelGroupBreakUp);
@@ -265,10 +273,8 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 CmsFieldSet contextsFieldset = new CmsFieldSet();
                 contextsFieldset.setLegend(m_contextInfo.getSettingDefinition().getNiceName());
                 contextsFieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
-                m_contextsWidget = new CmsMultiCheckBox(CmsStringUtil.splitAsMap(
-                    m_contextInfo.getSettingDefinition().getWidgetConfiguration(),
-                    "|",
-                    ":"));
+                m_contextsWidget = new CmsMultiCheckBox(
+                    CmsStringUtil.splitAsMap(m_contextInfo.getSettingDefinition().getWidgetConfiguration(), "|", ":"));
                 for (CmsCheckBox checkbox : m_contextsWidget.getCheckboxes()) {
                     Style checkboxStyle = checkbox.getElement().getStyle();
                     checkbox.getButton().getElement().getStyle().setFontWeight(Style.FontWeight.NORMAL);
@@ -299,7 +305,10 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             /**
              * @see org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler#onSubmitForm(org.opencms.gwt.client.ui.input.form.CmsForm, java.util.Map, java.util.Set)
              */
-            public void onSubmitForm(CmsForm formParam, final Map<String, String> fieldValues, Set<String> editedFields) {
+            public void onSubmitForm(
+                CmsForm formParam,
+                final Map<String, String> fieldValues,
+                Set<String> editedFields) {
 
                 submitForm(formParam, fieldValues, editedFields);
             }
@@ -325,7 +334,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /**
      * Returns if the template context has been changed.<p>
-     * 
+     *
      * @return <code>true</code> if the template context has been changed
      */
     boolean isTemplateContextChanged() {
@@ -335,7 +344,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /**
      * Handles the formatter selection changes.<p>
-     * 
+     *
      * @param formatterId the formatter id
      */
     void onFormatterChange(String formatterId) {
@@ -346,7 +355,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /**
      * Renders the settings form.<p>
-     * 
+     *
      * @param settingsConfig the settings configuration
      */
     void renderSettingsForm(Map<String, CmsXmlContentProperty> settingsConfig) {
@@ -383,7 +392,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /**
      * Submits the settings form.<p>
-     * 
+     *
      * @param formParam the form
      * @param fieldValues the field values
      * @param editedFields the changed fields
@@ -397,7 +406,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             String newTemplateContexts = m_contextsWidget.getFormValueAsString();
             if ((newTemplateContexts == null) || "".equals(newTemplateContexts)) {
                 newTemplateContexts = CmsTemplateContextInfo.EMPTY_VALUE;
-                // translate an empty selection to "none" 
+                // translate an empty selection to "none"
             }
             fieldValues.put(CmsTemplateContextInfo.SETTING, newTemplateContexts);
         }
@@ -416,9 +425,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         }
         if (m_modelGroupCheckBox != null) {
             boolean modelGroup = m_modelGroupCheckBox.isChecked();
-            fieldValues.put(CmsContainerElement.MODEL_GROUP_STATE, (modelGroup
-            ? ModelGroupState.isModelGroup
-            : ModelGroupState.noGroup).name());
+            fieldValues.put(
+                CmsContainerElement.MODEL_GROUP_STATE,
+                (modelGroup ? ModelGroupState.isModelGroup : ModelGroupState.noGroup).name());
             if (modelGroup) {
                 fieldValues.put(CmsContainerElement.MODEL_GROUP_TITLE, m_modelGroupTitle.getFormValueAsString());
                 fieldValues.put(
@@ -488,13 +497,13 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /**
      * Ensures the CSS snippet with the given ID is present.<p>
-     * 
+     *
      * @param formatterId the ID
      * @param cssContent the CSS snippet
      */
     private native void ensureInlineCss(String formatterId, String cssContent)/*-{
                                                                               var styles = $wnd.document.styleSheets;
-                                                                              for ( var i = 0; i < styles.length; i++) {
+                                                                              for (var i = 0; i < styles.length; i++) {
                                                                               // IE uses the owningElement property
                                                                               var styleNode = styles[i].owningElement ? styles[i].owningElement
                                                                               : styles[i].ownerNode;

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import java.util.Locale;
 
 /**
  * This list formatter uses the <code>{@link MessageFormat}</code> class for macro like formatting.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListMacroFormatter implements I_CmsListFormatter {
 
@@ -44,7 +44,7 @@ public class CmsListMacroFormatter implements I_CmsListFormatter {
 
     /**
      * Default constructor that sets the mask to use.<p>
-     * 
+     *
      * @param mask pattern for <code>{@link MessageFormat}</code>
      */
     public CmsListMacroFormatter(CmsMessageContainer mask) {
@@ -67,7 +67,7 @@ public class CmsListMacroFormatter implements I_CmsListFormatter {
 
     /**
      * Returns the mask.<p>
-     * 
+     *
      * @return the mask
      */
     public CmsMessageContainer getMask() {

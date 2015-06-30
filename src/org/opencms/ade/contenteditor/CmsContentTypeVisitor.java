@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -85,7 +85,7 @@ public class CmsContentTypeVisitor {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param config the attribute type configuration
          * @param configuredType the configured display type
          * @param defaultType the default display type
@@ -106,7 +106,7 @@ public class CmsContentTypeVisitor {
 
         /**
          * Returns the attribute name.<p>
-         * 
+         *
          * @return the attribute name
          */
         protected String getAttributeName() {
@@ -116,11 +116,11 @@ public class CmsContentTypeVisitor {
 
         /**
          * Returns the attribute configuration with the evaluated display type.<p>
-         * 
+         *
          * @param predecessor the proposed predecessor display type
          * @param successor the proposed successor display type
-         * 
-         * @return the attribute configuration 
+         *
+         * @return the attribute configuration
          */
         protected CmsAttributeConfiguration getEvaluatedConfiguration(DisplayType predecessor, DisplayType successor) {
 
@@ -143,21 +143,23 @@ public class CmsContentTypeVisitor {
                     if ((successor != null) && successor.equals(DisplayType.column)) {
                         successor = DisplayType.singleline;
                     }
-                    boolean strong = (m_rule.equals(EvaluationRule.none) || (m_rule.equals(EvaluationRule.optional) && m_default.equals(DisplayType.singleline)))
+                    boolean strong = (m_rule.equals(EvaluationRule.none)
+                        || (m_rule.equals(EvaluationRule.optional) && m_default.equals(DisplayType.singleline)))
                         || (m_rule.equals(EvaluationRule.optional) && m_default.equals(DisplayType.singleline));
                     if (((predecessor == null) || (successor == null)) && strong) {
                         resultingType = m_default;
                     } else if ((predecessor != null) || (successor != null)) {
 
-                        // check if the proposed type matches neither the type of the predecessor nor the type of the successor 
-                        if (!(((predecessor != null) && resultingType.equals(predecessor)) || ((successor != null) && resultingType.equals(successor)))) {
+                        // check if the proposed type matches neither the type of the predecessor nor the type of the successor
+                        if (!(((predecessor != null) && resultingType.equals(predecessor))
+                            || ((successor != null) && resultingType.equals(successor)))) {
                             DisplayType match = (predecessor != null)
                                 && (predecessor.equals(DisplayType.wide) || predecessor.equals(DisplayType.singleline))
-                            ? predecessor
-                            : ((successor != null)
-                                && (successor.equals(DisplayType.wide) || successor.equals(DisplayType.singleline))
-                            ? successor
-                            : null);
+                                ? predecessor
+                                : ((successor != null)
+                                    && (successor.equals(DisplayType.wide) || successor.equals(DisplayType.singleline))
+                                    ? successor
+                                    : null);
                             resultingType = match != null ? match : resultingType;
                         }
                     }
@@ -169,7 +171,7 @@ public class CmsContentTypeVisitor {
 
         /**
          * Returns the proposed display type.<p>
-         * 
+         *
          * @return the proposed display type
          */
         protected DisplayType getProposedType() {
@@ -194,7 +196,7 @@ public class CmsContentTypeVisitor {
 
         /**
          * Sets the attribute name.<p>
-         * 
+         *
          * @param attributeName the attribute name
          */
         protected void setAttributeName(String attributeName) {
@@ -206,12 +208,9 @@ public class CmsContentTypeVisitor {
     /** Widget display type evaluation rules. */
     protected enum EvaluationRule {
         /** Label length rule. */
-        labelLength,
-        /** No rule applied. */
-        none,
-        /** Optional field rule. */
-        optional,
-        /** Root level rule. */
+        labelLength, /** No rule applied. */
+        none, /** Optional field rule. */
+        optional, /** Root level rule. */
         rootLevel
     }
 
@@ -256,8 +255,8 @@ public class CmsContentTypeVisitor {
 
     /**
      * Constructor.<p>
-     * 
-     * @param cms the CMS context 
+     *
+     * @param cms the CMS context
      * @param file the content file
      * @param locale the content locale
      */
@@ -270,8 +269,8 @@ public class CmsContentTypeVisitor {
 
     /**
      * Gets the CMS context.<p>
-     * 
-     * @return the CMS context 
+     *
+     * @return the CMS context
      */
     public CmsObject getCmsObject() {
 
@@ -280,18 +279,18 @@ public class CmsContentTypeVisitor {
 
     /**
      * Gets the list of widgets which have been processed by this visitor.<p>
-     * 
-     * @return the list of widget 
+     *
+     * @return the list of widget
      */
     public List<I_CmsWidget> getCollectedWidgets() {
 
         return Collections.unmodifiableList(m_widgets);
     }
 
-    /** 
+    /**
      * Gets the map of complex widget configurations.<p>
-     * 
-     * @return a map from attribute names to complex widget configurations 
+     *
+     * @return a map from attribute names to complex widget configurations
      */
     public Map<String, CmsComplexWidgetData> getComplexWidgetData() {
 
@@ -310,7 +309,7 @@ public class CmsContentTypeVisitor {
 
     /**
      * Returns if the visited content has invisible fields.<p>
-     * 
+     *
      * @return <code>true</code>  if the visited content has invisible fields
      */
     public boolean hasInvisibleFields() {
@@ -320,11 +319,11 @@ public class CmsContentTypeVisitor {
 
     /**
      * Checks if the content type widgets are compatible with the new content editor.<p>
-     * 
+     *
      * @param xmlContentDefinition the content definition
-     * 
+     *
      * @return <code>true</code> if the content type widgets are compatible with the new content editor
-     * 
+     *
      * @throws CmsXmlException if something goes wrong reading the type widget
      */
     public boolean isEditorCompatible(CmsXmlContentDefinition xmlContentDefinition) throws CmsXmlException {
@@ -346,13 +345,13 @@ public class CmsContentTypeVisitor {
 
     /**
      * Visits all types within the XML content definition.<p>
-     * 
+     *
      * @param xmlContentDefinition the content definition
      * @param messageLocale the locale
      */
     /**
      * Visits all types within the XML content definition.<p>
-     * 
+     *
      * @param xmlContentDefinition the content definition
      * @param messageLocale the locale
      */
@@ -387,7 +386,7 @@ public class CmsContentTypeVisitor {
 
     /**
      * Returns the attribute configurations.<p>
-     * 
+     *
      * @return the attribute configurations
      */
     protected Map<String, CmsAttributeConfiguration> getAttributeConfigurations() {
@@ -397,7 +396,7 @@ public class CmsContentTypeVisitor {
 
     /**
      * Returns the locale synchronized attribute names.<p>
-     * 
+     *
      * @return the locale synchronized attribute names
      */
     protected List<String> getLocaleSynchronizations() {
@@ -407,7 +406,7 @@ public class CmsContentTypeVisitor {
 
     /**
      * Returns the types of the visited content definition.<p>
-     * 
+     *
      * @return the types
      */
     protected Map<String, CmsType> getTypes() {
@@ -417,7 +416,7 @@ public class CmsContentTypeVisitor {
 
     /**
      * Returns the external widget configurations.<p>
-     * 
+     *
      * @return the external widget configurations
      */
     protected Collection<CmsExternalWidgetConfiguration> getWidgetConfigurations() {
@@ -427,9 +426,9 @@ public class CmsContentTypeVisitor {
 
     /**
      * Returns the tab informations for the given content definition.<p>
-     * 
+     *
      * @param definition the content definition
-     * 
+     *
      * @return the tab informations
      */
     private List<CmsTabInfo> collectTabInfos(CmsXmlContentDefinition definition) {
@@ -437,10 +436,9 @@ public class CmsContentTypeVisitor {
         List<CmsTabInfo> result = new ArrayList<CmsTabInfo>();
         if (definition.getContentHandler().getTabs() != null) {
             for (CmsXmlContentTab xmlTab : definition.getContentHandler().getTabs()) {
-                String tabName = m_messages.keyDefault(A_CmsWidget.LABEL_PREFIX
-                    + definition.getInnerName()
-                    + "."
-                    + xmlTab.getTabName(), xmlTab.getTabName());
+                String tabName = m_messages.keyDefault(
+                    A_CmsWidget.LABEL_PREFIX + definition.getInnerName() + "." + xmlTab.getTabName(),
+                    xmlTab.getTabName());
                 result.add(new CmsTabInfo(tabName, xmlTab.getIdName(), xmlTab.getStartName(), xmlTab.isCollapsed()));
             }
         }
@@ -449,9 +447,9 @@ public class CmsContentTypeVisitor {
 
     /**
      * Returns the help information for this value.<p>
-     * 
+     *
      * @param value the value
-     * 
+     *
      * @return the help information
      */
     private String getHelp(I_CmsXmlSchemaType value) {
@@ -465,9 +463,9 @@ public class CmsContentTypeVisitor {
 
     /**
      * Returns the label for this value.<p>
-     * 
+     *
      * @param value the value
-     * 
+     *
      * @return the label
      */
     private String getLabel(I_CmsXmlSchemaType value) {
@@ -480,9 +478,9 @@ public class CmsContentTypeVisitor {
 
     /**
      * Returns the schema type message key.<p>
-     * 
+     *
      * @param value the schema type
-     * 
+     *
      * @return the schema type message key
      */
     private String getTypeKey(I_CmsXmlSchemaType value) {
@@ -496,11 +494,11 @@ public class CmsContentTypeVisitor {
 
     /**
      * Checks if the content value widget is compatible with the new content editor.<p>
-     * 
+     *
      * @param schemaType the content value type
-     * 
+     *
      * @return <code>true</code> if the content value widget is compatible with the new content editor
-     * 
+     *
      * @throws CmsXmlException if something goes wrong reading the type widget
      */
     private boolean isEditorCompatible(A_CmsXmlContentValue schemaType) throws CmsXmlException {
@@ -514,9 +512,9 @@ public class CmsContentTypeVisitor {
 
     /**
      * Returns if an element with the given path will be displayed at root level of a content editor tab.<p>
-     * 
+     *
      * @param path the element path
-     * 
+     *
      * @return <code>true</code> if an element with the given path will be displayed at root level of a content editor tab
      */
     private boolean isTabRootLevel(String path) {
@@ -539,10 +537,10 @@ public class CmsContentTypeVisitor {
 
     /**
      * Reads the attribute configuration for the given schema type. May return <code>null</code> if no special configuration was set.<p>
-     * 
+     *
      * @param schemaType the schema type
      * @param path the attribute path
-     * 
+     *
      * @return the attribute configuration
      */
     private DisplayTypeEvaluator readConfiguration(A_CmsXmlContentValue schemaType, String path) {
@@ -574,7 +572,9 @@ public class CmsContentTypeVisitor {
             if (widget != null) {
                 widgetName = widget.getClass().getName();
                 if ((configuredType == DisplayType.column)
-                    && !(schemaType.isSimpleType() && (schemaType.getMaxOccurs() == 1) && widget.isCompactViewEnabled())) {
+                    && !(schemaType.isSimpleType()
+                        && (schemaType.getMaxOccurs() == 1)
+                        && widget.isCompactViewEnabled())) {
                     // column view is not allowed for this widget
                     configuredType = DisplayType.singleline;
                 }
@@ -596,10 +596,11 @@ public class CmsContentTypeVisitor {
                         m_widgetConfigurations.put(widgetName, externalConfiguration);
                     }
                     if (CmsContentService.LOG.isDebugEnabled()) {
-                        CmsContentService.LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_TAKE_READING_WIDGET_CONFIGURATION_TIME_2,
-                            widgetName,
-                            "" + (System.currentTimeMillis() - timer)));
+                        CmsContentService.LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_TAKE_READING_WIDGET_CONFIGURATION_TIME_2,
+                                widgetName,
+                                "" + (System.currentTimeMillis() - timer)));
                     }
 
                 }
@@ -640,10 +641,10 @@ public class CmsContentTypeVisitor {
 
     /**
      * Reads the default value for the given type.<p>
-     * 
+     *
      * @param schemaType the schema type
      * @param path the element path
-     * 
+     *
      * @return the default value
      */
     private String readDefaultValue(I_CmsXmlSchemaType schemaType, String path) {
@@ -654,11 +655,11 @@ public class CmsContentTypeVisitor {
     /**
      * Reads the types from the given content definition and adds the to the map of already registered
      * types if necessary.<p>
-     * 
+     *
      * @param xmlContentDefinition the XML content definition
      * @param path the element path
-     * 
-     * @return the type 
+     *
+     * @return the type
      */
     private CmsType readTypes(CmsXmlContentDefinition xmlContentDefinition, String path) {
 
@@ -699,7 +700,11 @@ public class CmsContentTypeVisitor {
                 subEntityType = readTypes(subTypeDefinition, childPath);
             }
             if (choiceType != null) {
-                choiceType.addAttribute(subAttributeName, subEntityType, subType.getMinOccurs(), subType.getMaxOccurs());
+                choiceType.addAttribute(
+                    subAttributeName,
+                    subEntityType,
+                    subType.getMinOccurs(),
+                    subType.getMaxOccurs());
             } else {
                 type.addAttribute(subAttributeName, subEntityType, subType.getMinOccurs(), subType.getMaxOccurs());
             }

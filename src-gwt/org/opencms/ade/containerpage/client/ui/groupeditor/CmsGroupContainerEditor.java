@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The group-container editor.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
@@ -81,7 +81,7 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param groupContainer the group container widget
      * @param controller the container page controller
      * @param handler the container page handler
@@ -104,7 +104,7 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
 
     /**
      * Gets the editor instance.<p>
-     * 
+     *
      * @return the editor instance
      */
     public static CmsGroupContainerEditor getInstance() {
@@ -112,10 +112,10 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
         return INSTANCE;
     }
 
-    /** 
+    /**
      * Returns true if the editor is active.<p>
-     * 
-     * @return true if the editor is active 
+     *
+     * @return true if the editor is active
      */
     public static boolean isActive() {
 
@@ -124,12 +124,12 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
 
     /**
      * Opens the group container editor.<p>
-     * 
+     *
      * @param groupContainer the group container
      * @param controller the container page controller
      * @param handler the container page handler
-     * 
-     * @return the editor instance 
+     *
+     * @return the editor instance
      */
     public static CmsGroupContainerEditor openGroupcontainerEditor(
         CmsGroupContainerElementPanel groupContainer,
@@ -238,7 +238,7 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
 
     /**
      * Breaks up the group container inserting the given elements into the parent container instead.<p>
-     * 
+     *
      * @param elements the group container elements
      * @param elementsData the elements data
      */
@@ -307,7 +307,7 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
 
     /**
      * Sets the data of the group-container to edit.<p>
-     * 
+     *
      * @param elementsData the data of all contained elements and the group-container itself
      */
     protected void setGroupContainerData(Map<String, CmsContainerElementData> elementsData) {

@@ -27,8 +27,6 @@
 
 package org.opencms.db;
 
-import au.com.bytecode.opencsv.CSVParser;
-
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.alias.CmsAliasImportResult;
@@ -60,6 +58,8 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+
+import au.com.bytecode.opencsv.CSVParser;
 
 /**
  * The alias manager provides access to the aliases stored in the database.<p>
@@ -94,7 +94,7 @@ public class CmsAliasManager {
      *
      * @return the aliases for the given site root and path
      *
-     * @throws CmsException if something goes wrong 
+     * @throws CmsException if something goes wrong
      */
     public List<CmsAlias> getAliasesForPath(CmsObject cms, String siteRoot, String aliasPath) throws CmsException {
 
@@ -108,12 +108,12 @@ public class CmsAliasManager {
 
     /**
      * Gets the list of aliases for a given site root.<p>
-     * 
-     * @param cms the current CMS context  
-     * @param siteRoot the site root 
-     * @return the list of aliases for the given site 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param siteRoot the site root
+     * @return the list of aliases for the given site
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsAlias> getAliasesForSite(CmsObject cms, String siteRoot) throws CmsException {
 
@@ -145,12 +145,12 @@ public class CmsAliasManager {
 
     /**
      * Reads the rewrite aliases for a given site root.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param siteRoot the site root for which the rewrite aliases should be retrieved 
-     * @return the list of rewrite aliases for the given site root 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param siteRoot the site root for which the rewrite aliases should be retrieved
+     * @return the list of rewrite aliases for the given site root
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsRewriteAlias> getRewriteAliases(CmsObject cms, String siteRoot) throws CmsException {
 
@@ -162,12 +162,12 @@ public class CmsAliasManager {
     /**
      * Gets the rewrite alias matcher for the given site.<p>
      *
-     * @param cms the CMS context to use 
+     * @param cms the CMS context to use
      * @param siteRoot the site root
-     * 
+     *
      * @return the alias matcher for the site with the given site root
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsRewriteAliasMatcher getRewriteAliasMatcher(CmsObject cms, String siteRoot) throws CmsException {
 
@@ -176,11 +176,11 @@ public class CmsAliasManager {
     }
 
     /**
-     * Checks whether the current user has permissions for mass editing the alias table.<p> 
-     * 
-     * @param cms the current CMS context  
-     * @param siteRoot the site root to check 
-     * @return true if the user from the CMS context is allowed to mass edit the alias table 
+     * Checks whether the current user has permissions for mass editing the alias table.<p>
+     *
+     * @param cms the current CMS context
+     * @param siteRoot the site root to check
+     * @return true if the user from the CMS context is allowed to mass edit the alias table
      */
     public boolean hasPermissionsForMassEdit(CmsObject cms, String siteRoot) {
 
@@ -196,14 +196,14 @@ public class CmsAliasManager {
 
     /**
      * Imports alias CSV data.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param aliasData the alias data 
+     *
+     * @param cms the current CMS context
+     * @param aliasData the alias data
      * @param siteRoot the root of the site into which the alias data should be imported
-     * @param separator the field separator which is used by the imported data  
-     * @return the list of import results 
-     * 
-     * @throws Exception if something goes wrong 
+     * @param separator the field separator which is used by the imported data
+     * @return the list of import results
+     *
+     * @throws Exception if something goes wrong
      */
     public synchronized List<CmsAliasImportResult> importAliases(
         CmsObject cms,
@@ -212,9 +212,8 @@ public class CmsAliasManager {
         String separator) throws Exception {
 
         checkPermissionsForMassEdit(cms);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(
-            new ByteArrayInputStream(aliasData),
-            CmsEncoder.ENCODING_UTF_8));
+        BufferedReader reader = new BufferedReader(
+            new InputStreamReader(new ByteArrayInputStream(aliasData), CmsEncoder.ENCODING_UTF_8));
         String line = reader.readLine();
         List<CmsAliasImportResult> totalResult = new ArrayList<CmsAliasImportResult>();
         CmsAliasImportResult result;
@@ -246,12 +245,12 @@ public class CmsAliasManager {
 
     /**
      * Saves the rewrite alias for a given site root.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param siteRoot the site root for which the rewrite aliases should be saved 
-     * @param newAliases the list of aliases to save 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param siteRoot the site root for which the rewrite aliases should be saved
+     * @param newAliases the list of aliases to save
+     *
+     * @throws CmsException if something goes wrong
      */
     public void saveRewriteAliases(CmsObject cms, String siteRoot, List<CmsRewriteAlias> newAliases)
     throws CmsException {
@@ -262,11 +261,11 @@ public class CmsAliasManager {
 
     /**
      * Updates the aliases in the database.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param toDelete the collection of aliases to delete 
+     *
+     * @param cms the current CMS context
+     * @param toDelete the collection of aliases to delete
      * @param toAdd the collection of aliases to add
-     * @throws CmsException if something goes wrong 
+     * @throws CmsException if something goes wrong
      */
     public synchronized void updateAliases(CmsObject cms, Collection<CmsAlias> toDelete, Collection<CmsAlias> toAdd)
     throws CmsException {
@@ -288,7 +287,7 @@ public class CmsAliasManager {
             allKeys.add(alias.getStructureId());
         }
 
-        // Do all the deletions first, so we don't run into duplicate key errors for the alias paths 
+        // Do all the deletions first, so we don't run into duplicate key errors for the alias paths
         for (CmsUUID structureId : allKeys) {
             Set<CmsAlias> aliasesToSave = new HashSet<CmsAlias>(getAliasesForStructureId(cms, structureId));
             Collection<CmsAlias> toDeleteForId = toDeleteMap.get(structureId);
@@ -308,11 +307,11 @@ public class CmsAliasManager {
     }
 
     /**
-     * Checks whether the current user has the permissions to mass edit the alias table, and throws an 
+     * Checks whether the current user has the permissions to mass edit the alias table, and throws an
      * exception otherwise.<p>
-     * 
-     * @param cms the current CMS context 
-     * 
+     *
+     * @param cms the current CMS context
+     *
      * @throws CmsException
      */
     protected void checkPermissionsForMassEdit(CmsObject cms) throws CmsException {
@@ -322,16 +321,16 @@ public class CmsAliasManager {
 
     /**
      * Imports a single alias.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param siteRoot the site root 
-     * @param aliasPath the alias path  
-     * @param vfsPath the VFS path 
+     *
+     * @param cms the current CMS context
+     * @param siteRoot the site root
+     * @param aliasPath the alias path
+     * @param vfsPath the VFS path
      * @param mode the alias mode
-     *  
+     *
      * @return the result of the import
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected synchronized CmsAliasImportResult importAlias(
         CmsObject cms,
@@ -347,16 +346,22 @@ public class CmsAliasManager {
             cms.getRequestContext().setSiteRoot(siteRoot);
             resource = cms.readResource(vfsPath);
         } catch (CmsException e) {
-            return new CmsAliasImportResult(CmsAliasImportStatus.aliasImportError, messageImportCantReadResource(
-                locale,
-                vfsPath), aliasPath, vfsPath, mode);
+            return new CmsAliasImportResult(
+                CmsAliasImportStatus.aliasImportError,
+                messageImportCantReadResource(locale, vfsPath),
+                aliasPath,
+                vfsPath,
+                mode);
         } finally {
             cms.getRequestContext().setSiteRoot(originalSiteRoot);
         }
         if (!CmsAlias.ALIAS_PATTERN.matcher(aliasPath).matches()) {
-            return new CmsAliasImportResult(CmsAliasImportStatus.aliasImportError, messageImportInvalidAliasPath(
-                locale,
-                aliasPath), aliasPath, vfsPath, mode);
+            return new CmsAliasImportResult(
+                CmsAliasImportStatus.aliasImportError,
+                messageImportInvalidAliasPath(locale, aliasPath),
+                aliasPath,
+                vfsPath,
+                mode);
         }
         List<CmsAlias> maybeAlias = getAliasesForPath(cms, siteRoot, aliasPath);
         if (maybeAlias.isEmpty()) {
@@ -390,14 +395,14 @@ public class CmsAliasManager {
 
     /**
      * Processes a single alias import operation which has already been parsed into fields.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param siteRoot the site root 
-     * @param aliasPath the alias path 
-     * @param vfsPath the VFS resource path 
-     * @param mode the alias mode 
-     * 
-     * @return the result of the import operation 
+     *
+     * @param cms the current CMS context
+     * @param siteRoot the site root
+     * @param aliasPath the alias path
+     * @param vfsPath the VFS resource path
+     * @param mode the alias mode
+     *
+     * @return the result of the import operation
      */
     protected CmsAliasImportResult processAliasImport(
         CmsObject cms,
@@ -420,13 +425,13 @@ public class CmsAliasManager {
 
     /**
      * Processes a line from a CSV file containing the alias data to be imported.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param siteRoot the site root 
+     *
+     * @param cms the current CMS context
+     * @param siteRoot the site root
      * @param line the line with the data to import
-     * @param separator the field separator 
-     * 
-     * @return the import result 
+     * @param separator the field separator
+     *
+     * @return the import result
      */
     protected CmsAliasImportResult processAliasLine(CmsObject cms, String siteRoot, String line, String separator) {
 
@@ -496,11 +501,11 @@ public class CmsAliasManager {
 
     /**
      * Checks that the user has permissions for a mass edit operation in a given site.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param siteRoot the site for which the permissions should be checked 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param siteRoot the site for which the permissions should be checked
+     *
+     * @throws CmsException if something goes wrong
      */
     private void checkPermissionsForMassEdit(CmsObject cms, String siteRoot) throws CmsException {
 
@@ -515,11 +520,11 @@ public class CmsAliasManager {
 
     /**
      * Message accessor.<p>
-     * 
-     * @param locale the message locale 
-     * @param path a path 
-     * 
-     * @return the message string 
+     *
+     * @param locale the message locale
+     * @param path a path
+     *
+     * @return the message string
      */
     private String messageImportCantReadResource(Locale locale, String path) {
 
@@ -529,11 +534,11 @@ public class CmsAliasManager {
 
     /**
      * Message accessor.<p>
-     * 
-     * @param locale the message locale 
-     * @param path a path 
-     * 
-     * @return the message string 
+     *
+     * @param locale the message locale
+     * @param path a path
+     *
+     * @return the message string
      */
     private String messageImportInvalidAliasPath(Locale locale, String path) {
 
@@ -543,10 +548,10 @@ public class CmsAliasManager {
 
     /**
      * Message accessor.<p>
-     * 
-     * @param locale the message locale 
-     * 
-     * @return the message string 
+     *
+     * @param locale the message locale
+     *
+     * @return the message string
      */
     private String messageImportInvalidFormat(Locale locale) {
 
@@ -555,10 +560,10 @@ public class CmsAliasManager {
 
     /**
      * Message accessor.<p>
-     * 
-     * @param locale the message locale 
-     * 
-     * @return the message string 
+     *
+     * @param locale the message locale
+     *
+     * @return the message string
      */
     private String messageImportOk(Locale locale) {
 
@@ -567,10 +572,10 @@ public class CmsAliasManager {
 
     /**
      * Message accessor.<p>
-     * 
-     * @param locale the message locale 
-     * 
-     * @return the message string 
+     *
+     * @param locale the message locale
+     *
+     * @return the message string
      */
     private String messageImportUpdate(Locale locale) {
 
@@ -579,14 +584,14 @@ public class CmsAliasManager {
 
     /**
      * Handles the import of a rewrite alias.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param siteRoot the site root 
-     * @param source the rewrite pattern 
-     * @param target the rewrite replacement 
-     * @param mode the alias mode 
-     * 
-     * @return the import result 
+     *
+     * @param cms the current CMS context
+     * @param siteRoot the site root
+     * @param source the rewrite pattern
+     * @param target the rewrite replacement
+     * @param mode the alias mode
+     *
+     * @return the import result
      */
     private CmsAliasImportResult processRewriteImport(
         CmsObject cms,
@@ -610,9 +615,9 @@ public class CmsAliasManager {
 
     /**
      * Tries to to touch a resource by setting its last modification date, but only if its state is 'unchanged'.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param resource the resource which should be 'touched'. 
+     *
+     * @param cms the current CMS context
+     * @param resource the resource which should be 'touched'.
      */
     private void touch(CmsObject cms, CmsResource resource) {
 

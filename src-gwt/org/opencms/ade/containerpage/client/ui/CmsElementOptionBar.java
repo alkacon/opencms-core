@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,8 +48,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A panel to be displayed inside a container element to provide optional functions like edit, move, remove... <p> 
- * 
+ * A panel to be displayed inside a container element to provide optional functions like edit, move, remove... <p>
+ *
  * @since 8.0.0
  */
 public class CmsElementOptionBar extends Composite
@@ -108,7 +108,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param containerElement the parent container element
      */
     public CmsElementOptionBar(CmsContainerPageElementPanel containerElement) {
@@ -124,11 +124,11 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Creates an option-bar for the given drag element.<p>
-     * 
+     *
      * @param element the element to create the option-bar for
      * @param dndHandler the drag and drop handler
      * @param buttons the list of buttons to display
-     * 
+     *
      * @return the created option-bar
      */
     public static CmsElementOptionBar createOptionBarForElement(
@@ -155,7 +155,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Adds another option button.<p>
-     * 
+     *
      * @param w the button to add
      */
     public void add(Widget w) {
@@ -191,7 +191,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Returns the calculated width of the widget.<p>
-     * 
+     *
      * @return the calculated width
      */
     public int getCalculatedWidth() {
@@ -201,7 +201,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Returns an iterator for the child widgets.<p>
-     * 
+     *
      * @return the iterator
      */
     public Iterator<Widget> iterator() {
@@ -217,7 +217,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
         try {
             internalRemoveHighlighting();
         } catch (Exception e) {
-            // ignore 
+            // ignore
 
         }
     }
@@ -232,7 +232,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
         internalRemoveHighlighting();
     }
 
-    /** 
+    /**
      * Adds the highlighting and option bar.<p>
      */
     protected void addHighlighting() {
@@ -244,7 +244,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Returns the parent container element.<p>
-     * 
+     *
      * @return the parent container element
      */
     protected CmsContainerPageElementPanel getContainerElement() {
@@ -253,7 +253,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
     }
 
     /**
-     * Removes the highlighting.<p> 
+     * Removes the highlighting.<p>
      */
     protected void internalRemoveHighlighting() {
 

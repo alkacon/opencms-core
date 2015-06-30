@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,10 @@ public final class CmsVersionCell extends AbstractCell<CmsHistoryResourceBean> {
      * @see com.google.gwt.cell.client.AbstractCell#render(com.google.gwt.cell.client.Cell.Context, java.lang.Object, com.google.gwt.safehtml.shared.SafeHtmlBuilder)
      */
     @Override
-    public void render(com.google.gwt.cell.client.Cell.Context context, CmsHistoryResourceBean value, SafeHtmlBuilder sb) {
+    public void render(
+        com.google.gwt.cell.client.Cell.Context context,
+        CmsHistoryResourceBean value,
+        SafeHtmlBuilder sb) {
 
         CmsHistoryVersion version = value.getVersion();
         Integer versionNumber = version.getVersionNumber();

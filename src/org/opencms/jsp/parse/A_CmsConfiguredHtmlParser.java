@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,18 +38,18 @@ import org.htmlparser.util.ParserException;
 /**
  * Base class for all classes that are specified for the &lt;cms:parse parserClass="name"
  * param="config" /&gt; tag in the parserClass Attribute.<p>
- * 
+ *
  * Entry point for the tag implementation ({@link org.opencms.jsp.CmsJspTagParse}). The tag will
  * provide a valid {@link org.opencms.file.CmsObject} and it's configuration parameter String to
  * subclasses of this instances. Implementations just choose the type of
  * {@link org.opencms.util.I_CmsHtmlNodeVisitor} they will use for visiting the content to be
  * parsed.<p>
- * 
+ *
  * To implement a custom class that may be used with the <nobr>&lt;cms:parse parserClass="name"
  * param="config" /&gt;</nobr> tag the only thing that has to be done is to implement the method
- * {@link #createVisitorInstance()} and return the desired {@link org.opencms.util.I_CmsHtmlNodeVisitor} 
+ * {@link #createVisitorInstance()} and return the desired {@link org.opencms.util.I_CmsHtmlNodeVisitor}
  * implementation.<p>
- * 
+ *
  * @since 6.1.7
  */
 public abstract class A_CmsConfiguredHtmlParser {
@@ -73,26 +73,26 @@ public abstract class A_CmsConfiguredHtmlParser {
     }
 
     /**
-     * Subclasses have to create their desired instance for parsing the html here.<p> 
-     * 
+     * Subclasses have to create their desired instance for parsing the html here.<p>
+     *
      * You have access to {@link #getCmsObject()} and {@link #getParam()} already here and may pass those to
      * the visitor to return.<p>
-     * 
+     *
      * @return the instance to be used for parsing the html
-     * 
+     *
      * @throws CmsException if sth. goes wrong
      */
     protected abstract I_CmsHtmlNodeVisitor createVisitorInstance() throws CmsException;
 
     /**
      * Returns the result of subsequent parsing to the &lt;cms:parse&lt; tag implementation.<p>
-     * 
+     *
      * @param encoding the encoding to use for parsing
      * @param html the html content to parse
      * @param noAutoCloseTags a list of upper case tag names for which parsing / visiting should not correct missing closing tags.
-     * 
+     *
      * @return the result of subsequent parsing to the &lt;cms:parse&lt; tag implementation
-     * 
+     *
      * @throws ParserException if something goes wrong at parsing
      * @throws CmsException if something goes wrong at accessing OpenCms core functionality
     */
@@ -109,9 +109,9 @@ public abstract class A_CmsConfiguredHtmlParser {
 
     /**
      * Returns the internal cms object for accessing core functionality.<p>
-     * 
+     *
      * This value will be initialized by the &lt;cms:parse&gt; tag.<p>
-     * 
+     *
      * @return the internal cms object for accessing core functionality
      */
     protected CmsObject getCmsObject() {
@@ -121,7 +121,7 @@ public abstract class A_CmsConfiguredHtmlParser {
 
     /**
      * Returns the param.<p>
-     * 
+     *
      * @return the param
      */
     protected String getParam() {
@@ -131,7 +131,7 @@ public abstract class A_CmsConfiguredHtmlParser {
 
     /**
      * Returns the visitor.<p>
-     * 
+     *
      * @return the visitor
      */
     protected I_CmsHtmlNodeVisitor getVisitor() {
@@ -141,9 +141,9 @@ public abstract class A_CmsConfiguredHtmlParser {
 
     /**
      * Sets the internal cms object for accessing core functionality.<p>
-     * 
+     *
      * This will be invokde by the &tl;cms:parse&gt; tag implementation.<p>
-     * 
+     *
      * @param cmsObject the internal cms object for accessing core functionality to set
      */
     public void setCmsObject(CmsObject cmsObject) {
@@ -153,9 +153,9 @@ public abstract class A_CmsConfiguredHtmlParser {
 
     /**
      * The attribute value of the attribute param of the &lt;cms:parse&gt; tag.<p>
-     * 
+     *
      * Will be set by the &lt;cms:parse&gt; implementation.<p>
-     * 
+     *
      * @param param the param to set
      */
     public void setParam(String param) {

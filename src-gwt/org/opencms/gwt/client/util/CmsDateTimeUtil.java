@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,16 +33,16 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
  * Client side implementation for {@link org.opencms.util.CmsDateUtil}.<p>
- * 
- * @since 8.0.0 
- * 
+ *
+ * @since 8.0.0
+ *
  * @see org.opencms.util.CmsDateUtil
  */
 public final class CmsDateTimeUtil {
 
     /**
      * The standard formats.<p>
-     * 
+     *
      * @see java.text.DateFormat
      */
     public enum Format {
@@ -71,11 +71,11 @@ public final class CmsDateTimeUtil {
     /**
      * Returns a formated date String from a Date value,
      * the formatting based on the provided options.<p>
-     * 
+     *
      * @param date the Date object to format as String
      * @param format the format to use
-     * 
-     * @return the formatted date 
+     *
+     * @return the formatted date
      */
     public static String getDate(Date date, Format format) {
 
@@ -104,9 +104,9 @@ public final class CmsDateTimeUtil {
      * Returns a formated date String form a timestamp value,
      * the formatting based on the OpenCms system default locale
      * and the {@link Format#SHORT} date format.<p>
-     * 
+     *
      * @param time the time value to format as date
-     * @return the formatted date 
+     * @return the formatted date
      */
     public static String getDateShort(long time) {
 
@@ -116,10 +116,10 @@ public final class CmsDateTimeUtil {
     /**
      * Returns a formated date and time String from a Date value,
      * the formatting based on the provided options.<p>
-     * 
+     *
      * @param date the Date object to format as String
      * @param format the format to use, see {@link Format} for possible values
-     * @return the formatted date 
+     * @return the formatted date
      */
     public static String getDateTime(Date date, Format format) {
 
@@ -134,9 +134,9 @@ public final class CmsDateTimeUtil {
      * Returns a formated date and time String form a timestamp value,
      * the formatting based on the OpenCms system default locale
      * and the {@link Format#SHORT} date format.<p>
-     * 
+     *
      * @param time the time value to format as date
-     * @return the formatted date 
+     * @return the formatted date
      */
     public static String getDateTimeShort(long time) {
 
@@ -146,11 +146,11 @@ public final class CmsDateTimeUtil {
     /**
      * Returns a formated time String from a Date value,
      * the formatting based on the provided options.<p>
-     * 
+     *
      * @param date the Date object to format as String
      * @param format the format to use
-     * 
-     * @return the formatted time 
+     *
+     * @return the formatted time
      */
     public static String getTime(Date date, Format format) {
 

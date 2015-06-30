@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,11 +44,11 @@ import java.util.Map;
 
 /**
  * Comparator for sorting resource objects based on priority and title.<p>
- * 
+ *
  * Serves as {@link java.util.Comparator} for resources and as comparator key for the resource
  * at the same time. Uses lazy initializing of comparator keys in a resource.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsPriorityTitleResourceComparator implements Serializable, Comparator<CmsResource> {
 
@@ -69,7 +69,7 @@ public class CmsPriorityTitleResourceComparator implements Serializable, Compara
 
     /**
      * Creates a new instance of this comparator key.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      */
     public CmsPriorityTitleResourceComparator(CmsObject cms) {
@@ -80,10 +80,10 @@ public class CmsPriorityTitleResourceComparator implements Serializable, Compara
 
     /**
      * Creates a new instance of this comparator key.<p>
-     * 
+     *
      * @param resource the resource to create the key for
      * @param cms the current OpenCms user context
-     * 
+     *
      * @return a new instance of this comparator key
      */
     private static CmsPriorityTitleResourceComparator create(CmsResource resource, CmsObject cms) {
@@ -131,7 +131,7 @@ public class CmsPriorityTitleResourceComparator implements Serializable, Compara
 
     /**
      * Returns the priority of this resource comparator key.<p>
-     * 
+     *
      * @return the priority of this resource comparator key
      */
     public int getPriority() {
@@ -141,7 +141,7 @@ public class CmsPriorityTitleResourceComparator implements Serializable, Compara
 
     /**
      * Returns the title of this resource comparator key.<p>
-     * 
+     *
      * @return the title of this resource comparator key
      */
     public String getTitle() {
@@ -150,9 +150,9 @@ public class CmsPriorityTitleResourceComparator implements Serializable, Compara
     }
 
     /**
-     * Initializes the comparator key based on the member variables.<p> 
-     * 
-     * @param resource the resource to use 
+     * Initializes the comparator key based on the member variables.<p>
+     *
+     * @param resource the resource to use
      * @param cms the current OpenCms user contxt
      */
     private void init(CmsResource resource, CmsObject cms) {
@@ -168,7 +168,8 @@ public class CmsPriorityTitleResourceComparator implements Serializable, Compara
         }
 
         try {
-            m_priority = Integer.parseInt(CmsProperty.get(CmsPriorityResourceCollector.PROPERTY_PRIORITY, properties).getValue());
+            m_priority = Integer.parseInt(
+                CmsProperty.get(CmsPriorityResourceCollector.PROPERTY_PRIORITY, properties).getValue());
         } catch (NumberFormatException e) {
             m_priority = CmsPriorityResourceCollector.PRIORITY_STANDARD;
         }

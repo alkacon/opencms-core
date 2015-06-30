@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,7 +60,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestModuleOperations(String arg0) {
@@ -70,7 +70,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -110,7 +110,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
     /**
      * Tests a module action class.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testModuleActionClass() throws Throwable {
@@ -194,7 +194,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         TestModuleActionImpl.m_cmsEvent = -1;
         TestModuleActionImpl.m_publishProject = false;
 
-        // publish the current project 
+        // publish the current project
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
         // since module was uninstalled, no update on action class must have happend
@@ -204,7 +204,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
     /**
      * Tests a the "additionalresources" workaround.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testModuleAdditionalResourcesWorkaround() throws Throwable {
@@ -270,7 +270,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
     /**
      * Tests a module import.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testModuleDependencies() throws Throwable {
@@ -446,7 +446,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
     /**
      * Tests a module export (and then re-import).<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testModuleExport() throws Throwable {
@@ -543,7 +543,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
     /**
      * Tests a module import.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testModuleImport() throws Throwable {
@@ -582,7 +582,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
     /**
      * Tests the import of a module that has a duplicate id.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testModuleImportConflictId() throws Exception {
@@ -634,7 +634,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
     /**
      * Tests a module import with an unknown resource type class.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testModuleImportMissingResTypeClass() throws Throwable {
@@ -690,10 +690,10 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
     /**
      * Tests a update of a module that contains a new resource type.<p>
-     * 
-     * This test was added because there was an issue where modules with a resource 
+     *
+     * This test was added because there was an issue where modules with a resource
      * type generated an error "conficting id" during update.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testModuleUpdateWithResourceId() throws Exception {
@@ -745,7 +745,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
     /**
      * Tests a module import of an old (OpenCms 5.0) style module.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testOldModuleImport() throws Throwable {
@@ -777,7 +777,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         assertTrue(module.getActionClass() == null);
         assertEquals(module.getAuthorName(), "Alexander Kandzior");
         assertEquals(module.getAuthorEmail(), "alex@opencms.org");
-        // check if "additionalresources" where converted to module resources        
+        // check if "additionalresources" where converted to module resources
         assertTrue(module.getResources().size() == 2);
         assertEquals(module.getResources().get(0), "/system/modules/org.opencms.test.modules.testOld/");
         assertEquals(module.getResources().get(1), "/alkacon-documentation/documentation-flexcache/");
@@ -785,10 +785,10 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
     /**
      * Adds a module dependency for the tests.<p>
-     * 
+     *
      * @param cms the current OpenCms context
      * @param dep the dependency to check
-     * 
+     *
      * @throws CmsConfigurationException in case something goes wrong
      * @throws CmsSecurityException in case something goes wrong
      * @throws CmsLockException if the module resources can not be locked

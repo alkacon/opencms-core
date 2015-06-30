@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,8 +58,8 @@ public class CmsLoginOuSelector extends CustomComponent {
 
     /**
      * Gets the selected OU.<p<
-     *  
-     * @return the selected OU 
+     *
+     * @return the selected OU
      */
     public String getValue() {
 
@@ -68,13 +68,13 @@ public class CmsLoginOuSelector extends CustomComponent {
 
     /**
      * Initializes the select options.<p>
-     * 
+     *
      * @param orgUnits the selectable OUs
      */
     public void initOrgUnits(List<CmsOrganizationalUnit> orgUnits) {
 
         if ((orgUnits.size() == 1) && (orgUnits.get(0).getParentFqn() == null)) {
-            this.setVisible(false);
+            setVisible(false);
         }
         for (CmsOrganizationalUnit ou : orgUnits) {
             String key = normalizeOuName(ou.getName());
@@ -85,19 +85,19 @@ public class CmsLoginOuSelector extends CustomComponent {
 
     /**
      * Sets the selected OU.<p>
-     * 
-     * @param value the OU to select 
+     *
+     * @param value the OU to select
      */
     public void setValue(String value) {
 
         m_ouSelect.setValue(normalizeOuName(value));
     }
 
-    /** 
+    /**
      * Normalizes a given OU name.<p>
-     * 
-     * @param ou the OU name 
-     * @return the normalized version 
+     *
+     * @param ou the OU name
+     * @return the normalized version
      */
     String normalizeOuName(String ou) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,7 +59,7 @@ public final class CmsSliderMap extends HTML {
 
     /***
      * Initialize the SliderMap -- default mode is Saturation.
-     * @param parent 
+     * @param parent
      */
     public CmsSliderMap(CmsColorSelector parent) {
 
@@ -143,7 +143,7 @@ public final class CmsSliderMap extends HTML {
     @Override
     public void onLoad() {
 
-        this.sinkEvents(Event.MOUSEEVENTS);
+        sinkEvents(Event.MOUSEEVENTS);
     }
 
     /**
@@ -152,7 +152,7 @@ public final class CmsSliderMap extends HTML {
     @Override
     public void onUnload() {
 
-        this.unsinkEvents(Event.MOUSEEVENTS);
+        unsinkEvents(Event.MOUSEEVENTS);
     }
 
     /**

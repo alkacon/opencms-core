@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,9 +38,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides an output window for a CmsReport.<p> 
- * 
- * @since 6.0.0 
+ * Provides an output window for a CmsReport.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsHtmlImportReport extends A_CmsListReport {
 
@@ -52,7 +52,7 @@ public class CmsHtmlImportReport extends A_CmsListReport {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsHtmlImportReport(CmsJspActionElement jsp) {
@@ -62,7 +62,7 @@ public class CmsHtmlImportReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -74,7 +74,7 @@ public class CmsHtmlImportReport extends A_CmsListReport {
 
     /**
      * Returns the request parameter value for the class name to get the dialog object from.<p>
-     * 
+     *
      * @return the request parameter value for the class name to get the dialog object from
      */
     public String getParamClassname() {
@@ -82,10 +82,11 @@ public class CmsHtmlImportReport extends A_CmsListReport {
         return m_paramClassname;
     }
 
-    /** 
-     * 
+    /**
+     *
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
+    @Override
     public I_CmsReportThread initializeThread() {
 
         CmsHtmlImport htmlImport = (CmsHtmlImport)((Map)getSettings().getDialogObject()).get(getParamClassname());
@@ -95,9 +96,9 @@ public class CmsHtmlImportReport extends A_CmsListReport {
         return importThread;
     }
 
-    /** 
+    /**
      * Sets the request parameter value for the class name to get the dialog object from.<p>
-     * 
+     *
      * @param className the request parameter value for the class name to get the dialog object from
      */
     public void setParamClassname(String className) {

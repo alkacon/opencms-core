@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ import com.google.common.collect.Lists;
  *
  * The configuration of the repositories is done in the configuration file
  * <code>opencms-importexport.xml</code>.<p>
- * 
+ *
  * @since 6.2.4
  */
 public class CmsRepositoryManager {
@@ -80,7 +80,7 @@ public class CmsRepositoryManager {
     private Map<String, I_CmsRepository> m_repositoryMap = new LinkedHashMap<String, I_CmsRepository>();
 
     /**
-     * Creates a new instance for the resource manager, 
+     * Creates a new instance for the resource manager,
      * will be called by the vfs configuration manager.<p>
      */
     public CmsRepositoryManager() {
@@ -96,9 +96,9 @@ public class CmsRepositoryManager {
 
     /**
      * Creates a new unconfigured instance of the repository manager.<p>
-     * 
+     *
      * Is used if there are no repositories configured.<p>
-     * 
+     *
      * @param configured determines if the repository manager was configured
      */
     public CmsRepositoryManager(boolean configured) {
@@ -108,16 +108,16 @@ public class CmsRepositoryManager {
         m_frozen = true;
     }
 
-    /** 
+    /**
      * Creates a list of resource wrappers from a collection of configuration parameters, for use in configuring repositories.<p>
-     * 
-     * @param config the configuration 
-     * @param paramName the parameter name 
-     * @param log the logger to use for error messages 
-     * 
-     * @return the list of resource wrappers 
-     * 
-     * @throws CmsConfigurationException if something goes wrong with reading the configuration 
+     *
+     * @param config the configuration
+     * @param paramName the parameter name
+     * @param log the logger to use for error messages
+     *
+     * @return the list of resource wrappers
+     *
+     * @throws CmsConfigurationException if something goes wrong with reading the configuration
      */
     public static List<I_CmsResourceWrapper> createResourceWrappersFromConfiguration(
         CmsParameterConfiguration config,
@@ -157,25 +157,21 @@ public class CmsRepositoryManager {
                         wrapper.configure(configString);
                     }
                 } catch (InstantiationException e) {
-                    throw new CmsConfigurationException(Messages.get().container(
-                        Messages.ERR_INVALID_WRAPPER_NAME_1,
-                        wrapperString));
+                    throw new CmsConfigurationException(
+                        Messages.get().container(Messages.ERR_INVALID_WRAPPER_NAME_1, wrapperString));
                 } catch (IllegalAccessException e) {
-                    throw new CmsConfigurationException(Messages.get().container(
-                        Messages.ERR_INVALID_WRAPPER_NAME_1,
-                        wrapperString));
+                    throw new CmsConfigurationException(
+                        Messages.get().container(Messages.ERR_INVALID_WRAPPER_NAME_1, wrapperString));
                 } catch (ClassCastException e) {
-                    throw new CmsConfigurationException(Messages.get().container(
-                        Messages.ERR_INVALID_WRAPPER_NAME_1,
-                        wrapperString));
+                    throw new CmsConfigurationException(
+                        Messages.get().container(Messages.ERR_INVALID_WRAPPER_NAME_1, wrapperString));
                 }
 
                 wrapperObjects.add(wrapper);
 
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.INIT_ADD_WRAPPER_1,
-                        wrapper.getClass().getName()));
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(Messages.INIT_ADD_WRAPPER_1, wrapper.getClass().getName()));
                 }
             }
         }
@@ -184,9 +180,9 @@ public class CmsRepositoryManager {
 
     /**
      * Adds a new configured repository.<p>
-     * 
+     *
      * @param repository the repository to add
-     * 
+     *
      * @throws CmsConfigurationException in case the resource manager configuration is already initialized
      */
     public void addRepositoryClass(I_CmsRepository repository) throws CmsConfigurationException {
@@ -198,13 +194,13 @@ public class CmsRepositoryManager {
         m_repositoryList.add(repository);
     }
 
-    /** 
+    /**
      * Gets the additional infos for the user who just logged in which is required for the repositories to work.<p>
-     * 
-     * @param userName the name of the logged in user 
-     * @param password the password of the logged in user 
-     * 
-     * @return the additional info entries which should be written to the user 
+     *
+     * @param userName the name of the logged in user
+     * @param password the password of the logged in user
+     *
+     * @return the additional info entries which should be written to the user
      */
     public Map<String, Object> getAdditionalInfoForLogin(String userName, String password) {
 
@@ -230,9 +226,9 @@ public class CmsRepositoryManager {
     /**
      * Gets a list of the repositories for the given superclass.<p>
      *
-     * @param cls the superclass 
-     * 
-     * @return the repositories for whose classes the given class is a superclass 
+     * @param cls the superclass
+     *
+     * @return the repositories for whose classes the given class is a superclass
      */
     @SuppressWarnings("unchecked")
     public <REPO extends I_CmsRepository> List<REPO> getRepositories(Class<REPO> cls) {
@@ -248,9 +244,9 @@ public class CmsRepositoryManager {
 
     /**
      * Returns the repository with the given name.<p>
-     * 
+     *
      * @param name the name of the repository
-     * 
+     *
      * @return the repository configured for that name
      */
     public I_CmsRepository getRepository(String name) {
@@ -261,11 +257,11 @@ public class CmsRepositoryManager {
     /**
      * Gets a repository by name, but only if its class is a subclass of the class passed as a parameter.<p>
      * Otherwise, null will be returned.<p>
-     * 
-     * @param name the repository name 
-     * @param cls the class used to filter repositories 
-     * 
-     * @return the repository with the given name, or null  
+     *
+     * @param name the repository name
+     * @param cls the class used to filter repositories
+     *
+     * @return the repository with the given name, or null
      */
     @SuppressWarnings("unchecked")
     public <REPO extends I_CmsRepository> REPO getRepository(String name, Class<REPO> cls) {
@@ -284,17 +280,18 @@ public class CmsRepositoryManager {
 
     /**
      * Initializes a configuration after all parameters have been added.<p>
-     * 
+     *
      * @throws CmsConfigurationException if something goes wrong
      */
     public void initConfiguration() throws CmsConfigurationException {
 
         for (I_CmsRepository rep : m_repositoryList) {
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_ADD_REPOSITORY_2,
-                    rep.getClass().getName(),
-                    rep.getName()));
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(
+                        Messages.INIT_ADD_REPOSITORY_2,
+                        rep.getClass().getName(),
+                        rep.getName()));
             }
             rep.initConfiguration();
             m_repositoryMap.put(rep.getName(), rep);
@@ -309,13 +306,13 @@ public class CmsRepositoryManager {
 
     /**
      * Initializes repositories using an admin CMS object.<p>
-     * 
-     * @param cms the CMS object with admin privileges 
+     *
+     * @param cms the CMS object with admin privileges
      */
     public void initializeCms(CmsObject cms) {
 
         List<String> toRemove = new ArrayList<String>();
-        // Repositories which can't be fully initialized need to be removed. 
+        // Repositories which can't be fully initialized need to be removed.
         for (I_CmsRepository repository : m_repositoryMap.values()) {
             String repoName = repository.getName();
             try {
@@ -346,7 +343,7 @@ public class CmsRepositoryManager {
         return m_configured;
     }
 
-    /** 
+    /**
      * Shuts down the repository manager.<p>
      */
     public void shutDown() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -86,10 +86,10 @@ public class CmsAttributeChoiceWidget extends Composite implements HasMouseOverH
 
     /**
      * Adds a new choice entry.<p>
-     * 
-     * @param widgetService the widget service to use for labels 
-     * @param menuEntry the menu entry bean 
-     * @param selectHandler the handler to use for selecting entries 
+     *
+     * @param widgetService the widget service to use for labels
+     * @param menuEntry the menu entry bean
+     * @param selectHandler the handler to use for selecting entries
      */
     public void addChoice(
         I_CmsWidgetService widgetService,
@@ -108,7 +108,7 @@ public class CmsAttributeChoiceWidget extends Composite implements HasMouseOverH
 
     /**
      * Adds a choice to the widget.<p>
-     * 
+     *
      * @param choice the choice to add
      */
     public void addChoice(Widget choice) {
@@ -135,8 +135,8 @@ public class CmsAttributeChoiceWidget extends Composite implements HasMouseOverH
 
     /**
      * Gets the panel into which submenus of this menu should be inserted.<p>
-     * 
-     * @return the panel for submenus 
+     *
+     * @return the panel for submenus
      */
     public Panel getSubmenuPanel() {
 
@@ -166,7 +166,7 @@ public class CmsAttributeChoiceWidget extends Composite implements HasMouseOverH
 
     /**
      * Evaluates if the choice select should be displayed above the button.<p>
-     * 
+     *
      * @return <code>true</code> if the choice select should be displayed above the button
      */
     private boolean displayAbove() {

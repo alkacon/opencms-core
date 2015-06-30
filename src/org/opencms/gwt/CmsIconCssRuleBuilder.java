@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * This is a helper class for creating the text of the CSS rule for a single icon based on resource type and file suffix.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsIconCssRuleBuilder {
@@ -46,12 +46,12 @@ public class CmsIconCssRuleBuilder {
     /** The list of selector strings. */
     private List<String> m_selectors = new ArrayList<String>();
 
-    /** 
+    /**
      * Adds a selector for a resource type and a file suffix.<p>
-     *  
+     *
      * @param type the resource type name
-     * @param suffix the file suffix 
-     * @param small true if the selector should be for the small icon  
+     * @param suffix the file suffix
+     * @param small true if the selector should be for the small icon
      */
     public void addSelectorForSubType(String type, String suffix, boolean small) {
 
@@ -66,8 +66,8 @@ public class CmsIconCssRuleBuilder {
 
     /**
      * Adds a selector for a resource type.<p>
-     * 
-     * @param type the name of the resource type 
+     *
+     * @param type the name of the resource type
      * @param small true if the selector should be for the small icon
      */
     public void addSelectorForType(String type, boolean small) {
@@ -82,8 +82,8 @@ public class CmsIconCssRuleBuilder {
 
     /**
      * Sets the URI of the icon image file.<p>
-     * 
-     * @param imageUri the URI of the icon image file 
+     *
+     * @param imageUri the URI of the icon image file
      */
     public void setImageUri(String imageUri) {
 
@@ -92,8 +92,8 @@ public class CmsIconCssRuleBuilder {
 
     /**
      * Writes the CSS to a string buffer.<p>
-     * 
-     * @param buffer the string buffer to which the 
+     *
+     * @param buffer the string buffer to which the
      */
     public void writeCss(StringBuffer buffer) {
 

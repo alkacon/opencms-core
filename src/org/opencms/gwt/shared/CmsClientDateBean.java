@@ -43,9 +43,9 @@ public class CmsClientDateBean implements IsSerializable, Comparable<Object> {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param date the date value 
-     * @param dateText the user-readable date string 
+     *
+     * @param date the date value
+     * @param dateText the user-readable date string
      */
     public CmsClientDateBean(long date, String dateText) {
 

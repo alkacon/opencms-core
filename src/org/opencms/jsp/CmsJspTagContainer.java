@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides access to the page container elements.<p>
- * 
+ *
  * @since 8.0
  */
 public class CmsJspTagContainer extends BodyTagSupport {
@@ -155,7 +155,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Ensures the appropriate formatter configuration ID is set in the element settings.<p>
-     * 
+     *
      * @param cms the cms context
      * @param element the element bean
      * @param adeConfig the ADE configuration data
@@ -163,7 +163,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
      * @param containerType the container type
      * @param containerWidth the container width
      * @param allowNested if nested containers are allowed
-     * 
+     *
      * @return the formatter configuration bean, may be <code>null</code> if no formatter available or a schema formatter is used
      */
     public static I_CmsFormatterBean ensureValidFormatterSettings(
@@ -199,9 +199,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Returns the path to the associated detail content.<p>
-     * 
+     *
      * @param detailContainersPage the detail containers page path
-     * 
+     *
      * @return the path to the associated detail content
      */
     public static String getDetailContentPath(String detailContainersPage) {
@@ -214,10 +214,10 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Returns the detail only container page bean or <code>null</code> if none available.<p>
-     * 
+     *
      * @param cms the cms context
      * @param req the current request
-     * 
+     *
      * @return the container page bean
      */
     public static CmsContainerPageBean getDetailOnlyPage(CmsObject cms, ServletRequest req) {
@@ -248,9 +248,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Returns the site path to the detail only container page.<p>
-     * 
+     *
      * @param detailContentSitePath the detail content site path
-     * 
+     *
      * @return the site path to the detail only container page
      */
     public static String getDetailOnlyPageName(String detailContentSitePath) {
@@ -265,7 +265,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Returns the formatter configuration for the given element.<p>
-     * 
+     *
      * @param cms the cms context
      * @param element the element bean
      * @param adeConfig the ADE configuration
@@ -273,7 +273,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
      * @param containerType the container type
      * @param containerWidth the container width
      * @param allowNested if nested containers are allowed
-     * 
+     *
      * @return the formatter configuration
      */
     public static I_CmsFormatterBean getFormatterConfigurationForElement(
@@ -290,10 +290,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
         if ((element.getFormatterId() != null) && !element.getFormatterId().isNullUUID()) {
 
             if (!element.getSettings().containsKey(settingsKey)) {
-                for (I_CmsFormatterBean formatter : adeConfig.getFormatters(cms, element.getResource()).getAllMatchingFormatters(
-                    containerType,
-                    containerWidth,
-                    allowNested)) {
+                for (I_CmsFormatterBean formatter : adeConfig.getFormatters(
+                    cms,
+                    element.getResource()).getAllMatchingFormatters(containerType, containerWidth, allowNested)) {
                     if (element.getFormatterId().equals(formatter.getJspStructureId())) {
                         String formatterConfigId = formatter.getId();
                         if (formatterConfigId == null) {
@@ -308,12 +307,13 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 if (CmsUUID.isValidUUID(formatterConfigId)) {
                     formatterBean = OpenCms.getADEManager().getCachedFormatters(
                         cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
-                        new CmsUUID(formatterConfigId));
+                            new CmsUUID(formatterConfigId));
                 } else if (CmsFormatterConfig.SCHEMA_FORMATTER_ID.equals(formatterConfigId)) {
                     try {
-                        formatterBean = OpenCms.getResourceManager().getResourceType(element.getResource().getTypeId()).getFormattersForResource(
-                            cms,
-                            element.getResource()).getDefaultFormatter(containerType, containerWidth, allowNested);
+                        formatterBean = OpenCms.getResourceManager().getResourceType(
+                            element.getResource().getTypeId()).getFormattersForResource(
+                                cms,
+                                element.getResource()).getDefaultFormatter(containerType, containerWidth, allowNested);
                     } catch (CmsLoaderException e) {
                         LOG.error(e.getLocalizedMessage(), e);
                     }
@@ -325,7 +325,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 if (CmsUUID.isValidUUID(formatterConfigId)) {
                     formatterBean = OpenCms.getADEManager().getCachedFormatters(
                         cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
-                        new CmsUUID(formatterConfigId));
+                            new CmsUUID(formatterConfigId));
                 }
             }
             if (formatterBean == null) {
@@ -340,14 +340,14 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Returns the element group elements.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param element group element
      * @param req the servlet request
      * @param containerType the container type
-     * 
+     *
      * @return the elements of this group
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public static List<CmsContainerElementBean> getGroupContainerElements(
@@ -360,11 +360,13 @@ public class CmsJspTagContainer extends BodyTagSupport {
         CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, element.getResource(), req);
         CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(cms);
         if (!CmsElementUtil.checkGroupAllowed(containerType, groupContainer.getTypes())) {
-            LOG.warn(new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
-                element.getResource().getRootPath(),
-                OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName(),
-                containerType)));
+            LOG.warn(
+                new CmsIllegalStateException(
+                    Messages.get().container(
+                        Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
+                        element.getResource().getRootPath(),
+                        OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName(),
+                        containerType)));
             return Collections.emptyList();
         }
         subElements = groupContainer.getElements();
@@ -373,11 +375,11 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Reads elements from an inherited container.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param element the element which references the inherited container
-     *  
-     * @return the container elements 
+     *
+     * @return the container elements
      */
 
     public static List<CmsContainerElementBean> getInheritedContainerElements(
@@ -390,10 +392,10 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Checks whether the given resource path is of a detail containers page.<p>
-     * 
+     *
      * @param cms the cms context
      * @param detailContainersPage the resource site path
-     * 
+     *
      * @return <code>true</code> if the given resource path is of a detail containers page
      */
     public static boolean isDetailContainersPage(CmsObject cms, String detailContainersPage) {
@@ -414,9 +416,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Creates the closing tag for the container.<p>
-     * 
+     *
      * @param tagName the tag name
-     * 
+     *
      * @return the closing tag
      */
     protected static String getTagClose(String tagName) {
@@ -426,14 +428,14 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Creates the opening tag for the container assigning the appropriate id and class attributes.<p>
-     * 
+     *
      * @param tagName the tag name
      * @param containerName the container name used as id attribute value
      * @param tagClass the tag class attribute value
      * @param nested true if this is a nested container
-     * @param online true if we are in the online project 
+     * @param online true if we are in the online project
      * @param containerData the container data
-     * 
+     *
      * @return the opening tag
      */
     protected static String getTagOpen(
@@ -447,16 +449,16 @@ public class CmsJspTagContainer extends BodyTagSupport {
         StringBuffer buffer = new StringBuffer(32);
         buffer.append("<").append(tagName).append(" ");
         if (online && nested) {
-            // omit generated ids when online 
+            // omit generated ids when online
         } else {
             buffer.append(" id=\"").append(containerName).append("\" ");
         }
         if (containerData != null) {
             buffer.append(" rel=\"").append(containerData).append("\" ");
             // set the marker CSS class
-            tagClass = tagClass == null ? CmsContainerElement.CLASS_CONTAINER : tagClass
-                + " "
-                + CmsContainerElement.CLASS_CONTAINER;
+            tagClass = tagClass == null
+            ? CmsContainerElement.CLASS_CONTAINER
+            : tagClass + " " + CmsContainerElement.CLASS_CONTAINER;
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(tagClass)) {
             buffer.append("class=\"").append(tagClass).append("\" ");
@@ -492,7 +494,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
     public int doEndTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();
-        // This will always be true if the page is called through OpenCms 
+        // This will always be true if the page is called through OpenCms
         if (CmsFlexController.isCmsRequest(req)) {
 
             try {
@@ -539,9 +541,12 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 // get the maximal number of elements
                 int maxElements = getMaxElements(requestUri);
                 if (container == null) {
-                    container = new CmsContainerBean(getName(), getType(), m_parentElement != null
-                    ? m_parentElement.getInstanceId()
-                    : null, maxElements, Collections.<CmsContainerElementBean> emptyList());
+                    container = new CmsContainerBean(
+                        getName(),
+                        getType(),
+                        m_parentElement != null ? m_parentElement.getInstanceId() : null,
+                        maxElements,
+                        Collections.<CmsContainerElementBean> emptyList());
                 }
                 // set the parameter
                 container.setParam(getParam());
@@ -556,17 +561,22 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
 
                 pageContext.getOut().print(
-                    getTagOpen(tagName, getName(), getTagClass(), isNested(), isOnline, isOnline
-                    ? null
-                    : getContainerData(cms, maxElements, isUsedAsDetailView, detailOnly)));
+                    getTagOpen(
+                        tagName,
+                        getName(),
+                        getTagClass(),
+                        isNested(),
+                        isOnline,
+                        isOnline ? null : getContainerData(cms, maxElements, isUsedAsDetailView, detailOnly)));
 
                 standardContext.setContainer(container);
                 // validate the type
                 if (!getType().equals(container.getType())) {
                     container.setType(getType());
-                    LOG.warn(new CmsIllegalStateException(Messages.get().container(
-                        Messages.LOG_WRONG_CONTAINER_TYPE_4,
-                        new Object[] {requestUri, locale, getName(), getType()})));
+                    LOG.warn(new CmsIllegalStateException(
+                        Messages.get().container(
+                            Messages.LOG_WRONG_CONTAINER_TYPE_4,
+                            new Object[] {requestUri, locale, getName(), getType()})));
                 }
 
                 // update the cache
@@ -638,9 +648,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Internal action method.<p>
-     * 
+     *
      * @return EVAL_BODY_BUFFERED
-     * 
+     *
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
@@ -652,8 +662,8 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Returns the boolean value if this container is target of detail views.<p>
-     * 
-     * @return <code>true</code> or <code>false</code> 
+     *
+     * @return <code>true</code> or <code>false</code>
      */
     public String getDetailview() {
 
@@ -672,7 +682,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Returns the maxElements attribute value.<p>
-     * 
+     *
      * @return the maxElements attribute value
      */
     public String getMaxElements() {
@@ -682,7 +692,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Returns the name attribute value.<p>
-     * 
+     *
      * @return String the name attribute value
      */
     public String getName() {
@@ -695,12 +705,12 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Returns the (optional) container parameter.<p>
-     * 
+     *
      * This is useful for a dynamically generated nested container,
-     * to pass information to the formatter used inside that container. 
-     * 
+     * to pass information to the formatter used inside that container.
+     *
      * If no parameters have been set, this will return <code>null</code>
-     *  
+     *
      * @return the (optional) container parameter
      */
     public String getParam() {
@@ -730,9 +740,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Returns the type attribute value.<p>
-     * 
+     *
      * If the container type has not been set, the name is substituted as type.<p>
-     * 
+     *
      * @return the type attribute value
      */
     public String getType() {
@@ -742,8 +752,8 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Returns the container width as a string.<p>
-     * 
-     * @return the container width as a string 
+     *
+     * @return the container width as a string
      */
     public String getWidth() {
 
@@ -752,7 +762,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Sets if this container should only be displayed on detail pages.<p>
-     * 
+     *
      * @param detailOnly if this container should only be displayed on detail pages
      */
     public void setDetailonly(String detailOnly) {
@@ -762,7 +772,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Sets if the current container is target of detail views.<p>
-     * 
+     *
      * @param detailView <code>true</code> or <code>false</code>
      */
     public void setDetailview(String detailView) {
@@ -802,10 +812,10 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Sets the container parameter.<p>
-     * 
+     *
      * This is useful for a dynamically generated nested container,
-     * to pass information to the formatter used inside that container. 
-     *  
+     * to pass information to the formatter used inside that container.
+     *
      * @param param the parameter String to set
      */
     public void setParam(String param) {
@@ -845,8 +855,8 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Sets the container width as a string.<p>
-     * 
-     * @param width the container width as a string 
+     *
+     * @param width the container width as a string
      */
     public void setWidth(String width) {
 
@@ -855,12 +865,12 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Returns the serialized data of the given container.<p>
-     * 
+     *
      * @param cms the cms context
      * @param maxElements the maximum number of elements allowed within this container
      * @param isDetailView <code>true</code> if this container is currently being used for the detail view
      * @param isDetailOnly <code>true</code> if this is a detail only container
-     * 
+     *
      * @return the serialized container data
      */
     protected String getContainerData(CmsObject cms, int maxElements, boolean isDetailView, boolean isDetailOnly) {
@@ -897,9 +907,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Returns if the container is editable by the current user.<p>
-     * 
+     *
      * @param cms the cms context
-     * 
+     *
      * @return <code>true</code> if the container is editable by the current user
      */
     protected boolean isEditable(CmsObject cms) {
@@ -967,10 +977,10 @@ public class CmsJspTagContainer extends BodyTagSupport {
         return result;
     }
 
-    /** 
+    /**
      * Returns true if this is a nested container.<p>
-     * 
-     * @return true if this is a nested container 
+     *
+     * @return true if this is a nested container
      */
     protected boolean isNested() {
 
@@ -979,11 +989,11 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Prints the closing tag for an element wrapper if in online mode.<p>
-     * 
-     * @param isOnline if true, we are online 
+     *
+     * @param isOnline if true, we are online
      * @param isGroupcontainer <code>true</code> if element is a group-container
-     * 
-     * @throws IOException if the output fails 
+     *
+     * @throws IOException if the output fails
      */
     protected void printElementWrapperTagEnd(boolean isOnline, boolean isGroupcontainer) throws IOException {
 
@@ -1002,13 +1012,13 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Prints the opening element wrapper tag for the container page editor if we are in Offline mode.<p>
-     *  
-     * @param isOnline true if we are in Online mode 
-     * @param cms the Cms context 
-     * @param elementBean the element bean 
+     *
+     * @param isOnline true if we are in Online mode
+     * @param cms the Cms context
+     * @param elementBean the element bean
      * @param page the container page
-     * @param isGroupContainer true if the element is a group-container 
-     * 
+     * @param isGroupContainer true if the element is a group-container
+     *
      * @throws Exception if something goes wrong
      */
     protected void printElementWrapperTagStart(
@@ -1039,11 +1049,11 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Generates the detail view element.<p>
-     * 
+     *
      * @param cms the CMS context
      * @param detailContent the detail content resource
-     * 
-     * @return the detail view element 
+     *
+     * @return the detail view element
      */
     private CmsContainerElementBean generateDetailViewElement(CmsObject cms, CmsResource detailContent) {
 
@@ -1073,10 +1083,10 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Gets the container width as a number.<p>
-     * 
+     *
      * If the container width is not set, or not a number, -1 will be returned.<p>
-     * 
-     * @return the container width or -1 
+     *
+     * @return the container width or -1
      */
     private int getContainerWidth() {
 
@@ -1084,20 +1094,20 @@ public class CmsJspTagContainer extends BodyTagSupport {
         try {
             containerWidth = Integer.parseInt(m_width);
         } catch (NumberFormatException e) {
-            // do nothing, set width to -1 
+            // do nothing, set width to -1
         }
         return containerWidth;
     }
 
     /**
      * Returns the serialized element data.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param elementBean the element to serialize
      * @param page the container page
-     * 
+     *
      * @return the serialized element data
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     private String getElementInfo(CmsObject cms, CmsContainerElementBean elementBean, CmsContainerPageBean page)
@@ -1113,10 +1123,10 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Parses the maximum element number from the current container and returns the resulting number.<p>
-     *  
+     *
      * @param requestUri the requested URI
-     *  
-     * @return the maximum number of elements of the container 
+     *
+     * @return the maximum number of elements of the container
      */
     private int getMaxElements(String requestUri) {
 
@@ -1127,15 +1137,18 @@ public class CmsJspTagContainer extends BodyTagSupport {
             try {
                 maxElements = Integer.parseInt(containerMaxElements);
             } catch (NumberFormatException e) {
-                throw new CmsIllegalStateException(Messages.get().container(
-                    Messages.LOG_WRONG_CONTAINER_MAXELEMENTS_3,
-                    new Object[] {requestUri, getName(), containerMaxElements}), e);
+                throw new CmsIllegalStateException(
+                    Messages.get().container(
+                        Messages.LOG_WRONG_CONTAINER_MAXELEMENTS_3,
+                        new Object[] {requestUri, getName(), containerMaxElements}),
+                    e);
             }
         } else {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_MAXELEMENTS_NOT_SET_2,
-                    new Object[] {getName(), requestUri}));
+                LOG.warn(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_MAXELEMENTS_NOT_SET_2,
+                        new Object[] {getName(), requestUri}));
             }
         }
         return maxElements;
@@ -1143,9 +1156,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Returns the ADE session cache for container elements.<p>
-     * 
+     *
      * @param cms the cms context
-     * 
+     *
      * @return the session cache
      */
     private CmsADESessionCache getSessionCache(CmsObject cms) {
@@ -1155,12 +1168,12 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Prints an element error tag to the response out.<p>
-     * 
-     * @param isOnline true if we are in Online mode 
+     *
+     * @param isOnline true if we are in Online mode
      * @param elementSitePath the element site path
      * @param formatterSitePath the formatter site path
      * @param exception the exception causing the error
-     * 
+     *
      * @throws IOException if something goes wrong writing to response out
      */
     private void printElementErrorTag(
@@ -1178,17 +1191,20 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 stacktrace = CmsEncoder.escapeXml(stacktrace);
             }
             StringBuffer errorBox = new StringBuffer(256);
-            errorBox.append("<div style=\"display:block; padding: 5px; border: red solid 2px; color: black; background: white;\" class=\"");
+            errorBox.append(
+                "<div style=\"display:block; padding: 5px; border: red solid 2px; color: black; background: white;\" class=\"");
             errorBox.append(CmsContainerElement.CLASS_ELEMENT_ERROR);
             errorBox.append("\">");
-            errorBox.append(Messages.get().getBundle().key(
-                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                elementSitePath,
-                formatterSitePath));
+            errorBox.append(
+                Messages.get().getBundle().key(
+                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                    elementSitePath,
+                    formatterSitePath));
             errorBox.append("<br />");
             errorBox.append(exception.getLocalizedMessage());
             if (stacktrace != null) {
-                errorBox.append("<span onclick=\"__openStacktraceDialog(event);\" style=\"border: 1px solid black; cursor: pointer;\">");
+                errorBox.append(
+                    "<span onclick=\"__openStacktraceDialog(event);\" style=\"border: 1px solid black; cursor: pointer;\">");
                 errorBox.append(Messages.get().getBundle().key(Messages.GUI_LABEL_STACKTRACE_0));
                 errorBox.append("<span title=\"");
                 errorBox.append(Messages.get().getBundle().key(Messages.GUI_LABEL_STACKTRACE_0));
@@ -1205,17 +1221,17 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Renders a container element.<p>
-     * 
-     * @param request the current request 
-     * @param cms the CMS context 
+     *
+     * @param request the current request
+     * @param cms the CMS context
      * @param standardContext the current standard contxt bean
      * @param element the container element to render
      * @param locale the requested locale
-     * @param alreadyFull if true, only render invisible elements (they don't count towards the "max elements") 
-     * 
-     * @return true if an element was rendered that counts towards the container's maximum number of elements 
-     * 
-     * @throws Exception if something goes wrong 
+     * @param alreadyFull if true, only render invisible elements (they don't count towards the "max elements")
+     *
+     * @return true if an element was rendered that counts towards the container's maximum number of elements
+     *
+     * @throws Exception if something goes wrong
      */
     private boolean renderContainerElement(
         HttpServletRequest request,
@@ -1225,7 +1241,8 @@ public class CmsJspTagContainer extends BodyTagSupport {
         Locale locale,
         boolean alreadyFull) throws Exception {
 
-        CmsTemplateContext context = (CmsTemplateContext)(request.getAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT));
+        CmsTemplateContext context = (CmsTemplateContext)(request.getAttribute(
+            CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT));
         if ((context == null) && alreadyFull) {
             return false;
         }
@@ -1233,7 +1250,8 @@ public class CmsJspTagContainer extends BodyTagSupport {
         if (context != null) {
             contextKey = context.getKey();
         } else {
-            String rpcContextOverride = (String)request.getAttribute(CmsTemplateContextManager.ATTR_RPC_CONTEXT_OVERRIDE);
+            String rpcContextOverride = (String)request.getAttribute(
+                CmsTemplateContextManager.ATTR_RPC_CONTEXT_OVERRIDE);
             contextKey = rpcContextOverride;
         }
         boolean showInContext = shouldShowInContext(element, context != null ? context.getKey() : null);
@@ -1309,11 +1327,14 @@ public class CmsJspTagContainer extends BodyTagSupport {
                     }
                     if (subElementFormatterConfig == null) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(new CmsIllegalStateException(Messages.get().container(
-                                Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
-                                subelement.getSitePath(),
-                                OpenCms.getResourceManager().getResourceType(subelement.getResource()).getTypeName(),
-                                containerType)));
+                            LOG.error(
+                                new CmsIllegalStateException(
+                                    Messages.get().container(
+                                        Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
+                                        subelement.getSitePath(),
+                                        OpenCms.getResourceManager().getResourceType(
+                                            subelement.getResource()).getTypeName(),
+                                        containerType)));
                         }
                         // skip this element, it has no formatter for this container type defined
                         continue;
@@ -1325,7 +1346,8 @@ public class CmsJspTagContainer extends BodyTagSupport {
                     try {
                         String formatterSitePath;
                         try {
-                            CmsResource formatterResource = cms.readResource(subElementFormatterConfig.getJspStructureId());
+                            CmsResource formatterResource = cms.readResource(
+                                subElementFormatterConfig.getJspStructureId());
                             formatterSitePath = cms.getSitePath(formatterResource);
                         } catch (CmsVfsResourceNotFoundException ex) {
                             formatterSitePath = cms.getRequestContext().removeSiteRoot(
@@ -1402,11 +1424,14 @@ public class CmsJspTagContainer extends BodyTagSupport {
                         true);
                     if (elementFormatterBean == null) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(new CmsIllegalStateException(Messages.get().container(
-                                Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
-                                element.getSitePath(),
-                                OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName(),
-                                containerType)));
+                            LOG.error(
+                                new CmsIllegalStateException(
+                                    Messages.get().container(
+                                        Messages.ERR_XSD_NO_TEMPLATE_FORMATTER_3,
+                                        element.getSitePath(),
+                                        OpenCms.getResourceManager().getResourceType(
+                                            element.getResource()).getTypeName(),
+                                        containerType)));
                         }
                         // skip this element, it has no formatter for this container type defined
                         return false;
@@ -1423,7 +1448,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 standardContext.setElement(element);
                 try {
                     if (!showInContext) {
-                        // write invisible dummy element 
+                        // write invisible dummy element
                         pageContext.getOut().print(DUMMY_ELEMENT);
                         result = false;
                     } else {
@@ -1459,11 +1484,11 @@ public class CmsJspTagContainer extends BodyTagSupport {
 
     /**
      * Helper method to determine whether an element should be shown in a context.<p>
-     * 
-     * @param element the element for which the visibility should be determined 
-     * @param contextKey the key of the context for which to check 
-     * 
-     * @return true if the current context doesn't prohibit the element from being shown 
+     *
+     * @param element the element for which the visibility should be determined
+     * @param contextKey the key of the context for which to check
+     *
+     * @return true if the current context doesn't prohibit the element from being shown
      */
     private boolean shouldShowInContext(CmsContainerElementBean element, String contextKey) {
 

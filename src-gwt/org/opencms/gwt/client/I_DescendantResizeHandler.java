@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,12 +29,12 @@ package org.opencms.gwt.client;
 
 /**
  * Interface for widgets which should react to size changes of their descendants.<p>
- * 
+ *
  * @since 9.5.0
  */
 public interface I_DescendantResizeHandler {
 
-    /** 
+    /**
      * This method should be called when a descendant widget changes its size.<p>
      */
     void onResizeDescendant();

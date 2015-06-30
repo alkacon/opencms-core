@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  * Interface for a context menu entry.<p>
- * 
+ *
  * @since version 8.0.0
  */
 public interface I_CmsContextMenuEntry {
@@ -43,15 +43,15 @@ public interface I_CmsContextMenuEntry {
 
     /**
      * Generates the context menu item.<p>
-     * 
+     *
      * @return the context menu item
      */
     A_CmsContextMenuItem generateMenuItem();
 
     /**
      * Returns a CSS class which should be used to display an icon, or null if no icon is required.<p>
-     * 
-     * @return the CSS class for the icon 
+     *
+     * @return the CSS class for the icon
      */
     String getIconClass();
 
@@ -71,7 +71,7 @@ public interface I_CmsContextMenuEntry {
 
     /**
      * Returns the name of the entry.<p>
-     * 
+     *
      * @return the name of the entry
      */
     String getName();
@@ -92,7 +92,7 @@ public interface I_CmsContextMenuEntry {
 
     /**
      * Returns <code>true</code> if this menu entry has a sub menu <code>false</code> otherwise.<p>
-     * 
+     *
      * @return <code>true</code> if this menu entry has a sub menu <code>false</code> otherwise
      */
     boolean hasSubMenu();

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ import com.google.common.collect.Multimaps;
 
 /**
  * Represents the currently cached collection of all formatter beans extracted from formatter configuration files.<p>
- * 
+ *
  * Objects of this class are immutable, but have a method to create an updated copy.<p>
  */
 public class CmsFormatterConfigurationCacheState {
@@ -66,7 +66,7 @@ public class CmsFormatterConfigurationCacheState {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param formatters the initial map of formatters
      */
     public CmsFormatterConfigurationCacheState(Map<CmsUUID, I_CmsFormatterBean> formatters) {
@@ -80,12 +80,12 @@ public class CmsFormatterConfigurationCacheState {
 
     /**
      * Creates a new copy of this state in which some entries are removed or replaced.<p>
-     * 
+     *
      * This does not change the state object on which the method is called.
-     * 
+     *
      * @param updateFormatters a map of formatters to change, where the key is the structure id and the value is either the replacement or null if the map entry should be removed
-     *  
-     * @return the updated copy 
+     *
+     * @return the updated copy
      */
     public CmsFormatterConfigurationCacheState createUpdatedCopy(Map<CmsUUID, I_CmsFormatterBean> updateFormatters) {
 
@@ -104,8 +104,8 @@ public class CmsFormatterConfigurationCacheState {
 
     /**
      * Gets the map of formatters which are automatically enabled.<p>
-     * 
-     * @return the map of automatically enabled formatters with structure ids as keys  
+     *
+     * @return the map of automatically enabled formatters with structure ids as keys
      */
     public Map<CmsUUID, I_CmsFormatterBean> getAutoEnabledFormatters() {
 
@@ -123,8 +123,8 @@ public class CmsFormatterConfigurationCacheState {
 
     /**
      * Gets the map of all formatters.<p>
-     * 
-     * @return the map of all formatters 
+     *
+     * @return the map of all formatters
      */
     public Map<CmsUUID, I_CmsFormatterBean> getFormatters() {
 
@@ -133,11 +133,11 @@ public class CmsFormatterConfigurationCacheState {
 
     /**
      * Gets the formatters for a specific resource types, and optionally only returns those which are automatically enabled.<p>
-     * 
-     * @param resourceType the resource type name 
+     *
+     * @param resourceType the resource type name
      * @param filterAutoEnabled true if only the automatically enabled formatters should be returned
-     *  
-     * @return the formatters for the type 
+     *
+     * @return the formatters for the type
      */
     public Collection<I_CmsFormatterBean> getFormattersForType(String resourceType, boolean filterAutoEnabled) {
 
@@ -156,8 +156,8 @@ public class CmsFormatterConfigurationCacheState {
 
     /**
      * Gets the formatters as a multimap with the resource types as keys and caches this multimap if necessary.<p>
-     * 
-     * @return the multimap of formatters by resource type 
+     *
+     * @return the multimap of formatters by resource type
      */
     private Multimap<String, I_CmsFormatterBean> getFormattersByType() {
 

@@ -16,10 +16,10 @@
  *
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
- * 
+ *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
 
 /**
  * Resource bundle to access CSS and image resources.
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsLayoutBundle extends ClientBundle {
@@ -43,58 +43,58 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** The context menu CSS classes. */
     public interface I_CmsAvailabilityCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String checkBox();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String dateBox();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String fieldsetSpacer();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String inlineBlock();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String inputCombination();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String labelColumn();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String principalIcon();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String responsabilityLabel();
@@ -105,119 +105,119 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String black();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String blue();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cmsButtonBig();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cmsButtonMedium();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cmsButtonSmall();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cmsImageButton();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cmsMenuButton();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cmsMinWidth();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cmsTextButton();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cmsTransparentButton();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String gray();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String green();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String red();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String resizeButton();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String spacerLeft();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String spacerRight();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String yellow();
@@ -227,157 +227,157 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     interface I_CmsCategoryDialogCss extends CssResource {
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String criteriaList();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String editorGallery();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String galleryBody();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String hasButton();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String infoLabel();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String listIcon();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String listOnlyTab();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String noParamsMessage();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String paramsText();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String parentPanel();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String quickFilterBox();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String resultTabUpload();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String searchTabBorderLayer();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String searchTabDesMargin();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String searchTabInputLeft();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String searchTabInputRight();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String searchTabInputWide();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String searchTabLabelLeft();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String searchTabLabelRight();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String searchTabRow();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String searchTabRowRightAlign();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String selectboxWidth();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String showParams();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String showPreview();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String tabOptions();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String tabParamsPanel();
@@ -386,44 +386,44 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** THe color selector CSS classes.  */
     public interface I_CmsColorSelector extends CssResource {
 
-        /** 
+        /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String colorSelectorWidget();
 
-        /** 
+        /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String sliderMap();
 
-        /** 
+        /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String sliderMapOverlay();
 
-        /** 
+        /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String sliderMapSlider();
 
-        /** 
+        /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String sliderMapUnderlay();
 
-        /** 
+        /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String tableField();
@@ -434,7 +434,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     interface I_CmsContentEditorCss extends CssResource {
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String contentEditor();
@@ -443,37 +443,37 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** The context menu CSS classes. */
     public interface I_CmsContextmenuCss extends I_CmsPopupCss, I_CmsContextmenuItemCss {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cmsMenuBar();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String iconBox();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String menuInfoLabel();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String menuItemSeparator();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String menuPanel();
@@ -484,37 +484,37 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Shared
     public interface I_CmsContextmenuItemCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String arrow();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cmsMenuItem();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String disabled();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String label();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String selected();
@@ -523,23 +523,23 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** DateBox css. */
     public interface I_CmsDateBoxCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String ampm();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String dateTime();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String time();
@@ -549,156 +549,156 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Shared
     interface I_CmsDialogCss extends I_CmsPopupCss {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String alertBottomContent();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String alertMainContent();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String alertTopContent();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String borderPadding();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String caption();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String closePopup();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String closePopupImage();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String contentPadding();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String contentSpacer();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String dragging();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String dragOverlay();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String frameDialog();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String hideButtonPanel();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String hideCaption();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String logReportScrollPanel();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String menuArrowBottom();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String menuArrowTop();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String modelSelectList();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String popupButtonPanel();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String popupHead();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String popupMainContent();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String popupOverlay();
@@ -708,16 +708,16 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Shared
     interface I_CmsDragCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String dragPlaceholder();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String dragStarted();
@@ -726,23 +726,23 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** The error dialog CSS classes. */
     public interface I_CmsErrorDialogCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String details();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String errorIcon();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String message();
@@ -752,37 +752,37 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @ImportedWithPrefix("fieldset")
     public interface I_CmsFieldsetCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String content();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String fieldsetInvisible();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String fieldsetVisible();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String image();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String legend();
@@ -792,170 +792,170 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Shared
     interface I_CmsGeneralCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String border();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String buttonCornerAll();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cellpadding();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String clearAll();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String clearFix();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String clearStyles();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cornerAll();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cornerBottom();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cornerTop();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String disablingOverlay();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String header();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String headerButtons();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String hideOverlay();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String inlineBlock();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String multiLineLabel();
 
         /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String shadow();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String simpleFormInputBox();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String simpleFormLabel();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String simpleFormRow();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String textBig();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String textMedium();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String textSmall();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String toolTip();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String truncatingLabel();
@@ -967,28 +967,28 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String selectBoxPopup();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String selectBoxSelected();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String textAreaBox();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String textAreaBoxPanel();
@@ -997,44 +997,44 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Header CSS. */
     interface I_CmsHeaderCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String h1();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String h2();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String h3();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String h4();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String h5();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String h6();
@@ -1043,72 +1043,72 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Highlighting CSS, used within the {@link org.opencms.gwt.client.ui.CmsHighlightingBorder} widget. */
     interface I_CmsHighlightCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String animated();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String borderBottom();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String borderLeft();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String borderRight();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String borderTop();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String colorBlue();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String colorGrey();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String colorRed();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String colorSolidGrey();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String highlightBox();
@@ -1117,16 +1117,16 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Link warning panel CSS. */
     interface I_CmsLinkWarningCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String brokenLink();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String deletedEntryLabel();
@@ -1135,9 +1135,9 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** List item CSS. */
     interface I_CmsListItemCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String listItemCheckbox();
@@ -1148,253 +1148,253 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Shared
     interface I_CmsListItemWidgetCss extends I_CmsStateCss {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String buttonPanel();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String changed();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String copyModel();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String disabledItem();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String dragging();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String expired();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          **/
         String export();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          **/
         String hidden();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          **/
         String inlineEditable();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String itemActive();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String itemAdditional();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String itemAdditionalTitle();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String itemAdditionalValue();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String itemBlue();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String itemContainer();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String itemContent();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String itemIcon();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String itemRed();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String itemTitle();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String itemYellow();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          **/
         String lockClosed();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          **/
         String lockIcon();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          **/
         String lockOpen();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          **/
         String lockSharedClosed();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          **/
         String lockSharedOpen();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          **/
         String normal();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String open();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String permaVisible();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          **/
         String redirect();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          **/
         String secure();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          **/
         String stateIcon();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          **/
         String titleDeleted();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          **/
         String titleInput();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String titleRow();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String topRightIcon();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String unselectable();
@@ -1404,93 +1404,93 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** ListTree CSS. */
     interface I_CmsListTreeCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String list();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String listScrollable();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String listTreeItem();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String listTreeItemChildren();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String listTreeItemClosed();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String listTreeItemContent();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String listTreeItemInternal();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String listTreeItemLeaf();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String listTreeItemNoOpeners();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String listTreeItemOpen();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String listTreeItemOpener();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String minus();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String plus();
@@ -1499,51 +1499,51 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Location picker CSS. */
     public interface I_CmsLocationPicker extends I_CmsLocationPickerBase {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String buttonBar();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String fader();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String hasPreview();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String inlineField();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String inputContainer();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String mapCanvas();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String opener();
@@ -1553,44 +1553,44 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Shared
     public interface I_CmsLocationPickerBase extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String displayBox();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String locationField();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String locationFields();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String locationInfo();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String locationMainPanel();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String mapPreview();
@@ -1601,14 +1601,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String button();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String menu();
@@ -1618,100 +1618,100 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Shared
     interface I_CmsNotificationCss extends I_CmsPopupCss {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String blocking();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String busy();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String closeButton();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String loadingAnimation();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String messageContent();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String messagesPanel();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String messageTime();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String messageWrap();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String notificationContainer();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String notificationError();
 
         /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String notificationMessage();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String notificationNormal();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String notificationOverlay();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String notificationWarning();
@@ -1723,14 +1723,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String openerHover();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String openerNoHover();
@@ -1739,9 +1739,9 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Page CSS. */
     interface I_CmsPageCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String page();
@@ -1751,16 +1751,16 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Shared
     public interface I_CmsPopupCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String popup();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String popupContent();
@@ -1769,37 +1769,37 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** The context menu CSS classes. */
     public interface I_CmsProgressBarCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String colorComplete();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String colorIncomplete();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String meterText();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String meterValue();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String meterWrap();
@@ -1808,30 +1808,30 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** The context menu CSS classes. */
     public interface I_CmsResourceStateCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String noState();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String stateChanged();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String stateDeleted();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String stateNew();
@@ -1840,23 +1840,23 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** The scroll bar CSS classes. */
     public interface I_CmsScrollBarCss extends I_CmsScrollPanel {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String scrollBar();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String scrollbarLayer();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String scrollKnob();
@@ -1866,44 +1866,44 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Shared
     public interface I_CmsScrollPanel extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String allwaysShowBars();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String hiddenSize();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String scrollable();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String scrollContainer();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String scrollPanel();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String showBars();
@@ -1914,49 +1914,49 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String main();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String marker();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String markerBlackBorder();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String markerBorder();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String markerWhiteBorder();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String overlay();
 
         /**
          *  Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String showSelect();
@@ -1965,16 +1965,16 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** The single line list item CSS. */
     public interface I_CmsSingleLineItem extends I_CmsFloatDecoratedPanelCss {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String itemFace();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String singleLineItem();
@@ -1984,63 +1984,63 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Shared
     interface I_CmsStateCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cmsHovering();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cmsState();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         @ClassName("cmsState-down")
         String cmsStateDown();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         @ClassName("cmsState-down-disabled")
         String cmsStateDownDisabled();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         @ClassName("cmsState-down-hovering")
         String cmsStateDownHovering();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         @ClassName("cmsState-up")
         String cmsStateup();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         @ClassName("cmsState-up-disabled")
         String cmsStateUpDisabled();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         @ClassName("cmsState-up-hovering")
@@ -2051,121 +2051,121 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** Tabbed panel css. */
     interface I_CmsTabbedPanelCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String black();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String borderAll();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String buttonTabs();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String classicTabs();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         @ClassName("internal-tabbed")
         String cmsInternalTab();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanel")
         String cmsTabLayoutPanel();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelContent")
         String cmsTabLayoutPanelContent();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelTab")
         String cmsTabLayoutPanelTab();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelTabBar")
         String cmsTabLayoutPanelTabBar();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelTabs")
         String cmsTabLayoutPanelTabs();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         @ClassName("gwt-TabLayoutPanelTab-selected")
         String cmsTabLayoutPanelTabSelected();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cornerLeft();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String cornerRight();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String tabDisabled();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String tabLeftMargin();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String tabPanel();
@@ -2175,86 +2175,86 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Shared
     interface I_CmsToolbarCss extends CssResource {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String hideButtonShowSmallElements();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String notification();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String simpleToolbarShow();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String toolbar();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String toolbarBackground();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String toolbarButtonShowSmallElements();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String toolbarButtonsLeft();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String toolbarButtonsRight();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String toolbarContent();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String toolbarHide();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String toolbarShow();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String toolbarToggle();
@@ -2263,86 +2263,86 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** The upload button CSS classes. */
     public interface I_CmsUploadButtonCss extends I_CmsPopupCss {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String dialogMessage();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String dialogMessageImportant();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String fileInfoTable();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String loadingAnimation();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String loadingPanel();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String loadingText();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String progressInfo();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String uploadButton();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String uploadDialogButton();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String uploadFileInput();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String warningIcon();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String warningMessage();
@@ -2353,7 +2353,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the availability dialog CSS
      */
     @Source("availability.css")
@@ -2361,28 +2361,28 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image bundle for the backgrounds
      */
     I_CmsBackgroundImageBundle backgrounds();
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the bundle for the big icons
      */
     I_CmsBigIconBundle bigIcons();
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image bundle for the borders
      */
     I_CmsBorderImageBundle borders();
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the button CSS
      */
     @Source("button.css")
@@ -2390,7 +2390,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the gallery dialog CSS
      */
     @Source("categorydialog.css")
@@ -2398,7 +2398,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the gallery dialog CSS
      */
     @Source("colorSelector.css")
@@ -2406,14 +2406,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * The CSS constants bundle.<p>
-     * 
-     * @return a bundle of CSS constants 
+     *
+     * @return a bundle of CSS constants
      */
     I_CmsConstantsBundle constants();
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the content editor dialog CSS
      */
     @Source("contentEditor.css")
@@ -2422,22 +2422,22 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the constants CSS
      */
     @Source("contextmenu.css")
     I_CmsContextmenuCss contextmenuCss();
 
-    /** 
+    /**
      * Access method.<p>
-     * 
+     *
      * @return the CSS class name
      */
     I_CmsImageBundle coreImages();
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the constants CSS
      */
     @Source("datebox.css")
@@ -2445,7 +2445,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the dialog CSS
      */
     @Source("dialog.css")
@@ -2453,7 +2453,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the dialog CSS
      */
     @Source("directedit.css")
@@ -2461,7 +2461,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the drag and drop CSS
      */
     @Source("dragdrop.css")
@@ -2469,7 +2469,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the error dialog CSS
      */
     @Source("errorDialog.css")
@@ -2477,7 +2477,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the constants CSS
      */
     @Source("fieldset.css")
@@ -2485,7 +2485,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the toolbar CSS
      */
     @Source("floatDecoratedPanel.css")
@@ -2493,7 +2493,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the general CSS
      */
     @Source("general.css")
@@ -2501,7 +2501,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the upload button CSS
      */
     @Source("globalWidget.css")
@@ -2509,14 +2509,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image bundle for the gwt module
      */
     I_CmsImageBundle gwtImages();
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the highlight CSS
      */
     @Source("highlight.css")
@@ -2524,30 +2524,30 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Returns the image bundle for the input package.<p>
-     * 
+     *
      * @return an image bundle
      */
     I_CmsInputImageBundle inputImages();
 
     /**
      * Access method.<p>
-     * 
-     * @return the list item CSS 
+     *
+     * @return the list item CSS
      */
     @Source("linkWarning.css")
     I_CmsLinkWarningCss linkWarningCss();
 
     /**
      * Access method.<p>
-     * 
-     * @return the list item CSS 
+     *
+     * @return the list item CSS
      */
     @Source("listitem.css")
     I_CmsListItemCss listItemCss();
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the list item CSS
      */
     @Source("listItemWidget.css")
@@ -2556,15 +2556,15 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the list tree CSS
      */
     @Source("listtree.css")
     I_CmsListTreeCss listTreeCss();
 
-    /** 
+    /**
      * Access method.<p>
-     * 
+     *
      * @return the location picker CSS
      */
     @Source("locationPicker.css")
@@ -2572,7 +2572,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the menu button CSS
      */
     @Source("menuButton.css")
@@ -2580,7 +2580,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the list item CSS
      */
     @Source("notification.css")
@@ -2588,7 +2588,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the upload button CSS
      */
     @Source("openerHoverWidget.css")
@@ -2596,7 +2596,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the constants CSS
      */
     @Source("progressbar.css")
@@ -2604,7 +2604,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the page CSS
      */
     @Source("properties.css")
@@ -2612,7 +2612,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the list item CSS
      */
     @Source("resourceState.css")
@@ -2620,7 +2620,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the constants CSS
      */
     @Source("scrollBar.css")
@@ -2628,7 +2628,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the select area CSS
      */
     @Source("selectArea.css")
@@ -2636,7 +2636,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the single line list item CSS
      */
     @Source("singleLineItem.css")
@@ -2645,7 +2645,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /**
      * Access method. These CSS classes are used to indicate the state of ui items, use them within a dedicated CSS resources.
      * Do not inject this CSS, as it contains no style information.<p>
-     * 
+     *
      * @return the state CSS
      */
     @Source("state.css")
@@ -2653,7 +2653,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     *  
+     *
      * @return tabbed panel CSS
      */
     @Source("tabbedPanel.css")
@@ -2661,7 +2661,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the toolbar CSS
      */
     @Source("toolbar.css")
@@ -2669,7 +2669,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the upload button CSS
      */
     @Source("uploadButton.css")

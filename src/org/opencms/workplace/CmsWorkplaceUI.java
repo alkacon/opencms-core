@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -123,10 +123,10 @@ public class CmsWorkplaceUI extends A_CmsUI {
 
     /**
      * Replaces the site title, if necessary.<p>
-     * 
+     *
      * @param title the site title
-     *  
-     * @return the new site title 
+     *
+     * @return the new site title
      */
     protected String substituteSiteTitle(String title) {
 
@@ -141,7 +141,8 @@ public class CmsWorkplaceUI extends A_CmsUI {
 
         if (m_workplaceSettings == null) {
             VaadinSession session = getCurrent().getSession();
-            m_workplaceSettings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+            m_workplaceSettings = (CmsWorkplaceSettings)session.getAttribute(
+                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
 
             if (m_workplaceSettings == null) {
                 // create the settings object
@@ -164,8 +165,8 @@ public class CmsWorkplaceUI extends A_CmsUI {
         for (CmsSite site : sites) {
             Item selectItem = siteSelect.addItem(site);
             selectItem.getItemProperty("Title").setValue(substituteSiteTitle(site.getTitle()));
-            if (((site.getSiteRoot() != null) && site.getSiteRoot().equals(
-                getCmsObject().getRequestContext().getSiteRoot()))
+            if (((site.getSiteRoot() != null)
+                && site.getSiteRoot().equals(getCmsObject().getRequestContext().getSiteRoot()))
                 || ((site.getSiteRoot() == null) && (getCmsObject().getRequestContext().getSiteRoot() == null))) {
                 current = site;
             }

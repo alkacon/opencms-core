@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -91,11 +91,11 @@ public class CmsModelPageHelper {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param rootResource the root resource for the sitemap 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context to use
+     * @param rootResource the root resource for the sitemap
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsModelPageHelper(CmsObject cms, CmsResource rootResource)
     throws CmsException {
@@ -114,12 +114,12 @@ public class CmsModelPageHelper {
 
     /**
      * Adds a model page to the sitemap config.<p>
-     * 
-     * @param sitemapConfig the sitemap configuration resource 
-     * @param modelPage the model page to add 
-     * @param disabled true if the model page should be added as 'disabled' 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param sitemapConfig the sitemap configuration resource
+     * @param modelPage the model page to add
+     * @param disabled true if the model page should be added as 'disabled'
+     *
+     * @throws CmsException if something goes wrong
      */
     public void addModelPageToSitemapConfiguration(CmsResource sitemapConfig, CmsResource modelPage, boolean disabled)
     throws CmsException {
@@ -157,13 +157,13 @@ public class CmsModelPageHelper {
 
     /**
      * Creates a new model group page.<p>
-     * 
+     *
      * @param name the page name
      * @param description the page description
      * @param copyId structure id of the resource to use as a model for the model page, if any (may be null)
-     * 
+     *
      * @return the new resource
-     * 
+     *
      * @throws CmsException in case something goes wrong
      */
     public CmsResource createModelGroupPage(String name, String description, CmsUUID copyId) throws CmsException {
@@ -198,13 +198,13 @@ public class CmsModelPageHelper {
 
     /**
      * Creates a new potential model page in the default folder for new model pages.<p>
-     * 
-     * @param name the title for the model page 
-     * @param description the description for the model page 
+     *
+     * @param name the title for the model page
+     * @param description the description for the model page
      * @param copyId structure id of the resource to use as a model for the model page, if any (may be null)
-     *  
-     * @return the created resource 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the created resource
+     * @throws CmsException if something goes wrong
      */
     public CmsResource createPageInModelFolder(String name, String description, CmsUUID copyId) throws CmsException {
 
@@ -237,11 +237,11 @@ public class CmsModelPageHelper {
 
     /**
      * Disables the given model page.<p>
-     * 
+     *
      * @param sitemapConfig the configuration resource
      * @param structureId the model page id
      * @param disabled <code>true</code> to disabe the entry
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void disableModelPage(CmsResource sitemapConfig, CmsUUID structureId, boolean disabled) throws CmsException {
@@ -265,35 +265,35 @@ public class CmsModelPageHelper {
         } else {
             value = content.addValue(m_cms, CmsConfigurationReader.N_MODEL_PAGE, Locale.ENGLISH, i);
             String linkValuePath = value.getPath() + "/" + CmsConfigurationReader.N_MODEL_PAGE;
-            I_CmsXmlContentValue linkValue = content.hasValue(linkValuePath, Locale.ENGLISH) ? content.getValue(
-                linkValuePath,
-                Locale.ENGLISH) : content.addValue(m_cms, linkValuePath, Locale.ENGLISH, 0);
+            I_CmsXmlContentValue linkValue = content.hasValue(linkValuePath, Locale.ENGLISH)
+            ? content.getValue(linkValuePath, Locale.ENGLISH)
+            : content.addValue(m_cms, linkValuePath, Locale.ENGLISH, 0);
             CmsResource model = m_cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
             linkValue.setStringValue(m_cms, m_cms.getSitePath(model));
         }
         String disabledPath = value.getPath() + "/" + CmsConfigurationReader.N_DISABLED;
-        I_CmsXmlContentValue disabledValue = content.hasValue(disabledPath, Locale.ENGLISH) ? content.getValue(
-            disabledPath,
-            Locale.ENGLISH) : content.addValue(m_cms, disabledPath, Locale.ENGLISH, 0);
+        I_CmsXmlContentValue disabledValue = content.hasValue(disabledPath, Locale.ENGLISH)
+        ? content.getValue(disabledPath, Locale.ENGLISH)
+        : content.addValue(m_cms, disabledPath, Locale.ENGLISH, 0);
         disabledValue.setStringValue(m_cms, Boolean.toString(disabled));
         writeSitemapConfig(content, sitemapConfigFile);
     }
 
-    /** 
+    /**
      * Tries to either read or create the default folder for model pages in the current sitemap, and returns it.<p>
-     * 
-     * @param rootResource the root of the sitemap 
-     * @param isModelGroup <code>true</code> if a model group folder is requested 
-     * 
+     *
+     * @param rootResource the root of the sitemap
+     * @param isModelGroup <code>true</code> if a model group folder is requested
+     *
      * @return the folder resource
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsResource ensureModelFolder(CmsResource rootResource, boolean isModelGroup) throws CmsException {
 
-        String modelFolderPath = CmsStringUtil.joinPaths(m_adeConfig.getBasePath(), isModelGroup
-        ? CmsContainerpageService.MODEL_GROUP_PATH_FRAGMENT
-        : ".content/.templates");
+        String modelFolderPath = CmsStringUtil.joinPaths(
+            m_adeConfig.getBasePath(),
+            isModelGroup ? CmsContainerpageService.MODEL_GROUP_PATH_FRAGMENT : ".content/.templates");
         try {
             CmsResource result = m_cms.readFolder(modelFolderPath);
             return result;
@@ -312,7 +312,7 @@ public class CmsModelPageHelper {
 
     /**
      * Returns the local model group pages.<p>
-     * 
+     *
      * @return the model group pages
      */
     public List<CmsModelPageEntry> getModelGroups() {
@@ -325,8 +325,9 @@ public class CmsModelPageHelper {
             try {
                 List<CmsResource> modelResources = m_cms.readResources(
                     modelGroupFolderPath,
-                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(OpenCms.getResourceManager().getResourceType(
-                        CmsResourceTypeXmlContainerPage.getStaticTypeName())),
+                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
+                        OpenCms.getResourceManager().getResourceType(
+                            CmsResourceTypeXmlContainerPage.getStaticTypeName())),
                     false);
                 for (CmsResource model : modelResources) {
                     CmsModelPageEntry entry = createModelPageEntry(model, false, false);
@@ -343,7 +344,7 @@ public class CmsModelPageHelper {
 
     /**
      * Returns the model infos.<p>
-     * 
+     *
      * @return the model infos
      */
     public CmsModelInfo getModelInfo() {
@@ -351,10 +352,10 @@ public class CmsModelPageHelper {
         return new CmsModelInfo(getModelPages(), getParentModelPages(), getModelGroups());
     }
 
-    /** 
+    /**
      * Reads the model pages from the ADE configuration.<p>
-     * 
-     * @return the list of model pages 
+     *
+     * @return the list of model pages
      */
     public List<CmsModelPageEntry> getModelPages() {
 
@@ -364,7 +365,7 @@ public class CmsModelPageHelper {
 
     /**
      * Returns the parent model pages.<p>
-     *  
+     *
      * @return the parent model pages
      */
     public List<CmsModelPageEntry> getParentModelPages() {
@@ -377,13 +378,13 @@ public class CmsModelPageHelper {
         return buildModelPageList(modelPageConfigs);
     }
 
-    /** 
+    /**
      * Removes a model page from the sitemap configuration.<p>
-     * 
-     * @param sitemapConfig the sitemap configuration resource 
+     *
+     * @param sitemapConfig the sitemap configuration resource
      * @param structureId the structure id of the model page to remove
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void removeModelPage(CmsResource sitemapConfig, CmsUUID structureId) throws CmsException {
 
@@ -408,12 +409,12 @@ public class CmsModelPageHelper {
 
     /**
      * Creates a model page entry bean from a model page resource.<p>
-     * 
+     *
      * @param resource the model page resource
      * @param disabled if the model page is disabled
      * @param isDefault if this is the default model page
-     *  
-     * @return the model page entry bean 
+     *
+     * @return the model page entry bean
      */
     CmsModelPageEntry createModelPageEntry(CmsResource resource, boolean disabled, boolean isDefault) {
 
@@ -454,9 +455,9 @@ public class CmsModelPageHelper {
 
     /**
      * Builds the model page list.<p>
-     * 
+     *
      * @param modelPageConfigs the model page configuration
-     * 
+     *
      * @return the list
      */
     private List<CmsModelPageEntry> buildModelPageList(List<CmsModelPageConfig> modelPageConfigs) {
@@ -482,10 +483,10 @@ public class CmsModelPageHelper {
 
     /**
      * Gets the type id for a type name.<p>
-     * 
-     * @param name the type name 
-     * @return the type id 
-     * @throws CmsLoaderException if something goes wrong 
+     *
+     * @param name the type name
+     * @return the type id
+     * @throws CmsLoaderException if something goes wrong
      */
     private int getType(String name) throws CmsLoaderException {
 
@@ -494,8 +495,8 @@ public class CmsModelPageHelper {
 
     /**
      * Tries to unlock a resource.<p>
-     * 
-     * @param resource the resource to unlock 
+     *
+     * @param resource the resource to unlock
      */
     private void tryUnlock(CmsResource resource) {
 
@@ -508,12 +509,12 @@ public class CmsModelPageHelper {
 
     /**
      * Writes a sitemap configuration back to the VFS.<p>
-     * 
-     * @param content the content to write 
+     *
+     * @param content the content to write
      * @param sitemapConfigFile the file to which the sitemap config should be written
-     *  
-     * @throws CmsXmlException if an XML processing error occurs 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsXmlException if an XML processing error occurs
+     * @throws CmsException if something goes wrong
      */
     private void writeSitemapConfig(CmsXmlContent content, CmsFile sitemapConfigFile)
     throws CmsXmlException, CmsException {

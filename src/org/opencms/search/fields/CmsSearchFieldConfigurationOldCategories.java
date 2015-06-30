@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,10 +43,10 @@ import org.apache.lucene.document.StringField;
 
 /**
  * Describes a field configuration using the old (pre 8.0) logic for categories that depend on properties.<p>
- * 
+ *
  * Configure this class for a search index field configuration in case you want the old behavior.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsSearchFieldConfigurationOldCategories extends CmsLuceneFieldConfiguration {
 
@@ -60,16 +60,16 @@ public class CmsSearchFieldConfigurationOldCategories extends CmsLuceneFieldConf
 
     /**
      * Extends the given document by resource category information based on properties.<p>
-     * 
+     *
      * @param document the document to extend
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the document extended by resource category information
-     * 
+     *
      * @see org.opencms.search.fields.CmsSearchFieldConfiguration#appendCategories(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
      */
     @Override

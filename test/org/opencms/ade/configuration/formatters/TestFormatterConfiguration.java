@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,12 +52,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * Tests for formatter configurations.<p>
@@ -81,8 +81,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
     /**
      * Test constructor.<p>
-     * 
-     * @param name the name of the test 
+     *
+     * @param name the name of the test
      */
     public TestFormatterConfiguration(String name) {
 
@@ -91,8 +91,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
     /**
      * Returns the test suite.<p>
-     * 
-     * @return the test suite 
+     *
+     * @return the test suite
      */
     public static Test suite() {
 
@@ -135,9 +135,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
     /**
      * Gets the type id for a given name.<p>
-     * 
-     * @param name the type name 
-     * @return the type id 
+     *
+     * @param name the type name
+     * @return the type id
      */
     static int getTypeId(String name) {
 
@@ -150,7 +150,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
     /**
      * Tests adding a formatter through the configuration.
-     * 
+     *
      * @throws CmsException
      */
     public void testAddFormatter() throws CmsException {
@@ -161,8 +161,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         CmsTestConfigData config = createConfig("/", f1, f2, f3);
         CmsTestConfigData config2 = createConfig("/invalid-name", f1, f2, f3);
         config2.setParent(config);
-        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(Collections.<String> emptyList(), Arrays.asList(""
-            + CmsUUID.getConstantUUID("f2"), "" + CmsUUID.getConstantUUID("f3")));
+        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(
+            Collections.<String> emptyList(),
+            Arrays.asList("" + CmsUUID.getConstantUUID("f2"), "" + CmsUUID.getConstantUUID("f3")));
         config2.setFormatterChangeSet(changeSet);
 
         CmsFormatterConfiguration formatterConfig = config2.getFormatters(getCmsObject(), m_exampleResourceA);
@@ -176,8 +177,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
     }
 
     /**
-     * Tests that the "AutoEnabled" setting on formatters works. 
-     * 
+     * Tests that the "AutoEnabled" setting on formatters works.
+     *
      * @throws CmsException
      */
     public void testAutoEnabled() throws CmsException {
@@ -203,7 +204,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
     /**
      * Tests default formatter selection.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testDefaultFormatterSelection() throws Exception {
@@ -243,7 +244,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
     /**
      * Tests that the formatter cache is updated correctly.
-     * 
+     *
      * @throws Exception
      */
     public void testLiveFormatterConfig() throws Exception {
@@ -267,7 +268,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
                 new ArrayList<CmsProperty>());
 
             OpenCms.getADEManager().waitForFormatterCache(false);
-            Collection<I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().values();
+            Collection<I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
+                false).getFormatters().values();
             assertTrue(
                 "Formatter 'foobarx' should have been in cached formatter configuration, but was not there",
                 getFormatterNames(formatters).contains("foobarx"));
@@ -289,7 +291,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
     /**
      * Tests that the formatter cache is updated correctly.
-     * 
+     *
      * @throws Exception
      */
     public void testOverwriteFormatterConfig() throws Exception {
@@ -311,7 +313,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             file.setContents(formatterBytes);
             cms.writeFile(file);
             OpenCms.getADEManager().waitForFormatterCache(false);
-            Collection<I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().values();
+            Collection<I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
+                false).getFormatters().values();
             assertEquals(names("foobar2"), getFormatterNames(formatters));
         } finally {
             delete("/system/formatter1.fc");
@@ -321,7 +324,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
     /**
      * Tests adding/removing schema formatters.<p>
-     * 
+     *
      * @throws CmsException
      */
     @SuppressWarnings("unchecked")
@@ -347,8 +350,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             currentConfig.registerSchemaFormatters(typeB, CmsFormatterConfiguration.create(cms, Arrays.asList(s3)));
         }
 
-        CmsFormatterChangeSet changeSet2 = new CmsFormatterChangeSet(Collections.EMPTY_LIST, Arrays.asList("type_"
-            + TYPE_A));
+        CmsFormatterChangeSet changeSet2 = new CmsFormatterChangeSet(
+            Collections.EMPTY_LIST,
+            Arrays.asList("type_" + TYPE_A));
         config2.setFormatterChangeSet(changeSet2);
 
         CmsFormatterConfiguration formatterConfig = config.getFormatters(cms, m_exampleResourceA);
@@ -378,8 +382,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
     }
 
     /**
-     * Tests removal of a formatter through the configuration.<p> 
-     * 
+     * Tests removal of a formatter through the configuration.<p>
+     *
      * @throws CmsException
      */
     public void testRemoveFormatter() throws CmsException {
@@ -390,9 +394,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         CmsTestConfigData config = createConfig("/", f1, f2, f3);
         CmsTestConfigData config2 = createConfig("/invalid-name", f1, f2, f3);
         config2.setParent(config);
-        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(Arrays.asList(
-            "" + CmsUUID.getConstantUUID("f2"),
-            "" + CmsUUID.getConstantUUID("f3")), Collections.<String> emptyList());
+        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(
+            Arrays.asList("" + CmsUUID.getConstantUUID("f2"), "" + CmsUUID.getConstantUUID("f3")),
+            Collections.<String> emptyList());
         config2.setFormatterChangeSet(changeSet);
 
         CmsFormatterConfiguration formatterConfig = config2.getFormatters(getCmsObject(), m_exampleResourceA);
@@ -407,7 +411,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
     /**
      * Tests whether schema formatters are available.
-     * 
+     *
      * @throws CmsException
      */
     public void testSchemaFormatters() throws CmsException {
@@ -435,10 +439,10 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
     /**
      * Creates a sitemap configuration bean with formatters.<p>
-     * 
-     * @param path the sitemap configuration path 
-     * @param formatters the formatters  
-     * @return the sitemap configuration bean 
+     *
+     * @param path the sitemap configuration path
+     * @param formatters the formatters
+     * @return the sitemap configuration bean
      */
     private CmsTestConfigData createConfig(String path, I_CmsFormatterBean... formatters) {
 
@@ -456,14 +460,14 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         return config1;
     }
 
-    /** 
+    /**
      * Creates a formatter bean with the given resource type, name, rank, and auto-enabled status.
-     * 
+     *
      * @param resType
      * @param name
      * @param rank1
      * @param enabled
-     * @return the formatter bean 
+     * @return the formatter bean
      */
     private CmsFormatterBean createFormatter(String resType, String name, int rank1, boolean enabled) {
 
@@ -524,7 +528,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
      * @param name
      * @param enabled
      * @param rank
-     * @return the formatter XML 
+     * @return the formatter XML
      * @throws Exception
      */
     private String createFormatterConfigXml(String type, String name, boolean enabled, int rank) throws Exception {
@@ -567,12 +571,12 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
     /**
      * Creates a formatter bean for matching by type.<p>
-     * 
+     *
      * @param name
      * @param rank1
      * @param containerTypesArray
-     * 
-     * @return the created formatter bean 
+     *
+     * @return the created formatter bean
      */
     private CmsFormatterBean createTypeBasedFormatter(String name, int rank1, String... containerTypesArray) {
 
@@ -630,13 +634,13 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
     /**
      * Creates a formatter bean for matching by width.<p>
-     * 
+     *
      * @param name
      * @param rank
      * @param width
      * @param maxWidth
-     * 
-     * @return the created formatter bean 
+     *
+     * @return the created formatter bean
      */
     private CmsFormatterBean createWidthBasedFormatter(String name, int rank, int width, int maxWidth) {
 
@@ -688,9 +692,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
     /**
      * Gets the set of nice names of all formatters in a list.<p>
-     * 
-     * @param formatters 
-     * @return the set of formatter names 
+     *
+     * @param formatters
+     * @return the set of formatter names
      */
     private Set<String> getFormatterNames(Collection<I_CmsFormatterBean> formatters) {
 
@@ -701,11 +705,11 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         return result;
     }
 
-    /** 
+    /**
      * Creates the XML for a weak link to a resource.<p>
-     * 
-     * @param res the resource  
-     * @return the XML for the link 
+     *
+     * @param res the resource
+     * @return the XML for the link
      */
     private String link(CmsResource res) {
 
@@ -721,9 +725,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
     /**
      * Creates a set of strings.<p>
-     * 
+     *
      * @param names
-     * @return the set of strings 
+     * @return the set of strings
      */
     private Set<String> names(String... names) {
 

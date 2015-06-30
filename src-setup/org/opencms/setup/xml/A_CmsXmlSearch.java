@@ -58,7 +58,11 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
      * @param fieldConf the field configuration
      * @param clazz the optional class attribute value
      */
-    public void createFieldConfig(Document document, String xpath, CmsSearchFieldConfiguration fieldConf, Class<?> clazz) {
+    public void createFieldConfig(
+        Document document,
+        String xpath,
+        CmsSearchFieldConfiguration fieldConf,
+        Class<?> clazz) {
 
         if (clazz != null) {
             CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_CLASS, clazz.getName());
@@ -310,11 +314,10 @@ public abstract class A_CmsXmlSearch extends A_CmsSetupXmlUpdate {
         String[] doctypes) {
 
         CmsSetupXmlHelper.setValue(document, xpath + "/" + I_CmsXmlConfiguration.N_NAME, name);
-        CmsSetupXmlHelper.setValue(document, xpath
-            + "/"
-            + CmsSearchConfiguration.N_INDEXER
-            + "/@"
-            + I_CmsXmlConfiguration.A_CLASS, clazz.getName());
+        CmsSetupXmlHelper.setValue(
+            document,
+            xpath + "/" + CmsSearchConfiguration.N_INDEXER + "/@" + I_CmsXmlConfiguration.A_CLASS,
+            clazz.getName());
         for (String resource : resources) {
             String resourcePath = xpath
                 + "/"

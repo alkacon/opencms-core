@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Abstract base implementation for xml configurations.<p>
- * 
+ *
  * @since 6.0.0
  */
 public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
@@ -57,7 +57,7 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        // simple default configuration does not support parameters 
+        // simple default configuration does not support parameters
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_CONFIG_PARAM_3, paramName, paramValue, this));
         }
@@ -117,7 +117,7 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
 
     /**
      * Sets the file name of this XML configuration.<p>
-     * 
+     *
      * @param fileName the file name to set
      */
     protected void setXmlFileName(String fileName) {

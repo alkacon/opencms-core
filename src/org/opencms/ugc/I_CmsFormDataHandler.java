@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,10 +36,10 @@ public interface I_CmsFormDataHandler {
 
     /**
      * Processes the map of form data.<p>
-     * 
-     * @param item a map with the form field names as keys and the corresponding data items as valus 
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @param item a map with the form field names as keys and the corresponding data items as valus
+     *
+     * @throws Exception if something goes wrong
      */
     void handleFormData(Map<String, I_CmsFormDataItem> item) throws Exception;
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -91,7 +91,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides a UI list item.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsListItemWidget extends Composite
@@ -115,7 +115,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param additionalInfo the info to display
          */
         public AdditionalInfoItem(CmsAdditionalInfoBean additionalInfo) {
@@ -125,7 +125,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param title info title
          * @param value info value
          * @param additionalStyle an additional class name
@@ -189,12 +189,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     /** Background color values. */
     public enum Background {
         /** Color blue. */
-        BLUE,
-        /** Default color. */
-        DEFAULT,
-        /** Color red. */
-        RED,
-        /** Color yellow. */
+        BLUE, /** Default color. */
+        DEFAULT, /** Color red. */
+        RED, /** Color yellow. */
         YELLOW
     }
 
@@ -203,11 +200,11 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
      */
     public interface I_CmsTitleEditHandler {
 
-        /** 
+        /**
          * This method is called when the user has finished editing the title field.<p>
-         * 
-         * @param title the label containing the title 
-         * @param box the 
+         *
+         * @param title the label containing the title
+         * @param box the
          */
         void handleEdit(CmsLabel title, TextBox box);
     }
@@ -315,7 +312,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Constructor. Using a 'li'-tag as default root element.<p>
-     * 
+     *
      * @param infoBean bean holding the item information
      */
     public CmsListItemWidget(CmsListInfoBean infoBean) {
@@ -329,7 +326,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Adds an additional info item to the list.<p>
-     * 
+     *
      * @param additionalInfo the additional info to display
      */
     public void addAdditionalInfo(CmsAdditionalInfoBean additionalInfo) {
@@ -340,7 +337,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Adds a widget to the button panel.<p>
-     * 
+     *
      * @param w the widget to add
      */
     public void addButton(Widget w) {
@@ -353,7 +350,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Adds a widget to the front of the button panel.<p>
-     * 
+     *
      * @param w the widget to add
      */
     public void addButtonToFront(Widget w) {
@@ -390,14 +387,16 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Adds a mouse click handler to the icon panel.<p>
-     * 
+     *
      * @param handler the click handler
-     * 
+     *
      * @return the handler registration
      */
     public HandlerRegistration addIconClickHandler(final ClickHandler handler) {
 
-        final HandlerRegistration internalHandlerRegistration = m_iconPanel.addDomHandler(handler, ClickEvent.getType());
+        final HandlerRegistration internalHandlerRegistration = m_iconPanel.addDomHandler(
+            handler,
+            ClickEvent.getType());
         m_iconClickHandlers.add(handler);
         HandlerRegistration result = new HandlerRegistration() {
 
@@ -441,8 +440,8 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Adds a style name to the subtitle label.<p>
-     * 
-     * @param styleName the style name to add 
+     *
+     * @param styleName the style name to add
      */
     public void addSubtitleStyleName(String styleName) {
 
@@ -450,9 +449,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     }
 
     /**
-     * Adds a style name to the title label.<p> 
-     * 
-     * @param styleName the style name to add 
+     * Adds a style name to the title label.<p>
+     *
+     * @param styleName the style name to add
      */
     public void addTitleStyleName(String styleName) {
 
@@ -483,9 +482,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Returns the button at the given position.<p>
-     * 
+     *
      * @param index the button index
-     * 
+     *
      * @return the button at the given position
      */
     public Widget getButton(int index) {
@@ -495,7 +494,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Returns the number of buttons.<p>
-     * 
+     *
      * @return the number of buttons
      */
     public int getButtonCount() {
@@ -505,7 +504,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Returns the button panel.<p>
-     * 
+     *
      * @return the button panel
      */
     public FlowPanel getButtonPanel() {
@@ -525,7 +524,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Returns the label after the subtitle.<p>
-     * 
+     *
      * @return the label after the subtitle
      */
     public InlineLabel getShortExtraInfoLabel() {
@@ -545,7 +544,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Returns the title label text.<p>
-     * 
+     *
      * @return the title label text
      */
     public String getTitleLabel() {
@@ -553,9 +552,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         return m_title.getText();
     }
 
-    /** 
+    /**
      * Gets the title widget.<p>
-     * 
+     *
      * @return the title widget
      */
     public CmsLabel getTitleWidget() {
@@ -565,7 +564,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Returns if additional info items are present.<p>
-     * 
+     *
      * @return <code>true</code> if additional info items are present
      */
     public boolean hasAdditionalInfo() {
@@ -575,7 +574,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Re-initializes the additional infos.<p>
-     * 
+     *
      * @param infoBean the info bean
      */
     public void reInitAdditionalInfo(CmsListInfoBean infoBean) {
@@ -597,7 +596,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Removes a widget from the button panel.<p>
-     * 
+     *
      * @param w the widget to remove
      */
     public void removeButton(Widget w) {
@@ -622,8 +621,8 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Removes a style name from the subtitle label.<p>
-     * 
-     * @param styleName the style name to add 
+     *
+     * @param styleName the style name to add
      */
     public void removeSubtitleStyleName(String styleName) {
 
@@ -631,9 +630,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     }
 
     /**
-     * Removes a style name from the title label.<p> 
-     * 
-     * @param styleName the style name to add 
+     * Removes a style name from the title label.<p>
+     *
+     * @param styleName the style name to add
      */
     public void removeTitleStyleName(String styleName) {
 
@@ -642,7 +641,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Sets the additional info value label at the given position.<p>
-     * 
+     *
      * @param index the additional info index
      * @param label the new value to set
      */
@@ -653,8 +652,8 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Sets the additional info visible if present.<p>
-     * 
-     * @param visible <code>true</code> to show, <code>false</code> to hide 
+     *
+     * @param visible <code>true</code> to show, <code>false</code> to hide
      */
     public void setAdditionalInfoVisible(boolean visible) {
 
@@ -675,7 +674,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Sets the background color.<p>
-     * 
+     *
      * @param background the color
      */
     public void setBackground(Background background) {
@@ -699,8 +698,8 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     /**
      * Sets the extra info text, and hides or displays the extra info label depending on whether
      * the text is null or not null.<p>
-     * 
-     * @param text the text to put into the subtitle suffix 
+     *
+     * @param text the text to put into the subtitle suffix
      */
     public void setExtraInfo(String text) {
 
@@ -719,7 +718,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Sets the icon of this item.<p>
-     * 
+     *
      * @param image the image to use as icon
      */
     public void setIcon(Image image) {
@@ -733,7 +732,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Sets the icon for this item using the given CSS classes.<p>
-     * 
+     *
      * @param iconClasses the CSS classes
      */
     public void setIcon(String iconClasses) {
@@ -746,7 +745,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Sets the cursor for the icon.<p>
-     * 
+     *
      * @param cursor the cursor for the icon
      */
     public void setIconCursor(Cursor cursor) {
@@ -757,7 +756,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Sets the icon title.<p>
-     * 
+     *
      * @param title the new icon title
      */
     public void setIconTitle(String title) {
@@ -768,7 +767,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Sets the lock icon.<p>
-     * 
+     *
      * @param icon the icon to use
      * @param iconTitle the icon title
      */
@@ -781,24 +780,28 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         }
         switch (icon) {
             case CLOSED:
-                m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
-                    + " "
-                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockClosed());
+                m_lockIcon.setStyleName(
+                    I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
+                        + " "
+                        + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockClosed());
                 break;
             case OPEN:
-                m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
-                    + " "
-                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockOpen());
+                m_lockIcon.setStyleName(
+                    I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
+                        + " "
+                        + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockOpen());
                 break;
             case SHARED_CLOSED:
-                m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
-                    + " "
-                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockSharedClosed());
+                m_lockIcon.setStyleName(
+                    I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
+                        + " "
+                        + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockSharedClosed());
                 break;
             case SHARED_OPEN:
-                m_lockIcon.setStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
-                    + " "
-                    + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockSharedOpen());
+                m_lockIcon.setStyleName(
+                    I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockIcon()
+                        + " "
+                        + I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().lockSharedOpen());
                 break;
             case NONE:
             default:
@@ -811,9 +814,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Sets the state icon.<p>
-     * 
+     *
      * The state icon indicates if a resource is exported, secure, etc.<p>
-     * 
+     *
      * @param icon the state icon
      */
     public void setStateIcon(StateIcon icon) {
@@ -850,7 +853,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Sets the subtitle label text.<p>
-     * 
+     *
      * @param label the new subtitle to set
      */
     public void setSubtitleLabel(String label) {
@@ -860,8 +863,8 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Enables or disabled editing of the title field.<p>
-     * 
-     * @param editable if true, makes the title field editable 
+     *
+     * @param editable if true, makes the title field editable
      */
     public void setTitleEditable(boolean editable) {
 
@@ -891,8 +894,8 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Sets the handler for editing the list item widget's title.
-     * 
-     * @param handler the new title editing handler 
+     *
+     * @param handler the new title editing handler
      */
     public void setTitleEditHandler(I_CmsTitleEditHandler handler) {
 
@@ -901,7 +904,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Sets the title label text.<p>
-     * 
+     *
      * @param label the new title to set
      */
     public void setTitleLabel(String label) {
@@ -911,7 +914,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Sets the icon in the top right corner and its title.<p>
-     * 
+     *
      * @param iconClass the CSS class for the icon
      * @param title the value for the title attribute of the icon
      */
@@ -950,7 +953,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
             width -= 32;
         }
         if (width < 0) {
-            // IE fails with a JS error if the width is negative 
+            // IE fails with a JS error if the width is negative
             width = 0;
         }
         m_titleBox.setWidth(Math.max(0, width - 30) + "px");
@@ -960,9 +963,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Truncates the additional info items.<p>
-     * 
-     * @param textMetricsPrefix the text metrics prefix 
-     * @param widgetWidth the width to truncate to 
+     *
+     * @param textMetricsPrefix the text metrics prefix
+     * @param widgetWidth the width to truncate to
      */
     public void truncateAdditionalInfo(final String textMetricsPrefix, final int widgetWidth) {
 
@@ -973,7 +976,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Updates the truncation of labels if needed.<p>
-     * 
+     *
      * Use after changing any text on the widget.<p>
      */
     public void updateTruncation() {
@@ -993,7 +996,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         box.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().labelInput());
         box.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().titleInput());
         final String originalTitle = m_title.getText();
-        // wrap the boolean flag in an array so we can change it from the event handlers 
+        // wrap the boolean flag in an array so we can change it from the event handlers
         final boolean[] checked = new boolean[] {false};
         final boolean restoreUnselectable = CmsDomUtil.hasClass(
             I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().unselectable(),
@@ -1074,7 +1077,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param infoBean bean holding the item information
      */
     protected void init(CmsListInfoBean infoBean) {
@@ -1113,7 +1116,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Initializes the additional info.<p>
-     * 
+     *
      * @param infoBean the info bean
      */
     protected void initAdditionalInfo(CmsListInfoBean infoBean) {
@@ -1139,8 +1142,8 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Internal method which is called when the user has finished editing the title.
-     * 
-     * @param box the text box which has been edited 
+     *
+     * @param box the text box which has been edited
      */
     protected void onEditTitleTextBox(TextBox box) {
 
@@ -1158,11 +1161,11 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
 
     /**
      * Combines the main icon title with the title for a status icon overlayed over the main icon.<p>
-     * 
-     * @param main the main icon title 
+     *
+     * @param main the main icon title
      * @param secondary the secondary icon title
-     *  
-     * @return the combined icon title for the secondary icon 
+     *
+     * @return the combined icon title for the secondary icon
      */
     String concatIconTitles(String main, String secondary) {
 

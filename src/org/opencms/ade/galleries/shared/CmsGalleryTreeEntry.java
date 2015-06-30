@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,13 +27,12 @@
 
 package org.opencms.ade.galleries.shared;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Gallery tree entry class. To organize gallery folders as a tree.<p>
- * 
+ *
  * @since 8.0.1
  */
 public class CmsGalleryTreeEntry extends CmsGalleryFolderBean {
@@ -47,7 +46,7 @@ public class CmsGalleryTreeEntry extends CmsGalleryFolderBean {
     /**
      * Constructor.<p>
      * Copy the fields of the given master.<p>
-     * 
+     *
      * @param master master to copy
      */
     public CmsGalleryTreeEntry(CmsGalleryFolderBean master) {
@@ -61,7 +60,7 @@ public class CmsGalleryTreeEntry extends CmsGalleryFolderBean {
 
     /**
      * Adds a new child entry.<p>
-     * 
+     *
      * @param child the child entry to add
      */
     public void addChild(CmsGalleryTreeEntry child) {
@@ -75,7 +74,7 @@ public class CmsGalleryTreeEntry extends CmsGalleryFolderBean {
 
     /**
      * Returns the list of child entries.<p>
-     * 
+     *
      * @return the list of child entries
      */
     public List<CmsGalleryTreeEntry> getChildren() {
@@ -85,7 +84,7 @@ public class CmsGalleryTreeEntry extends CmsGalleryFolderBean {
 
     /**
      * Returns the parent entry or <code>null</code> if there is none.<p>
-     * 
+     *
      * @return the parent entry
      */
     public CmsGalleryTreeEntry getParent() {
@@ -95,7 +94,7 @@ public class CmsGalleryTreeEntry extends CmsGalleryFolderBean {
 
     /**
      * Sets the child entry list.<p>
-     *  
+     *
      * @param children the list of child entries
      */
     public void setChildren(List<CmsGalleryTreeEntry> children) {
@@ -108,7 +107,7 @@ public class CmsGalleryTreeEntry extends CmsGalleryFolderBean {
 
     /**
      * Sets the parent entry.<p>
-     * 
+     *
      * @param parent the parent entry
      */
     protected void setParent(CmsGalleryTreeEntry parent) {

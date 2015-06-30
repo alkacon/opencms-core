@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import java.util.Set;
 
 /**
  * A filter to retrieve log entries.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsLogFilter implements Cloneable {
@@ -88,23 +88,23 @@ public final class CmsLogFilter implements Cloneable {
 
     /**
      * Returns an extended filter with the given type restriction.<p>
-     * 
+     *
      * @param type the relation type to exclude
-     *  
+     *
      * @return an extended filter with the given type restriction
      */
     public CmsLogFilter excludeType(CmsLogEntryType type) {
 
-        CmsLogFilter filter = (CmsLogFilter)this.clone();
+        CmsLogFilter filter = (CmsLogFilter)clone();
         filter.m_excludeTypes.add(type);
         return filter;
     }
 
     /**
      * Returns an extended filter with the starting date restriction.<p>
-     * 
+     *
      * @param from the starting date to filter
-     *  
+     *
      * @return an extended filter with the starting date restriction
      */
     public CmsLogFilter filterFrom(long from) {
@@ -118,21 +118,21 @@ public final class CmsLogFilter implements Cloneable {
      * Returns an extended filter with the given resource restriction.<p>
      *
      * @param structureId the structure id to filter
-     *  
+     *
      * @return an extended filter with the given resource restriction
      */
     public CmsLogFilter filterResource(CmsUUID structureId) {
 
-        CmsLogFilter filter = (CmsLogFilter)this.clone();
+        CmsLogFilter filter = (CmsLogFilter)clone();
         filter.m_structureId = structureId;
         return filter;
     }
 
     /**
      * Returns an extended filter with the end date restriction.<p>
-     * 
+     *
      * @param to the end date to filter
-     *  
+     *
      * @return an extended filter with the end date restriction
      */
     public CmsLogFilter filterTo(long to) {
@@ -144,14 +144,14 @@ public final class CmsLogFilter implements Cloneable {
 
     /**
      * Returns an extended filter with the given user ID restriction.<p>
-     * 
+     *
      * @param userId the user ID to filter
-     *  
+     *
      * @return an extended filter with the given user ID restriction
      */
     public CmsLogFilter filterUser(CmsUUID userId) {
 
-        CmsLogFilter filter = (CmsLogFilter)this.clone();
+        CmsLogFilter filter = (CmsLogFilter)clone();
         filter.m_userId = userId;
         return filter;
     }
@@ -218,23 +218,23 @@ public final class CmsLogFilter implements Cloneable {
 
     /**
      * Returns an extended filter with the given type restriction.<p>
-     * 
+     *
      * @param type the relation type to include
-     *  
+     *
      * @return an extended filter with the given type restriction
      */
     public CmsLogFilter includeType(CmsLogEntryType type) {
 
-        CmsLogFilter filter = (CmsLogFilter)this.clone();
+        CmsLogFilter filter = (CmsLogFilter)clone();
         filter.m_includeTypes.add(type);
         return filter;
     }
 
     /**
      * Returns <code>true</code> if the given log entry type matches this filter.<p>
-     * 
+     *
      * @param type the log entry type to test
-     * 
+     *
      * @return <code>true</code> if the given log entry type matches this filter
      */
     public boolean matchType(CmsLogEntryType type) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Represents a gallery folder.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsGalleryFolderBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsHasType, IsSerializable {
@@ -109,9 +109,9 @@ public class CmsGalleryFolderBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsH
 
     /**
      * Returns if the gallery matches the given filter.<p>
-     * 
+     *
      * @param filter the filter to match
-     * 
+     *
      * @return <code>true</code> if the gallery matches the given filter.<p>
      */
     public boolean matchesFilter(String filter) {

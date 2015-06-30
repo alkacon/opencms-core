@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,8 +40,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Implements the management of indexing threads.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsIndexingThreadManager {
 
@@ -71,7 +71,7 @@ public class CmsIndexingThreadManager {
 
     /**
      * Creates and starts a thread manager for indexing threads.<p>
-     * 
+     *
      * @param timeout timeout after a thread is abandoned
      * @param maxModificationsBeforeCommit the maximum number of modifications before a commit in the search index is triggered
      */
@@ -83,13 +83,13 @@ public class CmsIndexingThreadManager {
 
     /**
      * Creates and starts a new indexing thread for a resource.<p>
-     * 
-     * After an indexing thread was started, the manager suspends itself 
+     *
+     * After an indexing thread was started, the manager suspends itself
      * and waits for an amount of time specified by the <code>timeout</code>
      * value. If the timeout value is reached, the indexing thread is
      * aborted by an interrupt signal.<p>
-     * 
-     * @param indexer the VFS indexer to create the index thread for 
+     *
+     * @param indexer the VFS indexer to create the index thread for
      * @param writer the index writer that can update the index
      * @param res the resource
      */
@@ -111,7 +111,7 @@ public class CmsIndexingThreadManager {
             // ignore
         }
         if (thread.isAlive()) {
-            // the thread has not finished - so it must be marked as an abandoned thread 
+            // the thread has not finished - so it must be marked as an abandoned thread
             m_abandonedCounter++;
             thread.interrupt();
             if (LOG.isWarnEnabled()) {
@@ -155,7 +155,7 @@ public class CmsIndexingThreadManager {
 
     /**
      * Returns if the indexing manager still have indexing threads.<p>
-     * 
+     *
      * @return true if the indexing manager still have indexing threads
      */
     public boolean isRunning() {
@@ -168,19 +168,21 @@ public class CmsIndexingThreadManager {
             if ((currentTime - m_lastLogWarnTime) > 30000) {
                 // write warning to log after 30 seconds
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_WAITING_ABANDONED_THREADS_2,
-                        new Integer(m_abandonedCounter),
-                        new Integer((m_startedCounter - m_returnedCounter))));
+                    LOG.warn(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_WAITING_ABANDONED_THREADS_2,
+                            new Integer(m_abandonedCounter),
+                            new Integer((m_startedCounter - m_returnedCounter))));
                 }
                 m_lastLogWarnTime = currentTime;
             }
             if ((currentTime - m_lastLogErrorTime) > 600000) {
                 // write error to log after 10 minutes
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_WAITING_ABANDONED_THREADS_2,
-                    new Integer(m_abandonedCounter),
-                    new Integer((m_startedCounter - m_returnedCounter))));
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_WAITING_ABANDONED_THREADS_2,
+                        new Integer(m_abandonedCounter),
+                        new Integer((m_startedCounter - m_returnedCounter))));
                 m_lastLogErrorTime = currentTime;
             }
         }
@@ -195,12 +197,12 @@ public class CmsIndexingThreadManager {
 
     /**
      * Writes statistical information to the report.<p>
-     * 
+     *
      * The method reports the total number of threads started
      * (equals to the number of indexed files), the number of returned
      * threads (equals to the number of successfully indexed files),
      * and the number of abandoned threads (hanging threads reaching the timeout).
-     * 
+     *
      * @param report the report to write the statistics to
      */
     public void reportStatistics(I_CmsReport report) {

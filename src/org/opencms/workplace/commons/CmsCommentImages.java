@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,14 +59,14 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the comment images dialog on image gallery folders.<p> 
- * 
+ * Provides methods for the comment images dialog on image gallery folders.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/commentimages.jsp
  * </ul>
  * <p>
- * 
+ *
  * @since 6.1.3
  */
 public class CmsCommentImages extends CmsDialog {
@@ -97,7 +97,7 @@ public class CmsCommentImages extends CmsDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsCommentImages(CmsJspActionElement jsp) {
@@ -107,7 +107,7 @@ public class CmsCommentImages extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -119,7 +119,7 @@ public class CmsCommentImages extends CmsDialog {
 
     /**
      * Performs the comment images action, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionCommentImages() throws JspException {
@@ -138,7 +138,7 @@ public class CmsCommentImages extends CmsDialog {
 
     /**
      * Returns the HTML for the dialog input form to comment the images.<p>
-     * 
+     *
      * @return the HTML for the dialog input form to comment the images
      */
     public String buildDialogForm() {
@@ -198,14 +198,18 @@ public class CmsCommentImages extends CmsDialog {
             // build description property input row
             String description = "";
             try {
-                description = getCms().readPropertyObject(res, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue();
+                description = getCms().readPropertyObject(
+                    res,
+                    CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+                    false).getValue();
             } catch (CmsException e) {
                 // log, should never happen
                 if (LOG.isErrorEnabled()) {
                     LOG.error(e.getLocalizedMessage(getLocale()));
                 }
             }
-            result.append("\t\t<tr>\n\t\t\t<td style=\"white-space: nowrap; vertical-align: top;\" unselectable=\"on\">");
+            result.append(
+                "\t\t<tr>\n\t\t\t<td style=\"white-space: nowrap; vertical-align: top;\" unselectable=\"on\">");
             result.append(key(Messages.GUI_LABEL_DESCRIPTION_0));
             result.append(":</td>\n\t\t\t<td style=\"vertical-align: top; height: 110px;\">");
             result.append("<textarea rows=\"8\" class=\"maxwidth\" style=\"overflow: auto;\" name=\"");
@@ -237,7 +241,7 @@ public class CmsCommentImages extends CmsDialog {
 
     /**
      * Returns the image resources of the gallery folder which are edited in the dialog form.<p>
-     * 
+     *
      * @return the images of the gallery folder which are edited in the dialog form
      */
     protected List<CmsResource> getImages() {
@@ -245,7 +249,8 @@ public class CmsCommentImages extends CmsDialog {
         // get all image resources of the folder
         int imageId;
         try {
-            imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
+            imageId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypeImage.getStaticTypeName()).getTypeId();
         } catch (CmsLoaderException e1) {
             // should really never happen
             LOG.warn(e1.getLocalizedMessage(), e1);
@@ -265,7 +270,7 @@ public class CmsCommentImages extends CmsDialog {
 
     /**
      * Returns the initialized image scaler object used to generate thumbnails for the dialog form.<p>
-     * 
+     *
      * @return the initialized image scaler object used to generate thumbnails for the dialog form
      */
     protected CmsImageScaler getImageScaler() {
@@ -291,7 +296,7 @@ public class CmsCommentImages extends CmsDialog {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
-        // check the required permissions to rename the resource       
+        // check the required permissions to rename the resource
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
@@ -299,7 +304,7 @@ public class CmsCommentImages extends CmsDialog {
 
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_COMMENTIMAGES);
         } else if (DIALOG_LOCKS_CONFIRMED.equals(getParamAction())) {
@@ -316,7 +321,7 @@ public class CmsCommentImages extends CmsDialog {
 
     /**
      * Performs the comment images operation.<p>
-     * 
+     *
      * @return true, if the resources were successfully processed, otherwise false
      * @throws CmsException if commenting is not successful
      */
@@ -351,7 +356,7 @@ public class CmsCommentImages extends CmsDialog {
 
     /**
      * Writes a property value for a resource, if the value was changed.<p>
-     * 
+     *
      * @param res the resource to write the property to
      * @param propName the name of the property definition
      * @param propValue the new value of the property

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,13 +54,13 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * DND controller for drag/drop of images from the gallery menu.<p>
- * 
- * Since the image drag and drop logic is mostly separate from the container drag and drop logic, the container page DND controller 
+ *
+ * Since the image drag and drop logic is mostly separate from the container drag and drop logic, the container page DND controller
  * delegates most of the drag and drop logic to this class if it detects that an image is being dragged.<p>
  */
 public class CmsImageDndController implements I_CmsDNDController {
 
-    /** 
+    /**
      * Drop target for an image.<p>
      */
     class ImageDropTarget implements I_CmsDropTarget {
@@ -76,10 +76,10 @@ public class CmsImageDndController implements I_CmsDNDController {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param element the element to use as the drop target 
-         * 
-         * @param containerElement the optional container element to which the drop target belongs 
+         *
+         * @param element the element to use as the drop target
+         *
+         * @param containerElement the optional container element to which the drop target belongs
          */
         public ImageDropTarget(Element element, Optional<CmsContainerPageElementPanel> containerElement) {
 
@@ -129,7 +129,7 @@ public class CmsImageDndController implements I_CmsDNDController {
          */
         public void insertPlaceholder(Element placeholder, int x, int y, Orientation orientation) {
 
-            // do nothing 
+            // do nothing
 
         }
 
@@ -150,7 +150,7 @@ public class CmsImageDndController implements I_CmsDNDController {
          */
         public void removePlaceholder() {
 
-            // do nothing 
+            // do nothing
         }
 
         /**
@@ -158,13 +158,13 @@ public class CmsImageDndController implements I_CmsDNDController {
          */
         public void repositionPlaceholder(int x, int y, Orientation orientation) {
 
-            // do nothing 
+            // do nothing
         }
 
         /**
          * Saves the image with the given path to the content to which this drop zone belongs.<p>
-         * 
-         * @param path the path of the image to save 
+         *
+         * @param path the path of the image to save
          */
         @SuppressWarnings("synthetic-access")
         public void saveImage(final String path) {
@@ -184,7 +184,7 @@ public class CmsImageDndController implements I_CmsDNDController {
 
                                     public void onFailure(Throwable caught) {
 
-                                        // do nothing 
+                                        // do nothing
                                     }
 
                                     public void onSuccess(final CmsContainerElement result) {
@@ -197,7 +197,8 @@ public class CmsImageDndController implements I_CmsDNDController {
 
                                             public void run() {
 
-                                                String serverId = CmsContainerpageController.getServerId(result.getClientId());
+                                                String serverId = CmsContainerpageController.getServerId(
+                                                    result.getClientId());
                                                 saveAndReloadElement(serverId, contentPath, locale, path);
                                             }
                                         });
@@ -217,8 +218,8 @@ public class CmsImageDndController implements I_CmsDNDController {
 
         /**
          * Sets the border color.<p>
-         *  
-         * @param color the border color 
+         *
+         * @param color the border color
          */
         public void setBorderColor(BorderColor color) {
 
@@ -227,10 +228,10 @@ public class CmsImageDndController implements I_CmsDNDController {
 
         /**
          * Saves the value to the content and reloads the corresponding container element.<p>
-         * 
-         * @param contentId the content structure id 
-         * @param contentPath the content xpath  
-         * @param locale the locale 
+         *
+         * @param contentId the content structure id
+         * @param contentPath the content xpath
+         * @param locale the locale
          * @param value the value to save
          */
         protected void saveAndReloadElement(String contentId, String contentPath, String locale, String value) {
@@ -263,8 +264,8 @@ public class CmsImageDndController implements I_CmsDNDController {
 
         /**
          * Gets the position.<p>
-         * 
-         * @return the position 
+         *
+         * @return the position
          */
         CmsPositionBean getPosition() {
 
@@ -281,10 +282,10 @@ public class CmsImageDndController implements I_CmsDNDController {
     /** The container page controller. */
     private CmsContainerpageController m_pageController;
 
-    /** 
+    /**
      * Creates a new instance.<p>
-     * 
-     * @param controller the container page controller 
+     *
+     * @param controller the container page controller
      */
     public CmsImageDndController(CmsContainerpageController controller) {
 
@@ -296,7 +297,7 @@ public class CmsImageDndController implements I_CmsDNDController {
      */
     public void onAnimationStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -340,7 +341,7 @@ public class CmsImageDndController implements I_CmsDNDController {
      */
     public void onDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        // actual drop logic is handled by the ImageDropTarget class, we only do some cleanup here  
+        // actual drop logic is handled by the ImageDropTarget class, we only do some cleanup here
         cleanupTargets();
         handler.clearTargets();
     }
@@ -350,7 +351,7 @@ public class CmsImageDndController implements I_CmsDNDController {
      */
     public void onPositionedPlaceholder(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        // do nothing 
+        // do nothing
 
     }
 
@@ -380,15 +381,14 @@ public class CmsImageDndController implements I_CmsDNDController {
 
     /**
      * Collects the valid drop targets for images from the page and initializes them.<p>
-     * 
-     * @return the list of drop targets 
+     *
+     * @return the list of drop targets
      */
     protected List<ImageDropTarget> findImageTargets() {
 
         List<ImageDropTarget> result = Lists.newArrayList();
-        elementLoop: for (Element element : CmsDomUtil.nodeListToList(CmsDomUtil.querySelectorAll("*["
-            + ATTR_DATA_IMAGEDND
-            + "]", RootPanel.getBodyElement()))) {
+        elementLoop: for (Element element : CmsDomUtil.nodeListToList(
+            CmsDomUtil.querySelectorAll("*[" + ATTR_DATA_IMAGEDND + "]", RootPanel.getBodyElement()))) {
             Optional<CmsContainerPageElementPanel> optElemWidget = CmsContainerpageController.get().getContainerElementWidgetForElement(
                 element);
             if (optElemWidget.isPresent()) {
@@ -408,7 +408,7 @@ public class CmsImageDndController implements I_CmsDNDController {
 
     }
 
-    /** 
+    /**
      * Cleans up all the drop targets.<p>
      */
     private void cleanupTargets() {

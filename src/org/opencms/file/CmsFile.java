@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,13 +32,13 @@ import org.opencms.util.CmsUUID;
 
 /**
  * A file resource in the OpenCms VFS.<p>
- * 
+ *
  * A file resource is a CmsResource that contains an additional byte
  *  array of binary data, which is the file content.<p>
- * 
+ *
  * A file object is not allowed to have sub-resources.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsFile extends CmsResource {
 
@@ -49,10 +49,10 @@ public class CmsFile extends CmsResource {
     private byte[] m_fileContent;
 
     /**
-     * Constructor, creates a new file Object from the given resource with 
+     * Constructor, creates a new file Object from the given resource with
      * an empty byte array as file content, if the resource does not
      * implement a file.<p>
-     * 
+     *
      * @param resource the base resource object to create a file from
      */
     public CmsFile(CmsResource resource) {
@@ -81,7 +81,7 @@ public class CmsFile extends CmsResource {
 
     /**
      * Constructor, creates a new file object.<p>
-     * 
+     *
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param path the filename of this resource
@@ -95,10 +95,10 @@ public class CmsFile extends CmsResource {
      * @param userLastModified the id of the user who did the last modification of this resource
      * @param dateReleased the release date of this resource
      * @param dateExpired the expiration date of this resource
-     * @param linkCount the count of all siblings of this resource 
+     * @param linkCount the count of all siblings of this resource
      * @param length the size of the file content of this resource
-     * @param dateContent the date of the last modification of the content of this resource 
-     * @param version the version number of this resource   
+     * @param dateContent the date of the last modification of the content of this resource
+     * @param version the version number of this resource
      * @param content the binary content data of this file
      */
     public CmsFile(
@@ -149,13 +149,13 @@ public class CmsFile extends CmsResource {
 
     /**
      * Returns a clone of this Objects instance.<p>
-     * 
+     *
      * @return a clone of this instance
      */
     @Override
     public Object clone() {
 
-        byte[] newContent = new byte[this.getContents().length];
+        byte[] newContent = new byte[getContents().length];
         System.arraycopy(getContents(), 0, newContent, 0, getContents().length);
 
         CmsFile clone = new CmsFile(
@@ -233,7 +233,7 @@ public class CmsFile extends CmsResource {
 
     /**
      * Sets the contents of this file.<p>
-     * 
+     *
      * This will also set the date content, but only if the content is already set.<p>
      *
      * @param value the content of this file

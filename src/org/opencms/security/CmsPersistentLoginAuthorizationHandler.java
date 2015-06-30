@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Authorization handler which uses a special cookie sent by the user's browser for authorization.<p>
- * 
- * The cookie contains a user's name and a key. It will only log that user in if there is a key matching the key from the cookie 
+ *
+ * The cookie contains a user's name and a key. It will only log that user in if there is a key matching the key from the cookie
  * in the user's additional info map, and if additional info value, when interpreted as a time, is greater than the current time returned
  * by System.currentTimeMillis().
  */
@@ -68,13 +68,13 @@ public class CmsPersistentLoginAuthorizationHandler extends CmsDefaultAuthorizat
         return cms;
     }
 
-    /** 
+    /**
      * Tries to initialize the CmsObject from a login token given as a cookie in the request.<p>
-     * 
-     * @param request the request 
+     *
+     * @param request the request
      * @param loginAction the privileged login action
-     *  
-     * @return the initialized CmsObject, or null if the user couldn't be authenticated using the login token cookie 
+     *
+     * @return the initialized CmsObject, or null if the user couldn't be authenticated using the login token cookie
      */
     public CmsObject initCmsObjectFromToken(HttpServletRequest request, I_PrivilegedLoginAction loginAction) {
 
@@ -83,7 +83,7 @@ public class CmsPersistentLoginAuthorizationHandler extends CmsDefaultAuthorizat
         try {
             CmsUser user = tokenHandler.validateToken(CmsRequestUtil.getCookieValue(request.getCookies(), COOKIE_NAME));
             if (user != null) {
-                // clean up some caches to ensure group changes in the LDAP directory take effect 
+                // clean up some caches to ensure group changes in the LDAP directory take effect
                 OpenCms.getMemoryMonitor().uncacheUser(user);
                 OpenCms.getMemoryMonitor().flushCache(
                     CacheType.HAS_ROLE,

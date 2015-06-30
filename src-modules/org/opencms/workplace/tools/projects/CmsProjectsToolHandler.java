@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ import java.util.Map;
 /**
  * Users management tool handler that hides the tool if the current user
  * has not the needed privileges.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsProjectsToolHandler extends A_CmsToolHandler {
 
@@ -53,6 +53,7 @@ public class CmsProjectsToolHandler extends A_CmsToolHandler {
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#getParameters(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     public Map getParameters(CmsWorkplace wp) {
 
         if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.PROJECT_MANAGER)) {

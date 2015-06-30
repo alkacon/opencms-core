@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -87,7 +87,7 @@ public class CmsInfoHeader extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param title the title
      * @param description the description
      * @param path the path
@@ -116,7 +116,7 @@ public class CmsInfoHeader extends Composite {
 
     /**
      * Adds a button to the top right of the info header.<p>
-     * 
+     *
      * @param button the button to add
      */
     public void addButtonTopRight(Widget button) {

@@ -144,12 +144,14 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /** Initialize the preview mime types. */
     static {
-        CollectionUtils.addAll(m_previewMimeTypes, (new String[] {
-            "application/msword",
-            "application/pdf",
-            "application/excel",
-            "application/mspowerpoint",
-            "application/zip"}));
+        CollectionUtils.addAll(
+            m_previewMimeTypes,
+            (new String[] {
+                "application/msword",
+                "application/pdf",
+                "application/excel",
+                "application/mspowerpoint",
+                "application/zip"}));
     }
 
     /** A helper object containing the implementations of the alias-related service methods. */
@@ -734,7 +736,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             CmsObject cms = getCmsObject();
             CmsResource previewResource = null;
             if (versionBean.getVersionNumber() != null) {
-                previewResource = (CmsResource)(cms.readResource(structureId, versionBean.getVersionNumber().intValue()));
+                previewResource = (CmsResource)(cms.readResource(
+                    structureId,
+                    versionBean.getVersionNumber().intValue()));
             } else if (versionBean.isOffline()) {
                 previewResource = cms.readResource(structureId, CmsResourceFilter.ALL);
             } else if (versionBean.isOnline()) {
@@ -1445,12 +1449,12 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         String dateLastModifiedLabel = org.opencms.workplace.commons.Messages.get().getBundle(
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
-            org.opencms.workplace.commons.Messages.GUI_LABEL_DATE_LAST_MODIFIED_0);
+                org.opencms.workplace.commons.Messages.GUI_LABEL_DATE_LAST_MODIFIED_0);
         String dateLastModified = CmsVfsService.formatDateTime(cms, resource.getDateLastModified());
 
         String userLastModifiedLabel = org.opencms.workplace.commons.Messages.get().getBundle(
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
-            org.opencms.workplace.commons.Messages.GUI_LABEL_USER_LAST_MODIFIED_0);
+                org.opencms.workplace.commons.Messages.GUI_LABEL_USER_LAST_MODIFIED_0);
         String userLastModified = "" + resource.getUserLastModified();
         try {
             userLastModified = cms.readUser(resource.getUserLastModified()).getName();
@@ -1501,14 +1505,17 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             long publishDate = project.getPublishingDate();
             result.setDatePublished(formatDate(publishDate, locale));
             int version = ((I_CmsHistoryResource)historyRes).getVersion();
-            result.setVersion(new CmsHistoryVersion(Integer.valueOf(historyRes.getVersion()), maxVersion == version
-            ? OfflineOnline.online
-            : null));
+            result.setVersion(
+                new CmsHistoryVersion(
+                    Integer.valueOf(historyRes.getVersion()),
+                    maxVersion == version ? OfflineOnline.online : null));
 
             List<CmsProperty> historyProperties = cms.readHistoryPropertyObjects((I_CmsHistoryResource)historyRes);
             Map<String, CmsProperty> historyPropertyMap = CmsProperty.toObjectMap(historyProperties);
-            CmsProperty titleProp = CmsProperty.wrapIfNull(historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_TITLE));
-            CmsProperty descProp = CmsProperty.wrapIfNull(historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+            CmsProperty titleProp = CmsProperty.wrapIfNull(
+                historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_TITLE));
+            CmsProperty descProp = CmsProperty.wrapIfNull(
+                historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION));
             result.setTitle(titleProp.getValue());
             result.setDescription(descProp.getValue());
         } else {
@@ -1867,23 +1874,31 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             return result;
         }
         if (CmsResourceTypeXmlContainerPage.isContainerPage(resource) || CmsResourceTypeXmlPage.isXmlPage(resource)) {
-            CmsPreviewInfo result = new CmsPreviewInfo(null, OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                cms,
-                resource.getRootPath())
-                + "?"
-                + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
-                + "=true"
-                + "&__locale="
-                + locale.toString(), false, title, cms.getSitePath(resource), locale.toString());
+            CmsPreviewInfo result = new CmsPreviewInfo(
+                null,
+                OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
+                    + "?"
+                    + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
+                    + "=true"
+                    + "&__locale="
+                    + locale.toString(),
+                false,
+                title,
+                cms.getSitePath(resource),
+                locale.toString());
             result.setLocales(locales);
             return result;
         }
-        return new CmsPreviewInfo(null, OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-            cms,
-            resource.getRootPath())
-            + "?"
-            + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
-            + "=true", true, title, cms.getSitePath(resource), locale.toString());
+        return new CmsPreviewInfo(
+            null,
+            OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
+                + "?"
+                + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
+                + "=true",
+            true,
+            title,
+            cms.getSitePath(resource),
+            locale.toString());
     }
 
     /**
@@ -1958,8 +1973,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         return (properties == null)
             || (properties.get(CmsPropertyDefinition.PROPERTY_TITLE) == null)
             || (properties.get(CmsPropertyDefinition.PROPERTY_TITLE).getValue() == null)
-            || ((properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT) != null) && properties.get(
-                CmsPropertyDefinition.PROPERTY_TITLE).getValue().equals(
-                properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT).getValue()));
+            || ((properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT) != null)
+                && properties.get(CmsPropertyDefinition.PROPERTY_TITLE).getValue().equals(
+                    properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT).getValue()));
     }
 }

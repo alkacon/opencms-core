@@ -16,10 +16,10 @@
  *
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
- * 
- * For further information about OpenCms, please see the 
+ *
+ * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,7 +55,7 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 
 /**
  * The abstract base class for dialogs to edit properties.<p>
- *  
+ *
  *  @since 8.0.0
  */
 public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory {
@@ -89,9 +89,9 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Creates a new sitemap entry editor.<p>
-     * 
+     *
      * @param handler the handler
-     * @param propertyConfig the property configuration 
+     * @param propertyConfig the property configuration
      */
     public A_CmsPropertyEditor(
         Map<String, CmsXmlContentProperty> propertyConfig,
@@ -106,9 +106,9 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Checks whether a widget can be used in the sitemap entry editor, and throws an exception otherwise.<p>
-     * 
-     * @param key the widget key 
-     * @param widget the created widget 
+     *
+     * @param key the widget key
+     * @param widget the created widget
      */
     public static void checkWidgetRequirements(String key, I_CmsFormWidget widget) {
 
@@ -130,9 +130,9 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
             CmsTextBox textBox = new CmsTextBox().colorWhite();
             textBox.setErrorMessageWidth("345px");
             textBox.setTriggerChangeOnKeyPress(true);
-            // we need this because the tab containing the text box may not be visible 
+            // we need this because the tab containing the text box may not be visible
             // at the time the error message is set, so measuring the field's size would
-            // yield an invalid value  
+            // yield an invalid value
             result = textBox;
         } else if ("select".equals(key)) {
             final CmsPropertySelectBox box = new CmsPropertySelectBox(widgetParams);
@@ -147,8 +147,8 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Disables all input to the form.<p>
-     * 
-     * @param disabledReason the reason to display to the user 
+     *
+     * @param disabledReason the reason to display to the user
      */
     public void disableInput(String disabledReason) {
 
@@ -162,8 +162,8 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Gets the form for the properties.<p>
-     * 
-     * @return the property form 
+     *
+     * @return the property form
      */
     public CmsForm getForm() {
 
@@ -172,15 +172,15 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Initializes the widgets for editing the properties.<p>
-     * 
-     * @param dialog the dialog which the property editor is part of 
+     *
+     * @param dialog the dialog which the property editor is part of
      */
     public void initializeWidgets(CmsPopup dialog) {
 
-        // creates tabs, etc. if necessary 
+        // creates tabs, etc. if necessary
         setupFieldContainer();
         addSpecialFields();
-        // create fields and add them to the correct location 
+        // create fields and add them to the correct location
         buildFields();
         m_form.setValidatorClass("org.opencms.gwt.CmsDefaultFormValidator");
         m_form.render();
@@ -192,8 +192,8 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Sets the names of properties which can be edited.<p>
-     * 
-     * @param propertyNames the property names 
+     *
+     * @param propertyNames the property names
      */
     public void setPropertyNames(List<String> propertyNames) {
 
@@ -207,7 +207,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
         String firstTab = m_form.getWidget().getDefaultGroup();
         if (m_handler.hasEditableName()) {
-            // the root entry name can't be edited 
+            // the root entry name can't be edited
             CmsBasicFormField urlNameField = createUrlNameField();
             m_form.addField(firstTab, urlNameField);
         }
@@ -220,8 +220,8 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Creates the text field for editing the URL name.<p>
-     * 
-     * @return the newly created form field 
+     *
+     * @return the newly created form field
       */
     protected CmsBasicFormField createUrlNameField() {
 
@@ -254,9 +254,9 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Gets the title from a map of field values.<p>
-     * 
-     * @param fieldValues the map of field values 
-     * @return the title 
+     *
+     * @param fieldValues the map of field values
+     * @return the title
      */
     protected String getTitle(Map<String, String> fieldValues) {
 
@@ -270,10 +270,10 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Lazily creates the model object for the URL name field.<p>
-     * 
-     * @param urlName the initial value for the URL name 
-     * 
-     * @return the model object for the URL name field 
+     *
+     * @param urlName the initial value for the URL name
+     *
+     * @return the model object for the URL name field
      */
     protected CmsDefaultStringModel getUrlNameModel(String urlName) {
 
@@ -286,11 +286,11 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Returns a localized message from the message bundle.<p>
-     * 
+     *
      * @param key the message key
      * @param args the message parameters
-     *  
-     * @return the localized message 
+     *
+     * @return the localized message
      */
     protected String message(String key, Object... args) {
 
@@ -299,10 +299,10 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Sets the ghost value for a form field if its normal value is empty and the field's widget supports ghost values.<p>
-     *  
-     * @param field the form field 
+     *
+     * @param field the form field
      * @param value the ghost value to set
-     * @param ghostMode if true, sets the widget to ghost mode  
+     * @param ghostMode if true, sets the widget to ghost mode
      */
     protected void setGhostValue(I_CmsFormField field, String value, boolean ghostMode) {
 
@@ -319,7 +319,7 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Sets the contents of the URL name field in the form.<p>
-     * 
+     *
      * @param urlName the new URL name
      */
     protected void setUrlNameField(String urlName) {
@@ -329,8 +329,8 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Shows an error message next to the URL name input field.<p>
-     * 
-     * @param message the message which should be displayed, or null if no message should be displayed 
+     *
+     * @param message the message which should be displayed, or null if no message should be displayed
      */
     protected void showUrlNameError(String message) {
 
@@ -339,8 +339,8 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Helper method for creating the template selection widget.<p>
-     * 
-     * @return the template selector widget 
+     *
+     * @return the template selector widget
      */
     private I_CmsFormWidget createTemplateSelector() {
 
@@ -366,13 +366,13 @@ public abstract class A_CmsPropertyEditor implements I_CmsFormWidgetMultiFactory
 
     /**
      * Helper method for removing hidden properties from a map of property configurations.<p>
-     * 
+     *
      * The map passed into the method is not changed; a map which only contains the non-hidden
      * property definitions is returned.<p>
-     * 
-     * @param propConfig the property configuration 
-     * 
-     * @return the filtered property configuration 
+     *
+     * @param propConfig the property configuration
+     *
+     * @return the filtered property configuration
      */
     private Map<String, CmsXmlContentProperty> removeHiddenProperties(Map<String, CmsXmlContentProperty> propConfig) {
 

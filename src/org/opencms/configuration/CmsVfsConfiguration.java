@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,7 +57,7 @@ import org.dom4j.Element;
 
 /**
  * VFS master configuration class.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
@@ -217,7 +217,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Adds the resource type rules to the given digester.<p>
-     * 
+     *
      * @param digester the digester to add the rules to
      */
     public static void addResourceTypeXmlRules(Digester digester) {
@@ -236,7 +236,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_RESOURCETYPES + "/" + N_TYPE,
             I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD,
             3);
-        // please note: the resource types use a special version of the init method with 3 parameters 
+        // please note: the resource types use a special version of the init method with 3 parameters
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 0, A_NAME);
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 1, A_ID);
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 2, A_CLASS);
@@ -245,57 +245,25 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate(
             "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY,
             CmsProperty.class);
-        digester.addCallMethod("*/"
-            + N_RESOURCETYPES
-            + "/"
-            + N_TYPE
-            + "/"
-            + N_PROPERTIES
-            + "/"
-            + N_PROPERTY
-            + "/"
-            + N_NAME, "setName", 1);
-        digester.addCallParam("*/"
-            + N_RESOURCETYPES
-            + "/"
-            + N_TYPE
-            + "/"
-            + N_PROPERTIES
-            + "/"
-            + N_PROPERTY
-            + "/"
-            + N_NAME, 0);
+        digester.addCallMethod(
+            "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_NAME,
+            "setName",
+            1);
+        digester.addCallParam(
+            "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_NAME,
+            0);
 
-        digester.addCallMethod("*/"
-            + N_RESOURCETYPES
-            + "/"
-            + N_TYPE
-            + "/"
-            + N_PROPERTIES
-            + "/"
-            + N_PROPERTY
-            + "/"
-            + N_VALUE, "setValue", 2);
-        digester.addCallParam("*/"
-            + N_RESOURCETYPES
-            + "/"
-            + N_TYPE
-            + "/"
-            + N_PROPERTIES
-            + "/"
-            + N_PROPERTY
-            + "/"
-            + N_VALUE, 0);
-        digester.addCallParam("*/"
-            + N_RESOURCETYPES
-            + "/"
-            + N_TYPE
-            + "/"
-            + N_PROPERTIES
-            + "/"
-            + N_PROPERTY
-            + "/"
-            + N_VALUE, 1, A_TYPE);
+        digester.addCallMethod(
+            "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_VALUE,
+            "setValue",
+            2);
+        digester.addCallParam(
+            "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_VALUE,
+            0);
+        digester.addCallParam(
+            "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_VALUE,
+            1,
+            A_TYPE);
 
         digester.addSetNext(
             "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY,
@@ -335,12 +303,15 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Creates the xml output for resourcetype nodes.<p>
-     * 
+     *
      * @param startNode the startnode to add all rescource types to
      * @param resourceTypes the list of resource types
      * @param module flag, signaling to add them module resource types or not
      */
-    public static void generateResourceTypeXml(Element startNode, List<I_CmsResourceType> resourceTypes, boolean module) {
+    public static void generateResourceTypeXml(
+        Element startNode,
+        List<I_CmsResourceType> resourceTypes,
+        boolean module) {
 
         for (int i = 0; i < resourceTypes.size(); i++) {
             I_CmsResourceType resType = resourceTypes.get(i);
@@ -417,23 +388,24 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Adds a directory default file.<p>
-     * 
+     *
      * @param defaultFile the directory default file to add
      */
     public void addDefaultFile(String defaultFile) {
 
         m_defaultFiles.add(defaultFile);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_VFS_DEFAULT_FILE_2,
-                new Integer(m_defaultFiles.size()),
-                defaultFile));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_VFS_DEFAULT_FILE_2,
+                    new Integer(m_defaultFiles.size()),
+                    defaultFile));
         }
     }
 
     /**
      * Adds one file translation rule.<p>
-     * 
+     *
      * @param translation the file translation rule to add
      */
     public void addFileTranslation(String translation) {
@@ -446,7 +418,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Adds one folder translation rule.<p>
-     * 
+     *
      * @param translation the folder translation rule to add
      */
     public void addFolderTranslation(String translation) {
@@ -493,7 +465,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 0, A_CLASS);
         digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 1, A_ORDER);
 
-        // add the name generator 
+        // add the name generator
         digester.addObjectCreate(
             "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_NAMEGENERATOR,
             CmsDefaultFileNameGenerator.class);
@@ -604,7 +576,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Adds one XSD translation rule.<p>
-     * 
+     *
      * @param translation the XSD translation rule to add
      */
     public void addXsdTranslation(String translation) {
@@ -659,9 +631,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
         // add VFS content collectors
         Element collectorsElement = resources.addElement(N_COLLECTORS);
         for (I_CmsResourceCollector collector : m_resourceManager.getRegisteredContentCollectors()) {
-            collectorsElement.addElement(N_COLLECTOR).addAttribute(A_CLASS, collector.getClass().getName()).addAttribute(
-                A_ORDER,
-                String.valueOf(collector.getOrder()));
+            collectorsElement.addElement(N_COLLECTOR).addAttribute(
+                A_CLASS,
+                collector.getClass().getName()).addAttribute(A_ORDER, String.valueOf(collector.getOrder()));
         }
 
         Element namegeneratorElement = resources.addElement(N_NAMEGENERATOR);
@@ -754,13 +726,13 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             }
         }
 
-        // XML content types 
+        // XML content types
         Element xmlSchemaTypesElement = xmlContentsElement.addElement(N_SCHEMATYPES);
         for (I_CmsXmlSchemaType type : m_xmlContentTypeManager.getRegisteredSchemaTypes()) {
             I_CmsWidget widget = m_xmlContentTypeManager.getWidgetDefault(type.getTypeName());
-            xmlSchemaTypesElement.addElement(N_SCHEMATYPE).addAttribute(A_CLASS, type.getClass().getName()).addAttribute(
-                A_DEFAULTWIDGET,
-                widget.getClass().getName());
+            xmlSchemaTypesElement.addElement(N_SCHEMATYPE).addAttribute(
+                A_CLASS,
+                type.getClass().getName()).addAttribute(A_DEFAULTWIDGET, widget.getClass().getName());
         }
 
         // return the vfs node
@@ -769,7 +741,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Returns the (unmodifiable) list of configured directory default files.<p>
-     * 
+     *
      * @return the (unmodifiable) list of configured directory default files
      */
     public List<String> getDefaultFiles() {
@@ -788,8 +760,8 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     /**
      * Returns the file resource translator that has been initialized
      * with the configured file translation rules.<p>
-     * 
-     * @return the file resource translator 
+     *
+     * @return the file resource translator
      */
     public CmsResourceTranslator getFileTranslator() {
 
@@ -806,8 +778,8 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     /**
      * Returns the folder resource translator that has been initialized
      * with the configured folder translation rules.<p>
-     * 
-     * @return the folder resource translator 
+     *
+     * @return the folder resource translator
      */
     public CmsResourceTranslator getFolderTranslator() {
 
@@ -823,7 +795,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Returns the initialized resource manager.<p>
-     * 
+     *
      * @return the initialized resource manager
      */
     public CmsResourceManager getResourceManager() {
@@ -833,7 +805,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Returns the configured XML content type manager.<p>
-     * 
+     *
      * @return the configured XML content type manager
      */
     public CmsXmlContentTypeManager getXmlContentTypeManager() {
@@ -844,8 +816,8 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     /**
      * Returns the XSD translator that has been initialized
      * with the configured XSD translation rules.<p>
-     * 
-     * @return the XSD translator 
+     *
+     * @return the XSD translator
      */
     public CmsResourceTranslator getXsdTranslator() {
 
@@ -857,7 +829,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * Will be called when configuration of this object is finished.<p> 
+     * Will be called when configuration of this object is finished.<p>
      */
     public void initializeFinished() {
 
@@ -868,7 +840,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Enables or disables the file translation rules.<p>
-     * 
+     *
      * @param value if <code>"true"</code>, file translation is enabled, otherwise it is disabled
      */
     public void setFileTranslationEnabled(String value) {
@@ -885,7 +857,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Enables or disables the folder translation rules.<p>
-     * 
+     *
      * @param value if <code>"true"</code>, folder translation is enabled, otherwise it is disabled
      */
     public void setFolderTranslationEnabled(String value) {
@@ -902,7 +874,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Sets the generated resource manager.<p>
-     * 
+     *
      * @param manager the resource manager to set
      */
     public void setResourceManager(CmsResourceManager manager) {
@@ -912,7 +884,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Sets the generated XML content type manager.<p>
-     * 
+     *
      * @param manager the generated XML content type manager to set
      */
     public void setXmlContentTypeManager(CmsXmlContentTypeManager manager) {
@@ -925,7 +897,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Enables or disables the XSD translation rules.<p>
-     * 
+     *
      * @param value if <code>"true"</code>, XSD translation is enabled, otherwise it is disabled
      */
     public void setXsdTranslationEnabled(String value) {

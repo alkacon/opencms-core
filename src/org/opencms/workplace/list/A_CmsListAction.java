@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 
 /**
  * The default skeleton for a list action.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_CmsListAction {
 
@@ -50,7 +50,7 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id unique id
      */
     public A_CmsListAction(String id) {
@@ -65,10 +65,10 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
     /**
      * Generates html for the confirmation message when having one confirmation message
      * for several actions.<p>
-     * 
+     *
      * @param confId the id of the confirmation message
      * @param confText the confirmation message
-     * 
+     *
      * @return html code
      */
     public static String defaultConfirmationHtml(String confId, String confText) {
@@ -131,9 +131,8 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
     public void setListId(String listId) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(listId)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_LIST_INVALID_NULL_ARG_1,
-                "listId"));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_LIST_INVALID_NULL_ARG_1, "listId"));
         }
         m_listId = listId;
     }

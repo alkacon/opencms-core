@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,9 +42,9 @@ import org.w3c.dom.NodeList;
 
 /**
  * Persistence configuration class.<p>
- * 
+ *
  * This class allow to be managed (reading and writing) JPA  persistence.xml configuration file.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPersistenceUnitConfiguration {
@@ -93,9 +93,9 @@ public class CmsPersistenceUnitConfiguration {
 
     /**
      * Public constructor which initialize the object.<p>
-     * 
-     * @param unitName persistence unit name to be managed 
-     * @param fileName configuration file name 
+     *
+     * @param unitName persistence unit name to be managed
+     * @param fileName configuration file name
      */
     public CmsPersistenceUnitConfiguration(String unitName, String fileName) {
 
@@ -109,10 +109,10 @@ public class CmsPersistenceUnitConfiguration {
 
     /**
      * Returns a property value for the given property name.<p>
-     * 
+     *
      * @param name the name of the property
      * @param defaultValue the default value if there was no property configured with the given name
-     * 
+     *
      * @return a property value for the given property name
      */
     public String getPropertyValue(String name, String defaultValue) {
@@ -129,7 +129,7 @@ public class CmsPersistenceUnitConfiguration {
 
     /**
      * Removes property with given name.<p>
-     * 
+     *
      * @param name value of the name attribute
      */
     public void removeProperty(String name) {
@@ -155,7 +155,7 @@ public class CmsPersistenceUnitConfiguration {
 
     /**
      * Sets property value with given name and value.<p>
-     * 
+     *
      * @param name value of the name attribute
      * @param value value of the value attribute
      */
@@ -180,7 +180,7 @@ public class CmsPersistenceUnitConfiguration {
 
     /**
      * Adds a property.<p>
-     * 
+     *
      * @param name the name of the property
      * @param value the value for the property
      */
@@ -195,9 +195,9 @@ public class CmsPersistenceUnitConfiguration {
 
     /**
      * Returns DOM element of persistence unit with name represents by m_persistenceUnitName.<p>
-     * 
+     *
      * @param e document element of xml document
-     * 
+     *
      * @return element for given name or null value if it does not exist
      */
     private Element getPersistenceUnit(Element e) {
@@ -215,9 +215,9 @@ public class CmsPersistenceUnitConfiguration {
 
     /**
      * Reads the configuration file.<p>
-     * 
+     *
      * @param fileName file name
-     * 
+     *
      * @return DOM model of configuration file
      */
     private Document readDocument(String fileName) {
@@ -243,8 +243,8 @@ public class CmsPersistenceUnitConfiguration {
 
     /**
      * Save the configuration to file.<p>
-     * 
-     * @param fileName the full path with file name to the persistence.xml 
+     *
+     * @param fileName the full path with file name to the persistence.xml
      */
     private void save(String fileName) {
 

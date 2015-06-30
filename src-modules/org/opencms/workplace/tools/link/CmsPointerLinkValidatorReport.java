@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,9 +43,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides an output window for a CmsReport.<p> 
- * 
- * @since 6.0.0 
+ * Provides an output window for a CmsReport.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsPointerLinkValidatorReport extends A_CmsListReport {
 
@@ -54,7 +54,7 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsPointerLinkValidatorReport(CmsJspActionElement jsp) {
@@ -64,7 +64,7 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -76,7 +76,7 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
 
     /**
      * Performs the pointer link validation report, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionReport() throws JspException {
@@ -105,10 +105,11 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
         }
     }
 
-    /** 
-     * 
+    /**
+     *
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
+    @Override
     public I_CmsReportThread initializeThread() {
 
         return new CmsExternalLinksValidatorThread(getCms());
@@ -117,6 +118,7 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         addMessages(Messages.get().getBundleName());
@@ -126,13 +128,14 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_CONFIRMED);
         } else if (REPORT_UPDATE.equals(getParamAction())) {
@@ -145,7 +148,7 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // add the title for the dialog 
+            // add the title for the dialog
             setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_EXTERNALLINK_ADMIN_TOOL_NAME_0));
         }
     }

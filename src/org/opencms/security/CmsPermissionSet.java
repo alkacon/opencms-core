@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,15 +33,15 @@ import java.util.Set;
 
 /**
  * An immutable permission set that contains both allowed and denied permissions as bitsets.<p>
- * 
+ *
  * Currently supported permissions are:<ul>
  * <li><code>{@link CmsPermissionSet#PERMISSION_READ}</code> (r) the right to read the contents of a resource</li>
  * <li><code>{@link CmsPermissionSet#PERMISSION_WRITE}</code> (w) the right to write the contents of a resource</li>
  * <li><code>{@link CmsPermissionSet#PERMISSION_VIEW}</code> (v) the right to see a resource in listings (workplace)</li>
  * <li><code>{@link CmsPermissionSet#PERMISSION_CONTROL}</code> (c) the right to set permissions of a resource</li>
  * <li><code>{@link CmsPermissionSet#PERMISSION_DIRECT_PUBLISH}</code> (d) the right direct publish a resource even without publish project permissions</li></ul><p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsPermissionSet {
 
@@ -97,7 +97,7 @@ public class CmsPermissionSet {
 
     /**
      * Constructor to create a permission set with preset allowed and denied permissions.<p>
-     * 
+     *
      * @param allowedPermissions the set of permissions to allow
      * @param deniedPermissions the set of permissions to deny
      */
@@ -117,7 +117,7 @@ public class CmsPermissionSet {
 
     /**
      * Constructor to create a permission set with preset allowed permissions.<p>
-     * 
+     *
      * @param allowedPermissions bitset of allowed permissions
      */
     protected CmsPermissionSet(int allowedPermissions) {
@@ -128,7 +128,7 @@ public class CmsPermissionSet {
 
     /**
      * Returns the message keys of each permission known in the system.<p>
-     * 
+     *
      * @return Enumeration of message keys
      */
     public static Set<String> getPermissionKeys() {
@@ -138,7 +138,7 @@ public class CmsPermissionSet {
 
     /**
      * Returns the value of a single permission.<p>
-     * 
+     *
      * @param key the key of the permission
      * @return the value of the given permission
      */
@@ -149,7 +149,7 @@ public class CmsPermissionSet {
 
     /**
      * Initializes and returns the hashtable of all permissions known in the system.<p>
-     * 
+     *
      * @return hastable with permission keys and values
      */
     private static Map<String, Integer> permissions() {
@@ -160,8 +160,9 @@ public class CmsPermissionSet {
             m_permissions.put("GUI_PERMISSION_TYPE_WRITE_0", new Integer(CmsPermissionSet.PERMISSION_WRITE));
             m_permissions.put("GUI_PERMISSION_TYPE_VIEW_0", new Integer(CmsPermissionSet.PERMISSION_VIEW));
             m_permissions.put("GUI_PERMISSION_TYPE_CONTROL_0", new Integer(CmsPermissionSet.PERMISSION_CONTROL));
-            m_permissions.put("GUI_PERMISSION_TYPE_DIRECT_PUBLISH_0", new Integer(
-                CmsPermissionSet.PERMISSION_DIRECT_PUBLISH));
+            m_permissions.put(
+                "GUI_PERMISSION_TYPE_DIRECT_PUBLISH_0",
+                new Integer(CmsPermissionSet.PERMISSION_DIRECT_PUBLISH));
         }
         return m_permissions;
     }
@@ -184,7 +185,7 @@ public class CmsPermissionSet {
 
     /**
      * Returns the currently allowed permissions of ths permission set.<p>
-     * 
+     *
      * @return the allowed permissions as bitset
      */
     public int getAllowedPermissions() {
@@ -194,7 +195,7 @@ public class CmsPermissionSet {
 
     /**
      * Returns the currently denied permissions of this permission set.<p>
-     * 
+     *
      * @return the denied permissions as bitset.
      */
     public int getDeniedPermissions() {
@@ -205,7 +206,7 @@ public class CmsPermissionSet {
     /**
      * Returns the permissions calculated from this permission set.<p>
      * These are all permissions allowed but not denied.
-     *  
+     *
      * @return the resulting permission set
      */
     public int getPermissions() {
@@ -215,7 +216,7 @@ public class CmsPermissionSet {
 
     /**
      * Returns the string representation of the current permissions in this permission set.<p>
-     * 
+     *
      * @return string of the format {{+|-}{r|w|v|c|d}}*
      */
     public String getPermissionString() {
@@ -266,7 +267,7 @@ public class CmsPermissionSet {
 
     /**
      * Returns true if control permissions (+c) are required by this permission set.<p>
-     * 
+     *
      * @return true if control permissions (+c) are required by this permission set
      */
     public boolean requiresControlPermission() {
@@ -276,7 +277,7 @@ public class CmsPermissionSet {
 
     /**
      * Returns true if direct publish permissions (+d) are required by this permission set.<p>
-     * 
+     *
      * @return true if direct publish permissions (+d) are required by this permission set
      */
     public boolean requiresDirectPublishPermission() {
@@ -286,7 +287,7 @@ public class CmsPermissionSet {
 
     /**
      * Returns true if read permissions (+r) are required by this permission set.<p>
-     * 
+     *
      * @return true if read permissions (+r) are required by this permission set
      */
     public boolean requiresReadPermission() {
@@ -296,7 +297,7 @@ public class CmsPermissionSet {
 
     /**
      * Returns true if view permissions (+v) are required by this permission set.<p>
-     * 
+     *
      * @return true if view permissions (+v) are required by this permission set
      */
     public boolean requiresViewPermission() {
@@ -306,7 +307,7 @@ public class CmsPermissionSet {
 
     /**
      * Returns true if write permissions (+w) are required by this permission set.<p>
-     * 
+     *
      * @return true if write permissions (+w) are required by this permission set
      */
     public boolean requiresWritePermission() {
@@ -316,7 +317,7 @@ public class CmsPermissionSet {
 
     /**
      * Returns the String representation of this permission set object.<p>
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,11 +57,11 @@ public class CmsFormatterChangeSet {
         // do nothing
     }
 
-    /** 
+    /**
      * Creates a new formatter change set.<p>
-     * 
-     * @param toRemove the formatter keys to remove 
-     * @param toAdd the formatter keys to add 
+     *
+     * @param toRemove the formatter keys to remove
+     * @param toAdd the formatter keys to add
      */
     public CmsFormatterChangeSet(Collection<String> toRemove, Collection<String> toAdd) {
 
@@ -69,11 +69,11 @@ public class CmsFormatterChangeSet {
         initialize(toRemove, toAdd);
     }
 
-    /** 
+    /**
      * Produces the key for a given resource type.<p>
-     * 
-     * @param typeName the resource type name 
-     * @return the key to use 
+     *
+     * @param typeName the resource type name
+     * @return the key to use
      */
     public static String keyForType(String typeName) {
 
@@ -82,8 +82,8 @@ public class CmsFormatterChangeSet {
 
     /**
      * Applies this change set to a list of external (non schema-based)  formatters.<p>
-     * 
-     * @param formatters the map of formatters to which the changes should be applied 
+     *
+     * @param formatters the map of formatters to which the changes should be applied
      * @param externalFormatters the formatter collection which should be used to add formatters which are not already present in 'formatters'
      */
     public void applyToFormatters(
@@ -105,11 +105,11 @@ public class CmsFormatterChangeSet {
     }
 
     /**
-     * Applies the changes (addition or removal of schema formatters) to a set of resource type names, 
-     * adding resource types for which schema formatters should be added and removing those for which 
+     * Applies the changes (addition or removal of schema formatters) to a set of resource type names,
+     * adding resource types for which schema formatters should be added and removing those for which
      * schema formatters should be removed.<p>
-     *  
-     * @param types the set of types to apply the changes to 
+     *
+     * @param types the set of types to apply the changes to
      */
     public void applyToTypes(Set<String> types) {
 
@@ -124,11 +124,11 @@ public class CmsFormatterChangeSet {
         }
     }
 
-    /** 
+    /**
      * Initializes this formatter change set with the values from the sitemap configuration.<p>
-     * 
-     * @param toRemove the keys for the formatters to remove 
-     * @param toAdd the keys for the formatters to add 
+     *
+     * @param toRemove the keys for the formatters to remove
+     * @param toAdd the keys for the formatters to add
      */
     private void initialize(Collection<String> toRemove, Collection<String> toAdd) {
 
@@ -148,12 +148,12 @@ public class CmsFormatterChangeSet {
         }
     }
 
-    /** 
+    /**
      * Removes a prefix from the given key.<p>
-     * 
+     *
      * @param key the key
-     *  
-     * @return the key with the prefix removed 
+     *
+     * @return the key with the prefix removed
      */
     private String removePrefix(String key) {
 

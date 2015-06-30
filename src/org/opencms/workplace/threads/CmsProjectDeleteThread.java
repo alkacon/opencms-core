@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,8 +36,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Deletes a project.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsProjectDeleteThread extends A_CmsReportThread {
 
@@ -52,7 +52,7 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
 
     /**
      * Creates the project delete thread.<p>
-     * 
+     *
      * @param cms the current OpenCms context object
      * @param projectId the project id to delete
      */

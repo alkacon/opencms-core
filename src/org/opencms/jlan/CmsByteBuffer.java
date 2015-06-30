@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,8 +54,8 @@ public class CmsByteBuffer {
 
     /**
      * Creates a new instance with a given initial capacity.<p>
-     * 
-     * @param capacity the initial capacity 
+     *
+     * @param capacity the initial capacity
      */
     public CmsByteBuffer(int capacity) {
 
@@ -63,11 +63,11 @@ public class CmsByteBuffer {
         m_size = 0;
     }
 
-    /** 
+    /**
      * Gets the current length of the internal byte buffer, which is the number of bytes this buffer
      * can contain before a new buffer is allocated.<p>
-     * 
-     * @return the current length of the internal buffer 
+     *
+     * @return the current length of the internal buffer
      */
     public int getCapacity() {
 
@@ -76,12 +76,12 @@ public class CmsByteBuffer {
 
     /**
      * Transfers bytes from this buffer to a target byte array.<p>
-     * 
-     * @param dest the byte array to which the bytes should be transferred 
+     *
+     * @param dest the byte array to which the bytes should be transferred
      * @param srcStart the start index in this buffer
-     * @param destStart the start index in the destination buffer 
-     * 
-     * @param len  the number of bytes to transfer 
+     * @param destStart the start index in the destination buffer
+     *
+     * @param len  the number of bytes to transfer
      */
     public void readBytes(byte[] dest, int srcStart, int destStart, int len) {
 
@@ -91,8 +91,8 @@ public class CmsByteBuffer {
 
     /**
      * Returns the logical size of this buffer (which may be less than its capacity).<p>
-     * 
-     * @return the buffer size 
+     *
+     * @return the buffer size
      */
     public int size() {
 
@@ -121,12 +121,12 @@ public class CmsByteBuffer {
 
     /**
      * Changes the logical size of this buffer.<p>
-     * 
+     *
      * If the size is larger than the current size, the new space will be filled with 0s.
      * Note that the internal byte buffer will not be shrunk if the size is smaller than the current
      * size.<p>
-     * 
-     * @param size the new size 
+     *
+     * @param size the new size
      */
     public void truncate(int size) {
 
@@ -139,12 +139,12 @@ public class CmsByteBuffer {
 
     /**
      * Writes some bytes to this buffer, expanding the buffer if necessary.<p>
-     * 
-     * @param src the source from which to write the bytes 
-     * @param srcStart the start index in the source array 
-     * @param destStart the start index in this buffer 
-     * 
-     * @param len the number of bytes to write 
+     *
+     * @param src the source from which to write the bytes
+     * @param srcStart the start index in the source array
+     * @param destStart the start index in this buffer
+     *
+     * @param len the number of bytes to write
      */
     public void writeBytes(byte[] src, int srcStart, int destStart, int len) {
 
@@ -159,8 +159,8 @@ public class CmsByteBuffer {
     /**
      * Make sure that the internal byte buffer can store at least requestedCapacity of bytes
      * by reallocating it if necessary.<p>
-     * 
-     * @param requestedCapacity the requested capacity 
+     *
+     * @param requestedCapacity the requested capacity
      */
     private void ensureCapacity(int requestedCapacity) {
 
@@ -175,8 +175,8 @@ public class CmsByteBuffer {
 
     /**
      * Reallocates the internal byte buffer with a new capacity.<p>
-     * 
-     * @param newCapacity the new capacity 
+     *
+     * @param newCapacity the new capacity
      */
     private void reallocateBuffer(int newCapacity) {
 

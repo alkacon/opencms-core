@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,7 +39,7 @@ import com.google.gwt.user.client.Command;
 /**
  * Slide animation. Sliding the element into view or sliding it out.<p>
  * Uses the in-line CSS display property, clear after completion if appropriate.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSlideAnimation extends A_CmsAnimation {
@@ -61,7 +61,7 @@ public class CmsSlideAnimation extends A_CmsAnimation {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param element the element to animate
      * @param show <code>true</code> to show the element, <code>false</code> to hide it away
      * @param callback the callback executed after the animation is completed
@@ -76,11 +76,11 @@ public class CmsSlideAnimation extends A_CmsAnimation {
 
     /**
      * Slides the given element into view executing the callback afterwards.<p>
-     * 
+     *
      * @param element the element to slide in
      * @param callback the callback
      * @param duration the animation duration
-     * 
+     *
      * @return the running animation object
      */
     public static CmsSlideAnimation slideIn(Element element, Command callback, int duration) {
@@ -92,11 +92,11 @@ public class CmsSlideAnimation extends A_CmsAnimation {
 
     /**
      * Slides the given element out of view executing the callback afterwards.<p>
-     * 
+     *
      * @param element the element to slide out
      * @param callback the callback
      * @param duration the animation duration
-     * 
+     *
      * @return the running animation object
      */
     public static CmsSlideAnimation slideOut(Element element, Command callback, int duration) {

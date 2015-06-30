@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,11 +29,11 @@ package org.opencms.db;
 
 /**
  * Wrapper for {@link CmsSelectQuery} objects which adds SQL code for results paging.<p>
- * 
+ *
  * The wrapper can either use the window function approach to paging or append a LIMIT/OFFSET clause.
- * 
+ *
  * @see "http://troels.arvin.dk/db/rdbms/#select-limit-offset"
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPagingQuery implements I_CmsQueryFragment {
@@ -55,8 +55,8 @@ public class CmsPagingQuery implements I_CmsQueryFragment {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param select the wrapped query 
+     *
+     * @param select the wrapped query
      */
     public CmsPagingQuery(CmsSelectQuery select) {
 
@@ -65,8 +65,8 @@ public class CmsPagingQuery implements I_CmsQueryFragment {
 
     /**
      * Enables or disables the naming of subqueries.<p>
-     *  
-     * @param nameSubquery if true, enables naming of subqueries 
+     *
+     * @param nameSubquery if true, enables naming of subqueries
      */
     public void setNameSubquery(boolean nameSubquery) {
 
@@ -75,8 +75,8 @@ public class CmsPagingQuery implements I_CmsQueryFragment {
 
     /**
      * Sets both the page size and current page to use for the query.<p>
-     * 
-     * @param pageSize the page size 
+     *
+     * @param pageSize the page size
      * @param page the current page (counting starts at 1)
      */
     public void setPaging(int pageSize, int page) {
@@ -87,7 +87,7 @@ public class CmsPagingQuery implements I_CmsQueryFragment {
 
     /**
      * Enables the use of window functions.<p>
-     * 
+     *
      * @param useWindowFunctions if true, enables window functions
      */
     public void setUseWindowFunctions(boolean useWindowFunctions) {
@@ -110,8 +110,8 @@ public class CmsPagingQuery implements I_CmsQueryFragment {
             m_select.addColumn(rownumFragment);
             builder.add("SELECT * FROM ( ");
             m_select.visit(builder);
-            int start = 1 + m_pageSize * (m_page - 1);
-            int end = start + m_pageSize - 1;
+            int start = 1 + (m_pageSize * (m_page - 1));
+            int end = (start + m_pageSize) - 1;
             builder.add(")");
             if (m_nameSubquery) {
                 builder.add(" AS rnsq ");

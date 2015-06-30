@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import org.opencms.util.CmsUUID;
 
 /**
  * Defines a property name, so that <code>{@link CmsProperty}</code> instances can be created with that name.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyDefinition> {
 
@@ -55,7 +55,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
         /**
          * Creates a new property type with the given identifier.<p>
-         * 
+         *
          * @param type the mode id to use
          */
         private CmsPropertyType(int type) {
@@ -65,12 +65,12 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
         /**
          * Returns the property definition type for the given type id. <p>
-         * 
-         * If the given String matches no known type <code>{@link #NORMAL}</code> 
+         *
+         * If the given String matches no known type <code>{@link #NORMAL}</code>
          * will be returned as the default.<p>
-         * 
+         *
          * @param type the type value to get the property type for
-         * 
+         *
          * @return the property type for the given type value
          */
         public static CmsPropertyType valueOf(int type) {
@@ -243,11 +243,11 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     private CmsPropertyType m_type;
 
     /**
-     * Creates a new property definition object with the type 
+     * Creates a new property definition object with the type
      * <code>{@link #TYPE_NORMAL}</code>.<p>
-     * 
+     *
      * @param id the id of the property definition
-     * @param name the name of the property definition 
+     * @param name the name of the property definition
      */
     public CmsPropertyDefinition(CmsUUID id, String name) {
 
@@ -256,9 +256,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /**
      * Creates a new property definition object.<p>
-     * 
+     *
      * @param id the id of the property definition
-     * @param name the name of the property definition 
+     * @param name the name of the property definition
      * @param propertyType the type of the property
      */
     public CmsPropertyDefinition(CmsUUID id, String name, CmsPropertyType propertyType) {
@@ -269,20 +269,21 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     }
 
     /**
-     * Checks if the provided property name is a valid property name, 
+     * Checks if the provided property name is a valid property name,
      * that is contains only valid characters.<p>
-     * 
-     * A property name can only be composed of digits, 
+     *
+     * A property name can only be composed of digits,
      * standard ASCII letters and the symbols defined in {@link #NAME_CONSTRAINTS}.<p>
      *
      * @param name the property name to check
-     * 
+     *
      * @throws CmsIllegalArgumentException if the given property name is not valid
      */
     public static void checkPropertyName(String name) throws CmsIllegalArgumentException {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_PROPERTYNAME_EMPTY_0, name));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_BAD_PROPERTYNAME_EMPTY_0, name));
         }
 
         CmsStringUtil.checkName(name, NAME_CONSTRAINTS, Messages.ERR_BAD_PROPERTYNAME_4, Messages.get());
@@ -290,7 +291,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /**
      * Returns the null property definition.<p>
-     * 
+     *
      * @return the null property definition
      */
     public static CmsPropertyDefinition getNullPropertyDefinition() {
@@ -300,7 +301,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /**
      * Returns a clone of this Objects instance.<p>
-     * 
+     *
      * @return a clone of this instance
      */
     @Override
@@ -356,8 +357,8 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     }
 
     /**
-     * Returns the the type of this property definition.<p> 
-     * 
+     * Returns the the type of this property definition.<p>
+     *
      * @return the type of this property definition
      */
     public CmsPropertyType getType() {
@@ -379,7 +380,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /**
      * Sets the type for this property definition.<p>
-     * 
+     *
      * @param type the type to set
      */
     public void setType(CmsPropertyType type) {

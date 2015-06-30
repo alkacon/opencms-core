@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,8 +42,8 @@ import javax.activation.DataSource;
 
 /**
  * DataSource wrapper for VFS resources, allows easy sending of VFS resources as email attachments.<p>
- * 
- * @since 6.2.0 
+ *
+ * @since 6.2.0
  */
 public class CmsVfsDataSource implements DataSource {
 
@@ -55,10 +55,10 @@ public class CmsVfsDataSource implements DataSource {
 
     /**
      * Creates a new data source for the given VFS resource.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param resource the resource to use
-     * 
+     *
      * @throws CmsException in case of errors accessing the resource in the VFS
      */
     public CmsVfsDataSource(CmsObject cms, CmsResource resource)
@@ -81,7 +81,7 @@ public class CmsVfsDataSource implements DataSource {
 
     /**
      * Returns an input stream baded on the file contents.<p>
-     * 
+     *
      * @see javax.activation.DataSource#getInputStream()
      */
     public InputStream getInputStream() {
@@ -91,7 +91,7 @@ public class CmsVfsDataSource implements DataSource {
 
     /**
      * Returns the root path of the given resource.<p>
-     * 
+     *
      * @see javax.activation.DataSource#getName()
      */
     public String getName() {
@@ -101,9 +101,9 @@ public class CmsVfsDataSource implements DataSource {
 
     /**
      * Don't use this method, VFS resources can't be written using this datasource class.<p>
-     * 
+     *
      * This method will just return a new <code>{@link ByteArrayOutputStream}</code>.<p>
-     * 
+     *
      * @see javax.activation.DataSource#getOutputStream()
      */
     public OutputStream getOutputStream() {

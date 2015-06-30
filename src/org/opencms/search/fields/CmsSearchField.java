@@ -266,7 +266,7 @@ public class CmsSearchField implements Serializable {
     }
 
     /** To allow sorting on a field the field must be added to the map given to {@link org.apache.lucene.uninverting.UninvertingReader#wrap(org.apache.lucene.index.DirectoryReader, Map)}.
-     *  The method adds all default fields. 
+     *  The method adds all default fields.
      * @param uninvertingMap the map to which the fields are added.
      */
     public static void addUninvertingMappings(Map<String, Type> uninvertingMap) {

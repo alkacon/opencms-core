@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,10 +46,10 @@ import java.sql.SQLException;
 
 import org.apache.commons.dbcp.DelegatingResultSet;
 
-/** 
+/**
  * Oracle/OCI implementation of the project driver methods.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
 
@@ -78,9 +78,9 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -94,9 +94,11 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                 "PUBLISH_LIST",
                 internalSerializePublishList(publishJob.getPublishList()));
         } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(
-                Messages.ERR_SERIALIZING_PUBLISHLIST_1,
-                publishJob.getPublishHistoryId().toString()), e);
+            throw new CmsDbIoException(
+                Messages.get().container(
+                    Messages.ERR_SERIALIZING_PUBLISHLIST_1,
+                    publishJob.getPublishHistoryId().toString()),
+                e);
         }
     }
 
@@ -116,7 +118,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
 
     /**
      * Writes data for a publish job.<p>
-     * 
+     *
      * @param dbc the database context
      * @param publishJobHistoryId the publish job id
      * @param queryKey the query to use
@@ -150,12 +152,11 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
             stmt.setString(1, publishJobHistoryId.toString());
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_READ_PUBLISH_JOB_1,
-                    publishJobHistoryId));
+                throw new CmsDbEntryNotFoundException(
+                    Messages.get().container(Messages.ERR_READ_PUBLISH_JOB_1, publishJobHistoryId));
             }
 
-            // write file content 
+            // write file content
             OutputStream output = CmsUserDriver.getOutputStreamFromBlob(res, fieldName);
             output.write(data);
             output.close();
@@ -177,13 +178,15 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                 conn.setAutoCommit(true);
             }
         } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(
-                Messages.ERR_WRITING_TO_OUTPUT_STREAM_1,
-                publishJobHistoryId), e);
+            throw new CmsDbIoException(
+                Messages.get().container(Messages.ERR_WRITING_TO_OUTPUT_STREAM_1, publishJobHistoryId),
+                e);
         } catch (SQLException e) {
-            throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
+            throw new CmsDbSqlException(
+                org.opencms.db.generic.Messages.get().container(
+                    org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)),
+                e);
         } finally {
             org.opencms.db.oracle.CmsSqlManager.closeAllInTransaction(
                 m_sqlManager,

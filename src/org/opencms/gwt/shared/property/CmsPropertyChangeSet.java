@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A bean representing a set of property changes.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPropertyChangeSet implements IsSerializable {
@@ -48,9 +48,9 @@ public class CmsPropertyChangeSet implements IsSerializable {
 
     /**
      * Creates a new property change set.<p>
-     * 
-     * @param target the structure of the target resource 
-     * @param propertyChanges the property changes themselves 
+     *
+     * @param target the structure of the target resource
+     * @param propertyChanges the property changes themselves
      */
     public CmsPropertyChangeSet(CmsUUID target, List<CmsPropertyModification> propertyChanges) {
 
@@ -64,13 +64,13 @@ public class CmsPropertyChangeSet implements IsSerializable {
      */
     protected CmsPropertyChangeSet() {
 
-        // only used for serialization 
+        // only used for serialization
     }
 
     /**
      * Gets the list of property change beans.<p>
-     * 
-     * @return the list of property change beans 
+     *
+     * @return the list of property change beans
      */
     public List<CmsPropertyModification> getChanges() {
 
@@ -79,8 +79,8 @@ public class CmsPropertyChangeSet implements IsSerializable {
 
     /**
      * Gets the structure id of the target resource.<p>
-     * 
-     * @return the structure id of the target resource 
+     *
+     * @return the structure id of the target resource
      */
     public CmsUUID getTargetStructureId() {
 

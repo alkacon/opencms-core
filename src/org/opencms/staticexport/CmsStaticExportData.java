@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,8 +31,8 @@ import org.opencms.file.CmsResource;
 
 /**
  * Provides a data structure for the result of an export request.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsStaticExportData {
 
@@ -53,7 +53,7 @@ public class CmsStaticExportData {
 
     /**
      * Creates a new static export data object.<p>
-     * 
+     *
      * @param vfsName the vfs name of the resource
      * @param rfsName the rfs name of the resource
      * @param resource the resource object
@@ -69,7 +69,7 @@ public class CmsStaticExportData {
 
     /**
      * Return the parameters of the resource to export.<p>
-     * 
+     *
      * @return the parameter map
      */
     public String getParameters() {
@@ -79,7 +79,7 @@ public class CmsStaticExportData {
 
     /**
      * Returns the resource to export.<p>
-     *  
+     *
      * @return the resource to export
      */
     public CmsResource getResource() {
@@ -89,7 +89,7 @@ public class CmsStaticExportData {
 
     /**
      * Returns the rfs name of the resource to export.<p>
-     * 
+     *
      * @return the rfs name of the resource to export
      */
     public String getRfsName() {
@@ -99,7 +99,7 @@ public class CmsStaticExportData {
 
     /**
      * Returns the vfs name of the resource to export.<p>
-     *  
+     *
      * @return the vfs name of the resource to export
      */
     public String getVfsName() {
@@ -109,8 +109,8 @@ public class CmsStaticExportData {
 
     /**
      * Returns true if this is the static export data for a detail page.<p>
-     * 
-     * @return true if this is the static export data for a detail page 
+     *
+     * @return true if this is the static export data for a detail page
      */
     public boolean isDetailPage() {
 
@@ -139,8 +139,8 @@ public class CmsStaticExportData {
 
     /**
      * Changes the 'is detail page' flag in this export data instance.<p>
-     * 
-     * @param isDetailPage the new value for the flag 
+     *
+     * @param isDetailPage the new value for the flag
      */
     protected void setIsDetailPage(boolean isDetailPage) {
 
@@ -149,7 +149,7 @@ public class CmsStaticExportData {
 
     /**
      * Sets the parameters.<p>
-     * 
+     *
      * @param parameters the parameters to set
      */
     protected void setParameters(String parameters) {
@@ -159,7 +159,7 @@ public class CmsStaticExportData {
 
     /**
      * Sets the RFS name.<p>
-     * 
+     *
      * @param rfsName the RFS name to set
      */
     protected void setRfsName(String rfsName) {

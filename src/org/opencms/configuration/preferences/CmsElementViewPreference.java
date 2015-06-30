@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,7 +50,7 @@ public class CmsElementViewPreference extends CmsBuiltinPreference {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param propName the name of the bean property used to access this preference
      */
     public CmsElementViewPreference(String propName) {
@@ -65,7 +65,8 @@ public class CmsElementViewPreference extends CmsBuiltinPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
             "string", //type
             null, //widget
             null, //widgetconfig
@@ -101,7 +102,8 @@ public class CmsElementViewPreference extends CmsBuiltinPreference {
                 resultBuffer.append(view.getTitle(cms, wpLocale));
             }
         }
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
             "string", //type
             "select_notnull", //widget
             resultBuffer.toString(), //widgetconfig

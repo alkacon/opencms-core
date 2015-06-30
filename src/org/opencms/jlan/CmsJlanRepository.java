@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -130,12 +130,12 @@ public class CmsJlanRepository implements I_CmsRepository {
         m_diskInterface = createLoggingProxy(m_originalDiskInterface);
     }
 
-    /** 
+    /**
      * Creates a dynamic proxy for a disk interface which logs the method calls and their results.<p>
-     * 
+     *
      * @param impl the disk interface for which a logging proxy should be created
-     *   
-     * @return the dynamic proxy which logs methods calls 
+     *
+     * @return the dynamic proxy which logs methods calls
      */
     public static DiskInterface createLoggingProxy(final DiskInterface impl) {
 
@@ -148,7 +148,7 @@ public class CmsJlanRepository implements I_CmsRepository {
                 public Object invoke(Object target, Method method, Object[] params) throws Throwable {
 
                     // Just to be on the safe side performance-wise, we only log the parameters/result
-                    // if the info channel is enabled 
+                    // if the info channel is enabled
                     if (LOG.isInfoEnabled()) {
                         List<String> paramStrings = new ArrayList<String>();
                         for (Object param : params) {
@@ -188,10 +188,10 @@ public class CmsJlanRepository implements I_CmsRepository {
 
     /**
      * Checks if a user may access this repository.<p>
-     * 
-     * @param user the name of the user 
-     * 
-     * @return true if the user may access the repository 
+     *
+     * @param user the name of the user
+     *
+     * @return true if the user may access the repository
      */
     public boolean allowAccess(String user) {
 
@@ -205,13 +205,13 @@ public class CmsJlanRepository implements I_CmsRepository {
 
     /**
      * Creates a CmsObjectWrapper for the current session.<p>
-     * 
-     * @param session the current session 
-     * @param connection the tree connection 
-     * 
-     * @return the correctly configured CmsObjectWrapper for this session 
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @param session the current session
+     * @param connection the tree connection
+     *
+     * @return the correctly configured CmsObjectWrapper for this session
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsObjectWrapper getCms(SrvSession session, TreeConnection connection) throws CmsException {
 
@@ -237,18 +237,18 @@ public class CmsJlanRepository implements I_CmsRepository {
 
     /**
      * Gets the device context for this repository.<p>
-     * 
-     * @return the device context 
+     *
+     * @return the device context
      */
     public DiskDeviceContext getDeviceContext() {
 
         return m_deviceContext;
     }
 
-    /** 
+    /**
      * Gets the disk interface for this repository.<p>
-     * 
-     * @return the disk interface 
+     *
+     * @return the disk interface
      */
     public DiskInterface getDiskInterface() {
 
@@ -271,10 +271,10 @@ public class CmsJlanRepository implements I_CmsRepository {
         return m_name;
     }
 
-    /** 
+    /**
      * Gets the configured project.<p>
-     * 
-     * @return the configured project 
+     *
+     * @return the configured project
      */
     public CmsProject getProject() {
 
@@ -283,8 +283,8 @@ public class CmsJlanRepository implements I_CmsRepository {
 
     /**
      * Gets the root directory configured for this repository.<p>
-     * 
-     * @return the root directory 
+     *
+     * @return the root directory
      */
     public String getRoot() {
 
@@ -293,8 +293,8 @@ public class CmsJlanRepository implements I_CmsRepository {
 
     /**
      * Gets the resource wrappers which have been configured for this repository.<p>
-     * 
-     * @return the resource wrappers which have been configured 
+     *
+     * @return the resource wrappers which have been configured
      */
     public List<I_CmsResourceWrapper> getWrappers() {
 
@@ -333,7 +333,7 @@ public class CmsJlanRepository implements I_CmsRepository {
      */
     public void setFilter(CmsRepositoryFilter filter) {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -341,14 +341,14 @@ public class CmsJlanRepository implements I_CmsRepository {
      */
     public void setName(String name) {
 
-        // case sensitive share names don't work 
+        // case sensitive share names don't work
         m_name = name.toUpperCase();
     }
 
     /**
      * Gets the shared device for this repository.<p>
-     * 
-     * @return the shared device 
+     *
+     * @return the shared device
      */
     DiskSharedDevice getSharedDevice() {
 

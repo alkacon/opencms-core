@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,8 +40,8 @@ import org.xml.sax.InputSource;
 
 /**
  * Test for the Xerces version.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsSetupTestXercesVersion implements I_CmsSetupTest {
 
@@ -92,14 +92,16 @@ public class CmsSetupTestXercesVersion implements I_CmsSetupTest {
         switch (xercesVersion) {
             case 2:
                 testResult.setResult(versionStr);
-                testResult.setHelp("OpenCms requires Xerces version 2 to run. Usually this should be available as part of the servlet environment.");
+                testResult.setHelp(
+                    "OpenCms requires Xerces version 2 to run. Usually this should be available as part of the servlet environment.");
                 testResult.setGreen();
                 break;
             case 1:
                 testResult.setResult(versionStr);
                 testResult.setRed();
-                testResult.setInfo("OpenCms requires Xerces version 2 to run, your Xerces version is 1. "
-                    + "Usually Xerces 2 should be installed by default as part of the servlet environment.");
+                testResult.setInfo(
+                    "OpenCms requires Xerces version 2 to run, your Xerces version is 1. "
+                        + "Usually Xerces 2 should be installed by default as part of the servlet environment.");
                 testResult.setHelp(testResult.getInfo());
                 break;
             default:
@@ -108,8 +110,9 @@ public class CmsSetupTestXercesVersion implements I_CmsSetupTest {
                 }
                 testResult.setResult(versionStr);
                 testResult.setRed();
-                testResult.setInfo("OpenCms requires Xerces version 2 to run. "
-                    + "Usually Xerces 2 should be installed by default as part of the servlet environment.");
+                testResult.setInfo(
+                    "OpenCms requires Xerces version 2 to run. "
+                        + "Usually Xerces 2 should be installed by default as part of the servlet environment.");
                 testResult.setHelp(testResult.getInfo());
         }
         return testResult;

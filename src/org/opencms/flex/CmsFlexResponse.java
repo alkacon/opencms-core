@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,17 +59,17 @@ import org.apache.commons.logging.Log;
  *
  * This class wraps the standard HttpServletResponse so that it's output can be delivered to
  * the CmsFlexCache.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
 
     /**
      * Wrapped implementation of the ServletOutputStream.<p>
-     * 
-     * This implementation writes to an internal buffer and optionally to another 
+     *
+     * This implementation writes to an internal buffer and optionally to another
      * output stream at the same time.<p>
-     * 
+     *
      * It should be fully transparent to the standard ServletOutputStream.<p>
      */
     private static class CmsServletOutputStream extends ServletOutputStream {
@@ -81,7 +81,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         private ByteArrayOutputStream m_stream;
 
         /**
-         * Constructor that must be used if the stream should write 
+         * Constructor that must be used if the stream should write
          * only to a buffer.<p>
          */
         public CmsServletOutputStream() {
@@ -91,7 +91,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         }
 
         /**
-         * Constructor that must be used if the stream should write 
+         * Constructor that must be used if the stream should write
          * to a buffer and to another stream at the same time.<p>
          *
          * @param servletStream The stream to write to
@@ -253,7 +253,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * Constructor for the CmsFlexResponse,
      * this variation one is usually used to wrap responses for further include calls in OpenCms.<p>
      *
-     * @param res the CmsFlexResponse to wrap     
+     * @param res the CmsFlexResponse to wrap
      * @param controller the controller to use
      */
     public CmsFlexResponse(HttpServletResponse res, CmsFlexController controller) {
@@ -269,7 +269,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         m_bufferHeaders = new HashMap<String, List<String>>(8);
     }
 
-    /** 
+    /**
      * Constructor for the CmsFlexResponse,
      * this variation is usually used for the "top" response.<p>
      *
@@ -297,7 +297,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
     /**
      * Process the headers stored in the provided map and add them to the response.<p>
-     * 
+     *
      * @param headers the headers to add
      * @param res the response to add the headers to
      */
@@ -373,7 +373,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                 }
                 header.append(CmsDateUtil.getOldCookieDate(time));
             } else {
-                // new RFC 2109 format 
+                // new RFC 2109 format
                 header.append("; Max-Age=");
                 header.append(cookie.getMaxAge());
             }
@@ -424,27 +424,27 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (m_cachingRequired && !m_includeMode) {
             addHeaderList(m_bufferHeaders, name, value);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_ELEMENT_BUFFER_2,
-                    name,
-                    value));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_ELEMENT_BUFFER_2,
+                        name,
+                        value));
             }
         }
 
         if (m_writeOnlyToBuffer) {
             addHeaderList(m_headers, name, value);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_HEADERS_2,
-                    name,
-                    value));
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_HEADERS_2, name, value));
             }
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_PARENT_RESPONSE_2,
-                    name,
-                    value));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_PARENT_RESPONSE_2,
+                        name,
+                        value));
             }
             m_res.addHeader(name, value);
         }
@@ -461,9 +461,9 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         addHeader(name, String.valueOf(value));
     }
 
-    /** 
+    /**
      * Adds an inclusion target to the list of include results.<p>
-     * 
+     *
      * Should be used only in inclusion-scenarios
      * like the JSP cms:include tag processing.<p>
      *
@@ -478,10 +478,11 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             m_includeListParameters = new ArrayList<Map<String, String[]>>(10);
             m_includeListAttributes = new ArrayList<Map<String, Object>>(10);
         }
-        // never cache some request attributes, e.g. the Flex controller 
+        // never cache some request attributes, e.g. the Flex controller
         m_controller.removeUncacheableAttributes(attributeMap);
         // only cache a copy of the JSP standard context bean
-        CmsJspStandardContextBean bean = (CmsJspStandardContextBean)attributeMap.get(CmsJspStandardContextBean.ATTRIBUTE_NAME);
+        CmsJspStandardContextBean bean = (CmsJspStandardContextBean)attributeMap.get(
+            CmsJspStandardContextBean.ATTRIBUTE_NAME);
         if (bean != null) {
             attributeMap.put(CmsJspStandardContextBean.ATTRIBUTE_NAME, bean.createCopy());
         }
@@ -505,7 +506,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
     /**
      * Returns the value of the encoding used for this response.<p>
-     * 
+     *
      * @return the value of the encoding used for this response
      */
     public String getEncoding() {
@@ -577,9 +578,9 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         return m_out.getBytes();
     }
 
-    /** 
+    /**
      * This flag indicates if the response is suspended or not.<p>
-     * 
+     *
      * A suspended response must not write further output to any stream or
      * process a cache entry for itself.<p>
      *
@@ -593,12 +594,12 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * Returns <code>true</code> if this response has been constructed for the 
-     * top level element of this request, <code>false</code> if it was 
+     * Returns <code>true</code> if this response has been constructed for the
+     * top level element of this request, <code>false</code> if it was
      * constructed for an included sub-element.<p>
-     * 
-     * @return <code>true</code> if this response has been constructed for the 
-     * top level element of this request, <code>false</code> if it was 
+     *
+     * @return <code>true</code> if this response has been constructed for the
+     * top level element of this request, <code>false</code> if it was
      * constructed for an included sub-element.
      */
     public boolean isTopElement() {
@@ -610,7 +611,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * Method overload from the standard HttpServletRequest API.<p>
      *
      * @see javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
-     * 
+     *
      * @throws IllegalArgumentException In case of a malformed location string
      */
     @Override
@@ -631,19 +632,21 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             // If caching is required a cached entry will be constructed first and redirect will
             // be called after this is completed and stored in the cache
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1, location));
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1, location));
             }
             if (LOG.isWarnEnabled()) {
                 if (m_controller.getResponseStackSize() > 2) {
                     // sendRedirect in a stacked response scenario, this may cause issues in some app servers
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_FLEXRESPONSE_REDIRECTWARNING_3,
-                        m_controller.getCmsResource().getRootPath(),
-                        m_controller.getCurrentRequest().getElementUri(),
-                        location));
+                    LOG.warn(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_FLEXRESPONSE_REDIRECTWARNING_3,
+                            m_controller.getCmsResource().getRootPath(),
+                            m_controller.getCurrentRequest().getElementUri(),
+                            location));
                 }
             }
-            
+
             try {
                 // Checking for possible illegal characters (for example, XSS exploits) before sending the redirect
                 // The constructor is key here. That method will throw an URISyntaxException if the URL
@@ -652,11 +655,10 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             } catch (URISyntaxException e) {
                 // Deliberately NOT passing the original exception, since the URISyntaxException contains the full path,
                 // which may include the XSS attempt
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_FLEXRESPONSE_URI_SYNTAX_EXCEPTION_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_FLEXRESPONSE_URI_SYNTAX_EXCEPTION_0), e);
                 throw new IllegalArgumentException("Illegal or malformed characters found in path");
             }
-            
+
             // use top response for redirect
             HttpServletResponse topRes = m_controller.getTopResponse();
             // add all headers found to make sure cookies can be set before redirect
@@ -678,8 +680,8 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_SETTING_CONTENTTYPE_1, type));
         }
-        // only if this is the "Top-Level" element, do set the content type    
-        // otherwise an included JSP could reset the type with some unwanted defaults  
+        // only if this is the "Top-Level" element, do set the content type
+        // otherwise an included JSP could reset the type with some unwanted defaults
         if (!m_typeSet && m_isTopElement) {
             // type must be set only once, otherwise some Servlet containers (not Tomcat) generate errors
             m_typeSet = true;
@@ -719,27 +721,27 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (m_cachingRequired && !m_includeMode) {
             setHeaderList(m_bufferHeaders, name, value);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_ELEMENT_BUFFER_2,
-                    name,
-                    value));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_ELEMENT_BUFFER_2,
+                        name,
+                        value));
             }
         }
 
         if (m_writeOnlyToBuffer) {
             setHeaderList(m_headers, name, value);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_HEADERS_2,
-                    name,
-                    value));
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_HEADERS_2, name, value));
             }
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_PARENT_RESPONSE_2,
-                    name,
-                    value));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_PARENT_RESPONSE_2,
+                        name,
+                        value));
             }
             m_res.setHeader(name, value);
         }
@@ -756,9 +758,9 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         setHeader(name, "" + value);
     }
 
-    /** 
+    /**
      * Sets buffering status of the response.<p>
-     * 
+     *
      * This must be done before the first output is written.
      * Buffering is needed to process elements that can not be written
      * directly to the output stream because their sub - elements have to
@@ -780,10 +782,10 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
     /**
      * Adds some bytes to the list of include results.<p>
-     * 
-     * Should be used only in inclusion-scenarios 
+     *
+     * Should be used only in inclusion-scenarios
      * like the JSP cms:include tag processing.<p>
-     * 
+     *
      * @param result the byte array to add
      */
     void addToIncludeResults(byte[] result) {
@@ -805,8 +807,8 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * Is used to check if the response has an include list, 
-     * which indicates a) it is probably processing a JSP element 
+     * Is used to check if the response has an include list,
+     * which indicates a) it is probably processing a JSP element
      * and b) it can never be streamed and always must be buffered.<p>
      *
      * @return true if this response has an include list, false otherwise
@@ -817,15 +819,15 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * Generates a CmsFlexCacheEntry from the current response using the 
+     * Generates a CmsFlexCacheEntry from the current response using the
      * stored include results.<p>
-     * 
-     * In case the results were written only to the buffer until now, 
-     * they are now re-written on the output stream, with all included 
+     *
+     * In case the results were written only to the buffer until now,
+     * they are now re-written on the output stream, with all included
      * elements.<p>
      *
      * @throws IOException in case something goes wrong while writing to the output stream
-     * 
+     *
      * @return  the generated cache entry
      */
     CmsFlexCacheEntry processCacheEntry() throws IOException {
@@ -843,7 +845,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             } else {
                 // add cached headers
                 m_cachedEntry.addHeaders(m_bufferHeaders);
-                // add cached output 
+                // add cached output
                 if (m_includeList != null) {
                     // probably JSP: we must analyze out stream for includes calls
                     // also, m_writeOnlyToBuffer must be "true" or m_includeList can not be != null
@@ -856,7 +858,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             // update the "last modified" date for the cache entry
             m_cachedEntry.complete();
         }
-        // in case the output was only buffered we have to re-write it to the "right" stream       
+        // in case the output was only buffered we have to re-write it to the "right" stream
         if (m_writeOnlyToBuffer) {
 
             // since we are processing a cache entry caching is not required
@@ -866,7 +868,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                 // send buffered redirect, will trigger redirect of top response
                 sendRedirect(m_bufferRedirect);
             } else {
-                // process the output               
+                // process the output
                 if (m_parentWritesOnlyToBuffer) {
                     // write results back to own stream, headers are already in buffer
                     if (m_out != null) {
@@ -874,15 +876,16 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                             m_out.clear();
                         } catch (Exception e) {
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug(Messages.get().getBundle().key(
-                                    Messages.LOG_FLEXRESPONSE_ERROR_FLUSHING_OUTPUT_STREAM_1,
-                                    e));
+                                LOG.debug(
+                                    Messages.get().getBundle().key(
+                                        Messages.LOG_FLEXRESPONSE_ERROR_FLUSHING_OUTPUT_STREAM_1,
+                                        e));
                             }
                         }
                     } else {
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().getBundle().key(
-                                Messages.LOG_FLEXRESPONSE_ERROR_OUTPUT_STREAM_NULL_0));
+                            LOG.debug(
+                                Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_ERROR_OUTPUT_STREAM_NULL_0));
                         }
                     }
                     writeCachedResultToStream(this);
@@ -897,7 +900,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * Sets the cache key for this response from 
+     * Sets the cache key for this response from
      * a pre-calculated cache key.<p>
      *
      * @param value the cache key to set
@@ -907,16 +910,16 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         m_key = value;
     }
 
-    /** 
+    /**
      * Sets the cache key for this response, which is calculated
      * from the provided parameters.<p>
-     * 
+     *
      * @param resourcename the target resource for which to create the cache key
      * @param cacheDirectives the cache directives of the resource (value of the property "cache")
      * @param online indicates if this resource is online or offline
      *
      * @return the generated cache key
-     * 
+     *
      * @throws CmsFlexCacheException in case the value String had a parse error
      */
     CmsFlexCacheKey setCmsCacheKey(String resourcename, String cacheDirectives, boolean online)
@@ -925,22 +928,23 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         m_key = new CmsFlexCacheKey(resourcename, cacheDirectives, online);
         if (m_key.hadParseError()) {
             // We throw the exception here to make sure this response has a valid key (cache=never)
-            throw new CmsFlexCacheException(Messages.get().container(
-                Messages.LOG_FLEXRESPONSE_PARSE_ERROR_IN_CACHE_KEY_2,
-                cacheDirectives,
-                resourcename));
+            throw new CmsFlexCacheException(
+                Messages.get().container(
+                    Messages.LOG_FLEXRESPONSE_PARSE_ERROR_IN_CACHE_KEY_2,
+                    cacheDirectives,
+                    resourcename));
         }
         return m_key;
     }
 
     /**
      * Set caching status for this response.<p>
-     * 
+     *
      * Will always be set to <code>"true"</code> if setOnlyBuffering() is set to <code>"true"</code>.
-     * Currently this is an optimization for non - JSP elements that 
+     * Currently this is an optimization for non - JSP elements that
      * are known not to be cachable.<p>
      *
-     * @param value the value to set     
+     * @param value the value to set
      */
     void setCmsCachingRequired(boolean value) {
 
@@ -949,12 +953,12 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
     /**
      * This flag indicates to the response if it is in "include mode" or not.<p>
-     * 
-     * This is important in case a cache entry is constructed, 
+     *
+     * This is important in case a cache entry is constructed,
      * since the cache entry must not consist of output or headers of the
      * included elements.<p>
      *
-     * @param value the value to set     
+     * @param value the value to set
      */
     void setCmsIncludeMode(boolean value) {
 
@@ -964,24 +968,24 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /**
      * Sets the suspended status of the response, and also sets
      * the suspend status of all responses wrapping this response.<p>
-     * 
+     *
      * A suspended response must not write further output to any stream or
      * process a cache entry for itself.<p>
      *
-     * @param value the value to set     
+     * @param value the value to set
      */
     void setSuspended(boolean value) {
 
         m_suspended = value;
     }
 
-    /** 
+    /**
      * Writes some bytes to the current output stream,
      * this method should be called from CmsFlexCacheEntry.service() only.<p>
      *
      * @param bytes an array of bytes
      * @param useArray indicates that the byte array should be used directly
-     * 
+     *
      * @throws IOException in case something goes wrong while writing to the stream
      */
     void writeToOutputStream(byte[] bytes, boolean useArray) throws IOException {
@@ -1004,7 +1008,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_ERROR_WRITING_TO_OUTPUT_STREAM_0));
             }
-            // The request is not buffered, so we can write directly to it's parents output stream 
+            // The request is not buffered, so we can write directly to it's parents output stream
             m_res.getOutputStream().write(bytes);
             m_res.getOutputStream().flush();
         }
@@ -1028,7 +1032,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * Initializes the current responses output stream 
+     * Initializes the current responses output stream
      * and the corresponding print writer.<p>
      *
      * @throws IOException in case something goes wrong while initializing
@@ -1058,22 +1062,22 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
     /**
      * This method is needed to process pages that can NOT be analyzed
-     * directly during delivering (like JSP) because they write to 
+     * directly during delivering (like JSP) because they write to
      * their own buffer.<p>
      *
      * In this case, we don't actually write output of include calls to the stream.
-     * Where there are include calls we write a <code>{@link #FLEX_CACHE_DELIMITER}</code> char on the stream 
+     * Where there are include calls we write a <code>{@link #FLEX_CACHE_DELIMITER}</code> char on the stream
      * to indicate that at this point the output of the include must be placed later.
      * The include targets (resource names) are then saved in the m_includeList.<p>
      *
      * This method must be called after the complete page has been processed.
-     * It will contain the output of the page only (no includes), 
-     * with <code>{@link #FLEX_CACHE_DELIMITER}</code> chars were the include calls should be placed. 
-     * What we do here is analyze the output and cut it in parts 
+     * It will contain the output of the page only (no includes),
+     * with <code>{@link #FLEX_CACHE_DELIMITER}</code> chars were the include calls should be placed.
+     * What we do here is analyze the output and cut it in parts
      * of <code>byte[]</code> arrays which then are saved in the resulting cache entry.
      * For the includes, we just save the name of the resource in
      * the cache entry.<p>
-     *  
+     *
      * If caching is disabled this method is just not called.<p>
      */
     private void processIncludeList() {
@@ -1090,7 +1094,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             int size = 0;
             int count = 0;
 
-            // work through result and split this with include list calls            
+            // work through result and split this with include list calls
             int i = 0;
             while ((i < m_includeList.size()) && (pos < max)) {
                 // look for the first FLEX_CACHE_DELIMITER char
@@ -1099,7 +1103,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                 }
                 if ((pos < max) && (result[pos] == FLEX_CACHE_DELIMITER)) {
                     count++;
-                    // a byte value of C_FLEX_CACHE_DELIMITER in our (String) output list indicates 
+                    // a byte value of C_FLEX_CACHE_DELIMITER in our (String) output list indicates
                     // that the next include call must be placed here
                     size = pos - last;
                     if (size > 0) {
@@ -1155,12 +1159,12 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         headers.put(name, values);
     }
 
-    /** 
+    /**
      * This delivers cached sub-elements back to the stream.
      * Needed to overcome JSP buffering.<p>
      *
      * @param res the response to write the cached results to
-     * 
+     *
      * @throws IOException in case something goes wrong writing to the responses output stream
      */
     private void writeCachedResultToStream(HttpServletResponse res) throws IOException {

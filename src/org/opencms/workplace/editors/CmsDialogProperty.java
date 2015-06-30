@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,18 +49,18 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the special xmlpage property dialog.<p> 
- * 
+ * Provides methods for the special xmlpage property dialog.<p>
+ *
  * This is a special dialog that is used for xmlpages in the workplace and the editors.<p>
  * Uses methods from the customized property dialog where possible.<p>
- * 
+ *
  * The following files use this class:
  * <ul>
  * <li>/jsp/editors/dialogs/property.html
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDialogProperty extends CmsPropertyCustom {
 
@@ -72,7 +72,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDialogProperty(CmsJspActionElement jsp) {
@@ -82,7 +82,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -94,7 +94,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
 
     /**
      * Creates the HTML String for the edit properties form.<p>
-     * 
+     *
      * @return the HTML output String for the edit properties form
      */
     @Override
@@ -115,18 +115,18 @@ public class CmsDialogProperty extends CmsPropertyCustom {
         retValue.append("<tr>\n");
         retValue.append("\t<td class=\"textbold\">" + messages.key(Messages.GUI_INPUT_PROPERTY_0) + "</td>\n");
         retValue.append("\t<td class=\"textbold\">" + messages.key(Messages.GUI_LABEL_VALUE_0) + "</td>\n");
-        retValue.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">"
-            + messages.key(Messages.GUI_INPUT_USEDPROPERTY_0)
-            + "</td>\n");
+        retValue.append(
+            "\t<td class=\"textbold\" style=\"white-space: nowrap;\">"
+                + messages.key(Messages.GUI_INPUT_USEDPROPERTY_0)
+                + "</td>\n");
         retValue.append("</tr>\n");
         retValue.append("<tr><td><span style=\"height: 6px;\"></span></td></tr>\n");
 
         // create template select box row
         retValue.append(buildTableRowStart(messages.key(Messages.GUI_INPUT_TEMPLATE_0)));
-        retValue.append(buildSelectTemplates("name=\""
-            + CmsPropertyDefinition.PROPERTY_TEMPLATE
-            + "\" class=\"maxwidth noborder\""
-            + disabled));
+        retValue.append(
+            buildSelectTemplates(
+                "name=\"" + CmsPropertyDefinition.PROPERTY_TEMPLATE + "\" class=\"maxwidth noborder\"" + disabled));
         retValue.append("</td>\n");
         retValue.append("\t<td class=\"textcenter\">");
         retValue.append("&nbsp;");
@@ -147,7 +147,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
 
     /**
      * Builds the html for the page template select box.<p>
-     * 
+     *
      * @param attributes optional attributes for the &lt;select&gt; tag
      * @return the html for the page template select box
      */
@@ -214,7 +214,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
 
     /**
      * Returns if the template property was changed.<p>
-     * 
+     *
      * @return true if the template property was changed, otherwise false
      */
     public boolean hasTemplateChanged() {
@@ -224,7 +224,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
 
     /**
      * Performs the editing of the resources properties.<p>
-     * 
+     *
      * @param request the HttpServletRequest
      * @return true, if the properties were successfully changed, otherwise false
      * @throws CmsException if editing is not successful
@@ -292,7 +292,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
 
     /**
      * Adds the currently selected template value to the option and value list.<p>
-     * 
+     *
      * @param currentTemplate the currently selected template to add
      * @param options the option list
      * @param values the value list
@@ -311,7 +311,10 @@ public class CmsDialogProperty extends CmsPropertyCustom {
             String name = null;
             try {
                 // read the title of the current template
-                name = getCms().readPropertyObject(currentTemplate, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                name = getCms().readPropertyObject(
+                    currentTemplate,
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    false).getValue();
             } catch (CmsException e) {
                 // ignore this exception - the title for this template was not readable
                 if (LOG.isInfoEnabled()) {

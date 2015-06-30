@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -148,7 +148,7 @@ import com.google.common.collect.Sets;
 
 /**
  * The RPC service used by the container-page editor.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainerpageService extends CmsGwtService implements I_CmsContainerpageService {
@@ -182,14 +182,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Generates the model resource data list.<p>
-     * 
+     *
      * @param cms the cms context
      * @param resourceType the resource type name
      * @param modelResources the model resource
      * @param contentLocale the content locale
-     * 
+     *
      * @return the model resources data
-     * 
+     *
      * @throws CmsException if something goes wrong reading the resource information
      */
     public static List<CmsModelResourceInfo> generateModelResourceList(
@@ -200,9 +200,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         List<CmsModelResourceInfo> result = new ArrayList<CmsModelResourceInfo>();
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        CmsModelResourceInfo defaultInfo = new CmsModelResourceInfo(Messages.get().getBundle(wpLocale).key(
-            Messages.GUI_TITLE_DEFAULT_RESOURCE_CONTENT_0), Messages.get().getBundle(wpLocale).key(
-            Messages.GUI_DESCRIPTION_DEFAULT_RESOURCE_CONTENT_0), null);
+        CmsModelResourceInfo defaultInfo = new CmsModelResourceInfo(
+            Messages.get().getBundle(wpLocale).key(Messages.GUI_TITLE_DEFAULT_RESOURCE_CONTENT_0),
+            Messages.get().getBundle(wpLocale).key(Messages.GUI_DESCRIPTION_DEFAULT_RESOURCE_CONTENT_0),
+            null);
         defaultInfo.setResourceType(resourceType);
         result.add(defaultInfo);
         for (CmsResource model : modelResources) {
@@ -223,11 +224,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Returns serialized container data.<p>
-     * 
+     *
      * @param container the container
-     * 
+     *
      * @return the serialized data
-     * 
+     *
      * @throws Exception if serialization fails
      */
     public static String getSerializedContainerInfo(CmsContainer container) throws Exception {
@@ -237,15 +238,15 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Returns the serialized element data.<p>
-     * 
+     *
      * @param cms the cms context
      * @param request the servlet request
      * @param response the servlet response
      * @param elementBean the element to serialize
-     * @param page the container page 
-     * 
+     * @param page the container page
+     *
      * @return the serialized element data
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public static String getSerializedElementInfo(
@@ -270,26 +271,25 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Checks whether the current page is a model group page.<p>
-     * 
+     *
      * @param cms the CMS context
      * @param containerPage the current page
-     * 
+     *
      * @return <code>true</code> if the current page is a model group page
      */
     public static boolean isEditingModelGroups(CmsObject cms, CmsResource containerPage) {
 
-        return (CmsResource.getParentFolder(containerPage.getRootPath()).endsWith(MODEL_GROUP_PATH_FRAGMENT) && OpenCms.getRoleManager().hasRole(
-            cms,
-            CmsRole.DEVELOPER));
+        return (CmsResource.getParentFolder(containerPage.getRootPath()).endsWith(MODEL_GROUP_PATH_FRAGMENT)
+            && OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER));
     }
 
     /**
      * Fetches the container page data.<p>
-     * 
+     *
      * @param request the current request
-     * 
+     *
      * @return the container page data
-     * 
+     *
      * @throws CmsRpcException if something goes wrong
      */
     public static CmsCntPageData prefetch(HttpServletRequest request) throws CmsRpcException {
@@ -358,7 +358,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             return result.isChanged();
         } catch (Throwable e) {
             error(e);
-            return false; // will never be reached 
+            return false; // will never be reached
         }
 
     }
@@ -413,19 +413,20 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Parses an element id.<p>
-     * 
+     *
      * @param id the element id
-     * 
+     *
      * @return the corresponding structure id
-     * 
+     *
      * @throws CmsIllegalArgumentException if the id has not the right format
      */
     public CmsUUID convertToServerId(String id) throws CmsIllegalArgumentException {
 
         if (id == null) {
-            throw new CmsIllegalArgumentException(org.opencms.xml.containerpage.Messages.get().container(
-                org.opencms.xml.containerpage.Messages.ERR_INVALID_ID_1,
-                id));
+            throw new CmsIllegalArgumentException(
+                org.opencms.xml.containerpage.Messages.get().container(
+                    org.opencms.xml.containerpage.Messages.ERR_INVALID_ID_1,
+                    id));
         }
         String serverId = id;
         try {
@@ -434,9 +435,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
             return new CmsUUID(serverId);
         } catch (NumberFormatException e) {
-            throw new CmsIllegalArgumentException(org.opencms.xml.containerpage.Messages.get().container(
-                org.opencms.xml.containerpage.Messages.ERR_INVALID_ID_1,
-                id));
+            throw new CmsIllegalArgumentException(
+                org.opencms.xml.containerpage.Messages.get().container(
+                    org.opencms.xml.containerpage.Messages.ERR_INVALID_ID_1,
+                    id));
         }
     }
 
@@ -464,14 +466,15 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         } catch (Throwable e) {
             error(e);
-            return null; // will never be reached 
+            return null; // will never be reached
         }
     }
 
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#createImageWrapperContent(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, java.lang.String)
      */
-    public String createImageWrapperContent(CmsContainerPageRpcContext context, String clientId) throws CmsRpcException {
+    public String createImageWrapperContent(CmsContainerPageRpcContext context, String clientId)
+    throws CmsRpcException {
 
         try {
             CmsUUID structureId = new CmsUUID(clientId);
@@ -642,9 +645,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             initRequestFromRpcContext(context);
             String containerpageUri = cms.getSitePath(pageResource);
             Locale contentLocale = CmsLocaleManager.getLocale(locale);
-            CmsElementUtil elemUtil = new CmsElementUtil(cms, containerpageUri, generateContainerPageForContainers(
-                containers,
-                pageResource.getRootPath()), detailContentId, getRequest(), getResponse(), contentLocale);
+            CmsElementUtil elemUtil = new CmsElementUtil(
+                cms,
+                containerpageUri,
+                generateContainerPageForContainers(containers, pageResource.getRootPath()),
+                detailContentId,
+                getRequest(),
+                getResponse(),
+                contentLocale);
 
             CmsContainerElementBean elementBean = getCachedElement(clientId, pageResource.getRootPath());
             elementBean.initResource(cms);
@@ -716,7 +724,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             Set<String> disabledTypes = new HashSet<String>();
             final Set<String> typesAtTheEndOfTheList = Sets.newHashSet();
             for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
-                boolean isModelGroup = CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(typeConfig.getTypeName());
+                boolean isModelGroup = CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(
+                    typeConfig.getTypeName());
                 try {
                     AddMenuVisibility visibility = typeConfig.getAddMenuVisibility(elementView);
 
@@ -754,8 +763,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsGalleryService srv = new CmsGalleryService();
             srv.setCms(cms);
             srv.setRequest(getRequest());
-            // we put the types 'imported' from other views at the end of the list. Since the sort is stable, 
-            // relative position of other types remains unchanged 
+            // we put the types 'imported' from other views at the end of the list. Since the sort is stable,
+            // relative position of other types remains unchanged
             Collections.sort(resourceTypes, new Comparator<I_CmsResourceType>() {
 
                 public int compare(I_CmsResourceType first, I_CmsResourceType second) {
@@ -851,12 +860,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Internal helper method to get the status of a removed element.<p>
-     * 
+     *
      * @param structureId the structure id of the removed element
-     * @param containerpageId the id of the page to exclude from the relation check, or null if no page should be excluded  
-     * 
+     * @param containerpageId the id of the page to exclude from the relation check, or null if no page should be excluded
+     *
      * @return the status of the removed element
-     *   
+     *
      * @throws CmsException in case reading the resource fails
      */
     public CmsRemovedElementStatus internalGetRemovedElementStatus(CmsUUID structureId, CmsUUID containerpageId)
@@ -1033,10 +1042,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                         parentFolder,
                         OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()));
                     // set the search exclude property on parent folder
-                    rootCms.writePropertyObject(parentFolder, new CmsProperty(
-                        CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
-                        CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL,
-                        null));
+                    rootCms.writePropertyObject(
+                        parentFolder,
+                        new CmsProperty(
+                            CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
+                            CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL,
+                            null));
                     tryUnlock(parentRes);
                 }
                 containerpage = rootCms.createResource(
@@ -1080,7 +1091,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     elementBean.getIndividualSettings().get(CmsContainerElement.ELEMENT_INSTANCE_ID));
             }
             if (isEditingModelGroups(cms, pageResource)) {
-                if ((ModelGroupState.evaluate(settings.get(CmsContainerElement.MODEL_GROUP_STATE)) == ModelGroupState.isModelGroup)) {
+                if ((ModelGroupState.evaluate(
+                    settings.get(CmsContainerElement.MODEL_GROUP_STATE)) == ModelGroupState.isModelGroup)) {
                     // make sure to keep the model group id
                     if (elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID)) {
                         settings.put(
@@ -1096,7 +1108,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 }
             } else {
                 // in case of model group state set to 'noGroup', the group will be dissolved and former group id forgotten
-                if (!(settings.containsKey(CmsContainerElement.MODEL_GROUP_STATE) && (ModelGroupState.noGroup == ModelGroupState.evaluate(settings.get(CmsContainerElement.MODEL_GROUP_STATE))))) {
+                if (!(settings.containsKey(CmsContainerElement.MODEL_GROUP_STATE)
+                    && (ModelGroupState.noGroup == ModelGroupState.evaluate(
+                        settings.get(CmsContainerElement.MODEL_GROUP_STATE))))) {
                     if (elementBean.getIndividualSettings().containsKey(CmsContainerElement.MODEL_GROUP_ID)) {
                         // make sure to keep the model group id
                         settings.put(
@@ -1139,9 +1153,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 saveContainers(rootCms, detailResource, detailResource.getRootPath(), detailContainers);
             }
             String containerpageUri = cms.getSitePath(pageResource);
-            CmsElementUtil elemUtil = new CmsElementUtil(cms, containerpageUri, generateContainerPageForContainers(
-                containers,
-                pageResource.getRootPath()), detailContentId, getRequest(), getResponse(), contentLocale);
+            CmsElementUtil elemUtil = new CmsElementUtil(
+                cms,
+                containerpageUri,
+                generateContainerPageForContainers(containers, pageResource.getRootPath()),
+                detailContentId,
+                getRequest(),
+                getResponse(),
+                contentLocale);
             element = elemUtil.getElementData(pageResource, elementBean, containers, allowNested);
         } catch (Throwable e) {
             error(e);
@@ -1191,15 +1210,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         ids.add(groupContainer.getClientId());
         // update offline indices
         OpenCms.getSearchManager().updateOfflineIndexes(2 * CmsSearchManager.DEFAULT_OFFLINE_UPDATE_FREQNENCY);
-        return new CmsGroupContainerSaveResult(getElementsData(
-            context,
-            detailContentId,
-            reqParams,
-            ids,
-            containers,
-            false,
-            null,
-            locale), removedElements);
+        return new CmsGroupContainerSaveResult(
+            getElementsData(context, detailContentId, reqParams, ids, containers, false, null, locale),
+            removedElements);
     }
 
     /**
@@ -1220,7 +1233,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsResource referenceResource = null;
             if (inheritanceContainer.isNew()) {
                 CmsADEConfigData config = getConfigData(containerPage.getRootPath());
-                CmsResourceTypeConfig typeConfig = config.getResourceType(CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME);
+                CmsResourceTypeConfig typeConfig = config.getResourceType(
+                    CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME);
                 referenceResource = typeConfig.createNewElement(cms, containerPage.getRootPath());
                 inheritanceContainer.setClientId(referenceResource.getStructureId().toString());
             }
@@ -1312,8 +1326,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Sets the session cache.<p>
-     * 
-     * @param cache the session cache 
+     *
+     * @param cache the session cache
      */
     public void setSessionCache(CmsADESessionCache cache) {
 
@@ -1339,14 +1353,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Gets the settings which should be updated for an element in the DND case.<p>
-     * 
-     * @param originalSettings the original settings 
-     * @param formatterConfig the formatter configuration for the element 
-     * @param containers the containers 
-     * @param dndContainer the id of the DND origin container 
-     * @param allowNested true if nested containers are allowed 
-     * 
-     * @return the map of settings to update  
+     *
+     * @param originalSettings the original settings
+     * @param formatterConfig the formatter configuration for the element
+     * @param containers the containers
+     * @param dndContainer the id of the DND origin container
+     * @param allowNested true if nested containers are allowed
+     *
+     * @return the map of settings to update
      */
     Map<String, String> getSettingsToChangeForDnd(
         Map<String, String> originalSettings,
@@ -1382,11 +1396,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Creates a new container element bean from an existing one, but changes some of the individual settings in the copy.<p>
-     * 
-     * @param element the original container element 
-     * @param settingsToOverride the map of settings to change 
-     * 
-     * @return the new container element bean with the changed settings 
+     *
+     * @param element the original container element
+     * @param settingsToOverride the map of settings to change
+     *
+     * @return the new container element bean with the changed settings
      */
     CmsContainerElementBean overrideSettings(CmsContainerElementBean element, Map<String, String> settingsToOverride) {
 
@@ -1402,13 +1416,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Converts the given setting values according to the setting configuration of the given resource.<p>
-     * 
+     *
      * @param resource the resource
      * @param settings the settings to convert
-     * @param locale the locale used for accessing the element settings 
-     * 
+     * @param locale the locale used for accessing the element settings
+     *
      * @return the converted settings
-     * @throws CmsException if something goes wrong 
+     * @throws CmsException if something goes wrong
      */
     private Map<String, String> convertSettingValues(CmsResource resource, Map<String, String> settings, Locale locale)
     throws CmsException {
@@ -1439,10 +1453,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Generates the XML container page bean for the given containers.<p>
-     * 
+     *
      * @param containers the containers
      * @param containerpageRootPath the container page root path
-     * 
+     *
      * @return the container page bean
      */
     private CmsContainerPageBean generateContainerPageForContainers(
@@ -1460,12 +1474,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Reads the cached element-bean for the given client-side-id from cache.<p>
-     * 
+     *
      * @param clientId the client-side-id
      * @param pageRootPath the container page root path
-     * 
+     *
      * @return the cached container element bean
-     * 
+     *
      * @throws CmsException in case reading the element resource fails
      */
     private CmsContainerElementBean getCachedElement(String clientId, String pageRootPath) throws CmsException {
@@ -1486,20 +1500,23 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         // this is necessary if the element has not been cached yet
         CmsResource resource = getCmsObject().readResource(convertToServerId(id), CmsResourceFilter.IGNORE_EXPIRATION);
         CmsADEConfigData configData = getConfigData(pageRootPath);
-        CmsResourceTypeConfig typeConfig = configData.getResourceType(OpenCms.getResourceManager().getResourceType(
-            resource).getTypeName());
-        element = new CmsContainerElementBean(convertToServerId(id), null, null, (typeConfig != null)
-            && typeConfig.isCopyInModels());
+        CmsResourceTypeConfig typeConfig = configData.getResourceType(
+            OpenCms.getResourceManager().getResourceType(resource).getTypeName());
+        element = new CmsContainerElementBean(
+            convertToServerId(id),
+            null,
+            null,
+            (typeConfig != null) && typeConfig.isCopyInModels());
         getSessionCache().setCacheContainerElement(element.editorHash(), element);
         return element;
     }
 
     /**
      * Returns a list of container elements from a list with client id's.<p>
-     * 
+     *
      * @param clientIds list of client id's
      * @param pageRootPath the container page root path
-     * 
+     *
      * @return a list of element beans
      * @throws CmsException in case reading the element resource fails
      */
@@ -1519,9 +1536,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Returns the configuration data of the current container page context.<p>
-     * 
+     *
      * @param pageRootPath the container page root path
-     * 
+     *
      * @return the configuration data of the current container page context
      */
     private CmsADEConfigData getConfigData(String pageRootPath) {
@@ -1534,10 +1551,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Helper method for converting a CmsContainer to a CmsContainerBean when saving a container page.<p>
-     * 
+     *
      * @param container the container for which the CmsContainerBean should be created
-     * @param containerpageRootPath the container page root path 
-     *  
+     * @param containerpageRootPath the container page root path
+     *
      * @return a container bean
      */
     private CmsContainerBean getContainerBeanToSave(CmsContainer container, String containerpageRootPath) {
@@ -1568,14 +1585,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Converts container page element data to a bean which can be saved in a container page.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param containerpageRootPath the container page root path
-     * @param container the container containing the element 
-     * @param elementData the data for the single element 
-     * 
-     * @return the container element bean 
-     * 
+     * @param container the container containing the element
+     * @param elementData the data for the single element
+     *
+     * @return the container element bean
+     *
      * @throws CmsException if something goes wrong
      */
     private CmsContainerElementBean getContainerElementBeanToSave(
@@ -1589,14 +1606,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         boolean isCreateNew = elementData.isCreateNew();
         if (elementData.isNew() && !hasUuidPrefix) {
 
-            // Due to the changed save system without the save button, we need to make sure that new elements 
-            // are only created once. This must happen when the user first edits a new element. But we still 
+            // Due to the changed save system without the save button, we need to make sure that new elements
+            // are only created once. This must happen when the user first edits a new element. But we still
             // want to save changes to non-new elements on the page, so we skip new elements while saving.
             return null;
         }
         CmsContainerElementBean element = getCachedElement(elementData.getClientId(), containerpageRootPath);
 
-        // make sure resource is readable, 
+        // make sure resource is readable,
         CmsResource resource = cms.readResource(element.getId(), CmsResourceFilter.IGNORE_EXPIRATION);
 
         // check if there is a valid formatter
@@ -1637,11 +1654,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Returns the requested container-page resource.<p>
-     * 
+     *
      * @param cms the current cms object
-     * 
+     *
      * @return the container-page resource
-     * 
+     *
      * @throws CmsException if the resource could not be read for any reason
      */
     private CmsResource getContainerpage(CmsObject cms) throws CmsException {
@@ -1668,18 +1685,18 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Returns the data of the given elements.<p>
-     * 
-     * @param page the current container page 
+     *
+     * @param page the current container page
      * @param clientIds the list of IDs of the elements to retrieve the data for
      * @param uriParam the current URI
      * @param detailContentId the detail content structure id
-     * @param containers the containers for which the element data should be fetched 
+     * @param containers the containers for which the element data should be fetched
      * @param allowNested if nested containers are allowed
      * @param dndOriginContainer the container from which an element was dragged (null if this method is not called for DND)
-     * @param locale the locale to use 
-     * 
+     * @param locale the locale to use
+     *
      * @return the elements data
-     * 
+     *
      * @throws CmsException if something really bad happens
      */
     private Map<String, CmsContainerElementData> getElements(
@@ -1768,7 +1785,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             elementData.setDndId(dndId);
             result.put(entry.getKey(), elementData);
             if (elementData.isGroupContainer() || elementData.isInheritContainer()) {
-                // this is a group-container 
+                // this is a group-container
                 CmsResource elementRes = cms.readResource(element.getId());
                 List<CmsContainerElementBean> subElements = elementData.isGroupContainer()
                 ? getGroupContainerElements(elementRes)
@@ -1794,7 +1811,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Returns the available element views.<p>
-     * 
+     *
      * @return the element views
      */
     private Map<CmsUUID, CmsElementViewInfo> getElementViews() {
@@ -1821,11 +1838,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Helper method for converting a CmsGroupContainer to a CmsGroupContainerBean when saving a group container.<p>
-     * 
+     *
      * @param groupContainer the group-container data
      * @param containerPage the container page
-     * @param locale the locale to use 
-     * 
+     * @param locale the locale to use
+     *
      * @return the group-container bean
      */
     private CmsGroupContainerBean getGroupContainerBean(
@@ -1849,7 +1866,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     elementData.getClientId(),
                     containerPage.getRootPath());
 
-                // make sure resource is readable, 
+                // make sure resource is readable,
                 if (cms.existsResource(element.getId(), CmsResourceFilter.IGNORE_EXPIRATION)) {
                     elements.add(element);
                 }
@@ -1867,11 +1884,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Returns the sub-elements of this group container resource.<p>
-     * 
+     *
      * @param resource the group container resource
-     * 
+     *
      * @return the sub-elements
-     * 
+     *
      * @throws CmsException if something goes wrong reading the resource
      */
     private List<CmsContainerElementBean> getGroupContainerElements(CmsResource resource) throws CmsException {
@@ -1886,11 +1903,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Gets the structure ids of group container elements from an unmarshalled group container for a single locale.<p>
-     * 
-     * @param groupContainer the group container 
-     * @param locale the locale for which we want the element ids 
-     * 
-     * @return the group container's element ids for the given locale 
+     *
+     * @param groupContainer the group container
+     * @param locale the locale for which we want the element ids
+     *
+     * @return the group container's element ids for the given locale
      */
     private Set<CmsUUID> getGroupElementIds(CmsXmlGroupContainer groupContainer, Locale locale) {
 
@@ -1907,13 +1924,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Returns the sub-elements of this inherit container resource.<p>
-     * 
+     *
      * @param resource the inherit container resource
      * @param locale the requested locale
      * @param uriParam the current URI
-     * 
+     *
      * @return the sub-elements
-     * 
+     *
      * @throws CmsException if something goes wrong reading the resource
      */
     private List<CmsContainerElementBean> getInheritedElements(CmsResource resource, Locale locale, String uriParam)
@@ -1936,16 +1953,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Returns the data of the given elements.<p>
-     * 
+     *
      * @param listElements the list of element beans to retrieve the data for
      * @param containerpageUri the current URI
      * @param detailContentId the detail content structure id
-     * @param containers the containers which exist on the container page  
+     * @param containers the containers which exist on the container page
      * @param allowNested if nested containers are allowed
-     * @param locale the locale to use 
-     * 
+     * @param locale the locale to use
+     *
      * @return the elements data
-     * 
+     *
      * @throws CmsException if something really bad happens
      */
     private List<CmsContainerElementData> getListElementsData(
@@ -1984,11 +2001,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Returns the lock information to the given resource.<p>
-     * 
+     *
      * @param resource the resource
-     * 
+     *
      * @return lock information, if the page is locked by another user
-     * 
+     *
      * @throws CmsException if something goes wrong reading the lock owner user
      */
     private String getLockInfo(CmsResource resource) throws CmsException {
@@ -2013,16 +2030,16 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Returns the element data for a new element not existing in the VFS yet.<p>
-     * 
+     *
      * @param resourceTypeName the resource type name
      * @param uriParam the request parameters
      * @param detailContentId the detail content structure id
      * @param containers the containers of the template
      * @param allowNested if nested containers are allowed
      * @param locale the current locale
-     * 
+     *
      * @return the element data
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private CmsContainerElementData getNewElement(
@@ -2034,9 +2051,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Locale locale) throws CmsException {
 
         CmsObject cms = getCmsObject();
-        CmsElementUtil elemUtil = new CmsElementUtil(cms, uriParam, generateContainerPageForContainers(
-            containers,
-            cms.getRequestContext().addSiteRoot(uriParam)), detailContentId, getRequest(), getResponse(), locale);
+        CmsElementUtil elemUtil = new CmsElementUtil(
+            cms,
+            uriParam,
+            generateContainerPageForContainers(containers, cms.getRequestContext().addSiteRoot(uriParam)),
+            detailContentId,
+            getRequest(),
+            getResponse(),
+            locale);
         CmsContainerElementBean elementBean = getSessionCache().getCacheContainerElement(resourceTypeName);
         if (elementBean == null) {
             CmsADEConfigData configData = getConfigData(cms.getRequestContext().addSiteRoot(uriParam));
@@ -2055,23 +2077,23 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Returns the no-edit reason for the given resource.<p>
-     * 
+     *
      * @param cms the current cms object
      * @param containerPage the resource
-     * 
+     *
      * @return the no-edit reason, empty if editing is allowed
-     * 
+     *
      * @throws CmsException is something goes wrong
      */
     private String getNoEditReason(CmsObject cms, CmsResource containerPage) throws CmsException {
 
-        return new CmsResourceUtil(cms, containerPage).getNoEditReason(OpenCms.getWorkplaceManager().getWorkplaceLocale(
-            cms));
+        return new CmsResourceUtil(cms, containerPage).getNoEditReason(
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
     }
 
     /**
      * Returns the session cache.<p>
-     * 
+     *
      * @return the session cache
      */
     private CmsADESessionCache getSessionCache() {
@@ -2084,7 +2106,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Returns the workplace settings of the current user.<p>
-     * 
+     *
      * @return the workplace settings
      */
     private CmsWorkplaceSettings getWorkplaceSettings() {
@@ -2097,27 +2119,29 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Initializes request attributes using data from the RPC context.<p>
-     * 
-     * @param context the RPC context 
+     *
+     * @param context the RPC context
      */
     private void initRequestFromRpcContext(CmsContainerPageRpcContext context) {
 
         if (context.getTemplateContext() != null) {
-            getRequest().setAttribute(CmsTemplateContextManager.ATTR_RPC_CONTEXT_OVERRIDE, context.getTemplateContext());
+            getRequest().setAttribute(
+                CmsTemplateContextManager.ATTR_RPC_CONTEXT_OVERRIDE,
+                context.getTemplateContext());
         }
     }
 
     /**
      * Internal method for saving a group container.<p>
-     * 
-     * @param cms the cms context 
-     * @param pageStructureId the container page structure id 
-     * @param groupContainer the group container to save 
-     * 
+     *
+     * @param cms the cms context
+     * @param pageStructureId the container page structure id
+     * @param groupContainer the group container to save
+     *
      * @return the container element representing the group container
-     *  
-     * @throws CmsException if something goes wrong 
-     * @throws CmsXmlException if the XML processing goes wrong 
+     *
+     * @throws CmsException if something goes wrong
+     * @throws CmsXmlException if the XML processing goes wrong
      */
     private CmsPair<CmsContainerElement, List<CmsRemovedElementStatus>> internalSaveGroupContainer(
         CmsObject cms,
@@ -2129,7 +2153,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsResource groupContainerResource = null;
         if (groupContainer.isNew()) {
             CmsADEConfigData config = getConfigData(pageResource.getRootPath());
-            CmsResourceTypeConfig typeConfig = config.getResourceType(CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
+            CmsResourceTypeConfig typeConfig = config.getResourceType(
+                CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME);
             groupContainerResource = typeConfig.createNewElement(getCmsObject(), pageResource.getRootPath());
             String resourceName = cms.getSitePath(groupContainerResource);
             groupContainer.setSitePath(resourceName);
@@ -2168,12 +2193,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         return CmsPair.create(element, deletionCandidateStatuses);
     }
 
-    /** 
+    /**
      * Checks if small elements in a container page should be initially editable.<p>
-     * 
-     * @param request the current request 
-     * @param cms the current CMS context 
-     * @return true if small elements should be initially editable 
+     *
+     * @param request the current request
+     * @param cms the current CMS context
+     * @return true if small elements should be initially editable
      */
     private boolean isEditSmallElements(HttpServletRequest request, CmsObject cms) {
 
@@ -2188,11 +2213,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Checks if a page is a model page.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param containerPage the page to check 
-     * 
-     * @return true if the resource is a model page 
+     *
+     * @param cms the CMS context to use
+     * @param containerPage the page to check
+     *
+     * @return true if the resource is a model page
      */
     private boolean isModelPage(CmsObject cms, CmsResource containerPage) {
 
@@ -2207,12 +2232,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Saves the given containers to the container page resource.<p>
-     * 
+     *
      * @param cms the cms context
      * @param containerpage the container page resource
      * @param containerpageUri the container page site path
      * @param containers the container to save
-     * 
+     *
      * @throws CmsException if something goes wrong writing the file
      */
     private void saveContainers(
@@ -2239,10 +2264,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Saves the inheritance group.<p>
-     * 
+     *
      * @param resource the inheritance group resource
      * @param inheritanceContainer the inherited group container data
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private void saveInheritanceGroup(CmsResource resource, CmsInheritanceContainer inheritanceContainer)
@@ -2267,13 +2292,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /**
      * Update favorite or recent list with the given element.<p>
-     * 
+     *
      * @param containerPage the edited container page
      * @param clientId the elements client id
      * @param list the list to update
-     * 
+     *
      * @return the updated list
-     * 
+     *
      * @throws CmsException in case reading the element resource fails
      */
     private List<CmsContainerElementBean> updateFavoriteRecentList(

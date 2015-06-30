@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import com.google.common.collect.Lists;
 
 /**
  * A query fragment which aggregates the results from a list of other query fragments.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsCompositeQueryFragment implements I_CmsQueryFragment {
@@ -53,8 +53,8 @@ public class CmsCompositeQueryFragment implements I_CmsQueryFragment {
 
     /**
      * Adds a new query fragment.<p>
-     * 
-     * @param node the query fragment 
+     *
+     * @param node the query fragment
      */
     public void add(I_CmsQueryFragment node) {
 
@@ -63,8 +63,8 @@ public class CmsCompositeQueryFragment implements I_CmsQueryFragment {
 
     /**
      * Returns the wrapped query fragments.<p>
-     * 
-     * @return a list of query fragments 
+     *
+     * @return a list of query fragments
      */
     public List<I_CmsQueryFragment> getNodes() {
 
@@ -73,8 +73,8 @@ public class CmsCompositeQueryFragment implements I_CmsQueryFragment {
 
     /**
      * Sets the prefix string (will be inserted before the other fragments).<p>
-     * 
-     * @param prefix the prefix string 
+     *
+     * @param prefix the prefix string
      */
     public void setPrefix(String prefix) {
 
@@ -83,8 +83,8 @@ public class CmsCompositeQueryFragment implements I_CmsQueryFragment {
 
     /**
      * Sets the separator which should be inserted between the constituent query fragments.<p>
-     * 
-     * @param separator the separator string  
+     *
+     * @param separator the separator string
      */
     public void setSeparator(String separator) {
 
@@ -93,8 +93,8 @@ public class CmsCompositeQueryFragment implements I_CmsQueryFragment {
 
     /**
      * Sets the suffix string (will be inserted after the other fragments).<p>
-     * 
-     * @param suffix the suffix string 
+     *
+     * @param suffix the suffix string
      */
     public void setSuffix(String suffix) {
 

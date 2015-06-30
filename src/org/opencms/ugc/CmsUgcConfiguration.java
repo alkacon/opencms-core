@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -91,21 +91,21 @@ public class CmsUgcConfiguration {
 
     /**
      * Creates a new form configuration.<p>
-     * 
+     *
      * @param id the id for the form configuration
      * @param userForGuests the user to use for VFS operations caused by guests who submit the XML content form
-     * @param projectGroup the group to be used as the manager group for projects based on this configuration    
+     * @param projectGroup the group to be used as the manager group for projects based on this configuration
      * @param resourceType the resource type for new XML contents
-     * @param contentParentFolder the parent folder for XML contents 
-     * @param namePattern the name pattern for XML contents 
-     * @param locale the locale to use 
-     * @param uploadParent the parent folder for uploads 
-     * @param maxUploadSize the maximum upload file size 
-     * @param maxContents the maximum number of XML contents 
-     * @param queueTimeout the wait time for the queue 
-     * @param maxQueueLength the maximum queue length 
-     * @param autoPublish enables/disables automatic publishing 
-     * @param validExtensions the list of valid extensions 
+     * @param contentParentFolder the parent folder for XML contents
+     * @param namePattern the name pattern for XML contents
+     * @param locale the locale to use
+     * @param uploadParent the parent folder for uploads
+     * @param maxUploadSize the maximum upload file size
+     * @param maxContents the maximum number of XML contents
+     * @param queueTimeout the wait time for the queue
+     * @param maxQueueLength the maximum queue length
+     * @param autoPublish enables/disables automatic publishing
+     * @param validExtensions the list of valid extensions
      */
     public CmsUgcConfiguration(
         CmsUUID id,
@@ -143,7 +143,7 @@ public class CmsUgcConfiguration {
     /**
      * Returns the folder for XML contents.<p>
      *
-     * @return the folder for XML contents 
+     * @return the folder for XML contents
      */
     public CmsResource getContentParentFolder() {
 
@@ -152,10 +152,10 @@ public class CmsUgcConfiguration {
 
     /**
      * Gets the id.<p>
-     * 
+     *
      * The id is a UUID that should uniquely identify this configuration.<p>
-     * 
-     * @return the id for this configuration 
+     *
+     * @return the id for this configuration
      */
     public CmsUUID getId() {
 
@@ -205,16 +205,16 @@ public class CmsUgcConfiguration {
     /**
      * Returns the name pattern for XML contents.<p>
      *
-     * @return the name pattern for XML contents 
+     * @return the name pattern for XML contents
      */
     public String getNamePattern() {
 
         return m_namePattern;
     }
 
-    /** 
+    /**
      * Gets the path of the configuration.<p>
-     * 
+     *
      * @return the path of the configuration
      */
     public String getPath() {
@@ -224,8 +224,8 @@ public class CmsUgcConfiguration {
 
     /**
      * Returns the group which should be used as the manager groups for projects based on this configuration.<p>
-     * 
-     * @return the project manager group for this configuration 
+     *
+     * @return the project manager group for this configuration
      */
     public CmsGroup getProjectGroup() {
 
@@ -235,7 +235,7 @@ public class CmsUgcConfiguration {
     /**
      * Returns the wait time for acquiring sessions for the same configuration.<p>
      *
-     * @return the wait time 
+     * @return the wait time
      */
     public Optional<Long> getQueueInterval() {
 
@@ -245,7 +245,7 @@ public class CmsUgcConfiguration {
     /**
      * Returns the resource type for XML contents.<p>
      *
-     * @return the resource type for XML contents 
+     * @return the resource type for XML contents
      */
     public String getResourceType() {
 
@@ -255,7 +255,7 @@ public class CmsUgcConfiguration {
     /**
      * Returns the folder for uploads.<p>
      *
-     * @return the folder for uploads 
+     * @return the folder for uploads
      */
     public Optional<CmsResource> getUploadParentFolder() {
 
@@ -264,8 +264,8 @@ public class CmsUgcConfiguration {
 
     /**
      * Returns the user which should be used for VFS operations when guests submit the XML content form.<p>
-     * 
-     * @return the  user to use for VFS operations instead of the guest user 
+     *
+     * @return the  user to use for VFS operations instead of the guest user
      */
     public Optional<CmsUser> getUserForGuests() {
 
@@ -275,7 +275,7 @@ public class CmsUgcConfiguration {
     /**
      * Returns the list of valid extensions for uploads.<p>
      *
-     * @return the list of valid extensions for uploads 
+     * @return the list of valid extensions for uploads
      */
     public Optional<List<String>> getValidExtensions() {
 
@@ -285,7 +285,7 @@ public class CmsUgcConfiguration {
     /**
      * Returns true if XML contents should automatically be published.<p>
      *
-     * @return true if XML contents should automatically be published 
+     * @return true if XML contents should automatically be published
      */
     public boolean isAutoPublish() {
 
@@ -294,8 +294,8 @@ public class CmsUgcConfiguration {
 
     /**
      * Checks if a queue is needed for creating sessions for this configuration.<p>
-     * 
-     * @return true if a queue is needed for this configuration 
+     *
+     * @return true if a queue is needed for this configuration
      */
     public boolean needsQueue() {
 
@@ -304,7 +304,7 @@ public class CmsUgcConfiguration {
 
     /**
      * Sets the path.<p>
-     * 
+     *
      * @param path the path of the configuration.<p>
      */
     public void setPath(String path) {

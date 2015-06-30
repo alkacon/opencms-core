@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,17 +30,17 @@ package org.opencms.util;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsTestCase;
 
-/** 
+/**
  * Test case for <code>{@link org.opencms.util.CmsHtmlStripper}</code>.<p>
- * 
+ *
  * @since 6.9.2
  */
 public class TestCmsHtmlStripper extends OpenCmsTestCase {
 
     /**
-     * Tests <code>{@link CmsHtmlStripper#stripHtml(String)}</code> 
+     * Tests <code>{@link CmsHtmlStripper#stripHtml(String)}</code>
      * with a configuration that only keeps: "b,p,strong,i". <p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testStripHtml() throws Exception {
@@ -77,9 +77,9 @@ public class TestCmsHtmlStripper extends OpenCmsTestCase {
     }
 
     /**
-     * Tests <code>{@link CmsHtmlStripper#stripHtml(String)}</code> 
+     * Tests <code>{@link CmsHtmlStripper#stripHtml(String)}</code>
      * with all HTML tags of test files as preserve tags (manual bypass-mode).<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testStripHtmlBypass() throws Exception {
@@ -125,9 +125,9 @@ public class TestCmsHtmlStripper extends OpenCmsTestCase {
     }
 
     /**
-     * Tests <code>{@link CmsHtmlStripper#stripHtml(String)}</code> 
+     * Tests <code>{@link CmsHtmlStripper#stripHtml(String)}</code>
      * if it strips newline separators. <p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testStripHtmlNewline() throws Exception {

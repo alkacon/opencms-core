@@ -366,10 +366,11 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                         m_index.getName()),
                     e);
             }
-            throw new CmsIndexException(Messages.get().container(
-                Messages.ERR_INDEX_RESOURCE_FAILED_2,
-                resource.getRootPath(),
-                m_index.getName()));
+            throw new CmsIndexException(
+                Messages.get().container(
+                    Messages.ERR_INDEX_RESOURCE_FAILED_2,
+                    resource.getRootPath(),
+                    m_index.getName()));
         }
     }
 
@@ -387,7 +388,10 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         } catch (Exception e) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(
-                    Messages.get().getBundle().key(Messages.LOG_IO_INDEX_DOCUMENT_UPDATE_2, rootPath, m_index.getName()),
+                    Messages.get().getBundle().key(
+                        Messages.LOG_IO_INDEX_DOCUMENT_UPDATE_2,
+                        rootPath,
+                        m_index.getName()),
                     e);
             }
         }

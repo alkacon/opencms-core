@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,9 +61,9 @@ import org.apache.log4j.Priority;
 
 /**
  * Main logging management list view.<p>
- * 
+ *
  * Defines the list columns and possible actions for logging.<p>
- * 
+ *
  */
 public class CmsLog4JAdminDialog extends A_CmsListDialog {
 
@@ -195,7 +195,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp the JSP action element
      */
     public CmsLog4JAdminDialog(CmsJspActionElement jsp) {
@@ -290,9 +290,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             String filepath = "";
             Layout layout = null;
             // if the button is activated check the value of the button
-            // the button was active 
+            // the button was active
             if (isloggingactivated(logchannel)) {
-                // remove the private Appender from logger 
+                // remove the private Appender from logger
                 logchannel.removeAllAppenders();
                 // activate the heredity so the logger get the appender from parent logger
                 logchannel.setAdditivity(true);
@@ -326,9 +326,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                 String temp = logchannel.getName();
                 // check if the logger name begins with "org.opencms"
                 if (logchannel.getName().contains(OPENCMS_CLASS_PREFIX)) {
-                    // remove the prefix "org.opencms" from logger name to generate the file name   
+                    // remove the prefix "org.opencms" from logger name to generate the file name
                     temp = temp.replace(OPENCMS_CLASS_PREFIX, "");
-                    // if the name has suffix 
+                    // if the name has suffix
                     if (temp.length() >= 1) {
                         logfilename = filepath
                             + File.separator
@@ -381,7 +381,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
     @Override
     protected List<CmsListItem> getListItems() {
 
-        // collect all the values for "Log-channels", "Log-channels-parents" and "Log-channels-level" 
+        // collect all the values for "Log-channels", "Log-channels-parents" and "Log-channels-level"
         List<CmsListItem> items = new LinkedList<CmsListItem>();
         List<Logger> loggers = getLoggers();
         Iterator<Logger> iterator = loggers.iterator();
@@ -402,7 +402,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             List<Appender> appenders = Collections.list(logger.getAllAppenders());
             Iterator<Appender> appendersIt = appenders.iterator();
             int count = 0;
-            // select the Appender from logger 
+            // select the Appender from logger
             while (appendersIt.hasNext()) {
                 Appender appender = appendersIt.next();
                 // only use file appenders
@@ -460,7 +460,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
 
     /**
      * Simple check if the logger has the global log file <p> or a single one.
-     * 
+     *
      * @param logchannel the channel that has do be checked
      * @return true if the the log channel has a single log file
      * */
@@ -865,9 +865,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
 
     /**
      * Simple function to get the prefix of an logchannel name.<p>
-     * 
+     *
      * @param logname the full name of the logging channel
-     * 
+     *
      * @return a string array with different package prefixes
      */
     private String[] buildsufix(String logname) {
@@ -881,7 +881,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             logname = logname.replace(subprefix, "");
             if (logname.indexOf(".") > 1) {
                 if (count > 0) {
-                    // build different suffixes based on the pieces separated above  
+                    // build different suffixes based on the pieces separated above
                     prefix_temp[count] = prefix_temp[count - 1] + subprefix;
                 } else {
                     // if it's the first piece of the name only it will be set
@@ -913,7 +913,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
 
     /**
      * Help function to get all loggers from LogManager.<p>
-     * 
+     *
      * @return List of Logger
      */
     private List<Logger> getLoggers() {
@@ -931,7 +931,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             Logger log = it_curentlogger.next();
             String logname = log.getName();
             String[] prefix = buildsufix(logname);
-            // create all possible package logger from given logger name            
+            // create all possible package logger from given logger name
             for (int i = 0; i < prefix.length; i++) {
                 // get the name of the logger without the prefix
                 String temp = log.getName().replace(prefix[i], "");
@@ -956,7 +956,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         }
 
         Iterator<Logger> it_logger = packageLoggers.iterator();
-        // iterate about all packageLoggers 
+        // iterate about all packageLoggers
         while (it_logger.hasNext()) {
             Logger temp = it_logger.next();
             // check if the logger is part of the logger list
@@ -987,7 +987,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
     /**
      * Simple function to set all child loggers to the same value of parent
      * logger if the parent logger leves is changed.<p>
-     * 
+     *
      * @param logchannel the channel that might be the parent logger
      */
     private void isparentlogger(Logger logchannel) {

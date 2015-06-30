@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * This editor handler class returns the editor URI depending on various factors.<p>
- * 
+ *
  * Editor selection criteria:
  * <ul>
  * <li>the user preferences</li>
@@ -50,9 +50,9 @@ import org.apache.commons.logging.Log;
  * <li>the resource type</li>
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.workplace.editors.I_CmsEditorHandler
  * @see org.opencms.workplace.editors.CmsWorkplaceEditorManager
  */
@@ -124,13 +124,15 @@ public class CmsEditorHandler implements I_CmsEditorHandler {
 
         // first try to get the "edit as text" and "load default" parameters from the request
         boolean editAsText = Boolean.valueOf(jsp.getRequest().getParameter(CmsEditor.PARAM_EDITASTEXT)).booleanValue();
-        boolean loadDefault = Boolean.valueOf(jsp.getRequest().getParameter(CmsEditor.PARAM_LOADDEFAULT)).booleanValue();
+        boolean loadDefault = Boolean.valueOf(
+            jsp.getRequest().getParameter(CmsEditor.PARAM_LOADDEFAULT)).booleanValue();
         // initialize resource type with -1 (unknown resource type)
         int resTypeId = -1;
         String resourceType = "";
         if (editAsText) {
             // the resource should be treated as text, set the plain resource id
-            resTypeId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+            resTypeId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypePlain.getStaticTypeName()).getTypeId();
         } else {
             // get the resource type id of the edited resource
             CmsResource res = jsp.getCmsObject().readResource(resource, CmsResourceFilter.ALL);

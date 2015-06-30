@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,8 +54,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Class to upload a zip file containing VFS resources from the server.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
 
@@ -88,7 +88,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDatabaseImportFromServer(CmsJspActionElement jsp) {
@@ -98,7 +98,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -110,7 +110,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
 
     /**
      * Returns the list of all uploadable zip files and uploadable folders available on the server.<p>
-     * 
+     *
      * @param includeFolders if true, the uploadable folders are included in the list
      * @return the list of all uploadable zip files and uploadable folders available on the server
      */
@@ -144,6 +144,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() throws IOException, ServletException {
 
         List errors = new ArrayList();
@@ -202,11 +203,12 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     }
 
     /**
-     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
-     * 
+     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -234,6 +236,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // get available files from server
@@ -241,8 +244,12 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
 
         if (files.isEmpty()) {
             // no import files available, display message
-            addWidget(new CmsWidgetDialogParameter(this, PARAM_IMPORTFILE, PAGES[0], new CmsDisplayWidget(
-                key(Messages.GUI_IMPORTSERVER_NO_DB_EXPORTS_0))));
+            addWidget(
+                new CmsWidgetDialogParameter(
+                    this,
+                    PARAM_IMPORTFILE,
+                    PAGES[0],
+                    new CmsDisplayWidget(key(Messages.GUI_IMPORTSERVER_NO_DB_EXPORTS_0))));
         } else {
             // add the file select box widget
             addWidget(new CmsWidgetDialogParameter(this, PARAM_IMPORTFILE, PAGES[0], new CmsSelectWidget(files)));
@@ -252,9 +259,9 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
 
     /**
      * Returns the list of all uploadable zip files and uploadable folders available on the server.<p>
-     * 
+     *
      * The list is returned as a String separated by "|" to use as configuration parameter for selectbox widgets.<p>
-     * 
+     *
      * @return pipe separated list of file names
      */
     protected List getFilesFromServer() {
@@ -271,6 +278,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -279,6 +287,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -290,6 +299,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type

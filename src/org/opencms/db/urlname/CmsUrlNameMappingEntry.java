@@ -16,10 +16,10 @@
  *
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
- * 
+ *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,13 +33,13 @@ import java.util.Comparator;
 
 /**
  * An URL name mapping entry.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsUrlNameMappingEntry {
 
-    /** 
-     * Class for comparing URL name mapping entries by date.<p> 
+    /**
+     * Class for comparing URL name mapping entries by date.<p>
      **/
     public static class DateComparator implements Comparator<CmsUrlNameMappingEntry> {
 
@@ -90,12 +90,12 @@ public class CmsUrlNameMappingEntry {
 
     /**
      * Creates a new URL name mapping entry.<p>
-     * 
-     * @param name the URL name 
-     * @param structureId the id to which the name is mapped 
-     * @param state the state of the entry 
+     *
+     * @param name the URL name
+     * @param structureId the id to which the name is mapped
+     * @param state the state of the entry
      * @param dateChanged the date of the entry's last change
-     * @param locale the locale of the mapping  
+     * @param locale the locale of the mapping
      */
     public CmsUrlNameMappingEntry(String name, CmsUUID structureId, int state, long dateChanged, String locale) {
 
@@ -109,9 +109,9 @@ public class CmsUrlNameMappingEntry {
 
     /**
      * Returns the date at which the mapping was last changed as a long.<p>
-     * 
-     * @return the date at which the mapping was last changed 
-     * 
+     *
+     * @return the date at which the mapping was last changed
+     *
      */
     public long getDateChanged() {
 
@@ -120,8 +120,8 @@ public class CmsUrlNameMappingEntry {
 
     /**
      * Returns the locale of the mapping entry.<p>
-     * 
-     * @return the locale of the mapping entry 
+     *
+     * @return the locale of the mapping entry
      */
     public String getLocale() {
 
@@ -130,8 +130,8 @@ public class CmsUrlNameMappingEntry {
 
     /**
      * Returns the name to which the mapping belongs.<p>
-     * 
-     * @return the name to which the mapping belongs 
+     *
+     * @return the name to which the mapping belongs
      */
     public String getName() {
 
@@ -140,8 +140,8 @@ public class CmsUrlNameMappingEntry {
 
     /**
      * Returns the state of the mapping entry.<p>
-     * 
-     * @return the state of the mapping entry 
+     *
+     * @return the state of the mapping entry
      */
     public int getState() {
 
@@ -150,8 +150,8 @@ public class CmsUrlNameMappingEntry {
 
     /**
      * Returns the structure id which is mapped to the name.<p>
-     * 
-     * @return the structure id which is mapped to the name 
+     *
+     * @return the structure id which is mapped to the name
      */
     public CmsUUID getStructureId() {
 

@@ -179,7 +179,9 @@ public class CmsContainerElementBean implements Cloneable {
      *
      * @return the element bean
      */
-    public static CmsContainerElementBean cloneWithSettings(CmsContainerElementBean source, Map<String, String> settings) {
+    public static CmsContainerElementBean cloneWithSettings(
+        CmsContainerElementBean source,
+        Map<String, String> settings) {
 
         boolean createNew = source.m_createNew;
         if (settings.containsKey(CmsContainerElement.CREATE_AS_NEW)) {
@@ -369,7 +371,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns the element instance id.<p>
-     * 
+     *
      * @return the element instance id
      */
     public String getInstanceId() {
@@ -418,7 +420,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns the resource type name.<p>
-     * 
+     *
      * @return the type name
      */
     public String getTypeName() {
@@ -476,7 +478,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Initializes the element settings.<p>
-     * 
+     *
      * @param cms the CMS context
      * @param formatterBean the formatter configuration bean
      */
@@ -500,7 +502,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns if the given element should be used as a copy model.<p>
-     * 
+     *
      * @return <code>true</code> if the given element should be used as a copy model
      */
     public boolean isCopyModel() {
@@ -532,8 +534,8 @@ public class CmsContainerElementBean implements Cloneable {
         if (m_resource == null) {
             initResource(cms);
         }
-        return CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(OpenCms.getResourceManager().getResourceType(
-            m_resource).getTypeName());
+        return CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(
+            OpenCms.getResourceManager().getResourceType(m_resource).getTypeName());
     }
 
     /**
@@ -550,7 +552,8 @@ public class CmsContainerElementBean implements Cloneable {
         if (m_resource == null) {
             initResource(cms);
         }
-        return OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME).getTypeId() == m_resource.getTypeId();
+        return OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME).getTypeId() == m_resource.getTypeId();
     }
 
     /**
@@ -565,19 +568,19 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns if the given element is a model group.<p>
-     * 
+     *
      * @return <code>true</code> if the given element is a model group
      */
     public boolean isModelGroup() {
 
-        ModelGroupState state = ModelGroupState.evaluate(getIndividualSettings().get(
-            CmsContainerElement.MODEL_GROUP_STATE));
+        ModelGroupState state = ModelGroupState.evaluate(
+            getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_STATE));
         return state == ModelGroupState.isModelGroup;
     }
 
     /**
      * Returns if all instances of this element should be replaced within a copy model.<p>
-     * 
+     *
      * @return <code>true</code> if all instances of this element should be replaced within a copy model
      */
     public boolean isModelGroupAlwaysReplace() {
@@ -628,8 +631,8 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Sets a historical file.<p>
-     * 
-     * @param file the historical file 
+     *
+     * @param file the historical file
      */
     public void setHistoryFile(CmsFile file) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,14 +57,14 @@ public class CmsSetupDBWrapper {
 
     /**
      * Constructor, creates a new CmsSetupDBWrapper.<p>
-     * @param con the connection to use in this db wrapper. 
+     * @param con the connection to use in this db wrapper.
      */
     public CmsSetupDBWrapper(Connection con) {
 
         m_connection = con;
     }
 
-    /** 
+    /**
      * Closes result set, and statement. <p>
      */
     public void close() {
@@ -99,7 +99,7 @@ public class CmsSetupDBWrapper {
 
     }
 
-    /** 
+    /**
      * Creates a new SQL Statement on the connection of this DB wrapper.<p>
      * @throws SQLException if statement cannot be created
      */
@@ -108,12 +108,12 @@ public class CmsSetupDBWrapper {
         m_statement = m_connection.createStatement();
     }
 
-    /** 
+    /**
      * Creates a new SQL Statement on the connection of this DB wrapper.<p>
-     * 
+     *
      * @param query the DB query to use
      * @param params List of additional parameters
-     * 
+     *
      * @throws SQLException if statement cannot be created
      */
     public void createPreparedStatement(String query, List<Object> params) throws SQLException {
@@ -151,11 +151,11 @@ public class CmsSetupDBWrapper {
 
     }
 
-    /** 
+    /**
      * Executes a query on the connection and statement of this db wrapper.<p>
-     * 
+     *
      * @param query the query to execute
-     * 
+     *
      * @throws SQLException if statement cannot be created
      */
     public void excecuteQuery(String query) throws SQLException {
@@ -163,7 +163,7 @@ public class CmsSetupDBWrapper {
         m_resultset = m_statement.executeQuery(query);
     }
 
-    /** 
+    /**
      * Executes a query on the connection and prepared statement of this db wrapper.<p>
      * @throws SQLException if statement cannot be created
      */

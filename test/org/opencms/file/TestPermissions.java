@@ -150,7 +150,9 @@ public class TestPermissions extends OpenCmsTestCase {
             fail("There is only 1 image resource in the folder, not " + resultList.size());
         }
         // files in folder only method
-        resultList = cms.getFilesInFolder(folder, CmsResourceFilter.requireType(CmsResourceTypeImage.getStaticTypeId()));
+        resultList = cms.getFilesInFolder(
+            folder,
+            CmsResourceFilter.requireType(CmsResourceTypeImage.getStaticTypeId()));
         if (resultList.size() != 1) {
             fail("There is only 1 image resource in the folder, not " + resultList.size());
         }
@@ -349,12 +351,23 @@ public class TestPermissions extends OpenCmsTestCase {
             CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
 
         // allow read and write for user "test1"
-        cms.chacc(resource, I_CmsPrincipal.PRINCIPAL_USER, "test1", CmsPermissionSet.PERMISSION_READ
-            + CmsPermissionSet.PERMISSION_WRITE, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
+        cms.chacc(
+            resource,
+            I_CmsPrincipal.PRINCIPAL_USER,
+            "test1",
+            CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE,
+            0,
+            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
         // allow read and write and direct publish for user "test2"
-        cms.chacc(resource, I_CmsPrincipal.PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ
-            + CmsPermissionSet.PERMISSION_WRITE
-            + CmsPermissionSet.PERMISSION_DIRECT_PUBLISH, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
+        cms.chacc(
+            resource,
+            I_CmsPrincipal.PRINCIPAL_USER,
+            "test2",
+            CmsPermissionSet.PERMISSION_READ
+                + CmsPermissionSet.PERMISSION_WRITE
+                + CmsPermissionSet.PERMISSION_DIRECT_PUBLISH,
+            0,
+            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
         cms.unlockResource(resource);
 
         cms.loginUser("test1", "test1");
@@ -402,14 +415,23 @@ public class TestPermissions extends OpenCmsTestCase {
             0,
             CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
         // allow only read and write for user "test1"
-        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_USER, "test1", CmsPermissionSet.PERMISSION_READ
-            + CmsPermissionSet.PERMISSION_WRITE, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE
-            + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
+        cms.chacc(
+            folder,
+            I_CmsPrincipal.PRINCIPAL_USER,
+            "test1",
+            CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE,
+            0,
+            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
         // allow read, write and and direct publish for user "test2"
-        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ
-            + CmsPermissionSet.PERMISSION_WRITE
-            + CmsPermissionSet.PERMISSION_DIRECT_PUBLISH, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE
-            + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
+        cms.chacc(
+            folder,
+            I_CmsPrincipal.PRINCIPAL_USER,
+            "test2",
+            CmsPermissionSet.PERMISSION_READ
+                + CmsPermissionSet.PERMISSION_WRITE
+                + CmsPermissionSet.PERMISSION_DIRECT_PUBLISH,
+            0,
+            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
         cms.unlockResource(folder);
 
         resource = "/newfolder/newpage.html";
@@ -433,7 +455,8 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         try {
             OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resource), false);
-            fail("Publish permissions available but should be unavailable for user test2 because the parent folder is new");
+            fail(
+                "Publish permissions available but should be unavailable for user test2 because the parent folder is new");
         } catch (Exception e) {
             // ok, ignore
         }
@@ -447,7 +470,8 @@ public class TestPermissions extends OpenCmsTestCase {
         try {
             OpenCms.getPublishManager().getPublishList(cms, cms.readResource(resource), false);
         } catch (Exception e) {
-            fail("Publish permissions unavailable but should be available for user test2 because the parent folder is now published");
+            fail(
+                "Publish permissions unavailable but should be available for user test2 because the parent folder is now published");
         }
     }
 
@@ -586,8 +610,13 @@ public class TestPermissions extends OpenCmsTestCase {
             0,
             CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
         // allow read and visible for user "test2"
-        cms.chacc(resource, I_CmsPrincipal.PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ
-            + CmsPermissionSet.PERMISSION_VIEW, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
+        cms.chacc(
+            resource,
+            I_CmsPrincipal.PRINCIPAL_USER,
+            "test2",
+            CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_VIEW,
+            0,
+            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
         cms.unlockResource(resource);
 
         cms.loginUser("test1", "test1");
@@ -657,9 +686,13 @@ public class TestPermissions extends OpenCmsTestCase {
             0,
             CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
         // allow read and visible for user "test2"
-        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ
-            + CmsPermissionSet.PERMISSION_VIEW, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE
-            + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
+        cms.chacc(
+            folder,
+            I_CmsPrincipal.PRINCIPAL_USER,
+            "test2",
+            CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_VIEW,
+            0,
+            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
         cms.unlockResource(folder);
 
         List resultList;
@@ -669,9 +702,10 @@ public class TestPermissions extends OpenCmsTestCase {
         // read excluding invisible resources
         resultList = cms.readResources(folder, CmsResourceFilter.ONLY_VISIBLE);
         if (resultList.size() > 0) {
-            fail("Was able to read "
-                + resultList.size()
-                + " invisible resources in a folder with filter excluding invisible resources");
+            fail(
+                "Was able to read "
+                    + resultList.size()
+                    + " invisible resources in a folder with filter excluding invisible resources");
         }
         boolean hasViewAccess = cms.hasPermissions(
             cms.readResource(folder, CmsResourceFilter.ALL),

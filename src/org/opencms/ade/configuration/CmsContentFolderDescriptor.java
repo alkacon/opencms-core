@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,8 +61,8 @@ public class CmsContentFolderDescriptor {
 
     /**
      * Creates an instance based on an existing folder.<p>
-     * 
-     * @param folder the folder 
+     *
+     * @param folder the folder
      */
     public CmsContentFolderDescriptor(CmsResource folder) {
 
@@ -71,9 +71,9 @@ public class CmsContentFolderDescriptor {
 
     /**
      * Creates an instance based on a relative folder name.<p>
-     * 
-     * @param basePath the base path which the folder name is relative to 
-     * @param name the relative folder name 
+     *
+     * @param basePath the base path which the folder name is relative to
+     * @param name the relative folder name
      */
     public CmsContentFolderDescriptor(String basePath, String name) {
 
@@ -89,10 +89,10 @@ public class CmsContentFolderDescriptor {
 
     }
 
-    /** 
+    /**
      * Creates folder descriptor which represents the 'page relative' setting.<p>
-     * 
-     * @return the folder descriptor for the 'page relative' setting 
+     *
+     * @return the folder descriptor for the 'page relative' setting
      */
     public static CmsContentFolderDescriptor createPageRelativeFolderDescriptor() {
 
@@ -103,18 +103,18 @@ public class CmsContentFolderDescriptor {
 
     /**
      * Gets the base path.<p>
-     * 
-     * @return the base path 
+     *
+     * @return the base path
      */
     public String getBasePath() {
 
         return m_basePath;
     }
 
-    /** 
+    /**
      * Gets the folder.<p>
-     * 
-     * @return the folder 
+     *
+     * @return the folder
      */
     public CmsResource getFolder() {
 
@@ -123,7 +123,7 @@ public class CmsContentFolderDescriptor {
 
     /**
      * Gets the relative folder name if available, else null.<p>
-     * 
+     *
      * @return the relative folder name null
      */
     public String getFolderName() {
@@ -133,10 +133,10 @@ public class CmsContentFolderDescriptor {
 
     /**
      * Computes the folder root path.<p>
-     * 
+     *
      * @param cms the CMS context to use
-     * @param pageFolderPath the root path of the folder containing the current container page  
-     * @return the folder root path 
+     * @param pageFolderPath the root path of the folder containing the current container page
+     * @return the folder root path
      */
     public String getFolderPath(CmsObject cms, String pageFolderPath) {
 
@@ -168,8 +168,8 @@ public class CmsContentFolderDescriptor {
 
     /**
      * Returns true if the current instance was created with a folder structure id parameter.<p>
-     * 
-     * @return true if this instance was created with a folder structure id parameter  
+     *
+     * @return true if this instance was created with a folder structure id parameter
      */
     public boolean isFolder() {
 
@@ -178,8 +178,8 @@ public class CmsContentFolderDescriptor {
 
     /**
      * Returns true if this instance was created with a folder name parameter.<p>
-     * 
-     * @return true if this instance was created with a folder name parameter 
+     *
+     * @return true if this instance was created with a folder name parameter
      */
     public boolean isName() {
 
@@ -188,8 +188,8 @@ public class CmsContentFolderDescriptor {
 
     /**
      * Returns true if this page descriptor represents the 'page relative' setting.<p>
-     * 
-     * @return true if this is page relative 
+     *
+     * @return true if this is page relative
      */
     public boolean isPageRelative() {
 

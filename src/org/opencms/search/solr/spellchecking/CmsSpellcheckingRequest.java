@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,7 +30,7 @@ package org.opencms.search.solr.spellchecking;
 import org.opencms.json.JSONObject;
 
 /**
- * Helper class that represents a spellchecking request. 
+ * Helper class that represents a spellchecking request.
  */
 class CmsSpellcheckingRequest {
 
@@ -54,10 +54,10 @@ class CmsSpellcheckingRequest {
     }
 
     /**
-     * Constructor. 
-     * 
+     * Constructor.
+     *
      * @param q the string that contains the words that have to checked.
-     * @param dictionary the dictionary to use. 
+     * @param dictionary the dictionary to use.
      */
     CmsSpellcheckingRequest(String[] q, String dictionary) {
 
@@ -66,22 +66,22 @@ class CmsSpellcheckingRequest {
 
     /**
      * Constructor.
-     *  
+     *
      * @param q the string that contains the words that have to checked.
-     * @param dictionary the dictionary to use. 
-     * @param id the Id of the request sent by tinyMce. 
+     * @param dictionary the dictionary to use.
+     * @param id the Id of the request sent by tinyMce.
      */
     CmsSpellcheckingRequest(String[] q, String dictionary, String id) {
 
-        this.m_wordsToCheck = q;
-        this.m_dictionaryToUse = dictionary;
-        this.m_id = id;
+        m_wordsToCheck = q;
+        m_dictionaryToUse = dictionary;
+        m_id = id;
     }
 
     /**
-     * Returns whether this class has been correctly initialized. 
-     * 
-     * @return true if this class has been correctly initialized, otherwise false. 
+     * Returns whether this class has been correctly initialized.
+     *
+     * @return true if this class has been correctly initialized, otherwise false.
      */
     public boolean isInitialized() {
 
@@ -89,11 +89,11 @@ class CmsSpellcheckingRequest {
     }
 
     /**
-     * Sets the words to check. 
-     * @param q Array containing all words to check. 
+     * Sets the words to check.
+     * @param q Array containing all words to check.
      */
     public void setWordsToCheck(String[] q) {
 
-        this.m_wordsToCheck = q;
+        m_wordsToCheck = q;
     }
 }

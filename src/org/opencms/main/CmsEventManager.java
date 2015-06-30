@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,15 +37,15 @@ import org.apache.commons.logging.Log;
 
 /**
  * Manager that controls the OpenCms event system.
- * 
+ *
  * There is only one instance of this event manager class used by the OpenCms runtime.
  * This instance can be obtained by calling {@link OpenCms#getEventManager()}.<p>
- * 
+ *
  * Events can be used in OpenCms to notify custom event listeners that certain system events have happened.
  * Event listeners have to implement the interface {@link org.opencms.main.I_CmsEventListener}.<p>
- * 
+ *
  * @since 7.0.0
- * 
+ *
  * @see org.opencms.main.CmsEvent
  * @see org.opencms.main.I_CmsEventListener
  */
@@ -120,7 +120,7 @@ public class CmsEventManager {
 
     /**
      * Notify all event listeners that a particular event has occurred without any additional event data.<p>
-     * 
+     *
      * @param type event type
      */
     public void fireEvent(int type) {
@@ -130,7 +130,7 @@ public class CmsEventManager {
 
     /**
      * Notify all event listeners that a particular event has occurred.<p>
-     * 
+     *
      * @param type event type
      * @param data event data
      */
@@ -157,7 +157,7 @@ public class CmsEventManager {
 
     /**
      * Returns the map of all configured event listeners.<p>
-     * 
+     *
      * @return the map of all configured event listeners
      */
     protected Map<Integer, List<I_CmsEventListener>> getEventListeners() {
@@ -166,8 +166,8 @@ public class CmsEventManager {
     }
 
     /**
-     * Initialize this event manager with all events from the given base event manager.<p> 
-     * 
+     * Initialize this event manager with all events from the given base event manager.<p>
+     *
      * @param base the base event manager to initialize this event manager with
      */
     protected void initialize(CmsEventManager base) {
@@ -177,14 +177,14 @@ public class CmsEventManager {
 
     /**
      * Fires the specified event to a list of event listeners.<p>
-     * 
+     *
      * @param listeners the listeners to fire
      * @param event the event to fire
      */
     protected void fireEventHandler(List<I_CmsEventListener> listeners, CmsEvent event) {
 
         if (!LOG.isDebugEnabled()) {
-            // no logging required            
+            // no logging required
             if ((listeners != null) && (listeners.size() > 0)) {
                 // handle all event listeners that listen to this event type
                 I_CmsEventListener[] list = listeners.toArray(EVENT_LIST);
@@ -207,37 +207,41 @@ public class CmsEventManager {
                     while (i.hasNext()) {
                         String key = i.next();
                         Object value = event.getData().get(key);
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_DEBUG_EVENT_VALUE_3,
-                            key,
-                            value,
-                            event.toString()));
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_DEBUG_EVENT_VALUE_3,
+                                key,
+                                value,
+                                event.toString()));
                     }
                 } else {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_NO_EVENT_VALUE_1, event.toString()));
                 }
                 // log all the registered event listeners
                 for (int j = 0; j < list.length; j++) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_EVENT_LISTENERS_3,
-                        list[j],
-                        new Integer(j),
-                        event.toString()));
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_DEBUG_EVENT_LISTENERS_3,
+                            list[j],
+                            new Integer(j),
+                            event.toString()));
                 }
                 // loop through all registered event listeners
                 for (int i = 0; i < list.length; i++) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_EVENT_START_LISTENER_3,
-                        list[i],
-                        new Integer(i),
-                        event.toString()));
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_DEBUG_EVENT_START_LISTENER_3,
+                            list[i],
+                            new Integer(i),
+                            event.toString()));
                     // fire the event
                     list[i].cmsEvent(event);
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_EVENT_END_LISTENER_3,
-                        list[i],
-                        new Integer(i),
-                        event.toString()));
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_DEBUG_EVENT_END_LISTENER_3,
+                            list[i],
+                            new Integer(i),
+                            event.toString()));
                 }
             } else {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_EVENT_NO_LISTENER_1, event.toString()));

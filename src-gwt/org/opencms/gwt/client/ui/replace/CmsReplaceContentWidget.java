@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -78,7 +78,7 @@ public class CmsReplaceContentWidget extends Composite {
 
     /**
      * Sets the dialog info message.<p>
-     *  
+     *
      * @param msg the message to display
      * @param warning signals whether the message should be a warning or nor
      */
@@ -117,7 +117,7 @@ public class CmsReplaceContentWidget extends Composite {
 
     /**
      * Sets the container widget content.<p>
-     * 
+     *
      * @param widget the container content
      */
     public void setContainerWidget(Widget widget) {
@@ -128,7 +128,7 @@ public class CmsReplaceContentWidget extends Composite {
 
     /**
      * Sets the replace info widget.<p>
-     * 
+     *
      * @param replaceInfo the replace info widget
      */
     public void setReplaceInfo(Widget replaceInfo) {
@@ -142,7 +142,7 @@ public class CmsReplaceContentWidget extends Composite {
 
     /**
      * Creates the loading animation HTML and adds is to the content wrapper.<p>
-     * 
+     *
      * @param msg the message to display below the animation
      */
     protected void showLoadingAnimation(String msg) {

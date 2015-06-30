@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,9 +38,9 @@ public class CmsRpcCallHelper {
     /** Counter to keep track of running requests. */
     private CmsRequestCounter m_requestCounter;
 
-    /** 
+    /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param counter the request counter to keep track of running requests
      */
     public CmsRpcCallHelper(CmsRequestCounter counter) {
@@ -51,8 +51,8 @@ public class CmsRpcCallHelper {
 
     /**
      * Executes the RPC call.<p>
-     * 
-     * @param requestBuilder the request builder returned by the service interface 
+     *
+     * @param requestBuilder the request builder returned by the service interface
      */
     @SuppressWarnings("synthetic-access")
     public void executeRpc(RequestBuilder requestBuilder) {

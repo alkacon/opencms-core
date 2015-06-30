@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -89,7 +89,7 @@ public class CmsCodeMirror extends CmsSimpleEditor {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsCodeMirror(CmsJspActionElement jsp) {
@@ -99,7 +99,7 @@ public class CmsCodeMirror extends CmsSimpleEditor {
 
     /**
      * Returns the editor language to use according to the current users workplace settings.<p>
-     * 
+     *
      * @return the editor language to use
      */
     public String getEditorLanguage() {
@@ -122,7 +122,7 @@ public class CmsCodeMirror extends CmsSimpleEditor {
 
     /**
      * Returns the syntax highlighting type for the currently edited resource.<p>
-     * 
+     *
      * @return the syntax highlighting type
      */
     public String getHighlightMode() {
@@ -165,7 +165,7 @@ public class CmsCodeMirror extends CmsSimpleEditor {
 
     /**
      * Returns the close function parameter.<p>
-     * 
+     *
      * @return the close function parameter
      */
     public String getParamCloseFunction() {
@@ -175,7 +175,7 @@ public class CmsCodeMirror extends CmsSimpleEditor {
 
     /**
      * Sets the close function parameter.<p>
-     * 
+     *
      * @param closeFunction the close function parameter
      */
     public void setParamCloseFunction(String closeFunction) {

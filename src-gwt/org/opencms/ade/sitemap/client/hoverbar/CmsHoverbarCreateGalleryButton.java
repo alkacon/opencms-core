@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
  * Sitemap hoverbar "go to page" button.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsHoverbarCreateGalleryButton extends CmsPushButton {
@@ -54,7 +54,7 @@ public class CmsHoverbarCreateGalleryButton extends CmsPushButton {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param resourceTypeId the resource type id
      * @param parentId the parent folder id
      */
@@ -82,7 +82,7 @@ public class CmsHoverbarCreateGalleryButton extends CmsPushButton {
 
     /**
      * Sets the hover bar instance.<p>
-     * 
+     *
      * @param hoverbar the hover bar
      */
     public void setHoverbar(CmsSitemapHoverbar hoverbar) {

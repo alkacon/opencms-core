@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,81 +39,81 @@ import com.google.gwt.user.client.Command;
 
 /**
  * Interface for resource preview within the galleries dialog.<p>
- * 
+ *
  * @param <T> the resource info bean type
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsResourcePreview<T extends CmsResourceInfoBean> {
 
     /**
      * Gets the gallery dialog in which this preview is displayed.<p>
-     * 
-     * @return the gallery dialog  
+     *
+     * @return the gallery dialog
      */
     CmsGalleryDialog getGalleryDialog();
 
     /**
      * Returns the gallery mode.<p>
-     * 
+     *
      * @return the gallery mode
      */
     GalleryMode getGalleryMode();
 
     /**
      * Returns the preview handler.<p>
-     * 
+     *
      * @return the preview handler
      */
     I_CmsPreviewHandler<T> getHandler();
 
     /**
      * Returns the current locale.<p>
-     * 
+     *
      * @return the current locale
      */
     String getLocale();
 
     /**
      * Returns the preview dialog widget.<p>
-     * 
+     *
      * @return the preview dialog widget
      */
     A_CmsPreviewDialog<T> getPreviewDialog();
 
     /**
      * Returns the preview name, should return the same as in {@link org.opencms.ade.galleries.preview.I_CmsPreviewProvider#getPreviewName()}.<p>
-     * 
+     *
      * @return the preview name
      */
     String getPreviewName();
 
     /**
      * Returns the resource path of the current resource.<p>
-     * 
+     *
      * @return the resource path
      */
     String getResourcePath();
 
     /**
      * Returns the site independent perma link.<p>
-     * 
+     *
      * @return the site independent link
      */
     String getViewLink();
 
     /**
      * Loads the resource info and displays the retrieved data.<p>
-     * 
+     *
      * @param resourcePath the resource path
      */
     void loadResourceInfo(String resourcePath);
 
     /**
      * Opens the preview for the given resource in the given gallery mode.<p>
-     * 
+     *
      * @param resourcePath the resource path
-     * @param disableSelection if the selection from the preview should be disabled 
+     * @param disableSelection if the selection from the preview should be disabled
      */
     void openPreview(String resourcePath, boolean disableSelection);
 
@@ -124,15 +124,15 @@ public interface I_CmsResourcePreview<T extends CmsResourceInfoBean> {
 
     /**
      * Saves the changed properties.<p>
-     * 
+     *
      * @param properties the changed properties
-     * @param afterSaveCommand the command to execute after saving the properties  
+     * @param afterSaveCommand the command to execute after saving the properties
      */
     void saveProperties(Map<String, String> properties, Command afterSaveCommand);
 
     /**
      * Sets the selected resource in the opening editor for the given gallery mode.<p>
-     * 
+     *
      * @param resourcePath the resource path
      * @param structureId the structure id
      * @param title the resource title
@@ -142,9 +142,9 @@ public interface I_CmsResourcePreview<T extends CmsResourceInfoBean> {
     /**
      * Checks if further user input is required and other wise sets the selected resource
      * via the provided integrator functions <code>setLink</code> and <code>setImage</code>.<p>
-     * Returning <code>true</code> when all data has been. 
+     * Returning <code>true</code> when all data has been.
      * If there are any changes, the user will be requested to save those and the editor OK function will be called again.<p>
-     * 
+     *
      * @return <code>true</code> when all data has been set, <code>false</code> if there were any changes that need saving
      */
     boolean setDataInEditor();
@@ -156,7 +156,7 @@ public interface I_CmsResourcePreview<T extends CmsResourceInfoBean> {
 
     /**
      * Calls the preview handler to display the given data.<p>
-     * 
+     *
      * @param resourceInfo the resource info data
      */
     void showData(T resourceInfo);

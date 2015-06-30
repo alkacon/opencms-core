@@ -48,7 +48,10 @@ public class CmsSearchConfigurationPagination implements I_CmsSearchConfiguratio
      * @param pageSize The page size.
      * @param pageNavLength The length of the "Google"-like page navigation. Should be an odd number.
      */
-    public CmsSearchConfigurationPagination(final String pageParam, final Integer pageSize, final Integer pageNavLength) {
+    public CmsSearchConfigurationPagination(
+        final String pageParam,
+        final Integer pageSize,
+        final Integer pageNavLength) {
 
         m_pageParam = pageParam;
         m_pageSize = pageSize == null ? DEFAULT_PAGE_SIZE : pageSize.intValue();

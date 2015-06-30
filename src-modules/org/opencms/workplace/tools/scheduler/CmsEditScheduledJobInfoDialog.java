@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -70,8 +70,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog to edit new and existing scheduled jobs in the administration view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
@@ -95,7 +95,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsEditScheduledJobInfoDialog(CmsJspActionElement jsp) {
@@ -105,7 +105,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -142,7 +142,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
     /**
      * Returns the job id parameter value.<p>
-     * 
+     *
      * @return the job id parameter value
      */
     public String getParamJobid() {
@@ -165,7 +165,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
     /**
      * Sets the job id parameter value.<p>
-     * 
+     *
      * @param jobid the job id parameter value
      */
     public void setParamJobid(String jobid) {
@@ -185,9 +185,9 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -242,55 +242,63 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(this, "serverTime", PAGES[0], new CmsDisplayWidget()));
         // widgets to display on the first dialog page
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "jobName", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "className", PAGES[0], new CmsComboWidget(getComboClasses())));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "cronExpression", PAGES[0], new CmsComboWidget(
-            getComboCronExpressions())));
+        addWidget(
+            new CmsWidgetDialogParameter(m_jobInfo, "className", PAGES[0], new CmsComboWidget(getComboClasses())));
+        addWidget(new CmsWidgetDialogParameter(
+            m_jobInfo,
+            "cronExpression",
+            PAGES[0],
+            new CmsComboWidget(getComboCronExpressions())));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "reuseInstance", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.userName", PAGES[0], new CmsUserWidget(
-            null,
-            null)));
+        addWidget(
+            new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.userName", PAGES[0], new CmsUserWidget(null, null)));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.projectName", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(
-            m_jobInfo,
-            "contextInfo.siteRoot",
-            dC.getSiteRoot(),
-            PAGES[0],
-            new CmsVfsFileWidget(),
-            0,
-            1));
-        addWidget(new CmsWidgetDialogParameter(
-            m_jobInfo,
-            "contextInfo.requestedUri",
-            dC.getRequestedUri(),
-            PAGES[0],
-            new CmsVfsFileWidget(),
-            0,
-            1));
-        addWidget(new CmsWidgetDialogParameter(
-            m_jobInfo,
-            "contextInfo.localeName",
-            dC.getLocaleName(),
-            PAGES[0],
-            new CmsInputWidget(),
-            0,
-            1));
-        addWidget(new CmsWidgetDialogParameter(
-            m_jobInfo,
-            "contextInfo.encoding",
-            dC.getEncoding(),
-            PAGES[0],
-            new CmsInputWidget(),
-            0,
-            1));
-        addWidget(new CmsWidgetDialogParameter(
-            m_jobInfo,
-            "contextInfo.remoteAddr",
-            dC.getRemoteAddr(),
-            PAGES[0],
-            new CmsInputWidget(),
-            0,
-            1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_jobInfo,
+                "contextInfo.siteRoot",
+                dC.getSiteRoot(),
+                PAGES[0],
+                new CmsVfsFileWidget(),
+                0,
+                1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_jobInfo,
+                "contextInfo.requestedUri",
+                dC.getRequestedUri(),
+                PAGES[0],
+                new CmsVfsFileWidget(),
+                0,
+                1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_jobInfo,
+                "contextInfo.localeName",
+                dC.getLocaleName(),
+                PAGES[0],
+                new CmsInputWidget(),
+                0,
+                1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_jobInfo,
+                "contextInfo.encoding",
+                dC.getEncoding(),
+                PAGES[0],
+                new CmsInputWidget(),
+                0,
+                1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_jobInfo,
+                "contextInfo.remoteAddr",
+                dC.getRemoteAddr(),
+                PAGES[0],
+                new CmsInputWidget(),
+                0,
+                1));
 
         // widget to display on the second dialog page
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "parameters", PAGES[1], new CmsInputWidget()));
@@ -298,19 +306,20 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
     /**
      * Returns the example cron class names to show in the combo box.<p>
-     * 
-     * The result list elements are of type <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code>.<p> 
-     * 
+     *
+     * The result list elements are of type <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code>.<p>
+     *
      * @return the example cron class names to show in the combo box
      */
     protected List<CmsSelectWidgetOption> getComboClasses() {
 
         List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>(16);
-        result.add(new CmsSelectWidgetOption(
-            CmsInternalRelationsValidationJob.class.getName(),
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONCLASS_INTERNALVALIDATION_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsInternalRelationsValidationJob.class.getName(),
+                false,
+                null,
+                key(Messages.GUI_EDITOR_CRONCLASS_INTERNALVALIDATION_0)));
         result.add(new CmsSelectWidgetOption(
             CmsPublishJob.class.getName(),
             false,
@@ -371,9 +380,9 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
     /**
      * Returns the example cron expressions to show in the combo box.<p>
-     * 
-     * The result list elements are of type <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code>.<p> 
-     * 
+     *
+     * The result list elements are of type <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code>.<p>
+     *
      * @return the example cron expressions to show in the combo box
      */
     protected List<CmsSelectWidgetOption> getComboCronExpressions() {
@@ -382,12 +391,14 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
         // 0 0 3 * * ? (daily at 3 am)
         result.add(new CmsSelectWidgetOption("0 0 3 * * ?", false, null, key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE1_0)));
-        // 0 0/30 * * * ? (daily every thirty minutes) 
-        result.add(new CmsSelectWidgetOption("0 0/30 * * * ?", false, null, key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE2_0)));
+        // 0 0/30 * * * ? (daily every thirty minutes)
+        result.add(
+            new CmsSelectWidgetOption("0 0/30 * * * ?", false, null, key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE2_0)));
         // 0 30 8 ? * 4 (every Wednesday at 8:30 am)
         result.add(new CmsSelectWidgetOption("0 30 8 ? * 4", false, null, key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE3_0)));
         // 0 15 18 15 * ? (on the 20th day of the month at 6:15 pm)
-        result.add(new CmsSelectWidgetOption("0 15 18 20 * ?", false, null, key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE4_0)));
+        result.add(
+            new CmsSelectWidgetOption("0 15 18 20 * ?", false, null, key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE4_0)));
         // 0 45 15 ? * 1 2007-2009 (every Sunday from the year 2007 to 2009 at 3:45 pm)
         result.add(new CmsSelectWidgetOption(
             "0 45 15 ? * 1 2007-2009",
@@ -420,7 +431,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
     /**
      * Initializes the scheduled job object to work with depending on the dialog state and request parameters.<p>
-     * 
+     *
      * Three initializations of the scheduled job object on first dialog call are possible:
      * <ul>
      * <li>edit an existing scheduled job</li>
@@ -488,7 +499,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
     /**
      * Checks if the new job dialog has to be displayed.<p>
-     * 
+     *
      * @return <code>true</code> if the new job dialog has to be displayed
      */
     protected boolean isNewJob() {

@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,15 +58,15 @@ import java.util.regex.Matcher;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides the dependency information about one search result document, 
- * used to generate the list of document search results.<p> 
- * 
+ * Provides the dependency information about one search result document,
+ * used to generate the list of document search results.<p>
+ *
  * @since 8.5.0
  */
 public final class CmsDocumentDependency {
 
-    /** 
-     * Defines the possible dependency types.<p> 
+    /**
+     * Defines the possible dependency types.<p>
      */
     public static enum DependencyType {
 
@@ -150,8 +150,8 @@ public final class CmsDocumentDependency {
     private List<CmsDocumentDependency> m_variants = new ArrayList<CmsDocumentDependency>();
 
     /**
-     * Creates a new dependency container for the given VFS resource.<p> 
-     * 
+     * Creates a new dependency container for the given VFS resource.<p>
+     *
      * @param res the VFS resource for which the dependencies are calculated
      */
     private CmsDocumentDependency(CmsPublishedResource res) {
@@ -160,10 +160,10 @@ public final class CmsDocumentDependency {
     }
 
     /**
-     * Creates a new dependency container for the given VFS resource.<p> 
-     * 
+     * Creates a new dependency container for the given VFS resource.<p>
+     *
      * Additional constructor with extra root path, to be used only for test cases.<p>
-     * 
+     *
      * @param resource the VFS resource for which the dependencies are calculated
      * @param rootPath the root path to use
      */
@@ -218,8 +218,8 @@ public final class CmsDocumentDependency {
     }
 
     /**
-     * Creates a new dependency container for the given VFS resource.<p> 
-     * 
+     * Creates a new dependency container for the given VFS resource.<p>
+     *
      * @param res the VFS resource for which the dependencies are calculated
      */
     private CmsDocumentDependency(CmsResource res) {
@@ -229,10 +229,10 @@ public final class CmsDocumentDependency {
 
     /**
      * Creates a dependency object from a String representation.<p>
-     * 
+     *
      * @param input the String representation
      * @param rootPath the root path of the base document of which the dependencies are encoded
-     * 
+     *
      * @return the dependency object created from a String representation
      */
     public static CmsDocumentDependency fromDependencyString(String input, String rootPath) {
@@ -286,9 +286,9 @@ public final class CmsDocumentDependency {
 
     /**
      * Returns the locale (language) of the given resource based on the resource root path.<p>
-     * 
+     *
      * @param rootPath the resource name to check for the locale information
-     * 
+     *
      * @return the locale of the given resource based on the resource root path
      */
     public static Locale getLocale(String rootPath) {
@@ -298,10 +298,10 @@ public final class CmsDocumentDependency {
 
     /**
      * Loads or creates a dependency object for the given parameters.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param pubRes the published resource to get the dependency object for
-     * 
+     *
      * @return a dependency object for the given parameters
      */
     public static CmsDocumentDependency load(CmsObject cms, CmsPublishedResource pubRes) {
@@ -316,10 +316,10 @@ public final class CmsDocumentDependency {
 
     /**
      * Loads or creates a dependency object for the given parameters.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param res the VFS resource to get the dependency object for
-     * 
+     *
      * @return a dependency object for the given parameters
      */
     public static CmsDocumentDependency load(CmsObject cms, CmsResource res) {
@@ -334,11 +334,11 @@ public final class CmsDocumentDependency {
 
     /**
      * Loads or creates a dependency object for the given parameters.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param res the VFS resource to get the dependency object for
      * @param resources the resource folder data to check for dependencies
-     * 
+     *
      * @return a dependency object for the given parameters
      */
     public static CmsDocumentDependency load(CmsObject cms, CmsResource res, List<CmsResource> resources) {
@@ -353,9 +353,9 @@ public final class CmsDocumentDependency {
 
     /**
      * Creates a dependency object for the given root path, to be used only for test cases.<p>
-     * 
+     *
      * @param rootPath the root path to create the dependency object for
-     * 
+     *
      * @return a dependency object for the given parameters
      */
     protected static CmsDocumentDependency loadForTest(String rootPath) {
@@ -366,15 +366,15 @@ public final class CmsDocumentDependency {
     /**
      * Removes the dependency object for a published resource from the OpenCms
      * runtime context.<p>
-     * 
+     *
      * <b>Please note:</b> This must be used with caution since the information
      * may be required to generate documents for several configured indexes. It
      * must be ensured that this is called only when all indexes have been
      * updated.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param pubRes the published resource info
-     * 
+     *
      * @see #storeInContext(CmsObject)
      */
     protected static void removeFromContext(CmsObject cms, CmsPublishedResource pubRes) {
@@ -382,11 +382,11 @@ public final class CmsDocumentDependency {
         cms.getRequestContext().removeAttribute(getAttributeKey(pubRes.getRootPath()));
     }
 
-    /** 
+    /**
      * Generates a context attribute name for a root path.
-     * 
+     *
      * @param rootPath the root path
-     *  
+     *
      * @return the Attr_Doc_Deps + rootPapth
      */
     private static String getAttributeKey(String rootPath) {
@@ -395,12 +395,12 @@ public final class CmsDocumentDependency {
     }
 
     /**
-     * Reads the dependency object for the given root path in the OpenCms runtime context.<p>  
-     * 
+     * Reads the dependency object for the given root path in the OpenCms runtime context.<p>
+     *
      * @param cms the current OpenCms user context
      * @param rootPath the root path to look up the dependency object for
-     * 
-     * @return the deps 
+     *
+     * @return the deps
      */
     private static CmsDocumentDependency readFromContext(CmsObject cms, String rootPath) {
 
@@ -409,7 +409,7 @@ public final class CmsDocumentDependency {
 
     /**
      * Adds another document attachment dependency to this document.<p>
-     * 
+     *
      * @param dep the document attachment dependency to add
      */
     public void addAttachment(CmsDocumentDependency dep) {
@@ -420,8 +420,8 @@ public final class CmsDocumentDependency {
             if (att.getAttachmentNumber() == dep.getAttachmentNumber()) {
 
                 if (m_locale.equals(dep.getLocale())) {
-                    // if dependency has same locale as main document it is added as attachment 
-                    // and gets the old attachment as a language-version with all previous language-versions  
+                    // if dependency has same locale as main document it is added as attachment
+                    // and gets the old attachment as a language-version with all previous language-versions
                     for (CmsDocumentDependency langAtt : att.getVariants()) {
                         dep.addVariant(langAtt);
                     }
@@ -446,7 +446,7 @@ public final class CmsDocumentDependency {
 
     /**
      * Adds another document dependency to this document.<p>
-     * 
+     *
      * @param dep the document dependency to add
      */
     public void addDependency(CmsDocumentDependency dep) {
@@ -456,7 +456,7 @@ public final class CmsDocumentDependency {
 
     /**
      * Adds another language version document dependency to this document.<p>
-     * 
+     *
      * @param dep the language version document dependency to add
      */
     public void addVariant(CmsDocumentDependency dep) {
@@ -492,7 +492,7 @@ public final class CmsDocumentDependency {
     /**
      * Read the information out of the given JSON object to fill
      * the values of the document.<p>
-     * 
+     *
      * @param json the JSON object with the information about this document
      * @param rootPath the current path the home division
      */
@@ -518,7 +518,9 @@ public final class CmsDocumentDependency {
                     try {
                         JSONObject jsonAttachment = (JSONObject)jsonAttachments.get(i);
 
-                        CmsDocumentDependency att = new CmsDocumentDependency(null, jsonAttachment.getString(JSON_PATH));
+                        CmsDocumentDependency att = new CmsDocumentDependency(
+                            null,
+                            jsonAttachment.getString(JSON_PATH));
                         att.fromJSON(jsonAttachment, rootPath);
 
                         // language versions of attachment
@@ -572,7 +574,7 @@ public final class CmsDocumentDependency {
 
     /**
      * Returns the list of resources the main resource depends on, including the main resource itself.<p>
-     *  
+     *
      * @return the list of resources the main resource depends on, including the main resource itself
      */
     public List<CmsDocumentDependency> getDependencies() {
@@ -592,7 +594,7 @@ public final class CmsDocumentDependency {
 
     /**
      * Returns the suffix of the document.<p>
-     * 
+     *
      * @return the suffix of the document
      */
     public String getDocumentSuffix() {
@@ -632,7 +634,7 @@ public final class CmsDocumentDependency {
 
     /**
      * Returns the root path of this dependency.<p>
-     * 
+     *
      * @return the root path
      */
     public String getRootPath() {
@@ -675,7 +677,7 @@ public final class CmsDocumentDependency {
 
     /**
      * Returns the locale file name flag.<p>
-     * 
+     *
      * @return the locale file name flag
      */
     public boolean hasLocaleFileName() {
@@ -685,7 +687,7 @@ public final class CmsDocumentDependency {
 
     /**
      * Returns true if this document is an attachment, i.e. an attachment number is provided.<p>
-     * 
+     *
      * @return true if this document is an attachment, otherwise false
      */
     public boolean isAttachment() {
@@ -695,9 +697,9 @@ public final class CmsDocumentDependency {
 
     /**
      * Reads all dependencies that exist for this main resource in the OpenCms VFS.<p>
-     * 
+     *
      * To be used when incremental updating an index.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      */
     public void readDependencies(CmsObject cms) {
@@ -716,7 +718,7 @@ public final class CmsDocumentDependency {
 
     /**
      * Reads all dependencies that exist for this main resource in provided list of resources.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param folderContent the contents of the folder to check the dependencies for
      */
@@ -767,7 +769,7 @@ public final class CmsDocumentDependency {
                             // add this dependency as an attachment
                             addAttachment(dep);
                         } else if (CmsStringUtil.isEqual(getDocumentSuffix(), dep.getDocumentSuffix())) {
-                            // if this is no attachment, and the file suffix is equal, 
+                            // if this is no attachment, and the file suffix is equal,
                             // this must be a language version of the main document
                             addVariant(dep);
                         }
@@ -782,7 +784,7 @@ public final class CmsDocumentDependency {
             for (CmsDocumentDependency att : attachments.values()) {
                 m_mainDocument.addAttachment(att);
             }
-            // add the main document as dependency for this attachment 
+            // add the main document as dependency for this attachment
             addDependency(m_mainDocument);
         }
         for (CmsDocumentDependency var : getVariants()) {
@@ -822,7 +824,7 @@ public final class CmsDocumentDependency {
 
     /**
      * Sets the suffix (.pdf, .doc etc.) of the document.<p>
-     * 
+     *
      * @param documentSuffix the suffix to set
      */
     public void setDocumentSuffix(String documentSuffix) {
@@ -876,7 +878,7 @@ public final class CmsDocumentDependency {
 
     /**
      * Sets the type for this dependency.<p>
-     * 
+     *
      * @param type the type to set
      */
     public void setType(DependencyType type) {
@@ -885,12 +887,12 @@ public final class CmsDocumentDependency {
     }
 
     /**
-     * Stores this dependency object for a published resource in the OpenCms runtime context.<p> 
-     * 
-     * This done to optimize indexing speed. When the index update information is calculated, 
-     * all dependencies for a resource must be calculated also. The same information is later needed when 
-     * the Lucene document is created, for example in order to store the list of other available languages.<p>  
-     * 
+     * Stores this dependency object for a published resource in the OpenCms runtime context.<p>
+     *
+     * This done to optimize indexing speed. When the index update information is calculated,
+     * all dependencies for a resource must be calculated also. The same information is later needed when
+     * the Lucene document is created, for example in order to store the list of other available languages.<p>
+     *
      * @param cms the current OpenCms user context
      */
     public void storeInContext(CmsObject cms) {
@@ -900,9 +902,9 @@ public final class CmsDocumentDependency {
 
     /**
      * Creates the String representation of this dependency object.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
-     * 
+     *
      * @return the String representation of this dependency object
      */
     public String toDependencyString(CmsObject cms) {
@@ -946,10 +948,10 @@ public final class CmsDocumentDependency {
 
     /**
      * Returns a JSON object describing this dependency document.<p>
-     * 
+     *
      * @param cms the current cms object
      * @param includeLang flag if language versions should be included
-     * 
+     *
      * @return a JSON object describing this dependency document
      */
     public JSONObject toJSON(CmsObject cms, boolean includeLang) {

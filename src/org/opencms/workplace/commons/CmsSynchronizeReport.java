@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,9 +39,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides an output window for a CmsReport.<p> 
- * 
- * @since 6.0.0 
+ * Provides an output window for a CmsReport.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsSynchronizeReport extends CmsReport {
 
@@ -50,7 +50,7 @@ public class CmsSynchronizeReport extends CmsReport {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSynchronizeReport(CmsJspActionElement jsp) {
@@ -60,7 +60,7 @@ public class CmsSynchronizeReport extends CmsReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -72,7 +72,7 @@ public class CmsSynchronizeReport extends CmsReport {
 
     /**
      * Performs the move report, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionReport() throws JspException {
@@ -108,7 +108,7 @@ public class CmsSynchronizeReport extends CmsReport {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_CONFIRMED);
         } else if (REPORT_UPDATE.equals(getParamAction())) {
@@ -121,7 +121,7 @@ public class CmsSynchronizeReport extends CmsReport {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // add the title for the dialog 
+            // add the title for the dialog
             setParamTitle(key(Messages.GUI_SYNC_FOLDERS_AND_FILES_0));
         }
     }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,10 +42,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This bean represents the current search object.<p>
- * 
+ *
  * The search object collects the current parameters which are used for the search and
  * contains the search results for the current search parameters.
- * 
+ *
  * @since 8.0.0
  */
 public class CmsGallerySearchBean implements IsSerializable {
@@ -162,9 +162,9 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Constructor of the search object.<p>
-     * 
+     *
      * The constructor copies the content of the provided parameter to the current bean.
-     * 
+     *
      * @param searchObj a search object with content
      */
     public CmsGallerySearchBean(CmsGallerySearchBean searchObj) {
@@ -193,11 +193,11 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Creates the key used to store the last selected gallery.<p>
-     * 
-     * @param prefix the prefix for the key 
-     * @param referenceType the type name of the reference resource 
-     * 
-     * @return the key to store the last selected gallery 
+     *
+     * @param prefix the prefix for the key
+     * @param referenceType the type name of the reference resource
+     *
+     * @return the key to store the last selected gallery
      */
     public static String getGalleryStorageKey(String prefix, String referenceType) {
 
@@ -206,7 +206,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Adds a category to the categories list.<p>
-     * 
+     *
      * @param category the category
      */
     public void addCategory(String category) {
@@ -218,8 +218,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Adds a new VFS folder to search in.<p>
-     * 
-     * @param folder the folder to add 
+     *
+     * @param folder the folder to add
      */
     public void addFolder(String folder) {
 
@@ -228,7 +228,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Adds a gallery folder to the galleries list.<p>
-     * 
+     *
      * @param gallery the gallery
      */
     public void addGallery(String gallery) {
@@ -240,7 +240,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Adds a type to the types list.<p>
-     * 
+     *
      * @param type the type
      */
     public void addType(String type) {
@@ -346,8 +346,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Returns the list of selected VFS folders.<p>
-     * 
-     * @return the list of selected VFS folders 
+     *
+     * @return the list of selected VFS folders
      */
     public Set<String> getFolders() {
 
@@ -366,8 +366,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Gets the gallery mode.<p>
-     * 
-     * @return the gallery mode 
+     *
+     * @return the gallery mode
      */
     public GalleryMode getGalleryMode() {
 
@@ -376,8 +376,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Gets the key used to store the last selected gallery.<p>
-     * 
-     * @return the key used to store the last selected gallery 
+     *
+     * @return the key used to store the last selected gallery
      */
     public String getGalleryStoragePrefix() {
 
@@ -386,8 +386,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Gets the initial tab id.<p>
-     * 
-     * @return the initial tab id 
+     *
+     * @return the initial tab id
      */
     public GalleryTabId getInitialTabId() {
 
@@ -395,9 +395,9 @@ public class CmsGallerySearchBean implements IsSerializable {
     }
 
     /**
-     * Gets the index of the last search results page.<p> 
-     * 
-     * @return the index of the last search results page 
+     * Gets the index of the last search results page.<p>
+     *
+     * @return the index of the last search results page
      */
     public int getLastPage() {
 
@@ -449,7 +449,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Gets the gallery reference path.<p>
-     * 
+     *
      * @return the gallery reference path
      */
     public String getReferencePath() {
@@ -499,8 +499,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Gets the search scope.<p>
-     * 
-     * @return the search scope 
+     *
+     * @return the search scope
      */
     public CmsGallerySearchScope getScope() {
 
@@ -509,8 +509,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Gets the sitemap preload data.<p>
-     * 
-     * @return the sitemap preload data 
+     *
+     * @return the sitemap preload data
      */
     public CmsSitemapEntryBean getSitemapPreloadData() {
 
@@ -549,8 +549,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Gets the VFS preload data.<p>
-     * 
-     * @return the VFS preload data 
+     *
+     * @return the VFS preload data
      */
     public CmsVfsEntryBean getVfsPreloadData() {
 
@@ -559,7 +559,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Checks if there are more search items available on the next page.<p>
-     * 
+     *
      * @return <code>true</code> if there are more search results available <code>false</code> otherwise
      */
     public boolean hasMore() {
@@ -569,8 +569,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Checks if the gallery selection was changed by the user.<p>
-     * 
-     * @return true if the gallery selection was changed 
+     *
+     * @return true if the gallery selection was changed
      */
     public boolean haveGalleriesChanged() {
 
@@ -579,8 +579,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Returns true if no preview should be shown for the search result.<p>
-     * 
-     * @return true if no preview should be shown 
+     *
+     * @return true if no preview should be shown
      */
     public boolean isDisablePreview() {
 
@@ -589,7 +589,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Checks if any search parameter are selected.<p>
-     * 
+     *
      * @return false if any search parameter is selected, true if there are no search parameter selected
      */
     @SuppressWarnings("unchecked")
@@ -604,11 +604,12 @@ public class CmsGallerySearchBean implements IsSerializable {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_query)) {
             return false;
         }
-        List<Long> dates = Arrays.asList(new Long[] {
-            Long.valueOf(m_dateCreatedEnd),
-            Long.valueOf(m_dateCreatedStart),
-            Long.valueOf(m_dateModifiedEnd),
-            Long.valueOf(m_dateModifiedStart)});
+        List<Long> dates = Arrays.asList(
+            new Long[] {
+                Long.valueOf(m_dateCreatedEnd),
+                Long.valueOf(m_dateCreatedStart),
+                Long.valueOf(m_dateModifiedEnd),
+                Long.valueOf(m_dateModifiedStart)});
         for (Long date : dates) {
             if ((date != null) && (!date.equals(Long.valueOf(-1L)))) {
                 return false;
@@ -639,7 +640,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Removes a category from the categories list.<p>
-     * 
+     *
      * @param category the category
      */
     public void removeCategory(String category) {
@@ -649,7 +650,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Removes a folder from the folder list.<p>
-     * 
+     *
      * @param folder the folder to remove
      */
     public void removeFolder(String folder) {
@@ -659,7 +660,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Removes a gallery folder from the galleries list.<p>
-     * 
+     *
      * @param gallery the gallery
      */
     public void removeGallery(String gallery) {
@@ -669,7 +670,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Removes a type from the types list.<p>
-     * 
+     *
      * @param type the type
      */
     public void removeType(String type) {
@@ -729,17 +730,17 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Sets the 'disable preview' flag.<p>
-     * 
-     * @param disablePreview true if the preview for the search result should not be shown 
+     *
+     * @param disablePreview true if the preview for the search result should not be shown
      */
     public void setDisablePreview(boolean disablePreview) {
 
         m_disablePreview = disablePreview;
     }
 
-    /** 
+    /**
      * Sets the folders to search in.<p>
-     * 
+     *
      * @param folders the folders
      */
     public void setFolders(Set<String> folders) {
@@ -759,8 +760,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Sets the "galleries changed" flag.<p>
-     * 
-     * @param changed the new flag value 
+     *
+     * @param changed the new flag value
      */
     public void setGalleriesChanged(boolean changed) {
 
@@ -769,8 +770,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Sets the gallery mode.<p>
-     * 
-     * @param galleryMode the gallery mode to set 
+     *
+     * @param galleryMode the gallery mode to set
      */
     public void setGalleryMode(GalleryMode galleryMode) {
 
@@ -779,8 +780,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Sets the prefix of the key used to store the last selected gallery.<p>
-     * 
-     * @param prefix the prefix of the key used to store the last selected gallery 
+     *
+     * @param prefix the prefix of the key used to store the last selected gallery
      */
     public void setGalleryStoragePrefix(String prefix) {
 
@@ -809,8 +810,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Sets the initial tab id.<p>
-     * 
-     * @param initialTabId the initial tab id 
+     *
+     * @param initialTabId the initial tab id
      */
     public void setInitialTabId(GalleryTabId initialTabId) {
 
@@ -819,8 +820,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Sets the index of the last search result page.<p>
-     *  
-     * @param lastPage the index of the last search result page 
+     *
+     * @param lastPage the index of the last search result page
      */
     public void setLastPage(int lastPage) {
 
@@ -869,8 +870,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Sets the gallery reference path.<p>
-     * 
-     * @param referencePath the gallery reference path 
+     *
+     * @param referencePath the gallery reference path
      */
     public void setReferencePath(String referencePath) {
 
@@ -919,8 +920,8 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Sets the search scope.<p>
-     * 
-     * @param scope the search scope 
+     *
+     * @param scope the search scope
      */
     public void setScope(CmsGallerySearchScope scope) {
 
@@ -929,7 +930,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Sets the sitemap preload data.<p>
-     * 
+     *
      * @param preloadData the sitemap preload data
      */
     public void setSitemapPreloadData(CmsSitemapEntryBean preloadData) {
@@ -973,7 +974,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Sets the VFS tree preload data.<p>
-     * 
+     *
      * @param preloadData the VFS tree preload data
      */
     public void setVfsPreloadData(CmsVfsEntryBean preloadData) {

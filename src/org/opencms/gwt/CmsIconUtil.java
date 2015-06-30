@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ import java.util.Map;
 
 /**
  * Utility class to generate the resource icon CSS.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implements I_CmsEventListener {
@@ -55,8 +55,8 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
 
         /**
          * Builds the CSS for all resource types.<p>
-         * 
-         * @return a string containing the CSS rules for all resource types 
+         *
+         * @return a string containing the CSS rules for all resource types
          */
         public String buildResourceIconCss() {
 
@@ -74,13 +74,14 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
 
         /**
          * Builds the CSS for the icon for unknown resource types.<p>
-         * 
+         *
          * @return the CSS for unknown resource type icons
          */
         public String buildUnknownIconCss() {
 
-            String unknown = getIconUri(OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                CmsResourceTypeUnknownFile.getStaticTypeName()).getBigIconIfAvailable());
+            String unknown = getIconUri(
+                OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                    CmsResourceTypeUnknownFile.getStaticTypeName()).getBigIconIfAvailable());
             String template = "div.%1$s { background: transparent scroll 50%% 50%% no-repeat url(\"%2$s\");} ";
 
             return String.format(template, TYPE_ICON_CLASS, unknown);
@@ -88,9 +89,9 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
 
         /**
          * Writes the CSS for a single icon rule to a buffer.<p>
-         * 
-         * @param typeName the name of the resource type 
-         * @param rule the icon rule 
+         *
+         * @param typeName the name of the resource type
+         * @param rule the icon rule
          */
         private void addCssForIconRule(String typeName, CmsIconRule rule) {
 
@@ -118,8 +119,8 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
 
         /**
          * Helper method for appending the CSS for a single resource type to a buffer.<p>
-         * 
-         * @param explorerType the explorer type for which the CSS should be generated 
+         *
+         * @param explorerType the explorer type for which the CSS should be generated
          */
         private void addCssForType(CmsExplorerTypeSettings explorerType) {
 
@@ -177,10 +178,10 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
 
         /**
          * Converts an icon file name to a full icon URI.<p>
-         * 
+         *
          * @param icon the file name of the icon
-         * 
-         * @return the full icon uri 
+         *
+         * @return the full icon uri
          */
         private String getIconUri(String icon) {
 
@@ -210,8 +211,8 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
 
     /**
      * Builds the CSS for all resource types.<p>
-     * 
-     * @return a string containing the CSS rules for all resource types 
+     *
+     * @return a string containing the CSS rules for all resource types
      */
     public static String buildResourceIconCss() {
 

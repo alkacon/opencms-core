@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,13 +32,13 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
-import org.opencms.main.OpenCms;
 import org.opencms.main.I_CmsEventListener;
+import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -51,7 +51,7 @@ public class TestFill extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestFill(String arg0) {
@@ -61,7 +61,7 @@ public class TestFill extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -96,7 +96,7 @@ public class TestFill extends OpenCmsTestCase {
 
     /**
      * fills the db with organizational units.<br>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPermissionsWithOUs() throws Throwable {
@@ -122,7 +122,7 @@ public class TestFill extends OpenCmsTestCase {
             t = System.currentTimeMillis();
             int n = 10;
             for (int i = 0; i < n; i++) {
-                int number = n * k + i;
+                int number = (n * k) + i;
                 cms.createResource("testPermissionsWithOu" + number, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
                 OpenCms.getPublishManager().publishResource(cms, "testPermissionsWithOu" + number);
                 OpenCms.getPublishManager().waitWhileRunning();
@@ -137,7 +137,7 @@ public class TestFill extends OpenCmsTestCase {
             echo("" + n + " ous created in " + t + " msecs");
 
             // check the performance
-            String newName = "testPermissionsWithOu" + (n * k + 1) + "/" + resourcename;
+            String newName = "testPermissionsWithOu" + ((n * k) + 1) + "/" + resourcename;
             cms.copyResource(resourcename, newName);
             res = cms.readResource(newName);
             t = System.currentTimeMillis();
@@ -145,7 +145,7 @@ public class TestFill extends OpenCmsTestCase {
                 cms,
                 res);
             t = System.currentTimeMillis() - t;
-            echo("permissions with " + n * (k + 1) + " OUs read in " + t + " msecs");
+            echo("permissions with " + (n * (k + 1)) + " OUs read in " + t + " msecs");
         }
     }
 
@@ -157,7 +157,7 @@ public class TestFill extends OpenCmsTestCase {
      *        <li>with 10 properties, 60% individual / 30% shared properties.<li>
      *    </ul>
      * that is a total of app. 10000 files, and 100000 property values. <p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testFillResources() throws Throwable {
@@ -173,7 +173,7 @@ public class TestFill extends OpenCmsTestCase {
     /**
      * Performance test for readFile.<p>
      * 10,000 files will be read and 20% of them are binary.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadFile() throws Throwable {
@@ -198,7 +198,7 @@ public class TestFill extends OpenCmsTestCase {
 
     /**
      * Tests the <code>{@link CmsObject#readResourcesWithProperty(String)}</code> method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testResWithProps() throws Throwable {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,8 +51,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Image Cache content view.<p>
- * 
- * @since 7.0.5 
+ *
+ * @since 7.0.5
  */
 public class CmsImageCacheList extends A_CmsListDialog {
 
@@ -85,7 +85,7 @@ public class CmsImageCacheList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsImageCacheList(CmsJspActionElement jsp) {
@@ -101,7 +101,7 @@ public class CmsImageCacheList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -114,6 +114,7 @@ public class CmsImageCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     public String defaultActionHtmlStart() {
 
         return getList().listJs() + dialogContentStart(getParamTitle());
@@ -122,6 +123,7 @@ public class CmsImageCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -130,14 +132,15 @@ public class CmsImageCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
     }
 
     /**
-     * Checks if the image size should be shown or not.<p> 
-     * 
+     * Checks if the image size should be shown or not.<p>
+     *
      * @return <code>true</code> if the image size should be shown
      */
     public boolean showSize() {
@@ -149,6 +152,7 @@ public class CmsImageCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -181,6 +185,7 @@ public class CmsImageCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List ret = new ArrayList();
@@ -213,6 +218,7 @@ public class CmsImageCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -224,6 +230,7 @@ public class CmsImageCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon display
@@ -273,23 +280,25 @@ public class CmsImageCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add variations details
         CmsListItemDetails variationsDetails = new CmsListItemDetails(LIST_DETAIL_VARIATIONS);
         variationsDetails.setAtColumn(LIST_COLUMN_RESOURCE);
         variationsDetails.setVisible(false);
-        variationsDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_IMAGECACHE_DETAIL_SHOW_VARIATIONS_NAME_0));
-        variationsDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_IMAGECACHE_DETAIL_SHOW_VARIATIONS_HELP_0));
-        variationsDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_IMAGECACHE_DETAIL_HIDE_VARIATIONS_NAME_0));
-        variationsDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_IMAGECACHE_DETAIL_HIDE_VARIATIONS_HELP_0));
+        variationsDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_IMAGECACHE_DETAIL_SHOW_VARIATIONS_NAME_0));
+        variationsDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_IMAGECACHE_DETAIL_SHOW_VARIATIONS_HELP_0));
+        variationsDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_IMAGECACHE_DETAIL_HIDE_VARIATIONS_NAME_0));
+        variationsDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_IMAGECACHE_DETAIL_HIDE_VARIATIONS_HELP_0));
         variationsDetails.setName(Messages.get().container(Messages.GUI_IMAGECACHE_DETAIL_VARIATIONS_NAME_0));
-        variationsDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_IMAGECACHE_DETAIL_VARIATIONS_NAME_0)));
+        variationsDetails.setFormatter(
+            new CmsListItemDetailsFormatter(
+                Messages.get().container(Messages.GUI_IMAGECACHE_DETAIL_VARIATIONS_NAME_0)));
         metadata.addItemDetails(variationsDetails);
 
         // add size details
@@ -299,8 +308,8 @@ public class CmsImageCacheList extends A_CmsListDialog {
         sizeDetails.setHideActionName(Messages.get().container(Messages.GUI_IMAGECACHE_DETAIL_HIDE_SIZE_NAME_0));
         sizeDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_IMAGECACHE_DETAIL_HIDE_SIZE_HELP_0));
         sizeDetails.setName(Messages.get().container(Messages.GUI_IMAGECACHE_DETAIL_SIZE_NAME_0));
-        sizeDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_IMAGECACHE_DETAIL_SIZE_NAME_0)));
+        sizeDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_IMAGECACHE_DETAIL_SIZE_NAME_0)));
         sizeDetails.setVisible(false);
         metadata.addItemDetails(sizeDetails);
     }
@@ -308,6 +317,7 @@ public class CmsImageCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no multi actions

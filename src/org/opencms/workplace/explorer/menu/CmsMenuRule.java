@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Defines a named menu rule set to check the visibility of a single context menu item in the explorer view.<p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public class CmsMenuRule {
 
@@ -69,7 +69,7 @@ public class CmsMenuRule {
 
     /**
      * Adds a single menu item rule to the list of rules.<p>
-     * 
+     *
      * @param menuItemRule the menu item rule to add
      */
     public void addMenuItemRule(I_CmsMenuItemRule menuItemRule) {
@@ -78,16 +78,17 @@ public class CmsMenuRule {
             m_menuItemRules.add(menuItemRule);
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_INITIALIZE_MENUITEMRULE_1,
-                    menuItemRule.getClass().getName()));
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_INITIALIZE_MENUITEMRULE_1,
+                        menuItemRule.getClass().getName()));
             }
         }
     }
 
     /**
      * Adds a single menu item rule to the list of rules.<p>
-     * 
+     *
      * @param className the class name of the menu item rule to add
      */
     public void addMenuItemRuleName(String className) {
@@ -103,7 +104,7 @@ public class CmsMenuRule {
 
     /**
      * Freezes the name and the items of the menu rule set.<p>
-     * 
+     *
      * They can not be modified anymore after calling this method.<p>
      */
     public void freeze() {
@@ -117,7 +118,7 @@ public class CmsMenuRule {
 
     /**
      * Returns the first matching rule for the resource to create the context menu for.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param resourceUtil the initialized resource utilities of the resource
      * @return the first matching rule for the resource
@@ -136,7 +137,7 @@ public class CmsMenuRule {
 
     /**
      * Returns the menu item rules class instances.<p>
-     * 
+     *
      * @return the menu item rules class instances
      */
     public List<I_CmsMenuItemRule> getMenuItemRules() {
@@ -146,7 +147,7 @@ public class CmsMenuRule {
 
     /**
      * Returns the name of the menu rule set.<p>
-     * 
+     *
      * @return the name of the menu rule set
      */
     public String getName() {
@@ -166,7 +167,7 @@ public class CmsMenuRule {
 
     /**
      * Sets the menu item rules class instances.<p>
-     * 
+     *
      * @param menuItemRules the menu item rules class instances
      */
     public void setMenuItemRules(List<I_CmsMenuItemRule> menuItemRules) {
@@ -176,7 +177,7 @@ public class CmsMenuRule {
 
     /**
      * Sets the name of the menu rule set.<p>
-     * 
+     *
      * @param name the name of the menu rule set
      */
     public void setName(String name) {

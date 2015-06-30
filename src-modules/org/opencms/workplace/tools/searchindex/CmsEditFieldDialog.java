@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,16 +44,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * 
+ *
  * Dialog to edit new or existing field in the administration view.<p>
- * 
- * @since 6.5.5 
+ *
+ * @since 6.5.5
  */
 public class CmsEditFieldDialog extends A_CmsFieldDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp the jsp action element
      */
     public CmsEditFieldDialog(CmsJspActionElement jsp) {
@@ -63,7 +63,7 @@ public class CmsEditFieldDialog extends A_CmsFieldDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -74,9 +74,9 @@ public class CmsEditFieldDialog extends A_CmsFieldDialog {
     }
 
     /**
-     * Returns the String value of the indexed value.<p> 
-     * 
-     * @return String value of the indexed value 
+     * Returns the String value of the indexed value.<p>
+     *
+     * @return String value of the indexed value
      */
     public String getIndexed() {
 
@@ -88,7 +88,7 @@ public class CmsEditFieldDialog extends A_CmsFieldDialog {
 
     /**
      * Sets the indexed value of the field.<p>
-     * 
+     *
      * @param indexed String value of the indexed value
      */
     public void setIndexed(String indexed) {
@@ -98,9 +98,9 @@ public class CmsEditFieldDialog extends A_CmsFieldDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -149,25 +149,33 @@ public class CmsEditFieldDialog extends A_CmsFieldDialog {
         } else {
             addWidget(new CmsWidgetDialogParameter(m_field, "name", PAGES[0], new CmsDisplayWidget()));
         }
-        addWidget(new CmsWidgetDialogParameter(this, "indexed", "true", PAGES[0], new CmsSelectWidget(
-            getTokenizedWidgetConfiguration()), 1, 1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                this,
+                "indexed",
+                "true",
+                PAGES[0],
+                new CmsSelectWidget(getTokenizedWidgetConfiguration()),
+                1,
+                1));
         addWidget(new CmsWidgetDialogParameter(m_field, "stored", "true", PAGES[0], new CmsCheckboxWidget(), 1, 1));
         addWidget(new CmsWidgetDialogParameter(m_field, "inExcerpt", "", PAGES[0], new CmsCheckboxWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(
-            m_field,
-            "displayNameForConfiguration",
-            "",
-            PAGES[0],
-            new CmsInputWidget(),
-            0,
-            1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_field,
+                "displayNameForConfiguration",
+                "",
+                PAGES[0],
+                new CmsInputWidget(),
+                0,
+                1));
         addWidget(new CmsWidgetDialogParameter(m_field, "boostDisplay", "", PAGES[0], new CmsInputWidget(), 0, 1));
         addWidget(new CmsWidgetDialogParameter(m_field, "defaultValue", "", PAGES[0], new CmsInputWidget(), 0, 1));
     }
 
     /**
      * Returns a list for the indexed select box.<p>
-     * 
+     *
      * @return a list for the indexed select box
      */
     private List<CmsSelectWidgetOption> getTokenizedWidgetConfiguration() {

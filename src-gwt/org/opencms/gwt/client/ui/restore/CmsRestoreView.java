@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -100,7 +100,7 @@ public class CmsRestoreView extends Composite {
 
     /**
      * Creates a new widget instance.<p>
-     * 
+     *
      * @param restoreInfo a bean with information about the resource to restore
      * @param afterRestoreAction the action to execute after restoring the resource
      */
@@ -115,9 +115,8 @@ public class CmsRestoreView extends Composite {
         CmsListItem li = new CmsListItem(liWidget);
         m_infoBoxContainer.add(li);
         if (restoreInfo.isMoved() && restoreInfo.canUndoMove()) {
-            m_movedLabel.setText(CmsRestoreMessages.messageMoved(
-                restoreInfo.getOnlinePath(),
-                restoreInfo.getOfflinePath()));
+            m_movedLabel.setText(
+                CmsRestoreMessages.messageMoved(restoreInfo.getOnlinePath(), restoreInfo.getOfflinePath()));
             m_movedSection.setVisible(true);
         }
         m_restoreInfo = restoreInfo;
@@ -125,8 +124,8 @@ public class CmsRestoreView extends Composite {
 
     /**
      * Sets the popup in which this widget is displayed.<p>
-     * 
-     * @param popup the popup in which this widget is displayed 
+     *
+     * @param popup the popup in which this widget is displayed
      */
     public void setPopup(CmsPopup popup) {
 
@@ -135,8 +134,8 @@ public class CmsRestoreView extends Composite {
 
     /**
      * Handler for the cancel button.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_cancelButton")
     protected void onClickCancel(ClickEvent e) {
@@ -146,8 +145,8 @@ public class CmsRestoreView extends Composite {
 
     /**
      * Click handler for the OK button.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_okButton")
     protected void onClickOk(ClickEvent e) {
@@ -180,8 +179,8 @@ public class CmsRestoreView extends Composite {
 
     /**
      * Gets the list of buttons for the dialog.<p>
-     * 
-     * @return the list of buttons for the dialog 
+     *
+     * @return the list of buttons for the dialog
      */
     List<CmsPushButton> getDialogButtons() {
 

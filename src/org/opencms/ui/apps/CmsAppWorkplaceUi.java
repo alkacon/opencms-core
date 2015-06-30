@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,7 +63,7 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
 
     /**
      * Call to add a new browser history entry.<p>
-     * 
+     *
      * @param state the current app view state
      */
     public void changeCurrentAppState(String state) {
@@ -74,7 +74,7 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
 
     /**
      * Returns the menu items.<p>
-     * 
+     *
      * @return the menu items
      */
     public List<I_CmsMenuItem> getMenuItems() {
@@ -125,7 +125,7 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
 
     /**
      * Navigates to the given app.<p>
-     * 
+     *
      * @param appConfig the app configuration
      */
     public void showApp(I_CmsWorkplaceAppConfiguration appConfig) {

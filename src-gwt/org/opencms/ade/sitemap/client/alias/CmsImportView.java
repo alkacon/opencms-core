@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,7 +65,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This widget is used for importing aliases by uploading a CSV file.<p>
- * 
+ *
  * It contains buttons for uploading a file, a form used to submit the file to the server, and an area
  * used for displaying the result of the import operation on the server.<p>
  */
@@ -127,7 +127,8 @@ public class CmsImportView extends Composite {
                 fileInput.setAllowMultipleFiles(false);
                 fileInput.getElement().getStyle().setFontSize(200, Unit.PX);
                 fileInput.setName(I_CmsAliasConstants.PARAM_IMPORTFILE);
-                fileInput.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().uploadFileInput());
+                fileInput.addStyleName(
+                    org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().uploadFileInput());
 
             }
 
@@ -178,8 +179,8 @@ public class CmsImportView extends Composite {
 
     /**
      * The event handler for the submit button.<p>
-     * 
-     * @param event the click event 
+     *
+     * @param event the click event
      */
     @UiHandler("m_submitButton")
     public void onClickSubmit(ClickEvent event) {
@@ -195,8 +196,8 @@ public class CmsImportView extends Composite {
 
     /**
      * Adds an import result to the displayed list of import results.<p>
-     * 
-     * @param result the result to add 
+     *
+     * @param result the result to add
      */
     protected void addImportResult(CmsAliasImportResult result) {
 
@@ -226,9 +227,9 @@ public class CmsImportView extends Composite {
         m_results.clear();
     }
 
-    /** 
+    /**
      * Processes the result of the import operation from the server.<p>
-     * 
+     *
      * @param results the string containing the results of the import sent by the server
      */
     protected void handleImportResults(List<CmsAliasImportResult> results) {
@@ -290,8 +291,8 @@ public class CmsImportView extends Composite {
 
     /**
      * Updates the path of the file to import.<p>
-     * 
-     * @param path the new path 
+     *
+     * @param path the new path
      */
     protected void updatePath(String path) {
 

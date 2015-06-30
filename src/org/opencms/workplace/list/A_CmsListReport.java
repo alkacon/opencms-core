@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,15 +38,15 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides a report in the list widget.<p> 
- * 
- * @since 6.0.0 
+ * Provides a report in the list widget.<p>
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsListReport extends CmsReport {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public A_CmsListReport(CmsJspActionElement jsp) {
@@ -57,7 +57,7 @@ public abstract class A_CmsListReport extends CmsReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -80,7 +80,7 @@ public abstract class A_CmsListReport extends CmsReport {
 
     /**
      * Performs the dialog actions depending on the initialized action.<p>
-     * 
+     *
      * @throws JspException if dialog actions fail
      */
     public void displayReport() throws JspException {
@@ -110,7 +110,7 @@ public abstract class A_CmsListReport extends CmsReport {
 
     /**
      * Initializes the report thread to use for this report.<p>
-     * 
+     *
      * @return the reported thread to use for this report.
      */
     public abstract I_CmsReportThread initializeThread();
@@ -133,7 +133,7 @@ public abstract class A_CmsListReport extends CmsReport {
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {
-            // set the default action               
+            // set the default action
             setAction(ACTION_DEFAULT);
         }
         if (DIALOG_INITIAL.equals(getParamAction()) || (getParamAction() == null)) {
@@ -155,7 +155,7 @@ public abstract class A_CmsListReport extends CmsReport {
 
     /**
      * Should be overridden for parameter validation.<p>
-     * 
+     *
      * @throws Exception if the parameters are not valid
      */
     protected void validateParameters() throws Exception {

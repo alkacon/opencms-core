@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -68,7 +68,7 @@ public class CmsPreviewInfo implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param content the preview content
      * @param url the preview URL
      * @param newWindowRequired flag indicating that the preview should be opened in a new window
@@ -132,7 +132,7 @@ public class CmsPreviewInfo implements IsSerializable {
 
     /**
      * Returns the preview content.<p>
-     * 
+     *
      * @return the preview content
      */
     public String getPreviewContent() {
@@ -142,7 +142,7 @@ public class CmsPreviewInfo implements IsSerializable {
 
     /**
      * Returns the preview URL.<p>
-     * 
+     *
      * @return the preview URL
      */
     public String getPreviewUrl() {
@@ -182,7 +182,7 @@ public class CmsPreviewInfo implements IsSerializable {
 
     /**
      * Returns if the given preview content has additional locales.<p>
-     * 
+     *
      * @return <code>true</code> if the given preview content has additional locales
      */
     public boolean hasAdditionalLocales() {
@@ -192,7 +192,7 @@ public class CmsPreviewInfo implements IsSerializable {
 
     /**
      * Returns if the preview requires specific dimensions.<p>
-     * 
+     *
      * @return <code>true</code> if the dialog requires dimensions
      */
     public boolean hasDimensions() {
@@ -202,7 +202,7 @@ public class CmsPreviewInfo implements IsSerializable {
 
     /**
      * Returns if preview HTML content is available to display directly.<p>
-     * 
+     *
      * @return if preview HTML content is available to display directly
      */
     public boolean hasPreviewContent() {
@@ -212,7 +212,7 @@ public class CmsPreviewInfo implements IsSerializable {
 
     /**
      * Returns if there a URL available to call for the preview.<p>
-     * 
+     *
      * @return if there a URL available to call for the preview
      */
     public boolean hasPreviewUrl() {
@@ -222,7 +222,7 @@ public class CmsPreviewInfo implements IsSerializable {
 
     /**
      * Returns if it is required to open the preview in a new window.<p>
-     * 
+     *
      * @return <code>true</code> if it is required to open the preview in a new window
      */
     public boolean isNewWindowRequired() {

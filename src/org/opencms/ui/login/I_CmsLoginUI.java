@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,62 +39,62 @@ public interface I_CmsLoginUI {
 
     /**
      * Displays an error message.<p>
-     * 
-     * @param message the message to display 
+     *
+     * @param message the message to display
      */
     void displayError(String message);
 
     /**
      * Gets the selected org unit.<p>
-     * 
-     * @return the selected org unit 
+     *
+     * @return the selected org unit
      */
     String getOrgUnit();
 
-    /** 
+    /**
      * Gets the password.<p>
-     * 
-     * @return the password 
+     *
+     * @return the password
      */
     String getPassword();
 
     /**
      * Gets the selected PC type.<p>
-     * 
-     * @return the PC type 
+     *
+     * @return the PC type
      */
     String getPcType();
 
     /**
      * Gets the user name.<p>
-     * 
-     * @return the user name 
+     *
+     * @return the user name
      */
     String getUser();
 
-    /** 
+    /**
      * Opens the login target for a logged in user.<p>
-     * 
-     * @param targetInfo the login target information 
+     *
+     * @param targetInfo the login target information
      */
     void openLoginTarget(CmsLoginTargetInfo targetInfo);
 
     /**
      * Sets the org units which should be selectable by the user.<p>
-     * 
-     * @param ous the selectable org units 
+     *
+     * @param ous the selectable org units
      */
     void setSelectableOrgUnits(List<CmsOrganizationalUnit> ous);
 
-    /** 
+    /**
      * Show notification that the user is already loogged in.<p>
      */
     void showAlreadyLoggedIn();
 
     /**
      * Initializes the login view.<p>
-     * 
-     * @param preselectedOu a potential preselected OU 
+     *
+     * @param preselectedOu a potential preselected OU
      */
     void showLoginView(String preselectedOu);
 

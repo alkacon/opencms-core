@@ -114,8 +114,8 @@ public class CmsHistoryResourceBean implements IsSerializable {
 
     /**
      * Gets the size.<p>
-     * 
-     * @return the size 
+     *
+     * @return the size
      */
     public int getSize() {
 
@@ -204,8 +204,8 @@ public class CmsHistoryResourceBean implements IsSerializable {
 
     /**
      * Sets the size.<p>
-     * 
-     * @param size the size 
+     *
+     * @param size the size
      */
     public void setSize(int size) {
 

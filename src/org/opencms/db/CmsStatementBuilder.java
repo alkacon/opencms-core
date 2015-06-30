@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import com.google.common.collect.Lists;
 
 /**
  * A helper class used to accumulate SQL fragments together with the corresponding query parameters.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsStatementBuilder {
 
@@ -47,9 +47,9 @@ public class CmsStatementBuilder {
 
     /**
      * Adds an SQL fragment and zero or more query parameters.<p>
-     *  
-     * @param fragment the SQL fragment 
-     * @param params the query parameters 
+     *
+     * @param fragment the SQL fragment
+     * @param params the query parameters
      */
     public void add(String fragment, List<Object> params) {
 
@@ -59,9 +59,9 @@ public class CmsStatementBuilder {
 
     /**
      * Adds an SQL fragment and zero or more query parameters.<p>
-     *  
-     * @param fragment the SQL fragment 
-     * @param params the query parameters 
+     *
+     * @param fragment the SQL fragment
+     * @param params the query parameters
      */
     public void add(String fragment, Object... params) {
 
@@ -71,8 +71,8 @@ public class CmsStatementBuilder {
 
     /**
      * Returns the list of accumulated query parameters.<p>
-     *  
-     * @return the list of accumulated query parameters 
+     *
+     * @return the list of accumulated query parameters
      */
     public List<Object> getParameters() {
 
@@ -81,8 +81,8 @@ public class CmsStatementBuilder {
 
     /**
      * Returns the accumulated query string.<p>
-     * 
-     * @return the accumulated query string 
+     *
+     * @return the accumulated query string
      */
     public String getQuery() {
 

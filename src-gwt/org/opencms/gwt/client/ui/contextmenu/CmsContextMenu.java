@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * A implementation for a context menu.<p>
- * 
+ *
  * @since version 8.0.0
  */
 public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAutoHider {
@@ -70,8 +70,8 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
 
     /**
      * Constructor.<p>
-     * 
-     * @param menuData the data structure for the context menu 
+     *
+     * @param menuData the data structure for the context menu
      * @param isFixed indicating if the position of the menu should be fixed.
      * @param autoHideParent the menu auto hide parent
      */
@@ -98,7 +98,7 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
 
     /**
      * Adds a menu item to this menu.
-     * 
+     *
      * @param item the item to be added
      */
     public void addItem(A_CmsContextMenuItem item) {
@@ -125,7 +125,7 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
         m_autoHideParent.hide();
     }
 
-    /** 
+    /**
      * Hides this menu and all its parent menus.<p>
      */
     public void hideAll() {
@@ -157,7 +157,7 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
 
     /**
      * If the browser's window is resized this method rearranges the sub menus of the selected item.<p>
-     * 
+     *
      * @see com.google.gwt.event.logical.shared.ResizeHandler#onResize(com.google.gwt.event.logical.shared.ResizeEvent)
      */
     public void onResize(final ResizeEvent event) {
@@ -205,8 +205,8 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
 
     /**
      * Sets the parent item.<p>
-     * 
-     * @param parentItem the parent item 
+     *
+     * @param parentItem the parent item
      */
     public void setParentItem(A_CmsContextMenuItem parentItem) {
 
@@ -215,7 +215,7 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
 
     /**
      * Returns the selected item of this menu.<p>
-     * 
+     *
      * @return the selected item of this menu
      */
     protected A_CmsContextMenuItem getSelectedItem() {
@@ -225,9 +225,9 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
 
     /**
      * Action on close.<p>
-     * 
-     * On close all sub menus should be hidden, the currently selected item should be deselected 
-     * and the popup will be closed.<p>  
+     *
+     * On close all sub menus should be hidden, the currently selected item should be deselected
+     * and the popup will be closed.<p>
      */
     protected void onClose() {
 
@@ -242,7 +242,7 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
 
     /**
      * Opens a sub menu and sets its position.<p>
-     * 
+     *
      * @param item the item to show the sub menu of
      */
     protected void openPopup(final A_CmsContextMenuItem item) {
@@ -261,7 +261,7 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
 
     /**
      * Sets the selected item of this menu.<p>
-     * 
+     *
      * @param selectedItem the item to select
      */
     protected void setSelectedItem(A_CmsContextMenuItem selectedItem) {
@@ -271,28 +271,28 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
 
     /**
      * Sets the position of the sub menu popup.<p>
-     * 
+     *
      * First calculates the best space where to show the popup.<p>
-     * 
+     *
      * The following list shows the possibilities, beginning
      * with the best and ending with the worst.<p>
-     * 
+     *
      * <ul>
      * <li>bottom-right</li>
      * <li>bottom-left</li>
      * <li>top-right</li>
      * <li>top-left</li>
      * </ul>
-     * 
+     *
      * Then the position (top and left coordinate) are calculated.<p>
-     * 
+     *
      * Finally the position of the sub menu popup is set to the calculated values.<p>
-     *  
+     *
      * @param item the item to show the sub menu of
      */
     protected void setSubMenuPosition(final A_CmsContextMenuItem item) {
 
-        // calculate the left space 
+        // calculate the left space
         // add 10 because of the shadow and for avoiding that the browser's right window border touches the sub menu
         int leftSpace = item.getAbsoluteLeft() - (Window.getScrollLeft() + 10);
         // calculate the right space
@@ -315,7 +315,7 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
         // if the height of the sub menu is smaller than the bottom space, show the sub menu on the bottom
         boolean showBottom = item.getSubMenu().getOffsetHeight() < bottomSpace;
         if (!showBottom) {
-            // if the height of the sub menu is larger than the bottom space, compare the top space with 
+            // if the height of the sub menu is larger than the bottom space, compare the top space with
             // the bottom space and show the sub menu on the bottom if on the bottom is more space than on the top
             showBottom = topSpace < bottomSpace;
         }
@@ -324,40 +324,42 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
         int top;
         if (showRight && showBottom) {
             // bottom-right
-            // if to show the sub menu on the right the left coordinate is on the right end of the item, so take the 
+            // if to show the sub menu on the right the left coordinate is on the right end of the item, so take the
             // item's absolute left and add the width of the item / by subtracting 4 the overlay it created
             left = (item.getAbsoluteLeft() + item.getOffsetWidth()) - 4;
-            // if to show the sub menu on the bottom the top coordinate is on the top end of the item, so take the 
+            // if to show the sub menu on the bottom the top coordinate is on the top end of the item, so take the
             // item's absolute top and subtract the scroll top of Window / by subtracting 4 the shadow is balanced
             top = item.getAbsoluteTop() - Window.getScrollTop() - 4;
         } else if (!showRight && showBottom) {
             // bottom-left
-            // if to show the sub menu on the left, the left coordinate is on the left end of the item plus the width 
+            // if to show the sub menu on the left, the left coordinate is on the left end of the item plus the width
             // of the sub menu, so take the item's absolute left, subtract the sub menu's width and the scroll left
             // by subtracting 4 the overlay it created
             left = item.getAbsoluteLeft() - item.getSubMenu().getOffsetWidth() - Window.getScrollLeft() - 4;
-            // if to show the sub menu on the bottom the top coordinate is on the top end of the item, so take the 
+            // if to show the sub menu on the bottom the top coordinate is on the top end of the item, so take the
             // item's absolute top and subtract the scroll top of Window / by subtracting 4 the shadow is balanced
             top = item.getAbsoluteTop() - Window.getScrollTop() - 4;
         } else if (showRight && !showBottom) {
             // top-right
-            // if to show the sub menu on the right the left coordinate is on the right end of the item, so take the 
+            // if to show the sub menu on the right the left coordinate is on the right end of the item, so take the
             // item's absolute left and add the width of the item / by subtracting 4 the overlay it created
             left = (item.getAbsoluteLeft() + item.getOffsetWidth()) - 4;
             // if to show the sub menu on the top, the bottom-left corner of the item plus the height of the sub menu
             // is the top coordinate, so take the item's absolute top subtract the scroll top and the height of the sub
             // menu and add the height of the item / by subtracting 4 the shadow is balanced
-            top = ((item.getAbsoluteTop() - Window.getScrollTop() - item.getSubMenu().getOffsetHeight()) + item.getOffsetHeight()) - 4;
+            top = ((item.getAbsoluteTop() - Window.getScrollTop() - item.getSubMenu().getOffsetHeight())
+                + item.getOffsetHeight()) - 4;
         } else {
             // top-left
-            // if to show the sub menu on the left, the left coordinate is on the left end of the item plus the width 
+            // if to show the sub menu on the left, the left coordinate is on the left end of the item plus the width
             // of the sub menu, so take the item's absolute left, subtract the sub menu's width and the scroll left
             // by subtracting 4 the overlay it created
             left = item.getAbsoluteLeft() - Window.getScrollLeft() - item.getSubMenu().getOffsetWidth() - 4;
             // if to show the sub menu on the top, the bottom-left corner of the item plus the height of the sub menu
             // is the top coordinate, so take the item's absolute top subtract the scroll top and the height of the sub
             // menu and add the height of the item / by subtracting 4 the shadow is balanced
-            top = ((item.getAbsoluteTop() - Window.getScrollTop() - item.getSubMenu().getOffsetHeight()) + item.getOffsetHeight()) - 4;
+            top = ((item.getAbsoluteTop() - Window.getScrollTop() - item.getSubMenu().getOffsetHeight())
+                + item.getOffsetHeight()) - 4;
         }
 
         // finally set the position of the popup
@@ -366,8 +368,8 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
 
     /**
      * Gets the parent menu.<p>
-     * 
-     * @return the parent menu 
+     *
+     * @return the parent menu
      */
     CmsContextMenu getParentMenu() {
 
@@ -380,7 +382,7 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
 
     /**
      * Creates the context menu.<p>
-     * 
+     *
      * @param entries a list with all entries for the context menu
      */
     private void createContextMenu(List<I_CmsContextMenuEntry> entries) {

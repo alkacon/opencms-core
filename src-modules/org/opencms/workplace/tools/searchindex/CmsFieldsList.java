@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -64,12 +64,12 @@ import javax.servlet.ServletException;
 import org.apache.commons.logging.Log;
 
 /**
- * A list that displays the fields of a request parameter given 
- * <code>{@link org.opencms.search.fields.CmsLuceneFieldConfiguration}</code> ("fieldconfiguration"). 
- * 
- * This list is no stand-alone page but has to be embedded in another dialog 
+ * A list that displays the fields of a request parameter given
+ * <code>{@link org.opencms.search.fields.CmsLuceneFieldConfiguration}</code> ("fieldconfiguration").
+ *
+ * This list is no stand-alone page but has to be embedded in another dialog
  * (see <code> {@link org.opencms.workplace.tools.searchindex.A_CmsEmbeddedListDialog}</code>. <p>
- * 
+ *
  * @since 6.5.5
  */
 public class CmsFieldsList extends A_CmsEmbeddedListDialog {
@@ -163,7 +163,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsFieldsList(CmsJspActionElement jsp) {
@@ -173,7 +173,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the list name
@@ -185,7 +185,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -277,7 +277,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         params.put(PARAM_ACTION, new String[] {DIALOG_INITIAL});
         params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
         if (action.equals(LIST_ACTION_EDIT)) {
-            // forward to the edit indexsource screen   
+            // forward to the edit indexsource screen
             getToolManager().jspForwardTool(
                 this,
                 "/searchindex/fieldconfigurations/fieldconfiguration/field/edit",
@@ -289,7 +289,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
                 "/searchindex/fieldconfigurations/fieldconfiguration/field/newmapping",
                 params);
         } else if (action.equals(LIST_ACTION_OVERVIEW_FIELD)) {
-            // forward to the field configuration overview screen   
+            // forward to the field configuration overview screen
             getToolManager().jspForwardTool(this, "/searchindex/fieldconfigurations/fieldconfiguration/field", params);
         } else if (action.equals(LIST_ACTION_EXCERPT_FALSE)) {
             // execute the excerpt false action
@@ -333,7 +333,7 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
 
     /**
      * Returns the request parameter "fieldconfiguration".<p>
-     *  
+     *
      * @return the request parameter "fieldconfiguration"
      */
     public String getParamFieldconfiguration() {
@@ -343,11 +343,11 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
 
     /**
      * Sets the request parameter "fieldconfiguration". <p>
-     * 
-     * Method intended for workplace-properietary automatic filling of 
+     *
+     * Method intended for workplace-properietary automatic filling of
      * request parameter values to dialogs, not for manual invocation. <p>
-     *  
-     * @param fieldconfiguration the request parameter "fieldconfiguration" to set 
+     *
+     * @param fieldconfiguration the request parameter "fieldconfiguration" to set
      */
     public void setParamFieldconfiguration(String fieldconfiguration) {
 
@@ -558,7 +558,8 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         };
         excerptFalseAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_FALSE_NAME_0));
         excerptFalseAction.setHelpText(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_FALSE_HELP_0));
-        excerptFalseAction.setConfirmationMessage(Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_FALSE_CONF_0));
+        excerptFalseAction.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_LIST_FIELD_ACTION_FALSE_CONF_0));
         excerptFalseAction.setIconPath(ICON_FALSE);
 
         excerptCol.addDirectAction(excerptTrueAction);
@@ -598,14 +599,14 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         configDetails.setAtColumn(LIST_COLUMN_NAME);
         configDetails.setVisible(false);
         configDetails.setShowActionName(Messages.get().container(Messages.GUI_LIST_FIELD_DETAIL_MAPPINGS_SHOW_0));
-        configDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_LIST_FIELD_DETAIL_MAPPINGS_SHOW_HELP_0));
+        configDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_LIST_FIELD_DETAIL_MAPPINGS_SHOW_HELP_0));
         configDetails.setHideActionName(Messages.get().container(Messages.GUI_LIST_FIELD_DETAIL_MAPPINGS_HIDE_0));
-        configDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_LIST_FIELD_DETAIL_MAPPINGS_HIDE_HELP_0));
+        configDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_LIST_FIELD_DETAIL_MAPPINGS_HIDE_HELP_0));
         configDetails.setName(Messages.get().container(Messages.GUI_LIST_FIELD_DETAIL_MAPPINGS_NAME_0));
-        configDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_LIST_FIELD_DETAIL_MAPPINGS_NAME_0)));
+        configDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_LIST_FIELD_DETAIL_MAPPINGS_NAME_0)));
         metadata.addItemDetails(configDetails);
     }
 
@@ -618,9 +619,10 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         // add add multi action
         CmsListMultiAction deleteMultiAction = new CmsListMultiAction(LIST_MACTION_DELETEFIELD);
         deleteMultiAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_MACTION_DELETEFIELD_NAME_0));
-        deleteMultiAction.setHelpText(Messages.get().container(Messages.GUI_LIST_FIELD_MACTION_DELETEFIELD_NAME_HELP_0));
-        deleteMultiAction.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_LIST_FIELD_MACTION_DELETEFIELD_CONF_0));
+        deleteMultiAction.setHelpText(
+            Messages.get().container(Messages.GUI_LIST_FIELD_MACTION_DELETEFIELD_NAME_HELP_0));
+        deleteMultiAction.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_LIST_FIELD_MACTION_DELETEFIELD_CONF_0));
         deleteMultiAction.setIconPath(ICON_MULTI_DELETE);
         metadata.addMultiAction(deleteMultiAction);
     }
@@ -636,9 +638,9 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
     }
 
     /**
-     * Writes the updated search configuration back to the XML 
+     * Writes the updated search configuration back to the XML
      * configuration file and refreshes the complete list.<p>
-     * 
+     *
      * @param refresh if true, the list items are refreshed
      */
     protected void writeConfiguration(boolean refresh) {
@@ -652,8 +654,8 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
 
     /**
      * Checks the configuration to write.<p>
-     * 
-     * @param fields list of fields of the current field configuration 
+     *
+     * @param fields list of fields of the current field configuration
      * @return true if configuration is valid, otherwise false
      */
     private boolean checkWriteConfiguration(List<CmsSearchField> fields) {
@@ -673,17 +675,18 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
 
     /**
      * Fills details of the field into the given item. <p>
-     * 
+     *
      * @param item the list item to fill
      * @param detailId the id for the detail to fill
      */
     private void fillDetailField(CmsListItem item, String detailId) {
 
         StringBuffer html = new StringBuffer();
-        // search for the corresponding A_CmsSearchIndex: 
+        // search for the corresponding A_CmsSearchIndex:
         String idxFieldName = (String)item.get(LIST_COLUMN_NAME);
 
-        List<CmsSearchField> fields = OpenCms.getSearchManager().getFieldConfiguration(m_paramFieldconfiguration).getFields();
+        List<CmsSearchField> fields = OpenCms.getSearchManager().getFieldConfiguration(
+            m_paramFieldconfiguration).getFields();
         Iterator<CmsSearchField> itFields = fields.iterator();
         CmsLuceneField idxField = null;
         while (itFields.hasNext()) {
@@ -711,8 +714,8 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
     }
 
     /**
-     * Returns the configured fields of the current field configuration. 
-     * 
+     * Returns the configured fields of the current field configuration.
+     *
      * @return the configured fields of the current field configuration
      */
     private List<CmsSearchField> getFields() {
@@ -725,9 +728,10 @@ public class CmsFieldsList extends A_CmsEmbeddedListDialog {
         } else {
             result = Collections.emptyList();
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
-                    A_CmsFieldConfigurationDialog.PARAM_FIELDCONFIGURATION));
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
+                        A_CmsFieldConfigurationDialog.PARAM_FIELDCONFIGURATION));
             }
         }
         return result;

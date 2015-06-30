@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -77,7 +77,7 @@ public class CmsModuleAddResourceTypes extends CmsWidgetDialog {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsModuleAddResourceTypes(CmsJspActionElement jsp) {
@@ -88,7 +88,7 @@ public class CmsModuleAddResourceTypes extends CmsWidgetDialog {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -107,14 +107,14 @@ public class CmsModuleAddResourceTypes extends CmsWidgetDialog {
         try {
             // validate the resource type info
             if (OpenCms.getResourceManager().hasResourceType(m_resInfo.getName())) {
-                throw new CmsException(Messages.get().container(
-                    Messages.ERR_RESOURCE_TYPE_ALREADY_EXISTS_1,
-                    m_resInfo.getName()));
+                throw new CmsException(
+                    Messages.get().container(Messages.ERR_RESOURCE_TYPE_ALREADY_EXISTS_1, m_resInfo.getName()));
             }
             if (OpenCms.getResourceManager().hasResourceType(m_resInfo.getId())) {
-                throw new CmsException(Messages.get().container(
-                    Messages.ERR_RESOURCE_TYPE_ID_ALREADY_IN_USE_1,
-                    String.valueOf(m_resInfo.getId())));
+                throw new CmsException(
+                    Messages.get().container(
+                        Messages.ERR_RESOURCE_TYPE_ID_ALREADY_IN_USE_1,
+                        String.valueOf(m_resInfo.getId())));
             }
 
             getJsp().getRequest().setAttribute(ATTR_RESOURCE_TYPE_INFO, m_resInfo);
@@ -131,7 +131,7 @@ public class CmsModuleAddResourceTypes extends CmsWidgetDialog {
 
     /**
      * Gets the module parameter.<p>
-     * 
+     *
      * @return the module parameter
      */
     public String getParamModule() {
@@ -139,7 +139,7 @@ public class CmsModuleAddResourceTypes extends CmsWidgetDialog {
         return m_paramModule;
     }
 
-    /** 
+    /**
      * Sets the module parameter.<p>
      * @param paramModule the module parameter
      */
@@ -238,7 +238,7 @@ public class CmsModuleAddResourceTypes extends CmsWidgetDialog {
 
     /**
      * Returns the next available resource type id.<p>
-     * 
+     *
      * @return the resource type id
      */
     private int findNextTypeId() {

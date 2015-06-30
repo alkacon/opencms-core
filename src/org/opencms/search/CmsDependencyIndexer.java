@@ -156,7 +156,8 @@ public class CmsDependencyIndexer extends CmsVfsIndexer {
                 Map<String, List<CmsResource>> folderLookupMap = createFolderLookupMap(resources);
                 // iterate all resources found in the folder
                 for (CmsResource resource : resources) {
-                    List<CmsResource> folderContent = folderLookupMap.get(CmsResource.getFolderPath(resource.getRootPath()));
+                    List<CmsResource> folderContent = folderLookupMap.get(
+                        CmsResource.getFolderPath(resource.getRootPath()));
                     CmsDocumentDependency dep = CmsDocumentDependency.load(m_cms, resource, folderContent);
                     dep.storeInContext(m_cms);
                     // now update all the resources individually

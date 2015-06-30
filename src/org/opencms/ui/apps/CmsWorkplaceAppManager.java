@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -89,7 +89,8 @@ public class CmsWorkplaceAppManager {
     public static List<I_CmsWorkplaceAppConfiguration> loadAppsUsingServiceLoader() {
 
         List<I_CmsWorkplaceAppConfiguration> appConfigurations = new ArrayList<I_CmsWorkplaceAppConfiguration>();
-        Iterator<I_CmsWorkplaceAppConfiguration> configs = ServiceLoader.load(I_CmsWorkplaceAppConfiguration.class).iterator();
+        Iterator<I_CmsWorkplaceAppConfiguration> configs = ServiceLoader.load(
+            I_CmsWorkplaceAppConfiguration.class).iterator();
         while (configs.hasNext()) {
             appConfigurations.add(configs.next());
         }

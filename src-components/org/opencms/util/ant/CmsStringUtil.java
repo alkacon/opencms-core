@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,8 +35,8 @@ import java.util.Map;
 
 /**
  * Provides String utility functions.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public final class CmsStringUtil {
 
@@ -50,10 +50,10 @@ public final class CmsStringUtil {
 
     /**
      * Returns <code>true</code> if the provided String is either <code>null</code>
-     * or the empty String <code>""</code>.<p> 
-     * 
+     * or the empty String <code>""</code>.<p>
+     *
      * @param value the value to check
-     * 
+     *
      * @return true, if the provided value is null or the empty String, false otherwise
      */
     public static boolean isEmpty(String value) {
@@ -63,10 +63,10 @@ public final class CmsStringUtil {
 
     /**
      * Returns <code>true</code> if the provided String is either <code>null</code>
-     * or contains only white spaces.<p> 
-     * 
+     * or contains only white spaces.<p>
+     *
      * @param value the value to check
-     * 
+     *
      * @return true, if the provided value is null or contains only white spaces, false otherwise
      */
     public static boolean isEmptyOrWhitespaceOnly(String value) {
@@ -112,7 +112,7 @@ public final class CmsStringUtil {
             i = n + 1;
             n = source.indexOf(delimiter, i);
         }
-        // is there a non - empty String to cut from the tail? 
+        // is there a non - empty String to cut from the tail?
         if (n < 0) {
             n = source.length();
         }
@@ -139,11 +139,11 @@ public final class CmsStringUtil {
     /**
      * Splits a String into substrings along the provided String delimiter and returns
      * the result as List of Substrings.<p>
-     * 
+     *
      * @param source the String to split
      * @param delimiter the delimiter to split at
      * @param trim flag to indicate if leading and trailing white spaces should be omitted
-     * 
+     *
      * @return the Array of splitted Substrings
      */
     public static List<String> splitAsList(String source, String delimiter, boolean trim) {
@@ -166,7 +166,7 @@ public final class CmsStringUtil {
             i = n + dl;
             n = source.indexOf(delimiter, i);
         }
-        // is there a non - empty String to cut from the tail? 
+        // is there a non - empty String to cut from the tail?
         if (n < 0) {
             n = source.length();
         }
@@ -179,11 +179,11 @@ public final class CmsStringUtil {
     /**
      * Splits a String into substrings along the provided <code>paramDelim</code> delimiter,
      * then each substring is treat as a key-value pair delimited by <code>keyValDelim</code>.<p>
-     * 
+     *
      * @param source the string to split
      * @param paramDelim the string to delimit each key-value pair
      * @param keyValDelim the string to delimit key and value
-     * 
+     *
      * @return a map of splitted key-value pairs
      */
     public static Map<String, String> splitAsMap(String source, String paramDelim, String keyValDelim) {
@@ -198,7 +198,7 @@ public final class CmsStringUtil {
             String value = "";
             if (pos > 0) {
                 key = param.substring(0, pos);
-                if (pos + keyValLen < param.length()) {
+                if ((pos + keyValLen) < param.length()) {
                     value = param.substring(pos + keyValLen);
                 }
             }

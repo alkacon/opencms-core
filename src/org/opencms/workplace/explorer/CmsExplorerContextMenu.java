@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,10 +36,10 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides methods to build a context menu for an explorer resource type.<p>
- * 
- * This object stores all entries which are displayed in a context menu in a sorted list.<p> 
- * 
- * @since 6.0.0 
+ *
+ * This object stores all entries which are displayed in a context menu in a sorted list.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsExplorerContextMenu {
 
@@ -62,7 +62,7 @@ public class CmsExplorerContextMenu {
 
     /**
      * Adds a menu entry to the list of context menu items.<p>
-     * 
+     *
      * @param item the entry item to add to the list
      */
     public void addContextMenuEntry(CmsExplorerContextMenuItem item) {
@@ -76,7 +76,7 @@ public class CmsExplorerContextMenu {
 
     /**
      * Adds a menu separator to the list of context menu items.<p>
-     * 
+     *
      * @param item the separator item to add to the list
      */
     public void addContextMenuSeparator(CmsExplorerContextMenuItem item) {
@@ -90,9 +90,9 @@ public class CmsExplorerContextMenu {
 
     /**
      * Adds a list of CmsContextMenuItem objects to the context menu list.<p>
-     * 
+     *
      * The list is sorted by their order after that operation.<p>
-     * 
+     *
      * @param entries a list of initialized context menu items
      */
     public void addEntries(List<CmsExplorerContextMenuItem> entries) {
@@ -114,7 +114,7 @@ public class CmsExplorerContextMenu {
 
     /**
      * Returns all entries of the context menu.<p>
-     * 
+     *
      * @return all entries of the context menu
      */
     public List<CmsExplorerContextMenuItem> getAllEntries() {
@@ -124,7 +124,7 @@ public class CmsExplorerContextMenu {
 
     /**
      * Tests if the context menu is empty.<p>
-     * 
+     *
      * @return true or false
      */
     public boolean isEmpty() {
@@ -134,7 +134,7 @@ public class CmsExplorerContextMenu {
 
     /**
      * Returns true if the menu is a multi context menu for more than one selected file.<p>
-     * 
+     *
      * @return if the menu is a multi context menu for more than one selected file
      */
     public boolean isMultiMenu() {
@@ -144,7 +144,7 @@ public class CmsExplorerContextMenu {
 
     /**
      * Sets all entries of the context menu.<p>
-     * 
+     *
      * @param entries all entries of the context menu
      */
     public void setAllEntries(List<CmsExplorerContextMenuItem> entries) {
@@ -154,7 +154,7 @@ public class CmsExplorerContextMenu {
 
     /**
      * Sets if the menu is a multi context menu for more than one selected file.<p>
-     * 
+     *
      * @param multiMenu true, if the menu is a multi context menu for more than one selected file, otherwise false
      */
     public void setMultiMenu(boolean multiMenu) {

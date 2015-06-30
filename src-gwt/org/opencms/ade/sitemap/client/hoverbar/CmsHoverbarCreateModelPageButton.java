@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,16 +49,17 @@ public class CmsHoverbarCreateModelPageButton extends CmsPushButton {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param isModelGroup in case of a model group page
      */
     public CmsHoverbarCreateModelPageButton(boolean isModelGroup) {
 
         m_isModelGroup = isModelGroup;
         setImageClass(org.opencms.gwt.client.ui.css.I_CmsImageBundle.INSTANCE.style().addIcon());
-        setTitle(isModelGroup
-        ? Messages.get().key(Messages.GUI_CREATE_MODEL_GROUP_PAGE_BUTTON_TITLE_0)
-        : Messages.get().key(Messages.GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0));
+        setTitle(
+            isModelGroup
+            ? Messages.get().key(Messages.GUI_CREATE_MODEL_GROUP_PAGE_BUTTON_TITLE_0)
+            : Messages.get().key(Messages.GUI_CREATE_MODEL_PAGE_BUTTON_TITLE_0));
         setButtonStyle(ButtonStyle.IMAGE, null);
         addClickHandler(new ClickHandler() {
 
@@ -77,7 +78,7 @@ public class CmsHoverbarCreateModelPageButton extends CmsPushButton {
 
     /**
      * Sets the hover bar instance.<p>
-     * 
+     *
      * @param hoverbar the hover bar
      */
     public void setHoverbar(CmsSitemapHoverbar hoverbar) {

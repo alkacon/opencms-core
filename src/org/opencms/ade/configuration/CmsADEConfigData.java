@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -83,13 +83,13 @@ public class CmsADEConfigData {
     /** The configuration sequence (contains the list of all sitemap configuration data beans to be used for inheritance). */
     private CmsADEConfigurationSequence m_configSequence;
 
-    /** 
-     * Creates a new configuration data object, based on an internal configuration data bean and a 
+    /**
+     * Creates a new configuration data object, based on an internal configuration data bean and a
      * configuration cache state.<p>
-     * 
-     * @param data the internal configuration data bean 
+     *
+     * @param data the internal configuration data bean
      * @param cache the configuration cache state
-     * @param configSequence the configuration sequence  
+     * @param configSequence the configuration sequence
      */
     public CmsADEConfigData(
         CmsADEConfigDataInternal data,
@@ -103,27 +103,27 @@ public class CmsADEConfigData {
 
     /**
      * Generic method to merge lists of named configuration objects.<p>
-     * 
+     *
      * The lists are merged such that the configuration objects from the child list rise to the front of the result list,
      * and two configuration objects will be merged themselves if they share the same name.<p>
-     * 
+     *
      * For example, if we have two lists of configuration objects:<p>
-     * 
+     *
      * parent: A1, B1, C1<p>
      * child: D2, B2<p>
-     * 
+     *
      * then the resulting list will look like:<p>
-     * 
+     *
      * D2, B3, A1, C1<p>
-     * 
+     *
      * where B3 is the result of merging B1 and B2.<p>
-     * 
-     * @param <C> the type of configuration object 
-     * @param parentConfigs the parent configurations 
-     * @param childConfigs the child configurations 
-     * @param preserveDisabled if true, try to merge parents with disabled children instead of discarding them 
-     * 
-     * @return the merged configuration object list 
+     *
+     * @param <C> the type of configuration object
+     * @param parentConfigs the parent configurations
+     * @param childConfigs the child configurations
+     * @param preserveDisabled if true, try to merge parents with disabled children instead of discarding them
+     *
+     * @return the merged configuration object list
      */
     public static <C extends I_CmsConfigurationObject<C>> List<C> combineConfigurationElements(
         List<C> parentConfigs,
@@ -158,7 +158,7 @@ public class CmsADEConfigData {
         }
         result = new ArrayList<C>(map.values());
         Collections.reverse(result);
-        // those multiple "reverse" calls may a bit confusing. They are there because on the one hand we want to keep the 
+        // those multiple "reverse" calls may a bit confusing. They are there because on the one hand we want to keep the
         // configuration items from one configuration in the same order as they are defined, on the other hand we want
         // configuration items from a child configuration to rise to the top of the configuration items.
 
@@ -171,10 +171,10 @@ public class CmsADEConfigData {
 
     /**
      * Applies the formatter change sets of this and all parent configurations to a map of external (non-schema) formatters.<p>
-     * 
-     * @param formatters the external formatter map which will be modified 
-     *  
-     * @param formatterCacheState the formatter cache state from which new external formatters should be fetched 
+     *
+     * @param formatters the external formatter map which will be modified
+     *
+     * @param formatterCacheState the formatter cache state from which new external formatters should be fetched
      */
     public void applyAllFormatterChanges(
         Map<CmsUUID, I_CmsFormatterBean> formatters,
@@ -187,8 +187,8 @@ public class CmsADEConfigData {
 
     /**
      * Gets the active external (non-schema) formatters for this sub-sitemap.<p>
-     * 
-     * @return the map of active external formatters by structure id 
+     *
+     * @return the map of active external formatters by structure id
      */
     public Map<CmsUUID, I_CmsFormatterBean> getActiveFormatters() {
 
@@ -200,8 +200,8 @@ public class CmsADEConfigData {
 
     /**
      * Gets the list of all detail pages.<p>
-     * 
-     * @return the list of all detail pages 
+     *
+     * @return the list of all detail pages
      */
     public List<CmsDetailPageInfo> getAllDetailPages() {
 
@@ -210,10 +210,10 @@ public class CmsADEConfigData {
 
     /**
      * Gets a list of all detail pages.<p>
-     * 
-     * @param update if true, this method will try to correct the root paths in the returned objects if the corresponding resources have been moved 
-     * 
-     * @return the list of all detail pages 
+     *
+     * @param update if true, this method will try to correct the root paths in the returned objects if the corresponding resources have been moved
+     *
+     * @return the list of all detail pages
      */
     public List<CmsDetailPageInfo> getAllDetailPages(boolean update) {
 
@@ -233,10 +233,10 @@ public class CmsADEConfigData {
 
     /**
      * Gets the configuration base path.<p>
-     * 
+     *
      * For example, if the configuration file is located at /sites/default/.content/.config, the base path is /sites/default.<p>
-     * 
-     * @return the base path of the configuration 
+     *
+     * @return the base path of the configuration
      */
     public String getBasePath() {
 
@@ -245,8 +245,8 @@ public class CmsADEConfigData {
 
     /**
      * Gets the cached formatters.<p>
-     * 
-     * @return the cached formatters 
+     *
+     * @return the cached formatters
      */
     public CmsFormatterConfigurationCacheState getCachedFormatters() {
 
@@ -256,10 +256,10 @@ public class CmsADEConfigData {
 
     /**
      * Gets the content folder path.<p>
-     * 
+     *
      * For example, if the configuration file is located at /sites/default/.content/.config, the content folder path is /sites/default/.content
-     * 
-     * @return the content folder path 
+     *
+     * @return the content folder path
      */
     public String getContentFolderPath() {
 
@@ -269,12 +269,12 @@ public class CmsADEConfigData {
 
     /**
      * Returns a list of the creatable resource types.<p>
-     * 
+     *
      * @param cms the CMS context used to check whether the resource types are creatable
-     * @param pageFolderRootPath the root path of the current container page 
-     * @return the list of creatable resource type 
-     * 
-     * @throws CmsException if something goes wrong 
+     * @param pageFolderRootPath the root path of the current container page
+     * @return the list of creatable resource type
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsResourceTypeConfig> getCreatableTypes(CmsObject cms, String pageFolderRootPath) throws CmsException {
 
@@ -289,8 +289,8 @@ public class CmsADEConfigData {
 
     /**
      * Returns the default model page.<p>
-     * 
-     * @return the default model page 
+     *
+     * @return the default model page
      */
     public CmsModelPageConfig getDefaultModelPage() {
 
@@ -308,10 +308,10 @@ public class CmsADEConfigData {
 
     /**
      * Gets the detail pages for a specific type.<p>
-     * 
-     * @param type the type name 
-     * 
-     * @return the list of detail pages for that type 
+     *
+     * @param type the type name
+     *
+     * @return the list of detail pages for that type
      */
     public List<CmsDetailPageInfo> getDetailPagesForType(String type) {
 
@@ -326,8 +326,8 @@ public class CmsADEConfigData {
 
     /**
      * Returns the formatter change sets for this and all parent sitemaps, ordered by increasing folder depth of the sitemap.<p>
-     * 
-     * @return the formatter change sets for all ancestor sitemaps 
+     *
+     * @return the formatter change sets for all ancestor sitemaps
      */
     public List<CmsFormatterChangeSet> getFormatterChangeSets() {
 
@@ -347,10 +347,10 @@ public class CmsADEConfigData {
     /**
      * Gets the formatter configuration for a resource.<p>
      *
-     * @param cms the current CMS context 
-     * @param res the resource for which the formatter configuration should be retrieved  
-     * 
-     * @return the configuration of formatters for the resource 
+     * @param cms the current CMS context
+     * @param res the resource for which the formatter configuration should be retrieved
+     *
+     * @return the configuration of formatters for the resource
      */
     public CmsFormatterConfiguration getFormatters(CmsObject cms, CmsResource res) {
 
@@ -368,10 +368,10 @@ public class CmsADEConfigData {
 
     /**
      * Gets a named function reference.<p>
-     * 
-     * @param name the name of the function reference 
-     * 
-     * @return the function reference for the given name 
+     *
+     * @param name the name of the function reference
+     *
+     * @return the function reference for the given name
      */
     public CmsFunctionReference getFunctionReference(String name) {
 
@@ -386,8 +386,8 @@ public class CmsADEConfigData {
 
     /**
      * Gets the list of configured function references.<p>
-     * 
-     * @return the list of configured function references 
+     *
+     * @return the list of configured function references
      */
     public List<CmsFunctionReference> getFunctionReferences() {
 
@@ -396,8 +396,8 @@ public class CmsADEConfigData {
 
     /**
      * Gets the map of external (non-schema) formatters which are inactive in this sub-sitemap.<p>
-     * 
-     * @return the map inactive external formatters 
+     *
+     * @return the map inactive external formatters
      */
     public Map<CmsUUID, I_CmsFormatterBean> getInactiveFormatters() {
 
@@ -409,10 +409,10 @@ public class CmsADEConfigData {
 
     /**
      * Gets the main detail page for a specific type.<p>
-     * 
-     * @param type the type name 
-     *  
-     * @return the main detail page for that type 
+     *
+     * @param type the type name
+     *
+     * @return the main detail page for that type
      */
     public CmsDetailPageInfo getMainDetailPage(String type) {
 
@@ -425,8 +425,8 @@ public class CmsADEConfigData {
 
     /**
      * Gets the list of available model pages.<p>
-     * 
-     * @return the list of available model pages 
+     *
+     * @return the list of available model pages
      */
     public List<CmsModelPageConfig> getModelPages() {
 
@@ -435,10 +435,10 @@ public class CmsADEConfigData {
 
     /**
      * Gets the list of available model pages.<p>
-     * 
-     * @param includeDisable <code>true</code> to include disabled model pages 
-     * 
-     * @return the list of available model pages 
+     *
+     * @param includeDisable <code>true</code> to include disabled model pages
+     *
+     * @return the list of available model pages
      */
     public List<CmsModelPageConfig> getModelPages(boolean includeDisable) {
 
@@ -459,8 +459,8 @@ public class CmsADEConfigData {
 
     /**
      * Gets the formatter changes for this sitemap configuration.<p>
-     * 
-     * @return the formatter change set 
+     *
+     * @return the formatter change set
      */
     public CmsFormatterChangeSet getOwnFormatterChangeSet() {
 
@@ -469,7 +469,7 @@ public class CmsADEConfigData {
 
     /**
      * Gets the configuration for the available properties.<p>
-     * 
+     *
      * @return the configuration for the available properties
      */
     public List<CmsPropertyConfig> getPropertyConfiguration() {
@@ -490,8 +490,8 @@ public class CmsADEConfigData {
 
     /**
      * Gets the property configuration as a map of CmsXmlContentProperty instances.<p>
-     * 
-     * @return the map of property configurations 
+     *
+     * @return the map of property configurations
      */
     public Map<String, CmsXmlContentProperty> getPropertyConfigurationAsMap() {
 
@@ -504,20 +504,20 @@ public class CmsADEConfigData {
 
     /**
      * Returns the resource from which this configuration was read.<p>
-     * 
-     * @return the resource from which this configuration was read 
+     *
+     * @return the resource from which this configuration was read
      */
     public CmsResource getResource() {
 
         return m_data.getResource();
     }
 
-    /** 
+    /**
      * Returns the configuration for a specific resource type.<p>
-     * 
-     * @param typeName the name of the type 
-     * 
-     * @return the resource type configuration for that type 
+     *
+     * @param typeName the name of the type
+     *
+     * @return the resource type configuration for that type
      */
     public CmsResourceTypeConfig getResourceType(String typeName) {
 
@@ -531,8 +531,8 @@ public class CmsADEConfigData {
 
     /**
      * Gets a list of all available resource type configurations.<p>
-     * 
-     * @return the available resource type configurations 
+     *
+     * @return the available resource type configurations
      */
     public List<CmsResourceTypeConfig> getResourceTypes() {
 
@@ -545,9 +545,9 @@ public class CmsADEConfigData {
 
     /**
      * Gets the searchable resource type configurations.<p>
-     * 
+     *
      * @param cms the current CMS context
-     * @return the searchable resource type configurations 
+     * @return the searchable resource type configurations
      */
     public Collection<CmsResourceTypeConfig> getSearchableTypes(CmsObject cms) {
 
@@ -556,8 +556,8 @@ public class CmsADEConfigData {
 
     /**
      * Gets the set of resource type names for which schema formatters can be enabled or disabled and which are not disabled in this sub-sitemap.<p>
-     * 
-     * @return the set of types for which schema formatters are active 
+     *
+     * @return the set of types for which schema formatters are active
      */
     public Set<String> getTypesWithActiveSchemaFormatters() {
 
@@ -570,7 +570,7 @@ public class CmsADEConfigData {
 
     /**
      * Gets the set of names of resource types which have schema-based formatters that can be enabled or disabled.<p>
-     * 
+     *
      * @return the set of names of resource types which have schema-based formatters that can be enabled or disabled
      */
     public Set<String> getTypesWithModifiableFormatters() {
@@ -596,10 +596,10 @@ public class CmsADEConfigData {
     /**
      * Checks if there are any matching formatters for the given set of containers.<p>
      *
-     * @param cms the current CMS context 
-     * @param resType the resource type for which the formatter configuration should be retrieved  
+     * @param cms the current CMS context
+     * @param resType the resource type for which the formatter configuration should be retrieved
      * @param containers the page containers
-     * 
+     *
      * @return if there are any matching formatters
      */
     public boolean hasFormatters(CmsObject cms, I_CmsResourceType resType, Collection<CmsContainer> containers) {
@@ -629,11 +629,11 @@ public class CmsADEConfigData {
 
     /**
      * Returns the value of the "create contents locally" flag.<p>
-     * 
+     *
      * If this flag is set, contents of types configured in a super-sitemap will be created in the sub-sitemap (if the user
      * creates them from the sub-sitemap).
-     *   
-     * @return the "create contents locally" flag 
+     *
+     * @return the "create contents locally" flag
      */
     public boolean isCreateContentsLocally() {
 
@@ -642,10 +642,10 @@ public class CmsADEConfigData {
 
     /**
      * Returns the value of the "discard inherited model pages" flag.<p>
-     * 
+     *
      * If this flag is set, inherited model pages will be discarded for this sitemap.<p>
-     * 
-     * @return the "discard inherited model pages" flag 
+     *
+     * @return the "discard inherited model pages" flag
      */
     public boolean isDiscardInheritedModelPages() {
 
@@ -654,9 +654,9 @@ public class CmsADEConfigData {
 
     /**
      * Returns the value of the "discard inherited properties" flag.<p>
-     * 
+     *
      * If this is flag is set, inherited property definitions will be discarded for this sitemap.<p>
-     * 
+     *
      * @return the "discard inherited properties" flag.<p>
      */
     public boolean isDiscardInheritedProperties() {
@@ -666,10 +666,10 @@ public class CmsADEConfigData {
 
     /**
      * Returns the value of the "discard inherited types" flag.<p>
-     * 
+     *
      * If this flag is set, inherited resource types from a super-sitemap will be discarded for this sitemap.<p>
-     * 
-     * @return the "discard inherited types" flag 
+     *
+     * @return the "discard inherited types" flag
      */
     public boolean isDiscardInheritedTypes() {
 
@@ -678,8 +678,8 @@ public class CmsADEConfigData {
 
     /**
      * Returns true if this is a module configuration instead of a normal sitemap configuration.<p>
-     * 
-     * @return true if this is a module configuration 
+     *
+     * @return true if this is a module configuration
      */
     public boolean isModuleConfiguration() {
 
@@ -688,7 +688,7 @@ public class CmsADEConfigData {
 
     /**
      * Returns true if detail pages from this sitemap should be preferred for links to contents in this sitemap.<p>
-     * 
+     *
      * @return true if detail pages from this sitemap should be preferred for links to contents in this sitemap
      */
     public boolean isPreferDetailPagesForLocalContents() {
@@ -698,12 +698,12 @@ public class CmsADEConfigData {
 
     /**
      * Fetches the parent configuration of this configuration.<p>
-     * 
-     * If this configuration is a sitemap configuration with no direct parent configuration, 
+     *
+     * If this configuration is a sitemap configuration with no direct parent configuration,
      * the module configuration will be returned. If this configuration already is a module configuration,
-     * null will be returned.<p> 
-     * 
-     * @return the parent configuration 
+     * null will be returned.<p>
+     *
+     * @return the parent configuration
      */
     public CmsADEConfigData parent() {
 
@@ -718,7 +718,7 @@ public class CmsADEConfigData {
 
     /**
      * Creates the content directory for this configuration node if possible.<p>
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected void createContentDirectory() throws CmsException {
@@ -728,15 +728,16 @@ public class CmsADEConfigData {
             if (!getCms().existsResource(contentFolder)) {
                 getCms().createResource(
                     contentFolder,
-                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId());
+                    OpenCms.getResourceManager().getResourceType(
+                        CmsResourceTypeFolder.getStaticTypeName()).getTypeId());
             }
         }
     }
 
-    /** 
+    /**
      * Gets the CMS object used for VFS operations.<p>
-     * 
-     * @return the CMS object used for VFS operations 
+     *
+     * @return the CMS object used for VFS operations
      */
     protected CmsObject getCms() {
 
@@ -745,8 +746,8 @@ public class CmsADEConfigData {
 
     /**
      * Gets the CMS object used for VFS operations.<p>
-     * 
-     * @return the CMS object 
+     *
+     * @return the CMS object
      */
     protected CmsObject getCmsObject() {
 
@@ -755,10 +756,10 @@ public class CmsADEConfigData {
 
     /**
      * Helper method to converts a list of detail pages to a map from type names to lists of detail pages for each type.<p>
-     * 
+     *
      * @param detailPages the list of detail pages
-     *  
-     * @return the map of detail pages  
+     *
+     * @return the map of detail pages
      */
     protected Map<String, List<CmsDetailPageInfo>> getDetailPagesMap(List<CmsDetailPageInfo> detailPages) {
 
@@ -775,9 +776,9 @@ public class CmsADEConfigData {
 
     /**
      * Collects the folder types in a map.<p>
-     * 
+     *
      * @return the map of folder types
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected Map<String, String> getFolderTypes() throws CmsException {
@@ -790,7 +791,7 @@ public class CmsADEConfigData {
                 cms.getRequestContext().setSiteRoot(siteRoot);
                 for (CmsResourceTypeConfig config : getResourceTypes()) {
                     String typeName = config.getTypeName();
-                    if (!config.isPageRelative()) { // elements stored with container pages can not be used as detail contents 
+                    if (!config.isPageRelative()) { // elements stored with container pages can not be used as detail contents
                         String folderPath = config.getFolderPath(cms, null);
                         result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
                     }
@@ -811,10 +812,10 @@ public class CmsADEConfigData {
     /**
      * Gets the formatter configuration for a resource type.<p>
      *
-     * @param cms the current CMS context 
+     * @param cms the current CMS context
      * @param resType the resource type
      * @param schemaFormatters the resource schema formatters
-     * 
+     *
      * @return the configuration of formatters for the resource type
      */
     protected CmsFormatterConfiguration getFormatters(
@@ -852,11 +853,11 @@ public class CmsADEConfigData {
 
     /**
      * Gets the formatters from the schema.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param res the resource for which the formatters should be retrieved 
-     * 
-     * @return the formatters from the schema 
+     *
+     * @param cms the current CMS context
+     * @param res the resource for which the formatters should be retrieved
+     *
+     * @return the formatters from the schema
      */
     protected CmsFormatterConfiguration getFormattersFromSchema(CmsObject cms, CmsResource res) {
 
@@ -870,8 +871,8 @@ public class CmsADEConfigData {
 
     /**
      * Internal method for getting the function references.<p>
-     *  
-     * @return the function references 
+     *
+     * @return the function references
      */
     protected List<CmsFunctionReference> internalGetFunctionReferences() {
 
@@ -890,10 +891,10 @@ public class CmsADEConfigData {
 
     /**
      * Helper method for getting the list of resource types.<p>
-     * 
+     *
      * @param filterDisabled true if disabled types should be filtered from the result
-     * 
-     * @return the list of resource types 
+     *
+     * @return the list of resource types
      */
     protected List<CmsResourceTypeConfig> internalGetResourceTypes(boolean filterDisabled) {
 
@@ -914,9 +915,8 @@ public class CmsADEConfigData {
             true);
         if (m_data.isCreateContentsLocally()) {
             for (CmsResourceTypeConfig typeConfig : result) {
-                typeConfig.updateBasePath(CmsStringUtil.joinPaths(
-                    m_data.getBasePath(),
-                    CmsADEManager.CONTENT_FOLDER_NAME));
+                typeConfig.updateBasePath(
+                    CmsStringUtil.joinPaths(m_data.getBasePath(), CmsADEManager.CONTENT_FOLDER_NAME));
             }
         }
         if (filterDisabled) {
@@ -933,11 +933,11 @@ public class CmsADEConfigData {
 
     /**
      * Merges two lists of detail pages, one from a parent configuration and one from a child configuration.<p>
-     * 
-     * @param parentDetailPages the parent's detail pages 
+     *
+     * @param parentDetailPages the parent's detail pages
      * @param ownDetailPages the child's detail pages
-     *  
-     * @return the merged detail pages 
+     *
+     * @return the merged detail pages
      */
     protected List<CmsDetailPageInfo> mergeDetailPages(
         List<CmsDetailPageInfo> parentDetailPages,
@@ -956,10 +956,10 @@ public class CmsADEConfigData {
 
     /**
      * Helper method to correct paths in detail page beans if the corresponding resources have been moved.<p>
-     * 
-     * @param detailPages the original list of detail pages 
-     * 
-     * @return the corrected list of detail pages 
+     *
+     * @param detailPages the original list of detail pages
+     *
+     * @return the corrected list of detail pages
      */
     protected List<CmsDetailPageInfo> updateUris(List<CmsDetailPageInfo> detailPages) {
 

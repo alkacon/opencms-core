@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
- * Root access point for the Javascript form editing API exported with gwt-exporter. Can be used 
+ * Root access point for the Javascript form editing API exported with gwt-exporter. Can be used
  * to acquire new form editing sessions.<p>
  */
 @Export
@@ -92,7 +92,7 @@ public class CmsXmlContentUgcApi implements Exportable {
 
     static {
         String url = Window.Location.getHref();
-        // cut off fragment, parameters, and trailing slash, then append service name  
+        // cut off fragment, parameters, and trailing slash, then append service name
         url = url.replaceAll("#.*$", "").replaceAll("\\?.*$", "").replaceAll("/$", "")
             + "/org.opencms.ugc.CmsUgcEditService.gwt";
         SERVICE_URL = url;
@@ -102,8 +102,8 @@ public class CmsXmlContentUgcApi implements Exportable {
 
     /**
      * Gets the request counter.<p>
-     * 
-     * @return the request counter 
+     *
+     * @return the request counter
      */
     @NoExport
     public CmsRequestCounter getRequestCounter() {
@@ -113,8 +113,8 @@ public class CmsXmlContentUgcApi implements Exportable {
 
     /**
      * Creates an RPC helper object.<p>
-     * 
-     * @return the RPC helper 
+     *
+     * @return the RPC helper
      */
     @NoExport
     public CmsRpcCallHelper getRpcHelper() {
@@ -124,9 +124,9 @@ public class CmsXmlContentUgcApi implements Exportable {
 
     /**
      * Passes an exception to the given error handling callback and optionally outputs some debug info.<p>
-     * 
-     * @param e the exception 
-     * @param callback  the error handling callback 
+     *
+     * @param e the exception
+     * @param callback  the error handling callback
      */
     public void handleError(Throwable e, I_CmsErrorCallback callback) {
 
@@ -146,11 +146,11 @@ public class CmsXmlContentUgcApi implements Exportable {
 
     /**
      * Loads a pre-created session.<p>
-     * 
-     * @param sessionId the session id 
-     * @param formElement the form element 
+     *
+     * @param sessionId the session id
+     * @param formElement the form element
      * @param onSuccess the callback to call in case of success
-     * @param onError the callback to call in case of an error 
+     * @param onError the callback to call in case of an error
      */
     public void initFormForSession(
         final String sessionId,
@@ -176,7 +176,7 @@ public class CmsXmlContentUgcApi implements Exportable {
 
     /**
      * Sets the error callback for all uncaught exceptions.<p>
-     * 
+     *
      * @param callback the error callback
      */
     public void setErrorCallback(final I_CmsStringArrayCallback callback) {
@@ -200,9 +200,9 @@ public class CmsXmlContentUgcApi implements Exportable {
         }
     }
 
-    /** 
+    /**
      * Sets the wait indicator callback.<p>
-     * 
+     *
      * @param callback a callback used to switch the wait indicator off or on.<p>
      */
     public void setWaitIndicatorCallback(I_CmsBooleanCallback callback) {

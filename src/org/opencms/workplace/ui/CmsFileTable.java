@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -64,7 +64,7 @@ import com.vaadin.ui.Table.RowHeaderMode;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
-/** 
+/**
  * Table for displaying resources.<p>
  */
 public class CmsFileTable extends A_CmsCustomComponent {
@@ -109,11 +109,11 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_fileTable.setMultiSelect(true);
     }
 
-    /** 
+    /**
      * Fills the resource table.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param resources the resources which should be displayed in the table 
+     *
+     * @param cms the current CMS context
+     * @param resources the resources which should be displayed in the table
      */
     public void fillTable(CmsObject cms, List<CmsResource> resources) {
 
@@ -130,8 +130,8 @@ public class CmsFileTable extends A_CmsCustomComponent {
                 CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                     type.getTypeName());
                 resourceItem.getItemProperty("typeIcon").setValue(
-                    new ExternalResource(CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES
-                        + settings.getIcon())));
+                    new ExternalResource(
+                        CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getIcon())));
             } catch (CmsException e) {
                 e.printStackTrace();
                 Notification.show(e.getMessage());
@@ -144,10 +144,10 @@ public class CmsFileTable extends A_CmsCustomComponent {
         return m_container;
     }
 
-    /** 
-     * Gets the selected structure ids.<p> 
-     * 
-     * @return the set of selected structure ids 
+    /**
+     * Gets the selected structure ids.<p>
+     *
+     * @return the set of selected structure ids
      */
     public Set<CmsUUID> getSelectedIds() {
 
@@ -159,11 +159,11 @@ public class CmsFileTable extends A_CmsCustomComponent {
         Notification.show("File table refresh not implemented yet!");
     }
 
-    /** 
+    /**
      * Executes a context menu action.<p>
-     * 
-     * @param entry the context menu entry for which the action should be executed 
-     * @param selected the list of selected resource structure ids 
+     *
+     * @param entry the context menu entry for which the action should be executed
+     * @param selected the list of selected resource structure ids
      */
     protected void executeMenuAction(CmsContextMenuEntryBean entry, List<CmsUUID> selected) {
 
@@ -212,7 +212,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
 
     }
 
-    /** 
+    /**
      * Gets the window which was opened from the context menu.<p>
      * @return
      */

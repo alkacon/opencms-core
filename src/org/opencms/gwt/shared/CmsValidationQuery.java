@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A simple bean class which represents a validation request for a single form field.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsValidationQuery implements IsSerializable {
@@ -47,10 +47,10 @@ public class CmsValidationQuery implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
-     * @param validator the server-side validator class name 
-     * @param value the value to validate 
-     * @param config the configuration string for the server-side validator 
+     *
+     * @param validator the server-side validator class name
+     * @param value the value to validate
+     * @param config the configuration string for the server-side validator
      */
     public CmsValidationQuery(String validator, String value, String config) {
 
@@ -59,18 +59,18 @@ public class CmsValidationQuery implements IsSerializable {
         m_config = config;
     }
 
-    /** 
+    /**
      * Hidden default constructor.<p>
      */
     protected CmsValidationQuery() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
      * Gets the configuration string for the server-side validator.<p>
-     * 
-     * @return a configuration string 
+     *
+     * @return a configuration string
      */
     public String getConfig() {
 
@@ -79,8 +79,8 @@ public class CmsValidationQuery implements IsSerializable {
 
     /**
      * Gets the class name of the server-side validator.<p>
-     * 
-     * @return  the class name of the server-side validator 
+     *
+     * @return  the class name of the server-side validator
      */
     public String getValidatorId() {
 
@@ -89,8 +89,8 @@ public class CmsValidationQuery implements IsSerializable {
 
     /**
      * Returns the value to validate.<p>
-     * 
-     * @return the value which should be validated 
+     *
+     * @return the value which should be validated
      */
     public String getValue() {
 

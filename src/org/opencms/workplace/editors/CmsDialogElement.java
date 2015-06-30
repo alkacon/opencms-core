@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,8 +31,8 @@ import org.opencms.util.CmsStringUtil;
 
 /**
  * Contains the setup information about a single dialog element.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDialogElement implements Comparable<CmsDialogElement> {
 
@@ -53,14 +53,19 @@ public class CmsDialogElement implements Comparable<CmsDialogElement> {
 
     /**
      * Creates a new dialog element.<p>
-     * 
+     *
      * @param name the (system) name of the element
      * @param niceName the nice "display" name of the element
      * @param mandantory indicates if the element is mandatory
      * @param templateElement indicates if the element is defined as template-element
      * @param existing indicates if the element is existing on the xmlPage or not
      */
-    public CmsDialogElement(String name, String niceName, boolean mandantory, boolean templateElement, boolean existing) {
+    public CmsDialogElement(
+        String name,
+        String niceName,
+        boolean mandantory,
+        boolean templateElement,
+        boolean existing) {
 
         m_name = name;
         m_niceName = niceName;

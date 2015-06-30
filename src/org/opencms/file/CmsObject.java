@@ -125,7 +125,7 @@ public final class CmsObject {
      * @param target the target resource
      * @param type the type of the relation
      *
-     * @throws CmsException if something goes wrong 
+     * @throws CmsException if something goes wrong
      */
     public void addRelationToResource(CmsResource resource, CmsResource target, String type) throws CmsException {
 
@@ -385,8 +385,9 @@ public final class CmsObject {
                 CmsRole role = CmsRole.valueOfRoleName(principalName);
                 // role based permissions can only be set in the system folder
                 if ((role == null)
-                    || (!res.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM) && !res.getRootPath().equals("/") && !res.getRootPath().equals(
-                        "/system"))) {
+                    || (!res.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
+                        && !res.getRootPath().equals("/")
+                        && !res.getRootPath().equals("/system"))) {
                     throw e;
                 }
                 acEntry = new CmsAccessControlEntry(res.getResourceId(), role.getId(), permissionString);
@@ -512,7 +513,7 @@ public final class CmsObject {
      * @param type the new resource type for this resource
      *
      * @throws CmsException if something goes wrong
-     * 
+     *
      * @deprecated
      * Use {@link #chtype(String, I_CmsResourceType)} instead.
      * Resource types should always be referenced either by its type class (preferred) or by type name.
@@ -1038,9 +1039,8 @@ public final class CmsObject {
 
         // throw the exception if resource name is an empty string
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(resourcename)) {
-            throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                Messages.ERR_DELETE_RESOURCE_1,
-                resourcename));
+            throw new CmsVfsResourceNotFoundException(
+                Messages.get().container(Messages.ERR_DELETE_RESOURCE_1, resourcename));
         }
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -1685,7 +1685,8 @@ public final class CmsObject {
      *
      * @see CmsSecurityManager#getRelationsForResource(CmsRequestContext, CmsResource, CmsRelationFilter)
      */
-    public List<CmsRelation> getRelationsForResource(String resourceName, CmsRelationFilter filter) throws CmsException {
+    public List<CmsRelation> getRelationsForResource(String resourceName, CmsRelationFilter filter)
+    throws CmsException {
 
         return getRelationsForResource(readResource(resourceName, CmsResourceFilter.ALL), filter);
     }
@@ -1875,7 +1876,12 @@ public final class CmsObject {
      */
     public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
 
-        return m_securityManager.hasPermissions(m_context, resource, requiredPermissions, true, CmsResourceFilter.ALL).isAllowed();
+        return m_securityManager.hasPermissions(
+            m_context,
+            resource,
+            requiredPermissions,
+            true,
+            CmsResourceFilter.ALL).isAllowed();
     }
 
     /**
@@ -2228,11 +2234,11 @@ public final class CmsObject {
 
     /**
      * Reads all available versions for a given resource.<p>
-     * 
-     * @param resource the resource for which to read the versions 
+     *
+     * @param resource the resource for which to read the versions
      * @return the list of historical versions of the resource
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<I_CmsHistoryResource> readAllAvailableVersions(CmsResource resource) throws CmsException {
 
@@ -2383,7 +2389,7 @@ public final class CmsObject {
      * </ol>
      *
      * @param resourceNameOrID the name or id of the folder to read the default file for#
-     * @param filter the resource filter to use for reading the resources 
+     * @param filter the resource filter to use for reading the resources
      *
      * @return the default file for the given folder
      *
@@ -3530,7 +3536,7 @@ public final class CmsObject {
      * @param properties the new properties of the resource
      *
      * @throws CmsException if something goes wrong
-     * 
+     *
      * @deprecated
      * Use {@link #replaceResource(String, I_CmsResourceType, byte[], List)} instead.
      * Resource types should always be referenced either by its type class (preferred) or by type name.
@@ -4005,8 +4011,8 @@ public final class CmsObject {
      * @param nameSeq an iterator for generating names for the mapping
      * @param structureId the structure id to which the name should be mapped
      * @param locale the locale of the mapping
-     * @param replaceOnPublish if the mapping should replace previous mappings when published 
-     *   
+     * @param replaceOnPublish if the mapping should replace previous mappings when published
+     *
      * @return the name which was actually mapped to the structure id
      *
      * @throws CmsException if something goes wrong
@@ -4030,7 +4036,7 @@ public final class CmsObject {
      * @param structureId the structure id to which the name should be mapped
      * @param locale the locale of the mapping
      * @param replaceOnPublish mappings for which this is set will replace older mappings on publish
-     *   
+     *
      * @return the URL name that was actually used for the mapping
      *
      * @throws CmsException if something goes wrong
@@ -4172,9 +4178,8 @@ public final class CmsObject {
 
         // throw the exception if resource name is an empty string
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(resourcename)) {
-            throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                Messages.ERR_LOCK_RESOURCE_1,
-                resourcename));
+            throw new CmsVfsResourceNotFoundException(
+                Messages.get().container(Messages.ERR_LOCK_RESOURCE_1, resourcename));
         }
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource).lockResource(this, m_securityManager, resource, type);

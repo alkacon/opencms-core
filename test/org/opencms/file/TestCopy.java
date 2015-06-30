@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ public class TestCopy extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCopy(String arg0) {
@@ -61,7 +61,7 @@ public class TestCopy extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -101,7 +101,7 @@ public class TestCopy extends OpenCmsTestCase {
 
     /**
      * Tests the copy of a resource with assigned categories.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testCopyCategories() throws Exception {
@@ -118,28 +118,34 @@ public class TestCopy extends OpenCmsTestCase {
         cms.createResource(resname, CmsResourceTypePlain.getStaticTypeId());
         CmsCategoryService.getInstance().addResourceToCategory(cms, resname, category);
 
-        assertTrue(CmsCategoryService.getInstance().readCategoryResources(cms, category, true, null).contains(
-            cms.readResource(resname)));
-        assertTrue(CmsCategoryService.getInstance().readResourceCategories(cms, resname).contains(
-            CmsCategoryService.getInstance().readCategory(cms, category, null)));
+        assertTrue(
+            CmsCategoryService.getInstance().readCategoryResources(cms, category, true, null).contains(
+                cms.readResource(resname)));
+        assertTrue(
+            CmsCategoryService.getInstance().readResourceCategories(cms, resname).contains(
+                CmsCategoryService.getInstance().readCategory(cms, category, null)));
 
         String copyname = "testCopyCategories2.txt";
         cms.copyResource(resname, copyname);
 
-        assertTrue(CmsCategoryService.getInstance().readCategoryResources(cms, category, true, null).contains(
-            cms.readResource(resname)));
-        assertTrue(CmsCategoryService.getInstance().readResourceCategories(cms, resname).contains(
-            CmsCategoryService.getInstance().readCategory(cms, category, null)));
+        assertTrue(
+            CmsCategoryService.getInstance().readCategoryResources(cms, category, true, null).contains(
+                cms.readResource(resname)));
+        assertTrue(
+            CmsCategoryService.getInstance().readResourceCategories(cms, resname).contains(
+                CmsCategoryService.getInstance().readCategory(cms, category, null)));
 
-        assertTrue(CmsCategoryService.getInstance().readCategoryResources(cms, category, true, null).contains(
-            cms.readResource(copyname)));
-        assertTrue(CmsCategoryService.getInstance().readResourceCategories(cms, copyname).contains(
-            CmsCategoryService.getInstance().readCategory(cms, category, null)));
+        assertTrue(
+            CmsCategoryService.getInstance().readCategoryResources(cms, category, true, null).contains(
+                cms.readResource(copyname)));
+        assertTrue(
+            CmsCategoryService.getInstance().readResourceCategories(cms, copyname).contains(
+                CmsCategoryService.getInstance().readCategory(cms, category, null)));
     }
 
     /**
      * Tests the "copy a folder as new" operation.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testCopyFolderAsNew() throws Exception {
@@ -197,14 +203,14 @@ public class TestCopy extends OpenCmsTestCase {
             assertLock(cms, resName);
             // must have sibling count of 1
             assertSiblingCount(cms, resName, 1);
-            // now assert the filter for the rest of the attributes            
+            // now assert the filter for the rest of the attributes
             assertFilter(cms, resName, filter);
         }
     }
 
     /**
      * Tests the copy operation for a folder, checking if the date of the new folder is the current date.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testCopyFolderDateIssue() throws Exception {
@@ -238,14 +244,14 @@ public class TestCopy extends OpenCmsTestCase {
         assertUserLastModified(cms, destination, cms.getRequestContext().getCurrentUser());
         // assert lock state
         assertLock(cms, destination, CmsLockType.EXCLUSIVE);
-        // now assert the filter for the rest of the attributes        
+        // now assert the filter for the rest of the attributes
         setMapping(destination, source);
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_COPY_FOLDER);
     }
 
     /**
      * Tests the "copy a folder recursive" bug.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testCopyFolderRecursive() throws Exception {
@@ -283,7 +289,7 @@ public class TestCopy extends OpenCmsTestCase {
 
     /**
      * Tests to copy a folder with a (from other user) locked sibling.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testCopyFolderWithLockedSibling() throws Exception {
@@ -330,7 +336,7 @@ public class TestCopy extends OpenCmsTestCase {
     /**
      * Tests the to copy a single resource to a destination that already exists but is
      * marked as deleted.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testCopyOverwriteDeletedFile() throws Exception {
@@ -414,7 +420,7 @@ public class TestCopy extends OpenCmsTestCase {
     /**
      * Tests the to copy a single resource to a destination that already exists but is
      * marked as deleted and locked by another user.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testCopyOverwriteLockedDeletedFile() throws Exception {
@@ -444,7 +450,7 @@ public class TestCopy extends OpenCmsTestCase {
 
     /**
      * Tests the copy of siblings.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testCopySiblings() throws Exception {
@@ -482,7 +488,7 @@ public class TestCopy extends OpenCmsTestCase {
 
     /**
      * Tests the "copy single resource as new" operation.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testCopySingleResourceAsNew() throws Exception {
@@ -525,7 +531,7 @@ public class TestCopy extends OpenCmsTestCase {
         assertUserCreated(cms, destination, cms.getRequestContext().getCurrentUser());
         // user last modified must be original user
         assertUserLastModified(cms, destination, cms.readUser(original.getUserLastModified()));
-        // now assert the filter for the rest of the attributes        
+        // now assert the filter for the rest of the attributes
         setMapping(destination, source);
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_COPY_FILE_AS_NEW);
         // assert lock state

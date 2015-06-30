@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import com.google.gwt.user.client.Command;
 /**
  * Move animation. Moving the given element from it's start to it's end position
  * and executing the given call-back on complete.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsMoveAnimation extends A_CmsAnimation {
@@ -56,7 +56,7 @@ public class CmsMoveAnimation extends A_CmsAnimation {
 
     /**
      * Constructor. Setting the element to animate, it's start and end position.<p>
-     * 
+     *
      * @param element the element
      * @param startTop the start top
      * @param startLeft the start left

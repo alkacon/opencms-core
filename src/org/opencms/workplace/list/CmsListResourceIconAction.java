@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,8 +35,8 @@ import org.opencms.workplace.CmsWorkplace;
 
 /**
  * Displays an icon action for dependency lists.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListResourceIconAction extends CmsListDirectAction {
 
@@ -48,7 +48,7 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id the unique id
      * @param resColumnTypeId the id of the column with the resource type
      * @param cms the cms context
@@ -110,10 +110,10 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
 
     /**
      * Generates a default html code where several buttons can have the same help text.<p>
-     * 
+     *
      * the only diff to <code>{@link org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum, String, String, String, boolean, String, String, String)}</code>
      * is that the icons are 16x16.<p>
-     * 
+     *
      * @param cms the cms context, can be null
      * @param id the id
      * @param helpId the id of the helptext div tag
@@ -124,9 +124,9 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
      * @param onClick the js code to execute, if empty no link is generated
      * @param confirmationMessage the confirmation message
      * @param singleHelp if set, no helptext is written, you have to use the defaultHelpHtml() method later
-     * 
+     *
      * @return html code
-     * 
+     *
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum, String, String, String, boolean, String, String, String)
      */
     protected String defButtonHtml(

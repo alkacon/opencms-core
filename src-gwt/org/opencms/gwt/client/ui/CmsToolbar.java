@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides a tool-bar to be shown at the top of a page.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolbar extends Composite {
@@ -77,10 +77,10 @@ public class CmsToolbar extends Composite {
 
     /**
      * Helper method for setting toolbar visibility.<p>
-     * 
-     * @param toolbar the toolbar 
-     * @param show true if the toolbar should be shown 
-     * @param toolbarVisibility the style variable controlling the toolbar visibility 
+     *
+     * @param toolbar the toolbar
+     * @param show true if the toolbar should be shown
+     * @param toolbarVisibility the style variable controlling the toolbar visibility
      */
     public static void showToolbar(
         final CmsToolbar toolbar,
@@ -88,7 +88,8 @@ public class CmsToolbar extends Composite {
         final CmsStyleVariable toolbarVisibility) {
 
         if (show) {
-            toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
+            toolbarVisibility.setValue(
+                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
             CmsFadeAnimation.fadeIn(toolbar.getElement(), null, 300);
             // body.getStyle().setMarginTop(m_bodyMarginTop + 36, Unit.PX);
         } else {
@@ -96,21 +97,21 @@ public class CmsToolbar extends Composite {
 
                 public void execute() {
 
-                    toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+                    toolbarVisibility.setValue(
+                        org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
                 }
-            },
-                300);
+            }, 300);
             // body.getStyle().setMarginTop(m_bodyMarginTop, Unit.PX);
         }
     }
 
     /**
      * Helper method for setting toolbar visibility.<p>
-     * 
-     * @param toolbar the toolbar 
-     * @param show true if the toolbar should be shown 
+     *
+     * @param toolbar the toolbar
+     * @param show true if the toolbar should be shown
      * @param toolbarVisibility the style variable controlling the toolbar visibility
-     * @param showClass the class which should be used for showing the toolbar  
+     * @param showClass the class which should be used for showing the toolbar
      */
     public static void showToolbar(
         final CmsToolbar toolbar,
@@ -127,17 +128,17 @@ public class CmsToolbar extends Composite {
 
                 public void execute() {
 
-                    toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+                    toolbarVisibility.setValue(
+                        org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
                 }
-            },
-                300);
+            }, 300);
             // body.getStyle().setMarginTop(m_bodyMarginTop, Unit.PX);
         }
     }
 
     /**
      * Adds a widget to the left button panel.<p>
-     * 
+     *
      * @param widget the widget to add
      */
     public void addLeft(Widget widget) {
@@ -147,7 +148,7 @@ public class CmsToolbar extends Composite {
 
     /**
      * Adds a widget to the left button panel.<p>
-     * 
+     *
      * @param widget the widget to add
      */
     public void addRight(Widget widget) {
@@ -158,7 +159,7 @@ public class CmsToolbar extends Composite {
 
     /**
      * Returns all {@link com.google.gwt.user.client.ui.Widget} added to the tool-bar in order of addition first left than right.<p>
-     * 
+     *
      * @return all added Widgets
      */
     public List<Widget> getAll() {

@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ import org.apache.solr.common.SolrInputDocument;
 
 /**
  * Implements the index writer for the Solr server used by OpenCms.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSolrIndexWriter implements I_CmsIndexWriter {
@@ -56,7 +56,8 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
     protected static final Log LOG = CmsLog.getLog(CmsSolrIndexWriter.class);
 
     /** The time to wait before a commit is sent to the Solr index.  */
-    private int m_commitMs = new Long(OpenCms.getSearchManager().getSolrServerConfiguration().getSolrCommitMs()).intValue();
+    private int m_commitMs = new Long(
+        OpenCms.getSearchManager().getSolrServerConfiguration().getSolrCommitMs()).intValue();
 
     /** The Solr index. */
     private CmsSolrIndex m_index;
@@ -75,10 +76,10 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
     }
 
     /**
-     * Creates a new index writer based on the provided standard Lucene IndexWriter for the 
+     * Creates a new index writer based on the provided standard Lucene IndexWriter for the
      * provided OpenCms search index instance.<p>
-     * 
-     * The OpenCms search instance is currently used only for improved logging of the 
+     *
+     * The OpenCms search instance is currently used only for improved logging of the
      * index operations.<p>
      *
      * @param client the standard Lucene IndexWriter to use as delegate
@@ -89,10 +90,11 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
         m_index = index;
         m_server = client;
         if (m_index != null) {
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_SOLR_WRITER_CREATE_2,
-                m_index.getName(),
-                m_index.getPath()));
+            LOG.info(
+                Messages.get().getBundle().key(
+                    Messages.LOG_SOLR_WRITER_CREATE_2,
+                    m_index.getName(),
+                    m_index.getPath()));
         }
     }
 
@@ -111,10 +113,11 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
 
         if ((m_server != null) && (m_index != null)) {
             try {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.LOG_SOLR_WRITER_COMMIT_2,
-                    m_index.getName(),
-                    m_index.getPath()));
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_SOLR_WRITER_COMMIT_2,
+                        m_index.getName(),
+                        m_index.getPath()));
                 m_server.commit();
             } catch (SolrServerException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
@@ -124,17 +127,18 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
 
     /**
      * Deletes all documents of the index belonging to this index writer.<p>
-     * 
+     *
      * @throws IOException if something goes wrong
      */
     public void deleteAllDocuments() throws IOException {
 
         if ((m_server != null) && (m_index != null)) {
             try {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.LOG_SOLR_WRITER_DELETE_ALL_2,
-                    m_index.getName(),
-                    m_index.getPath()));
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_SOLR_WRITER_DELETE_ALL_2,
+                        m_index.getName(),
+                        m_index.getPath()));
                 m_server.deleteByQuery("*:*", m_commitMs);
             } catch (SolrServerException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
@@ -149,11 +153,12 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
 
         if ((m_server != null) && (m_index != null)) {
             try {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.LOG_SOLR_WRITER_DOC_DELETE_3,
-                    resource.getRootPath(),
-                    m_index.getName(),
-                    m_index.getPath()));
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_SOLR_WRITER_DOC_DELETE_3,
+                        resource.getRootPath(),
+                        m_index.getName(),
+                        m_index.getPath()));
                 m_server.deleteById(resource.getStructureId().toString(), m_commitMs);
             } catch (SolrServerException e) {
                 throw new IOException(e.getLocalizedMessage(), e);
@@ -180,11 +185,12 @@ public class CmsSolrIndexWriter implements I_CmsIndexWriter {
         if ((m_server != null) && (m_index != null)) {
             if (document.getDocument() != null) {
                 try {
-                    LOG.info(Messages.get().getBundle().key(
-                        Messages.LOG_SOLR_WRITER_DOC_UPDATE_3,
-                        rootPath,
-                        m_index.getName(),
-                        m_index.getPath()));
+                    LOG.info(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_SOLR_WRITER_DOC_UPDATE_3,
+                            rootPath,
+                            m_index.getName(),
+                            m_index.getPath()));
                     m_server.add((SolrInputDocument)document.getDocument(), m_commitMs);
                 } catch (SolrServerException e) {
                     throw new IOException(e.getLocalizedMessage(), e);

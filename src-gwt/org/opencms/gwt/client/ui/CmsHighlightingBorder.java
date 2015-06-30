@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.HTML;
 
 /**
  * A Widget to display a highlighting border around a specified position.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsHighlightingBorder extends Composite {
@@ -68,7 +68,7 @@ public class CmsHighlightingBorder extends Composite {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param cssClass the CSS class to display the border colour
          */
         private BorderColor(String cssClass) {
@@ -78,7 +78,7 @@ public class CmsHighlightingBorder extends Composite {
 
         /**
          * Returns the associated CSS class.<p>
-         * 
+         *
          * @return the CSS class
          */
         public String getCssClass() {
@@ -128,7 +128,7 @@ public class CmsHighlightingBorder extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param position the position data
      * @param color the border color
      */
@@ -139,7 +139,7 @@ public class CmsHighlightingBorder extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param position the position data
      * @param color the border color
      * @param borderOffset the border offset
@@ -151,7 +151,7 @@ public class CmsHighlightingBorder extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param positioningParent the element the border is positioned around, position is set relative to it
      * @param color the border color
      */
@@ -167,7 +167,7 @@ public class CmsHighlightingBorder extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param height the height
      * @param width the width
      * @param positionLeft the absolute left position
@@ -193,7 +193,7 @@ public class CmsHighlightingBorder extends Composite {
     /**
      * Enables the border animation.<p>
      * (Is enabled by default)<p>
-     * 
+     *
      * @param animated <code>true</code> to enable border animation
      */
     public void enableAnimation(boolean animated) {
@@ -225,10 +225,10 @@ public class CmsHighlightingBorder extends Composite {
         }
     }
 
-    /** 
+    /**
      * Sets the color of the border.<p>
-     * 
-     * @param color the color of the border 
+     *
+     * @param color the color of the border
      */
     public void setColor(BorderColor color) {
 
@@ -237,7 +237,7 @@ public class CmsHighlightingBorder extends Composite {
 
     /**
      * Sets the border position.<p>
-     * 
+     *
      * @param position the position data
      */
     public void setPosition(CmsPositionBean position) {
@@ -247,7 +247,7 @@ public class CmsHighlightingBorder extends Composite {
 
     /**
      * Sets the border position.<p>
-     * 
+     *
      * @param height the height
      * @param width the width
      * @param positionLeft the absolute left position
@@ -267,7 +267,7 @@ public class CmsHighlightingBorder extends Composite {
         if ((m_positioningParent == null)
             && (Window.getClientWidth() < (width + positionLeft))
             && (Window.getScrollLeft() == 0)) {
-            // highlighting should not extend over the right hand 
+            // highlighting should not extend over the right hand
             width = Window.getClientWidth() - (positionLeft + BORDER_WIDTH);
         }
         Style style = getElement().getStyle();
@@ -287,7 +287,7 @@ public class CmsHighlightingBorder extends Composite {
 
     /**
      * Sets the highlighting height.<p>
-     * 
+     *
      * @param height the height
      */
     private void setHeight(int height) {
@@ -299,7 +299,7 @@ public class CmsHighlightingBorder extends Composite {
 
     /**
      * Sets the highlighting width.<p>
-     * 
+     *
      * @param width the width
      */
     private void setWidth(int width) {

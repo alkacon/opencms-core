@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,14 +46,14 @@ import org.apache.commons.logging.Log;
  *
  * This thread executes all 60 seconds and checks if report threads are still active.
  * A report thread usually waits for a user to get the contents written to the report.
- * However, if the user does not request the reports content (e.g. because the 
+ * However, if the user does not request the reports content (e.g. because the
  * browser was closed), then the report thread becomes abandoned. This Grim Reaper
- * will collect all such abandoned report threads and remove them after further 
+ * will collect all such abandoned report threads and remove them after further
  * 60 seconds.<p>
  *
  * Moreover, the Grim Reaper checks for all invalid user sessions that have times out for
  * 5 or more minutes, and removes them as well.<p>
- * 
+ *
  * @since 6.0.0
  */
 public final class CmsThreadStore extends Thread {
@@ -78,8 +78,8 @@ public final class CmsThreadStore extends Thread {
 
     /**
      * Hides the public constructor.<p>
-     * 
-     * @param securityManager needed for scheduling "undercover-jobs" 
+     *
+     * @param securityManager needed for scheduling "undercover-jobs"
      *      that increase stability and fault tolerance
      */
     protected CmsThreadStore(CmsSecurityManager securityManager) {
@@ -95,7 +95,7 @@ public final class CmsThreadStore extends Thread {
 
     /**
      * Adds a Thread to this Thread store.<p>
-     * 
+     *
      * @param thread the Thread to add
      */
     public void addThread(A_CmsReportThread thread) {
@@ -108,7 +108,7 @@ public final class CmsThreadStore extends Thread {
 
     /**
      * Retrieves a Thread from this Thread store.<p>
-     * 
+     *
      * @param key the key of the Thread to retrieve
      * @return the Thread form this Thread store that matches the given key
      */
@@ -186,7 +186,8 @@ public final class CmsThreadStore extends Thread {
                 return;
             }
             // check if the report still has output and so is active
-            if (System.currentTimeMillis() - thread.getLastEntryTime() > UPDATE_MINUTES_INTERVAL * ONE_MINUTE_IN_MILLIS) {
+            if ((System.currentTimeMillis() - thread.getLastEntryTime()) > (UPDATE_MINUTES_INTERVAL
+                * ONE_MINUTE_IN_MILLIS)) {
                 // remove it
                 m_threads.remove(thread);
                 // abandon thread
@@ -212,10 +213,11 @@ public final class CmsThreadStore extends Thread {
                 if (thread.isDoomed()) {
                     doomed.add(key);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_THREADSTORE_DOOMED_2,
-                            thread.getName(),
-                            thread.getUUID()));
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_THREADSTORE_DOOMED_2,
+                                thread.getName(),
+                                thread.getUUID()));
                     }
                 }
             }
@@ -228,7 +230,7 @@ public final class CmsThreadStore extends Thread {
                 dumpThreads();
             }
         } catch (Throwable t) {
-            // the Grim Reaper must not be stopped by any error 
+            // the Grim Reaper must not be stopped by any error
             LOG.error(Messages.get().getBundle().key(Messages.LOG_THREADSTORE_CHECK_THREADS_ERROR_0), t);
         }
     }
@@ -278,7 +280,7 @@ public final class CmsThreadStore extends Thread {
     }
 
     /**
-     * Method to dump all currently known Threads.<p> 
+     * Method to dump all currently known Threads.<p>
      */
     private void dumpThreads() {
 
@@ -293,10 +295,11 @@ public final class CmsThreadStore extends Thread {
                 b.append(thread.getUUID());
                 b.append('\n');
             }
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_THREADSTORE_POOL_CONTENT_2,
-                new Integer(m_threads.size()),
-                b.toString()));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_THREADSTORE_POOL_CONTENT_2,
+                    new Integer(m_threads.size()),
+                    b.toString()));
         }
     }
 }

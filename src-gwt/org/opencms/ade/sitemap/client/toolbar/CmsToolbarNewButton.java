@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Sitemap toolbar new menu button.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
@@ -71,9 +71,9 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param toolbar the toolbar instance
-     * @param controller the sitemap controller 
+     * @param controller the sitemap controller
      */
     public CmsToolbarNewButton(CmsSitemapToolbar toolbar, CmsSitemapController controller) {
 
@@ -148,10 +148,10 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
 
     /**
      * Creates a list item representing a detail page to be created.<p>
-     * 
+     *
      * @param typeInfo the bean for the type for which the detail page item should be created
-     *  
-     * @return the detail page list item  
+     *
+     * @return the detail page list item
      */
     private CmsCreatableListItem makeDetailPageItem(CmsNewResourceInfo typeInfo) {
 
@@ -176,8 +176,8 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
 
     /**
      * Creates a list item representing a redirect.<p>
-     * 
-     * @return the new list item 
+     *
+     * @return the new list item
      */
     private CmsCreatableListItem makeNavigationLevelItem() {
 
@@ -194,9 +194,9 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
 
     /**
      * Create a new-element list item.<p>
-     * 
+     *
      * @param typeInfo the new-element info
-     * 
+     *
      * @return the list item
      */
     private CmsCreatableListItem makeNewElementItem(final CmsNewResourceInfo typeInfo) {
@@ -222,8 +222,8 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
 
     /**
      * Creates a list item representing a redirect.<p>
-     * 
-     * @return the new list item 
+     *
+     * @return the new list item
      */
     private CmsCreatableListItem makeRedirectItem() {
 

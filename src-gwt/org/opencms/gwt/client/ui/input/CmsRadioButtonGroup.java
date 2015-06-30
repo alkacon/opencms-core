@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
 /**
  * This class coordinates multiple radio buttons and makes sure that when a radio button of a group is
  * selected, no other radio button of the same group is selected.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsRadioButtonGroup implements HasValueChangeHandlers<String> {
@@ -60,7 +60,7 @@ public class CmsRadioButtonGroup implements HasValueChangeHandlers<String> {
         return addHandler(handler, ValueChangeEvent.getType());
     }
 
-    /** 
+    /**
      * Deselects a selected radio button (if one is selected).<p>
      */
     public void deselectButton() {
@@ -84,7 +84,7 @@ public class CmsRadioButtonGroup implements HasValueChangeHandlers<String> {
 
     /**
      * Returns the currently selected button, or null if none is selected.<p>
-     * 
+     *
      * @return the selected button or null
      */
     public CmsRadioButton getSelectedButton() {
@@ -94,8 +94,8 @@ public class CmsRadioButtonGroup implements HasValueChangeHandlers<String> {
 
     /**
      * Selects a new button and deselects the previously selected one.<p>
-     * 
-     * @param button the button which should be selected 
+     *
+     * @param button the button which should be selected
      */
     public void selectButton(CmsRadioButton button) {
 
@@ -116,8 +116,8 @@ public class CmsRadioButtonGroup implements HasValueChangeHandlers<String> {
 
     /**
      * Sets the new value change event target for this button group.<p>
-     * 
-     * @param target the value change event target 
+     *
+     * @param target the value change event target
      */
     public void setValueChangeTarget(HasValueChangeHandlers<String> target) {
 
@@ -126,7 +126,7 @@ public class CmsRadioButtonGroup implements HasValueChangeHandlers<String> {
 
     /**
      * Adds this handler to the widget.
-     * 
+     *
      * @param <H> the type of handler to add
      * @param type the event type
      * @param handler the handler
@@ -139,7 +139,7 @@ public class CmsRadioButtonGroup implements HasValueChangeHandlers<String> {
 
     /**
      * Lazy initializing the handler manager.<p>
-     * 
+     *
      * @return the handler manager
      */
     private SimpleEventBus ensureHandlers() {

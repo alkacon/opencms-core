@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,15 +37,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.mail.Email;
 
 /**
- * 
+ *
  * A content distributor that sends the extracted xmlcontent data to the recepient via email.
  * <p>
- * 
+ *
  * Class to send a newsletter to a number of CmsNewsletterRecipients
  * <p>
- * 
+ *
  * @since 6.0.2
- * 
+ *
  */
 public class CmsNewsletterDistributor {
 
@@ -54,7 +54,7 @@ public class CmsNewsletterDistributor {
 
     /**
      * Sends a {@link I_CmsNewsletter} to a list of {@link I_CmsNewsletterRecipient} objects.<p>
-     * 
+     *
      * @param recipients a list of CmsNewsletterRecipient objects
      * @param newsletter the newsletter to be distributed
      * @param cms the CmsObject

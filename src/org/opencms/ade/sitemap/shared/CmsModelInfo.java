@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ public class CmsModelInfo implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param modelPages the model pages
      * @param parentModelPages the global model pages
      * @param modelGroups the model groups
@@ -72,7 +72,7 @@ public class CmsModelInfo implements IsSerializable {
 
     /**
      * Returns the model group info.<p>
-     * 
+     *
      * @return the model group info
      */
     public List<CmsModelPageEntry> getModelGroups() {
@@ -82,7 +82,7 @@ public class CmsModelInfo implements IsSerializable {
 
     /**
      * Returns the model page info.<p>
-     * 
+     *
      * @return the model page info
      */
     public List<CmsModelPageEntry> getModelPages() {
@@ -92,7 +92,7 @@ public class CmsModelInfo implements IsSerializable {
 
     /**
      * Returns the parent model pages.<p>
-     * 
+     *
      * @return the parent model pages
      */
     public List<CmsModelPageEntry> getParentModelPages() {

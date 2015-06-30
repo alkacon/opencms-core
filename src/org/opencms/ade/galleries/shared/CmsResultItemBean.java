@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,9 +35,9 @@ import org.opencms.util.CmsStringUtil;
 
 /**
  * A specific bean holding all info to be displayed in {@link org.opencms.ade.galleries.client.ui.CmsResultListItem}s.<p>
- * 
+ *
  * @see org.opencms.ade.galleries.client.ui.CmsResultListItem
- * 
+ *
  * @since 8.0.0
  */
 public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle, I_CmsHasPath, I_CmsHasType {
@@ -98,8 +98,8 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
 
     /**
      * Returns the formatted last modification date.<p>
-     * 
-     * @return the formatted last modification date 
+     *
+     * @return the formatted last modification date
      */
     public String getDateLastModified() {
 
@@ -148,8 +148,8 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
 
     /**
      * Gets the raw title, without status information attached.<p>
-     * 
-     * @return the raw title 
+     *
+     * @return the raw title
      */
     public String getRawTitle() {
 
@@ -179,10 +179,10 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
         return getResourceType();
     }
 
-    /** 
+    /**
      * Gets the name of the user who last modified the resource.<p>
-     * 
-     * @return the name of the user who last modified the resource  
+     *
+     * @return the name of the user who last modified the resource
      */
     public String getUserLastModified() {
 
@@ -191,18 +191,18 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
 
     /**
      * Gets the link for displaying the resource.<p>
-     * 
-     * @return the link for displaying the resource 
+     *
+     * @return the link for displaying the resource
      */
     public String getViewLink() {
 
         return m_viewLink;
     }
 
-    /** 
+    /**
      * Returns true if the result resource is a copy model.<p>
-     * 
-     * @return true if the resource is a copy model 
+     *
+     * @return true if the resource is a copy model
      */
     public boolean isCopyModel() {
 
@@ -211,7 +211,7 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
 
     /**
      * Returns if the represented resource is editable by the current user.<p>
-     * 
+     *
      * @return <code>true</code> if editable
      */
     public boolean isEditable() {
@@ -221,8 +221,8 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
 
     /**
      * True if this is result item corresponds to a preset value in the editor.<p>
-     * 
-     * @return true if this corresponds to a preset value 
+     *
+     * @return true if this corresponds to a preset value
      */
     public boolean isPreset() {
 
@@ -251,8 +251,8 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
 
     /**
      * Sets the formatted last modification date.<p>
-     * 
-     * @param formattedDate the formatted last modification date 
+     *
+     * @param formattedDate the formatted last modification date
      */
     public void setDateLastModified(String formattedDate) {
 
@@ -261,7 +261,7 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
 
     /**
      * Sets the description.<p>
-     * 
+     *
      * Also used as sub-title.<p>
      *
      * @param description the description to set
@@ -281,10 +281,10 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
         m_dimension = dimension;
     }
 
-    /** 
+    /**
      * Sets the "copy model" status of this result bean.<p>
-     * 
-     * @param isCopyModel true if this result should be marked as a copy model 
+     *
+     * @param isCopyModel true if this result should be marked as a copy model
      */
     public void setIsCopyModel(boolean isCopyModel) {
 
@@ -313,18 +313,18 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
 
     /**
      * Sets the "is preset" flag.<p>
-     * 
-     * @param preset the "is preset" flag 
+     *
+     * @param preset the "is preset" flag
      */
     public void setPreset(boolean preset) {
 
         m_isPreset = preset;
     }
 
-    /** 
+    /**
      * Sets the raw title.<p>
-     * 
-     * @param rawTitle the raw title 
+     *
+     * @param rawTitle the raw title
      */
     public void setRawTitle(String rawTitle) {
 
@@ -343,7 +343,7 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
 
     /**
      * Sets the resource type name.<p>
-     * 
+     *
      * @param type the resource type name to set
      */
     public void setType(String type) {
@@ -353,8 +353,8 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
 
     /**
      * Sets the name of the user who last modified the resource.<p>
-     * 
-     * @param userLastModified a user name 
+     *
+     * @param userLastModified a user name
      */
     public void setUserLastModified(String userLastModified) {
 
@@ -363,8 +363,8 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
 
     /**
      * Sets the link for displaying the resource.<p>
-     * 
-     * @param viewLink the link for displaying the 
+     *
+     * @param viewLink the link for displaying the
      */
     public void setViewLink(String viewLink) {
 

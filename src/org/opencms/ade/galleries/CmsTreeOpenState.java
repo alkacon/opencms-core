@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,10 +54,10 @@ public class CmsTreeOpenState implements Serializable {
 
     /**
      * Creates a new tree open state instance.<p>
-     * 
-     * @param treeName the tree name 
-     * @param siteRoot the site root 
-     * @param openItems the ids of the open tree entries 
+     *
+     * @param treeName the tree name
+     * @param siteRoot the site root
+     * @param openItems the ids of the open tree entries
      */
     public CmsTreeOpenState(String treeName, String siteRoot, Set<CmsUUID> openItems) {
 
@@ -69,8 +69,8 @@ public class CmsTreeOpenState implements Serializable {
 
     /**
      * Gets the set of structure ids of resources corresponding to opened tree entries.<p>
-     * 
-     * @return the set of structure ids of open tree entries 
+     *
+     * @return the set of structure ids of open tree entries
      */
     public Set<CmsUUID> getOpenItems() {
 
@@ -79,8 +79,8 @@ public class CmsTreeOpenState implements Serializable {
 
     /**
      * Gets the site root.<p>
-     * 
-     * @return the site root 
+     *
+     * @return the site root
      */
     public String getSiteRoot() {
 
@@ -89,8 +89,8 @@ public class CmsTreeOpenState implements Serializable {
 
     /**
      * Gets the time stamp.<p>
-     * 
-     * @return the time stamps 
+     *
+     * @return the time stamps
      */
     public long getTimestamp() {
 
@@ -99,8 +99,8 @@ public class CmsTreeOpenState implements Serializable {
 
     /**
      * Gets the tree name.<p>
-     * 
-     * @return the tree name 
+     *
+     * @return the tree name
      */
     public String getTreeName() {
 

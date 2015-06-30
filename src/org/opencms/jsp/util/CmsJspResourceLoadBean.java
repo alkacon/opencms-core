@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,9 +34,9 @@ import java.util.List;
 
 /**
  * Allows JSP access to the results of a &lt;cms:resourceload ... &gt; operation using the JSTL and EL.<p>
- * 
- * @since 8.0 
- * 
+ *
+ * @since 8.0
+ *
  * @see org.opencms.jsp.CmsJspTagResourceLoad
  * @see CmsJspResourceAccessBean
  */
@@ -50,10 +50,10 @@ public class CmsJspResourceLoadBean {
 
     /**
      * No argument constructor, required for a JavaBean.<p>
-     * 
-     * You must call {@link #init(CmsObject, List)} and provide the 
-     * required values when you use this constructor.<p> 
-     * 
+     *
+     * You must call {@link #init(CmsObject, List)} and provide the
+     * required values when you use this constructor.<p>
+     *
      * @see #init(CmsObject, List)
      */
     public CmsJspResourceLoadBean() {
@@ -63,9 +63,9 @@ public class CmsJspResourceLoadBean {
 
     /**
      * Creates a new context bean using the OpenCms context of the current user.<p>
-     * 
+     *
      * The current request context locale is used.<p>
-     * 
+     *
      * @param cms the OpenCms context of the current user
      * @param resources the resources to access, must contain objects of type {@link CmsResource}
      */
@@ -76,7 +76,7 @@ public class CmsJspResourceLoadBean {
 
     /**
      * Returns the OpenCms user context this bean was initialized with.<p>
-     * 
+     *
      * @return the OpenCms user context this bean was initialized with
      */
     public CmsObject getCmsObject() {
@@ -86,7 +86,7 @@ public class CmsJspResourceLoadBean {
 
     /**
      * Returns a list of {@link CmsResource} instances.<p>
-     * 
+     *
      * @return a list of {@link CmsResource} instances
      */
     public List<CmsResource> getResources() {
@@ -96,7 +96,7 @@ public class CmsJspResourceLoadBean {
 
     /**
      * Initialize this instance.<p>
-     * 
+     *
      * @param cms the OpenCms context of the current user
      * @param resources the resources to access, must contain objects of type {@link CmsResource}
      */

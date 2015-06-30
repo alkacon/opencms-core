@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -80,8 +80,8 @@ import org.xml.sax.SAXException;
  *
  * Use the {@link org.opencms.xml.content.CmsXmlContentFactory} to generate an
  * instance of this class.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument {
 
@@ -121,10 +121,10 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Creates a new XML content based on the provided XML document.<p>
-     * 
+     *
      * The given encoding is used when marshalling the XML again later.<p>
-     * 
-     * @param cms the cms context, if <code>null</code> no link validation is performed 
+     *
+     * @param cms the cms context, if <code>null</code> no link validation is performed
      * @param document the document to create the xml content from
      * @param encoding the encoding of the xml content
      * @param resolver the XML entitiy resolver to use
@@ -142,14 +142,14 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Create a new XML content based on the given default content,
-     * that will have all language nodes of the default content and ensures the presence of the given locale.<p> 
-     * 
+     * that will have all language nodes of the default content and ensures the presence of the given locale.<p>
+     *
      * The given encoding is used when marshalling the XML again later.<p>
-     * 
+     *
      * @param cms the current users OpenCms content
      * @param locale the locale to generate the default content for
      * @param modelUri the absolute path to the XML content file acting as model
-     * 
+     *
      * @throws CmsException in case the model file is not found or not valid
      */
     protected CmsXmlContent(CmsObject cms, Locale locale, String modelUri)
@@ -182,10 +182,10 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Create a new XML content based on the given content definiton,
-     * that will have one language node for the given locale all initialized with default values.<p> 
-     * 
+     * that will have one language node for the given locale all initialized with default values.<p>
+     *
      * The given encoding is used when marshalling the XML again later.<p>
-     * 
+     *
      * @param cms the current users OpenCms content
      * @param locale the locale to generate the default content for
      * @param encoding the encoding to use when marshalling the XML content later
@@ -219,28 +219,27 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Adds a new XML content value for the given element name and locale at the given index position
-     * to this XML content document.<p> 
-     * 
+     * to this XML content document.<p>
+     *
      * @param cms the current users OpenCms context
      * @param path the path to the XML content value element
-     * @param locale the locale where to add the new value 
+     * @param locale the locale where to add the new value
      * @param index the index where to add the value (relative to all other values of this type)
-     * 
-     * @return the created XML content value 
-     * 
+     *
+     * @return the created XML content value
+     *
      * @throws CmsIllegalArgumentException if the given path is invalid
-     * @throws CmsRuntimeException if the element identified by the path already occurred {@link I_CmsXmlSchemaType#getMaxOccurs()}  
+     * @throws CmsRuntimeException if the element identified by the path already occurred {@link I_CmsXmlSchemaType#getMaxOccurs()}
      *         or the given <code>index</code> is invalid (too high).
      */
     public I_CmsXmlContentValue addValue(CmsObject cms, String path, Locale locale, int index)
     throws CmsIllegalArgumentException, CmsRuntimeException {
 
-        // get the schema type of the requested path           
+        // get the schema type of the requested path
         I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(path);
         if (type == null) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1,
-                path));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1, path));
         }
 
         Element parentElement;
@@ -251,9 +250,8 @@ public class CmsXmlContent extends A_CmsXmlDocument {
             String parentPath = CmsXmlUtils.createXpath(CmsXmlUtils.removeLastXpathElement(path), 1);
             Object o = getBookmark(parentPath, locale);
             if (o == null) {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_1,
-                    path));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_1, path));
             }
             CmsXmlNestedContentDefinition parentValue = (CmsXmlNestedContentDefinition)o;
             parentElement = parentValue.getElement();
@@ -280,18 +278,20 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
             if (siblings.size() >= type.getMaxOccurs()) {
                 // must not allow adding an element if max occurs would be violated
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_XMLCONTENT_ELEM_MAXOCCURS_2,
-                    elementName,
-                    new Integer(type.getMaxOccurs())));
+                throw new CmsRuntimeException(
+                    Messages.get().container(
+                        Messages.ERR_XMLCONTENT_ELEM_MAXOCCURS_2,
+                        elementName,
+                        new Integer(type.getMaxOccurs())));
             }
 
             if (index > siblings.size()) {
                 // index position behind last element of the list
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_3,
-                    new Integer(index),
-                    new Integer(siblings.size())));
+                throw new CmsRuntimeException(
+                    Messages.get().container(
+                        Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_3,
+                        new Integer(index),
+                        new Integer(siblings.size())));
             }
 
             // check for offset required to append beyond last position
@@ -305,10 +305,11 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
             if (index > 0) {
                 // since the element does not occur, index must be 0
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_2,
-                    new Integer(index),
-                    elementName));
+                throw new CmsRuntimeException(
+                    Messages.get().container(
+                        Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_2,
+                        new Integer(index),
+                        elementName));
             }
 
             // check where in the type sequence the type should appear
@@ -332,7 +333,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                     Node node = i.next();
                     if (node instanceof Element) {
                         if (!previousTypeNames.contains(node.getName())) {
-                            // the element name is NOT in the list of names that occurs before the selected type, 
+                            // the element name is NOT in the list of names that occurs before the selected type,
                             // so it must be an element that occurs AFTER the type
                             break;
                         }
@@ -352,21 +353,22 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                 // validate the XML structure to see if the index position was valid
                 CmsXmlUtils.validateXmlStructure(m_document, m_encoding, new CmsXmlEntityResolver(cms));
             } catch (Exception e) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_CHOICE_3,
-                    new Integer(insertIndex),
-                    elementName,
-                    parentElement.getUniquePath()));
+                throw new CmsRuntimeException(
+                    Messages.get().container(
+                        Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_CHOICE_3,
+                        new Integer(insertIndex),
+                        elementName,
+                        parentElement.getUniquePath()));
             }
         } else {
             // just append the new element at the calculated position
             newValue = addValue(cms, parentElement, type, locale, insertIndex);
         }
 
-        // re-initialize this XML content 
+        // re-initialize this XML content
         initDocument(m_document, m_encoding, m_contentDefinition);
 
-        // return the value instance that was stored in the bookmarks 
+        // return the value instance that was stored in the bookmarks
         // just returning "newValue" isn't enough since this instance is NOT stored in the bookmarks
         return getBookmark(getBookmarkName(newValue.getPath(), locale));
     }
@@ -390,7 +392,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Copies the content of the given source locale to the given destination locale in this XML document.<p>
-     * 
+     *
      * @param source the source locale
      * @param destination the destination loacle
      * @param elements the set of elements to copy
@@ -399,14 +401,12 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     public void copyLocale(Locale source, Locale destination, Set<String> elements) throws CmsXmlException {
 
         if (!hasLocale(source)) {
-            throw new CmsXmlException(Messages.get().container(
-                org.opencms.xml.Messages.ERR_LOCALE_NOT_AVAILABLE_1,
-                source));
+            throw new CmsXmlException(
+                Messages.get().container(org.opencms.xml.Messages.ERR_LOCALE_NOT_AVAILABLE_1, source));
         }
         if (hasLocale(destination)) {
-            throw new CmsXmlException(Messages.get().container(
-                org.opencms.xml.Messages.ERR_LOCALE_ALREADY_EXISTS_1,
-                destination));
+            throw new CmsXmlException(
+                Messages.get().container(org.opencms.xml.Messages.ERR_LOCALE_ALREADY_EXISTS_1, destination));
         }
 
         Element sourceElement = null;
@@ -426,9 +426,8 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
         if (sourceElement == null) {
             // should not happen since this was checked already, just to make sure...
-            throw new CmsXmlException(Messages.get().container(
-                org.opencms.xml.Messages.ERR_LOCALE_NOT_AVAILABLE_1,
-                source));
+            throw new CmsXmlException(
+                Messages.get().container(org.opencms.xml.Messages.ERR_LOCALE_NOT_AVAILABLE_1, source));
         }
 
         // switch locale value in attribute of copied node
@@ -442,9 +441,9 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Returns all simple type sub values.<p>
-     * 
+     *
      * @param value the value
-     * 
+     *
      * @return the simple type sub values
      */
     public List<I_CmsXmlContentValue> getAllSimpleSubValues(I_CmsXmlContentValue value) {
@@ -462,13 +461,13 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Returns the list of choice options for the given xpath in the selected locale.<p>
-     * 
-     * In case the xpath does not select a nested choice content definition, 
+     *
+     * In case the xpath does not select a nested choice content definition,
      * or in case the xpath does not exist at all, <code>null</code> is returned.<p>
-     * 
+     *
      * @param xpath the xpath to check the choice options for
      * @param locale the locale to check
-     * 
+     *
      * @return the list of choice options for the given xpath
      */
     public List<I_CmsXmlSchemaType> getChoiceOptions(String xpath, Locale locale) {
@@ -531,11 +530,11 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Returns the XML root element node for the given locale.<p>
-     * 
+     *
      * @param locale the locale to get the root element for
-     * 
+     *
      * @return the XML root element node for the given locale
-     * 
+     *
      * @throws CmsRuntimeException if no language element is found in the document
      */
     public Element getLocaleNode(Locale locale) throws CmsRuntimeException {
@@ -555,10 +554,10 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Returns all simple type values below a given path.<p>
-     * 
+     *
      * @param elementPath the element path
      * @param locale the content locale
-     * 
+     *
      * @return the simple type values
      */
     public List<I_CmsXmlContentValue> getSimpleValuesBelowPath(String elementPath, Locale locale) {
@@ -577,10 +576,10 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Returns the list of sub-value for the given xpath in the selected locale.<p>
-     * 
+     *
      * @param path the xpath to look up the sub-value for
      * @param locale the locale to use
-     * 
+     *
      * @return the list of sub-value for the given xpath in the selected locale
      */
     @Override
@@ -604,10 +603,10 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Returns all values of the given element path.<p>
-     * 
+     *
      * @param elementPath the element path
      * @param locale the content locale
-     * 
+     *
      * @return the values
      */
     public List<I_CmsXmlContentValue> getValuesByPath(String elementPath, Locale locale) {
@@ -630,13 +629,13 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Returns the value sequence for the selected element xpath in this XML content.<p>
-     * 
+     *
      * If the given element xpath is not valid according to the schema of this XML content,
      * <code>null</code> is returned.<p>
-     * 
+     *
      * @param xpath the element xpath to get the value sequence for
      * @param locale the locale to get the value sequence for
-     * 
+     *
      * @return the value sequence for the selected element name in this XML content
      */
     public CmsXmlContentValueSequence getValueSequence(String xpath, Locale locale) {
@@ -650,13 +649,13 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Returns <code>true</code> if choice options exist for the given xpath in the selected locale.<p>
-     * 
-     * In case the xpath does not select a nested choice content definition, 
+     *
+     * In case the xpath does not select a nested choice content definition,
      * or in case the xpath does not exist at all, <code>false</code> is returned.<p>
-     * 
+     *
      * @param xpath the xpath to check the choice options for
      * @param locale the locale to check
-     * 
+     *
      * @return <code>true</code> if choice options exist for the given xpath in the selected locale
      */
     public boolean hasChoiceOptions(String xpath, Locale locale) {
@@ -679,8 +678,8 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Checks if the content is locale independent.<p>
-     * 
-     * @return true if the content is locale independent 
+     *
+     * @return true if the content is locale independent
      */
     public boolean isLocaleIndependent() {
 
@@ -696,7 +695,8 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         }
 
         try {
-            if (OpenCms.getResourceManager().getResourceType(file) instanceof CmsResourceTypeLocaleIndependentXmlContent) {
+            if (OpenCms.getResourceManager().getResourceType(
+                file) instanceof CmsResourceTypeLocaleIndependentXmlContent) {
                 return true;
             }
         } catch (Exception e) {
@@ -708,10 +708,10 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Removes an existing XML content value of the given element name and locale at the given index position
-     * from this XML content document.<p> 
-     * 
+     * from this XML content document.<p>
+     *
      * @param name the name of the XML content value element
-     * @param locale the locale where to remove the value 
+     * @param locale the locale where to remove the value
      * @param index the index where to remove the value (relative to all other values of this type)
      */
     public void removeValue(String name, Locale locale, int index) {
@@ -724,23 +724,24 @@ public class CmsXmlContent extends A_CmsXmlDocument {
             List<I_CmsXmlContentValue> values = getValues(name, locale);
             if (values.size() <= value.getMinOccurs()) {
                 // must not allow removing an element if min occurs would be violated
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_XMLCONTENT_ELEM_MINOCCURS_2,
-                    name,
-                    new Integer(value.getMinOccurs())));
+                throw new CmsRuntimeException(
+                    Messages.get().container(
+                        Messages.ERR_XMLCONTENT_ELEM_MINOCCURS_2,
+                        name,
+                        new Integer(value.getMinOccurs())));
             }
         }
 
         // detach the value node from the XML document
         value.getElement().detach();
 
-        // re-initialize this XML content 
+        // re-initialize this XML content
         initDocument(m_document, m_encoding, m_contentDefinition);
     }
 
     /**
      * Resolves the mappings for all values of this XML content.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      */
     public void resolveMappings(CmsObject cms) {
@@ -762,7 +763,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Synchronizes the locale independent fields for the given locale.<p>
-     * 
+     *
      * @param cms the cms context
      * @param skipPaths the paths to skip
      * @param sourceLocale the source locale
@@ -790,11 +791,11 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Visits all values of this XML content with the given value visitor.<p>
-     * 
+     *
      * Please note that the order in which the values are visited may NOT be the
-     * order they appear in the XML document. It is ensured that the the parent 
+     * order they appear in the XML document. It is ensured that the the parent
      * of a nested value is visited before the element it contains.<p>
-     * 
+     *
      * @param visitor the value visitor implementation to visit the values with
      */
     public void visitAllValuesWith(I_CmsXmlContentValueVisitor visitor) {
@@ -812,8 +813,8 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Creates a new bookmark for the given element.<p>
-     * 
-     * @param element the element to create the bookmark for 
+     *
+     * @param element the element to create the bookmark for
      * @param locale the locale
      * @param parent the parent node of the element
      * @param parentPath the parent's path
@@ -837,7 +838,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Adds a bookmark for the given value.<p>
-     * 
+     *
      * @param value the value to bookmark
      * @param path the lookup path to use for the bookmark
      * @param locale the locale to use for the bookmark
@@ -850,13 +851,13 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Adds a new XML schema type with the default value to the given parent node.<p>
-     * 
+     *
      * @param cms the cms context
      * @param parent the XML parent element to add the new value to
      * @param type the type of the value to add
      * @param locale the locale to add the new value for
      * @param insertIndex the index in the XML document where to add the XML node
-     * 
+     *
      * @return the created XML content value
      */
     protected I_CmsXmlContentValue addValue(
@@ -870,17 +871,17 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         Element element = type.generateXml(cms, this, parent, locale);
         // detach the XML element from the appended position in order to insert it at the required position
         element.detach();
-        // add the XML element at the required position in the parent XML node 
+        // add the XML element at the required position in the parent XML node
         CmsXmlGenericWrapper.content(parent).add(insertIndex, element);
         // create the type and return it
         I_CmsXmlContentValue value = type.createValue(this, element, locale);
-        // generate the default value again - required for nested mappings because only now the full path is available  
+        // generate the default value again - required for nested mappings because only now the full path is available
         String defaultValue = m_contentDefinition.getContentHandler().getDefault(cms, value, locale);
         if (defaultValue != null) {
             // only if there is a default value available use it to overwrite the initial default
             value.setStringValue(cms, defaultValue);
         }
-        // finally return the value        
+        // finally return the value
         return value;
     }
 
@@ -890,7 +891,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     @Override
     protected I_CmsXmlContentValue getBookmark(String bookmark) {
 
-        // allows package classes to directly access the bookmark information of the XML content 
+        // allows package classes to directly access the bookmark information of the XML content
         return super.getBookmark(bookmark);
     }
 
@@ -900,20 +901,20 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     @Override
     protected Set<String> getBookmarks() {
 
-        // allows package classes to directly access the bookmark information of the XML content 
+        // allows package classes to directly access the bookmark information of the XML content
         return super.getBookmarks();
     }
 
     /**
      * Returns the content definition object for this xml content object.<p>
-     * 
+     *
      * @param resolver the XML entity resolver to use, required for VFS access
-     * 
+     *
      * @return the content definition object for this xml content object
-     * 
-     * @throws CmsRuntimeException if the schema location attribute (<code>systemId</code>)cannot be found, 
+     *
+     * @throws CmsRuntimeException if the schema location attribute (<code>systemId</code>)cannot be found,
      *         parsing of the schema fails, an underlying IOException occurs or unmarshalling fails
-     *           
+     *
      */
     protected CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) throws CmsRuntimeException {
 
@@ -942,9 +943,9 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Initializes an XML document based on the provided document, encoding and content definition.<p>
-     * 
+     *
      * Checks the links and removes invalid ones in the initialized document.<p>
-     * 
+     *
      * @param cms the current users OpenCms content
      * @param document the base XML document to use for initializing
      * @param encoding the encoding to use when marshalling the document later
@@ -978,8 +979,8 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         for (Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement()); i.hasNext();) {
             Element node = i.next();
             try {
-                Locale locale = CmsLocaleManager.getLocale(node.attribute(
-                    CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
+                Locale locale = CmsLocaleManager.getLocale(
+                    node.attribute(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
 
                 addLocale(locale);
                 processSchemaNode(node, null, locale, definition);
@@ -992,16 +993,16 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Processes a document node and extracts the values of the node according to the provided XML
-     * content definition.<p> 
-     * 
+     * content definition.<p>
+     *
      * @param root the root node element to process
      * @param rootPath the Xpath of the root node in the document
-     * @param locale the locale 
+     * @param locale the locale
      * @param definition the XML content definition to use for processing the values
      */
     protected void processSchemaNode(Element root, String rootPath, Locale locale, CmsXmlContentDefinition definition) {
 
-        // iterate all XML nodes 
+        // iterate all XML nodes
         List<Node> content = CmsXmlGenericWrapper.content(root);
         for (int i = content.size() - 1; i >= 0; i--) {
             Node node = content.get(i);
@@ -1009,7 +1010,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                 // this node is not an element, so it must be a white space text node, remove it
                 node.detach();
             } else {
-                // node must be an element 
+                // node must be an element
                 Element element = (Element)node;
                 String name = element.getName();
                 int xpathIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(root));
@@ -1042,10 +1043,11 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                 } else {
                     // unknown XML node name according to schema
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.LOG_XMLCONTENT_INVALID_ELEM_2,
-                            name,
-                            definition.getSchemaLocation()));
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_XMLCONTENT_INVALID_ELEM_2,
+                                name,
+                                definition.getSchemaLocation()));
                     }
                 }
             }
@@ -1053,8 +1055,8 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     }
 
     /**
-     * Sets the file this XML content is written to.<p> 
-     * 
+     * Sets the file this XML content is written to.<p>
+     *
      * @param file the file this XML content content is written to
      */
     protected void setFile(CmsFile file) {
@@ -1064,7 +1066,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Ensures the parent values to the given path are created.<p>
-     * 
+     *
      * @param cms the cms context
      * @param valuePath the value path
      * @param locale the content locale
@@ -1083,7 +1085,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Removes all surplus values of locale independent fields in the other locales.<p>
-     * 
+     *
      * @param elementPath the element path
      * @param valueCount the value count
      * @param sourceLocale the source locale
@@ -1103,7 +1105,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Removes all values of the given path in the other locales.<p>
-     * 
+     *
      * @param elementPath the element path
      * @param sourceLocale the source locale
      */
@@ -1121,7 +1123,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Sets the value in all other locales.<p>
-     * 
+     *
      * @param cms the cms context
      * @param value the value
      * @param requiredParent the path to the required parent value
@@ -1152,13 +1154,17 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /**
      * Synchronizes the values for the given element path.<p>
-     * 
+     *
      * @param cms the cms context
      * @param elementPath the element path
      * @param skipPaths the paths to skip
      * @param sourceLocale the source locale
      */
-    private void synchronizeElement(CmsObject cms, String elementPath, Collection<String> skipPaths, Locale sourceLocale) {
+    private void synchronizeElement(
+        CmsObject cms,
+        String elementPath,
+        Collection<String> skipPaths,
+        Locale sourceLocale) {
 
         if (elementPath.contains("/")) {
             String parentPath = CmsXmlUtils.removeLastXpathElement(elementPath);

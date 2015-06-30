@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,16 +57,16 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Creates the dialogs for publishing a project or a resource.<p> 
- * 
+ * Creates the dialogs for publishing a project or a resource.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/publishproject.jsp
  * <li>/commons/publishresource.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsPublishProject extends CmsMultiDialog {
 
@@ -123,7 +123,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsPublishProject(CmsJspActionElement jsp) {
@@ -133,7 +133,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -145,7 +145,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Performs the publish action, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionPublish() throws JspException {
@@ -185,7 +185,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns the html for the confirmation message.<p>
-     * 
+     *
      * @return the html for the confirmation message
      */
     public String buildConfirmation() {
@@ -216,7 +216,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns the html code to build the confirmation messages.<p>
-     * 
+     *
      * @return html code
      */
     @Override
@@ -255,9 +255,9 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns the html code to build the lock dialog.<p>
-     * 
+     *
      * @return html code
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     @Override
@@ -282,7 +282,7 @@ public class CmsPublishProject extends CmsMultiDialog {
             return super.buildLockHeaderBox();
         }
         StringBuffer html = new StringBuffer(512);
-        // include resource info  
+        // include resource info
         html.append(dialogBlockStart(null));
         html.append(key(org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0));
         html.append(": ");
@@ -293,15 +293,16 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Override to display additional options in the lock dialog.<p>
-     * 
+     *
      * @return html code to display additional options
      */
     public String buildPublishOptions() {
 
         // show only for direct publish actions
         StringBuffer result = new StringBuffer(128);
-        boolean showOptionSiblings = (isMultiOperation() || isOperationOnFolder() || (isDirectPublish()
-            && hasSiblings() && hasCorrectLockstate()));
+        boolean showOptionSiblings = (isMultiOperation()
+            || isOperationOnFolder()
+            || (isDirectPublish() && hasSiblings() && hasCorrectLockstate()));
         boolean showOptionSubresources = (isMultiOperation() || isOperationOnFolder());
 
         result.append("<p>");
@@ -381,7 +382,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns the list of the resources to publish with broken relations.<p>
-     * 
+     *
      * @return the list of the resources to publish with broken relations
      */
     public CmsPublishBrokenRelationsList getBrokenRelationsList() {
@@ -391,7 +392,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns if a resource will be directly published.<p>
-     * 
+     *
      * @return <code>"true"</code> if a resource will be directly published
      */
     public String getParamDirectpublish() {
@@ -406,7 +407,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     public String getParamFramename() {
 
         String fn = super.getParamFramename();
-        // to correctly return after publish project 
+        // to correctly return after publish project
         if ((fn == null) && !isDirectPublish()) {
             fn = "body";
         }
@@ -425,7 +426,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns the value of the project id which will be published.<p>
-     * 
+     *
      * @return the String value of the project id
      */
     public String getParamProjectid() {
@@ -435,7 +436,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns the value of the project name which will be published.<p>
-     * 
+     *
      * @return the String value of the project name
      */
     public String getParamProjectname() {
@@ -445,7 +446,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns if siblings of the resource should be published.<p>
-     * 
+     *
      * @return <code>"true"</code> (String) if siblings of the resource should be published
      */
     public String getParamPublishsiblings() {
@@ -455,7 +456,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns the value of the related resources parameter.<p>
-     * 
+     *
      * @return the value of the related resources parameter
      */
     public String getParamRelatedresources() {
@@ -465,7 +466,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns the value of the subresources parameter.<p>
-     * 
+     *
      * @return the value of the sub resources parameter
      */
     public String getParamSubresources() {
@@ -485,9 +486,9 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Unlocks all selected resources, will be called by the JSP page.<p>
-     * 
+     *
      * @return <code>true</code> if everything went ok
-     * 
+     *
      * @throws JspException if there is some problem including the error page
      */
     public CmsPublishList getPublishList() throws JspException {
@@ -539,9 +540,9 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns the list with the resources to publish.<p>
-     * 
+     *
      * @return the list with the resources to publish
-     * 
+     *
      * @throws JspException if creation of publish list fails
      */
     public CmsPublishResourcesList getPublishResourcesList() throws JspException {
@@ -558,7 +559,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns <code>true</code> if the resources to be published will generate broken links.<p>
-     * 
+     *
      * @return <code>true</code> if the resources to be published will generate broken links
      */
     public boolean hasBrokenLinks() {
@@ -570,10 +571,10 @@ public class CmsPublishProject extends CmsMultiDialog {
     }
 
     /**
-     * Returns <code>true</code> if the current user is allowed 
+     * Returns <code>true</code> if the current user is allowed
      * to publish the selected resources.<p>
-     * 
-     * @return <code>true</code> if the current user is allowed 
+     *
+     * @return <code>true</code> if the current user is allowed
      *          to publish the selected resources
      */
     public boolean isCanPublish() {
@@ -584,7 +585,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns <code>true</code> if the selection has blocking locks.<p>
-     * 
+     *
      * @return <code>true</code> if the selection has blocking locks
      */
     public boolean isLockStateOk() {
@@ -636,7 +637,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Sets if a resource will be directly published.<p>
-     * 
+     *
      * @param value <code>"true"</code> (String) if a resource will be directly published
      */
     public void setParamDirectpublish(String value) {
@@ -655,8 +656,8 @@ public class CmsPublishProject extends CmsMultiDialog {
     }
 
     /**
-     * Sets the value of the project id which will be published.<p> 
-     * 
+     * Sets the value of the project id which will be published.<p>
+     *
      * @param value the String value of the project id
      */
     public void setParamProjectid(String value) {
@@ -665,8 +666,8 @@ public class CmsPublishProject extends CmsMultiDialog {
     }
 
     /**
-     * Sets the value of the project name which will be published.<p> 
-     * 
+     * Sets the value of the project name which will be published.<p>
+     *
      * @param value the String value of the project name
      */
     public void setParamProjectname(String value) {
@@ -675,8 +676,8 @@ public class CmsPublishProject extends CmsMultiDialog {
     }
 
     /**
-     * Sets if siblings of the resource should be published.<p> 
-     * 
+     * Sets if siblings of the resource should be published.<p>
+     *
      * @param value <code>"true"</code> (String) if siblings of the resource should be published
      */
     public void setParamPublishsiblings(String value) {
@@ -686,7 +687,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Sets the value of the related resources parameter.<p>
-     * 
+     *
      * @param relatedResources the value of the related resources parameter
      */
     public void setParamRelatedresources(String relatedResources) {
@@ -696,7 +697,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Sets the value of the subresources parameter.<p>
-     * 
+     *
      * @param paramSubresources the value of the subresources parameter
      */
     public void setParamSubresources(String paramSubresources) {
@@ -751,7 +752,7 @@ public class CmsPublishProject extends CmsMultiDialog {
             setParamRelatedresources(defValue);
         }
 
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_PUBLISH);
         } else if (DIALOG_LOCKS_CONFIRMED.equals(getParamAction())) {
@@ -779,7 +780,10 @@ public class CmsPublishProject extends CmsMultiDialog {
                         CmsPublishList relResources = OpenCms.getPublishManager().getRelatedResourcesToPublish(
                             getCms(),
                             publishList);
-                        publishList = OpenCms.getPublishManager().mergePublishLists(getCms(), publishList, relResources);
+                        publishList = OpenCms.getPublishManager().mergePublishLists(
+                            getCms(),
+                            publishList,
+                            relResources);
                     } else {
                         publishList = storedList;
                     }
@@ -828,10 +832,10 @@ public class CmsPublishProject extends CmsMultiDialog {
                     setAction(ACTION_CANCEL);
                     return;
                 }
-                // add the title for the direct publish dialog 
+                // add the title for the direct publish dialog
                 setDialogTitle(Messages.GUI_PUBLISH_RESOURCE_1, Messages.GUI_PUBLISH_MULTI_2);
             } else {
-                // add the title for the publish project dialog 
+                // add the title for the publish project dialog
                 setParamTitle(key(Messages.GUI_PUBLISH_PROJECT_0));
                 // determine the project id and name for publishing
                 computePublishProject();
@@ -839,7 +843,7 @@ public class CmsPublishProject extends CmsMultiDialog {
             }
             // if lock state if not as expected
             if (isLockStateOk()) { // this may take a while :(
-                // skip lock confirmation screen 
+                // skip lock confirmation screen
                 setAction(ACTION_LOCKS_CONFIRMED);
             }
         }
@@ -853,9 +857,8 @@ public class CmsPublishProject extends CmsMultiDialog {
 
         CmsPublishList publishList = getSettings().getPublishList();
         if (publishList == null) {
-            throw new CmsException(Messages.get().container(
-                org.opencms.db.Messages.ERR_GET_PUBLISH_LIST_PROJECT_1,
-                getProjectname()));
+            throw new CmsException(
+                Messages.get().container(org.opencms.db.Messages.ERR_GET_PUBLISH_LIST_PROJECT_1, getProjectname()));
         }
         OpenCms.getPublishManager().publishProject(
             getCms(),
@@ -890,7 +893,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns the filter to identify blocking locks.<p>
-     * 
+     *
      * @return the filter to identify blocking locks
      */
     private CmsLockFilter getBlockingFilter() {
@@ -905,7 +908,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns the parent folder for the publish process.<p>
-     * 
+     *
      * @return the parent folder for the publish process
      */
     private String getParentFolder() {
@@ -921,7 +924,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns the project name.<p>
-     * 
+     *
      * @return the project name
      */
     private String getProjectname() {
@@ -937,7 +940,7 @@ public class CmsPublishProject extends CmsMultiDialog {
 
     /**
      * Returns <code>false</code> if this is a publish project operation.<p>
-     * 
+     *
      * @return <code>true</code> if this is a direct publish operation
      */
     private boolean isDirectPublish() {

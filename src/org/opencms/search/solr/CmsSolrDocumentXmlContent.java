@@ -142,9 +142,8 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         // un-marshal the content
         CmsFile file = cms.readFile(resource);
         if (file.getLength() <= 0) {
-            throw new CmsIndexNoContentException(Messages.get().container(
-                Messages.ERR_NO_CONTENT_1,
-                resource.getRootPath()));
+            throw new CmsIndexNoContentException(
+                Messages.get().container(Messages.ERR_NO_CONTENT_1, resource.getRootPath()));
         }
         A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
 
@@ -224,10 +223,11 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                                 }
                             } else if (mapping.equals(MAPPING_GALLERY_NAME)) {
                                 galleryNameTemplate = value.getPlainText(cms);
-                                LOG.info("Found gallery name template for "
-                                    + resource.getRootPath()
-                                    + ":"
-                                    + galleryNameTemplate);
+                                LOG.info(
+                                    "Found gallery name template for "
+                                        + resource.getRootPath()
+                                        + ":"
+                                        + galleryNameTemplate);
 
                             }
                         }
@@ -253,10 +253,11 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                                 null,
                                 xpath,
                                 locale);
-                            LOG.info("Using default value for gallery name template in "
-                                + resource.getRootPath()
-                                + ": "
-                                + galleryNameTemplate);
+                            LOG.info(
+                                "Using default value for gallery name template in "
+                                    + resource.getRootPath()
+                                    + ": "
+                                    + galleryNameTemplate);
                             break;
                         }
                     }
@@ -277,15 +278,16 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
             if (galleryNameTemplate != null) {
                 CmsGalleryNameMacroResolver macroResolver = new CmsGalleryNameMacroResolver(cms, xmlContent, locale);
                 String galleryName = macroResolver.resolveMacros(galleryNameTemplate);
-                LOG.info("Using gallery name mapping '"
-                    + galleryNameTemplate
-                    + "' for '"
-                    + resource.getRootPath()
-                    + "' in locale "
-                    + locale
-                    + ", resulting in gallery name '"
-                    + galleryName
-                    + "'");
+                LOG.info(
+                    "Using gallery name mapping '"
+                        + galleryNameTemplate
+                        + "' for '"
+                        + resource.getRootPath()
+                        + "' in locale "
+                        + locale
+                        + ", resulting in gallery name '"
+                        + galleryName
+                        + "'");
                 fieldMappings.put(
                     CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_TITLE_UNSTORED, locale)
                         + "_s",
@@ -355,9 +357,10 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
             for (Iterator<I_CmsResourceType> i = OpenCms.getResourceManager().getResourceTypes().iterator(); i.hasNext();) {
                 I_CmsResourceType resourceType = i.next();
                 if ((resourceType instanceof CmsResourceTypeXmlContent)
-                // either we need a configured schema, or another class name (which must then contain an inline schema)
+                    // either we need a configured schema, or another class name (which must then contain an inline schema)
                     && (((CmsResourceTypeXmlContent)resourceType).getConfiguration().containsKey(
-                        CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA) || !CmsResourceTypeXmlContent.class.equals(resourceType.getClass()))) {
+                        CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA)
+                        || !CmsResourceTypeXmlContent.class.equals(resourceType.getClass()))) {
                     // add the XML content resource type name
                     allTypes.add(resourceType.getTypeName());
                 }

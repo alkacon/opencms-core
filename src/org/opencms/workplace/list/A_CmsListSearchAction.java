@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,10 +35,10 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
 /**
  * Abstract implementation of a search action.<p>
- * 
+ *
  * It provides the default show all action accessor and the rendering method.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
 
@@ -166,7 +166,7 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
 
     /**
      * Creates a default show all action.<p>
-     * 
+     *
      * @return default show all action
      */
     private I_CmsListAction createDefaultShowAllAction() {

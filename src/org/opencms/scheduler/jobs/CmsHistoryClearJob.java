@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,12 +38,12 @@ import java.util.Map;
 
 /**
  * A schedulable OpenCms job to clear the history.<p>
- * 
+ *
  * The user to execute the process should have have access to the required "Workplace manager" role.<p>
- * 
+ *
  * If there is an Uri set for the scheduled job, which should only be folders, it will be used
  * for clearing the history only in there (and the subfolders).<p>
- * 
+ *
  * Job parameters:<p>
  * <dl>
  * <dt><code>keepVersions={Number/Integer}</code></dt>
@@ -52,11 +52,11 @@ import java.util.Map;
  * <dd>Boolean to configure if the versions of deleted resources should be cleared.
  * The default is false.</dd>
  * <dt><code>keepTimeRange</code></dt>
- * <dd>Number/Integer to configure the number of days the versions of deleted resources will 
+ * <dd>Number/Integer to configure the number of days the versions of deleted resources will
  * be kept. That means that all versions wich are older than the specified number will be deleted.
  * This parameter is optional and only makes sense if the clearDeleted parameter is set to true.</dd>
  * </dl>
- * 
+ *
  * @since 7.0.0
  */
 public class CmsHistoryClearJob implements I_CmsScheduledJob {

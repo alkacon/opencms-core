@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,9 +55,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Container page container.<p>
- * 
- * 
- * 
+ *
+ *
+ *
  * @since 8.0.0
  */
 public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDropContainer {
@@ -84,7 +84,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param element the DOM element
          */
         public ElementPositionInfo(Element element) {
@@ -105,7 +105,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         /**
          * Returns the DOM element.<p>
-         * 
+         *
          * @return the DOM element
          */
         public Element getElement() {
@@ -115,7 +115,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         /**
          * Returns the element position bean.<p>
-         * 
+         *
          * @return the element position bean
          */
         public CmsPositionBean getElementPosition() {
@@ -125,10 +125,10 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         /**
          * Returns the x distance of the cursor to the element left.<p>
-         *  
+         *
          * @param x the cursor x position
          * @param documentScrollLeft the document scroll left position
-         * 
+         *
          * @return the y distance of the cursor to the element top
          */
         public int getRelativeLeft(int x, int documentScrollLeft) {
@@ -138,10 +138,10 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         /**
          * Returns the y distance of the cursor to the element top.<p>
-         *  
+         *
          * @param y the cursor y position
          * @param documentScrollTop the document scroll top position
-         * 
+         *
          * @return the y distance of the cursor to the element top
          */
         public int getRelativeTop(int y, int documentScrollTop) {
@@ -151,7 +151,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         /**
          * Returns if the element is positioned absolute.<p>
-         * 
+         *
          * @return <code>true</code> if the element is positioned absolute
          */
         public boolean isAbsolute() {
@@ -161,7 +161,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         /**
          * Returns if the element is floated.<p>
-         * 
+         *
          * @return <code>true</code> if the element is floated
          */
         public boolean isFloating() {
@@ -171,7 +171,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         /**
          * Returns if the element is floated to the left.<p>
-         * 
+         *
          * @return <code>true</code> if the element is floated to the left
          */
         public boolean isFloatLeft() {
@@ -181,7 +181,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         /**
          * Returns if the element is floated to the right.<p>
-         * 
+         *
          * @return <code>true</code> if the element is floated to the right
          */
         public boolean isFloatRight() {
@@ -191,7 +191,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
         /**
          * Returns if the given element is visible.<p>
-         * 
+         *
          * @return <code>true</code> if the given element is visible
          */
         public boolean isVisible() {
@@ -239,7 +239,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param containerData the container data
      * @param element the container element
      */
@@ -386,7 +386,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
     /**
      * Returns all contained drag elements.<p>
-     * 
+     *
      * @return the drag elements
      */
     public List<CmsContainerPageElementPanel> getAllDragElements() {
@@ -413,7 +413,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
     /**
      * Returns the configured width for this container.<p>
-     * 
+     *
      * @return the configured width
      */
     public int getConfiguredWidth() {
@@ -443,7 +443,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
     /**
      * In case of a former copy model, and a max elements setting of one, the id of the overflowing element is returned.<p>
-     * 
+     *
      * @return the overflowing element id or <code>null</code>
      */
     public String getCopyModelReplaceId() {
@@ -468,7 +468,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
     /**
      * Returns whether this container has a model group parent.<p>
-     * 
+     *
      * @return <code>true</code> if this container has a model group parent
      */
     public Element getFormerModelGroupParent() {
@@ -511,7 +511,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
     /**
      * Returns whether this container has a model group parent.<p>
-     * 
+     *
      * @return <code>true</code> if this container has a model group parent
      */
     public boolean hasModelGroupParent() {
@@ -598,8 +598,8 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
     /**
      * Returns true if this is a detail view container.<p>
-     * 
-     * @return true if this is a detail view container 
+     *
+     * @return true if this is a detail view container
      */
     public boolean isDetailView() {
 
@@ -694,7 +694,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
     /**
      * Sets the empty container element.<p>
-     * 
+     *
      * @param emptyContainerElement the empty container element
      */
     public void setEmptyContainerElement(Element emptyContainerElement) {
@@ -752,10 +752,10 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
 
     /**
      * Repositions the drag and drop placeholder.<p>
-     * 
+     *
      * @param x the x cursor position
      * @param y the y cursor position
-     * 
+     *
      * @return the placeholder position index
      */
     private int internalRepositionPlaceholder(int x, int y) {

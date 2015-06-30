@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,23 +41,23 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Displays a certain amount of lines starting from a certain starting line 
- * which are specified in the <code>{@link org.opencms.workplace.CmsWorkplaceManager}'s</code> 
+ * Displays a certain amount of lines starting from a certain starting line
+ * which are specified in the <code>{@link org.opencms.workplace.CmsWorkplaceManager}'s</code>
  * <code>{@link org.opencms.util.CmsRfsFileViewer}</code>.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
 
     /**
-     * Boolean request parameter that switches between serving the content of the file 
+     * Boolean request parameter that switches between serving the content of the file
      * to the iframe of the page that is generated if the switch is false. <p>
      */
     String m_paramShowlog;
 
     /**
-     * Public constructor with JSP action element.<p> 
-     * 
+     * Public constructor with JSP action element.<p>
+     *
      * @param jsp the CmsJspActionElement
      */
     public CmsRfsFileViewDialog(CmsJspActionElement jsp) {
@@ -68,7 +68,7 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -88,7 +88,7 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
             super.displayDialog();
         } else {
             StringBuffer result = new StringBuffer(1024);
-            // wrap a box with scrollbars around the file content: 
+            // wrap a box with scrollbars around the file content:
             try {
                 result.append("<pre>");
                 result.append(m_logView.readFilePortion());
@@ -107,10 +107,10 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
     }
 
     /**
-     * Returns true whether the content of the file should be written to the response or false 
+     * Returns true whether the content of the file should be written to the response or false
      * if the page content should be generated.<p>
-     *  
-     * @return true whether the content of the file should be written to the response or false 
+     *
+     * @return true whether the content of the file should be written to the response or false
      * if the page content should be generated
      */
     public String getParamShowlog() {
@@ -119,8 +119,8 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
     }
 
     /**
-     * Set the value to decide whether page content or the file content has to be shown to the response.<p> 
-     * 
+     * Set the value to decide whether page content or the file content has to be shown to the response.<p>
+     *
      * @param value the value to decide whether page content or the file content has to be shown to the response to set
      */
     public void setParamShowlog(String value) {
@@ -130,9 +130,9 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
 
     /**
      * Returns the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return dialog HTML for all defined widgets of the named dialog (page)
      */

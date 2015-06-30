@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,8 +43,8 @@ public class CmsExtendedRealProjectWrapper extends CmsRealProjectVirtualWrapper 
 
     /**
      * Creates a new wrapper instance.<p>
-     * 
-     * @param id the project id 
+     *
+     * @param id the project id
      */
     public CmsExtendedRealProjectWrapper(CmsUUID id) {
 
@@ -59,7 +59,7 @@ public class CmsExtendedRealProjectWrapper extends CmsRealProjectVirtualWrapper 
     throws CmsException {
 
         if (CmsExtendedWorkflowManager.WORKFLOW_RELEASE.equals(workflowId)) {
-            // use readProjectView because it doesn't check for publish permissions on the resources 
+            // use readProjectView because it doesn't check for publish permissions on the resources
             return cms.readProjectView(getProjectId(), CmsResource.STATE_KEEP);
         } else {
             return super.getResources(cms, params, workflowId);

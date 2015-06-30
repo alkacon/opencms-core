@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,17 +34,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
-/** 
+/**
  * Form action element class for use in rendering user-generated content forms.<p>
  */
 public class CmsUgcActionElement extends CmsJspActionElement {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param pageContext the JSP page context 
-     * @param request the current request 
-     * @param response the current response 
+     *
+     * @param pageContext the JSP page context
+     * @param request the current request
+     * @param response the current response
      */
     public CmsUgcActionElement(PageContext pageContext, HttpServletRequest request, HttpServletResponse response) {
 
@@ -53,12 +53,12 @@ public class CmsUgcActionElement extends CmsJspActionElement {
 
     /**
      * Creates a new form session to edit the file with the given name using the given form configuration.
-     * 
-     * @param configPath the site path of the form configuration 
-     * @param fileName the name (not path) of the XML content to edit 
+     *
+     * @param configPath the site path of the form configuration
+     * @param fileName the name (not path) of the XML content to edit
      * @return the id of the newly created form session
-     * 
-     * @throws CmsUgcException if something goes wrong 
+     *
+     * @throws CmsUgcException if something goes wrong
      */
     public String createSessionForResource(String configPath, String fileName) throws CmsUgcException {
 

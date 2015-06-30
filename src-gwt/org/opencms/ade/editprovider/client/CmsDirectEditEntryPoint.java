@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,8 +28,8 @@
 package org.opencms.ade.editprovider.client;
 
 import org.opencms.gwt.client.A_CmsEntryPoint;
-import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsBroadcastTimer;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * The entry point class for the org.opencms.ade.editprovider.EditProvider module.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
@@ -143,7 +143,7 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
 
     /**
      * Writes the tool-bar visibility into the session cache.<p>
-     * 
+     *
      * @param visible <code>true</code> if the tool-bar is visible
      */
     public void saveToolbarVisibility(final boolean visible) {
@@ -199,8 +199,10 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
         toggleToolbarButton.setButtonStyle(ButtonStyle.TEXT, null);
         toggleToolbarButton.setSize(Size.small);
         toggleToolbarButton.setImageClass(I_CmsImageBundle.INSTANCE.style().opencmsSymbol());
-        toggleToolbarButton.removeStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
-        toggleToolbarButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        toggleToolbarButton.removeStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
+        toggleToolbarButton.addStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         root.add(toggleToolbarButton);
         toggleToolbarButton.addClickHandler(new ClickHandler() {
 
@@ -219,7 +221,8 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
             m_toolbarVisibility.setValue(I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
         }
 
-        toggleToolbarButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarToggle());
+        toggleToolbarButton.addStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarToggle());
         CmsDirectEditToolbarHandler handler = new CmsDirectEditToolbarHandler();
 
         CmsToolbarPublishButton publish = new CmsToolbarPublishButton(handler);
@@ -241,8 +244,8 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
 
     /**
      * Checks if the toolbar is visible.<p>
-     * 
-     * @return true if the toolbar is visible 
+     *
+     * @return true if the toolbar is visible
      */
     protected boolean isToolbarVisible() {
 
@@ -252,10 +255,10 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
 
     /**
      * Adds the direct edit buttons for a single editable element.<p>
-     * 
-     * @param elem the data container element 
-     * 
-     * @return the direct edit buttons widget which was created for the element 
+     *
+     * @param elem the data container element
+     *
+     * @return the direct edit buttons widget which was created for the element
      */
     protected CmsDirectEditButtons processEditableElement(Element elem) {
 

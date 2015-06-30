@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Provides a standard HTML form password widget, for use on a widget dialog.<p>
- * 
+ *
  * */
 public class CmsPasswordWidget extends Composite implements I_CmsEditWidget {
 
@@ -102,7 +102,7 @@ public class CmsPasswordWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Represents a value change event.<p>
-     * 
+     *
      */
     public void fireChangeEvent() {
 

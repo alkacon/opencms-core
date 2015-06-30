@@ -40,18 +40,12 @@ public class CmsPublishResourceInfo implements IsSerializable {
     public enum Type {
 
         /** The resource is still used in the online project. */
-        BROKENLINK,
-        /** Resource is locked by another user. */
-        LOCKED,
-        /** The resource is missing in the online project. */
-        MISSING,
-        /** User does not have enough permissions. */
-        PERMISSIONS,
-        /** Resource has been already published. */
-        PUBLISHED,
-        /** Changed related resource can not be published. */
-        RELATED,
-        /** Resource is already in the workflow. */
+        BROKENLINK, /** Resource is locked by another user. */
+        LOCKED, /** The resource is missing in the online project. */
+        MISSING, /** User does not have enough permissions. */
+        PERMISSIONS, /** Resource has been already published. */
+        PUBLISHED, /** Changed related resource can not be published. */
+        RELATED, /** Resource is already in the workflow. */
         WORKFLOW;
     }
 

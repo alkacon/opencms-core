@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,16 +30,16 @@ package org.opencms.util;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsTestCase;
 
-/** 
+/**
  * Test case for <code>{@link org.opencms.util.CmsHtml2TextConverter}</code>.<p>
- * 
+ *
  * @since 6.2.0
  */
 public class TestCmsHtml2TextConverter extends OpenCmsTestCase {
 
     /**
      * Tests the HTML extractor.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testHtmlExtractor() throws Exception {
@@ -62,7 +62,7 @@ public class TestCmsHtml2TextConverter extends OpenCmsTestCase {
         System.out.println(result3 + "\n\n");
 
         //        String content3 = CmsFileUtil.readFile("org/opencms/util/testHtml_02.html", CmsEncoder.ENCODING_ISO_8859_1);
-        //        String result3 = CmsHtmlTextAuszeichner.machDieAuszeichnung(content3, CmsEncoder.ENCODING_ISO_8859_1);        
+        //        String result3 = CmsHtmlTextAuszeichner.machDieAuszeichnung(content3, CmsEncoder.ENCODING_ISO_8859_1);
         //        System.out.println(result3 + "\n\n");
     }
 }

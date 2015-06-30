@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,7 +50,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
 
 /**
  * Image format form handler.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCroppingParamBean> {
@@ -58,14 +58,10 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
     /** Default image formats. */
     private enum DefaultRestriction {
         /** Big image format. */
-        big,
-        /** Free image format. */
-        free,
-        /** Original format. */
-        original,
-        /** Small image format. */
-        small,
-        /** User defined image format. */
+        big, /** Free image format. */
+        free, /** Original format. */
+        original, /** Small image format. */
+        small, /** User defined image format. */
         user
     }
 
@@ -129,7 +125,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param galleryMode the gallery mode
      * @param dialog the gallery dialog
      * @param selectedPath the selected gallery path
@@ -182,7 +178,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Returns the current cropping parameter.<p>
-     * 
+     *
      * @return the current cropping parameter
      */
     public CmsCroppingParamBean getCroppingParam() {
@@ -212,7 +208,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Adds necessary attributes to the map.<p>
-     * 
+     *
      * @param attributes the attribute map
      * @return the attribute map
      */
@@ -245,7 +241,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Initializes the format form handler.<p>
-     * 
+     *
      * @param formatForm the format form
      * @param croppingDialog the cropping dialog
      */
@@ -276,7 +272,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
             /**
              * Executed on value change. Sets the returned cropping parameters.<p>
-             * 
+             *
              * @param event the value change event
              */
             public void onValueChange(ValueChangeEvent<CmsCroppingParamBean> event) {
@@ -289,7 +285,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Returns if scaling formats may be selected for the image.<p>
-     * 
+     *
      * @return <code>true</code> if scaling formats may be selected for the image
      */
     public boolean isUseFormats() {
@@ -299,7 +295,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Execute on format change.<p>
-     * 
+     *
      * @param formatKey the new format value
      */
     public void onFormatChange(String formatKey) {
@@ -316,7 +312,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Execute on height change.<p>
-     * 
+     *
      * @param height the new height
      */
     public void onHeightChange(String height) {
@@ -342,7 +338,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Execute when the lock image ratio is clicked.<p>
-     * 
+     *
      * @param locked <code>true</code> if ratio is locked
      */
     public void onLockRatio(boolean locked) {
@@ -377,7 +373,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Execute on width change.<p>
-     * 
+     *
      * @param width the new width
      */
     public void onWidthChange(String width) {
@@ -413,7 +409,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Sets the given cropping parameter.<p>
-     * 
+     *
      * @param croppingParam the cropping parameter
      */
     public void setCropping(CmsCroppingParamBean croppingParam) {
@@ -446,7 +442,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Adds this handler to the widget.
-     * 
+     *
      * @param <H> the type of handler to add
      * @param type the event type
      * @param handler the handler
@@ -457,7 +453,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
         return ensureHandlers().addHandlerToSource(type, this, handler);
     }
 
-    /** 
+    /**
      * Helper method for firing a 'value changed' event.<p>
      */
     protected void fireValueChangedEvent() {
@@ -475,14 +471,16 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
         int width = m_croppingParam.getOrgWidth();
         if (m_croppingParam.isScaled()) {
             if (m_croppingParam.getTargetHeight() == -1) {
-                height = (int)Math.floor(((1.00 * m_croppingParam.getOrgHeight()) / m_croppingParam.getOrgWidth())
-                    * m_croppingParam.getTargetWidth());
+                height = (int)Math.floor(
+                    ((1.00 * m_croppingParam.getOrgHeight()) / m_croppingParam.getOrgWidth())
+                        * m_croppingParam.getTargetWidth());
             } else {
                 height = m_croppingParam.getTargetHeight();
             }
             if (m_croppingParam.getTargetWidth() == -1) {
-                width = (int)Math.floor(((1.00 * m_croppingParam.getOrgWidth()) / m_croppingParam.getOrgHeight())
-                    * m_croppingParam.getTargetHeight());
+                width = (int)Math.floor(
+                    ((1.00 * m_croppingParam.getOrgWidth()) / m_croppingParam.getOrgHeight())
+                        * m_croppingParam.getTargetHeight());
             } else {
                 width = m_croppingParam.getTargetWidth();
             }
@@ -516,7 +514,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Lazy initializing the handler manager.<p>
-     * 
+     *
      * @return the handler manager
      */
     private SimpleEventBus ensureHandlers() {
@@ -589,10 +587,10 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Checks the format restrictions if the match the giving cropping parameter.<p>
-     * 
+     *
      * @param croppingParam the cropping parameter
      * @param forceByName force format match by name within cropping parameter
-     * 
+     *
      * @return the matching format restriction
      */
     private I_CmsFormatRestriction getMatchingFormat(CmsCroppingParamBean croppingParam, boolean forceByName) {
@@ -619,7 +617,7 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Returns if the user defined format restriction is available.<p>
-     * 
+     *
      * @return <code>true</code> if the user defined format restriction is available
      */
     private boolean hasUserFormatRestriction() {
@@ -629,10 +627,10 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
 
     /**
      * Reads the format configuration for the given gallery mode.<p>
-     * 
+     *
      * @param mode the gallery mode
      * @param isNativeWidget if the dialog is used as a native widget
-     * @param overrideFormats true if the formats from the gallery dialog should take priority in 'editor' mode 
+     * @param overrideFormats true if the formats from the gallery dialog should take priority in 'editor' mode
      */
     private void readFormatsConfig(GalleryMode mode, boolean isNativeWidget, boolean overrideFormats) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ public class CmsWorkflowAction implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param actionKey the action key
      * @param label the action label
      * @param isEnabled <code>true</code> if the action is enabled
@@ -65,11 +65,11 @@ public class CmsWorkflowAction implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param actionKey the action key
      * @param label the action label
      * @param isEnabled <code>true</code> if the action is enabled
-     * @param isPublish a flag to distinguish publish actions from other workflow actions 
+     * @param isPublish a flag to distinguish publish actions from other workflow actions
      */
     public CmsWorkflowAction(String actionKey, String label, boolean isEnabled, boolean isPublish) {
 
@@ -89,7 +89,7 @@ public class CmsWorkflowAction implements IsSerializable {
 
     /**
      * Returns the action key.<p>
-     * 
+     *
      * @return the action key
      */
     public String getAction() {
@@ -99,7 +99,7 @@ public class CmsWorkflowAction implements IsSerializable {
 
     /**
      * Returns the action label.<p>
-     * 
+     *
      * @return the action label
      */
     public String getLabel() {
@@ -109,7 +109,7 @@ public class CmsWorkflowAction implements IsSerializable {
 
     /**
      * Returns if the action is enabled.<p>
-     * 
+     *
      * @return <code>true</code> if the action is enabled
      */
     public boolean isEnabled() {
@@ -117,10 +117,10 @@ public class CmsWorkflowAction implements IsSerializable {
         return m_enabled;
     }
 
-    /** 
+    /**
      * Check whether this action is a publish action.<p>
-     * 
-     * @return true if this is a publish action 
+     *
+     * @return true if this is a publish action
      */
     public boolean isPublish() {
 

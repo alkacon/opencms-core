@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,15 +39,15 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * An abstract class for widgets which represent options for select boxes.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public abstract class A_CmsSelectCell extends Composite {
 
     /**
      * Measures the required width for this cell.<p>
-     * 
+     *
      * @return the required width
      */
     public int getRequiredWidth() {
@@ -62,22 +62,22 @@ public abstract class A_CmsSelectCell extends Composite {
 
     /**
      * Returns the value of the select option as a string.<p>
-     * 
-     * @return the value of the select option 
+     *
+     * @return the value of the select option
      */
     public abstract String getValue();
 
     /**
      * Adds a new event handler to the widget.<p>
-     * 
+     *
      * This method is used because we want the select box to register some event handlers on this widget,
      * but we can't use {@link com.google.gwt.user.client.ui.Widget#addDomHandler} directly, since it's both protected
      * and final.
-     *    
+     *
      * @param <H> the event type
      * @param handler the new event handler
-     * @param type the event type object 
-     * 
+     * @param type the event type object
+     *
      * @return the HandlerRegistration for removing the event handler
      */
     public <H extends EventHandler> HandlerRegistration registerDomHandler(final H handler, DomEvent.Type<H> type) {

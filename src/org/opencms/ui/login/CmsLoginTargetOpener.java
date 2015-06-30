@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,12 +39,12 @@ public class CmsLoginTargetOpener extends AbstractComponent {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /** 
+    /**
      * Opens the login target.<p>
-     * 
-     * @param target the login target URL 
-     * @param user the logged in user 
-     * @param password the password  of the user 
+     *
+     * @param target the login target URL
+     * @param user the logged in user
+     * @param password the password  of the user
      */
     public void openTarget(String target, String user, String password) {
 

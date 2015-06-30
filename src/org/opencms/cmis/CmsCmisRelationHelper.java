@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -74,11 +74,11 @@ import org.apache.chemistry.opencmis.commons.impl.server.ObjectInfoImpl;
 
 /**
  * Helper class for CMIS CRUD operations on relation objects.<p>
- * 
- * Since CMIS requires any object to have an ID by which it is accessed, but OpenCms relations 
- * are not addressable by ids, we invent an artificial relation id string of the form 
- * REL_(SOURCE_ID)_(TARGET_ID)_(TYPE).<p> 
- *  
+ *
+ * Since CMIS requires any object to have an ID by which it is accessed, but OpenCms relations
+ * are not addressable by ids, we invent an artificial relation id string of the form
+ * REL_(SOURCE_ID)_(TARGET_ID)_(TYPE).<p>
+ *
  */
 public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
@@ -104,10 +104,10 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
         /**
          * Creates a new relation key.<p>
-         * 
-         * @param sourceId the source id 
-         * @param targetId the target id 
-         * @param relType the relation type 
+         *
+         * @param sourceId the source id
+         * @param targetId the target id
+         * @param relType the relation type
          */
         public RelationKey(CmsUUID sourceId, CmsUUID targetId, String relType) {
 
@@ -118,8 +118,8 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
         /**
          * Reads the actual resource and relation data from the OpenCms VFS.<p>
-         * 
-         * @param cms the CMS context to use for reading the data  
+         *
+         * @param cms the CMS context to use for reading the data
          */
         public void fillRelation(CmsObject cms) {
 
@@ -139,8 +139,8 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
         /**
          * Gets the relation object.<p>
-         * 
-         * @return the relation object 
+         *
+         * @return the relation object
          */
         public CmsRelation getRelation() {
 
@@ -149,8 +149,8 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
         /**
          * Gets the relation type.<p>
-         * 
-         * @return the relation type 
+         *
+         * @return the relation type
          */
         public String getRelType() {
 
@@ -159,8 +159,8 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
         /**
          * Gets the source resource of the relation.<p>
-         * 
-         * @return the source of the relation 
+         *
+         * @return the source of the relation
          */
         public CmsResource getSource() {
 
@@ -169,8 +169,8 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
         /**
          * Gets the source id.<p>
-         * 
-         * @return the source id 
+         *
+         * @return the source id
          */
         public CmsUUID getSourceId() {
 
@@ -179,8 +179,8 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
         /**
          * Gets the target id of the relation.<p>
-         * 
-         * @return the target id 
+         *
+         * @return the target id
          */
         public CmsUUID getTargetId() {
 
@@ -189,8 +189,8 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
         /**
          * Sets the relation type.<p>
-         * 
-         * @param relType the relation type 
+         *
+         * @param relType the relation type
          */
         public void setRelType(String relType) {
 
@@ -199,8 +199,8 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
         /**
          * Sets the source id.<p>
-         * 
-         * @param sourceId the source id 
+         *
+         * @param sourceId the source id
          */
         public void setSourceId(CmsUUID sourceId) {
 
@@ -209,8 +209,8 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
         /**
          * Sets the target id.<p>
-         * 
-         * @param targetId the target id 
+         *
+         * @param targetId the target id
          */
         public void setTargetId(CmsUUID targetId) {
 
@@ -231,33 +231,30 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
     public static final String RELATION_ID_PREFIX = "REL_";
 
     /** The pattern which relation ids should match. */
-    public static final Pattern RELATION_PATTERN = Pattern.compile("^REL_("
-        + CmsUUID.UUID_REGEX
-        + ")_("
-        + CmsUUID.UUID_REGEX
-        + ")_(.*)$");
+    public static final Pattern RELATION_PATTERN = Pattern.compile(
+        "^REL_(" + CmsUUID.UUID_REGEX + ")_(" + CmsUUID.UUID_REGEX + ")_(.*)$");
 
     /** The underlying CMIS repository. */
     private CmsCmisRepository m_repository;
 
     /**
      * Creates a new relation helper for the given repository.<p>
-     * 
-     * @param repository the repository 
+     *
+     * @param repository the repository
      */
     public CmsCmisRelationHelper(CmsCmisRepository repository) {
 
         m_repository = repository;
     }
 
-    /** 
+    /**
      * Creates a relation id string from the source and target ids and a relation type.<p>
-     *  
-     * @param source the source id 
-     * @param target the target id 
-     * @param relType the relation type 
-     * 
-     * @return the relation id 
+     *
+     * @param source the source id
+     * @param target the target id
+     * @param relType the relation type
+     *
+     * @return the relation id
      */
     protected static String createKey(CmsUUID source, CmsUUID target, String relType) {
 
@@ -266,10 +263,10 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Gets a relation type by name.<p>
-     * 
-     * @param typeName the relation type name 
-     * 
-     * @return the relation type with the matching name 
+     *
+     * @param typeName the relation type name
+     *
+     * @return the relation type with the matching name
      */
     protected static CmsRelationType getRelationType(String typeName) {
 
@@ -294,8 +291,8 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
             CmsResource sourceResource = cms.readResource(sourceId);
             boolean wasLocked = CmsCmisUtil.ensureLock(cms, sourceResource);
             try {
-                CmsRelationFilter relFilter = CmsRelationFilter.ALL.filterType(getRelationType(rk.getRelType())).filterStructureId(
-                    rk.getTargetId());
+                CmsRelationFilter relFilter = CmsRelationFilter.ALL.filterType(
+                    getRelationType(rk.getRelType())).filterStructureId(rk.getTargetId());
                 cms.deleteRelationsFromResource(sourceResource.getRootPath(), relFilter);
             } finally {
                 if (wasLocked) {
@@ -359,11 +356,11 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Compiles the ACL for a relation.<p>
-     *  
+     *
      * @param cms the CMS context
-     * @param resource the resource for which to collect the ACLs 
-     * @param onlyBasic flag to only include basic ACEs   
-     * 
+     * @param resource the resource for which to collect the ACLs
+     * @param onlyBasic flag to only include basic ACEs
+     *
      * @return the ACL for the resource
      */
     protected Acl collectAcl(CmsObject cms, CmsResource resource, boolean onlyBasic) {
@@ -377,12 +374,12 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Collects the allowable actions for a relation.<p>
-     *  
-     * @param cms the current CMS context 
-     * @param file the source of the relation 
-     * @param relation the relation object  
-     * 
-     * @return the allowable actions for the given resource 
+     *
+     * @param cms the current CMS context
+     * @param file the source of the relation
+     * @param relation the relation object
+     *
+     * @return the allowable actions for the given resource
      */
     protected AllowableActions collectAllowableActions(CmsObject cms, CmsResource file, CmsRelation relation) {
 
@@ -407,16 +404,16 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Fills in an ObjectData record.<p>
-     * 
+     *
      * @param context the call context
      * @param cms the CMS context
      * @param resource the resource for which we want the ObjectData
-     * @param relation the relation object 
-     * @param filter the property filter string 
-     * @param includeAllowableActions true if the allowable actions should be included  
+     * @param relation the relation object
+     * @param filter the property filter string
+     * @param includeAllowableActions true if the allowable actions should be included
      * @param includeAcl true if the ACL entries should be included
-     * 
-     * @return the object data 
+     *
+     * @return the object data
      */
     protected ObjectData collectObjectData(
         CmsCmisCallContext context,
@@ -449,15 +446,15 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
     }
 
     /**
-     * Gathers all base properties of a file or folder. 
-     * 
-     * @param cms the current CMS context 
-     * @param resource the file for which we want the properties 
-     * @param relation the relation object  
-     * @param orgfilter the property filter 
-     * @param objectInfo the object info handler 
-     * 
-     * @return the properties for the given resource 
+     * Gathers all base properties of a file or folder.
+     *
+     * @param cms the current CMS context
+     * @param resource the file for which we want the properties
+     * @param relation the relation object
+     * @param orgfilter the property filter
+     * @param objectInfo the object info handler
+     *
+     * @return the properties for the given resource
      */
     protected Properties collectProperties(
         CmsObject cms,
@@ -518,7 +515,7 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
                 CmsUser user = cms.readUser(creatorId);
                 creatorName = user.getName();
             } catch (CmsException e) {
-                // ignore, use id as name 
+                // ignore, use id as name
             }
             try {
                 CmsUser user = cms.readUser(modifierId);
@@ -561,10 +558,10 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Creates a user-readable name from the given relation object.<p>
-     * 
-     * @param relation the relation object 
-     * 
-     * @return the readable name 
+     *
+     * @param relation the relation object
+     *
+     * @return the readable name
      */
     protected String createReadableName(CmsRelation relation) {
 
@@ -578,9 +575,9 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Extracts the source/target ids and the type from a relation id.<p>
-     * 
-     * @param id the relation id 
-     * 
+     *
+     * @param id the relation id
+     *
      * @return the relation key object
      */
     protected RelationKey parseRelationKey(String id) {
@@ -595,10 +592,10 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Creates a relation id from the given OpenCms relation object.<p>
-     * 
+     *
      * @param relation the OpenCms relation object
-     *  
-     * @return the relation id 
+     *
+     * @return the relation id
      */
     String createKey(CmsRelation relation) {
 

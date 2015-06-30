@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,8 +48,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog to edit new or existing user in the administration view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
@@ -73,7 +73,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUserOverviewDialog(CmsJspActionElement jsp) {
@@ -83,7 +83,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -96,6 +96,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     /**
      * Commits the edited user to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
         // no saving is done
@@ -104,15 +105,17 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Calls the switch user method of the SessionManager.<p>
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void actionSwitchUser() throws CmsException {
 
         try {
             CmsSessionManager sessionManager = OpenCms.getSessionManager();
-            sessionManager.switchUser(getCms(), getJsp().getRequest(), getCms().readUser(
-                new CmsUUID(getJsp().getRequest().getParameter("userid"))));
+            sessionManager.switchUser(
+                getCms(),
+                getJsp().getRequest(),
+                getCms().readUser(new CmsUUID(getJsp().getRequest().getParameter("userid"))));
         } catch (CmsException e) {
             String toolPath = getCurrentToolPath().substring(0, getCurrentToolPath().lastIndexOf("/"));
             getToolManager().setCurrentToolPath(this, toolPath);
@@ -122,7 +125,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Returns the description of the parent ou.<p>
-     * 
+     *
      * @return the description of the parent ou
      */
     public String getAssignedOu() {
@@ -139,7 +142,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
      * Returns the creation date.<p>
      *
      * Auxiliary Property for better representation.<p>
-     * 
+     *
      * @return the creation date
      */
     public String getCreated() {
@@ -149,7 +152,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Returns the localized description of the user.<p>
-     * 
+     *
      * @return the localized description of the user
      */
     public String getDescription() {
@@ -161,7 +164,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
      * Returns the last login.<p>
      *
      * Auxiliary Property for better representation.<p>
-     * 
+     *
      * @return the last login
      */
     public String getLastlogin() {
@@ -171,7 +174,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Returns the simple name of the user object.<p>
-     * 
+     *
      * @return the simple name of the user object
      */
     public String getName() {
@@ -181,7 +184,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Returns the user id parameter value.<p>
-     * 
+     *
      * @return the user id parameter value
      */
     public String getParamUserid() {
@@ -201,7 +204,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Setter for widget definition.<p>
-     * 
+     *
      * @param assignedOu the ou description
      */
     public void setAssignedOu(String assignedOu) {
@@ -213,7 +216,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
      * Sets the creation date.<p>
      *
      * Auxiliary Property for better representation.<p>
-     * 
+     *
      * @param created the creation date to set
      */
     public void setCreated(String created) {
@@ -225,7 +228,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Sets the description of the user.<p>
-     * 
+     *
      * @param description the user description
      */
     public void setDescription(String description) {
@@ -237,7 +240,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
      * Sets the last login.<p>
      *
      * Auxiliary Property for better representation.<p>
-     * 
+     *
      * @param lastlogin the last login to set
      */
     public void setLastlogin(String lastlogin) {
@@ -249,7 +252,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Sets the name of the user object.<p>
-     * 
+     *
      * @param name the name of the user object
      */
     public void setName(String name) {
@@ -259,7 +262,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Sets the user id parameter value.<p>
-     * 
+     *
      * @param userId the user id parameter value
      */
     public void setParamUserid(String userId) {
@@ -279,12 +282,13 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -324,6 +328,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -332,6 +337,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the user object to use for the dialog
@@ -367,6 +373,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -375,6 +382,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -398,9 +406,10 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Overridden to set a custom online help path. <p>
-     * 
+     *
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
      */
+    @Override
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         super.initWorkplaceMembers(jsp);
@@ -410,6 +419,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters
@@ -418,7 +428,7 @@ public class CmsUserOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Checks if the User overview has to be displayed.<p>
-     * 
+     *
      * @return <code>true</code> if the user overview has to be displayed
      */
     private boolean isOverview() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,8 +49,8 @@ import java.util.Map;
 
 /**
  * Image Cache helper.<p>
- * 
- * @since 7.0.5 
+ *
+ * @since 7.0.5
  */
 public class CmsImageCacheHelper {
 
@@ -71,9 +71,9 @@ public class CmsImageCacheHelper {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param cms the cms context
-     * @param withVariations if also variations should be read 
+     * @param withVariations if also variations should be read
      * @param showSize if it is needed to compute the image size
      * @param statsOnly if only statistical information should be retrieved
      */
@@ -84,7 +84,7 @@ public class CmsImageCacheHelper {
 
     /**
      * Returns all cached images.<p>
-     * 
+     *
      * @return a list of root paths
      */
     public List getAllCachedImages() {
@@ -96,7 +96,7 @@ public class CmsImageCacheHelper {
 
     /**
      * Returns the total number of files.<p>
-     * 
+     *
      * @return the total number of files
      */
     public int getFilesCount() {
@@ -106,8 +106,8 @@ public class CmsImageCacheHelper {
 
     /**
      * Returns the length of the given image.<p>
-     * 
-     * @param imgName the image name 
+     *
+     * @param imgName the image name
      *
      * @return the length of the given image
      */
@@ -122,8 +122,8 @@ public class CmsImageCacheHelper {
 
     /**
      * Returns the size of the given image.<p>
-     * 
-     * @param imgName the image name 
+     *
+     * @param imgName the image name
      *
      * @return the size of the given image
      */
@@ -139,7 +139,7 @@ public class CmsImageCacheHelper {
     /**
      * Returns the variations for the given image.<p>
      *
-     * @param imgName the image name 
+     * @param imgName the image name
      *
      * @return the variations for the given image
      */
@@ -155,7 +155,7 @@ public class CmsImageCacheHelper {
 
     /**
      * Returns the total number of variations.<p>
-     * 
+     *
      * @return the total number of variations
      */
     public int getVariationsCount() {
@@ -165,7 +165,7 @@ public class CmsImageCacheHelper {
 
     /**
      * Returns the total size of all variations.<p>
-     * 
+     *
      * @return the total size of all variations
      */
     public int getVariationsSize() {
@@ -175,9 +175,9 @@ public class CmsImageCacheHelper {
 
     /**
      * Reads all cached images.<p>
-     * 
+     *
      * @param cms the cms context
-     * @param withVariations if also variations should be read 
+     * @param withVariations if also variations should be read
      * @param showSize if it is needed to compute the image size
      * @param statsOnly if only statistical information should be retrieved
      */
@@ -202,14 +202,19 @@ public class CmsImageCacheHelper {
 
     /**
      * Visits all cached images in the given directory.<p>
-     * 
+     *
      * @param cms the cms context
      * @param directory the directory to visit
-     * @param withVariations if also variations should be read 
+     * @param withVariations if also variations should be read
      * @param showSize if it is needed to compute the image size
      * @param statsOnly if only statistical information should be retrieved
      */
-    private void visitImages(CmsObject cms, File directory, boolean withVariations, boolean showSize, boolean statsOnly) {
+    private void visitImages(
+        CmsObject cms,
+        File directory,
+        boolean withVariations,
+        boolean showSize,
+        boolean statsOnly) {
 
         if (!directory.canRead() || !directory.isDirectory()) {
             return;

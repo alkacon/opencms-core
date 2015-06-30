@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,10 +39,10 @@ import java.util.List;
 
 /**
  * Default implementation for a search action in an html list.<p>
- * 
+ *
  * It allows to search in several columns, including item details.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListSearchAction extends A_CmsListSearchAction {
 
@@ -57,7 +57,7 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param column the column to search into
      */
     public CmsListSearchAction(CmsListColumnDefinition column) {
@@ -69,7 +69,7 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
 
     /**
      * Adds a column to search into.<p>
-     * 
+     *
      * @param column the additional column to search into
      */
     public void addColumn(CmsListColumnDefinition column) {
@@ -79,9 +79,9 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
 
     /**
      * Returns the html code for the search bar.<p>
-     * 
+     *
      * @param wp the workplace context
-     * 
+     *
      * @return html code
      */
     public String barHtml(CmsWorkplace wp) {
@@ -97,7 +97,9 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
         html.append("' value='");
         if (wp instanceof A_CmsListDialog) {
             // http://www.securityfocus.com/archive/1/490498: searchfilter cross site scripting vulnerability:
-            html.append(CmsStringUtil.escapeJavaScript(CmsEncoder.escapeXml(((A_CmsListDialog)wp).getList().getSearchFilter())));
+            html.append(
+                CmsStringUtil.escapeJavaScript(
+                    CmsEncoder.escapeXml(((A_CmsListDialog)wp).getList().getSearchFilter())));
         }
         html.append("' size='20' maxlength='245' style='vertical-align: bottom;' >\n");
         html.append(buttonHtml(wp));
@@ -130,20 +132,21 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
                     + " and "
                     + columns.substring(columns.lastIndexOf(", ") + 2);
             }
-            setHelpText(new CmsMessageContainer(
-                Messages.get(),
-                Messages.GUI_LIST_ACTION_SEARCH_HELP_1,
-                new Object[] {columns}));
+            setHelpText(
+                new CmsMessageContainer(
+                    Messages.get(),
+                    Messages.GUI_LIST_ACTION_SEARCH_HELP_1,
+                    new Object[] {columns}));
         }
         return super.buttonHtml(wp);
     }
 
     /**
      * Returns a sublist of the given items, that match the given filter string.<p>
-     * 
+     *
      * @param items the items to filter
      * @param filter the string to filter
-     * 
+     *
      * @return the filtered sublist
      */
     public List<CmsListItem> filter(List<CmsListItem> items, String filter) {
@@ -184,7 +187,7 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
 
     /**
      * Returns the list of columns to be searched.<p>
-     * 
+     *
      * @return a list of {@link CmsListColumnDefinition} objects
      */
     public List<CmsListColumnDefinition> getColumns() {
@@ -214,9 +217,9 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
 
     /**
      * Sets the current search filter.<p>
-     * 
+     *
      * @param filter the current search filter
-     * 
+     *
      * @deprecated use {@link CmsHtmlList#setSearchFilter(String)} instead
      */
     @Deprecated

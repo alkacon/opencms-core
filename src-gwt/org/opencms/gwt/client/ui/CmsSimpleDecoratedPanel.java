@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,12 +39,12 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A panel containing two sub-panels next to each other , one for 'decorations' (check boxes, etc.) and one containing a main widget.<p>
- * 
+ *
  * This widget does not calculate the width of the decoration panel automatically. You have to pass the appropriate width
  * as a parameter to the constructor.
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsSimpleDecoratedPanel extends Composite implements I_CmsTruncable {
 
@@ -75,10 +75,10 @@ public class CmsSimpleDecoratedPanel extends Composite implements I_CmsTruncable
 
     /**
      * Creates a new instance of this widget.<p>
-     * 
-     * @param decorationWidth the width which the decoration box should have 
-     * @param mainWidget the main widget 
-     * @param decoration the list of decoration widgets (from left to right) 
+     *
+     * @param decorationWidth the width which the decoration box should have
+     * @param mainWidget the main widget
+     * @param decoration the list of decoration widgets (from left to right)
      */
     public CmsSimpleDecoratedPanel(int decorationWidth, Widget mainWidget, List<Widget> decoration) {
 
@@ -95,8 +95,8 @@ public class CmsSimpleDecoratedPanel extends Composite implements I_CmsTruncable
 
     /**
      * Adds a style name to the decoration box.<p>
-     * 
-     * @param cssClass the CSS class to add 
+     *
+     * @param cssClass the CSS class to add
      */
     public void addDecorationBoxStyle(String cssClass) {
 
@@ -105,9 +105,9 @@ public class CmsSimpleDecoratedPanel extends Composite implements I_CmsTruncable
 
     /**
      * Returns the widget at the given position.<p>
-     * 
+     *
      * @param index the position
-     * 
+     *
      * @return  the widget at the given position
      */
     public Widget getWidget(int index) {
@@ -129,10 +129,10 @@ public class CmsSimpleDecoratedPanel extends Composite implements I_CmsTruncable
         }
     }
 
-    /** 
+    /**
      * Returns the width of the decoration box.<p>
-     * 
-     * @return the width of the decoration box 
+     *
+     * @return the width of the decoration box
      */
     private int getDecorationWidth() {
 

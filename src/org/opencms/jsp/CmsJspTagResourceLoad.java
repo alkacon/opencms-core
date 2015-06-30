@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,10 +45,10 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 
 /**
- * Implementation of the <code>&lt;cms:resourceload/&gt;</code> tag, 
+ * Implementation of the <code>&lt;cms:resourceload/&gt;</code> tag,
  * used to access and display resource information from the VFS.<p>
- * 
- * @since 8.0 
+ *
+ * @since 8.0
  */
 public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implements I_CmsResourceContainer {
 
@@ -101,7 +101,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
     protected String m_resourceName;
 
     /**
-     * Empty constructor, required for JSP tags.<p> 
+     * Empty constructor, required for JSP tags.<p>
      */
     public CmsJspTagResourceLoad() {
 
@@ -109,13 +109,13 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
     }
 
     /**
-     * Constructor used when using <code>resourceload</code> from scriptlet code.<p> 
-     * 
+     * Constructor used when using <code>resourceload</code> from scriptlet code.<p>
+     *
      * @param container the parent resource container (could be a preloader)
      * @param context the JSP page context
      * @param collectorName the collector name to use
      * @param collectorParam the collector param to use
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     public CmsJspTagResourceLoad(
@@ -123,21 +123,21 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
         PageContext context,
         String collectorName,
         String collectorParam)
-    throws JspException {
+        throws JspException {
 
         this(container, context, collectorName, collectorParam, null, null);
     }
 
     /**
-     * Constructor used when using <code>resourceload</code> from scriptlet code.<p> 
-     * 
+     * Constructor used when using <code>resourceload</code> from scriptlet code.<p>
+     *
      * @param container the parent resource container (could be a preloader)
      * @param context the JSP page context
      * @param collectorName the collector name to use
      * @param collectorParam the collector param to use
      * @param pageIndex the display page index (may contain macros)
      * @param pageSize the display page size (may contain macros)
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     public CmsJspTagResourceLoad(
@@ -147,7 +147,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
         String collectorParam,
         String pageIndex,
         String pageSize)
-    throws JspException {
+        throws JspException {
 
         setCollector(collectorName);
         setParam(collectorParam);
@@ -160,11 +160,11 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
     }
 
     /**
-     * Returns the resource name currently processed.<p> 
-     * 
+     * Returns the resource name currently processed.<p>
+     *
      * @param cms the current OpenCms user context
      * @param contentContainer the current resource container
-     * 
+     *
      * @return the resource name currently processed
      */
     protected static String getResourceName(CmsObject cms, I_CmsResourceContainer contentContainer) {
@@ -180,10 +180,10 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
 
     /**
      * Limits the collector's result list to the size of a page to be displayed in a JSP.<p>
-     * 
+     *
      * @param contentInfoBean the info bean of the collector
      * @param collectorResult the result list of the collector
-     * 
+     *
      * @return a limited collector's result list
      */
     protected static List<CmsResource> limitCollectorResult(
@@ -311,7 +311,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
 
     /**
      * Returns the index of the page to be displayed.<p>
-     * 
+     *
      * @return the index of the page to be displayed
      */
     public String getPageIndex() {
@@ -321,7 +321,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
 
     /**
      * Returns the number of page links in the Google-like page navigation.<p>
-     * 
+     *
      * @return the number of page links in the Google-like page navigation
      */
     public String getPageNavLength() {
@@ -331,7 +331,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
 
     /**
      * Returns the size of a single page to be displayed.<p>
-     * 
+     *
      * @return the size of a single page to be displayed
      */
     public String getPageSize() {
@@ -351,7 +351,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
 
     /**
      * Returns <code>"true"</code> if this content load tag should only preload the values from the collector.<p>
-     * 
+     *
      * @return <code>"true"</code> if this content load tag should only preload the values from the collector
      */
     public String getPreload() {
@@ -401,7 +401,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
     public boolean hasMoreResources() throws JspException {
 
         if (isPreloader()) {
-            // if in preload mode, no result is required            
+            // if in preload mode, no result is required
             return false;
         }
 
@@ -459,7 +459,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
 
     /**
      * Sets the index of the page to be displayed.<p>
-     * 
+     *
      * @param pageIndex the index of the page to be displayed
      */
     public void setPageIndex(String pageIndex) {
@@ -469,7 +469,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
 
     /**
      * Sets the number of page links in the Google-like page navigation.<p>
-     * 
+     *
      * @param pageNavLength the number of page links in the Google-like page navigation
      */
     public void setPageNavLength(String pageNavLength) {
@@ -479,7 +479,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
 
     /**
      * Sets the size of a single page to be displayed.<p>
-     * 
+     *
      * @param pageSize the size of a single page to be displayed
      */
     public void setPageSize(String pageSize) {
@@ -498,11 +498,11 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
     }
 
     /**
-     * Sets the preload flag for this resource load tag.<p> 
-     * 
-     * If this is set to <code>true</code>, then the collector result will only 
-     * be preloaded, but not iterated.<p> 
-     * 
+     * Sets the preload flag for this resource load tag.<p>
+     *
+     * If this is set to <code>true</code>, then the collector result will only
+     * be preloaded, but not iterated.<p>
+     *
      * @param preload the preload flag to set
      */
     public void setPreload(String preload) {
@@ -542,7 +542,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
 
     /**
      * Returns the content info bean.<p>
-     * 
+     *
      * @return the content info bean
      */
     protected CmsContentInfoBean getContentInfoBean() {
@@ -552,7 +552,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
 
     /**
      * Returns the next resource from the collector.<p>
-     * 
+     *
      * @return the next resource from the collector
      */
     protected CmsResource getNextResource() {
@@ -567,10 +567,10 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
     }
 
     /**
-     * Initializes this content load tag.<p> 
-     * 
+     * Initializes this content load tag.<p>
+     *
      * @param container the parent container (could be a preloader)
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     protected void init(I_CmsResourceContainer container) throws JspException {
@@ -590,13 +590,13 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
             usedContainer = this;
             if (CmsStringUtil.isEmpty(m_collector)) {
                 // check if the tag contains a collector attribute
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_TAG_RESOURCELOAD_MISSING_COLLECTOR_0));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(Messages.ERR_TAG_RESOURCELOAD_MISSING_COLLECTOR_0));
             }
             if (CmsStringUtil.isEmpty(m_param)) {
                 // check if the tag contains a param attribute
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_TAG_RESOURCELOAD_MISSING_PARAM_0));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(Messages.ERR_TAG_RESOURCELOAD_MISSING_PARAM_0));
             }
         } else {
             // use provided container (preloading ancestor)
@@ -611,8 +611,8 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
         String resourcename = getResourceName(m_cms, usedContainer);
 
         // initialize a string mapper to resolve EL like strings in tag attributes
-        CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(m_cms).setJspPageContext(pageContext).setResourceName(
-            resourcename).setKeepEmptyMacros(true);
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(m_cms).setJspPageContext(
+            pageContext).setResourceName(resourcename).setKeepEmptyMacros(true);
 
         // resolve the collector name
         if (container == null) {
@@ -647,7 +647,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
             m_contentInfoBean.initResultIndex();
 
             if (!isPreloader()) {
-                // not required when only preloading 
+                // not required when only preloading
                 m_collectorResult = CmsJspTagResourceLoad.limitCollectorResult(m_contentInfoBean, m_collectorResult);
                 m_contentInfoBean.initPageNavIndexes();
             } else if (isScopeVarSet()) {

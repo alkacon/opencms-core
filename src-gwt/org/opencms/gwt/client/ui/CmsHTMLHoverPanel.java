@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,14 +38,14 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 
 /**
  * A HTML Panel implementation toggles the I_CmsStateCss.cmsHovering CSS class on mouse over.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsHTMLHoverPanel extends HTMLPanel implements HasMouseOutHandlers, HasMouseOverHandlers {
 
     /**
      * Creates an HTML hover panel with the specified HTML contents inside a DIV element. Any element within this HTML that has a specified id can contain a child widget.
-     * 
+     *
      * @param html the panel's HTML
      */
     public CmsHTMLHoverPanel(String html) {
@@ -56,7 +56,7 @@ public class CmsHTMLHoverPanel extends HTMLPanel implements HasMouseOutHandlers,
 
     /**
      * Creates an HTML hover panel whose root element has the given tag, and with the specified HTML contents. Any element within this HTML that has a specified id can contain a child widget.
-     * 
+     *
      * @param tag the tag of the root element
      * @param html the panel's HTML
      */

@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -80,11 +80,11 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
 
     /**
      * Creates a new cache instance for inherited containers.<p>
-     * 
+     *
      * @param cms the CMS context to use for VFS operations.
-     * @param name the name of the cache, for debugging/testing purposes 
-     *  
-     * @throws CmsException if something goes wrong 
+     * @param name the name of the cache, for debugging/testing purposes
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsContainerConfigurationCache(CmsObject cms, String name)
     throws CmsException {
@@ -105,11 +105,11 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
 
     /**
      * Gets the container configuration for a given root path, name and locale.<p>
-     * 
-     * @param rootPath the root path 
-     * @param name the configuration name 
-     * 
-     * @return the container configuration for the given combination of parameters 
+     *
+     * @param rootPath the root path
+     * @param name the configuration name
+     *
+     * @return the container configuration for the given combination of parameters
      */
     public synchronized CmsContainerConfiguration getContainerConfiguration(String rootPath, String name) {
 
@@ -123,7 +123,7 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
         return null;
     }
 
-    /** 
+    /**
      * Initializes the cache.<p>
      */
     public synchronized void initialize() {
@@ -165,12 +165,12 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
 
     /**
      * Returns the base path for a given configuration file.
-     * 
+     *
      * E.g. the result for the input '/sites/default/.container-config' will be '/sites/default'.<p>
-     *  
-     * @param rootPath the root path of the configuration file 
-     * 
-     * @return the base path for the configuration file 
+     *
+     * @param rootPath the root path of the configuration file
+     *
+     * @return the base path for the configuration file
      */
     protected String getBasePath(String rootPath) {
 
@@ -182,24 +182,24 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
 
     /**
      * Gets the cache key for a given base path.<p>
-     * 
-     * @param basePath the base path 
-     * 
-     * @return the cache key for the base path 
+     *
+     * @param basePath the base path
+     *
+     * @return the cache key for the base path
      */
     protected String getCacheKey(String basePath) {
 
-        assert !basePath.endsWith(INHERITANCE_CONFIG_FILE_NAME);
+        assert!basePath.endsWith(INHERITANCE_CONFIG_FILE_NAME);
         return CmsFileUtil.addTrailingSeparator(basePath);
     }
 
     /**
      * Checks whethet a given combination of path and resource type belongs to an inherited container configuration file.<p>
-     * 
-     * @param rootPath the root path of the resource 
+     *
+     * @param rootPath the root path of the resource
      * @param type the type id of the resource
-     * 
-     * @return true if the given root path / type combination matches an inherited container configuration file 
+     *
+     * @return true if the given root path / type combination matches an inherited container configuration file
      */
     protected boolean isContainerConfiguration(String rootPath, int type) {
 
@@ -216,8 +216,8 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
 
     /**
      * Loads a single configuration file into the cache.<p>
-     * 
-     * @param configResource the configuration resource 
+     *
+     * @param configResource the configuration resource
      */
     protected void load(CmsResource configResource) {
 
@@ -228,7 +228,7 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
         try {
             CmsFile file = m_cms.readFile(configResource);
             CmsContainerConfigurationParser parser = new CmsContainerConfigurationParser(m_cms);
-            // This log message is needed for the test cases. 
+            // This log message is needed for the test cases.
             LOG.trace("inherited-container-cache " + m_name + " load");
             parser.parse(file);
             CmsContainerConfigurationGroup group = new CmsContainerConfigurationGroup(parser.getParsedResults());
@@ -270,7 +270,7 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
                 CmsUUID structureId = entry.getValue();
                 CmsResource resource = null;
                 try {
-                    // This log message is needed for the unit tests 
+                    // This log message is needed for the unit tests
                     LOG.trace("inherited-container-cache " + m_name + " readSingleResource");
                     resource = m_cms.readResource(structureId);
                     load(resource);
@@ -286,13 +286,13 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
         }
     }
 
-    /** 
+    /**
      * Removes a resource from the cache.<p>
-     * 
-     * @param structureId the structure id of the resource 
-     * @param rootPath the root path of the resource 
-     * 
-     * @param type the resource type 
+     *
+     * @param structureId the structure id of the resource
+     * @param rootPath the root path of the resource
+     *
+     * @param type the resource type
      */
     protected synchronized void remove(CmsUUID structureId, String rootPath, int type) {
 
@@ -306,8 +306,8 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
 
     /**
      * Either gets the configuration type id, or returns -1 if the type hasn't been loaded yet.<p>
-     * 
-     * @return the configuration type id or -1 
+     *
+     * @return the configuration type id or -1
      */
     protected int safeGetType() {
 
@@ -321,11 +321,11 @@ public class CmsContainerConfigurationCache implements I_CmsGlobalConfigurationC
 
     /**
      * Updates a resource in the cache.<p>
-     * 
-     * @param structureId the structure id of the resource 
-     * @param rootPath the root path of the resource 
-     * @param type the resource type 
-     * @param state the resource state 
+     *
+     * @param structureId the structure id of the resource
+     * @param rootPath the root path of the resource
+     * @param type the resource type
+     * @param state the resource state
      */
     protected synchronized void update(CmsUUID structureId, String rootPath, int type, CmsResourceState state) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,14 +33,14 @@ import java.util.Locale;
 
 /**
  * Comparator for column sorting by first direct action icon names.<p>
- * 
- * If the list items column definition has at least one direct action, 
- * the icon of the first visible action is used for sorting 
- * (using the <code>{@link I_CmsListDirectAction#setItem(CmsListItem)}</code> method); 
+ *
+ * If the list items column definition has at least one direct action,
+ * the icon of the first visible action is used for sorting
+ * (using the <code>{@link I_CmsListDirectAction#setItem(CmsListItem)}</code> method);
  * if not, the <code>{@link Comparable}</code> interface is used.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.workplace.list.CmsListColumnDefinition
  */
 public class CmsListItemActionIconComparator implements I_CmsListItemComparator {

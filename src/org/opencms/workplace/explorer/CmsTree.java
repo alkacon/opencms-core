@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,16 +59,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 
 /**
- * Generates the tree view for the OpenCms Workplace.<p> 
- * 
+ * Generates the tree view for the OpenCms Workplace.<p>
+ *
  * The following Workplace files use this class:
  * <ul>
  * <li>/views/explorer/tree_fs.jsp
  * <li>/views/explorer/tree_files.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsTree extends CmsWorkplace {
 
@@ -143,7 +143,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsTree(CmsJspActionElement jsp) {
@@ -153,7 +153,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Returns the HTML for the tree initialization.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param encoding the current encoding
      * @param skinUri the current skin URI
@@ -218,7 +218,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Determines the root folder of the current tree dependent on users setting of explorer view restriction.<p>
-     * 
+     *
      * @return the root folder resource name to display
      */
     public String getRootFolder() {
@@ -243,7 +243,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Returns the HTML for the site selector box for the explorer tree window.<p>
-     * 
+     *
      * @param htmlAttributes optional attributes for the &lt;select&gt; tag
      * @return HTML code for the site selector box
      */
@@ -285,7 +285,7 @@ public class CmsTree extends CmsWorkplace {
             values.add(site.getSiteRoot());
             String curOption = substituteSiteTitle(site.getTitle());
             if (showSiteUrls && (site.getSiteMatcher() != null)) {
-                // show the site URL in editor link dialog tree 
+                // show the site URL in editor link dialog tree
                 curOption = site.getUrl() + " (" + curOption + ")";
                 if (getCms().getRequestContext().getSiteRoot().equals(site.getSiteRoot())) {
                     // mark the current workplace site in selector
@@ -370,19 +370,19 @@ public class CmsTree extends CmsWorkplace {
                 String rcSite = getCms().getRequestContext().getSiteRoot();
                 if (OpenCms.getSiteManager().startsWithShared(currentTargetFolder)
                     && OpenCms.getSiteManager().startsWithShared(rcSite)) {
-                    currentTargetFolder = currentTargetFolder.substring(OpenCms.getSiteManager().getSharedFolder().length() - 1);
+                    currentTargetFolder = currentTargetFolder.substring(
+                        OpenCms.getSiteManager().getSharedFolder().length() - 1);
                 }
                 if ((startFolder == null) || (!currentTargetFolder.startsWith(startFolder))) {
-                    // no (valid) start folder given, just load current folder        
+                    // no (valid) start folder given, just load current folder
                     try {
                         if (includeFiles()) {
                             resources.addAll(getCms().getResourcesInFolder(
                                 currentTargetFolder,
                                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                         } else {
-                            resources.addAll(getCms().getSubFolders(
-                                currentTargetFolder,
-                                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
+                            resources.addAll(
+                                getCms().getSubFolders(currentTargetFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                         }
                     } catch (CmsException e) {
                         // return with error
@@ -392,13 +392,11 @@ public class CmsTree extends CmsWorkplace {
                     // valid start folder given, load all folders between start and current folder
                     try {
                         if (includeFiles()) {
-                            resources.addAll(getCms().getResourcesInFolder(
-                                startFolder,
-                                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
+                            resources.addAll(
+                                getCms().getResourcesInFolder(startFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                         } else {
-                            resources.addAll(getCms().getSubFolders(
-                                startFolder,
-                                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
+                            resources.addAll(
+                                getCms().getSubFolders(startFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                         }
                         StringTokenizer tok = new StringTokenizer(
                             currentTargetFolder.substring(startFolder.length()),
@@ -410,13 +408,12 @@ public class CmsTree extends CmsWorkplace {
                                     startFolder,
                                     CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                             } else {
-                                resources.addAll(getCms().getSubFolders(
-                                    startFolder,
-                                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
+                                resources.addAll(
+                                    getCms().getSubFolders(startFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                             }
                         }
                     } catch (CmsException e) {
-                        // return with error 
+                        // return with error
                         return printError(e);
                     }
                 }
@@ -430,7 +427,7 @@ public class CmsTree extends CmsWorkplace {
                 result.append(getRootNode());
             }
 
-            // read the list of project resource to select which resource is "inside" or "outside" 
+            // read the list of project resource to select which resource is "inside" or "outside"
             List<String> projectResources = new ArrayList<String>();
             if (isProjectAware()) {
                 try {
@@ -460,13 +457,14 @@ public class CmsTree extends CmsWorkplace {
                     }
                 }
 
-                result.append(getNode(
-                    resource.getRootPath(),
-                    resource.getName(),
-                    resource.getTypeId(),
-                    resource.isFolder(),
-                    resource.getState(),
-                    grey));
+                result.append(
+                    getNode(
+                        resource.getRootPath(),
+                        resource.getName(),
+                        resource.getTypeId(),
+                        resource.isFolder(),
+                        resource.getState(),
+                        grey));
             }
 
             if (includeFiles()) {
@@ -493,14 +491,14 @@ public class CmsTree extends CmsWorkplace {
 
             if (folder != null) {
                 if (newTree()) {
-                    // new tree 
+                    // new tree
                     result.append("parent.showTree(parent.tree_display.document, \"");
                     result.append(folder.getRootPath().hashCode());
                     result.append("\");\n");
                 } else {
                     // update the current tree with the children of the selected node
                     if (resources.size() == 0) {
-                        // the node had no children 
+                        // the node had no children
                         result.append("parent.setNoChilds(\"");
                         result.append(folder.getRootPath().hashCode());
                         result.append("\");\n");
@@ -523,7 +521,7 @@ public class CmsTree extends CmsWorkplace {
     /**
      * Returns the type of this tree (e.g. "copy", "project" etc.),
      * if null this is the default explorer version.<p>
-     * 
+     *
      * @return the current type of the tree (e.g. "copy", "project" etc.)
      */
     public String getTreeType() {
@@ -533,7 +531,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Indicates if only folders or files and folders should be included in the tree.<p>
-     * 
+     *
      * @return true if files and folders should be included in the tree
      */
     public boolean includeFiles() {
@@ -543,7 +541,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Returns the HTML for the tree initialization.<p>
-     * 
+     *
      * @return the HTML for the tree initialization
      */
     public String initTree() {
@@ -573,7 +571,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Indicates if the site selector should be shown depending on the tree type, initial settings and the count of accessible sites.<p>
-     * 
+     *
      * @return true if site selector should be shown, otherwise false
      */
     public boolean showSiteSelector() {
@@ -657,9 +655,9 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Determines if the site selector frame should be shown depending on the tree type or the value of a request parameter.<p>
-     * 
+     *
      * If only one site is available, the site selector is not displayed.<p>
-     * 
+     *
      * @param request the HttpServletRequest to check
      */
     private void computeSiteSelector(HttpServletRequest request) {
@@ -680,10 +678,10 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Creates the output for a tree node.<p>
-     * 
+     *
      * @param path the path of the resource represented by this tree node
      * @param title the resource name
-     * @param type the resource type 
+     * @param type the resource type
      * @param folder if the resource is a folder
      * @param state the resource state
      * @param grey if true, the node is displayed in grey
@@ -701,7 +699,7 @@ public class CmsTree extends CmsWorkplace {
         // type
         result.append(type);
         result.append(",");
-        // folder 
+        // folder
         if (folder) {
             result.append(1);
         } else {
@@ -729,7 +727,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Creates a node entry for the root node of the current site.<p>
-     *  
+     *
      * @return a node entry for the root node of the current site
      */
     private String getRootNode() {
@@ -740,7 +738,10 @@ public class CmsTree extends CmsWorkplace {
         try {
             resource = getCms().readFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
             // get the title information of the folder
-            CmsProperty titleProperty = getCms().readPropertyObject(folder, CmsPropertyDefinition.PROPERTY_TITLE, false);
+            CmsProperty titleProperty = getCms().readPropertyObject(
+                folder,
+                CmsPropertyDefinition.PROPERTY_TITLE,
+                false);
 
             if ((titleProperty == null) || titleProperty.isNullProperty()) {
                 getCms().getSitePath(resource);
@@ -760,10 +761,10 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Calculates the prefix that has to be added when selecting a resource in a popup tree window.<p>
-     * 
-     * This is needed for the link dialog in editors 
+     *
+     * This is needed for the link dialog in editors
      * as well as the copy, move and link popup dialogs for resources in the VFS.<p>
-     * 
+     *
      * @param prefix the current prefix of the resource
      * @param storedSiteRoot the site root in which the workplace (not the tree!) is
      * @return the prefix which is added to the resource name
@@ -811,7 +812,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Returns the target folder name.<p>
-     * 
+     *
      * @return the target folder name
      */
     private String getTargetFolder() {
@@ -820,9 +821,9 @@ public class CmsTree extends CmsWorkplace {
     }
 
     /**
-     * Returns true if a complete new tree must be loaded, false if an existing 
+     * Returns true if a complete new tree must be loaded, false if an existing
      * tree is updated or extended.<p>
-     *  
+     *
      * @return true if a complete new tree must be loaded
      */
     private boolean newTree() {
@@ -832,7 +833,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Creates error information output.<p>
-     * 
+     *
      * @param t an error that occurred
      * @return error information output
      */
@@ -849,7 +850,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Sets the value to indicate if only folders or files and folders should be included in the tree.<p>
-     * 
+     *
      * @param includeFiles if true if files and folders should be included in the tree
      */
     private void setIncludeFiles(boolean includeFiles) {
@@ -859,7 +860,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Sets if a complete tree must be loaded.<p>
-     * 
+     *
      * @param newTree if true, a complete tree must be loaded
      */
     private void setNewTree(boolean newTree) {
@@ -879,7 +880,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Sets the name of the start folder (or "last known" folder) to be loaded.<p>
-     * 
+     *
      * @param startFolder the name of the start folder (or "last known" folder) to be loaded
      */
     private void setStartFolder(String startFolder) {
@@ -889,7 +890,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Sets the target folder name.<p>
-     * 
+     *
      * @param targetFolder the target folder name
      */
     private void setTargetFolder(String targetFolder) {
@@ -899,7 +900,7 @@ public class CmsTree extends CmsWorkplace {
 
     /**
      * Sets the type of this tree.<p>
-     * 
+     *
      * @param type the type of this tree
      */
     private void setTreeType(String type) {

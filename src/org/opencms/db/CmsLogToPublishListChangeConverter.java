@@ -120,10 +120,11 @@ public class CmsLogToPublishListChangeConverter {
             Long value = entry.getValue();
             Action valueAction = getAction(value.longValue());
             if (valueAction.equals(action)) {
-                result.add(new CmsUserPublishListEntry(
-                    isDeleteAll ? null : key.getFirst(),
-                    key.getSecond(),
-                    value.longValue()));
+                result.add(
+                    new CmsUserPublishListEntry(
+                        isDeleteAll ? null : key.getFirst(),
+                        key.getSecond(),
+                        value.longValue()));
             }
         }
         return result;

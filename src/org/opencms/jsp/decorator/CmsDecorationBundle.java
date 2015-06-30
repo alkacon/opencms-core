@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,14 +34,14 @@ import java.util.Set;
 
 /**
  * CmsDecorationBundle, contains a map of merged CmsDEcorationMaps.<p>
- * 
+ *
  * The map inside the decoration bundle uses the decoration as keys and CmsDecorationObjects as values.<p>
- * 
+ *
  * A decoration bundle contains either all decoarions for one locale (similar to a resource bundle), or
  * is locale independend. If its a locale independend bundle, the included locale is set to null.
- * 
- * 
- * @since 6.1.3 
+ *
+ *
+ * @since 6.1.3
  */
 public class CmsDecorationBundle {
 
@@ -62,7 +62,7 @@ public class CmsDecorationBundle {
 
     /**
      * Constructor, creates a new CmsDecorationBundle for a given locale.<p>
-     * 
+     *
      * @param locale the locale of this bundle or null
      */
     public CmsDecorationBundle(Locale locale) {
@@ -91,7 +91,7 @@ public class CmsDecorationBundle {
         return m_bundle;
     }
 
-    /** 
+    /**
      * Gets the locale of this decoration bundle.<p>
      * @return locale of the decoration bundle
      */
@@ -143,7 +143,7 @@ public class CmsDecorationBundle {
      * <ul>
      * <li>&nbsp; is replaced with space</li>
      * <li>multiple spaces are replaced with a single space</li>
-     * </ul> 
+     * </ul>
      * @param key the key to adjust
      * @return the adjusted key
      */

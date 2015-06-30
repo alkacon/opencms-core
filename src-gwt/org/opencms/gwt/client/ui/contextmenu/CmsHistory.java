@@ -107,7 +107,10 @@ public class CmsHistory implements I_CmsHasContextMenuCommand, I_CmsContextMenuC
     /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#execute(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
      */
-    public void execute(final CmsUUID structureId, final I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+    public void execute(
+        final CmsUUID structureId,
+        final I_CmsContextMenuHandler handler,
+        CmsContextMenuEntryBean bean) {
 
         I_CmsHistoryActionHandler historyActionHandler = new I_CmsHistoryActionHandler() {
 
@@ -183,7 +186,9 @@ public class CmsHistory implements I_CmsHasContextMenuCommand, I_CmsContextMenuC
                         CmsPreviewDialog dialog = CmsPreviewDialog.createPreviewDialog(result);
                         dialog.setPreviewInfoProvider(new I_PreviewInfoProvider() {
 
-                            public void loadPreviewForLocale(String locale, AsyncCallback<CmsPreviewInfo> resultCallback) {
+                            public void loadPreviewForLocale(
+                                String locale,
+                                AsyncCallback<CmsPreviewInfo> resultCallback) {
 
                                 CmsCoreProvider.getVfsService().getHistoryPreviewInfo(
                                     structureId,

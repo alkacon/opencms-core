@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -132,7 +132,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
         /**
          * Will be triggered if the value in the select box changes.<p>
-         * 
+         *
          * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
          */
         public void onValueChange(ValueChangeEvent<String> event) {
@@ -187,8 +187,8 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
         }
 
         /**
-         * Is triggered if an check box is selected or deselected.<p> 
-         * 
+         * Is triggered if an check box is selected or deselected.<p>
+         *
          * @param event The event that is triggered
          */
         public void onValueChange(ValueChangeEvent<Boolean> event) {
@@ -227,7 +227,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
         private CmsTreeItem m_item;
 
         /** Constructor to set the right CmsTreeItem for this handler.<p>
-         * 
+         *
          * @param item the CmsTreeItem of this Handler
          */
         public DataValueClickHander(CmsTreeItem item) {
@@ -238,7 +238,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
         /**
          * Is triggered if the DataValue widget is clicked.<p>
          * If its check box was selected the click will deselect this box otherwise it will select it.
-         * 
+         *
          * @param event The event that is triggered
          * */
         public void onClick(ClickEvent event) {
@@ -350,11 +350,11 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     }
 
     /**
-     * Constructor to collect all categories and build a view tree.<p> 
+     * Constructor to collect all categories and build a view tree.<p>
      * @param selectedCategories A list of all selected categories
-     * @param height The height of this widget 
+     * @param height The height of this widget
      * @param isSingleValue Sets the modes of this widget
-     * @param resultList 
+     * @param resultList
      * */
     public CmsCategoryTree(
         List<String> selectedCategories,
@@ -381,8 +381,8 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Adds children item to the category tree and select the categories.<p>
-     * 
-     * @param parent the parent item 
+     *
+     * @param parent the parent item
      * @param children the list of children
      * @param selectedCategories the list of categories to select
      */
@@ -419,7 +419,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Disabled the category selection.<p>
-     * 
+     *
      * @param disabledReason the disable reason, will be displayed as check box title
      */
     public void disable(String disabledReason) {
@@ -456,7 +456,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Returns a list of all selected values.<p>
-     * 
+     *
      * @return a list of selected values
      */
     public List<String> getAllSelected() {
@@ -475,7 +475,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Returns a list of all selected values as Sidepath.<p>
-     * 
+     *
      * @return a list of selected values
      */
     public List<String> getAllSelectedSitePath() {
@@ -494,7 +494,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Returns the scrollpanel of this widget.<p>
-     * 
+     *
      * @return CmsScrollPanel the scrollpanel of this widget
      * */
     public CmsScrollPanel getScrollPanel() {
@@ -504,7 +504,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Returns the last selected value.<p>
-     * 
+     *
      * @return the last selected value
      */
     public List<String> getSelected() {
@@ -516,7 +516,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Returns if the category selection is enabled.<p>
-     * 
+     *
      * @return <code>true</code> if the category selection is enabled
      */
     public boolean isEnabled() {
@@ -526,7 +526,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Goes up the tree and opens the parents of the item.<p>
-     * 
+     *
      * @param item the child item to start from
      */
     public void openParents(CmsTreeItem item) {
@@ -550,7 +550,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Updates the content of the categories list.<p>
-     * 
+     *
      * @param categoriesBeans the updates list of categories tree item beans
      * @param selectedCategories the categories to select in the list by update
      */
@@ -577,7 +577,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Updates the content of the categories tree.<p>
-     * 
+     *
      * @param treeEntries the root category entry
      * @param selectedCategories the categories to select after update
      */
@@ -590,7 +590,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
         if ((treeEntries != null) && !treeEntries.isEmpty()) {
             // add the first level and children
             for (CmsCategoryTreeEntry category : treeEntries) {
-                // set the category tree item and add to list 
+                // set the category tree item and add to list
                 CmsTreeItem treeItem = buildTreeItem(category, selectedCategories);
                 m_scrollList.add(treeItem);
                 addChildren(treeItem, category.getChildren(), selectedCategories);
@@ -671,8 +671,8 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Creates the list which should contain the list items of the tab.<p>
-     * 
-     * @return the newly created list widget 
+     *
+     * @return the newly created list widget
      */
     protected CmsList<CmsTreeItem> createScrollList() {
 
@@ -703,7 +703,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Deselect all Values.<p>
-     * 
+     *
      * @param ignorItem The Item that should not be deselected
      */
     protected void deselectAll(String ignorItem) {
@@ -726,7 +726,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Deselect the parent if there are no other values selected.
-     * 
+     *
      * @param item The item that should be deselected
      */
     protected void deselectParent(CmsTreeItem item) {
@@ -752,10 +752,10 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Gets the filtered list of categories.<p>
-     * 
-     * @param filter the search string to use for filtering 
-     * 
-     * @return the filtered category beans 
+     *
+     * @param filter the search string to use for filtering
+     *
+     * @return the filtered category beans
      */
     protected List<CmsTreeItem> getFilteredCategories(String filter) {
 
@@ -779,7 +779,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * List of all sort parameters.<p>
-     * 
+     *
      * @return List of all sort parameters
      */
     protected LinkedHashMap<String, String> getSortList() {
@@ -796,7 +796,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Returns true if this widget hat an QuickFilter.<p>
-     * 
+     *
      * @return true if this widget hat an QuickFilter
      */
     protected boolean hasQuickFilter() {
@@ -870,7 +870,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Select a singel value and all parents.<p>
-     * @param item 
+     * @param item
      * @param path The path of the Item that should be selected
      * @return true if this CmsTreeItem is selected or one of its children
      */
@@ -921,9 +921,9 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Select a singel value and all parents.<p>
-     * @param item 
+     * @param item
      * @param path The path of the Item that should be selected
-     * @param result 
+     * @param result
      * @return true if this CmsTreeItem is selected or one of its children
      */
     protected boolean selectAllParents(CmsTreeItem item, String path, List<String> result) {
@@ -968,7 +968,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Sorts a list of tree items according to the sort parameter.<p>
-     * 
+     *
      * @param items the items to sort
      * @param sort the sort parameter
      */
@@ -1009,21 +1009,26 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Builds a tree item for the given category.<p>
-     * 
+     *
      * @param category the category
      * @param selectedCategories the selected categories
-     * 
+     *
      * @return the tree item widget
      */
     private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
 
         // generate the widget that should be shown in the list
-        CmsDataValue dataValue = new CmsDataValue(600, 3, null, category.getTitle(), category.getPath(), "hide:"
-            + category.getSitePath());
+        CmsDataValue dataValue = new CmsDataValue(
+            600,
+            3,
+            null,
+            category.getTitle(),
+            category.getPath(),
+            "hide:" + category.getSitePath());
 
-        // create the check box for this item 
+        // create the check box for this item
         CmsCheckBox checkBox = new CmsCheckBox();
-        // if it has to be selected, select it 
+        // if it has to be selected, select it
         boolean isPartofPath = false;
         Iterator<String> it = selectedCategories.iterator();
         while (it.hasNext()) {
@@ -1131,7 +1136,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Sets the given tree list enabled/disabled.<p>
-     * 
+     *
      * @param list the list of tree items
      * @param enabled <code>true</code> to enable
      * @param disabledReason the disable reason, will be displayed as check box title

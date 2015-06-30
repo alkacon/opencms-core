@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * The binary resource preview.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsBinaryResourcePreview extends A_CmsResourcePreview<CmsResourceInfoBean> {
@@ -53,7 +53,7 @@ public final class CmsBinaryResourcePreview extends A_CmsResourcePreview<CmsReso
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param galleryDialog the gallery dialog instance
      */
     public CmsBinaryResourcePreview(CmsGalleryDialog galleryDialog) {
@@ -88,7 +88,7 @@ public final class CmsBinaryResourcePreview extends A_CmsResourcePreview<CmsReso
 
     /**
      * Loads the resource info and displays the retrieved data.<p>
-     * 
+     *
      * @param resourcePath the resource path
      */
     public void loadResourceInfo(final String resourcePath) {

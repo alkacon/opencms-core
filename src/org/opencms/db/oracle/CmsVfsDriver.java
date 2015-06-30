@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,8 +49,8 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 
 /**
  * Oracle implementation of the VFS driver methods.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
@@ -74,9 +74,9 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -130,7 +130,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 // now update the file content
                 internalWriteContent(dbc, CmsProject.ONLINE_PROJECT_ID, resourceId, contents, publishTag);
             } else {
-                // update old content entry                        
+                // update old content entry
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_CONTENTS_UPDATE");
                 stmt.setInt(1, publishTag);
                 stmt.setString(2, resourceId.toString());
@@ -138,7 +138,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 m_sqlManager.closeAll(dbc, null, stmt, null);
 
                 if (!keepOnline) {
-                    // put the online content in the history 
+                    // put the online content in the history
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
                     stmt.setString(1, resourceId.toString());
                     stmt.executeUpdate();
@@ -146,9 +146,9 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 }
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -174,13 +174,13 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
     /**
      * Writes the resource content with the specified resource id.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param projectId the id of the current project
      * @param resourceId the id of the resource used to identify the content to update
      * @param contents the new content of the file
      * @param publishTag the publish tag if to be written to the online content
-     * 
+     *
      * @throws CmsDataAccessException if something goes wrong
      */
     protected void internalWriteContent(
@@ -217,11 +217,10 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             }
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.LOG_READING_RESOURCE_1,
-                    resourceId));
+                throw new CmsDbEntryNotFoundException(
+                    Messages.get().container(Messages.LOG_READING_RESOURCE_1, resourceId));
             }
-            // write file content 
+            // write file content
             OutputStream output = CmsUserDriver.getOutputStreamFromBlob(res, "FILE_CONTENT");
             output.write(contents, 0, contents.length);
             output.close();
@@ -243,11 +242,15 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 conn.setAutoCommit(true);
             }
         } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(Messages.ERR_WRITING_TO_OUTPUT_STREAM_1, resourceId), e);
+            throw new CmsDbIoException(
+                Messages.get().container(Messages.ERR_WRITING_TO_OUTPUT_STREAM_1, resourceId),
+                e);
         } catch (SQLException e) {
-            throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
+            throw new CmsDbSqlException(
+                org.opencms.db.generic.Messages.get().container(
+                    org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)),
+                e);
         } finally {
             org.opencms.db.oracle.CmsSqlManager.closeAllInTransaction(
                 m_sqlManager,

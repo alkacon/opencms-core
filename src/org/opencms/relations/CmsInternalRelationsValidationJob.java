@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,20 +45,20 @@ import javax.mail.internet.InternetAddress;
 
 /**
  * A schedulable OpenCms job to validate internal relations.<p>
- * 
+ *
  * This job will validate all link parseable resources of the context project.<p>
- * 
+ *
  * Parameters used by this job (all optional):
- * <code>email</code> parameter, should be a comma separated list of email addresses, 
+ * <code>email</code> parameter, should be a comma separated list of email addresses,
  *            if empty the email address of the context user will be user instead.<p>
- * <code>from</code> parameter, should be the "from" field of the email to send, 
+ * <code>from</code> parameter, should be the "from" field of the email to send,
  *            a valid email address, if empty the default will be used.<p>
- * <code>subject</code> parameter, should be the subject of the sent email, 
- *            if empty a default subject text will be used, 
- *            a good practice is to use the same job name as subject.<p> 
- * 
- * @since 6.5.0 
- * 
+ * <code>subject</code> parameter, should be the subject of the sent email,
+ *            if empty a default subject text will be used,
+ *            a good practice is to use the same job name as subject.<p>
+ *
+ * @since 6.5.0
+ *
  * @see org.opencms.relations.I_CmsLinkParseable
  */
 public class CmsInternalRelationsValidationJob implements I_CmsScheduledJob {
@@ -86,7 +86,7 @@ public class CmsInternalRelationsValidationJob implements I_CmsScheduledJob {
                     Messages.GUI_RELATIONS_VALIDATION_PROJECT_1,
                     cms.getRequestContext().getCurrentProject().getName()),
                 I_CmsReport.FORMAT_HEADLINE);
-            // TODO: replace by CmsObject#getRelationsForResource 
+            // TODO: replace by CmsObject#getRelationsForResource
             OpenCms.getPublishManager().validateRelations(cms, null, report);
         } catch (Exception e) {
             if (report != null) {

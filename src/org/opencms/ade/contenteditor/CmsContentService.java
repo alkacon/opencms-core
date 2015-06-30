@@ -187,9 +187,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
         StringBuffer result = new StringBuffer();
         result.append("about=\"");
-        result.append(CmsContentDefinition.uuidToEntityId(
-            parentValue.getDocument().getFile().getStructureId(),
-            parentValue.getLocale().toString()));
+        result.append(
+            CmsContentDefinition.uuidToEntityId(
+                parentValue.getDocument().getFile().getStructureId(),
+                parentValue.getLocale().toString()));
         result.append("/").append(parentValue.getPath());
         result.append("\" ");
         String[] children = childNames.split("\\|");
@@ -223,9 +224,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         StringBuffer result = new StringBuffer();
         if (schemaType != null) {
             result.append("about=\"");
-            result.append(CmsContentDefinition.uuidToEntityId(
-                document.getFile().getStructureId(),
-                contentLocale.toString()));
+            result.append(
+                CmsContentDefinition.uuidToEntityId(document.getFile().getStructureId(), contentLocale.toString()));
             result.append("\" property=\"");
             result.append(getTypeUri(schemaType.getContentDefinition())).append("/").append(childName);
             result.append("\"");
@@ -337,7 +337,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsFile file = getCmsObject().readFile(resource);
             CmsXmlContent content = getSessionCache().getCacheXmlContent(structureId);
             synchronizeLocaleIndependentForEntity(file, content, Collections.<String> emptyList(), sourceLocale);
-            Locale sourceContentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(sourceLocale.getId()));
+            Locale sourceContentLocale = CmsLocaleManager.getLocale(
+                CmsContentDefinition.getLocaleFromId(sourceLocale.getId()));
             for (String loc : locales) {
                 Locale targetLocale = CmsLocaleManager.getLocale(loc);
                 if (content.hasLocale(targetLocale)) {
@@ -638,7 +639,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /**
      * @see org.opencms.acacia.shared.rpc.I_CmsContentService#updateEntityHtml(org.opencms.acacia.shared.CmsEntity, java.lang.String, java.lang.String)
      */
-    public CmsEntityHtml updateEntityHtml(CmsEntity entity, String contextUri, String htmlContextInfo) throws Exception {
+    public CmsEntityHtml updateEntityHtml(CmsEntity entity, String contextUri, String htmlContextInfo)
+    throws Exception {
 
         CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entity.getId());
         if (structureId != null) {
@@ -872,14 +874,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 previousName = attributeName;
             }
             if (isChoice) {
-                result = new CmsEntity(newEntityId
-                    + "/"
-                    + CmsType.CHOICE_ATTRIBUTE_NAME
-                    + "_"
-                    + child.getName()
-                    + "["
-                    + counter
-                    + "]", choiceTypeName);
+                result = new CmsEntity(
+                    newEntityId + "/" + CmsType.CHOICE_ATTRIBUTE_NAME + "_" + child.getName() + "[" + counter + "]",
+                    choiceTypeName);
                 newEntity.addAttributeValue(CmsType.CHOICE_ATTRIBUTE_NAME, result);
             }
             String path = parentPath + child.getName();
@@ -1023,7 +1020,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 for (int i = 0; i < choiceEntities.size(); i++) {
                     List<CmsEntityAttribute> choiceAttributes = choiceEntities.get(i).getAttributes();
                     // each choice entity may only have a single attribute with a single value
-                    assert (choiceAttributes.size() == 1) && choiceAttributes.get(0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
+                    assert(choiceAttributes.size() == 1)
+                        && choiceAttributes.get(
+                            0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
                     CmsEntityAttribute choiceAttribute = choiceAttributes.get(0);
                     String elementPath = parentPath + getElementName(choiceAttribute.getAttributeName());
                     if (choiceAttribute.isSimpleValue()) {
@@ -1190,7 +1189,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                                 // in case the current value does not match the previously stored value,
                                 // remove it and add the parent path to the skipPaths list
                                 syncValues.remove(valuePath);
-                                int pathLevelDiff = (CmsResource.getPathLevel(valuePath) - CmsResource.getPathLevel(elementPath)) + 1;
+                                int pathLevelDiff = (CmsResource.getPathLevel(valuePath)
+                                    - CmsResource.getPathLevel(elementPath)) + 1;
                                 for (int i = 0; i < pathLevelDiff; i++) {
                                     valuePath = CmsXmlUtils.removeLastXpathElement(valuePath);
                                 }
@@ -1375,13 +1375,14 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 locale,
                 defaultLocales,
                 availableLocalesList);
-            LOG.info("Can't edit locale "
-                + locale
-                + " of file "
-                + file.getRootPath()
-                + " because it is not configured as available locale. Using locale "
-                + replacementLocale
-                + " instead.");
+            LOG.info(
+                "Can't edit locale "
+                    + locale
+                    + " of file "
+                    + file.getRootPath()
+                    + " because it is not configured as available locale. Using locale "
+                    + replacementLocale
+                    + " instead.");
             locale = replacementLocale;
             entityId = CmsContentDefinition.uuidToEntityId(file.getStructureId(), locale.toString());
         }
@@ -1394,9 +1395,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             content.initDocument();
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_TAKE_UNMARSHALING_TIME_1,
-                "" + (System.currentTimeMillis() - timer)));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_TAKE_UNMARSHALING_TIME_1,
+                    "" + (System.currentTimeMillis() - timer)));
         }
         CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(cms, file, locale);
         if (LOG.isDebugEnabled()) {
@@ -1404,9 +1406,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         visitor.visitTypes(content.getContentDefinition(), getWorkplaceLocale(cms));
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_TAKE_VISITING_TYPES_TIME_1,
-                "" + (System.currentTimeMillis() - timer)));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_TAKE_VISITING_TYPES_TIME_1,
+                    "" + (System.currentTimeMillis() - timer)));
         }
         CmsEntity entity = null;
         Map<String, String> syncValues = new HashMap<String, String>();
@@ -1441,9 +1444,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             visitor,
             false);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_TAKE_READING_ENTITY_TIME_1,
-                "" + (System.currentTimeMillis() - timer)));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_TAKE_READING_ENTITY_TIME_1,
+                    "" + (System.currentTimeMillis() - timer)));
         }
         List<String> contentLocales = new ArrayList<String>();
         for (Locale contentLocale : content.getLocales()) {
@@ -1706,9 +1710,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         try {
             file.setContents(decodedContent.getBytes(encoding));
         } catch (UnsupportedEncodingException e) {
-            throw new CmsException(org.opencms.workplace.editors.Messages.get().container(
-                org.opencms.workplace.editors.Messages.ERR_INVALID_CONTENT_ENC_1,
-                file.getRootPath()), e);
+            throw new CmsException(
+                org.opencms.workplace.editors.Messages.get().container(
+                    org.opencms.workplace.editors.Messages.ERR_INVALID_CONTENT_ENC_1,
+                    file.getRootPath()),
+                e);
         }
         // the file content might have been modified during the write operation
         file = cms.writeFile(file);

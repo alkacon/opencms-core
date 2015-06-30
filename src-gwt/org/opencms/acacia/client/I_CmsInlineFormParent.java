@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,21 +38,21 @@ public interface I_CmsInlineFormParent {
     /**
      * Adopts the given widget as a child widget.<p>
      * This assumes the widget element is already attached to the DOM and is a child or descendant of this widget element.<p>
-     * 
+     *
      * @param widget the widget to adopt
      */
     void adoptWidget(IsWidget widget);
 
     /**
      * The widget element.<p>
-     * 
+     *
      * @return the widget element
      */
     Element getElement();
 
-    /** 
+    /**
      * Replaces the inner HTML of widget to reflect content data changes.<p>
-     * 
+     *
      * @param html the element HTML
      */
     void replaceHtml(String html);

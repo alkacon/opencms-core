@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Tree item for lazily loaded list trees.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsLazyTreeItem extends CmsTreeItem {
@@ -85,8 +85,8 @@ public class CmsLazyTreeItem extends CmsTreeItem {
 
     /**
      * Constructs a new lazy tree item with a main widget and a check box.<p>
-     * 
-     * @param checkbox the check box 
+     *
+     * @param checkbox the check box
      * @param widget the main widget
      * @param useLoadItem <code>true</code> to show a load item while children are being loaded
      */
@@ -98,8 +98,8 @@ public class CmsLazyTreeItem extends CmsTreeItem {
 
     /**
      * Constructs a new lazy tree item with a main widget.<p>
-     * 
-     * @param widget the main widget 
+     *
+     * @param widget the main widget
      * @param useLoadItem <code>true</code> to show a load item while children are being loaded
      */
     public CmsLazyTreeItem(Widget widget, boolean useLoadItem) {
@@ -110,7 +110,7 @@ public class CmsLazyTreeItem extends CmsTreeItem {
 
     /**
      * Gets the load state of the tree item.<p>
-     * 
+     *
      * @return a load state
      */
     public LoadState getLoadState() {
@@ -120,7 +120,7 @@ public class CmsLazyTreeItem extends CmsTreeItem {
 
     /**
      * Returns if tree item children have been loaded.<p>
-     * 
+     *
      * @return <code>true</code> if tree item children have been loaded
      */
     public boolean isLoaded() {
@@ -157,7 +157,7 @@ public class CmsLazyTreeItem extends CmsTreeItem {
 
     /**
      * Returns the loading image.<p>
-     * 
+     *
      * @return the loading image
      */
     protected Image getLoadingImage() {

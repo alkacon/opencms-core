@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
 
 /**
  * CSS resource for the CmsFloatDecoratedPanel class.<p>
- * 
+ *
  * @since 8.0.0
  */
 @Shared
@@ -40,35 +40,35 @@ public interface I_CmsFloatDecoratedPanelCss extends CssResource {
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      */
     String decorationBox();
 
     /**
      * CSS class accessor.<P>
-     * 
+     *
      * @return a CSS class
      */
     String decorationBoxSmall();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      */
     String floatBox();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      */
     String floatDecoratedPanel();
 
     /**
      * CSS class accessor.<P>
-     * 
+     *
      * @return a CSS class
      */
     String primary();

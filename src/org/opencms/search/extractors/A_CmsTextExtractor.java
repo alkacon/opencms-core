@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,8 +45,8 @@ import org.apache.tika.sax.BodyContentHandler;
 
 /**
  * Base utility class that allows extraction of the indexable "plain" text from a given document format.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
 
@@ -55,7 +55,7 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
      */
     public I_CmsExtractionResult extractText(byte[] content) throws Exception {
 
-        // call stream based method of extraction without encoding     
+        // call stream based method of extraction without encoding
         return extractText(new ByteArrayInputStream(content));
     }
 
@@ -90,9 +90,9 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
     }
 
     /**
-     * Combines a meta information item extracted from the document with the main content buffer and 
+     * Combines a meta information item extracted from the document with the main content buffer and
      * also stores the individual information as item in the Map of content items.<p>
-     * 
+     *
      * @param itemValue the value of the item to store
      * @param itemKey the key in the Map of content items
      * @param content a buffer where to append the content item
@@ -113,12 +113,12 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
 
     /**
      * Parses the given input stream with the provided parser and returns the result as a map of content items.<p>
-     * 
+     *
      * @param in the input stream for the content to parse
      * @param parser the parser to use
-     * 
+     *
      * @return the result of the parsing as a map of content items
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     protected CmsExtractionResult extractText(InputStream in, Parser parser) throws Exception {
@@ -164,9 +164,9 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
 
     /**
      * Removes "unwanted" control chars from the given content.<p>
-     * 
+     *
      * @param content the content to remove the unwanted control chars from
-     * 
+     *
      * @return the content with the unwanted control chars removed
      */
     protected String removeControlChars(String content) {
@@ -185,7 +185,7 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
             int type = Character.getType(ch);
             switch (type) {
 
-            // punctuation
+                // punctuation
                 case Character.CURRENCY_SYMBOL:
                 case Character.CONNECTOR_PUNCTUATION:
                 case Character.FINAL_QUOTE_PUNCTUATION:

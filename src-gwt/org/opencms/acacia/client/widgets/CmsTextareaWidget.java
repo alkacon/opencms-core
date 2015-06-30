@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Composite;
 
 /**
  * Provides a display only widget, for use on a widget dialog.<p>
- *  
+ *
  * */
 public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, HasResizeHandlers, I_HasResizeOnShow {
 
@@ -60,8 +60,8 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
 
     /**
      * Creates a new display widget.<p>
-     * 
-     * @param config the widget configuration string 
+     *
+     * @param config the widget configuration string
      */
     public CmsTextareaWidget(String config) {
 
@@ -80,7 +80,8 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
         }
         m_textarea.setRows(configheight);
         m_textarea.getTextArea().addStyleName(I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().textAreaBox());
-        m_textarea.getTextAreaContainer().addStyleName(I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().textAreaBoxPanel());
+        m_textarea.getTextAreaContainer().addStyleName(
+            I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().textAreaBoxPanel());
         m_textarea.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -126,7 +127,7 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
 
     /**
      * Represents a value change event.<p>
-     * 
+     *
      */
     public void fireChangeEvent() {
 

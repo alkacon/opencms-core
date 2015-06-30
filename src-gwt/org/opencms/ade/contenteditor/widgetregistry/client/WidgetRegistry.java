@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -72,7 +72,7 @@ public final class WidgetRegistry {
 
     /**
      * Returns the widget registry instance.<p>
-     * 
+     *
      * @return the widget registry instance
      */
     public static WidgetRegistry getInstance() {
@@ -85,18 +85,18 @@ public final class WidgetRegistry {
 
     /**
      * Adds a renderer which should be used by the Acacia editor.<p>
-     * 
-     * @param renderer the renderer to add 
+     *
+     * @param renderer the renderer to add
      */
     public void addRenderer(I_CmsEntityRenderer renderer) {
 
         m_renderers.put(renderer.getName(), renderer);
     }
 
-    /** 
+    /**
      * Returns the registered renderers.<p>
-     * 
-     * @return the renderers 
+     *
+     * @return the renderers
      */
     public Collection<I_CmsEntityRenderer> getRenderers() {
 
@@ -105,7 +105,7 @@ public final class WidgetRegistry {
 
     /**
      * Returns the registered widget factories.<p>
-     * 
+     *
      * @return the registered widget factories
      */
     public Map<String, I_CmsWidgetFactory> getWidgetFactories() {
@@ -115,7 +115,7 @@ public final class WidgetRegistry {
 
     /**
      * Registers external widgets.<p>
-     * 
+     *
      * @param externalWidgetConfigurations the external widget configurations
      * @param callback the callback to execute when done
      */
@@ -178,8 +178,8 @@ public final class WidgetRegistry {
 
     /**
      * Registers a widget.<p>
-     * 
-     * @param widgetName the widget name 
+     *
+     * @param widgetName the widget name
      * @param widgetFactory the widget
      */
     public void registerWidgetFactory(String widgetName, I_CmsWidgetFactory widgetFactory) {
@@ -189,20 +189,20 @@ public final class WidgetRegistry {
 
     /**
      * Logs an error.<p>
-     * 
-     * @param error the error to log 
+     *
+     * @param error the error to log
      */
     protected native void showError(String error) /*-{
-      if ($wnd.console) {
-         $wnd.console.log(error);
-      }
-      throw error;
-    }-*/;
+                                                  if ($wnd.console) {
+                                                  $wnd.console.log(error);
+                                                  }
+                                                  throw error;
+                                                  }-*/;
 
-    /** 
+    /**
      * Logs an error for missing init calls.<p>
-     * 
-     * @param initCalls the set of missing init calls 
+     *
+     * @param initCalls the set of missing init calls
      */
     protected void showInitCallError(Set<String> initCalls) {
 
@@ -217,38 +217,38 @@ public final class WidgetRegistry {
 
     /**
      * Tries to initializes a widget with the given initialization call. Returns false if the init method was not available within the window context yet.<p>
-     * 
+     *
      * @param initCall the initialization function name
-     * 
+     *
      * @return <code>true</code> if the initialization function was available and has been executed
      */
     protected native boolean tryInitCall(String initCall)/*-{
-      try {
-         if ($wnd[initCall]) {
-            $wnd[initCall]();
-            return true;
-         }
-      } catch (error) {
-         throw "Failed excuting " + initCall
-               + " to initialize editing widget. \n" + error
-      }
-      return false;
-    }-*/;
+                                                         try {
+                                                         if ($wnd[initCall]) {
+                                                         $wnd[initCall]();
+                                                         return true;
+                                                         }
+                                                         } catch (error) {
+                                                         throw "Failed excuting " + initCall
+                                                         + " to initialize editing widget. \n" + error
+                                                         }
+                                                         return false;
+                                                         }-*/;
 
     /**
      * Exports the widget registration.<p>
      */
     private native void exportWidgetRegistration() /*-{
-      var self = this;
-      $wnd[@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::REGISTER_WIDGET_FACTORY_FUNCTION] = function(
-            factory) {
-         self.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::registerWrapper(Lorg/opencms/ade/contenteditor/widgetregistry/client/WidgetFactoryWrapper;)(factory);
-      }
-    }-*/;
+                                                   var self = this;
+                                                   $wnd[@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::REGISTER_WIDGET_FACTORY_FUNCTION] = function(
+                                                   factory) {
+                                                   self.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry::registerWrapper(Lorg/opencms/ade/contenteditor/widgetregistry/client/WidgetFactoryWrapper;)(factory);
+                                                   }
+                                                   }-*/;
 
     /**
      * Registers a widget wrapper as widget.<p>
-     * 
+     *
      * @param wrapper the wrapper object
      */
     private void registerWrapper(WidgetFactoryWrapper wrapper) {

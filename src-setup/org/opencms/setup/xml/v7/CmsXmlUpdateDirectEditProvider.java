@@ -13,20 +13,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.setup.xml.v7;
-import org.opencms.configuration.CmsConfigurationManager;
+
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.setup.xml.A_CmsXmlWorkplace;
@@ -40,11 +41,10 @@ import java.util.List;
 import org.dom4j.Document;
 import org.dom4j.Node;
 
-
 /**
  * Updates localization keys.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsXmlUpdateDirectEditProvider extends A_CmsXmlWorkplace {
 
@@ -81,7 +81,8 @@ public class CmsXmlUpdateDirectEditProvider extends A_CmsXmlWorkplace {
 
         // /opencms/workplace/directeditprovider
         return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
-            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(CmsWorkplaceConfiguration.N_DIRECTEDITPROVIDER).toString();
+            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(
+                CmsWorkplaceConfiguration.N_DIRECTEDITPROVIDER).toString();
     }
 
     /**
@@ -90,11 +91,12 @@ public class CmsXmlUpdateDirectEditProvider extends A_CmsXmlWorkplace {
     @Override
     protected List<String> getXPathsToUpdate() {
 
-        return Collections.singletonList(getCommonPath()
-            + "[@"
-            + I_CmsXmlConfiguration.A_CLASS
-            + "='"
-            + CmsDirectEditDefaultProvider.class.getName()
-            + "']");
+        return Collections.singletonList(
+            getCommonPath()
+                + "[@"
+                + I_CmsXmlConfiguration.A_CLASS
+                + "='"
+                + CmsDirectEditDefaultProvider.class.getName()
+                + "']");
     }
 }

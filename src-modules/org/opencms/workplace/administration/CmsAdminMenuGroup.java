@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,8 +36,8 @@ import java.util.List;
 
 /**
  * Container for menu items that generates the necesary html code for a group of items.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsAdminMenuGroup {
 
@@ -53,8 +53,8 @@ public class CmsAdminMenuGroup {
     private final String m_name;
 
     /**
-     * Default Constructor.<p> 
-     * 
+     * Default Constructor.<p>
+     *
      * @param id a unique id
      * @param name the name of the group
      */
@@ -66,9 +66,9 @@ public class CmsAdminMenuGroup {
 
     /**
      * Adds a menu item.<p>
-     * 
+     *
      * @param item the item
-     * 
+     *
      * @see org.opencms.workplace.tools.CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addMenuItem(CmsAdminMenuItem item) {
@@ -78,10 +78,10 @@ public class CmsAdminMenuGroup {
 
     /**
      * Adds a menu item at the given position.<p>
-     * 
+     *
      * @param item the item
      * @param position the position
-     * 
+     *
      * @see org.opencms.workplace.tools.CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addMenuItem(CmsAdminMenuItem item, float position) {
@@ -101,7 +101,7 @@ public class CmsAdminMenuGroup {
 
     /**
      * Returns a list of menu items.<p>
-     * 
+     *
      * @return a list of <code>{@link CmsAdminMenuItem}</code>s
      */
     public List<CmsAdminMenuItem> getMenuItems() {
@@ -121,9 +121,9 @@ public class CmsAdminMenuGroup {
 
     /**
      * Returns the necessary html code.<p>
-     * 
+     *
      * @param wp the jsp page to write the code to
-     * 
+     *
      * @return html code
      */
     public String groupHtml(CmsWorkplace wp) {
@@ -142,7 +142,7 @@ public class CmsAdminMenuGroup {
 
     /**
      * Generates the last part of the html code.<p>
-     * 
+     *
      * @return html code
      */
     private String htmlEnd() {
@@ -160,9 +160,9 @@ public class CmsAdminMenuGroup {
 
     /**
      * Generates the first part of the html code.<p>
-     * 
+     *
      * @param wp the workplace
-     * 
+     *
      * @return html code
      */
     private String htmlStart(CmsWorkplace wp) {
@@ -173,7 +173,8 @@ public class CmsAdminMenuGroup {
         html.append("'>\n");
         html.append("\t<tr>\n");
         html.append("\t\t<td class='titleBorder'>\n");
-        html.append("\t\t\t<table border='0' cellspacing='0' cellpadding='0' width='100%' class='navTitle' onMouseOver='mouseGroupEvent(this, true);' onMouseOut='mouseGroupEvent(this, false);' onClick=\"return openGroup('");
+        html.append(
+            "\t\t\t<table border='0' cellspacing='0' cellpadding='0' width='100%' class='navTitle' onMouseOver='mouseGroupEvent(this, true);' onMouseOut='mouseGroupEvent(this, false);' onClick=\"return openGroup('");
         html.append(getId());
         html.append("');\" >\n");
         html.append("\t\t\t\t<tr>\n");

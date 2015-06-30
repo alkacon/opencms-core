@@ -40,11 +40,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.lucene.search.BooleanClause.Occur;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.apache.lucene.search.BooleanClause.Occur;
 
 /**
  * Unit test for searching in special fields of extracted document text.<p>
@@ -161,7 +161,8 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         searchBean.setField(new String[] {"content", "special"});
         searchResult = searchBean.getSearchResult();
         assertNotNull(searchResult);
-        System.out.println("\n\nResults found searching in 'content' AND 'special' index fields, some excerpts should be available from 'content':");
+        System.out.println(
+            "\n\nResults found searching in 'content' AND 'special' index fields, some excerpts should be available from 'content':");
         TestCmsSearch.printResults(searchResult, cms, true);
         excerptFound = false;
         i = searchResult.iterator();
@@ -407,7 +408,8 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         searchBean.addFieldQueryMustNot(CmsSearchField.FIELD_TITLE_UNSTORED, "article");
         searchResult = searchBean.getSearchResult();
         assertNotNull(searchResult);
-        System.out.println("\n\nResults found with field query searching in 'special' and 'Title' index field with NOT option:");
+        System.out.println(
+            "\n\nResults found with field query searching in 'special' and 'Title' index field with NOT option:");
         TestCmsSearch.printResults(searchResult, cms);
         assertEquals(2, searchResult.size());
     }
@@ -431,24 +433,27 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         searchBean.setSearchRoot("/");
 
         // search for "article" or "opencms" in the "title" field, or "opencms" in the content field
-        searchBean.addFieldQuery(new CmsSearchParameters.CmsSearchFieldQuery(
-            CmsSearchField.FIELD_TITLE_UNSTORED,
-            Occur.SHOULD,
-            Arrays.asList("article", "opencms"),
-            Occur.SHOULD));
+        searchBean.addFieldQuery(
+            new CmsSearchParameters.CmsSearchFieldQuery(
+                CmsSearchField.FIELD_TITLE_UNSTORED,
+                Occur.SHOULD,
+                Arrays.asList("article", "opencms"),
+                Occur.SHOULD));
         searchBean.addFieldQueryShould(CmsSearchField.FIELD_CONTENT, "opencms");
         // extend the search to make the query more complex
-        searchBean.addFieldQuery(new CmsSearchParameters.CmsSearchFieldQuery(
-            CmsSearchField.FIELD_TITLE_UNSTORED,
-            Occur.MUST,
-            Arrays.asList("article", "page*", "index", "alkacon"),
-            Occur.SHOULD));
+        searchBean.addFieldQuery(
+            new CmsSearchParameters.CmsSearchFieldQuery(
+                CmsSearchField.FIELD_TITLE_UNSTORED,
+                Occur.MUST,
+                Arrays.asList("article", "page*", "index", "alkacon"),
+                Occur.SHOULD));
         // extend the search to make the query more complex
-        searchBean.addFieldQuery(new CmsSearchParameters.CmsSearchFieldQuery(
-            CmsSearchField.FIELD_TITLE_UNSTORED,
-            Occur.MUST_NOT,
-            Arrays.asList("subfolder", "page1"),
-            Occur.SHOULD));
+        searchBean.addFieldQuery(
+            new CmsSearchParameters.CmsSearchFieldQuery(
+                CmsSearchField.FIELD_TITLE_UNSTORED,
+                Occur.MUST_NOT,
+                Arrays.asList("subfolder", "page1"),
+                Occur.SHOULD));
 
         searchResult = searchBean.getSearchResult();
         assertNotNull(searchResult);
@@ -524,7 +529,8 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         searchBean.setResourceTypes(new String[] {"image", "plain", "xmlpage"});
         searchResult = searchBean.getSearchResult();
         assertNotNull(searchResult);
-        System.out.println("\n\nResults found with field query and a limit of the search to types \"image\", \"plain\" and \"xmlpage\":");
+        System.out.println(
+            "\n\nResults found with field query and a limit of the search to types \"image\", \"plain\" and \"xmlpage\":");
         TestCmsSearch.printResults(searchResult, cms);
         assertEquals(3, searchResult.size());
 

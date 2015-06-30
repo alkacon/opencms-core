@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,18 +56,18 @@ import com.google.common.collect.Maps;
 
 /**
  * Macro resolver used to resolve macros for the gallery name mapping.<p>
- * 
+ *
  * This supports the following special macros:
  * <ul>
- * <li>%(no_prefix:some more text): This will expand to "some more text" if, after expanding all other macros in the input string, 
+ * <li>%(no_prefix:some more text): This will expand to "some more text" if, after expanding all other macros in the input string,
  *     there is at least one character before the occurence of this macro, and to an empty string otherwise.
  * <li>%(value:/Some/XPath): This will expand to the value under the given XPath in the XML content and locale with
  *     which the macro resolver was initialized. If no value is found under the XPath, the macro will expand to an empty string.
- * <li>%(page_nav): This will expand to the NavText property of the container page in which this element is referenced. 
+ * <li>%(page_nav): This will expand to the NavText property of the container page in which this element is referenced.
  *                  If this element is referenced from multiple container pages with the same locale, this macro is expanded
  *                  to an empty string.
- *<li>%(page_title): Same as %(page_nav), but uses the Title property instead of NavText. 
- *</ul> 
+ *<li>%(page_title): Same as %(page_nav), but uses the Title property instead of NavText.
+ *</ul>
  */
 public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
 
@@ -97,10 +97,10 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param cms the CMS context to use for VFS operations 
-     * @param content the content to use for macro value lookup  
-     * @param locale the locale to use for macro value lookup 
+     *
+     * @param cms the CMS context to use for VFS operations
+     * @param content the content to use for macro value lookup
+     * @param locale the locale to use for macro value lookup
      */
     public CmsGalleryNameMacroResolver(CmsObject cms, A_CmsXmlDocument content, Locale locale) {
 
@@ -133,7 +133,7 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
             return getContainerPageProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT);
         } else if (macro.startsWith(NO_PREFIX)) {
             return "%(" + macro + ")";
-            // this is just to prevent the %(no_prefix:...) macro from being expanded to an empty string. We could call setKeepEmptyMacros(true) instead, 
+            // this is just to prevent the %(no_prefix:...) macro from being expanded to an empty string. We could call setKeepEmptyMacros(true) instead,
             // but that would also affect other macros.
         } else {
             return super.getMacroValue(macro);
@@ -146,10 +146,10 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
     @Override
     public String resolveMacros(String input) {
 
-        // We are overriding this method to implement the no_prefix macro. This is because 
-        // we only know what the no_prefix macro should expand to after resolving all other 
-        // macros (there could be an arbitrary number of macros before it which might potentially 
-        // all expand to the empty string). 
+        // We are overriding this method to implement the no_prefix macro. This is because
+        // we only know what the no_prefix macro should expand to after resolving all other
+        // macros (there could be an arbitrary number of macros before it which might potentially
+        // all expand to the empty string).
         String result = super.resolveMacros(input);
         Matcher matcher = NO_PREFIX_PATTERN.matcher(result);
         if (matcher.find()) {
@@ -165,17 +165,18 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
 
     /**
      * Gets the given property of the container page referencing this content.<p>
-     * 
+     *
      * If more than one container page with the same locale reference this content, the empty string will be returned.
-     * 
-     * @param propName the property name to look up 
-     * 
-     * @return the value of the named property on the container page, or an empty string 
+     *
+     * @param propName the property name to look up
+     *
+     * @return the value of the named property on the container page, or an empty string
      */
     protected String getContainerPageProperty(String propName) {
 
         try {
-            Collection<CmsRelation> relations = m_cms.readRelations(CmsRelationFilter.relationsToStructureId(m_content.getFile().getStructureId()));
+            Collection<CmsRelation> relations = m_cms.readRelations(
+                CmsRelationFilter.relationsToStructureId(m_content.getFile().getStructureId()));
             Map<Locale, String> pagePropsByLocale = Maps.newHashMap();
             for (CmsRelation relation : relations) {
                 CmsResource source = relation.getSource(m_cms, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -188,7 +189,7 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
                         if (pagePropsByLocale.get(pageLocale) == null) {
                             pagePropsByLocale.put(pageLocale, pagePropCandidate.getValue());
                         } else {
-                            return ""; // more than one container page per locale is referencing this content. 
+                            return ""; // more than one container page per locale is referencing this content.
                         }
                     }
                 }

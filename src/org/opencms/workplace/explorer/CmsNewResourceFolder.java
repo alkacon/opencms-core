@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,16 +66,16 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * The new resource folder dialog handles the creation of a folder.<p>
- * 
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/newresource_folder.jsp
  * </ul>
  * <p>
- * 
+ *
  * Displays a list with resource types to choose one for the index page.<p>
- * 
- * @since 6.7.1 
+ *
+ * @since 6.7.1
  */
 public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
 
@@ -161,7 +161,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsNewResourceFolder(CmsJspActionElement jsp) {
@@ -177,7 +177,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -189,9 +189,9 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
 
     /**
      * Creates the folder using the specified resource name.<p>
-     * 
+     *
      * @return if the resource was created successfully
-     * 
+     *
      * @throws JspException if inclusion of error dialog fails
      */
     public boolean actionCreateResource() throws JspException {
@@ -210,7 +210,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
                 CmsResourceTypeFolder.getStaticTypeName(),
                 title);
 
-            // create the folder            
+            // create the folder
             getCms().createResource(
                 fullResourceName,
                 OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId(),
@@ -247,9 +247,9 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
 
     /**
      * Forwards to the property dialog if the resourceeditprops parameter is true.<p>
-     * 
+     *
      * If the parameter is not true, the dialog will be closed.<p>
-     * 
+     *
      * @throws IOException if forwarding to the property dialog fails
      * @throws ServletException if forwarding to the property dialog fails
      * @throws JspException if an inclusion fails
@@ -281,7 +281,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
             sendForward(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER, params);
         } else if (createIndex) {
 
-            // create an index file in the new folder, redirect to new xmlpage dialog              
+            // create an index file in the new folder, redirect to new xmlpage dialog
             String newFolder = getParamResource();
             if (!newFolder.endsWith("/")) {
                 newFolder += "/";
@@ -293,7 +293,9 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
                 + OpenCms.getWorkplaceManager().getExplorerTypeSetting(indexPageType).getNewResourceUri();
             CmsUriSplitter splitter = new CmsUriSplitter(newUri);
             Map<String, String[]> params = CmsRequestUtil.createParameterMap(splitter.getQuery());
-            params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, new String[] {CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX});
+            params.put(
+                CmsPropertyAdvanced.PARAM_DIALOGMODE,
+                new String[] {CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX});
             params.put(PARAM_ACTION, new String[] {CmsNewResource.DIALOG_NEWFORM});
             sendForward(splitter.getPrefix(), params);
         } else {
@@ -308,7 +310,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
 
     /**
      * Returns the current folder set by the http request.<p>
-     *  
+     *
      * If the request parameter value is null/empty then returns the default computed folder.<p>
      *
      * @return the current folder set by the request param or the computed current folder
@@ -414,7 +416,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
 
     /**
      * Appends the full path to the new resource name given in the resource parameter.<p>
-     * 
+     *
      * @return the full path of the new resource
      */
     protected String computeFullResourceName() {
@@ -434,7 +436,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
 
     /**
      * Returns the html code to add directly before the list inside the form element.<p>
-     * 
+     *
      * @return the html code to add directly before the list inside the form element
      */
     @Override
@@ -457,7 +459,8 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
             resource = "";
         }
         result.append(resource);
-        result.append("\" class=\"maxwidth\" onkeyup=\"checkValue();\" onchange=\"checkValue();\" onpaste=\"setTimeout(checkValue,4);\" ></td>\n");
+        result.append(
+            "\" class=\"maxwidth\" onkeyup=\"checkValue();\" onchange=\"checkValue();\" onpaste=\"setTimeout(checkValue,4);\" ></td>\n");
         result.append("\t</tr>\n");
         result.append("\t<tr>\n");
         result.append("\t\t<td>&nbsp;</td>\n");
@@ -548,11 +551,8 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
                 result.append("<input name=\"set\" type=\"button\" value=\"");
                 result.append(key(Messages.GUI_BUTTON_CONTINUE_0) + "\"");
                 if (attribute.toLowerCase().indexOf("onclick") == -1) {
-                    result.append(" onclick=\"submitAction('"
-                        + DIALOG_CONTINUE
-                        + "', form, '"
-                        + getListId()
-                        + "-form');\"");
+                    result.append(
+                        " onclick=\"submitAction('" + DIALOG_CONTINUE + "', form, '" + getListId() + "-form');\"");
                 }
                 result.append(" class=\"dialogbutton\"");
                 result.append(" id=\"nextButton\"");
@@ -567,12 +567,12 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
 
     /**
      * Returns a list with all available resource types for the index page.<p>
-     * 
+     *
      * The information is first read from the property "restypes.indexpage".
      * If there nothing could be found, the global settings from the resource
      * type folder is taken. Only if there is nothing configured, the default
      * (No index page and xmlpage) will be taken.<p>
-     * 
+     *
      * @return a list with all available resource types for the index page
      */
     protected List<String> getAvailableResTypes() {

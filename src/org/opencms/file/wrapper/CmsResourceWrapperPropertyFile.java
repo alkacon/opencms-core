@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,20 +51,20 @@ import org.apache.commons.logging.Log;
 /**
  * Adds a folder in every existing folder with the name "__properties" which
  * contains property files for every resource in the existing folder.<p>
- * 
+ *
  * Empty folders don't have the property folder visible.<p>
- * 
+ *
  * The names of the property files are the same as the resource they belong to
  * with the extension "properties". To keep the correct sorting the names of
  * folders gets additionaly the prefix "__" to keep them at the beginning of the
  * list.<p>
- * 
+ *
  * When creating new folders, the property folder gets visible after a time period
  * of 60 seconds. For new resources the property file appears after that period too.
  * In this time period it is possible to create the property folder and the property
  * files manually. The properties in the created property files will be set at the
  * resource they belong to.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
@@ -383,9 +383,9 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
 
     /**
      * Tries to the read the resource with the given structure id using the given CmsObject and returns it, or null if the resource can not be read.<p>
-     * 
-     * @param cms the CmsObject to use 
-     * @param structureId the structure id of the resource 
+     *
+     * @param cms the CmsObject to use
+     * @param structureId the structure id of the resource
      * @return the resource which has been read
      */
     CmsResource getResource(CmsObject cms, CmsUUID structureId) {
@@ -403,15 +403,15 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
 
     /**
      * Checks if a resource exists depending on the creation date and the temp files saved.<p>
-     * 
-     * Dreamweaver copies folders through creating folder for folder and file for file. 
-     * So there is first a call if the property folder already exists and afterwards create 
+     *
+     * Dreamweaver copies folders through creating folder for folder and file for file.
+     * So there is first a call if the property folder already exists and afterwards create
      * it. If the folder already exists, the copy action fails.
      * In the first time after creating a folder, the property dir does not exists until it is
      * created or the time expired.<p>
-     * 
+     *
      * @param res the resource to check if it exists
-     * 
+     *
      * @return return if the folder exists otherwise false
      */
     private boolean existsResource(CmsResource res) {
@@ -439,9 +439,9 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
 
     /**
      * Creates the full path to the property file of the given resource.<p>
-     * 
+     *
      * @param res the resource where to create the path for the property file for
-     * 
+     *
      * @return the full path to the property file of the resource
      */
     private String getPropertyFileName(CmsResource res) {
@@ -474,13 +474,13 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
 
     /**
      * Reads the resource for the property file.<p>
-     * 
+     *
      * @param cms the initialized CmsObject
      * @param resourcename the name of the property resource
      * @param filter the filter to use
-     * 
+     *
      * @return the resource for the property file or null if not found
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private CmsResource getResource(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {

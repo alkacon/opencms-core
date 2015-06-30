@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 /**
  * Defines a menu item rule that sets the visibility to invisible
  * if the current resource is locked by the current user.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsMirPrSameLockedInvisible extends A_CmsMenuItemRule {
@@ -55,9 +55,11 @@ public class CmsMirPrSameLockedInvisible extends A_CmsMenuItemRule {
 
         if (resourceUtil[0].isInsideProject()) {
             CmsLock lock = resourceUtil[0].getLock();
-            return (!resourceUtil[0].getProjectState().isLockedForPublishing() && !lock.isShared() && lock.isOwnedInProjectBy(
-                cms.getRequestContext().getCurrentUser(),
-                cms.getRequestContext().getCurrentProject()));
+            return (!resourceUtil[0].getProjectState().isLockedForPublishing()
+                && !lock.isShared()
+                && lock.isOwnedInProjectBy(
+                    cms.getRequestContext().getCurrentUser(),
+                    cms.getRequestContext().getCurrentProject()));
         }
         // resource is not locked by the user in current project, rule does not match
         return false;

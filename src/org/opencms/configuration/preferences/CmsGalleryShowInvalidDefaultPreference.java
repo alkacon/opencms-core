@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ public class CmsGalleryShowInvalidDefaultPreference extends CmsBuiltinPreference
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param propName the property name 
+     *
+     * @param propName the property name
      */
     public CmsGalleryShowInvalidDefaultPreference(String propName) {
 
@@ -57,7 +57,8 @@ public class CmsGalleryShowInvalidDefaultPreference extends CmsBuiltinPreference
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
             "string", //type
             "checkbox", //widget
             null, //widgetconfig

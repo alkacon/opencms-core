@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,8 +48,8 @@ public class CmsStartGallleryPreference extends A_CmsPreference {
 
     /**
      * Creates a new instance.<o>
-     * @param galleryType the gallery type 
-     * @param value the value  
+     * @param galleryType the gallery type
+     * @param value the value
      */
     public CmsStartGallleryPreference(String galleryType, String value) {
 
@@ -79,7 +79,8 @@ public class CmsStartGallleryPreference extends A_CmsPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
             "string", //type
             null, //widget
             null, //widgetconfig

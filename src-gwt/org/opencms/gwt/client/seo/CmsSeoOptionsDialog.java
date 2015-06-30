@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -113,12 +113,12 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
 
     /**
      * Creates a new dialog instance.<p>
-     * 
+     *
      * @param structureId the structure id of the resource whose aliases are being edited
-     * @param infoBean a bean containing the information to display in the resource info box 
-     * @param aliases the existing aliases of the resource 
-     * @param propertyConfig the property configuration 
-     * @param propertyEditorHandler the property editor handler 
+     * @param infoBean a bean containing the information to display in the resource info box
+     * @param aliases the existing aliases of the resource
+     * @param propertyConfig the property configuration
+     * @param propertyEditorHandler the property editor handler
      */
     public CmsSeoOptionsDialog(
         CmsUUID structureId,
@@ -139,7 +139,7 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
         liWidget.setStateIcon(StateIcon.standard);
         m_panel.add(liWidget);
 
-        //------------------------ PROPERTIES ------------------------------------------        
+        //------------------------ PROPERTIES ------------------------------------------
         LinkedHashMap<String, CmsXmlContentProperty> props = new LinkedHashMap<String, CmsXmlContentProperty>();
         for (String seoProperty : seoProperties) {
             if (propertyConfig.containsKey(seoProperty)) {
@@ -152,8 +152,8 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
         m_structureId = structureId;
         m_propertyFieldset.getElement().getStyle().setMarginTop(10, Unit.PX);
         m_propertyFieldset.getContentPanel().getElement().getStyle().setOverflow(Overflow.VISIBLE);
-        m_propertyFieldset.setLegend(org.opencms.gwt.client.Messages.get().key(
-            org.opencms.gwt.client.Messages.GUI_PROPERTIES_0));
+        m_propertyFieldset.setLegend(
+            org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_PROPERTIES_0));
         m_propertyEditor.initializeWidgets(this);
         m_panel.add(m_propertyFieldset);
 
@@ -180,9 +180,9 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
 
     /**
      * Loads the aliases for a given page.<p>
-     * 
-     * @param structureId the structure id of the page 
-     * @param callback the callback for the loaded aliases 
+     *
+     * @param structureId the structure id of the page
+     * @param callback the callback for the loaded aliases
      */
     public static void loadAliases(final CmsUUID structureId, final AsyncCallback<List<CmsAliasBean>> callback) {
 
@@ -225,8 +225,8 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
 
     /**
      * Saves the aliases for a given page.<p>
-     *  
-     * @param uuid the page structure id 
+     *
+     * @param uuid the page structure id
      * @param aliases the aliases to save
      */
     public void saveAliases(final CmsUUID uuid, final List<CmsAliasBean> aliases) {
@@ -271,8 +271,8 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
 
     /**
      * Updates the validation status and optionally submits the data.<p>
-     * 
-     * @param submit the submit flag 
+     *
+     * @param submit the submit flag
      */
     public void update(boolean submit) {
 
@@ -311,7 +311,7 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
                 m_propertyEditor.getForm().validateAndSubmit();
             }
         };
-        // slight delay so that the validation doesn't interfere with validations triggered by the change event 
+        // slight delay so that the validation doesn't interfere with validations triggered by the change event
         timer.schedule(20);
     }
 
@@ -334,7 +334,7 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
 
     /**
      * Creates the cancel button.<p>
-     * 
+     *
      * @return the cancel button
      */
     private CmsPushButton createCancelButton() {
@@ -369,7 +369,7 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
 
     /**
      * Creates the OK button.<p>
-     * 
+     *
      * @return the OK button
      */
     private CmsPushButton saveButton() {

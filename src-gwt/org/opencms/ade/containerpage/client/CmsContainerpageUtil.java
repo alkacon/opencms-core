@@ -132,9 +132,10 @@ public class CmsContainerpageUtil {
                 try {
                     elementData = m_controller.getSerializedElement(serializedData);
                 } catch (Exception e) {
-                    CmsErrorDialog.handleException(new Exception(
-                        "Deserialization of element data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
-                        e));
+                    CmsErrorDialog.handleException(
+                        new Exception(
+                            "Deserialization of element data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                            e));
                 }
                 if (isContainerElement) {
 
@@ -173,11 +174,14 @@ public class CmsContainerpageUtil {
                         Element endMarker = (Element)elementRoot.getNextSibling();
                         // only if the end marker node is not null and has neither the end-marker class or start-marker class
                         // remove the current node and check the next sibling
-                        while (!((endMarker == null) || ((endMarker.getNodeType() == Node.ELEMENT_NODE) && (CmsDomUtil.hasClass(
-                            CmsContainerElement.CLASS_CONTAINER_ELEMENT_END_MARKER,
-                            endMarker) || CmsDomUtil.hasClass(
-                            CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER,
-                            endMarker))))) {
+                        while (!((endMarker == null)
+                            || ((endMarker.getNodeType() == Node.ELEMENT_NODE)
+                                && (CmsDomUtil.hasClass(
+                                    CmsContainerElement.CLASS_CONTAINER_ELEMENT_END_MARKER,
+                                    endMarker)
+                                    || CmsDomUtil.hasClass(
+                                        CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER,
+                                        endMarker))))) {
                             Element temp = endMarker;
                             endMarker = (Element)endMarker.getNextSibling();
                             temp.removeFromParent();
@@ -236,7 +240,8 @@ public class CmsContainerpageUtil {
                     container.adoptElement(groupContainer);
                     consumeContainerElements(groupContainer);
                     if (groupContainer.getWidgetCount() == 0) {
-                        groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
+                        groupContainer.addStyleName(
+                            I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
                     }
                     children.add(groupContainer);
                     // important: adding the option-bar only after the group-containers have been consumed
@@ -255,7 +260,7 @@ public class CmsContainerpageUtil {
                     // this element is no container element and is the container only child, assume it is an empty container marker
                     ((CmsContainerPageContainer)container).setEmptyContainerElement(child);
                 } else {
-                    // e.g. option bar 
+                    // e.g. option bar
                     if (!CmsContainerPageElementPanel.isOverlay(child)) {
                         container.getElement().removeChild(child);
                     }
@@ -288,18 +293,24 @@ public class CmsContainerpageUtil {
                 CmsContainer container = m_controller.getSerializedContainer(data);
                 containers.put(container.getName(), container);
                 try {
-                    CmsContainerPageContainer dragContainer = new CmsContainerPageContainer(container, containerElement);
+                    CmsContainerPageContainer dragContainer = new CmsContainerPageContainer(
+                        container,
+                        containerElement);
                     consumeContainerElements(dragContainer);
                     result.put(container.getName(), dragContainer);
                 } catch (Exception e) {
-                    CmsErrorDialog.handleException(new Exception("Error parsing container "
-                        + container.getName()
-                        + ". Please check if your HTML is well formed.", e));
+                    CmsErrorDialog.handleException(
+                        new Exception(
+                            "Error parsing container "
+                                + container.getName()
+                                + ". Please check if your HTML is well formed.",
+                            e));
                 }
             } catch (Exception e) {
-                CmsErrorDialog.handleException(new Exception(
-                    "Deserialization of container data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
-                    e));
+                CmsErrorDialog.handleException(
+                    new Exception(
+                        "Deserialization of container data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                        e));
             }
         }
         return result;
@@ -398,8 +409,8 @@ public class CmsContainerpageUtil {
 
                     CmsEditableData editableData = new CmsEditableData();
                     editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
-                    editableData.setStructureId(new CmsUUID(
-                        CmsContainerpageController.getServerId(containerElement.getClientId())));
+                    editableData.setStructureId(
+                        new CmsUUID(CmsContainerpageController.getServerId(containerElement.getClientId())));
                     editableData.setSitePath(containerElement.getSitePath());
                     getController().getContentEditorHandler().openDialog(editableData, false, null, null);
                     ((CmsPushButton)event.getSource()).clearHoverState();
@@ -446,9 +457,11 @@ public class CmsContainerpageUtil {
      */
     private void alertParsingError(String sitePath) {
 
-        new CmsErrorDialog("Error parsing element "
-            + sitePath
-            + ". Please check if the HTML generated by the element formatter is well formed.", null).center();
+        new CmsErrorDialog(
+            "Error parsing element "
+                + sitePath
+                + ". Please check if the HTML generated by the element formatter is well formed.",
+            null).center();
     }
 
     /**

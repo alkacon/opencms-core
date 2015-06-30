@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,11 +53,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Shows useful information about the current file chosen within the 
- * <code>{@link org.opencms.util.CmsRfsFileViewer}</code> and offers 
+ * Shows useful information about the current file chosen within the
+ * <code>{@link org.opencms.util.CmsRfsFileViewer}</code> and offers
  * a direct download link. <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
 
@@ -84,7 +84,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsRfsFileDownloadDialog(CmsJspActionElement jsp) {
@@ -95,7 +95,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -211,9 +211,9 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -249,7 +249,8 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
         setFilename(getDownloadFile().getName());
         setFilesize("" + getDownloadFile().length());
         setFilepath(getDownloadFile().getAbsolutePath());
-        setFiledate(CmsDateUtil.getDateTime(new Date(getDownloadFile().lastModified()), DateFormat.MEDIUM, getLocale()));
+        setFiledate(
+            CmsDateUtil.getDateTime(new Date(getDownloadFile().lastModified()), DateFormat.MEDIUM, getLocale()));
 
         addWidget(new CmsWidgetDialogParameter(this, "filename", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(this, "filesize", PAGES[0], new CmsDisplayWidget()));
@@ -258,12 +259,12 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the file that will be downloaded upon clicking the download button 
+     * Returns the file that will be downloaded upon clicking the download button
      * generated in this form by <code>{@link #dialogButtonsOkCancel()}</code>.<p>
-     * 
-     * @return the file that will be downloaded upon clicking the download button 
+     *
+     * @return the file that will be downloaded upon clicking the download button
      *         generated in this form by <code>{@link #dialogButtonsOkCancel()}</code>
-     *         
+     *
      * @throws CmsRuntimeException if access to the chosen file to download fails
      */
     protected File getDownloadFile() throws CmsRuntimeException {
@@ -273,7 +274,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
             CmsRfsFileViewer fileView = OpenCms.getWorkplaceManager().getFileViewSettings();
             m_downloadFile = new File(fileView.getFilePath());
             try {
-                // 2nd check: it is impossible to set an invalid path to that class. 
+                // 2nd check: it is impossible to set an invalid path to that class.
                 m_downloadFile = m_downloadFile.getCanonicalFile();
             } catch (IOException ioex) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_FILE_ACCESS_0), ioex);

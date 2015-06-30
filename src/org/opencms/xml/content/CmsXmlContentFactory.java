@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,14 +51,14 @@ import org.dom4j.DocumentHelper;
 import org.xml.sax.EntityResolver;
 
 /**
- * Provides factory methods to unmarshal (read) an XML content object.<p> 
- * 
- * @since 6.0.0 
+ * Provides factory methods to unmarshal (read) an XML content object.<p>
+ *
+ * @since 6.0.0
  */
 public final class CmsXmlContentFactory {
 
     /**
-     * No instances of this class should be created.<p> 
+     * No instances of this class should be created.<p>
      */
     private CmsXmlContentFactory() {
 
@@ -67,14 +67,14 @@ public final class CmsXmlContentFactory {
 
     /**
      * Creates a new XML content based on a resource type.<p>
-     * 
-     * @param cms the current OpenCms context 
-     * @param locale the locale to generate the default content for 
-     * @param resourceType the resource type for which the document should be created 
-     * 
-     * @return the created XML content 
-     * 
-     * @throws CmsXmlException if something goes wrong 
+     *
+     * @param cms the current OpenCms context
+     * @param locale the locale to generate the default content for
+     * @param resourceType the resource type for which the document should be created
+     *
+     * @return the created XML content
+     *
+     * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlContent createDocument(CmsObject cms, Locale locale, CmsResourceTypeXmlContent resourceType)
     throws CmsXmlException {
@@ -91,37 +91,37 @@ public final class CmsXmlContentFactory {
 
     /**
      * Create a new instance of an XML content based on the given default content,
-     * hat will have all language nodes of the default content and ensures the presence of the given locale.<p> 
-     * 
+     * hat will have all language nodes of the default content and ensures the presence of the given locale.<p>
+     *
      * The given encoding is used when marshalling the XML again later.<p>
-     * 
+     *
      * @param cms the current users OpenCms content
      * @param locale the locale to generate the default content for
      * @param modelUri the absolute path to the XML content file acting as model
-     * 
+     *
      * @throws CmsException in case the model file is not found or not valid
-     * 
+     *
      * @return the created XML content
      */
     public static CmsXmlContent createDocument(CmsObject cms, Locale locale, String modelUri) throws CmsException {
 
         // create the XML content
         CmsXmlContent content = new CmsXmlContent(cms, locale, modelUri);
-        // call prepare for use content handler and return the result 
+        // call prepare for use content handler and return the result
         return content.getContentDefinition().getContentHandler().prepareForUse(cms, content);
     }
 
     /**
      * Create a new instance of an XML content based on the given content definiton,
-     * that will have one language node for the given locale all initialized with default values.<p> 
-     * 
+     * that will have one language node for the given locale all initialized with default values.<p>
+     *
      * The given encoding is used when marshalling the XML again later.<p>
-     * 
+     *
      * @param cms the current users OpenCms content
      * @param locale the locale to generate the default content for
      * @param encoding the encoding to use when marshalling the XML content later
      * @param contentDefinition the content definiton to create the content for
-     * 
+     *
      * @return the created XML content
      */
     public static CmsXmlContent createDocument(
@@ -132,29 +132,29 @@ public final class CmsXmlContentFactory {
 
         // create the XML content
         CmsXmlContent content = new CmsXmlContent(cms, locale, encoding, contentDefinition);
-        // call prepare for use content handler and return the result 
+        // call prepare for use content handler and return the result
         return content.getHandler().prepareForUse(cms, content);
     }
 
     /**
      * Factory method to unmarshal (generate) a XML content instance from a byte array
      * that contains XML data.<p>
-     * 
-     * When unmarshalling, the encoding is read directly from the XML header of the byte array. 
+     *
+     * When unmarshalling, the encoding is read directly from the XML header of the byte array.
      * The given encoding is used only when marshalling the XML again later.<p>
-     * 
+     *
      * <b>Warning:</b><br/>
-     * This method does not support requested historic versions, it always loads the 
-     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code> 
+     * This method does not support requested historic versions, it always loads the
+     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code>
      * for history support.<p>
-     * 
+     *
      * @param cms the cms context
      * @param xmlData the XML data in a byte array
      * @param encoding the encoding to use when marshalling the XML content later
      * @param resolver the XML entitiy resolver to use
-     * 
+     *
      * @return a XML content instance unmarshalled from the byte array
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlContent unmarshal(CmsObject cms, byte[] xmlData, String encoding, EntityResolver resolver)
@@ -166,17 +166,17 @@ public final class CmsXmlContentFactory {
     /**
      * Factory method to unmarshal (read) a XML content instance from a OpenCms VFS file
      * that contains XML data.<p>
-     * 
+     *
      * <b>Warning:</b><br/>
-     * This method does not support requested historic versions, it always loads the 
-     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code> 
+     * This method does not support requested historic versions, it always loads the
+     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code>
      * for history support.<p>
-     * 
+     *
      * @param cms the current cms object
      * @param file the file with the XML data to unmarshal
-     * 
+     *
      * @return a XML page instance unmarshalled from the provided file
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlContent unmarshal(CmsObject cms, CmsFile file) throws CmsXmlException {
@@ -188,22 +188,22 @@ public final class CmsXmlContentFactory {
      * Factory method to unmarshal (read) a XML content instance from a OpenCms VFS file
      * that contains XML data, using wither the encoding set
      * in the XML file header, or the encoding set in the VFS file property.<p>
-     * 
-     * If you are not sure about the implications of the encoding issues, 
+     *
+     * If you are not sure about the implications of the encoding issues,
      * use {@link #unmarshal(CmsObject, CmsFile)} instead.<p>
-     * 
+     *
      * <b>Warning:</b><br/>
-     * This method does not support requested historic versions, it always loads the 
-     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code> 
+     * This method does not support requested historic versions, it always loads the
+     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code>
      * for history support.<p>
-     * 
+     *
      * @param cms the current cms object
      * @param file the file with the XML data to unmarshal
-     * @param keepEncoding if true, the encoding spefified in the XML header is used, 
+     * @param keepEncoding if true, the encoding spefified in the XML header is used,
      *    otherwise the encoding from the VFS file property is used
-     *    
+     *
      * @return a XML content instance unmarshalled from the provided file
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlContent unmarshal(CmsObject cms, CmsFile file, boolean keepEncoding) throws CmsXmlException {
@@ -213,9 +213,12 @@ public final class CmsXmlContentFactory {
 
         String encoding = null;
         try {
-            encoding = cms.readPropertyObject(filename, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue();
+            encoding = cms.readPropertyObject(
+                filename,
+                CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                true).getValue();
         } catch (CmsException e) {
-            // encoding will be null 
+            // encoding will be null
         }
         if (encoding == null) {
             encoding = OpenCms.getSystemInfo().getDefaultEncoding();
@@ -234,13 +237,14 @@ public final class CmsXmlContentFactory {
                 content = unmarshal(cms, contentBytes, encoding, new CmsXmlEntityResolver(cms));
             } else {
                 // use the encoding from the file property
-                // this usually only triggered by a save operation                
+                // this usually only triggered by a save operation
                 try {
                     String contentStr = new String(contentBytes, encoding);
                     content = unmarshal(cms, contentStr, encoding, new CmsXmlEntityResolver(cms));
                 } catch (UnsupportedEncodingException e) {
                     // this will not happen since the encodig has already been validated
-                    throw new CmsXmlException(Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ENC_1, filename));
+                    throw new CmsXmlException(
+                        Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ENC_1, filename));
                 }
             }
         } else {
@@ -250,20 +254,20 @@ public final class CmsXmlContentFactory {
 
         // set the file
         content.setFile(file);
-        // call prepare for use content handler and return the result 
+        // call prepare for use content handler and return the result
         return content.getHandler().prepareForUse(cms, content);
     }
 
     /**
      * Factory method to unmarshal (read) a XML content instance from
      * a resource, using the request attributes as cache.<p>
-     * 
+     *
      * @param cms the current OpenCms context object
      * @param resource the resource to unmarshal
      * @param req the current request
-     * 
+     *
      * @return the unmarshaled xml content, or null if the given resource was not of type {@link org.opencms.file.types.CmsResourceTypeXmlContent}
-     * 
+     *
      * @throws CmsException in something goes wrong
      * @throws CmsLoaderException if no loader for the given <code>resource</code> type ({@link CmsResource#getTypeId()}) is available
      * @throws CmsXmlException if the given <code>resource</code> is not of type xml content
@@ -275,13 +279,12 @@ public final class CmsXmlContentFactory {
 
         if (!CmsResourceTypeXmlContent.isXmlContent(resource)) {
             // sanity check: resource must be of type XML content
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_INVALID_TYPE_1,
-                cms.getSitePath(resource)));
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_TYPE_1, cms.getSitePath(resource)));
         }
 
         // try to get the requested content from the current request attribute
-        // this is also necessary for historic versions that have been loaded 
+        // this is also necessary for historic versions that have been loaded
         CmsXmlContent content = (CmsXmlContent)req.getAttribute(rootPath);
 
         if (content == null) {
@@ -297,46 +300,46 @@ public final class CmsXmlContentFactory {
 
     /**
      * Factory method to unmarshal (generate) a XML content instance from a XML document.<p>
-     * 
+     *
      * The given encoding is used when marshalling the XML again later.<p>
-     * 
+     *
      * <b>Warning:</b><br/>
-     * This method does not support requested historic versions, it always loads the 
-     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code> 
+     * This method does not support requested historic versions, it always loads the
+     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code>
      * for history support.<p>
-     * 
+     *
      * @param cms the cms context, if <code>null</code> no link validation is performed
      * @param document the XML document to generate the XML content from
      * @param encoding the encoding to use when marshalling the XML content later
      * @param resolver the XML entitiy resolver to use
-     * 
+     *
      * @return a XML content instance unmarshalled from the String
      */
     public static CmsXmlContent unmarshal(CmsObject cms, Document document, String encoding, EntityResolver resolver) {
 
         CmsXmlContent content = new CmsXmlContent(cms, document, encoding, resolver);
-        // call prepare for use content handler and return the result 
+        // call prepare for use content handler and return the result
         return content.getHandler().prepareForUse(cms, content);
     }
 
     /**
      * Factory method to unmarshal (generate) a XML content instance from a String
      * that contains XML data.<p>
-     * 
+     *
      * The given encoding is used when marshalling the XML again later.<p>
-     * 
+     *
      * <b>Warning:</b><br/>
-     * This method does not support requested historic versions, it always loads the 
-     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code> 
+     * This method does not support requested historic versions, it always loads the
+     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code>
      * for history support.<p>
-     * 
+     *
      * @param cms the cms context, if <code>null</code> no link validation is performed
      * @param xmlData the XML data in a String
      * @param encoding the encoding to use when marshalling the XML content later
      * @param resolver the XML entitiy resolver to use
-     * 
+     *
      * @return a XML content instance unmarshalled from the String
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlContent unmarshal(CmsObject cms, String xmlData, String encoding, EntityResolver resolver)
@@ -349,22 +352,22 @@ public final class CmsXmlContentFactory {
     /**
      * Factory method to unmarshal (generate) a XML content instance from a String
      * that contains XML data.<p>
-     * 
+     *
      * The given encoding is used when marshalling the XML again later.<p>
-     * 
+     *
      * Since no {@link CmsObject} is available, no link validation is performed!<p>
-     * 
+     *
      * <b>Warning:</b><br/>
-     * This method does not support requested historic versions, it always loads the 
-     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code> 
+     * This method does not support requested historic versions, it always loads the
+     * most recent version. Use <code>{@link #unmarshal(CmsObject, CmsResource, ServletRequest)}</code>
      * for history support.<p>
-     * 
+     *
      * @param xmlData the XML data in a String
      * @param encoding the encoding to use when marshalling the XML content later
      * @param resolver the XML entity resolver to use
-     * 
+     *
      * @return a XML content instance unmarshalled from the String
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlContent unmarshal(String xmlData, String encoding, EntityResolver resolver)

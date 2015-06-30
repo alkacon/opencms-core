@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,8 +60,8 @@ import com.google.common.collect.Lists;
  */
 public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResourceTypeConfig> {
 
-    /** 
-     * Represents the visibility status of a resource type  in  the 'Add' menu of the container page editor.<p> 
+    /**
+     * Represents the visibility status of a resource type  in  the 'Add' menu of the container page editor.<p>
      */
     public enum AddMenuVisibility {
         /** Type not visible. */
@@ -110,13 +110,13 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** The name of the resource type. */
     private String m_typeName;
 
-    /** 
+    /**
      * Creates a new resource type configuration.<p>
-     * 
-     * @param typeName the resource type name 
-     * @param disabled true if this is a disabled configuration 
-     * @param folder the folder reference 
-     * @param pattern the name pattern 
+     *
+     * @param typeName the resource type name
+     * @param disabled true if this is a disabled configuration
+     * @param folder the folder reference
+     * @param pattern the name pattern
      */
     public CmsResourceTypeConfig(String typeName, boolean disabled, CmsContentFolderDescriptor folder, String pattern) {
 
@@ -133,20 +133,20 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             I_CmsConfigurationObject.DEFAULT_ORDER);
     }
 
-    /** 
+    /**
      * Creates a new resource type configuration.<p>
-     * 
-     * @param typeName the resource type name 
-     * @param disabled true if this is a disabled configuration 
-     * @param folder the folder reference 
-     * @param pattern the name pattern 
+     *
+     * @param typeName the resource type name
+     * @param disabled true if this is a disabled configuration
+     * @param folder the folder reference
+     * @param pattern the name pattern
      * @param detailPagesDisabled true if detail page creation should be disabled for this type
-     * @param addDisabled true if adding elements of this type via ADE should be disabled 
+     * @param addDisabled true if adding elements of this type via ADE should be disabled
      * @param elementView the element view id
-     * @param showInDefaultView if true, the element type should be shown in the default element view even if it doesn't belong to it 
+     * @param showInDefaultView if true, the element type should be shown in the default element view even if it doesn't belong to it
      * @param copyInModels if elements of this type when used in models should be copied instead of reused
-     * 
-     * @param order the number used for sorting resource types from modules  
+     *
+     * @param order the number used for sorting resource types from modules
      */
     public CmsResourceTypeConfig(
         String typeName,
@@ -172,15 +172,15 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         m_order = order;
     }
 
-    /** 
+    /**
      * Checks if this resource type is creatable.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param pageFolderRootPath the root path of the folder containing the current container page 
-     * 
-     * @return <code>true</code> if the resource type is creatable 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param pageFolderRootPath the root path of the folder containing the current container page
+     *
+     * @return <code>true</code> if the resource type is creatable
+     *
+     * @throws CmsException if something goes wrong
      */
     public boolean checkCreatable(CmsObject cms, String pageFolderRootPath) throws CmsException {
 
@@ -209,7 +209,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
                 return false;
             }
             boolean editable = settings.isEditable(cms, permissionCheckFolder);
-            boolean controlPermission = settings.getAccess().getPermissions(cms, permissionCheckFolder).requiresControlPermission();
+            boolean controlPermission = settings.getAccess().getPermissions(
+                cms,
+                permissionCheckFolder).requiresControlPermission();
             boolean hasWritePermission = cms.hasPermissions(
                 permissionCheckFolder,
                 CmsPermissionSet.ACCESS_WRITE,
@@ -238,7 +240,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Checks whether the cms context is in the offline project and throws an exception otherwise.<p>
-     * 
+     *
      * @param cms the cms context
      */
     public void checkOffline(CmsObject cms) {
@@ -249,13 +251,13 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
-     * Checks if a resource type is viewable for the current user. 
+     * Checks if a resource type is viewable for the current user.
      * If not, this resource type should not be available at all within the ADE 'add-wizard'.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param referenceUri the resource URI to check permissions for
-     * 
-     * @return <code>true</code> if the resource type is viewable 
+     *
+     * @return <code>true</code> if the resource type is viewable
      */
     public boolean checkViewable(CmsObject cms, String referenceUri) {
 
@@ -275,11 +277,11 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Creates a folder and its parent folders if they don't exist.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param rootPath the folder root path 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context to use
+     * @param rootPath the folder root path
+     *
+     * @throws CmsException if something goes wrong
      */
     public void createFolder(CmsObject cms, String rootPath) throws CmsException {
 
@@ -306,21 +308,21 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
                     }
                 }
             } catch (CmsVfsResourceAlreadyExistsException e) {
-                // nop 
+                // nop
             }
         }
     }
 
     /**
      * Creates a new element.<p>
-     * 
+     *
      * @param userCms the CMS context to use
      * @param modelResource the model resource to use
-     * @param pageFolderRootPath the root path of the folder containing the current container page 
-     * 
+     * @param pageFolderRootPath the root path of the folder containing the current container page
+     *
      * @return the created resource
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsResource createNewElement(CmsObject userCms, CmsResource modelResource, String pageFolderRootPath)
     throws CmsException {
@@ -350,7 +352,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         try {
             rootCms.unlockResource(creationPath);
         } catch (CmsLockException e) {
-            // probably the parent folder is locked 
+            // probably the parent folder is locked
             LOG.info(e.getLocalizedMessage(), e);
         }
         return createdResource;
@@ -358,25 +360,25 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Creates a new element.<p>
-     * 
+     *
      * @param userCms the CMS context to use
-     * @param pageFolderRootPath root path of the folder containing the current container page 
-     * 
+     * @param pageFolderRootPath root path of the folder containing the current container page
+     *
      * @return the created resource
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsResource createNewElement(CmsObject userCms, String pageFolderRootPath) throws CmsException {
 
         return createNewElement(userCms, null, null);
     }
 
-    /** 
+    /**
      * Gets the visibility status in the 'add' menu for this type and the given element view.<p>
-     * 
-     * @param elementViewId the id of the view for which to compute the visibility status 
-     * 
-     * @return the visibility status 
+     *
+     * @param elementViewId the id of the view for which to compute the visibility status
+     *
+     * @return the visibility status
      */
     public AddMenuVisibility getAddMenuVisibility(CmsUUID elementViewId) {
 
@@ -398,7 +400,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Returns the element view id.<p>
-     * 
+     *
      * @return the element view id
      */
     public CmsUUID getElementView() {
@@ -408,11 +410,11 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Computes the folder path for this resource type.<p>
-     * 
-     * @param cms the cms context to use 
-     * @param pageFolderRootPath root path of the folder containing the current container page 
-     * 
-     * @return the folder root path for this resource type 
+     *
+     * @param cms the cms context to use
+     * @param pageFolderRootPath root path of the folder containing the current container page
+     *
+     * @return the folder root path for this resource type
      */
     public String getFolderPath(CmsObject cms, String pageFolderRootPath) {
 
@@ -436,11 +438,11 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
-     * Gets the name pattern.<p> 
-     * 
+     * Gets the name pattern.<p>
+     *
      * @param useDefaultIfEmpty if true, uses a default value if the name pattern isn't set directly
-     *  
-     * @return the name pattern 
+     *
+     * @return the name pattern
      */
     public String getNamePattern(boolean useDefaultIfEmpty) {
 
@@ -455,8 +457,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Returns the number used for sorting module resource types.<p>
-     * 
-     * @return the number used for sorting module resource types 
+     *
+     * @return the number used for sorting module resource types
      */
     public int getOrder() {
 
@@ -465,10 +467,10 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Gets the actual resource type for which this is a configuration.<p>
-     * 
+     *
      * @return the actual resource type
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public I_CmsResourceType getType() throws CmsException {
 
@@ -477,8 +479,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Returns the type name.<p>
-     * 
-     * @return the type name 
+     *
+     * @return the type name
      */
     public String getTypeName() {
 
@@ -487,8 +489,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Initializes this instance.<p>
-     * 
-     * @param cms the CMS context to use  
+     *
+     * @param cms the CMS context to use
      */
     public void initialize(CmsObject cms) {
 
@@ -498,8 +500,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Returns true if adding elements of this type via ADE should be disabled.<p>
-     * 
-     * @return true if elements of this type shouldn't be added to the page 
+     *
+     * @return true if elements of this type shouldn't be added to the page
      */
     public boolean isAddDisabled() {
 
@@ -508,7 +510,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Returns if elements of this type when used in models should be copied instead of reused.<p>
-     * 
+     *
      * @return if elements of this type when used in models should be copied instead of reused
      */
     public boolean isCopyInModels() {
@@ -518,8 +520,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * True if the detail page creation should be disabled for this resource type.<p>
-     * 
-     * @return true if detail page creation should be disabled for this type 
+     *
+     * @return true if detail page creation should be disabled for this type
      */
     public boolean isDetailPagesDisabled() {
 
@@ -534,12 +536,12 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         return m_disabled;
     }
 
-    /** 
+    /**
      * Checks if the type should be hidden from the 'add' menu.<p>
-     * 
-     * @param elementView the current element view 
-     * 
-     * @return true if the type should be hidden 
+     *
+     * @param elementView the current element view
+     *
+     * @return true if the type should be hidden
      */
     public boolean isHiddenFromAddMenu(CmsUUID elementView) {
 
@@ -553,11 +555,11 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         return !matchingView;
     }
 
-    /** 
-     * Returns true if this resource type is configured as 'page relative', i.e. elements of this type are to be stored 
+    /**
+     * Returns true if this resource type is configured as 'page relative', i.e. elements of this type are to be stored
      * with the container page on which they were created.<p>
-     * 
-     * @return true if this is a page relative type configuration 
+     *
+     * @return true if this is a page relative type configuration
      */
     public boolean isPageRelative() {
 
@@ -566,10 +568,10 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Returns true if the type should be shown in the default view if it is not assigned to it.<p>
-     * 
+     *
      * This defaults to 'false' if not set.
-     * 
-     * @return true if the type should be shown in the default view event if  it doens't belong to that element view 
+     *
+     * @return true if the type should be shown in the default view event if  it doens't belong to that element view
      */
     public boolean isShowInDefaultView() {
 
@@ -610,8 +612,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Creates a shallow copy of this resource type configuration object.<p>
-     * 
-     * @return a copy of the resource type configuration object 
+     *
+     * @return a copy of the resource type configuration object
      */
     protected CmsResourceTypeConfig copy() {
 
@@ -620,10 +622,10 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Creates a shallow copy of this resource type configuration object.<p>
-     * 
-     * @param disabled true if the copy should be disabled regardless of whether the original is disabled 
-     * 
-     * @return a copy of the resource type configuration object 
+     *
+     * @param disabled true if the copy should be disabled regardless of whether the original is disabled
+     *
+     * @return a copy of the resource type configuration object
      */
     protected CmsResourceTypeConfig copy(boolean disabled) {
 
@@ -642,10 +644,10 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Returns the folder bean from the configuration.<p>
-     * 
+     *
      * Normally, you should use getFolderPath() instead.<p>
-     * 
-     * @return the folder bean from the configuration 
+     *
+     * @return the folder bean from the configuration
      */
     protected CmsContentFolderDescriptor getFolderOrName() {
 
@@ -654,8 +656,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Gets the configured name pattern.<p>
-     * 
-     * @return the configured name pattern 
+     *
+     * @return the configured name pattern
      */
     protected String getNamePattern() {
 
@@ -664,10 +666,10 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Creates a new CMS object based on existing one and changes its site root to the site root.<p>
-     * 
-     * @param cms the CMS context 
-     * @return the root site CMS context 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context
+     * @return the root site CMS context
+     * @throws CmsException if something goes wrong
      */
     protected CmsObject rootCms(CmsObject cms) throws CmsException {
 
@@ -678,23 +680,23 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Tries to remove a lock on an ancestor of a given path owned by the current user.<p>
-     * 
-     * @param cms the CMS context 
-     * @param folderPath the path for which the lock should be removed 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context
+     * @param folderPath the path for which the lock should be removed
+     *
+     * @throws CmsException if something goes wrong
      */
     protected void tryToUnlock(CmsObject cms, String folderPath) throws CmsException {
 
-        // Get path of first ancestor that actually exists 
+        // Get path of first ancestor that actually exists
         while (!cms.existsResource(folderPath)) {
             folderPath = CmsResource.getParentFolder(folderPath);
         }
         CmsResource resource = cms.readResource(folderPath);
         CmsLock lock = cms.getLock(resource);
-        // we are only interested in locks we can safely unlock, i.e. locks by the current user  
+        // we are only interested in locks we can safely unlock, i.e. locks by the current user
         if (lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
-            // walk up the tree until we get to the location from which the lock is inherited 
+            // walk up the tree until we get to the location from which the lock is inherited
             while (lock.isInherited()) {
                 folderPath = CmsResource.getParentFolder(folderPath);
                 resource = cms.readResource(folderPath);
@@ -706,8 +708,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /**
      * Updates the base path for the folder information.<p>
-     * 
-     * @param basePath the new base path 
+     *
+     * @param basePath the new base path
      */
     protected void updateBasePath(String basePath) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import com.google.gwt.resources.client.CssResource;
 
 /**
  * Resource bundle to access CSS and image resources.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLayoutBundle {
@@ -41,19 +41,19 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
     interface I_CmsClipboardCss extends CssResource {
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String clipboardList();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String listClearButton();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String menuTabContainer();
@@ -63,19 +63,19 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
     interface I_CmsSitemapCss extends CssResource {
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String page();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String pageCenter();
 
         /** Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String root();
@@ -86,14 +86,14 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the base image bundle
      */
     org.opencms.gwt.client.ui.css.I_CmsImageBundle baseImages();
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the root CSS
      **/
     @Source("clipboard.css")
@@ -101,14 +101,14 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image bundle for the sitemap
      */
     I_CmsImageBundle images();
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the root CSS
      */
     @Source("sitemap.css")
@@ -116,7 +116,7 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the root CSS
      **/
     @Source("sitemapItem.css")

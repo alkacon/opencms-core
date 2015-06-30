@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -83,8 +83,8 @@ import org.apache.commons.logging.Log;
 /**
  * Master class for the JSP based workplace which provides default methods and
  * session handling for all JSP workplace classes.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class CmsWorkplace {
 
@@ -243,7 +243,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp the initialized JSP context
      */
     public CmsWorkplace(CmsJspActionElement jsp) {
@@ -253,7 +253,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Constructor in case no page context is available.<p>
-     * 
+     *
      * @param cms the current user context
      * @param session the session
      */
@@ -264,7 +264,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -276,10 +276,10 @@ public abstract class CmsWorkplace {
 
     /**
      * Generates a html select box out of the provided values.<p>
-     * 
+     *
      * @param parameters a string that will be inserted into the initial select tag,
      *      if null no parameters will be inserted
-     * @param options the options 
+     * @param options the options
      * @param values the option values, if null the select will have no value attributes
      * @param selected the index of the pre-selected option, if -1 no option is pre-selected
      * @param useLineFeed if true, adds some formatting "\n" to the output String
@@ -312,7 +312,7 @@ public abstract class CmsWorkplace {
                     if (LOG.isInfoEnabled()) {
                         LOG.info(e.getLocalizedMessage());
                     }
-                    // lists are not properly initialized, just don't use the value                    
+                    // lists are not properly initialized, just don't use the value
                     value = null;
                 }
             }
@@ -351,9 +351,9 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the full Workplace resource path to the selected resource.<p>
-     * 
+     *
      * @param resourceName the name of the resource to get the resource path for
-     * 
+     *
      * @return the full Workplace resource path to the selected resource
      */
     public static String getResourceUri(String resourceName) {
@@ -366,7 +366,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the path to the skin resources.<p>
-     * 
+     *
      * @return the path to the skin resources
      */
     public static String getSkinUri() {
@@ -379,10 +379,10 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the start site from the given workplace settings.<p>
-     * 
+     *
      * @param cms the cms context
      * @param settings the workplace settings
-     * 
+     *
      * @return the start site root
      */
     public static String getStartSiteRoot(CmsObject cms, CmsWorkplaceSettings settings) {
@@ -423,7 +423,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the path to the cascading stylesheets.<p>
-     * 
+     *
      * @param jsp the JSP context
      * @return the path to the cascading stylesheets
      */
@@ -447,7 +447,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the path to the cascading stylesheets.<p>
-     * 
+     *
      * @param jsp the JSP context
      * @param filename the name of the stylesheet
      * @return the path to the cascading stylesheets
@@ -473,14 +473,14 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the temporary file name for the given resource name.<p>
-     * 
+     *
      * To create a temporary file name of a resource name, the prefix char <code>'~'</code> (tilde)
      * is added to the file name after all parent folder names have been removed.<p>
-     * 
+     *
      * @param resourceName the resource name to return the temporary file name for
-     * 
+     *
      * @return the temporary file name for the given resource name
-     * 
+     *
      * @see CmsResource#isTemporaryFileName(String)
      * @see #isTemporaryFile(CmsResource)
      */
@@ -498,10 +498,10 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the workplace settings of the current user.<p>
-     * 
+     *
      * @param cms the cms context
      * @param req the request
-     * 
+     *
      * @return the workplace settings or <code>null</code> if the user is not logged in
      */
     public static CmsWorkplaceSettings getWorkplaceSettings(CmsObject cms, HttpServletRequest req) {
@@ -510,7 +510,8 @@ public abstract class CmsWorkplace {
         CmsWorkplaceSettings workplaceSettings = null;
         if (session != null) {
             // all logged in user will have a session
-            workplaceSettings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+            workplaceSettings = (CmsWorkplaceSettings)session.getAttribute(
+                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
             // ensure workplace settings attribute is set
             if (workplaceSettings == null) {
                 // creating any instance of {@link org.opencms.workplace.CmsWorkplaceSettings} and store it
@@ -524,13 +525,13 @@ public abstract class CmsWorkplace {
     /**
      * Updates the user settings in the given workplace settings for the current user, reading the user settings
      * from the database if required.<p>
-     * 
+     *
      * @param cms the cms object for the current user
      * @param settings the workplace settings to update (if <code>null</code> a new instance is created)
      * @param update flag indicating if settings are only updated (user preferences)
-     * 
+     *
      * @return the current users workplace settings
-     * 
+     *
      * @see #initWorkplaceSettings(CmsObject, CmsWorkplaceSettings, boolean)
      */
     public static CmsWorkplaceSettings initUserSettings(CmsObject cms, CmsWorkplaceSettings settings, boolean update) {
@@ -566,24 +567,24 @@ public abstract class CmsWorkplace {
     /**
      * Updates the given workplace settings, also re-initializing
      * the state of the Workplace to the users preferences (for example setting the startup site and project).
-     * 
+     *
      * The user settings will also be updated by calling <code>{@link #initUserSettings(CmsObject, CmsWorkplaceSettings, boolean)}</code>
      * before updating the workplace project, selected site etc.<p>
-     * 
+     *
      * @param cms the cms object for the current user
      * @param settings the workplace settings to update (if <code>null</code> a new instance is created)
      * @param update flag indicating if settings are only updated (user preferences)
-     * 
+     *
      * @return the current users initialized workplace settings
-     * 
-     * @see #initUserSettings(CmsObject, CmsWorkplaceSettings, boolean) 
+     *
+     * @see #initUserSettings(CmsObject, CmsWorkplaceSettings, boolean)
      */
     public static synchronized CmsWorkplaceSettings initWorkplaceSettings(
         CmsObject cms,
         CmsWorkplaceSettings settings,
         boolean update) {
 
-        // init the workplace user settings 
+        // init the workplace user settings
         settings = initUserSettings(cms, settings, update);
 
         // save current project
@@ -592,7 +593,7 @@ public abstract class CmsWorkplace {
         // keep the current site
         settings.setSite(currentSite);
 
-        // switch to users preferred site      
+        // switch to users preferred site
         String startSiteRoot = getStartSiteRoot(cms, settings);
 
         try {
@@ -602,10 +603,10 @@ public abstract class CmsWorkplace {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(projectName)) {
                 cloneCms.getRequestContext().setCurrentProject(cloneCms.readProject(projectName));
             }
-            // check start folder: 
+            // check start folder:
             String startFolder = settings.getUserSettings().getStartFolder();
             if (!cloneCms.existsResource(startFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
-                // self - healing: 
+                // self - healing:
                 startFolder = "/";
                 settings.getUserSettings().setStartFolder(startFolder);
             }
@@ -625,31 +626,33 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns <code>true</code> if the given resource is a temporary file.<p>
-     * 
+     *
      * A resource is considered a temporary file it is a file where the
      * {@link CmsResource#FLAG_TEMPFILE} flag has been set, or if the file name (without parent folders)
      * starts with the prefix char <code>'~'</code> (tilde).<p>
-     * 
+     *
      * @param resource the resource name to check
-     * 
+     *
      * @return <code>true</code> if the given resource name is a temporary file
-     * 
+     *
      * @see #getTemporaryFileName(String)
      * @see CmsResource#isTemporaryFileName(String)
      */
     public static boolean isTemporaryFile(CmsResource resource) {
 
         return (resource != null)
-            && ((resource.isFile() && (((resource.getFlags() & CmsResource.FLAG_TEMPFILE) > 0) || (CmsResource.isTemporaryFileName(resource.getName())))));
+            && ((resource.isFile()
+                && (((resource.getFlags() & CmsResource.FLAG_TEMPFILE) > 0)
+                    || (CmsResource.isTemporaryFileName(resource.getName())))));
     }
 
     /**
      * Substitutes the site title.<p>
-     * 
-     * @param title the raw site title 
-     * @param locale the localel 
-     * 
-     * @return the locale specific site title 
+     *
+     * @param title the raw site title
+     * @param locale the localel
+     *
+     * @return the locale specific site title
      */
     public static String substituteSiteTitleStatic(String title, Locale locale) {
 
@@ -662,7 +665,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Stores the settings in the given session.<p>
-     * 
+     *
      * @param session the session to store the settings in
      * @param settings the settings
      */
@@ -673,9 +676,9 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns all parameters of the current workplace class 
+     * Returns all parameters of the current workplace class
      * as hidden field tags that can be inserted in a form.<p>
-     * 
+     *
      * @return all parameters of the current workplace class
      * as hidden field tags that can be inserted in a html form
      */
@@ -698,9 +701,9 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns all present request parameters as String.<p>
-     * 
+     *
      * The String is formatted as a parameter String (<code>param1=val1&amp;param2=val2</code>) with UTF-8 encoded values.<p>
-     * 
+     *
      * @return all present request parameters as String
      */
     public String allParamsAsRequest() {
@@ -711,7 +714,8 @@ public abstract class CmsWorkplace {
         while (paramNames.hasNext()) {
             String paramName = paramNames.next();
             String paramValue = request.getParameter(paramName);
-            retValue.append(paramName + "=" + CmsEncoder.encode(paramValue, getCms().getRequestContext().getEncoding()));
+            retValue.append(
+                paramName + "=" + CmsEncoder.encode(paramValue, getCms().getRequestContext().getEncoding()));
             if (paramNames.hasNext()) {
                 retValue.append("&");
             }
@@ -721,7 +725,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Builds the end html of the body.<p>
-     * 
+     *
      * @return the end html of the body
      */
     public String bodyEnd() {
@@ -731,7 +735,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Builds the start html of the body.<p>
-     * 
+     *
      * @param className optional class attribute to add to the body tag
      * @return the start html of the body
      */
@@ -742,7 +746,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Builds the start html of the body.<p>
-     * 
+     *
      * @param className optional class attribute to add to the body tag
      * @param parameters optional parameters to add to the body tag
      * @return the start html of the body
@@ -754,10 +758,10 @@ public abstract class CmsWorkplace {
 
     /**
      * Generates a html select box out of the provided values.<p>
-     * 
+     *
      * @param parameters a string that will be inserted into the initial select tag,
      *      if null no parameters will be inserted
-     * @param options the options 
+     * @param options the options
      * @param values the option values, if null the select will have no value attributes
      * @param selected the index of the pre-selected option, if -1 no option is pre-selected
      * @return a formatted html String representing a html select box
@@ -769,13 +773,13 @@ public abstract class CmsWorkplace {
 
     /**
      * Generates a button for the OpenCms workplace.<p>
-     * 
+     *
      * @param href the href link for the button, if none is given the button will be disabled
      * @param target the href link target for the button, if none is given the target will be same window
      * @param image the image name for the button, skin path will be automattically added as prefix
-     * @param label the label for the text of the button 
+     * @param label the label for the text of the button
      * @param type 0: image only (default), 1: image and text, 2: text only
-     * 
+     *
      * @return a button for the OpenCms workplace
      */
     public String button(String href, String target, String image, String label, int type) {
@@ -785,14 +789,14 @@ public abstract class CmsWorkplace {
 
     /**
      * Generates a button for the OpenCms workplace.<p>
-     * 
+     *
      * @param href the href link for the button, if none is given the button will be disabled
      * @param target the href link target for the button, if none is given the target will be same window
      * @param image the image name for the button, skin path will be automattically added as prefix
-     * @param label the label for the text of the button 
+     * @param label the label for the text of the button
      * @param type 0: image only (default), 1: image and text, 2: text only
-     * @param imagePath the path to the image 
-     * 
+     * @param imagePath the path to the image
+     *
      * @return a button for the OpenCms workplace
      */
     public String button(String href, String target, String image, String label, int type, String imagePath) {
@@ -821,7 +825,8 @@ public abstract class CmsWorkplace {
                 }
                 result.append("<span unselectable=\"on\" ");
                 if (href != null) {
-                    result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                    result.append(
+                        "class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
                 } else {
                     result.append("class=\"disabled\"");
                 }
@@ -856,7 +861,8 @@ public abstract class CmsWorkplace {
                 }
                 result.append("<span unselectable=\"on\" ");
                 if (href != null) {
-                    result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                    result.append(
+                        "class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
                 } else {
                     result.append("class=\"disabled\"");
                 }
@@ -885,7 +891,8 @@ public abstract class CmsWorkplace {
                 }
                 result.append("<span unselectable=\"on\" ");
                 if (href != null) {
-                    result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                    result.append(
+                        "class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
                 } else {
                     result.append("class=\"disabled\"");
                 }
@@ -911,10 +918,10 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the html for a button bar.<p>
-     * 
+     *
      * @param segment the HTML segment (START / END)
-     * 
-     * @return a button bar html start / end segment 
+     *
+     * @return a button bar html start / end segment
      */
     public String buttonBar(int segment) {
 
@@ -923,11 +930,11 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the html for a button bar.<p>
-     * 
+     *
      * @param segment the HTML segment (START / END)
      * @param attributes optional attributes for the table tag
-     * 
-     * @return a button bar html start / end segment 
+     *
+     * @return a button bar html start / end segment
      */
     public String buttonBar(int segment, String attributes) {
 
@@ -944,7 +951,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Generates a horizontal button bar separator line with maximum width.<p>
-     * 
+     *
      * @return a horizontal button bar separator line
      */
     public String buttonBarHorizontalLine() {
@@ -962,9 +969,9 @@ public abstract class CmsWorkplace {
 
     /**
      * Generates a button bar label.<p>
-     * 
+     *
      * @param label the label to show
-     * 
+     *
      * @return a button bar label
      */
     public String buttonBarLabel(String label) {
@@ -974,10 +981,10 @@ public abstract class CmsWorkplace {
 
     /**
      * Generates a button bar label.<p>
-     * 
+     *
      * @param label the label to show
      * @param className the css class name for the formatting
-     * 
+     *
      * @return a button bar label
      */
     public String buttonBarLabel(String label, String className) {
@@ -992,12 +999,12 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Generates a variable button bar separator line.<p>  
-     * 
+     * Generates a variable button bar separator line.<p>
+     *
      * @param leftPixel the amount of pixel left to the line
      * @param rightPixel the amount of pixel right to the line
      * @param className the css class name for the formatting
-     * 
+     *
      * @return  a variable button bar separator line
      */
     public String buttonBarLine(int leftPixel, int rightPixel, String className) {
@@ -1016,27 +1023,28 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Generates a variable button bar separator line spacer.<p>  
-     * 
+     * Generates a variable button bar separator line spacer.<p>
+     *
      * @param pixel the amount of pixel space
-     * 
+     *
      * @return a variable button bar separator line spacer
      */
     public String buttonBarLineSpacer(int pixel) {
 
         StringBuffer result = new StringBuffer(128);
-        result.append("<td><span class=\"norm\"><span unselectable=\"on\" class=\"txtbutton\" style=\"padding-right: 0px; padding-left: ");
+        result.append(
+            "<td><span class=\"norm\"><span unselectable=\"on\" class=\"txtbutton\" style=\"padding-right: 0px; padding-left: ");
         result.append(pixel);
         result.append("px;\"></span></span></td>\n");
         return result.toString();
     }
 
     /**
-     * Generates a button bar separator.<p>  
-     * 
+     * Generates a button bar separator.<p>
+     *
      * @param leftPixel the amount of pixel left to the separator
      * @param rightPixel the amount of pixel right to the separator
-     * 
+     *
      * @return a button bar separator
      */
     public String buttonBarSeparator(int leftPixel, int rightPixel) {
@@ -1046,7 +1054,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the html for an invisible spacer between button bar contents like buttons, labels, etc.<p>
-     * 
+     *
      * @param width the width of the invisible spacer
      * @return the html for the invisible spacer
      */
@@ -1060,11 +1068,11 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Generates a button bar starter tab.<p>  
-     * 
+     * Generates a button bar starter tab.<p>
+     *
      * @param leftPixel the amount of pixel left to the starter
      * @param rightPixel the amount of pixel right to the starter
-     * 
+     *
      * @return a button bar starter tab
      */
     public String buttonBarStartTab(int leftPixel, int rightPixel) {
@@ -1078,7 +1086,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
-     * 
+     *
      * @param resource the resource name which is checked
      * @throws CmsException if reading or locking the resource fails
      */
@@ -1089,10 +1097,10 @@ public abstract class CmsWorkplace {
 
     /**
      * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
-     * 
+     *
      * @param resource the resource name which is checked
      * @param type indicates the mode {@link CmsLockType#EXCLUSIVE} or {@link CmsLockType#TEMPORARY}
-     * 
+     *
      * @throws CmsException if reading or locking the resource fails
      */
     public void checkLock(String resource, CmsLockType type) throws CmsException {
@@ -1121,9 +1129,9 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * First sets site and project in the workplace settings, then fills all class parameter values from the data 
+     * First sets site and project in the workplace settings, then fills all class parameter values from the data
      * provided in the current request.<p>
-     * 
+     *
      * @param settings the workplace settings
      * @param request the current request
      */
@@ -1135,13 +1143,13 @@ public abstract class CmsWorkplace {
 
     /**
      * Fills all class parameter values from the data provided in the current request.<p>
-     * 
+     *
      * All methods that start with "setParam" are possible candidates to be
      * automatically filled. The remaining part of the method name is converted
      * to lower case. Then a parameter of this name is searched in the request parameters.
-     * If the parameter is found, the "setParam" method is automatically invoked 
+     * If the parameter is found, the "setParam" method is automatically invoked
      * by reflection with the value of the parameter.<p>
-     * 
+     *
      * @param request the current JSP request
      */
     public void fillParamValues(HttpServletRequest request) {
@@ -1149,7 +1157,7 @@ public abstract class CmsWorkplace {
         m_parameterMap = null;
         // ensure a multipart request is parsed only once (for "forward" scenarios with reports)
         if (null == request.getAttribute(REQUEST_ATTRIBUTE_MULTIPART)) {
-            // check if this is a multipart request 
+            // check if this is a multipart request
             m_multiPartFileItems = CmsRequestUtil.readMultipartFileItems(request);
             if (m_multiPartFileItems != null) {
                 // this was indeed a multipart form request
@@ -1204,9 +1212,9 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the message String for the broadcast message alert of the workplace.<p>
-     * 
+     *
      * Caution: returns the pure message String (not escaped) or null, if no message is pending.<p>
-     * 
+     *
      * @return the message String for the broadcast message alert of the workplace
      */
     public String getBroadcastMessageString() {
@@ -1246,7 +1254,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the initialized cms object for the current user.<p>
-     * 
+     *
      * @return the initialized cms object for the current user
      */
     public CmsObject getCms() {
@@ -1256,7 +1264,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the current workplace encoding.<p>
-     * 
+     *
      * @return the current workplace encoding
      */
     public String getEncoding() {
@@ -1266,7 +1274,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the uri (including context path) to the explorer file list.<p>
-     * 
+     *
      * @return the uri (including context path) to the explorer file list
      */
     public String getExplorerFileListFullUri() {
@@ -1282,7 +1290,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the html for the frame name and source and stores this information in the workplace settings.<p>
-     * 
+     *
      * @param frameName the name of the frame
      * @param uri the absolute path of the frame
      * @return the html for the frame name and source
@@ -1301,7 +1309,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the JSP action element.<p>
-     * 
+     *
      * @return the JSP action element
      */
     public CmsJspActionElement getJsp() {
@@ -1311,7 +1319,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the current users workplace locale settings.<p>
-     * 
+     *
      * @return the current users workplace locale setting
      */
     public Locale getLocale() {
@@ -1321,7 +1329,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the current used macro resolver instance.<p>
-     * 
+     *
      * @return the macro resolver
      */
     public CmsMacroResolver getMacroResolver() {
@@ -1339,7 +1347,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the current used message object.<p>
-     * 
+     *
      * @return the current used message object
      */
     public CmsMessages getMessages() {
@@ -1349,9 +1357,9 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns a list of FileItem instances parsed from the request, in the order that they were transmitted.<p>
-     * 
-     * This list is automatically initialized from the createParameterMapFromMultiPart(HttpServletRequest) method.<p> 
-     * 
+     *
+     * This list is automatically initialized from the createParameterMapFromMultiPart(HttpServletRequest) method.<p>
+     *
      * @return list of FileItem instances parsed from the request, in the order that they were transmitted
      */
     public List<FileItem> getMultiPartFileItems() {
@@ -1361,12 +1369,12 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the path to the workplace static resources.<p>
-     * 
+     *
      * Workplaces static resources are images, css files etc.
      * These are exported during the installation of OpenCms,
-     * and are usually only read from this exported location to 
-     * avoid the overhaead of accessing the database later.<p> 
-     * 
+     * and are usually only read from this exported location to
+     * avoid the overhaead of accessing the database later.<p>
+     *
      * @return the path to the workplace static resources
      */
     public String getResourceUri() {
@@ -1379,7 +1387,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the current user http session.<p>
-     * 
+     *
      * @return the current user http session
      */
     public HttpSession getSession() {
@@ -1389,7 +1397,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the current users workplace settings.<p>
-     * 
+     *
      * @return the current users workplace settings
      */
     public CmsWorkplaceSettings getSettings() {
@@ -1399,7 +1407,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the path to the cascading stylesheets.<p>
-     * 
+     *
      * @param filename the name of the stylesheet
      * @return the path to the cascading stylesheets
      */
@@ -1410,7 +1418,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Builds the end html of the page.<p>
-     * 
+     *
      * @return the end html of the page
      */
     public String htmlEnd() {
@@ -1419,9 +1427,9 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Builds the start html of the page, including setting of DOCTYPE and 
+     * Builds the start html of the page, including setting of DOCTYPE and
      * inserting a header with the content-type.<p>
-     * 
+     *
      * @param title the content for the title tag
      * @return the start html of the page
      */
@@ -1431,12 +1439,12 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Sets site and project in the workplace settings with the request values of parameters 
+     * Sets site and project in the workplace settings with the request values of parameters
      * <code>{@link CmsWorkplace#PARAM_WP_SITE}</code> and <code>{@link CmsWorkplace#PARAM_WP_PROJECT}</code>.<p>
-     * 
+     *
      * @param settings the workplace settings
      * @param request the current request
-     * 
+     *
      * @return true, if a reload of the main body frame is required
      */
     public boolean initSettings(CmsWorkplaceSettings settings, HttpServletRequest request) {
@@ -1492,7 +1500,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns true if the online help for the users current workplace language is installed.<p>
-     * 
+     *
      * @return true if the online help for the users current workplace language is installed
      */
     public boolean isHelpEnabled() {
@@ -1504,7 +1512,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns true if the currently processed element is an included sub element.<p>
-     * 
+     *
      * @return true if the currently processed element is an included sub element
      */
     public boolean isSubElement() {
@@ -1515,16 +1523,16 @@ public abstract class CmsWorkplace {
     /**
      * Returns the localized resource string for a given message key,
      * checking the workplace default resources and all module bundles.<p>
-     * 
+     *
      * If the key was not found, the return value is
      * <code>"??? " + keyName + " ???"</code>.<p>
-     * 
+     *
      * If the key starts with <code>"help."</code> and is not found,
      * the value <code>"index.html"</code> is returned.<p>
-     * 
-     * @param keyName the key for the desired string 
-     * @return the resource string for the given key 
-     * 
+     *
+     * @param keyName the key for the desired string
+     * @return the resource string for the given key
+     *
      * @see CmsMessages#key(String)
      */
     public String key(String keyName) {
@@ -1535,19 +1543,19 @@ public abstract class CmsWorkplace {
     /**
      * Returns the localized resource string for a given message key,
      * with the provided replacement parameters.<p>
-     * 
+     *
      * If the key was found in the bundle, it will be formatted using
      * a <code>{@link java.text.MessageFormat}</code> using the provided parameters.<p>
-     * 
+     *
      * If the key was not found in the bundle, the return value is
-     * <code>"??? " + keyName + " ???"</code>. This will also be returned 
+     * <code>"??? " + keyName + " ???"</code>. This will also be returned
      * if the bundle was not properly initialized first.
-     * 
-     * @param keyName the key for the desired string 
+     *
+     * @param keyName the key for the desired string
      * @param params the parameters to use for formatting
      * @return the resource string for the given key
-     * 
-     * @see CmsMessages#key(String) 
+     *
+     * @see CmsMessages#key(String)
      */
     public String key(String keyName, Object[] params) {
 
@@ -1555,16 +1563,16 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns the localized resource string for the given message key, 
+     * Returns the localized resource string for the given message key,
      * checking the workplace default resources and all module bundles.<p>
-     * 
-     * If the key was not found, the provided default value 
+     *
+     * If the key was not found, the provided default value
      * is returned.<p>
-     * 
-     * @param keyName the key for the desired string 
+     *
+     * @param keyName the key for the desired string
      * @param defaultValue the default value in case the key does not exist in the bundle
-     * @return the resource string for the given key it it exists, or the given default if not 
-     * 
+     * @return the resource string for the given key it it exists, or the given default if not
+     *
      * @see CmsMessages#keyDefault(String, String)
      */
     public String keyDefault(String keyName, String defaultValue) {
@@ -1573,14 +1581,14 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns the empty String "" if the provided value is null, otherwise just returns 
+     * Returns the empty String "" if the provided value is null, otherwise just returns
      * the provided value.<p>
-     * 
+     *
      * Use this method in forms if a getParamXXX method is used, but a String (not null)
      * is required.
-     * 
+     *
      * @param value the String to check
-     * @return the empty String "" if the provided value is null, otherwise just returns 
+     * @return the empty String "" if the provided value is null, otherwise just returns
      * the provided value
      */
     public String nullToEmpty(String value) {
@@ -1593,7 +1601,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Builds the html of the body.<p>
-     * 
+     *
      * @param segment the HTML segment (START / END)
      * @param className optional class attribute to add to the body tag
      * @param parameters optional parameters to add to the body tag
@@ -1621,9 +1629,9 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns the default html for a workplace page, including setting of DOCTYPE and 
+     * Returns the default html for a workplace page, including setting of DOCTYPE and
      * inserting a header with the content-type.<p>
-     * 
+     *
      * @param segment the HTML segment (START / END)
      * @param title the title of the page, if null no title tag is inserted
      * @return the default html for a workplace page
@@ -1634,9 +1642,9 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns the default html for a workplace page, including setting of DOCTYPE and 
+     * Returns the default html for a workplace page, including setting of DOCTYPE and
      * inserting a header with the content-type, allowing the selection of an individual style sheet.<p>
-     * 
+     *
      * @param segment the HTML segment (START / END)
      * @param title the title of the page, if null no title tag is inserted
      * @param stylesheet the used style sheet, if null the default stylesheet 'workplace.css' is inserted
@@ -1667,9 +1675,9 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns all initialized parameters of the current workplace class 
+     * Returns all initialized parameters of the current workplace class
      * as hidden field tags that can be inserted in a form.<p>
-     * 
+     *
      * @return all initialized parameters of the current workplace class
      * as hidden field tags that can be inserted in a html form
      */
@@ -1679,11 +1687,11 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns all initialized parameters of the current workplace class 
+     * Returns all initialized parameters of the current workplace class
      * that are not in the given exclusion list as hidden field tags that can be inserted in a form.<p>
-     * 
-     * @param excludes the parameters to exclude 
-     * 
+     *
+     * @param excludes the parameters to exclude
+     *
      * @return all initialized parameters of the current workplace class
      * that are not in the given exclusion list as hidden field tags that can be inserted in a form
      */
@@ -1712,7 +1720,7 @@ public abstract class CmsWorkplace {
     /**
      * Returns all initialized parameters of the current workplace class in the
      * form of a parameter map, i.e. the values are arrays.<p>
-     * 
+     *
      * @return all initialized parameters of the current workplace class in the
      * form of a parameter map
      */
@@ -1722,10 +1730,10 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns all initialized parameters of the current workplace class 
+     * Returns all initialized parameters of the current workplace class
      * as request parameters, i.e. in the form <code>key1=value1&key2=value2</code> etc.
-     *  
-     * @return all initialized parameters of the current workplace class 
+     *
+     * @return all initialized parameters of the current workplace class
      * as request parameters
      */
     public String paramsAsRequest() {
@@ -1747,16 +1755,16 @@ public abstract class CmsWorkplace {
 
     /**
      * Resolves the macros in the given String and replaces them by their localized keys.<p>
-     * 
+     *
      * The following macro contexts are available in the Workplace:<ul>
      * <li>Macros based on the current users OpenCms context (obtained from the current <code>{@link CmsObject}</code>).</li>
      * <li>Localized key macros (obtained from the current <code>{@link CmsMessages}</code>).</li>
      * <li>Macros from the current JSP page context (obtained by <code>{@link #getJsp()}</code>).</li>
      * </ul>
-     * 
+     *
      * @param input the input String containing the macros
      * @return the resolved String
-     * 
+     *
      * @see CmsMacroResolver#resolveMacros(String)
      */
     public String resolveMacros(String input) {
@@ -1782,7 +1790,7 @@ public abstract class CmsWorkplace {
      *
      * @param location the location the response is redirected to
      * @param params the map of parameters to use for the forwarded request
-     * 
+     *
      * @throws IOException in case the forward fails
      * @throws ServletException in case the forward fails
      */
@@ -1810,7 +1818,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Get a localized short key value for the workplace.<p>
-     * 
+     *
      * @param keyName name of the key
      * @return a localized short key value
      */
@@ -1826,7 +1834,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Auxiliary method for initialization of messages.<p>
-     * 
+     *
      * @param messages the {@link CmsMessages} to add
      */
     protected void addMessages(CmsMessages messages) {
@@ -1838,7 +1846,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Auxiliary method for initialization of messages.<p>
-     * 
+     *
      * @param bundleName the resource bundle name to add
      */
     protected void addMessages(String bundleName) {
@@ -1848,7 +1856,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the values of all parameter methods of this workplace class instance.<p>
-     * 
+     *
      * @return the values of all parameter methods of this workplace class instance
      */
     protected Map<String, Object> allParamValues() {
@@ -1882,8 +1890,8 @@ public abstract class CmsWorkplace {
 
     /**
      * Checks that the current user is a workplace user.<p>
-     * 
-     * @throws CmsRoleViolationException if the user does not have the required role 
+     *
+     * @throws CmsRoleViolationException if the user does not have the required role
      */
     protected void checkRole() throws CmsRoleViolationException {
 
@@ -1892,15 +1900,15 @@ public abstract class CmsWorkplace {
 
     /**
      * Decodes an individual parameter value.<p>
-     * 
+     *
      * In special cases some parameters might require a different-from-default
-     * encoding. This is the case if the content of the parameter was 
+     * encoding. This is the case if the content of the parameter was
      * encoded using the JavaScript encodeURIComponent() method on the client,
-     * which always encodes in UTF-8.<p> 
-     * 
-     * @param paramName the name of the parameter 
+     * which always encodes in UTF-8.<p>
+     *
+     * @param paramName the name of the parameter
      * @param paramValue the unencoded value of the parameter
-     * 
+     *
      * @return the encoded value of the parameter
      */
     protected String decodeParamValue(String paramName, String paramValue) {
@@ -1917,7 +1925,7 @@ public abstract class CmsWorkplace {
      *
      * This method will also handle parameters from forms
      * of type <code>multipart/form-data</code>.<p>
-     * 
+     *
      * @return the map of parameters read from the current request
      */
     protected Map<String, String[]> getParameterMap() {
@@ -1927,9 +1935,9 @@ public abstract class CmsWorkplace {
 
     /**
      * Initializes the message object.<p>
-     * 
+     *
      * By default the {@link CmsWorkplaceMessages} are initialized.<p>
-     * 
+     *
      * You SHOULD override this method for setting the bundles you really need,
      * using the <code>{@link #addMessages(CmsMessages)}</code> or <code>{@link #addMessages(String)}</code> method.<p>
      */
@@ -1941,12 +1949,12 @@ public abstract class CmsWorkplace {
     /**
      * Sets the users time warp if configured and if the current timewarp setting is different or
      * clears the current time warp setting if the user has no configured timewarp.<p>
-     * 
+     *
      * Timwarping is controlled by the session attribute
      * {@link CmsContextInfo#ATTRIBUTE_REQUEST_TIME} with a value of type <code>Long</code>.<p>
-     * 
+     *
      * @param settings the user settings which are configured via the preferences dialog
-     * 
+     *
      * @param session the session of the user
      */
     protected void initTimeWarp(CmsUserSettings settings, HttpSession session) {
@@ -1971,10 +1979,10 @@ public abstract class CmsWorkplace {
 
     /**
      * Initializes this workplace class instance.<p>
-     * 
+     *
      * This method can be used in case there a workplace class was generated using
-     * {@link Class#forName(java.lang.String)} to initialize the class members.<p> 
-     * 
+     * {@link Class#forName(java.lang.String)} to initialize the class members.<p>
+     *
      * @param jsp the initialized JSP context
      */
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
@@ -1987,7 +1995,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Initializes this workplace class instance.<p>
-     * 
+     *
      * @param cms the user context
      * @param session the session
      */
@@ -2002,7 +2010,7 @@ public abstract class CmsWorkplace {
             throw new CmsIllegalStateException(e.getMessageContainer(), e);
         }
 
-        // get / create the workplace settings 
+        // get / create the workplace settings
         m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
 
         if (m_settings == null) {
@@ -2013,7 +2021,7 @@ public abstract class CmsWorkplace {
             storeSettings(m_session, m_settings);
         }
 
-        // initialize messages            
+        // initialize messages
         CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(getLocale());
         // generate a new multi messages object and add the messages from the workplace
         m_messages = new CmsMultiMessages(getLocale());
@@ -2033,8 +2041,8 @@ public abstract class CmsWorkplace {
 
     /**
      * Analyzes the request for workplace parameters and adjusts the workplace
-     * settings accordingly.<p> 
-     * 
+     * settings accordingly.<p>
+     *
      * @param settings the workplace settings
      * @param request the current request
      */
@@ -2042,7 +2050,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns the values of all parameter methods of this workplace class instance.<p>
-     * 
+     *
      * @return the values of all parameter methods of this workplace class instance
      */
     protected Map<String, Object> paramValues() {
@@ -2075,10 +2083,10 @@ public abstract class CmsWorkplace {
 
     /**
      * Replaces the site title, if necessary.<p>
-     * 
+     *
      * @param title the site title
-     *  
-     * @return the new site title 
+     *
+     * @return the new site title
      */
     protected String substituteSiteTitle(String title) {
 
@@ -2087,7 +2095,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Helper method to change back from the temporary project to the current project.<p>
-     * 
+     *
      * @throws CmsException if switching back fails
      */
     protected void switchToCurrentProject() throws CmsException {
@@ -2100,9 +2108,9 @@ public abstract class CmsWorkplace {
 
     /**
      * Helper method to change the current project to the temporary file project.<p>
-     * 
+     *
      * The id of the old project is stored in a member variable to switch back.<p>
-     * 
+     *
      * @return the id of the tempfileproject
      * @throws CmsException if getting the tempfileproject id fails
      */
@@ -2116,9 +2124,9 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Sets the cms request context and other cms related settings to the 
+     * Sets the cms request context and other cms related settings to the
      * values stored in the workplace settings.<p>
-     * 
+     *
      * @param settings the workplace settings
      * @param cms the current cms object
      */
@@ -2126,7 +2134,7 @@ public abstract class CmsWorkplace {
 
         CmsRequestContext reqCont = cms.getRequestContext();
 
-        // check project setting        
+        // check project setting
         if (!settings.getProject().equals(reqCont.getCurrentProject().getUuid())) {
             try {
                 reqCont.setCurrentProject(cms.readProject(settings.getProject()));
@@ -2157,10 +2165,10 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns a list of all methods of the current class instance that 
-     * start with "getParam" and have no parameters.<p> 
-     * 
-     * @return a list of all methods of the current class instance that 
+     * Returns a list of all methods of the current class instance that
+     * start with "getParam" and have no parameters.<p>
+     *
+     * @return a list of all methods of the current class instance that
      * start with "getParam" and have no parameters
      */
     private List<Method> paramGetMethods() {
@@ -2181,10 +2189,10 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns a list of all methods of the current class instance that 
-     * start with "setParam" and have exactly one String parameter.<p> 
-     * 
-     * @return a list of all methods of the current class instance that 
+     * Returns a list of all methods of the current class instance that
+     * start with "setParam" and have exactly one String parameter.<p>
+     *
+     * @return a list of all methods of the current class instance that
      * start with "setParam" and have exactly one String parameter
      */
     private List<Method> paramSetMethods() {

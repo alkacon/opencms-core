@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,7 +57,7 @@ public class CmsTypeComboWidget extends CmsComboWidget {
 
     /**
      * Constructor with a configuration parameter.<p>
-     * @param config the configuration string 
+     * @param config the configuration string
      */
     public CmsTypeComboWidget(String config) {
 
@@ -136,14 +136,14 @@ public class CmsTypeComboWidget extends CmsComboWidget {
 
     /**
      * Internal method to create the configuration string from the available types.<p>
-     * 
-     * @return the configuration string 
+     *
+     * @return the configuration string
      */
     private String createConfiguration() {
 
         CmsResourceManager resManager = OpenCms.getResourceManager();
         if (resManager == null) {
-            // can happen during the OpenCms startup 
+            // can happen during the OpenCms startup
             return "";
         }
         List<I_CmsResourceType> resTypes = resManager.getResourceTypes();

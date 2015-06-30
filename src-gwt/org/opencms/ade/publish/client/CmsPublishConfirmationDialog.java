@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,9 +56,9 @@ public class CmsPublishConfirmationDialog extends CmsPopup {
 
     /**
      * Creates a new publish confirmation dialog.<p>
-     * 
+     *
      * @param dialog the publish dialog instance
-     * @param closeLink the link to open after the dialog is finished  
+     * @param closeLink the link to open after the dialog is finished
      */
     public CmsPublishConfirmationDialog(CmsPublishDialog dialog, String closeLink) {
 
@@ -96,8 +96,8 @@ public class CmsPublishConfirmationDialog extends CmsPopup {
 
     /**
      * Produces the buttons for this dialog.<p>
-     * 
-     * @return a list of buttons that should be displayed 
+     *
+     * @return a list of buttons that should be displayed
      */
     protected List<CmsPushButton> getButtons() {
 
@@ -118,11 +118,11 @@ public class CmsPublishConfirmationDialog extends CmsPopup {
 
     /**
      * Helper method to get a localized message.<p>
-     * 
+     *
      * @param key the message key
      * @param args the message parameters
-     *  
-     * @return the localized message 
+     *
+     * @return the localized message
      */
     protected String getMessage(String key, Object... args) {
 

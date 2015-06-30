@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,47 +32,47 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 
 /**
- * Represents a repository.<p> 
- * 
+ * Represents a repository.<p>
+ *
  * Since different types of repositories have very different methods, this interface only
  * provides the bare minimum of methods which are necessary for configuration.<p>
- * 
+ *
  * @since 6.2.4
  */
 public interface I_CmsRepository extends I_CmsConfigurationParameterHandler {
 
     /**
      * Gets the repository filter.<p>
-     * 
-     * @return the repository filter 
+     *
+     * @return the repository filter
      */
     CmsRepositoryFilter getFilter();
 
     /**
      * Returns the name of the repository.<p>
-     * 
+     *
      * @return the name of the repository
      */
     String getName();
 
     /**
      * Initializes this repository with an admin CMS object.<p>
-     * 
-     * @param cms an admin CMS object 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms an admin CMS object
+     * @throws CmsException if something goes wrong
      */
     void initializeCms(CmsObject cms) throws CmsException;
 
     /**
      * Sets the repository filter.<p>
-     * 
-     * @param filter the repository filter 
+     *
+     * @param filter the repository filter
      */
     void setFilter(CmsRepositoryFilter filter);
 
     /**
      * Sets the name for this repository.<p>
-     * 
+     *
      * @param name the name to use for the repository
      */
     void setName(String name);

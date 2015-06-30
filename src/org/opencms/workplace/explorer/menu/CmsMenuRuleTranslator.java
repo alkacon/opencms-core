@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,8 +37,8 @@ import java.util.Map;
 
 /**
  * Provides methods to translate the legacy rule Strings for the context menu entries to the new menu rule set definitions.<p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public class CmsMenuRuleTranslator {
 
@@ -67,7 +67,8 @@ public class CmsMenuRuleTranslator {
         "showsiblings"};
 
     /** The legacy menu rule Strings which were used in OpenCms 6. */
-    private static final String[] MENURULES_LEGACY_STRINGS = new String[] {"d a dddd dddd dddd", // copytoproject
+    private static final String[] MENURULES_LEGACY_STRINGS = new String[] {
+        "d a dddd dddd dddd", // copytoproject
         "d d aaaa dddd dddd", // ...
         "d d dddd dddd aaaa",
         "d d dddd aaaa dddd",
@@ -132,7 +133,8 @@ public class CmsMenuRuleTranslator {
     private static final String[] TRANS_OTHERPROJECTRULES_LEGACY = new String[] {"a", "i", "d"};
 
     /** The legacy rule Strings applying for other projects. */
-    private static final List<String> TRANS_OTHERPROJECTRULES_LEGACY_LIST = Arrays.asList(TRANS_OTHERPROJECTRULES_LEGACY);
+    private static final List<String> TRANS_OTHERPROJECTRULES_LEGACY_LIST = Arrays.asList(
+        TRANS_OTHERPROJECTRULES_LEGACY);
 
     /** The rules applying for unlocked resources. */
     private static final Object[] TRANS_UNLOCKEDRULES = new Object[] {
@@ -170,7 +172,7 @@ public class CmsMenuRuleTranslator {
 
     /**
      * Creates a new menu rule set from the given legacy rule String.<p>
-     * 
+     *
      * @param legacyRules the legacy rule String to parse
      * @return a menu rule set from the given legacy rule String
      */
@@ -225,9 +227,9 @@ public class CmsMenuRuleTranslator {
 
     /**
      * Returns the name of the matching default rule set definition for the given legacy rule String.<p>
-     * 
+     *
      * If no matching rule set can be found, <code>null</code> is returned.<p>
-     * 
+     *
      * @param legacyRules the legacy rule String
      * @return the name of the matching default rule set definition for the given legacy rule String
      */
@@ -238,7 +240,7 @@ public class CmsMenuRuleTranslator {
 
     /**
      * Returns if a matching default rule set definition is present for the given legacy rule String.<p>
-     * 
+     *
      * @param legacyRules the legacy rule String
      * @return true if a matching default rule set definition is present for the given legacy rule String, otherwise false
      */
@@ -253,7 +255,7 @@ public class CmsMenuRuleTranslator {
 
     /**
      * Returns the mappings of the legacy rule Strings to the default menu rule set names.<p>
-     * 
+     *
      * @return the mappings of the legacy rule Strings to the default menu rule set names
      */
     protected Map<String, String> getRuleMappings() {
@@ -275,7 +277,7 @@ public class CmsMenuRuleTranslator {
 
     /**
      * Removes all whitespaces from the given legacy rule String.<p>
-     * 
+     *
      * @param legacyRules the legacy rule String to substitute
      * @return the legacy rule String without whitespaces
      */

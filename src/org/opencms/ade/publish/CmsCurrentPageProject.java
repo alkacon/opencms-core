@@ -131,8 +131,8 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                 Set<CmsResource> result = Sets.newHashSet();
 
                 if (res.getStructureId().toString().equals(detailId)) {
-                    String detailContentPagePath = CmsJspTagContainer.getDetailOnlyPageName(cms.getRequestContext().removeSiteRoot(
-                        res.getRootPath()));
+                    String detailContentPagePath = CmsJspTagContainer.getDetailOnlyPageName(
+                        cms.getRequestContext().removeSiteRoot(res.getRootPath()));
                     try {
                         CmsResource detailContentPage = cms.readResource(
                             detailContentPagePath,
@@ -146,7 +146,8 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                 }
                 if (res.getStructureId().toString().equals(pageId)) {
 
-                    I_CmsCollectorInfoFactory collectorInfoFactory = AutoBeanFactorySource.create(I_CmsCollectorInfoFactory.class);
+                    I_CmsCollectorInfoFactory collectorInfoFactory = AutoBeanFactorySource.create(
+                        I_CmsCollectorInfoFactory.class);
                     for (Map.Entry<String, String> entry : params.entrySet()) {
                         if (entry.getKey().startsWith(CmsPublishOptions.PARAM_COLLECTOR_INFO)) {
                             try {

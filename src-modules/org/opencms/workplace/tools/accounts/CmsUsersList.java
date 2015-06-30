@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,8 +51,8 @@ import com.google.common.collect.Lists;
 
 /**
  * Main system user account management view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsUsersList extends A_CmsUsersList {
 
@@ -61,7 +61,7 @@ public class CmsUsersList extends A_CmsUsersList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUsersList(CmsJspActionElement jsp) {
@@ -71,9 +71,9 @@ public class CmsUsersList extends A_CmsUsersList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
-     * @param lazy the lazy flag 
+     * @param lazy the lazy flag
      */
     public CmsUsersList(CmsJspActionElement jsp, boolean lazy) {
 
@@ -82,7 +82,7 @@ public class CmsUsersList extends A_CmsUsersList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -94,7 +94,7 @@ public class CmsUsersList extends A_CmsUsersList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -107,6 +107,7 @@ public class CmsUsersList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getGroupIcon()
      */
+    @Override
     protected String getGroupIcon() {
 
         return PATH_BUTTONS + "group.png";
@@ -136,10 +137,10 @@ public class CmsUsersList extends A_CmsUsersList {
 
     /**
      * Gets the search parameters.<p>
-     * 
-     * @return the search parameters 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the search parameters
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsUserSearchParameters getSearchParams() throws CmsException {
 
@@ -157,9 +158,9 @@ public class CmsUsersList extends A_CmsUsersList {
 
     /**
      * Gets the sort key for a column.<p>
-     * 
-     * @param column a column 
-     * @return the sort key 
+     *
+     * @param column a column
+     * @return the sort key
      */
     protected SortKey getSortKey(String column) {
 
@@ -192,6 +193,7 @@ public class CmsUsersList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#readUser(java.lang.String)
      */
+    @Override
     protected CmsUser readUser(String name) throws CmsException {
 
         return getCms().readUser(name);
@@ -215,6 +217,7 @@ public class CmsUsersList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setDeleteAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setDeleteAction(CmsListColumnDefinition deleteCol) {
 
         CmsListDirectAction deleteAction = new CmsListDirectAction(LIST_ACTION_DELETE);
@@ -227,6 +230,7 @@ public class CmsUsersList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setEditAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setEditAction(CmsListColumnDefinition editCol) {
 
         CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);

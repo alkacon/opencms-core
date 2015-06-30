@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,8 +40,8 @@ import java.util.Map;
 
 /**
  * Collector for model files used in the list for the new XML content dialog.<p>
- * 
- * @since 6.5.4 
+ *
+ * @since 6.5.4
  */
 public class CmsNewResourceXmlContentModelCollector extends A_CmsListResourceCollector {
 
@@ -50,7 +50,7 @@ public class CmsNewResourceXmlContentModelCollector extends A_CmsListResourceCol
 
     /**
      * Constructor, creates a new instance.<p>
-     * 
+     *
      * @param wp the workplace object
      * @param resources list of locked resources
      */
@@ -72,7 +72,7 @@ public class CmsNewResourceXmlContentModelCollector extends A_CmsListResourceCol
 
     /**
      * Returns the dummy resource object representing the "none" selection, this has to be treated specially.<p>
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResource(org.opencms.file.CmsObject, org.opencms.workplace.list.CmsListItem)
      */
     @Override

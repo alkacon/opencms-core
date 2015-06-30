@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,8 +33,8 @@ import org.apache.tika.parser.pdf.PDFParser;
 
 /**
  * Extracts the text from a PDF document.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public final class CmsExtractorPdf extends A_CmsTextExtractor {
 
@@ -42,7 +42,7 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
     private static final CmsExtractorPdf INSTANCE = new CmsExtractorPdf();
 
     /**
-     * Hide the public constructor.<p> 
+     * Hide the public constructor.<p>
      */
     private CmsExtractorPdf() {
 
@@ -50,8 +50,8 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
     }
 
     /**
-     * Returns an instance of this text extractor.<p> 
-     * 
+     * Returns an instance of this text extractor.<p>
+     *
      * @return an instance of this text extractor
      */
     public static I_CmsTextExtractor getExtractor() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,9 +32,9 @@ import org.opencms.test.OpenCmsTestCase;
 
 import java.util.Locale;
 
-/** 
+/**
  * Test cases for {@link org.opencms.util.CmsMacroResolver}.<p>
- * 
+ *
  */
 public class TestCmsMacroResolver extends OpenCmsTestCase {
 
@@ -210,7 +210,7 @@ public class TestCmsMacroResolver extends OpenCmsTestCase {
         result = resolver.resolveMacros(content);
         assertEquals("${$<<This $}{ is$}$ a {{pr${{${efix >>${", result);
 
-        // test for unknown macros       
+        // test for unknown macros
 
         content = "<<This is a prefix >>${unknown}<<This is a suffix>>";
         result = resolver.resolveMacros(content);
@@ -413,7 +413,7 @@ public class TestCmsMacroResolver extends OpenCmsTestCase {
         result = resolver.resolveMacros(content);
         assertEquals("%(%<<This %)( is%)% a ((pr%((%(efix >>%(", result);
 
-        // test for unknown macros       
+        // test for unknown macros
 
         content = "<<This is a prefix >>%(unknown)<<This is a suffix>>";
         result = resolver.resolveMacros(content);

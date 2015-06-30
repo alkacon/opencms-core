@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,7 +62,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param infoBean the data to display
          */
         public CmsModelPageListItemWidget(CmsListInfoBean infoBean) {
@@ -87,8 +87,8 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Creates the fake model page tree item used as a root for the tree view.<p>
-     * 
-     * @param isModelGroup in case of a model group page 
+     *
+     * @param isModelGroup in case of a model group page
      * @param title the title
      * @param subTitle the sub title
      */
@@ -104,7 +104,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param modelpage the model page
      * @param isModelGroup in case of a model group page
      * @param isParentModel the parent model flag
@@ -121,12 +121,12 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Creates the fake model page tree item used as a root for the tree view.<p>
-     * 
+     *
      * @param isModelGroup in case of a model group page
      * @param title the title
      * @param subTitle the sub title
-     * 
-     * @return the root tree item 
+     *
+     * @return the root tree item
      */
     public static CmsModelPageTreeItem createRootItem(boolean isModelGroup, String title, String subTitle) {
 
@@ -135,7 +135,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Returns the folder entry id.<p>
-     * 
+     *
      * @return the folder entry id
      */
     public CmsUUID getEntryId() {
@@ -145,7 +145,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Returns the site path.<p>
-     * 
+     *
      * @return the site path
      */
     public String getSitePath() {
@@ -156,7 +156,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Returns if the model page entry is disabled.<p>
-     * 
+     *
      * @return <code>true</code> if the model page entry is disabled
      */
     public boolean isDisabled() {
@@ -166,7 +166,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Returns whether the entry represents a model group page.<p>
-     * 
+     *
      * @return <code>true</code> if the entry represents a model group page
      */
     public boolean isModelGroup() {
@@ -176,7 +176,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Returns if this model page entry is inherited from the parent configuration.<p>
-     * 
+     *
      * @return <code>true</code> if this model page entry is inherited from the parent configuration
      */
     public boolean isParentModel() {
@@ -186,7 +186,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Sets the model page entry disabled.<p>
-     * 
+     *
      * @param disabled <code>true</Code> to disable
      */
     public void setDisabled(boolean disabled) {
@@ -201,7 +201,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Updates the site path info.<p>
-     * 
+     *
      * @param sitePath the new site path
      */
     public void updateSitePath(String sitePath) {
@@ -211,7 +211,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Handles direct editing of the gallery title.<p>
-     * 
+     *
      * @param editEntry the edit entry
      * @param newTitle the new title
      */
@@ -240,9 +240,9 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Creates the list item widget for the given folder.<p>
-     * 
-     * @param modelPage the model page bean 
-     * 
+     *
+     * @param modelPage the model page bean
+     *
      * @return the list item widget
      */
     private CmsListItemWidget createListWidget(final CmsModelPageEntry modelPage) {

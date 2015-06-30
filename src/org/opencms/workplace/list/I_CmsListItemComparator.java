@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,18 +32,18 @@ import java.util.Locale;
 
 /**
  * A list item comparator can be set at a column definition to set the sorting method for that column.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsListItemComparator {
 
     /**
      * Returns a new comparator for comparing list items by the given column,
      * and using the given locale.<p>
-     * 
+     *
      * @param columnId the id of the column to sort by
      * @param locale the current used locale
-     * 
+     *
      * @return a new comparator
      */
     Comparator<CmsListItem> getComparator(final String columnId, final Locale locale);

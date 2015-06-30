@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,8 +63,8 @@ import org.apache.commons.logging.Log;
  * Resource type descriptor for the type "containerpage".<p>
  *
  * It is just a xml content with a fixed schema.<p>
- * 
- * @since 7.6 
+ *
+ * @since 7.6
  */
 public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
@@ -106,9 +106,9 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
     /**
      * Returns the container-page type id.<p>
-     * 
+     *
      * @return the container-page type id
-     * 
+     *
      * @throws CmsLoaderException if the type is not configured
      */
     public static int getContainerPageTypeId() throws CmsLoaderException {
@@ -124,8 +124,8 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
     /**
      * Returns the container-page type id, but returns -1 instead of throwing an exception when an error happens.<p>
-     * 
-     * @return the container-page type id 
+     *
+     * @return the container-page type id
      */
     public static int getContainerPageTypeIdSafely() {
 
@@ -141,7 +141,7 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
     /**
      * Returns the static type name of this (default) resource type.<p>
-     * 
+     *
      * @return the static type name of this (default) resource type
      */
     public static String getStaticTypeName() {
@@ -151,12 +151,12 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
     /**
      * Returns <code>true</code> in case the given resource is a container page.<p>
-     * 
-     * Internally this checks if the type id for the given resource is 
+     *
+     * Internally this checks if the type id for the given resource is
      * identical type id of the container page.<p>
-     * 
+     *
      * @param resource the resource to check
-     * 
+     *
      * @return <code>true</code> in case the given resource is a container page
      */
     public static boolean isContainerPage(CmsResource resource) {
@@ -188,12 +188,13 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
             CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, getSchema());
 
             // read the default locale for the new resource
-            Locale locale = OpenCms.getLocaleManager().getDefaultLocales(cms, CmsResource.getParentFolder(resourcename)).get(
-                0);
+            Locale locale = OpenCms.getLocaleManager().getDefaultLocales(
+                cms,
+                CmsResource.getParentFolder(resourcename)).get(0);
 
             String modelUri = (String)cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_MODEL);
 
-            // must set URI of OpenCms user context to parent folder of created resource, 
+            // must set URI of OpenCms user context to parent folder of created resource,
             // in order to allow reading of properties for default values
             CmsObject newCms = OpenCms.initCmsObject(cms);
             newCms.getRequestContext().setUri(CmsResource.getParentFolder(resourcename));
@@ -242,11 +243,12 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
 
         if (!RESOURCE_TYPE_NAME.equals(name) && !MODEL_GROUP_TYPE_NAME.equals(name)) {
             // default resource type MUST have default name
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
-                this.getClass().getName(),
-                RESOURCE_TYPE_NAME,
-                name));
+            throw new CmsConfigurationException(
+                Messages.get().container(
+                    Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
+                    this.getClass().getName(),
+                    RESOURCE_TYPE_NAME,
+                    name));
         }
         super.initConfiguration(name, id, className);
     }
@@ -327,7 +329,7 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
             CmsPermissionSet.ACCESS_WRITE,
             true,
             CmsResourceFilter.ALL);
-        // read the XML content, use the encoding set in the property       
+        // read the XML content, use the encoding set in the property
         CmsXmlContainerPage xmlContent = CmsXmlContainerPageFactory.unmarshal(cms, resource, false, true);
         // call the content handler for post-processing
         resource = xmlContent.getHandler().prepareForWrite(cms, xmlContent, resource);

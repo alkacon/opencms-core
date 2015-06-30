@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,14 +37,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 
 /**
  * The edit button holding all edit related methods.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param handler the container-page handler
      */
     public CmsToolbarEditButton(CmsContainerpageHandler handler) {
@@ -65,11 +65,13 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
             button.disable("");
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(element.getNoEditReason())) {
             if (element.hasWritePermission()
-                && !((element instanceof CmsGroupContainerElementPanel) && ((CmsGroupContainerElementPanel)element).isInheritContainer())) {
+                && !((element instanceof CmsGroupContainerElementPanel)
+                    && ((CmsGroupContainerElementPanel)element).isInheritContainer())) {
                 // if the user has write permissions, the lock report dialog will be accessible through this button
-                button.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass()
-                    + " "
-                    + I_CmsLayoutBundle.INSTANCE.containerpageCss().lockedElement());
+                button.setImageClass(
+                    I_CmsButton.ButtonData.SELECTION.getIconClass()
+                        + " "
+                        + I_CmsLayoutBundle.INSTANCE.containerpageCss().lockedElement());
                 button.setTitle(element.getNoEditReason());
             } else {
                 button.disable(element.getNoEditReason());
@@ -96,7 +98,7 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
 
     /**
      * Opens the element editor.<p>
-     * 
+     *
      * @param element the element
      */
     private void openEditor(CmsContainerPageElementPanel element) {
@@ -106,7 +108,7 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
 
     /**
      * Opens the lock report for locked elements.<p>
-     * 
+     *
      * @param element the element
      */
     private void openLockReport(CmsContainerPageElementPanel element) {

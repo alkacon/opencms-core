@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,17 +46,17 @@ public class CmsAttributeComparison {
     /** The second value of the attribute.<p> */
     private String m_version2;
 
-    /** 
+    /**
      * Constructs a new attribute object.<p>
      */
     public CmsAttributeComparison() {
 
-        // empty  
+        // empty
     }
 
-    /** 
-     * Creates a new attribute comparison.<p> 
-     * 
+    /**
+     * Creates a new attribute comparison.<p>
+     *
      * @param name the name to set
      * @param version1 the first value of the property
      * @param version2 the second value of the property
@@ -79,14 +79,14 @@ public class CmsAttributeComparison {
         }
     }
 
-    /** 
-     * Creates a new attribute comparison.<p> 
-     * 
+    /**
+     * Creates a new attribute comparison.<p>
+     *
      * @param name the name to set
      * @param version1 the first value of the property
      * @param version2 the second value of the property
-     * @param type the type indicating if the element value has been added, removed, modified or is unchanged 
-     *              
+     * @param type the type indicating if the element value has been added, removed, modified or is unchanged
+     *
      * @see CmsResourceComparison#TYPE_ADDED
      * @see CmsResourceComparison#TYPE_CHANGED
      * @see CmsResourceComparison#TYPE_REMOVED

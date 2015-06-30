@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,12 +50,12 @@ public class CmsVfsBundleParameters {
     private String m_type;
 
     /**
-     * 
-     * @param name the name of the message bundle 
-     * @param basePath the root base path of the message bundle 
-     * @param locale the locale of the message bundle 
-     * @param isDefault true if this is the set of parameters for the default locale 
-     * @param type a string constant indicating the type of the resource bundle 
+     *
+     * @param name the name of the message bundle
+     * @param basePath the root base path of the message bundle
+     * @param locale the locale of the message bundle
+     * @param isDefault true if this is the set of parameters for the default locale
+     * @param type a string constant indicating the type of the resource bundle
      */
     public CmsVfsBundleParameters(String name, String basePath, Locale locale, boolean isDefault, String type) {
 
@@ -68,8 +68,8 @@ public class CmsVfsBundleParameters {
 
     /**
      * Gets the base path of the resource bundle.<p>
-     * 
-     * @return the base path of the resource bundle 
+     *
+     * @return the base path of the resource bundle
      */
     public String getBasePath() {
 
@@ -78,8 +78,8 @@ public class CmsVfsBundleParameters {
 
     /**
      * Gets the locale.<p>
-     * 
-     * @return the locale 
+     *
+     * @return the locale
      */
     public Locale getLocale() {
 
@@ -88,8 +88,8 @@ public class CmsVfsBundleParameters {
 
     /**
      * Gets the name of the message bundle.<p>
-     * 
-     * @return the name of the message bundle 
+     *
+     * @return the name of the message bundle
      */
     public String getName() {
 
@@ -98,8 +98,8 @@ public class CmsVfsBundleParameters {
 
     /**
      * Gets the resource bundle type.<p>
-     * 
-     * @return the resource bundle type 
+     *
+     * @return the resource bundle type
      */
     public String getType() {
 
@@ -108,8 +108,8 @@ public class CmsVfsBundleParameters {
 
     /**
      * Returns true if this is the set of parameters for the default message bundle.<p>
-     * 
-     * @return true if this is the set of parameters for the default message bundle 
+     *
+     * @return true if this is the set of parameters for the default message bundle
      */
     public boolean isDefault() {
 

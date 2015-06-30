@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,16 +40,16 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Describes a mapping of a piece of content from an OpenCms VFS 
+ * Describes a mapping of a piece of content from an OpenCms VFS
  * resource to a field of a search index.<p>
- * 
+ *
  * @since 8.5.0
  */
 public interface I_CmsSearchFieldMapping extends Serializable {
 
     /**
      * Returns the default value used for this field mapping in case no content is available.<p>
-     * 
+     *
      * @return the default value used for this field mapping in case no content is available
      */
     String getDefaultValue();
@@ -57,7 +57,7 @@ public interface I_CmsSearchFieldMapping extends Serializable {
     /**
      * Returns the mapping parameter.<p>
      *
-     * The parameter is used depending on the implementation of the rules of 
+     * The parameter is used depending on the implementation of the rules of
      * the selected {@link CmsSearchFieldMappingType}.<p>
      *
      * @return the mapping parameter
@@ -65,14 +65,14 @@ public interface I_CmsSearchFieldMapping extends Serializable {
     String getParam();
 
     /**
-     * Returns the String value extracted form the provided data according to the rules of this mapping type.<p> 
-     * 
+     * Returns the String value extracted form the provided data according to the rules of this mapping type.<p>
+     *
      * @param cms the OpenCms context used for building the search index
      * @param res the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the String value extracted form the provided data according to the rules of this mapping type
      */
     String getStringValue(
@@ -90,8 +90,8 @@ public interface I_CmsSearchFieldMapping extends Serializable {
     CmsSearchFieldMappingType getType();
 
     /**
-     * Sets the default value for this field mapping in case no content is available.<p> 
-     * 
+     * Sets the default value for this field mapping in case no content is available.<p>
+     *
      * @param defaultValue the default value to set
      */
     void setDefaultValue(String defaultValue);
@@ -99,7 +99,7 @@ public interface I_CmsSearchFieldMapping extends Serializable {
     /**
      * Sets the mapping parameter.<p>
      *
-     * The parameter is used depending on the implementation of the rules of 
+     * The parameter is used depending on the implementation of the rules of
      * the selected {@link CmsSearchFieldMappingType}.<p>
      *
      * @param param the parameter to set

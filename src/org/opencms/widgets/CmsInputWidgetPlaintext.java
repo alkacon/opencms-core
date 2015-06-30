@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,8 +42,8 @@ import org.htmlparser.util.ParserException;
 
 /**
  * {@link org.opencms.widgets.CmsInputWidget} that strips HTML Tags from the input before storing values.<p>
- * 
- * @since 6.3.0 
+ *
+ * @since 6.3.0
  *
  */
 public final class CmsInputWidgetPlaintext extends CmsInputWidget {
@@ -86,15 +86,13 @@ public final class CmsInputWidgetPlaintext extends CmsInputWidget {
                     value = CmsHtmlExtractor.extractText(value, CmsEncoder.ENCODING_UTF_8);
                 } catch (ParserException e) {
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().getBundle().key(
-                            Messages.LOG_ERR_WIDGET_PLAINTEXT_EXTRACT_HTML_1,
-                            value));
+                        LOG.error(
+                            Messages.get().getBundle().key(Messages.LOG_ERR_WIDGET_PLAINTEXT_EXTRACT_HTML_1, value));
                     }
                 } catch (UnsupportedEncodingException e) {
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().getBundle().key(
-                            Messages.LOG_ERR_WIDGET_PLAINTEXT_EXTRACT_HTML_1,
-                            value));
+                        LOG.error(
+                            Messages.get().getBundle().key(Messages.LOG_ERR_WIDGET_PLAINTEXT_EXTRACT_HTML_1, value));
                     }
                 }
             } else {

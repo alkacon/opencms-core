@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,12 +43,12 @@ import java.util.List;
 /**
  * Default abstract implementation of the interface {@link I_CmsResourceWrapper}.<p>
  *
- * This class returns for all methods that the action is not handled by the 
+ * This class returns for all methods that the action is not handled by the
  * resource wrapper.<p>
- * 
+ *
  * Subclasses can only implement those methods where they want to change the default
  * behaviour.<p>
- * 
+ *
  * @since 6.5.6
  */
 public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
@@ -74,7 +74,7 @@ public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
      */
     public void configure(String configString) {
 
-        // ignore 
+        // ignore
 
     }
 

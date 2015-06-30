@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,40 +41,40 @@ public interface I_CmsGalleryHandler {
 
     /**
      * This method is used to disable drag-and-drop for specific results.<p>
-     * 
+     *
      * If this returns false, drag and drop should be disabled for the result (however, if true is returned,
      * this does not automatically mean that drag and drop should be enabled.)
-     *  
-     * @param resultBean the result for which drag-and-drop feasibility should be checked  
-     * @return false if DnD should be prohibited for the element, else true 
+     *
+     * @param resultBean the result for which drag-and-drop feasibility should be checked
+     * @return false if DnD should be prohibited for the element, else true
      */
     boolean filterDnd(CmsResultItemBean resultBean);
 
-    /** 
+    /**
      * Gets an additional widget to display in the type tab.<p>
-     * 
-     * @return the additional widget to display 
+     *
+     * @return the additional widget to display
      */
     Widget getAdditionalTypeTabControl();
 
     /**
      * Gets the auto-hide parent.<p>
-     * 
-     * @return the auto-hide parent 
+     *
+     * @return the auto-hide parent
      */
     I_CmsAutoHider getAutoHideParent();
 
     /**
      * Gets the drag-and-drop handler for the result list.
-     * 
-     * @return the drag-and-drop handler 
+     *
+     * @return the drag-and-drop handler
      */
     CmsDNDHandler getDndHandler();
 
-    /** 
+    /**
      * Processes a result list item.<p>
-     *  
-     * @param item the item to process 
+     *
+     * @param item the item to process
      */
     void processResultItem(CmsResultListItem item);
 

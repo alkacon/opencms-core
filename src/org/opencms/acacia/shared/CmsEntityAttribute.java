@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,10 +58,10 @@ public class CmsEntityAttribute implements Serializable {
 
     /**
      * Creates a entity type attribute.<p>
-     * 
+     *
      * @param name the attribute name
      * @param values the attribute values
-     * 
+     *
      * @return the newly created attribute
      */
     public static CmsEntityAttribute createEntityAttribute(String name, List<CmsEntity> values) {
@@ -74,10 +74,10 @@ public class CmsEntityAttribute implements Serializable {
 
     /**
      * Creates a simple type attribute.<p>
-     * 
+     *
      * @param name the attribute name
      * @param values the attribute values
-     * 
+     *
      * @return the newly created attribute
      */
     public static CmsEntityAttribute createSimpleAttribute(String name, List<String> values) {
@@ -90,7 +90,7 @@ public class CmsEntityAttribute implements Serializable {
 
     /**
      * Returns the attribute name.<p>
-     * 
+     *
      * @return the attribute name
      */
     public String getAttributeName() {
@@ -100,7 +100,7 @@ public class CmsEntityAttribute implements Serializable {
 
     /**
      * Returns the first complex value in the list.<p>
-     * 
+     *
      * @return the first complex value
      */
     public CmsEntity getComplexValue() {
@@ -110,7 +110,7 @@ public class CmsEntityAttribute implements Serializable {
 
     /**
      * Returns the list of complex values.<p>
-     * 
+     *
      * @return the list of complex values
      */
     public List<CmsEntity> getComplexValues() {
@@ -122,7 +122,7 @@ public class CmsEntityAttribute implements Serializable {
 
     /**
      * Returns the first simple value in the list.<p>
-     * 
+     *
      * @return the first simple value
      */
     public String getSimpleValue() {
@@ -132,7 +132,7 @@ public class CmsEntityAttribute implements Serializable {
 
     /**
      * Returns the list of simple values.<p>
-     * 
+     *
      * @return the list of simple values
      */
     public List<String> getSimpleValues() {
@@ -142,7 +142,7 @@ public class CmsEntityAttribute implements Serializable {
 
     /**
      * Returns the number of values set for this attribute.<p>
-     * 
+     *
      * @return the number of values
      */
     public int getValueCount() {
@@ -155,7 +155,7 @@ public class CmsEntityAttribute implements Serializable {
 
     /**
      * Returns if the is a complex type value.<p>
-     * 
+     *
      * @return <code>true</code> if this is a complex type value
      */
     public boolean isComplexValue() {
@@ -165,7 +165,7 @@ public class CmsEntityAttribute implements Serializable {
 
     /**
      * Returns if the is a simple type value.<p>
-     * 
+     *
      * @return <code>true</code> if this is a simple type value
      */
     public boolean isSimpleValue() {
@@ -175,7 +175,7 @@ public class CmsEntityAttribute implements Serializable {
 
     /**
      * Returns if this is a single value attribute.<p>
-     * 
+     *
      * @return <code>true</code> if this is a single value attribute
      */
     public boolean isSingleValue() {

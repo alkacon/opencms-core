@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,10 +50,10 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides the specific constants, members and helper methods to generate the content of the image gallery dialog 
- * used in the XML content editors, WYSIWYG editors and context menu.<p>  
- * 
- * @since 7.5.0 
+ * Provides the specific constants, members and helper methods to generate the content of the image gallery dialog
+ * used in the XML content editors, WYSIWYG editors and context menu.<p>
+ *
+ * @since 7.5.0
  */
 public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
 
@@ -109,7 +109,7 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsAjaxImageGallery(CmsJspActionElement jsp) {
@@ -119,7 +119,7 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -131,7 +131,7 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
 
     /**
      * Returns the default image scaling parameters for the gallery preview.<p>
-     * 
+     *
      * @return the default image scaling parameters for the gallery preview
      */
     public CmsImageScaler getDefaultScaleParams() {
@@ -147,7 +147,8 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
 
         int imageId;
         try {
-            imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
+            imageId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypeImage.getStaticTypeName()).getTypeId();
         } catch (CmsLoaderException e1) {
             // should really never happen
             LOG.warn(e1.getLocalizedMessage(), e1);
@@ -163,14 +164,14 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
     public int getGalleryTypeId() {
 
         try {
-            this.m_galleryTypeId = OpenCms.getResourceManager().getResourceType(GALLERYTYPE_NAME).getTypeId();
+            m_galleryTypeId = OpenCms.getResourceManager().getResourceType(GALLERYTYPE_NAME).getTypeId();
         } catch (CmsLoaderException e) {
             // resource type not found, log error
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-        return this.m_galleryTypeId;
+        return m_galleryTypeId;
     }
 
     /**
@@ -184,7 +185,7 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
 
     /**
      * Initializes the default image scaling parameters for the gallery preview.<p>
-     * 
+     *
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#init()
      */
     @Override
@@ -220,7 +221,7 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
 
     /**
      * Fills the JSON object with the specific information used for image resource type.<p>
-     * 
+     *
      * <ul>
      * <li><code>scalepath</code>: scaling parameters.</li>
      * <li><code>width</code>: image width.</li>
@@ -230,7 +231,7 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
      * <li><code>hash</code>: image structure id hash code.</li>
      * <li><code>copyright</code>: image copyright.</li>
      * </ul>
-     * 
+     *
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath)
      */
     @Override

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,9 +38,9 @@ import java.util.Locale;
 
 /**
  * A group principal in the OpenCms permission system.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see CmsUser
  */
 public class CmsGroup extends CmsPrincipal {
@@ -58,12 +58,12 @@ public class CmsGroup extends CmsPrincipal {
 
     /**
      * Creates a new OpenCms group principal.
-     * 
+     *
      * @param id the unique id of the group
      * @param parentId the is of the parent group
      * @param name the fully qualified name of the name of the group
      * @param description the description of the group
-     * @param flags the flags of the group    
+     * @param flags the flags of the group
      */
     public CmsGroup(CmsUUID id, CmsUUID parentId, String name, String description, int flags) {
 
@@ -76,16 +76,16 @@ public class CmsGroup extends CmsPrincipal {
 
     /**
      * Checks if the given String starts with {@link I_CmsPrincipal#PRINCIPAL_GROUP} followed by a dot.<p>
-     * 
+     *
      * <ul>
      * <li>Works if the given String is <code>null</code>.
      * <li>Removes white spaces around the String before the check.
      * <li>Also works with prefixes not being in upper case.
      * <li>Does not check if the group after the prefix actually exists.
      * </ul>
-     * 
+     *
      * @param principalName the group name to check
-     * 
+     *
      * @return <code>true</code> in case the String starts with {@link I_CmsPrincipal#PRINCIPAL_GROUP}
      */
     public static boolean hasPrefix(String principalName) {
@@ -96,17 +96,17 @@ public class CmsGroup extends CmsPrincipal {
 
     /**
      * Removes the prefix if the given String starts with {@link I_CmsPrincipal#PRINCIPAL_GROUP} followed by a dot.<p>
-     * 
+     *
      * <ul>
      * <li>Works if the given String is <code>null</code>.
      * <li>If the given String does not start with {@link I_CmsPrincipal#PRINCIPAL_GROUP} followed by a dot it is returned unchanged.
      * <li>Removes white spaces around the group name.
-     * <li>Also works with prefixes not being in upper case. 
+     * <li>Also works with prefixes not being in upper case.
      * <li>Does not check if the group after the prefix actually exists.
      * </ul>
-     * 
+     *
      * @param principalName the group name to remove the prefix from
-     * 
+     *
      * @return the given String with the prefix {@link I_CmsPrincipal#PRINCIPAL_GROUP} with the following dot removed
      */
     public static String removePrefix(String principalName) {
@@ -121,13 +121,13 @@ public class CmsGroup extends CmsPrincipal {
     }
 
     /**
-     * Checks if the provided group name is valid and can be used as an argument value 
-     * for {@link #setName(String)}.<p> 
-     * 
+     * Checks if the provided group name is valid and can be used as an argument value
+     * for {@link #setName(String)}.<p>
+     *
      * A group name must not be empty or whitespace only.<p>
-     * 
+     *
      * @param name the group name to check
-     * 
+     *
      * @see org.opencms.security.I_CmsValidationHandler#checkGroupName(String)
      */
     public void checkName(String name) {
@@ -160,7 +160,7 @@ public class CmsGroup extends CmsPrincipal {
 
     /**
      * Returns the parent group id of this group.<p>
-     * 
+     *
      * @return the parent group id of this group
      */
     public CmsUUID getParentId() {
@@ -179,7 +179,7 @@ public class CmsGroup extends CmsPrincipal {
 
     /**
      * Checks if this group is a role group.<p>
-     * 
+     *
      * @return <code>true</code> if this group is a role group
      */
     public boolean isRole() {
@@ -198,7 +198,7 @@ public class CmsGroup extends CmsPrincipal {
 
     /**
      * Checks if this group is a virtual group, emulating a role.<p>
-     * 
+     *
      * @return if this group is a virtual group
      */
     public boolean isVirtual() {
@@ -208,7 +208,7 @@ public class CmsGroup extends CmsPrincipal {
 
     /**
      * Sets the parent group id of this group.<p>
-     * 
+     *
      * @param parentId the parent group id to set
      */
     public void setParentId(CmsUUID parentId) {

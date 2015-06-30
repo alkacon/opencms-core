@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,8 +52,8 @@ public class CmsChangeCategoryMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsChangeCategoryMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -105,15 +105,16 @@ public class CmsChangeCategoryMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Creates a property configuration for a simple named string field.<p>
-     * 
-     * @param name the name of the field 
-     * @param niceName the display name of the field 
-     * 
+     *
+     * @param name the name of the field
+     * @param niceName the display name of the field
+     *
      * @return the property configuration
      */
     CmsXmlContentProperty createBasicStringProperty(String name, String niceName) {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(name, //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            name, //name
             "string", // type
             "string", // widget
             "", // widgetconfig
@@ -130,12 +131,12 @@ public class CmsChangeCategoryMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Asks the user for the changed category info.<p>
-     * 
+     *
      * @param caption the dialog caption
-     * @param title the old title 
-     * @param name the old name 
-     * @param callback the callback to call when done 
-     * 
+     * @param title the old title
+     * @param name the old name
+     * @param callback the callback to call when done
+     *
      */
     private void askForCategoryInfo(
         String caption,

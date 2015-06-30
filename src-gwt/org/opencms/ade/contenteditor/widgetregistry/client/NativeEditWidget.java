@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,10 +46,10 @@ public final class NativeEditWidget extends JavaScriptObject {
 
     /**
      * Wraps a GWT edit widget instance to be used from within another GWT module.<p>
-     * 
+     *
      * @param widget the widget to wrap
      * @param isFormWidget in case of a form widget
-     * 
+     *
      * @return the wrapping native java script object
      */
     public static native NativeEditWidget wrapWidget(I_CmsEditWidget widget, boolean isFormWidget)/*-{
@@ -99,9 +99,9 @@ public final class NativeEditWidget extends JavaScriptObject {
 
     /**
      * Returns an event handler that delegates to a native java script object.<p>
-     * 
+     *
      * @param connector the native java script object
-     * 
+     *
      * @return the event handler
      */
     private static NativeEventHandler getNativeHandler(NativeEditWidget connector) {
@@ -111,7 +111,7 @@ public final class NativeEditWidget extends JavaScriptObject {
 
     /**
      * Returns the widget element.<p>
-     * 
+     *
      * @return the widget element
      */
     protected native Element getElement() /*-{
@@ -120,7 +120,7 @@ public final class NativeEditWidget extends JavaScriptObject {
 
     /**
      * Returns the widget value.<p>
-     * 
+     *
      * @return the widget value
      */
     protected native String getValue()/*-{
@@ -129,7 +129,7 @@ public final class NativeEditWidget extends JavaScriptObject {
 
     /**
      * Returns if the widget is active.<p>
-     * 
+     *
      * @return <code>true</code> if the widget is active
      */
     protected native boolean isActive() /*-{
@@ -145,7 +145,7 @@ public final class NativeEditWidget extends JavaScriptObject {
 
     /**
      * Sets the widget active.<p>
-     * 
+     *
      * @param active <code>true</code> to activate the widget
      */
     protected native void setActive(boolean active)/*-{
@@ -154,7 +154,7 @@ public final class NativeEditWidget extends JavaScriptObject {
 
     /**
      * Sets the widget value.<p>
-     * 
+     *
      * @param value the value
      */
     protected native void setValue(String value)/*-{
@@ -163,7 +163,7 @@ public final class NativeEditWidget extends JavaScriptObject {
 
     /**
      * Sets the widget value.<p>
-     * 
+     *
      * @param value the value
      * @param fireEvent <code>true</code> to fire the value change event
      */
@@ -173,7 +173,7 @@ public final class NativeEditWidget extends JavaScriptObject {
 
     /**
      * Sets the widget label and help text.<p>
-     * 
+     *
      * @param label the widget label text
      * @param help the widget help text
      */

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,9 +45,9 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides an output window for a CmsReport.<p> 
- * 
- * @since 6.0.0 
+ * Provides an output window for a CmsReport.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsReport extends CmsMultiDialog {
 
@@ -83,7 +83,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsReport(CmsJspActionElement jsp) {
@@ -93,7 +93,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -105,7 +105,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Returns the style sheets for the report.<p>
-     * 
+     *
      * @param cms the current users context
      * @return the style sheets for the report
      */
@@ -123,8 +123,10 @@ public class CmsReport extends CmsMultiDialog {
         }
         if (CmsStringUtil.isEmpty(contents)) {
             // css file not found, create default styles
-            result.append("body       { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; margin: 0; color: /*begin-color WindowText*/#000000/*end-color*/; background-color: /*begin-color Window*/#ffffff/*end-color*/; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; }\n");
-            result.append("div.main   { box-sizing: border-box; -moz-box-sizing: border-box; color: /*begin-color WindowText*/#000000/*end-color*/; white-space: nowrap; }\n");
+            result.append(
+                "body       { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; margin: 0; color: /*begin-color WindowText*/#000000/*end-color*/; background-color: /*begin-color Window*/#ffffff/*end-color*/; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; }\n");
+            result.append(
+                "div.main   { box-sizing: border-box; -moz-box-sizing: border-box; color: /*begin-color WindowText*/#000000/*end-color*/; white-space: nowrap; }\n");
             result.append("span.head  { color: #000099; font-weight: bold; }\n");
             result.append("span.note  { color: #666666; }\n");
             result.append("span.ok    { color: #009900; }\n");
@@ -143,7 +145,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Generates the footer for the extended report view.<p>
-     * 
+     *
      * @return html code
      */
     public static String generatePageEndExtended() {
@@ -157,7 +159,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Generates the footer for the simple report view.<p>
-     * 
+     *
      * @return html code
      */
     public static String generatePageEndSimple() {
@@ -171,10 +173,10 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Generates the header for the extended report view.<p>
-     * 
+     *
      * @param cms the current users context
      * @param encoding the encoding string
-     * 
+     *
      * @return html code
      */
     public static String generatePageStartExtended(CmsObject cms, String encoding) {
@@ -193,9 +195,9 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Generates the header for the simple report view.<p>
-     * 
+     *
      * @param wp the workplace instance
-     * 
+     *
      * @return html code
      */
     public static String generatePageStartSimple(CmsWorkplace wp) {
@@ -222,16 +224,16 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Returns an initialized CmsReport instance that is read from the request attributes.<p>
-     * 
-     * This method is used by dialog elements. 
-     * The dialog elements do not initialize their own workplace class, 
+     *
+     * This method is used by dialog elements.
+     * The dialog elements do not initialize their own workplace class,
      * but use the initialized instance of the "master" class.
      * This is required to ensure that parameters of the "master" class
      * can properly be kept on the dialog elements.<p>
-     * 
-     * To prevent null pointer exceptions, an empty dialog is returned if 
+     *
+     * To prevent null pointer exceptions, an empty dialog is returned if
      * nothing is found in the request attributes.<p>
-     *  
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -249,9 +251,9 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Builds a button row with an "Ok", a "Cancel" and a "Details" button.<p>
-     * 
+     *
      * This row is displayed when the first report is running.<p>
-     * 
+     *
      * @param okAttrs optional attributes for the ok button
      * @param cancelAttrs optional attributes for the cancel button
      * @param detailsAttrs optional attributes for the details button
@@ -264,17 +266,16 @@ public class CmsReport extends CmsMultiDialog {
         } else {
             detailsAttrs += " ";
         }
-        return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {
-            okAttrs,
-            cancelAttrs,
-            detailsAttrs + "onclick=\"switchOutputFormat();\""});
+        return dialogButtons(
+            new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS},
+            new String[] {okAttrs, cancelAttrs, detailsAttrs + "onclick=\"switchOutputFormat();\""});
     }
 
     /**
      * Builds a button row with an "Ok", a "Cancel" and a "Details" button.<p>
-     * 
+     *
      * This row is used when a single report is running or after the first report has finished.<p>
-     * 
+     *
      * @param okAttrs optional attributes for the ok button
      * @param cancelAttrs optional attributes for the cancel button
      * @param detailsAttrs optional attributes for the details button
@@ -290,19 +291,18 @@ public class CmsReport extends CmsMultiDialog {
 
         if (Boolean.valueOf(getParamThreadHasNext()).booleanValue()
             && CmsStringUtil.isNotEmpty(getParamReportContinueKey())) {
-            return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {
-                okAttrs,
-                cancelAttrs,
-                detailsAttrs + "onclick=\"switchOutputFormat();\""});
+            return dialogButtons(
+                new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS},
+                new String[] {okAttrs, cancelAttrs, detailsAttrs + "onclick=\"switchOutputFormat();\""});
         }
-        return dialogButtons(new int[] {BUTTON_OK, BUTTON_DETAILS}, new String[] {
-            okAttrs,
-            detailsAttrs + "onclick=\"switchOutputFormat();\""});
+        return dialogButtons(
+            new int[] {BUTTON_OK, BUTTON_DETAILS},
+            new String[] {okAttrs, detailsAttrs + "onclick=\"switchOutputFormat();\""});
     }
 
     /**
      * Returns if the workplace must be refreshed.<p>
-     * 
+     *
      * @return <code>"true"</code> if the workplace must be refreshed.
      */
     public String getParamRefreshWorkplace() {
@@ -312,7 +312,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Returns the key name which contains the localized message for the continue checkbox.<p>
-     * 
+     *
      * @return the key name which contains the localized message for the continue checkbox
      */
     public String getParamReportContinueKey() {
@@ -325,7 +325,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Returns the type of this report.<p>
-     * 
+     *
      * @return the type of this report
      */
     public String getParamReportType() {
@@ -340,7 +340,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Returns the Thread id to display in this report.<p>
-     * 
+     *
      * @return the Thread id to display in this report
      */
     public String getParamThread() {
@@ -354,7 +354,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Returns if another report is following this report.<p>
-     * 
+     *
      * @return <code>"true"</code> if another report is following this report
      */
     public String getParamThreadHasNext() {
@@ -367,7 +367,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Returns the part of the report that is ready for output.<p>
-     * 
+     *
      * @return the part of the report that is ready for output
      */
     public String getReportUpdate() {
@@ -382,7 +382,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Returns if the report generated an error output.<p>
-     * 
+     *
      * @return true if the report generated an error, otherwise false
      */
     public boolean hasError() {
@@ -396,11 +396,11 @@ public class CmsReport extends CmsMultiDialog {
     }
 
     /**
-     * Builds the start html of the page, including setting of DOCTYPE and 
+     * Builds the start html of the page, including setting of DOCTYPE and
      * inserting a header with the content-type.<p>
-     * 
+     *
      * This overloads the default method of the parent class.<p>
-     * 
+     *
      * @return the start html of the page
      */
     @Override
@@ -410,11 +410,11 @@ public class CmsReport extends CmsMultiDialog {
     }
 
     /**
-     * Builds the start html of the page, including setting of DOCTYPE and 
+     * Builds the start html of the page, including setting of DOCTYPE and
      * inserting a header with the content-type.<p>
-     * 
+     *
      * This overloads the default method of the parent class.<p>
-     * 
+     *
      * @param loadStyles if true, the defaul style sheet will be loaded
      * @return the start html of the page
      */
@@ -425,7 +425,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Returns true if the report Thread is still alive (i.e. running), false otherwise.<p>
-     *  
+     *
      * @return true if the report Thread is still alive
      */
     public boolean isAlive() {
@@ -440,7 +440,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Checks whether this is a simple report.<p>
-     * 
+     *
      * @return true, if the type of this report is a "simple"
      */
     public boolean isSimpleReport() {
@@ -449,11 +449,11 @@ public class CmsReport extends CmsMultiDialog {
     }
 
     /**
-     * Builds the start html of the page, including setting of DOCTYPE and 
+     * Builds the start html of the page, including setting of DOCTYPE and
      * inserting a header with the content-type.<p>
-     * 
+     *
      * This overloads the default method of the parent class.<p>
-     * 
+     *
      * @param segment the HTML segment (START / END)
      * @param loadStyles if true, the defaul style sheet will be loaded
      * @return the start html of the page
@@ -487,7 +487,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Returns an optional conclusion text to be displayed below the report output.<p>
-     * 
+     *
      * @return an optional conclusion text
      */
     public String reportConclusionText() {
@@ -497,7 +497,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Returns an optional introduction text to be displayed above the report output.<p>
-     * 
+     *
      * @return an optional introduction text
      */
     public String reportIntroductionText() {
@@ -507,7 +507,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Sets  if the workplace must be refreshed.<p>
-     * 
+     *
      * @param value <code>"true"</code> (String) if the workplace must be refreshed.
      */
     public void setParamRefreshWorkplace(String value) {
@@ -517,7 +517,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Sets the key name which contains the localized message for the continue checkbox.<p>
-     * 
+     *
      * @param key the key name which contains the localized message for the continue checkbox
      */
     public void setParamReportContinueKey(String key) {
@@ -527,7 +527,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Sets the type of this report.<p>
-     * 
+     *
      * @param value the type of this report
      */
     public void setParamReportType(String value) {
@@ -537,7 +537,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Sets the Thread id to display in this report.<p>
-     * 
+     *
      * @param value the Thread id to display in this report
      */
     public void setParamThread(String value) {
@@ -559,7 +559,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Sets if another report is following this report.<p>
-     * 
+     *
      * @param value <code>"true"</code> if another report is following this report
      */
     public void setParamThreadHasNext(String value) {
@@ -575,7 +575,7 @@ public class CmsReport extends CmsMultiDialog {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (REPORT_UPDATE.equals(getParamAction())) {
             setAction(ACTION_REPORT_UPDATE);
         } else {
@@ -585,7 +585,7 @@ public class CmsReport extends CmsMultiDialog {
 
     /**
      * Returns always true and does nothing else, has to be implemented.<p>
-     * 
+     *
      * @see org.opencms.workplace.CmsMultiDialog#performDialogOperation()
      */
     @Override

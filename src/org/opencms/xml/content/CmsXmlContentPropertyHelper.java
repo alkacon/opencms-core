@@ -82,24 +82,15 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     public enum JsonProperty {
 
         /** Property's default value. */
-        defaultValue,
-        /** Property's description. */
-        description,
-        /** Property's error message. */
-        error,
-        /** Property's nice name. */
-        niceName,
-        /** Property's validation regular expression. */
-        ruleRegex,
-        /** Property's validation rule type. */
-        ruleType,
-        /** Property's type. */
-        type,
-        /** Property's value. */
-        value,
-        /** Property's widget. */
-        widget,
-        /** Property's widget configuration. */
+        defaultValue, /** Property's description. */
+        description, /** Property's error message. */
+        error, /** Property's nice name. */
+        niceName, /** Property's validation regular expression. */
+        ruleRegex, /** Property's validation rule type. */
+        ruleType, /** Property's type. */
+        type, /** Property's value. */
+        value, /** Property's widget. */
+        widget, /** Property's widget configuration. */
         widgetConf;
     }
 
@@ -375,7 +366,10 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      *
      * @return a merged map of properties
      */
-    public static Map<String, String> mergeDefaults(CmsObject cms, CmsResource resource, Map<String, String> properties) {
+    public static Map<String, String> mergeDefaults(
+        CmsObject cms,
+        CmsResource resource,
+        Map<String, String> properties) {
 
         Map<String, CmsXmlContentProperty> propertyConfig = null;
         if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
@@ -386,7 +380,7 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
                     && CmsUUID.isValidUUID(property.getValue())) {
                     formatter = OpenCms.getADEManager().getCachedFormatters(
                         cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
-                        new CmsUUID(property.getValue()));
+                            new CmsUUID(property.getValue()));
                     break;
                 }
 
@@ -454,14 +448,18 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             I_CmsXmlContentValueLocation nameLocation = propertyLocation.getSubValue(nameElementName);
             String name = nameLocation.asString(cms).trim();
             String value = null;
-            I_CmsXmlContentValueLocation valueLocation = propertyLocation.getSubValue(CmsXmlContentProperty.XmlNode.Value.name());
-            I_CmsXmlContentValueLocation stringLocation = valueLocation.getSubValue(CmsXmlContentProperty.XmlNode.String.name());
-            I_CmsXmlContentValueLocation fileListLocation = valueLocation.getSubValue(CmsXmlContentProperty.XmlNode.FileList.name());
+            I_CmsXmlContentValueLocation valueLocation = propertyLocation.getSubValue(
+                CmsXmlContentProperty.XmlNode.Value.name());
+            I_CmsXmlContentValueLocation stringLocation = valueLocation.getSubValue(
+                CmsXmlContentProperty.XmlNode.String.name());
+            I_CmsXmlContentValueLocation fileListLocation = valueLocation.getSubValue(
+                CmsXmlContentProperty.XmlNode.FileList.name());
             if (stringLocation != null) {
                 value = stringLocation.asString(cms).trim();
             } else if (fileListLocation != null) {
                 List<CmsUUID> idList = new ArrayList<CmsUUID>();
-                List<I_CmsXmlContentValueLocation> fileLocations = fileListLocation.getSubValues(CmsXmlContentProperty.XmlNode.Uri.name());
+                List<I_CmsXmlContentValueLocation> fileLocations = fileListLocation.getSubValues(
+                    CmsXmlContentProperty.XmlNode.Uri.name());
                 for (I_CmsXmlContentValueLocation fileLocation : fileLocations) {
                     CmsUUID structureId = fileLocation.asId(cms);
                     idList.add(structureId);

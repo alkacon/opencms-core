@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-/** 
+/**
  * Context menu entry for copying a model page to be used as a model group page.<p>
  */
 public class CmsCopyAsModelGroupPageMenuEntry extends A_CmsSitemapMenuEntry {
@@ -46,8 +46,8 @@ public class CmsCopyAsModelGroupPageMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Creates a new model page menu entry.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsCopyAsModelGroupPageMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -95,8 +95,8 @@ public class CmsCopyAsModelGroupPageMenuEntry extends A_CmsSitemapMenuEntry {
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         final CmsUUID id = entry.getId();
         boolean show = CmsSitemapView.getInstance().isModelPageMode()
-            && (CmsSitemapView.getInstance().isModelPageEntry(id) || CmsSitemapView.getInstance().isParentModelPageEntry(
-                id));
+            && (CmsSitemapView.getInstance().isModelPageEntry(id)
+                || CmsSitemapView.getInstance().isParentModelPageEntry(id));
         setVisible(show);
     }
 }

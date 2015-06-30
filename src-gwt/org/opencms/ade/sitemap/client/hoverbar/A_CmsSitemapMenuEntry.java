@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * Common super class for all sitemap context menu entries.<p>
- * 
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry {
@@ -57,8 +57,8 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry {
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public A_CmsSitemapMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -158,9 +158,9 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry {
      */
     public abstract void onShow();
 
-    /** 
+    /**
      * Sets if this menu entry is active.<p>
-     * 
+     *
      * @param active <code>true</code> to set this menu entry active
      */
     public void setActive(boolean active) {
@@ -170,8 +170,8 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry {
 
     /**
      * Sets the reason if the entry is de-activated.<p>
-     * 
-     * @param reason the reason if the entry is de-activated 
+     *
+     * @param reason the reason if the entry is de-activated
      */
     public void setDisabledReason(String reason) {
 
@@ -180,7 +180,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry {
 
     /**
      * Sets the label (text) for the menu entry.<p>
-     * 
+     *
      * @param label the label (text) for the menu entry
      */
     public void setLabel(String label) {
@@ -190,7 +190,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry {
 
     /**
      * Sets if the menu entry is visible.<p>
-     * 
+     *
      * @param visible <code>true</code> to set the entry visible
      */
     public void setVisible(boolean visible) {
@@ -208,7 +208,7 @@ public abstract class A_CmsSitemapMenuEntry implements I_CmsContextMenuEntry {
 
     /**
      * Returns the hoverbar.<p>
-     * 
+     *
      * @return the hoverbar
      */
     protected CmsSitemapHoverbar getHoverbar() {

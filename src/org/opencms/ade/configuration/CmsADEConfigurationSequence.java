@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,9 +33,9 @@ import com.google.common.base.Optional;
 
 /**
  * Represents a sequence of inherited module/sitemap configurations, together with an index into that list.<p>
- * 
+ *
  * Used for computing the configuration inheritance.
- * 
+ *
  */
 public class CmsADEConfigurationSequence {
 
@@ -45,10 +45,10 @@ public class CmsADEConfigurationSequence {
     /** The index for the current configuration. */
     private int m_configIndex;
 
-    /** 
+    /**
      * Creates a new instance for the given list of configuration data, with the index pointing to the last element.<p>
-     * 
-     * @param configDatas the config data list 
+     *
+     * @param configDatas the config data list
      */
     public CmsADEConfigurationSequence(List<CmsADEConfigDataInternal> configDatas) {
 
@@ -57,34 +57,34 @@ public class CmsADEConfigurationSequence {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param configDatas the configuration data list 
-     * @param index the index into the list 
+     *
+     * @param configDatas the configuration data list
+     * @param index the index into the list
      */
     protected CmsADEConfigurationSequence(List<CmsADEConfigDataInternal> configDatas, int index) {
 
-        assert (0 <= index) && (index < configDatas.size());
+        assert(0 <= index) && (index < configDatas.size());
         m_configDatas = configDatas;
         m_configIndex = index;
 
     }
 
-    /** 
+    /**
      * Gets the current configuration data.<p>
-     * 
-     * @return the current configuration data 
+     *
+     * @return the current configuration data
      */
     public CmsADEConfigDataInternal getConfig() {
 
         return m_configDatas.get(m_configIndex);
     }
 
-    /** 
+    /**
      * Returns a sequence which only differs from this instance in that its index is one less.<p>
-     * 
+     *
      * However, if the index of this instance is already 0, Optional.absent will be returned.
-     * 
-     * @return the parent sequence, or Optional.absent if we are already at the start of the sequence 
+     *
+     * @return the parent sequence, or Optional.absent if we are already at the start of the sequence
      */
     public Optional<CmsADEConfigurationSequence> getParent() {
 

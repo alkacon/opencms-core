@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,14 +51,14 @@ import java.util.regex.Pattern;
  *
  * The resource bundle is configured with the widget configuration attribute. An optional key name to look up in the bundle
  * can be given, too, in case it is different from the element name: <code>key=mykey</code>.<p>
- * 
+ *
  * The locale to get the value for can be configured, too, by adding a configuration directive: <code>locale=en</code>.<p>
- * 
+ *
  * Example: <code><layout element="elemname" widget="LocalizationWidget" configuration="org.opencms.workplace.messages|key=mykey|locale=en" /></code>.<p>
  *
  * To use the stored localization values and have the values of the resource bundles as fallback,
  * use the {@link org.opencms.xml.CmsXmlMessages} object.<p>
- * 
+ *
  * @since 6.5.4
  */
 public class CmsLocalizationWidget extends A_CmsWidget implements I_CmsADEWidget {
@@ -70,13 +70,14 @@ public class CmsLocalizationWidget extends A_CmsWidget implements I_CmsADEWidget
     public static final String OPTION_LOCALE = "locale=";
 
     /** Pattern to get OpenCms like macros, e.g. "%(0)". */
-    private static Pattern PATTERN_MACRO = Pattern.compile(".*("
-        + I_CmsMacroResolver.MACRO_DELIMITER
-        + "\\"
-        + I_CmsMacroResolver.MACRO_START
-        + ")(\\d*)(\\"
-        + I_CmsMacroResolver.MACRO_END
-        + ").*");
+    private static Pattern PATTERN_MACRO = Pattern.compile(
+        ".*("
+            + I_CmsMacroResolver.MACRO_DELIMITER
+            + "\\"
+            + I_CmsMacroResolver.MACRO_START
+            + ")(\\d*)(\\"
+            + I_CmsMacroResolver.MACRO_END
+            + ").*");
 
     /** Pattern to get message bundle arguments, e.g. "{0}". */
     private static Pattern PATTERN_MESSAGEARGUMENT = Pattern.compile(".*(\\{)(\\d*)(\\}).*");
@@ -101,7 +102,7 @@ public class CmsLocalizationWidget extends A_CmsWidget implements I_CmsADEWidget
 
     /**
      * Creates a new input localization widget with the given configuration.<p>
-     * 
+     *
      * @param configuration the configuration to use
      */
     public CmsLocalizationWidget(String configuration) {
@@ -249,7 +250,7 @@ public class CmsLocalizationWidget extends A_CmsWidget implements I_CmsADEWidget
 
     /**
      * Initializes the localized bundle to get the value from, the optional key name and the optional locale.<p>
-     * 
+     *
      * @param cms an initialized instance of a CmsObject
      * @param schemaType the widget parameter to generate the widget for
      */
@@ -292,7 +293,7 @@ public class CmsLocalizationWidget extends A_CmsWidget implements I_CmsADEWidget
 
     /**
      * Initializes the localized bundle to get the value from, the optional key name and the optional locale.<p>
-     * 
+     *
      * @param cms an initialized instance of a CmsObject
      * @param param the widget parameter to generate the widget for
      */
@@ -337,14 +338,14 @@ public class CmsLocalizationWidget extends A_CmsWidget implements I_CmsADEWidget
      * Determine value to show in editor.<p>
      * @param cms an initialized instance of a CmsObject
      * @param param the widget parameter to generate the widget for
-     * 
+     *
      * @return value to show in editor
      */
     private String getValue(CmsObject cms, I_CmsWidgetParameter param) {
 
         String value = m_messages.key(m_bundleKey);
-        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(param.getStringValue(cms)) && !value.equals(param.getStringValue(cms)))
-            || value.startsWith(CmsMessages.UNKNOWN_KEY_EXTENSION)) {
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(param.getStringValue(cms))
+            && !value.equals(param.getStringValue(cms))) || value.startsWith(CmsMessages.UNKNOWN_KEY_EXTENSION)) {
             // saved value is provided and different from localized value in bundle or no value found in bundle, use it
             value = param.getStringValue(cms);
             // replace OpenCms macro syntax with message bundle arguments

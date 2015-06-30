@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ import java.util.Map;
 
 /**
  * Oracle implementation for the creation of the indexes of the tables in version 7.<p>
- * 
+ *
  * @since 7.0.0
  */
 public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.db.update6to7.CmsUpdateDBCreateIndexes7 {
@@ -71,7 +71,7 @@ public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.db.update6to7.C
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the sql queries properties file could not be read
      */
     public CmsUpdateDBCreateIndexes7()
@@ -159,8 +159,8 @@ public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.db.update6to7.C
     }
 
     /**
-     * Creates the new indexes for the given table.<p> 
-     * 
+     * Creates the new indexes for the given table.<p>
+     *
      * @param dbCon the connection to the database
      */
     private void createNewIndexes(CmsSetupDb dbCon) {
@@ -268,13 +268,13 @@ public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.db.update6to7.C
 
     /**
      * Gets the constraints for a table.<p>
-     * 
+     *
      * @param dbCon the db connection interface
      * @param tablename the table to get the indexes from
-     * 
+     *
      * @return a list of constraints
-     * 
-     * @throws SQLException if something goes wrong 
+     *
+     * @throws SQLException if something goes wrong
      */
     private List<String> getConstraintsTopDrop(CmsSetupDb dbCon, String tablename) throws SQLException {
 
@@ -301,10 +301,10 @@ public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.db.update6to7.C
 
     /**
      * Returns the list of the indexes that shall be dropped before adding the final new indexes.<p>
-     * 
+     *
      * @param dbCon the connection to the database
      * @param tablename the table to drop the indexes from
-     * 
+     *
      * @return the list of indexes to drop
      */
     private List<String> getIndexesToDrop(CmsSetupDb dbCon, String tablename) {

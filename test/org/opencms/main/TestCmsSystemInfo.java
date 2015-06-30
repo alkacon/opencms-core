@@ -158,8 +158,8 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         assertEquals(path + " does not exist.", true, file.exists());
         assertEquals(true, file.isDirectory());
 
-        path = sysinfo.getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.FOLDER_CONFIG_DEFAULT
-            + CmsSearchConfiguration.DEFAULT_XML_FILE_NAME);
+        path = sysinfo.getAbsoluteRfsPathRelativeToWebInf(
+            CmsSystemInfo.FOLDER_CONFIG_DEFAULT + CmsSearchConfiguration.DEFAULT_XML_FILE_NAME);
         assertNotNull(path);
         path = path.trim();
         assertEquals(true, path.length() != 0);
@@ -201,7 +201,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
 
         /*
         // some extra calls to make sure the version check method really works as expected
-        
+
         checkVersions("9.5", expectedVersion, true);
         checkVersions("9.5_customer", expectedVersion, true);
         checkVersions("9.7.x", expectedVersion, true);
@@ -267,9 +267,10 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
                 "We always assume the build system name starts with 'Jenkins'",
                 info.get("build.system").getValue().startsWith("Jenkins"));
         } else {
-            fail("No valid version information for test cases found, version id is '"
-                + OpenCms.getSystemInfo().getVersionId()
-                + "'\n\nThis indicates manual unexpected changes in 'src/org/opencms/main/version.properties'");
+            fail(
+                "No valid version information for test cases found, version id is '"
+                    + OpenCms.getSystemInfo().getVersionId()
+                    + "'\n\nThis indicates manual unexpected changes in 'src/org/opencms/main/version.properties'");
         }
     }
 
@@ -288,7 +289,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
 
     /**
      * Compare version numbers.
-     * 
+     *
      * @param configuredVersion the configured version
      * @param expectedVersion the expected version
      * @param larger indicates if the configured version number is expected to be larger or smaller
@@ -329,12 +330,14 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         System.out.println("\nExpected Version  : " + v1);
         System.out.println("Configured Version: " + v2 + " [" + configuredVersion + "]");
 
-        assertTrue("OpenCms Version number not set correctly, expected a version equal or "
-            + (larger ? "larger" : "smaller")
-            + " then ["
-            + expectedVersion
-            + "] but got ["
-            + configuredVersion
-            + "]", larger == (v2.compareTo(v1) >= 0));
+        assertTrue(
+            "OpenCms Version number not set correctly, expected a version equal or "
+                + (larger ? "larger" : "smaller")
+                + " then ["
+                + expectedVersion
+                + "] but got ["
+                + configuredVersion
+                + "]",
+            larger == (v2.compareTo(v1) >= 0));
     }
 }

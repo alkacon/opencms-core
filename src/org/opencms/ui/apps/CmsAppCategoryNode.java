@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import com.google.common.collect.Lists;
 
 /**
  * Tree node representing an app category.<p>
- * 
+ *
  * Contains a list of child nodes and a list of apps, which are the leaves of the tree.
  * Note that the list of children is not initialized after construction, it has to be filled manually.
  */
@@ -55,7 +55,7 @@ public class CmsAppCategoryNode {
     /** Used to count the apps in the subtree starting with this node. */
     private int m_appCount;
 
-    /** 
+    /**
      * Creates a new root node.<p>
      */
     public CmsAppCategoryNode() {
@@ -65,8 +65,8 @@ public class CmsAppCategoryNode {
 
     /**
      * Creates a new category node for the given category.
-     *  
-     * @param appCategory the category data 
+     *
+     * @param appCategory the category data
      */
     public CmsAppCategoryNode(CmsAppCategory appCategory) {
 
@@ -75,18 +75,18 @@ public class CmsAppCategoryNode {
 
     /**
      * Adds an app configuration.<p>
-     * 
-     * @param appConfig the app configuration to add 
+     *
+     * @param appConfig the app configuration to add
      */
     public void addAppConfiguration(I_CmsWorkplaceAppConfiguration appConfig) {
 
         m_appConfigurations.add(appConfig);
     }
 
-    /** 
+    /**
      * Adds a child node.<p>
-     * 
-     * @param node the child node 
+     *
+     * @param node the child node
      */
     public void addChild(CmsAppCategoryNode node) {
 
@@ -96,8 +96,8 @@ public class CmsAppCategoryNode {
 
     /**
      * Gets the app configurations for this category.<p>
-     * 
-     * @return the app configurations 
+     *
+     * @return the app configurations
      */
     public List<I_CmsWorkplaceAppConfiguration> getAppConfigurations() {
 
@@ -106,8 +106,8 @@ public class CmsAppCategoryNode {
 
     /**
      * Gets the app category data for this node.<p>
-     * 
-     * @return the app category data 
+     *
+     * @return the app category data
      */
     public CmsAppCategory getCategory() {
 
@@ -116,8 +116,8 @@ public class CmsAppCategoryNode {
 
     /**
      * Gets the child nodes of this node.<p>
-     * 
-     * @return the child nodes 
+     *
+     * @return the child nodes
      */
     public List<CmsAppCategoryNode> getChildren() {
 
@@ -149,12 +149,14 @@ public class CmsAppCategoryNode {
 
             public int compare(CmsAppCategoryNode o1, CmsAppCategoryNode o2) {
 
-                return ComparisonChain.start().compare(o1.getCategory().getOrder(), o2.getCategory().getOrder()).result();
+                return ComparisonChain.start().compare(
+                    o1.getCategory().getOrder(),
+                    o2.getCategory().getOrder()).result();
             }
         });
     }
 
-    /** 
+    /**
      * Recursively calls sort on all descendants of this node.<p>
      */
     public void sortRecursively() {
@@ -165,7 +167,7 @@ public class CmsAppCategoryNode {
         }
     }
 
-    /** 
+    /**
      * Recursively computes the app count for each descendant of this tree node.<p>
      */
     private void computeAppCount() {
@@ -177,10 +179,10 @@ public class CmsAppCategoryNode {
         }
     }
 
-    /** 
+    /**
      * Internal helper method used to remove subtrees containing no app configurations.<p>
-     * 
-     * @param isRoot should be true if this is a root node 
+     *
+     * @param isRoot should be true if this is a root node
      */
     private void internalRemoveApplessSubtrees(boolean isRoot) {
 

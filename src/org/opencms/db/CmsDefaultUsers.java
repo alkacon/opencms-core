@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import org.opencms.util.CmsStringUtil;
 
 /**
  * Provides access to the names of the OpenCms default users and groups.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsDefaultUsers {
@@ -82,8 +82,8 @@ public class CmsDefaultUsers {
 
     /**
      * Constructor that initializes all names with default values.<p>
-     * 
-     * See the constants of this class for the defaule values that are uses.<p> 
+     *
+     * See the constants of this class for the defaule values that are uses.<p>
      */
     public CmsDefaultUsers() {
 
@@ -98,7 +98,7 @@ public class CmsDefaultUsers {
 
     /**
      * Public constructor. <p>
-     * 
+     *
      * @param userAdmin the name of the default admin user
      * @param userGuest the name of the guest user
      * @param userExport the name of the export user
@@ -121,7 +121,7 @@ public class CmsDefaultUsers {
 
     /**
      * Returns the name of the administrators group.<p>
-     * 
+     *
      * @return the name of the administrators group
      */
     public String getGroupAdministrators() {
@@ -131,7 +131,7 @@ public class CmsDefaultUsers {
 
     /**
      * Returns the name of the guests group.<p>
-     * 
+     *
      * @return the name of the guests group
      */
     public String getGroupGuests() {
@@ -141,10 +141,10 @@ public class CmsDefaultUsers {
 
     /**
      * Returns the name of the project managers group.<p>
-     * 
+     *
      * @return the name of the project managers group
-     * 
-     * @deprecated 
+     *
+     * @deprecated
      *      As of OpenCms 9.5, there is no default group for project managers anymore.
      *      Use the role {@link org.opencms.security.CmsRole#PROJECT_MANAGER} instead in case you want a user to be able to manage projects.
      *      For backward compatibility in old installations, this returns the old default group name "Projectmanagers".
@@ -157,7 +157,7 @@ public class CmsDefaultUsers {
 
     /**
      * Returns the name of the users group.<p>
-     * 
+     *
      * @return the name of the users group
      */
     public String getGroupUsers() {
@@ -167,7 +167,7 @@ public class CmsDefaultUsers {
 
     /**
      * Returns the name of the default administrator user.<p>
-     * 
+     *
      * @return the name of the default administrator user
      */
     public String getUserAdmin() {
@@ -177,7 +177,7 @@ public class CmsDefaultUsers {
 
     /**
      * Returns the name of the default deleted resource user.<p>
-     * 
+     *
      * @return the name of the default deleted resource user
      */
     public String getUserDeletedResource() {
@@ -187,7 +187,7 @@ public class CmsDefaultUsers {
 
     /**
      * Returns the name of the user used to generate the static export.<p>
-     * 
+     *
      * @return the name of the user used to generate the static export
      */
     public String getUserExport() {
@@ -197,7 +197,7 @@ public class CmsDefaultUsers {
 
     /**
      * Returns the name of the default guest user.<p>
-     * 
+     *
      * @return the name of the default guest user
      */
     public String getUserGuest() {
@@ -211,7 +211,7 @@ public class CmsDefaultUsers {
      * @param groupName the group name to check
      * @return <code>true</code> if group name is one of OpenCms default groups, <code>false</code> if it is not
      * or if <code>groupName</code> is <code>null</code> or an empty string (no trim)
-     * 
+     *
      * @see #getGroupAdministrators()
      * @see #getGroupUsers()
      * @see #getGroupGuests()
@@ -239,10 +239,10 @@ public class CmsDefaultUsers {
      * Checks if a given user name is the name of one of the OpenCms default users.<p>
      *
      * @param userName the group name to check
-     * 
+     *
      * @return <code>true</code> if user name is one of OpenCms default users, <code>false</code> if it is not
      * or if <code>userName</code> is <code>null</code> or an empty string (no trim)
-     * 
+     *
      * @see #getUserAdmin()
      * @see #getUserExport()
      * @see #getUserGuest()
@@ -271,9 +271,9 @@ public class CmsDefaultUsers {
 
     /**
      * Checks if a given group name is the name of the guests group.<p>
-     * 
+     *
      * @param groupName the group name to check
-     * 
+     *
      * @return <code>true</code> if a given group name is the name of the guests group
      */
     public boolean isGroupGuests(String groupName) {
@@ -286,9 +286,9 @@ public class CmsDefaultUsers {
 
     /**
      * Checks if a given user name is the name of the admin user.<p>
-     * 
+     *
      * @param userName the user name to check
-     * 
+     *
      * @return <code>true</code> if a given user name is the name of the admin user
      */
     public boolean isUserAdmin(String userName) {
@@ -301,9 +301,9 @@ public class CmsDefaultUsers {
 
     /**
      * Checks if a given user name is the name of the export user.<p>
-     * 
+     *
      * @param userName the user name to check
-     * 
+     *
      * @return <code>true</code> if a given user name is the name of the export user
      */
     public boolean isUserExport(String userName) {
@@ -316,9 +316,9 @@ public class CmsDefaultUsers {
 
     /**
      * Checks if a given user name is the name of the guest user.<p>
-     * 
+     *
      * @param userName the user name to check
-     * 
+     *
      * @return <code>true</code> if a given user name is the name of the guest user
      */
     public boolean isUserGuest(String userName) {
@@ -331,7 +331,7 @@ public class CmsDefaultUsers {
 
     /**
      * Initializes this instance.<p>
-     * 
+     *
      * @param userAdmin the name of the default admin user
      * @param userGuest the name of the guest user
      * @param userExport the name of the export user

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import java.util.Map;
 /**
  * Pre editor action for XML content resource types, checks if model files are available for the XML content
  * to create in direct edit mode and shows the selection before opening the editor.<p>
- * 
+ *
  * @since 6.5.4
  */
 public class CmsPreEditorActionDefinitionXmlContent extends A_CmsPreEditorActionDefinition {

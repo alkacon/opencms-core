@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,10 +50,10 @@ public class CmsTypeWrapper implements Exportable {
 
     }
 
-    /** 
+    /**
      * Wrapper constructor.<p>
-     * 
-     * @param type the type object to wrap 
+     *
+     * @param type the type object to wrap
      */
     public CmsTypeWrapper(CmsType type) {
 
@@ -62,10 +62,10 @@ public class CmsTypeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @param attributeName parameter for the wrapped method 
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @param attributeName parameter for the wrapped method
+     *
+     * @return the result of the wrapped method
      */
     public int getAttributeMaxOccurrence(String attributeName) {
 
@@ -74,10 +74,10 @@ public class CmsTypeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @param attributeName parameter for the wrapped method 
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @param attributeName parameter for the wrapped method
+     *
+     * @return the result of the wrapped method
      */
     public int getAttributeMinOccurrence(String attributeName) {
 
@@ -86,8 +86,8 @@ public class CmsTypeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @return the result of the wrapped method
      */
     public String[] getAttributeNames() {
 
@@ -96,10 +96,10 @@ public class CmsTypeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @param attributeName parameter for the wrapped method 
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @param attributeName parameter for the wrapped method
+     *
+     * @return the result of the wrapped method
      */
     public CmsTypeWrapper getAttributeType(String attributeName) {
 
@@ -108,10 +108,10 @@ public class CmsTypeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @param attributeName parameter for the wrapped method 
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @param attributeName parameter for the wrapped method
+     *
+     * @return the result of the wrapped method
      */
     public String getAttributeTypeName(String attributeName) {
 
@@ -120,7 +120,7 @@ public class CmsTypeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
+     *
      * @return the result of the wrapped method
      */
     public int getChoiceMaxOccurrence() {
@@ -130,7 +130,7 @@ public class CmsTypeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
+     *
      * @return the result of the wrapped method
      */
     public String getId() {
@@ -140,7 +140,7 @@ public class CmsTypeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
+     *
      * @return the result of the wrapped method
      */
     public boolean isChoice() {
@@ -150,8 +150,8 @@ public class CmsTypeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @return the result of the wrapped method
      */
     public boolean isSimpleType() {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,11 +33,11 @@ import java.util.List;
 
 /**
  * Helper class to ease implementation of CMIS service methods which support paging.<p>
- * 
+ *
  * This class works as an iterator for a given list, and limits the number of iterations based on skip/max parameters
  * which are usually passed to the service methods.<p>
- * 
- * @param <A> the content type of the list 
+ *
+ * @param <A> the content type of the list
  */
 public class CmsObjectListLimiter<A> implements Iterable<A>, Iterator<A> {
 
@@ -52,10 +52,10 @@ public class CmsObjectListLimiter<A> implements Iterable<A>, Iterator<A> {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param baseList the list over which we want to iterate 
-     * @param maxItems the maximum number of items 
-     * @param skipCount the number of items to skip 
+     *
+     * @param baseList the list over which we want to iterate
+     * @param maxItems the maximum number of items
+     * @param skipCount the number of items to skip
      */
     public CmsObjectListLimiter(List<A> baseList, BigInteger maxItems, BigInteger skipCount) {
 
@@ -75,8 +75,8 @@ public class CmsObjectListLimiter<A> implements Iterable<A>, Iterator<A> {
 
     /**
      * Checks if there are more items left in the base list which were not returned.<p>
-     * 
-     * @return true if there are more items left in the base list which were not returned 
+     *
+     * @return true if there are more items left in the base list which were not returned
      */
     public boolean hasMore() {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Sitemap toolbar.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSitemapToolbar extends CmsToolbar {
@@ -68,8 +68,8 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
     /**
      * Constructor.<p>
-     * 
-     * @param controller the sitemap controller 
+     *
+     * @param controller the sitemap controller
      */
     public CmsSitemapToolbar(CmsSitemapController controller) {
 
@@ -126,8 +126,8 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
     /**
      * Gets the context menu button.<p>
-     * 
-     * @return the context menu button 
+     *
+     * @return the context menu button
      */
     public CmsToolbarContextButton getContextMenuButton() {
 
@@ -136,7 +136,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
     /**
      * Returns the toolbar handler.<p>
-     * 
+     *
      * @return the toolbar handler
      */
     public CmsSitemapToolbarHandler getToolbarHandler() {
@@ -146,7 +146,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
     /**
      * Should be executed by every widget when starting an action.<p>
-     * 
+     *
      * @param widget the widget that got activated
      */
     public void onButtonActivation(Widget widget) {
@@ -161,7 +161,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
     /**
      * Enables/disables the new clipboard button.<p>
-     * 
+     *
      * @param enabled <code>true</code> to enable the button
      * @param disabledReason the reason, why the button is disabled
      */
@@ -178,7 +178,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
     /**
      * Sets the available gallery types.<p>
-     * 
+     *
      * @param galleryTypes the gallery types
      */
     public void setGalleryTypes(Collection<CmsGalleryType> galleryTypes) {
@@ -188,8 +188,8 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
     /**
      * Sets the galleries mode.<p>
-     * 
-     * @param mode the editor mode 
+     *
+     * @param mode the editor mode
      */
     public void setMode(EditorMode mode) {
 
@@ -212,7 +212,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
     /**
      * Enables/disables the new menu button.<p>
-     * 
+     *
      * @param enabled <code>true</code> to enable the button
      * @param disabledReason the reason, why the button is disabled
      */
@@ -227,7 +227,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
     /**
      * Enables/disables the new menu button.<p>
-     * 
+     *
      * @param enabled <code>true</code> to enable the button
      * @param disabledReason the reason, why the button is disabled
      */

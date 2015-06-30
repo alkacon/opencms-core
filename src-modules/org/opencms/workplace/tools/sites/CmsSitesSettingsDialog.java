@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Configuration dialog for general site settings.<p>
- * 
+ *
  * @since 9.0.0
  */
 public class CmsSitesSettingsDialog extends CmsWidgetDialog {
@@ -72,7 +72,7 @@ public class CmsSitesSettingsDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSitesSettingsDialog(CmsJspActionElement jsp) {
@@ -83,7 +83,7 @@ public class CmsSitesSettingsDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -179,8 +179,9 @@ public class CmsSitesSettingsDialog extends CmsWidgetDialog {
 
         StringBuffer result = new StringBuffer(1024);
         result.append(createWidgetTableStart());
-        result.append(dialogBlockStart(Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
-            Messages.GUI_SITES_GENERAL_SETTINGS_0)));
+        result.append(dialogBlockStart(
+            Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                Messages.GUI_SITES_GENERAL_SETTINGS_0)));
         result.append(createWidgetTableStart());
         result.append(createDialogRowsHtml(0, 2));
         result.append(createWidgetTableEnd());
@@ -254,11 +255,12 @@ public class CmsSitesSettingsDialog extends CmsWidgetDialog {
 
         addWidget(new CmsWidgetDialogParameter(this, "workplaceServer", PAGES[0], new CmsComboWidget(wpServerOptions)));
         addWidget(new CmsWidgetDialogParameter(this, "defaultUri", PAGES[0], new CmsSelectWidget(defaultUriOptions)));
-        addWidget(new CmsWidgetDialogParameter(this, "sharedFolder", PAGES[0], new CmsVfsFileWidget(
-            false,
-            "",
-            false,
-            false)));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                this,
+                "sharedFolder",
+                PAGES[0],
+                new CmsVfsFileWidget(false, "", false, false)));
     }
 
     /**

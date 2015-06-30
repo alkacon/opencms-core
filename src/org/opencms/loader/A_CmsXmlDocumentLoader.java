@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,8 +49,8 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * OpenCms base loader implementation for resources of type <code>{@link org.opencms.xml.I_CmsXmlDocument}</code>.<p>
- * 
- * @since 6.2.0 
+ *
+ * @since 6.2.0
  */
 abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResourceStringDumpLoader {
 
@@ -59,7 +59,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        // xml document loaders require no parameters     
+        // xml document loaders require no parameters
     }
 
     /**
@@ -83,9 +83,8 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
 
         if ((element == null) || (selectedLocale == null)) {
             // element and locale to display must be specified
-            throw new CmsLoaderException(Messages.get().container(
-                Messages.ERR_LOADER_XML_NEED_ELEMENT_LOCALE_1,
-                resource.getRootPath()));
+            throw new CmsLoaderException(
+                Messages.get().container(Messages.ERR_LOADER_XML_NEED_ELEMENT_LOCALE_1, resource.getRootPath()));
         }
 
         // get the value as a String
@@ -127,16 +126,16 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
             locales);
         if (locale == null) {
             // no locale can be determined to display, output a meaningfull error message
-            throw new CmsLoaderException(Messages.get().container(
-                Messages.ERR_LOADER_UNKNOWN_LOCALE_5,
-                new Object[] {
-                    resource.getRootPath(),
-                    element,
-                    selectedLocale,
-                    CmsLocaleManager.getLocaleNames(locales),
-                    CmsLocaleManager.getLocaleNames(OpenCms.getLocaleManager().getDefaultLocales(
-                        cms,
-                        cms.getSitePath(resource)))}));
+            throw new CmsLoaderException(
+                Messages.get().container(
+                    Messages.ERR_LOADER_UNKNOWN_LOCALE_5,
+                    new Object[] {
+                        resource.getRootPath(),
+                        element,
+                        selectedLocale,
+                        CmsLocaleManager.getLocaleNames(locales),
+                        CmsLocaleManager.getLocaleNames(
+                            OpenCms.getLocaleManager().getDefaultLocales(cms, cms.getSitePath(resource)))}));
         }
         // return the appropriate content
         return doc.getStringValue(cms, element, locale);
@@ -158,7 +157,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
 
     /**
      * Returns <code>null</code> since XML document loaders does usually not need to be configured.<p>
-     * 
+     *
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
     public CmsParameterConfiguration getConfiguration() {
@@ -172,9 +171,8 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
     public void initConfiguration() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_LOADER_INITIALIZED_1,
-                this.getClass().getName()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
         }
     }
 
@@ -226,9 +224,9 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
             getTemplatePropertyDefinition());
         CmsTemplateContext context = loaderFacade.getTemplateContext();
         req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT, context);
-        TemplateBean templateBean = new TemplateBean(context != null
-        ? context.getKey()
-        : loaderFacade.getTemplateName(), loaderFacade.getTemplate());
+        TemplateBean templateBean = new TemplateBean(
+            context != null ? context.getKey() : loaderFacade.getTemplateName(),
+            loaderFacade.getTemplate());
         templateBean.setForced((context != null) && context.isForced());
         req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN, templateBean);
         loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);
@@ -257,20 +255,20 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
 
     /**
      * Returns the property definition name used to selecte the template for this XML document resource loader.<p>
-     * 
+     *
      * @return the property definition name used to selecte the template for this XML document resource loader
      */
     protected abstract String getTemplatePropertyDefinition();
 
     /**
      * Returns the unmarshalled XML document.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param resource the requested resource
      * @param req the current Servlet request
-     * 
+     *
      * @return the unmarshalled XML document
-     * 
+     *
      * @throws CmsException in case the unmarshalling fails
      */
     protected abstract I_CmsXmlDocument unmarshalXmlDocument(CmsObject cms, CmsResource resource, ServletRequest req)

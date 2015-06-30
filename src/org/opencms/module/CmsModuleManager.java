@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -68,8 +68,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Manages the modules of an OpenCms installation.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsModuleManager {
 
@@ -93,8 +93,8 @@ public class CmsModuleManager {
 
     /**
      * Basic constructor.<p>
-     * 
-     * @param configuredModules the list of configured modules 
+     *
+     * @param configuredModules the list of configured modules
      */
     public CmsModuleManager(List<CmsModule> configuredModules) {
 
@@ -112,30 +112,29 @@ public class CmsModuleManager {
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_NUM_MODS_CONFIGURED_1,
-                new Integer(m_modules.size())));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_NUM_MODS_CONFIGURED_1, new Integer(m_modules.size())));
         }
         m_moduleExportPoints = Collections.emptySet();
     }
 
     /**
      * Returns a map of dependencies.<p>
-     * 
+     *
      * The module dependencies are get from the installed modules or
      * from the module manifest.xml files found in the given FRS path.<p>
-     * 
+     *
      * Two types of dependency lists can be generated:<br>
      * <ul>
      *   <li>Forward dependency lists: a list of modules that depends on a module</li>
      *   <li>Backward dependency lists: a list of modules that a module depends on</li>
      * </ul>
-     * 
+     *
      * @param rfsAbsPath a RFS absolute path to search for modules, or <code>null</code> to use the installed modules
      * @param mode if <code>true</code> a list of forward dependency is build, is not a list of backward dependency
-     * 
+     *
      * @return a Map of module names as keys and a list of dependency names as values
-     * 
+     *
      * @throws CmsConfigurationException if something goes wrong
      */
     public static Map<String, List<String>> buildDepsForAllModules(String rfsAbsPath, boolean mode)
@@ -153,7 +152,7 @@ public class CmsModuleManager {
             CmsModule module = itMods.next();
 
             // if module a depends on module b, and module c depends also on module b:
-            // build a map with a list containing "a" and "c" keyed by "b" to get a 
+            // build a map with a list containing "a" and "c" keyed by "b" to get a
             // list of modules depending on module "b"...
             Iterator<CmsModuleDependency> itDeps = module.getDependencies().iterator();
             while (itDeps.hasNext()) {
@@ -193,22 +192,22 @@ public class CmsModuleManager {
 
     /**
      * Returns a map of dependencies between the given modules.<p>
-     * 
+     *
      * The module dependencies are get from the installed modules or
      * from the module manifest.xml files found in the given FRS path.<p>
-     * 
+     *
      * Two types of dependency lists can be generated:<br>
      * <ul>
      *   <li>Forward dependency lists: a list of modules that depends on a module</li>
      *   <li>Backward dependency lists: a list of modules that a module depends on</li>
      * </ul>
-     * 
+     *
      * @param moduleNames a list of module names
      * @param rfsAbsPath a RFS absolute path to search for modules, or <code>null</code> to use the installed modules
      * @param mode if <code>true</code> a list of forward dependency is build, is not a list of backward dependency
-     * 
+     *
      * @return a Map of module names as keys and a list of dependency names as values
-     * 
+     *
      * @throws CmsConfigurationException if something goes wrong
      */
     public static Map<String, List<String>> buildDepsForModulelist(
@@ -239,11 +238,11 @@ public class CmsModuleManager {
 
     /**
      * Returns a map of modules found in the given RFS absolute path.<p>
-     * 
+     *
      * @param rfsAbsPath the path to look for module distributions
-     * 
+     *
      * @return a map of <code>{@link CmsModule}</code> objects for keys and filename for values
-     * 
+     *
      * @throws CmsConfigurationException if something goes wrong
      */
     public static Map<CmsModule, String> getAllModulesFromPath(String rfsAbsPath) throws CmsConfigurationException {
@@ -283,15 +282,15 @@ public class CmsModuleManager {
      * Sorts a given list of module names by dependencies,
      * so that the resulting list can be imported in that given order,
      * that means modules without dependencies first.<p>
-     * 
+     *
      * The module dependencies are get from the installed modules or
      * from the module manifest.xml files found in the given FRS path.<p>
-     * 
+     *
      * @param moduleNames a list of module names
      * @param rfsAbsPath a RFS absolute path to search for modules, or <code>null</code> to use the installed modules
-     * 
+     *
      * @return a sorted list of module names
-     * 
+     *
      * @throws CmsConfigurationException if something goes wrong
      */
     public static List<String> topologicalSort(List<String> moduleNames, String rfsAbsPath)
@@ -320,9 +319,8 @@ public class CmsModuleManager {
             }
         }
         if (!modules.isEmpty()) {
-            throw new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_MODULE_DEPENDENCY_CYCLE_1,
-                modules.toString()));
+            throw new CmsIllegalStateException(
+                Messages.get().container(Messages.ERR_MODULE_DEPENDENCY_CYCLE_1, modules.toString()));
         }
         Collections.reverse(retList);
         return retList;
@@ -330,12 +328,12 @@ public class CmsModuleManager {
 
     /**
      * Adds a new module to the module manager.<p>
-     * 
-     * @param cms must be initialized with "Admin" permissions 
+     *
+     * @param cms must be initialized with "Admin" permissions
      * @param module the module to add
-     * 
+     *
      * @throws CmsSecurityException if the required permissions are not available (i.e. no "Admin" CmsObject has been provided)
-     * @throws CmsConfigurationException if a module with this name is already configured 
+     * @throws CmsConfigurationException if a module with this name is already configured
      */
     public synchronized void addModule(CmsObject cms, CmsModule module)
     throws CmsSecurityException, CmsConfigurationException {
@@ -345,9 +343,8 @@ public class CmsModuleManager {
 
         if (m_modules.containsKey(module.getName())) {
             // module is currently configured, no create possible
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_MODULE_ALREADY_CONFIGURED_1,
-                module.getName()));
+            throw new CmsConfigurationException(
+                Messages.get().container(Messages.ERR_MODULE_ALREADY_CONFIGURED_1, module.getName()));
 
         }
 
@@ -378,16 +375,16 @@ public class CmsModuleManager {
     }
 
     /**
-     * Checks if a modules dependencies are fulfilled.<p> 
-     * 
+     * Checks if a modules dependencies are fulfilled.<p>
+     *
      * The possible values for the <code>mode</code> parameter are:<dl>
      * <dt>{@link #DEPENDENCY_MODE_DELETE}</dt>
-     *      <dd>Check for module deleting, i.e. are other modules dependent on the 
+     *      <dd>Check for module deleting, i.e. are other modules dependent on the
      *          given module?</dd>
      * <dt>{@link #DEPENDENCY_MODE_IMPORT}</dt>
      *      <dd>Check for module importing, i.e. are all dependencies required by the given
      *          module available?</dd></dl>
-     * 
+     *
      * @param module the module to check the dependencies for
      * @param mode the dependency check mode
      * @return a list of dependencies that are not fulfilled, if empty all dependencies are fulfilled
@@ -409,7 +406,7 @@ public class CmsModuleManager {
             }
 
         } else if (mode == DEPENDENCY_MODE_IMPORT) {
-            // import mode, check if all module dependencies are fulfilled            
+            // import mode, check if all module dependencies are fulfilled
             Iterator<CmsModule> i = m_modules.values().iterator();
             // add all dependencies that must be found
             result.addAll(module.getDependencies());
@@ -423,25 +420,24 @@ public class CmsModuleManager {
             }
         } else {
             // invalid mode selected
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_CHECK_DEPENDENCY_INVALID_MODE_1,
-                new Integer(mode)));
+            throw new CmsRuntimeException(
+                Messages.get().container(Messages.ERR_CHECK_DEPENDENCY_INVALID_MODE_1, new Integer(mode)));
         }
 
         return result;
     }
 
     /**
-     * Checks the module selection list for consistency, that means 
+     * Checks the module selection list for consistency, that means
      * that if a module is selected, all its dependencies are also selected.<p>
-     * 
+     *
      * The module dependencies are get from the installed modules or
      * from the module manifest.xml files found in the given FRS path.<p>
-     * 
+     *
      * @param moduleNames a list of module names
      * @param rfsAbsPath a RFS absolute path to search for modules, or <code>null</code> to use the installed modules
      * @param forDeletion there are two modes, one for installation of modules, and one for deletion.
-     * 
+     *
      * @throws CmsIllegalArgumentException if the module list is not consistent
      * @throws CmsConfigurationException if something goes wrong
      */
@@ -457,10 +453,11 @@ public class CmsModuleManager {
                 List<String> depModules = new ArrayList<String>(dependencies);
                 depModules.removeAll(moduleNames);
                 if (!depModules.isEmpty()) {
-                    throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_MODULE_SELECTION_INCONSISTENT_2,
-                        moduleName,
-                        depModules.toString()));
+                    throw new CmsIllegalArgumentException(
+                        Messages.get().container(
+                            Messages.ERR_MODULE_SELECTION_INCONSISTENT_2,
+                            moduleName,
+                            depModules.toString()));
                 }
             }
         }
@@ -468,13 +465,13 @@ public class CmsModuleManager {
 
     /**
      * Deletes a module from the configuration.<p>
-     * 
-     * @param cms must be initialized with "Admin" permissions 
+     *
+     * @param cms must be initialized with "Admin" permissions
      * @param moduleName the name of the module to delete
      * @param replace indicates if the module is replaced (true) or finally deleted (false)
      * @param report the report to print progress messages to
-     * 
-     * @throws CmsRoleViolationException if the required module manager role permissions are not available 
+     *
+     * @throws CmsRoleViolationException if the required module manager role permissions are not available
      * @throws CmsConfigurationException if a module with this name is not available for deleting
      * @throws CmsLockException if the module resources can not be locked
      */
@@ -486,9 +483,8 @@ public class CmsModuleManager {
 
         if (!m_modules.containsKey(moduleName)) {
             // module is not currently configured, no update possible
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_MODULE_NOT_CONFIGURED_1,
-                moduleName));
+            throw new CmsConfigurationException(
+                Messages.get().container(Messages.ERR_MODULE_NOT_CONFIGURED_1, moduleName));
         }
 
         if (LOG.isInfoEnabled()) {
@@ -508,10 +504,8 @@ public class CmsModuleManager {
                 while (it.hasNext()) {
                     message.append("  ").append(it.next().getName()).append("\r\n");
                 }
-                throw new CmsConfigurationException(Messages.get().container(
-                    Messages.ERR_MOD_DEPENDENCIES_2,
-                    moduleName,
-                    message.toString()));
+                throw new CmsConfigurationException(
+                    Messages.get().container(Messages.ERR_MOD_DEPENDENCIES_2, moduleName, message.toString()));
             }
             try {
                 I_CmsModuleAction moduleAction = module.getActionInstance();
@@ -534,13 +528,14 @@ public class CmsModuleManager {
         }
 
         CmsProject previousProject = cms.getRequestContext().getCurrentProject();
-        // try to create a new offline project for deletion 
+        // try to create a new offline project for deletion
         CmsProject deleteProject = null;
         try {
             // try to read a (leftover) module delete project
-            deleteProject = cms.readProject(Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
-                Messages.GUI_DELETE_MODULE_PROJECT_NAME_1,
-                new Object[] {moduleName}));
+            deleteProject = cms.readProject(
+                Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
+                    Messages.GUI_DELETE_MODULE_PROJECT_NAME_1,
+                    new Object[] {moduleName}));
         } catch (CmsException e) {
             try {
                 // create a Project to delete the module
@@ -564,7 +559,8 @@ public class CmsModuleManager {
 
             // check locks
             List<String> lockedResources = new ArrayList<String>();
-            CmsLockFilter filter1 = CmsLockFilter.FILTER_ALL.filterNotLockableByUser(cms.getRequestContext().getCurrentUser());
+            CmsLockFilter filter1 = CmsLockFilter.FILTER_ALL.filterNotLockableByUser(
+                cms.getRequestContext().getCurrentUser());
             CmsLockFilter filter2 = CmsLockFilter.FILTER_INHERITED;
             List<String> moduleResources = module.getResources();
             for (int iLock = 0; iLock < moduleResources.size(); iLock++) {
@@ -615,7 +611,8 @@ public class CmsModuleManager {
                     } catch (CmsException e) {
                         // may happen if the resource has already been deleted
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().getBundle().key(Messages.LOG_MOVE_RESOURCE_FAILED_1, resourceName));
+                            LOG.debug(
+                                Messages.get().getBundle().key(Messages.LOG_MOVE_RESOURCE_FAILED_1, resourceName));
                         }
                         report.println(e.getMessageContainer(), I_CmsReport.FORMAT_WARNING);
                     }
@@ -658,9 +655,10 @@ public class CmsModuleManager {
                         }
                         // update the report
                         report.print(Messages.get().container(Messages.RPT_DELETE_0), I_CmsReport.FORMAT_NOTE);
-                        report.println(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_ARGUMENT_1,
-                            currentResource));
+                        report.println(
+                            org.opencms.report.Messages.get().container(
+                                org.opencms.report.Messages.RPT_ARGUMENT_1,
+                                currentResource));
                         if (!resource.getState().isNew()) {
                             // unlock the resource (so it gets deleted with next publish)
                             cms.unlockResource(currentResource);
@@ -702,7 +700,7 @@ public class CmsModuleManager {
 
     /**
      * Returns a list of installed modules.<p>
-     * 
+     *
      * @return a list of <code>{@link CmsModule}</code> objects
      */
     public List<CmsModule> getAllInstalledModules() {
@@ -712,7 +710,7 @@ public class CmsModuleManager {
 
     /**
      * Returns the (immutable) list of configured module export points.<p>
-     * 
+     *
      * @return the (immutable) list of configured module export points
      * @see CmsExportPoint
      */
@@ -734,7 +732,7 @@ public class CmsModuleManager {
     /**
      * Returns the module with the given module name,
      * or <code>null</code> if no module with the given name is configured.<p>
-     * 
+     *
      * @param name the name of the module to return
      * @return the module with the given module name
      */
@@ -745,7 +743,7 @@ public class CmsModuleManager {
 
     /**
      * Returns the set of names of all the installed modules.<p>
-     * 
+     *
      * @return the set of names of all the installed modules
      */
     public Set<String> getModuleNames() {
@@ -757,7 +755,7 @@ public class CmsModuleManager {
 
     /**
      * Checks if this module manager has a module with the given name installed.<p>
-     * 
+     *
      * @param name the name of the module to check
      * @return true if this module manager has a module with the given name installed
      */
@@ -768,10 +766,10 @@ public class CmsModuleManager {
 
     /**
      * Initializes all module instance classes managed in this module manager.<p>
-     * 
+     *
      * @param cms an initialized CmsObject with "manage modules" role permissions
      * @param configurationManager the initialized OpenCms configuration manager
-     * 
+     *
      * @throws CmsRoleViolationException if the provided OpenCms context does not have "manage modules" role permissions
      */
     public synchronized void initialize(CmsObject cms, CmsConfigurationManager configurationManager)
@@ -805,12 +803,13 @@ public class CmsModuleManager {
                     count++;
                     module.setActionInstance(moduleAction);
                     if (CmsLog.INIT.isInfoEnabled()) {
-                        CmsLog.INIT.info(Messages.get().getBundle().key(
-                            Messages.INIT_INITIALIZE_MOD_CLASS_1,
-                            moduleAction.getClass().getName()));
+                        CmsLog.INIT.info(
+                            Messages.get().getBundle().key(
+                                Messages.INIT_INITIALIZE_MOD_CLASS_1,
+                                moduleAction.getClass().getName()));
                     }
                     try {
-                        // create a copy of the adminCms so that each module instance does have 
+                        // create a copy of the adminCms so that each module instance does have
                         // it's own context, a shared context might introduce side - effects
                         CmsObject adminCmsCopy = OpenCms.initCmsObject(cms);
                         // initialize the module
@@ -831,7 +830,8 @@ public class CmsModuleManager {
         m_importExportRepository.initialize(cms);
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_NUM_CLASSES_INITIALIZED_1, new Integer(count)));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_NUM_CLASSES_INITIALIZED_1, new Integer(count)));
         }
     }
 
@@ -849,7 +849,7 @@ public class CmsModuleManager {
             if (module == null) {
                 continue;
             }
-            // get the module action instance            
+            // get the module action instance
             I_CmsModuleAction moduleAction = module.getActionInstance();
             if (moduleAction == null) {
                 continue;
@@ -857,9 +857,10 @@ public class CmsModuleManager {
 
             count++;
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_SHUTDOWN_MOD_CLASS_1,
-                    moduleAction.getClass().getName()));
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(
+                        Messages.INIT_SHUTDOWN_MOD_CLASS_1,
+                        moduleAction.getClass().getName()));
             }
             try {
                 // shut down the module
@@ -874,9 +875,8 @@ public class CmsModuleManager {
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_SHUTDOWN_NUM_MOD_CLASSES_1,
-                new Integer(count)));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_NUM_MOD_CLASSES_1, new Integer(count)));
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -886,12 +886,12 @@ public class CmsModuleManager {
 
     /**
      * Updates a already configured module with new values.<p>
-     * 
-     * @param cms must be initialized with "Admin" permissions 
+     *
+     * @param cms must be initialized with "Admin" permissions
      * @param module the module to update
-     * 
-     * @throws CmsRoleViolationException if the required module manager role permissions are not available 
-     * @throws CmsConfigurationException if a module with this name is not available for updating 
+     *
+     * @throws CmsRoleViolationException if the required module manager role permissions are not available
+     * @throws CmsConfigurationException if a module with this name is not available for updating
      */
     public synchronized void updateModule(CmsObject cms, CmsModule module)
     throws CmsRoleViolationException, CmsConfigurationException {
@@ -953,18 +953,17 @@ public class CmsModuleManager {
                 CmsExportPoint point = moduleExportPoints.get(j);
                 if (exportPoints.contains(point)) {
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.LOG_DUPLICATE_EXPORT_POINT_2,
-                            point,
-                            module.getName()));
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_DUPLICATE_EXPORT_POINT_2,
+                                point,
+                                module.getName()));
                     }
                 } else {
                     exportPoints.add(point);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_ADD_EXPORT_POINT_2,
-                            point,
-                            module.getName()));
+                        LOG.debug(
+                            Messages.get().getBundle().key(Messages.LOG_ADD_EXPORT_POINT_2, point, module.getName()));
                     }
                 }
             }

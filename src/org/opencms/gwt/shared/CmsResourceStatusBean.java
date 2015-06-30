@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -204,18 +204,18 @@ public class CmsResourceStatusBean implements IsSerializable {
 
     /**
      * Gets the list info beans for the source resources of relations pointing to this resource.<p>
-     * 
-     * @return the relation source beans 
+     *
+     * @return the relation source beans
      */
     public ArrayList<CmsResourceStatusRelationBean> getRelationSources() {
 
         return m_relationSources;
     }
 
-    /** 
+    /**
      * Gets the list info beans for the targets of relations pointing away from this resource.<p>
-     * 
-     * @return the relation target beans   
+     *
+     * @return the relation target beans
      */
     public ArrayList<CmsResourceStatusRelationBean> getRelationTargets() {
 
@@ -244,8 +244,8 @@ public class CmsResourceStatusBean implements IsSerializable {
 
     /**
      * Gets the resource state object.<p>
-     * 
-     * @return the resource state object 
+     *
+     * @return the resource state object
      */
     public CmsResourceState getStateBean() {
 
@@ -254,7 +254,7 @@ public class CmsResourceStatusBean implements IsSerializable {
 
     /**
      * Gets the structure id of the resource.<p>
-     * 
+     *
      * @return the structure id of the resource
      */
     public CmsUUID getStructureId() {
@@ -262,10 +262,10 @@ public class CmsResourceStatusBean implements IsSerializable {
         return m_structureId;
     }
 
-    /** 
+    /**
      * Gets the tab configuration, which is an ordered map defining the tabs to display and their order, with the tab labels as values.
-     * 
-     * @return the tab configuration 
+     *
+     * @return the tab configuration
      */
     public LinkedHashMap<CmsResourceStatusTabId, String> getTabs() {
 
@@ -424,8 +424,8 @@ public class CmsResourceStatusBean implements IsSerializable {
 
     /**
      * Sets the resource state object.<p>
-     * 
-     * @param stateBean the new resource state object 
+     *
+     * @param stateBean the new resource state object
      */
     public void setStateBean(CmsResourceState stateBean) {
 
@@ -434,8 +434,8 @@ public class CmsResourceStatusBean implements IsSerializable {
 
     /**
      * Sets the structure id of the resource.<p>
-     * 
-     * @param structureId the structure id of the resource 
+     *
+     * @param structureId the structure id of the resource
      */
     public void setStructureId(CmsUUID structureId) {
 
@@ -444,8 +444,8 @@ public class CmsResourceStatusBean implements IsSerializable {
 
     /**
      * Sets the tab configuration.<p>
-     * 
-     * @param tabs the tab configuration 
+     *
+     * @param tabs the tab configuration
      */
     public void setTabs(LinkedHashMap<CmsResourceStatusTabId, String> tabs) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -104,10 +104,10 @@ public class CmsElementView {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param cms the cms context
      * @param resource the group resource
-     * 
+     *
      * @throws Exception  if parsing the resource fails
      */
     public CmsElementView(CmsObject cms, CmsResource resource)
@@ -130,7 +130,7 @@ public class CmsElementView {
 
     /**
      * Returns the element view id.<p>
-     * 
+     *
      * @return the group id
      */
     public CmsUUID getId() {
@@ -145,7 +145,7 @@ public class CmsElementView {
 
     /**
      * The order.<p>
-     * 
+     *
      * @return the order
      */
     public int getOrder() {
@@ -155,7 +155,7 @@ public class CmsElementView {
 
     /**
      * Returns the element view resource.<p>
-     * 
+     *
      * @return the element view resource
      */
     public CmsResource getResource() {
@@ -165,10 +165,10 @@ public class CmsElementView {
 
     /**
      * Returns the element view title.<p>
-     * 
+     *
      * @param cms the cms context
      * @param locale the locale
-     * 
+     *
      * @return the title
      */
     public String getTitle(CmsObject cms, Locale locale) {
@@ -182,9 +182,9 @@ public class CmsElementView {
 
     /**
      * Checks whether the current user has permissions to use the element view.<p>
-     * 
+     *
      * @param cms the cms context
-     * 
+     *
      * @return <code>true</code> if the current user has permissions to use the element view
      **/
     public boolean hasPermission(CmsObject cms) {
@@ -207,7 +207,7 @@ public class CmsElementView {
 
     /**
      * Parses the edit view resource.<p>
-     * 
+     *
      * @param cms the cms context
      * @throws Exception if parsing the resource fails
      */

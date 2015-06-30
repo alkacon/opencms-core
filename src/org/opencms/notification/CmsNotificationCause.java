@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,10 +35,10 @@ import java.io.Serializable;
  * Objects of this class are serialized in the additional infos of a user to store, which resources were
  * already confirmed by the user.
  * This class is the counterpart to <code>{@link org.opencms.notification.CmsExtendedNotificationCause}</code>, to be used
- * for serialization in the AdditionalInfos of a <code>{@link org.opencms.file.CmsUser}</code>, and therefore only 
+ * for serialization in the AdditionalInfos of a <code>{@link org.opencms.file.CmsUser}</code>, and therefore only
  * contains the essential information
  * <p>
- * 
+ *
  */
 public class CmsNotificationCause implements Serializable {
 
@@ -53,7 +53,7 @@ public class CmsNotificationCause implements Serializable {
 
     /**
      * Creates a new CmsNotificationResourceInfo.<p>
-     * 
+     *
      * @param resource the specific resource
      * @param cause that the resource occures in the notification
      */
@@ -64,7 +64,7 @@ public class CmsNotificationCause implements Serializable {
     }
 
     /**
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -76,11 +76,11 @@ public class CmsNotificationCause implements Serializable {
     /**
      * Returns true if the Object equals to the corresponding CmsNotificationCause, that means a notification cause
      * with the same resource and cause.
-     * 
+     *
      * @return true if the resource info is equal to a notification cause or resource info with the same resource and cause
-     * 
+     *
      * @param o the object to check for equality
-     * 
+     *
      * @see org.opencms.notification.CmsExtendedNotificationCause#equals(java.lang.Object)
      */
     @Override

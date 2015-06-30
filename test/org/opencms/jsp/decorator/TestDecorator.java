@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,14 +39,14 @@ import junit.framework.TestSuite;
 
 /**
  * Tests for the decoration postprocessor.<p>
- * 
+ *
  * @since 6.1.3
  */
 public class TestDecorator extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestDecorator(String arg0) {
@@ -56,7 +56,7 @@ public class TestDecorator extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -89,7 +89,7 @@ public class TestDecorator extends OpenCmsTestCase {
 
     /**
      * Tests the decoration postprocessor.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testDecoratorBasics() throws Exception {
@@ -179,30 +179,28 @@ public class TestDecorator extends OpenCmsTestCase {
         decorationMap.put("CMS", new CmsDecorationObject("CMS", "Content Management System", decDef1, locale));
         decorationMap.put("VFS", new CmsDecorationObject("VFS", "Virtual File System", decDef1, locale));
         decorationMap.put("RFS", new CmsDecorationObject("RFS", "Real File System", decDef1, locale));
-        decorationMap.put("T" + C_UUML_UPPER + "V", new CmsDecorationObject("T" + C_UUML_UPPER + "V", "Technischer "
-            + C_UUML_UPPER
-            + "berwachungsverein", decDef1, locale));
+        decorationMap.put(
+            "T" + C_UUML_UPPER + "V",
+            new CmsDecorationObject(
+                "T" + C_UUML_UPPER + "V",
+                "Technischer " + C_UUML_UPPER + "berwachungsverein",
+                decDef1,
+                locale));
         decorationMap.put("Dr.", new CmsDecorationObject("Dr.", "Doctor", decDef1, locale));
         decorationMap.put("z. B.", new CmsDecorationObject("z. B.", "zum Beispiel", decDef1, locale));
         decorationMap.put("e.g.", new CmsDecorationObject("e.g.", "example given", decDef1, locale));
         decorationMap.put(
             "ZB MED",
             new CmsDecorationObject("ZB MED", "a decoarion with a blank in it", decDef1, locale));
-        decorationMap.put("ZB&nbsp;MED", new CmsDecorationObject(
+        decorationMap.put(
             "ZB&nbsp;MED",
-            "a decoarion with a blank in it",
-            decDef1,
-            locale));
-        decorationMap.put("CMS-UI", new CmsDecorationObject(
+            new CmsDecorationObject("ZB&nbsp;MED", "a decoarion with a blank in it", decDef1, locale));
+        decorationMap.put(
             "CMS-UI",
-            "Content Management System User Interface",
-            decDef1,
-            locale));
-        decorationMap.put("ABC@DEF", new CmsDecorationObject(
+            new CmsDecorationObject("CMS-UI", "Content Management System User Interface", decDef1, locale));
+        decorationMap.put(
             "ABC@DEF",
-            "A strange thing with a @ in it",
-            decDef1,
-            locale));
+            new CmsDecorationObject("ABC@DEF", "A strange thing with a @ in it", decDef1, locale));
 
         // create a decorator  configuration
         CmsDecoratorConfiguration configuration = new CmsDecoratorConfiguration(getCmsObject());
@@ -323,7 +321,7 @@ public class TestDecorator extends OpenCmsTestCase {
 
     /**
      * Tests the decoration configuration.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testDecoratorConfiguration() throws Exception {

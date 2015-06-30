@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,12 +42,12 @@ import org.dom4j.Document;
 
 /**
  * Adds some binary type mappings.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlAddTypeMappings extends A_CmsXmlVfs {
 
-    /** 
+    /**
      * The new widget definition data.<p>
      */
     private String[] m_suffixes = {".flv", ".swf", ".docx", ".xlsx", ".pptx"};
@@ -116,9 +116,9 @@ public class CmsXmlAddTypeMappings extends A_CmsXmlVfs {
 
     /**
      * Returns the xpath for the type node with a given type name.<p>
-     * 
-     * @param type the resource type name 
-     * 
+     *
+     * @param type the resource type name
+     *
      * @return the xpath for the type node
      */
     protected String xpathForType(String type) {
@@ -134,11 +134,11 @@ public class CmsXmlAddTypeMappings extends A_CmsXmlVfs {
     }
 
     /**
-     * Returns the xpath for a type mapping with a given suffix.<p> 
-     * 
-     * @param type the type name 
-     * @param suffix the suffix 
-     * @return the xpath of the type mapping 
+     * Returns the xpath for a type mapping with a given suffix.<p>
+     *
+     * @param type the type name
+     * @param suffix the suffix
+     * @return the xpath of the type mapping
      */
     protected String xpathForTypeMapping(String type, String suffix) {
 
@@ -156,8 +156,8 @@ public class CmsXmlAddTypeMappings extends A_CmsXmlVfs {
 
     /**
      * Returns the xpath for a the resourcetypes node.<p>
-     * 
-     * @return the xpath for the resourcetypes node 
+     *
+     * @return the xpath for the resourcetypes node
      */
     protected String xpathForTypes() {
 

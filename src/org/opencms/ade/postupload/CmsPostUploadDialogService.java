@@ -147,12 +147,13 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
                 "",
                 "false");
             propertyDefinitions.put(CmsPropertyModification.FILE_NAME_PROPERTY, fileNamePropDef);
-            clientProperties.put(CmsPropertyModification.FILE_NAME_PROPERTY, new CmsClientProperty(
+            clientProperties.put(
                 CmsPropertyModification.FILE_NAME_PROPERTY,
-                res.getName(),
-                res.getName()));
+                new CmsClientProperty(CmsPropertyModification.FILE_NAME_PROPERTY, res.getName(), res.getName()));
 
-            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(getCmsObject(), res.getRootPath());
+            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
+                getCmsObject(),
+                res.getRootPath());
             Map<String, CmsXmlContentProperty> propertyConfiguration = configData.getPropertyConfigurationAsMap();
 
             Set<String> propertiesToShow = new HashSet<String>();
@@ -212,8 +213,8 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
 
             Map<CmsUUID, String> uuids = new LinkedHashMap<CmsUUID, String>();
 
-            if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequest().getParameter(
-                I_CmsDialogConstants.PARAM_RESOURCES)))) {
+            if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(
+                getRequest().getParameter(I_CmsDialogConstants.PARAM_RESOURCES)))) {
                 // if the request parameter resources exists and contains a list of UUIDs
                 // this dialog is used as upload hook
                 String resourcesParam = getRequest().getParameter(I_CmsDialogConstants.PARAM_RESOURCES);

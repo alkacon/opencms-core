@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,13 +46,13 @@ import junit.framework.TestSuite;
 
 /**
  * Tests exporting/import VFS data with nonexistent users.<p>
- * 
+ *
  */
 public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsImportExportNonexistentUser(String arg0) {
@@ -62,7 +62,7 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -94,10 +94,10 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
 
     /**
      * Tests exporting and import of VFS data with a nonexistent/deleted user.<p>
-     * 
-     * The username of the deleted user should in the export manifest be replaced 
+     *
+     * The username of the deleted user should in the export manifest be replaced
      * by the name of the Admin user.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportExportNonexistentUser() throws Exception {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -76,10 +76,10 @@ public class CmsSelectionButtonMenu extends CmsToolbarPopup {
 
     /**
      * Creates a new selection menu.<p>
-     * 
-     * @param button the selection button 
-     * @param isToolbarMode true if this is the toolbar mode  
-     * @param baseElement the base button element 
+     *
+     * @param button the selection button
+     * @param isToolbarMode true if this is the toolbar mode
+     * @param baseElement the base button element
      */
     public CmsSelectionButtonMenu(CmsToggleButton button, boolean isToolbarMode, Element baseElement) {
 
@@ -100,7 +100,7 @@ public class CmsSelectionButtonMenu extends CmsToolbarPopup {
     public void activate() {
 
         if (m_sizingTimer != null) {
-            return; // already activated 
+            return; // already activated
         }
 
         m_buttonPanel.addDomHandler(new MouseOverHandler() {
@@ -156,8 +156,8 @@ public class CmsSelectionButtonMenu extends CmsToolbarPopup {
 
     /**
      * Adds a widget to the button panel.<p>
-     * 
-     * @param widget the widget to add 
+     *
+     * @param widget the widget to add
      */
     public void addToPanel(Widget widget) {
 
@@ -199,13 +199,13 @@ public class CmsSelectionButtonMenu extends CmsToolbarPopup {
      */
     protected void update() {
 
-        // cancel timer on state change 
+        // cancel timer on state change
         if (m_timer != null) {
             m_timer.cancel();
             m_timer = null;
         }
 
-        // timed transition show -> hide 
+        // timed transition show -> hide
         if (isAttached() && !m_mouseOverButton && !m_mouseOverPopup) {
             m_timer = new Timer() {
 
@@ -219,7 +219,7 @@ public class CmsSelectionButtonMenu extends CmsToolbarPopup {
             m_timer.schedule(HIDE_DELAY);
         }
 
-        // timed transition hide -> show, only when selection button is active  
+        // timed transition hide -> show, only when selection button is active
         if (!isAttached() && m_mouseOverButton && m_toggleButton.isDown()) {
             m_timer = new Timer() {
 

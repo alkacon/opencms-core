@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,7 +55,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsLinkManager(String arg0) {
@@ -65,7 +65,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -169,13 +169,14 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         String serverlink = lm.getServerLink(cms, "/");
         serverlink = serverlink.substring(0, serverlink.length() - 1);
         String inputlink = serverlink + link;
-        echo("Checking link "
-            + inputlink
-            + " in context "
-            + context
-            + " and site \""
-            + cms.getRequestContext().getSiteRoot()
-            + "\"");
+        echo(
+            "Checking link "
+                + inputlink
+                + " in context "
+                + context
+                + " and site \""
+                + cms.getRequestContext().getSiteRoot()
+                + "\"");
         String outputlink = lm.getRootPath(cms, inputlink);
         echo("Result: " + outputlink);
         assertEquals(link, outputlink);
@@ -184,7 +185,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
     /**
      * Tests symmetric link / root path substitution with a custom link handler.<p>
-     * 
+     *
      * @throws Exception if test fails
      */
     public void testCustomLinkHandler() throws Exception {
@@ -230,7 +231,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
     /**
      * Tests the link substitution.<p>
-     * 
+     *
      * @throws Exception if test fails
      */
     public void testLinkSubstitution() throws Exception {
@@ -291,7 +292,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
      * input link: /opencmswhatever/path output link: /opencmswhatever/path
      *
      * Assumption: OpenCms context never ends with "/".
-     * 
+     *
      * @throws CmsException from getCmsObject()
      *
      */
@@ -316,7 +317,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
      * Just a copy of the called method - if the same method is called twice,
      * the JUnit Eclipse plugin (or JUnit itself?) behaves strange (if the test failed or succeeded is only mentioned
      * for the last test occurrence.
-     * 
+     *
      * @throws CmsException from getCmsObject()
      */
     public void testRootPathAdjustmentCopy() throws CmsException {
@@ -326,7 +327,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
     /**
      * Tests symmetric link / root path substitution.<p>
-     * 
+     *
      * @throws Exception if test fails
      */
     public void testSymmetricSubstitution() throws Exception {
@@ -379,10 +380,10 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
     /**
      * Internal test method for custom link test.<p>
-     * 
+     *
      * @param cms the current OpenCms context
      * @param path the resource path in the VFS to check the links for
-     * 
+     *
      * @throws Exception in case the test fails
      */
     private void testCustomLinkHandler(CmsObject cms, String path) throws Exception {

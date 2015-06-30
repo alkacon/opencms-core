@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,10 +44,10 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * A resource loader which does nothing, except provide access to the last flex cache instance set
  * with {@link #setFlexCache}.<p>
- * 
+ *
  * The instance can be accessed via the package static variable {@link #m_flexCache}.
  * This allows unit tests in this package to do some white-box testing on the flex cache system.
- * 
+ *
  * @since 6.0.1
  */
 public class CmsFlexDummyLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledLoader {
@@ -66,7 +66,7 @@ public class CmsFlexDummyLoader implements I_CmsResourceLoader, I_CmsFlexCacheEn
 
     /**
      * Allows static access to the internal {@link CmsFlexCache}.<p>
-     * 
+     *
      * @return the {@link CmsFlexCache} used by this OpenCms instance
      */
     public static CmsFlexCache getFlexCache() {

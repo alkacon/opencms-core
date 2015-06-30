@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -80,12 +80,12 @@ import org.apache.commons.logging.Log;
 
 /**
  * Displays the history of a file.<p>
- * 
- * @since 6.0.2 
+ *
+ * @since 6.0.2
  */
 public class CmsHistoryList extends A_CmsListDialog {
 
-    /** 
+    /**
      * Wrapper class for the version which is either an integer or the string "offline".<p>
      */
     public static class CmsVersionWrapper implements Comparable<Object> {
@@ -93,9 +93,9 @@ public class CmsHistoryList extends A_CmsListDialog {
         /** the version. */
         private Integer m_version;
 
-        /** 
+        /**
          * Constructs a new version wrapper.<p>
-         * 
+         *
          * @param version the version of the file
          */
         public CmsVersionWrapper(int version) {
@@ -104,7 +104,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         }
 
         /**
-         * 
+         *
          * @see java.lang.Comparable#compareTo(java.lang.Object)
          */
         public int compareTo(Object o) {
@@ -145,7 +145,7 @@ public class CmsHistoryList extends A_CmsListDialog {
 
         /**
          * Returns the version of the file.<p>
-         * 
+         *
          * @return the version of the file
          */
         public Integer getVersion() {
@@ -163,7 +163,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         }
 
         /**
-         * 
+         *
          * @see java.lang.Object#toString()
          */
         @Override
@@ -260,7 +260,7 @@ public class CmsHistoryList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsHistoryList(CmsJspActionElement jsp) {
@@ -276,7 +276,7 @@ public class CmsHistoryList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -288,10 +288,10 @@ public class CmsHistoryList extends A_CmsListDialog {
 
     /**
      * Returns the version number from a version parameter.<p>
-     * 
+     *
      * @param version might be negative for the online version
      * @param locale if the result is for display purposes, the locale has to be <code>!= null</code>
-     * 
+     *
      * @return the display name
      */
     public static String getDisplayVersion(String version, Locale locale) {
@@ -311,11 +311,11 @@ public class CmsHistoryList extends A_CmsListDialog {
 
     /**
      * Returns the link to an historical file.<p>
-     * 
+     *
      * @param cms the cms context
      * @param structureId the structure id of the file
      * @param version the version number of the file
-     * 
+     *
      * @return the link to an historical file
      */
     public static String getHistoryLink(CmsObject cms, CmsUUID structureId, String version) {
@@ -340,9 +340,9 @@ public class CmsHistoryList extends A_CmsListDialog {
 
     /**
      * Returns the version number from a version parameter.<p>
-     * 
+     *
      * @param version might be negative for the online version
-     * 
+     *
      * @return the positive value
      */
     public static int getVersion(String version) {
@@ -474,7 +474,7 @@ public class CmsHistoryList extends A_CmsListDialog {
                 }
             }
 
-            // the publish tag for the history project            
+            // the publish tag for the history project
             int publishTag = histRes.getPublishTag();
 
             CmsHistoryProject project = getCms().readHistoryProject(publishTag);
@@ -496,7 +496,7 @@ public class CmsHistoryList extends A_CmsListDialog {
             item.set(LIST_COLUMN_DATE_PUBLISHED, datePublished);
             // last modification date
             item.set(LIST_COLUMN_DATE_LAST_MODIFIED, dateLastModified);
-            // resource type           
+            // resource type
             item.set(LIST_COLUMN_FILE_TYPE, filetype);
             // user
             String user = histRes.getUserLastModified().toString();
@@ -506,13 +506,13 @@ public class CmsHistoryList extends A_CmsListDialog {
                 // ignore
             }
             item.set(LIST_COLUMN_USER, user);
-            // path           
+            // path
             item.set(LIST_COLUMN_RESOURCE_PATH, getCms().getRequestContext().removeSiteRoot(histRes.getRootPath()));
-            // size 
+            // size
             item.set(LIST_COLUMN_SIZE, new Integer(histRes.getLength()).toString());
             // invisible publish tag (for reading history project in fillDetails)
             item.set(LIST_COLUMN_PUBLISH_TAG, new Integer(publishTag));
-            // invisible structure id           
+            // invisible structure id
             item.set(LIST_COLUMN_STRUCTURE_ID, histRes.getStructureId().toString());
             // invisible version flag: true if history version has content and actions should be enabled, false otherwise
             item.set(LIST_COLUMN_VERSION_ENABLE, new Boolean(isEnabled));
@@ -538,23 +538,25 @@ public class CmsHistoryList extends A_CmsListDialog {
                 item.set(
                     LIST_COLUMN_DATE_LAST_MODIFIED,
                     getMessages().getDateTime(onlineResource.getDateLastModified()));
-                // resource type           
+                // resource type
                 item.set(LIST_COLUMN_FILE_TYPE, String.valueOf(onlineResource.getTypeId()));
-                // user   
+                // user
                 String user = onlineResource.getUserLastModified().toString();
                 try {
-                    user = CmsPrincipal.readPrincipalIncludingHistory(getCms(), onlineResource.getUserLastModified()).getName();
+                    user = CmsPrincipal.readPrincipalIncludingHistory(
+                        getCms(),
+                        onlineResource.getUserLastModified()).getName();
                 } catch (CmsDbEntryNotFoundException e) {
                     // ignore
                 }
                 item.set(LIST_COLUMN_USER, user);
-                // size 
+                // size
                 item.set(LIST_COLUMN_SIZE, new Integer(onlineResource.getLength()).toString());
                 // path
                 item.set(LIST_COLUMN_RESOURCE_PATH, getCms().getSitePath(onlineResource));
-                // invisible structure id           
+                // invisible structure id
                 item.set(LIST_COLUMN_STRUCTURE_ID, onlineResource.getStructureId().toString());
-                // invisible version flag: true 
+                // invisible version flag: true
                 item.set(LIST_COLUMN_VERSION_ENABLE, new Boolean(true));
 
                 result.add(item);
@@ -580,23 +582,25 @@ public class CmsHistoryList extends A_CmsListDialog {
             item.set(LIST_COLUMN_DATE_PUBLISHED, "-");
             // last modification date
             item.set(LIST_COLUMN_DATE_LAST_MODIFIED, getMessages().getDateTime(offlineResource.getDateLastModified()));
-            // resource type           
+            // resource type
             item.set(LIST_COLUMN_FILE_TYPE, String.valueOf(offlineResource.getTypeId()));
             // user
             String user = offlineResource.getUserLastModified().toString();
             try {
-                user = CmsPrincipal.readPrincipalIncludingHistory(getCms(), offlineResource.getUserLastModified()).getName();
+                user = CmsPrincipal.readPrincipalIncludingHistory(
+                    getCms(),
+                    offlineResource.getUserLastModified()).getName();
             } catch (CmsDbEntryNotFoundException e) {
                 // ignore
             }
             item.set(LIST_COLUMN_USER, user);
-            // size 
+            // size
             item.set(LIST_COLUMN_SIZE, new Integer(offlineResource.getLength()).toString());
             // path
             item.set(LIST_COLUMN_RESOURCE_PATH, getCms().getSitePath(offlineResource));
-            // invisible structure id           
+            // invisible structure id
             item.set(LIST_COLUMN_STRUCTURE_ID, offlineResource.getStructureId().toString());
-            // invisible version flag: true 
+            // invisible version flag: true
             item.set(LIST_COLUMN_VERSION_ENABLE, new Boolean(true));
 
             result.add(item);
@@ -612,7 +616,7 @@ public class CmsHistoryList extends A_CmsListDialog {
 
     /**
      * Restores a backed up resource version.<p>
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected void performRestoreOperation() throws CmsException {
@@ -725,12 +729,13 @@ public class CmsHistoryList extends A_CmsListDialog {
                 CmsVersionWrapper version = (CmsVersionWrapper)getItem().get(LIST_COLUMN_VERSION);
 
                 // is the resource already a sibling already deleted?
-                jsCode.append(OpenCms.getLinkManager().substituteLink(
-                    cms,
-                    getHistoryLink(
+                jsCode.append(
+                    OpenCms.getLinkManager().substituteLink(
                         cms,
-                        new CmsUUID(getItem().get(LIST_COLUMN_STRUCTURE_ID).toString()),
-                        version.toString())));
+                        getHistoryLink(
+                            cms,
+                            new CmsUUID(getItem().get(LIST_COLUMN_STRUCTURE_ID).toString()),
+                            version.toString())));
                 jsCode.append("','version','scrollbars=yes, resizable=yes, width=800, height=600')");
                 return super.defButtonHtml(
                     cms,
@@ -745,7 +750,7 @@ public class CmsHistoryList extends A_CmsListDialog {
                     singleHelp);
             }
 
-            /** 
+            /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
              */
             @Override
@@ -759,7 +764,7 @@ public class CmsHistoryList extends A_CmsListDialog {
 
             }
 
-            /** 
+            /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isEnabled()
              */
             @Override
@@ -868,14 +873,14 @@ public class CmsHistoryList extends A_CmsListDialog {
         radioSel2Col.addDirectAction(sel2Action);
         metadata.addColumn(radioSel2Col);
 
-        // create invisible publish tag column to allow fillDetails to be able to read the proper 
+        // create invisible publish tag column to allow fillDetails to be able to read the proper
         // historical project
         CmsListColumnDefinition publishTagCol = new CmsListColumnDefinition(LIST_COLUMN_PUBLISH_TAG);
         publishTagCol.setSorteable(false);
         publishTagCol.setVisible(false);
         metadata.addColumn(publishTagCol);
 
-        // create invisible strcuture id column 
+        // create invisible strcuture id column
         CmsListColumnDefinition strIdCol = new CmsListColumnDefinition(LIST_COLUMN_STRUCTURE_ID);
         strIdCol.setSorteable(false);
         strIdCol.setVisible(false);
@@ -893,14 +898,14 @@ public class CmsHistoryList extends A_CmsListDialog {
         indexDetails.setAtColumn(LIST_COLUMN_VERSION);
         indexDetails.setVisible(false);
         indexDetails.setShowActionName(Messages.get().container(Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_NAME_SHOW_0));
-        indexDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_SHOW_HELP_0));
+        indexDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_SHOW_HELP_0));
         indexDetails.setHideActionName(Messages.get().container(Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_NAME_HIDE_0));
-        indexDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_HIDE_HELP_0));
+        indexDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_HIDE_HELP_0));
         indexDetails.setName(Messages.get().container(Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_INFO_0));
-        indexDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_INFO_0)));
+        indexDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_LIST_HISTORY_DETAIL_PROJECT_INFO_0)));
         metadata.addItemDetails(indexDetails);
     }
 
@@ -920,18 +925,18 @@ public class CmsHistoryList extends A_CmsListDialog {
     }
 
     /**
-     * Fills details of the project into the given item. <p> 
-     * 
-     * @param item the list item to fill 
-     * 
+     * Fills details of the project into the given item. <p>
+     *
+     * @param item the list item to fill
+     *
      * @param detailId the id for the detail to fill
-     * 
+     *
      */
     private void fillDetailProject(CmsListItem item, String detailId) {
 
         StringBuffer html = new StringBuffer();
 
-        // search /read for the corresponding history project: it's tag id transmitted from getListItems() 
+        // search /read for the corresponding history project: it's tag id transmitted from getListItems()
         // in a hidden column
         Object tagIdObj = item.get(LIST_COLUMN_PUBLISH_TAG);
         if (tagIdObj != null) {
@@ -942,7 +947,7 @@ public class CmsHistoryList extends A_CmsListDialog {
                 // output of project info
                 html.append(project.getName()).append("<br/>").append(project.getDescription());
             } catch (CmsException cmse) {
-                html.append(cmse.getMessageContainer().key(this.getLocale()));
+                html.append(cmse.getMessageContainer().key(getLocale()));
             }
         }
         item.set(detailId, html.toString());

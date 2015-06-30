@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A publish group.<p>
- * 
- * @since 7.6 
+ *
+ * @since 7.6
  */
 public class CmsPublishGroup implements IsSerializable {
 
@@ -48,17 +48,18 @@ public class CmsPublishGroup implements IsSerializable {
     /** The group resources.*/
     private List<CmsPublishResource> m_resources;
 
-    /** 
-     * Creates a new publish group bean.<p> 
-     * 
+    /**
+     * Creates a new publish group bean.<p>
+     *
      * @param name the group name
      * @param resources the resources
      **/
     public CmsPublishGroup(String name, List<CmsPublishResource> resources) {
 
         m_name = name;
-        m_resources = ((resources == null) ? new ArrayList<CmsPublishResource>() : new ArrayList<CmsPublishResource>(
-            resources));
+        m_resources = ((resources == null)
+        ? new ArrayList<CmsPublishResource>()
+        : new ArrayList<CmsPublishResource>(resources));
     }
 
     /**
@@ -91,8 +92,8 @@ public class CmsPublishGroup implements IsSerializable {
 
     /**
      * Returns true if the GUI should be able to automatically select this group.<p>
-     *  
-     * @return the value of the auto-selectable flag 
+     *
+     * @return the value of the auto-selectable flag
      */
     public boolean isAutoSelectable() {
 
@@ -101,8 +102,8 @@ public class CmsPublishGroup implements IsSerializable {
 
     /**
      * Sets the auto-selectable flag.<p>
-     * 
-     * @param autoSelectable the new flag value 
+     *
+     * @param autoSelectable the new flag value
      */
     public void setAutoSelectable(boolean autoSelectable) {
 

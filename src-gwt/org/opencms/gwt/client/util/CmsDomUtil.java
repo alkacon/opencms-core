@@ -206,8 +206,7 @@ public final class CmsDomUtil {
     public static enum Method {
 
         /** The get method. */
-        get,
-        /** The post method. */
+        get, /** The post method. */
         post;
     }
 
@@ -695,7 +694,18 @@ public final class CmsDomUtil {
      */
     public static void ensureMouseOut(Element element) {
 
-        NativeEvent nativeEvent = Document.get().createMouseOutEvent(0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        NativeEvent nativeEvent = Document.get().createMouseOutEvent(
+            0,
+            0,
+            0,
+            0,
+            0,
+            false,
+            false,
+            false,
+            false,
+            0,
+            null);
         element.dispatchEvent(nativeEvent);
     }
 
@@ -708,7 +718,18 @@ public final class CmsDomUtil {
      */
     public static void ensureMouseOut(HasHandlers target) {
 
-        NativeEvent nativeEvent = Document.get().createMouseOutEvent(0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        NativeEvent nativeEvent = Document.get().createMouseOutEvent(
+            0,
+            0,
+            0,
+            0,
+            0,
+            false,
+            false,
+            false,
+            false,
+            0,
+            null);
         DomEvent.fireNativeEvent(nativeEvent, target);
     }
 
@@ -899,7 +920,11 @@ public final class CmsDomUtil {
      *
      * @return the generated form element
      */
-    public static FormElement generateHiddenForm(String action, Method method, String target, Map<String, String> values) {
+    public static FormElement generateHiddenForm(
+        String action,
+        Method method,
+        String target,
+        Map<String, String> values) {
 
         FormElement formElement = Document.get().createFormElement();
         formElement.setMethod(method.name());
@@ -923,14 +948,18 @@ public final class CmsDomUtil {
      *
      * @return the generated form element
      */
-    public static FormElement generateHiddenForm(String action, Method method, Target target, Map<String, String> values) {
+    public static FormElement generateHiddenForm(
+        String action,
+        Method method,
+        Target target,
+        Map<String, String> values) {
 
         return generateHiddenForm(action, method, target.getRepresentation(), values);
     }
 
     /**
      * Gets the edit data for all cms-editable elements in the page.<p>
-     * 
+     *
      * @return the list of edit data
      */
     public static List<CmsEditableDataJSO> getAllEditableDataForPage() {
@@ -1079,18 +1108,22 @@ public final class CmsDomUtil {
                 && !sibling.getTagName().equalsIgnoreCase(Tag.script.name())) {
                 if (!CmsDomUtil.hasClass("cms-editable-skip", sibling)) {
                     CmsPositionBean siblingPos = CmsPositionBean.generatePositionInfo(sibling);
-                    result.setLeft(((result.getLeft() == dummy) || (siblingPos.getLeft() < result.getLeft()))
-                    ? siblingPos.getLeft()
-                    : result.getLeft());
-                    result.setTop(((result.getTop() == dummy) || (siblingPos.getTop() < result.getTop()))
-                    ? siblingPos.getTop()
-                    : result.getTop());
-                    result.setHeight(((result.getTop() + result.getHeight()) > (siblingPos.getTop() + siblingPos.getHeight()))
-                    ? result.getHeight()
-                    : (siblingPos.getTop() + siblingPos.getHeight()) - result.getTop());
-                    result.setWidth(((result.getLeft() + result.getWidth()) > (siblingPos.getLeft() + siblingPos.getWidth()))
-                    ? result.getWidth()
-                    : (siblingPos.getLeft() + siblingPos.getWidth()) - result.getLeft());
+                    result.setLeft(
+                        ((result.getLeft() == dummy) || (siblingPos.getLeft() < result.getLeft()))
+                        ? siblingPos.getLeft()
+                        : result.getLeft());
+                    result.setTop(
+                        ((result.getTop() == dummy) || (siblingPos.getTop() < result.getTop()))
+                        ? siblingPos.getTop()
+                        : result.getTop());
+                    result.setHeight(
+                        ((result.getTop() + result.getHeight()) > (siblingPos.getTop() + siblingPos.getHeight()))
+                        ? result.getHeight()
+                        : (siblingPos.getTop() + siblingPos.getHeight()) - result.getTop());
+                    result.setWidth(
+                        ((result.getLeft() + result.getWidth()) > (siblingPos.getLeft() + siblingPos.getWidth()))
+                        ? result.getWidth()
+                        : (siblingPos.getLeft() + siblingPos.getWidth()) - result.getLeft());
                 }
             }
 
@@ -1119,7 +1152,9 @@ public final class CmsDomUtil {
     public static String getEffectiveBackgroundColor(Element element) {
 
         String backgroundColor = CmsDomUtil.getCurrentStyle(element, Style.backgroundColor);
-        if ((CmsStringUtil.isEmptyOrWhitespaceOnly(backgroundColor) || isTransparent(backgroundColor) || backgroundColor.equals(StyleValue.inherit.toString()))) {
+        if ((CmsStringUtil.isEmptyOrWhitespaceOnly(backgroundColor)
+            || isTransparent(backgroundColor)
+            || backgroundColor.equals(StyleValue.inherit.toString()))) {
 
             if ((Document.get().getBody() != element) && (element.getParentElement() != null)) {
 
@@ -1250,8 +1285,7 @@ public final class CmsDomUtil {
      */
     public static int getRelativeX(int x, Element target) {
 
-        return (x - target.getAbsoluteLeft())
-            + /* target.getScrollLeft() + */target.getOwnerDocument().getScrollLeft();
+        return (x - target.getAbsoluteLeft()) + /* target.getScrollLeft() + */target.getOwnerDocument().getScrollLeft();
     }
 
     /**
@@ -1305,7 +1339,9 @@ public final class CmsDomUtil {
         String backgroundColor = CmsDomUtil.getCurrentStyle(element, Style.backgroundColor);
         String backgroundImage = CmsDomUtil.getCurrentStyle(element, Style.backgroundImage);
         if ((isTransparent(backgroundColor))
-            && ((backgroundImage == null) || (backgroundImage.trim().length() == 0) || backgroundImage.equals(StyleValue.none.toString()))) {
+            && ((backgroundImage == null)
+                || (backgroundImage.trim().length() == 0)
+                || backgroundImage.equals(StyleValue.none.toString()))) {
             return false;
         }
         return true;
@@ -1433,9 +1469,9 @@ public final class CmsDomUtil {
 
     /**
      * Converts a NodeList to a List of elements.<p>
-     * 
-     * @param nodelist the node list 
-     * @return the list of elements 
+     *
+     * @param nodelist the node list
+     * @return the list of elements
      */
     public static List<Element> nodeListToList(NodeList<Element> nodelist) {
 
@@ -1640,10 +1676,10 @@ public final class CmsDomUtil {
 
     /**
      * Returns the first element matching the given CSS selector.<p>
-     * 
+     *
      * @param selector the CSS selector
      * @param context the context element, may be <code>null</code>
-     * 
+     *
      * @return the matching element
      */
     public static native Element querySelector(String selector, Element context)/*-{
@@ -1656,10 +1692,10 @@ public final class CmsDomUtil {
 
     /**
      * Returns a list of elements matching the given CSS selector.<p>
-     * 
+     *
      * @param selector the CSS selector
      * @param context the context element, may be <code>null</code>
-     * 
+     *
      * @return the list of matching elements
      */
     public static native NodeList<Element> querySelectorAll(String selector, Element context)/*-{

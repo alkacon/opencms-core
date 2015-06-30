@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,8 +66,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Resource type descriptor for the type "xmlcontent".<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
@@ -82,14 +82,14 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
     /**
      * Returns <code>true</code> in case the given resource is an XML content.<p>
-     * 
-     * Internally this checks if the content loader for the given resource is 
+     *
+     * Internally this checks if the content loader for the given resource is
      * identical to the XML content loader.<p>
-     * 
+     *
      * @param resource the resource to check
-     * 
+     *
      * @return <code>true</code> in case the given resource is an XML content
-     * 
+     *
      * @since 7.0.2
      */
     public static boolean isXmlContent(CmsResource resource) {
@@ -141,7 +141,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             Locale locale = getLocaleForNewContent(cms, securityManager, resourcename, properties);
             String modelUri = (String)cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_MODEL);
 
-            // must set URI of OpenCms user context to parent folder of created resource, 
+            // must set URI of OpenCms user context to parent folder of created resource,
             // in order to allow reading of properties for default values
             CmsObject newCms = OpenCms.initCmsObject(cms);
             newCms.getRequestContext().setUri(CmsResource.getParentFolder(resourcename));
@@ -215,9 +215,10 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             // no content definition found, use the preview formatter
         }
         if (result == null) {
-            LOG.warn(Messages.get().getBundle().key(
-                Messages.LOG_WARN_NO_FORMATTERS_DEFINED_1,
-                cd == null ? resource.getRootPath() : cd.getSchemaLocation()));
+            LOG.warn(
+                Messages.get().getBundle().key(
+                    Messages.LOG_WARN_NO_FORMATTERS_DEFINED_1,
+                    cd == null ? resource.getRootPath() : cd.getSchemaLocation()));
             result = CmsFormatterConfiguration.EMPTY_CONFIGURATION;
         }
         return result;
@@ -248,7 +249,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
     /**
      * Returns the configured xsd schema uri.<p>
-     * 
+     *
      * @return the configured xsd schema uri, or <code>null</code> if not set
      */
     public String getSchema() {
@@ -269,10 +270,11 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                 if (cms.existsResource(m_schema)) {
                     CmsXmlContentDefinition.unmarshal(cms, m_schema);
                 } else {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_WARN_SCHEMA_RESOURCE_DOES_NOT_EXIST_2,
-                        m_schema,
-                        getTypeName()));
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_WARN_SCHEMA_RESOURCE_DOES_NOT_EXIST_2,
+                            m_schema,
+                            getTypeName()));
                 }
             } catch (Throwable e) {
                 // unable to unmarshal the XML schema configured
@@ -374,7 +376,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             CmsPermissionSet.ACCESS_WRITE,
             true,
             CmsResourceFilter.ALL);
-        // read the XML content, use the encoding set in the property       
+        // read the XML content, use the encoding set in the property
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, false);
         // call the content handler for post-processing
         resource = xmlContent.getHandler().prepareForWrite(cms, xmlContent, resource);
@@ -385,13 +387,13 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
     /**
      * Gets the locale which should be used for creating an empty content.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param securityManager the security manager
-     * @param resourcename the name of the resource to create 
-     * @param properties the properties for the resource to create 
-     * 
-     * @return the locale to use 
+     * @param resourcename the name of the resource to create
+     * @param properties the properties for the resource to create
+     *
+     * @return the locale to use
      */
     protected Locale getLocaleForNewContent(
         CmsObject cms,
@@ -411,10 +413,10 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
     /**
      * Creates a new link object for the schema definition.<p>
-     * 
+     *
      * @param cms the current CMS context
      * @param xmlContent the xml content to crete the link for
-     * 
+     *
      * @return the generated link
      */
     protected CmsLink getXsdLink(CmsObject cms, CmsXmlContent xmlContent) {
@@ -426,7 +428,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             }
             schema = schema.substring(CmsXmlEntityResolver.OPENCMS_SCHEME.length() - 1);
         } else if (CmsXmlEntityResolver.isCachedSystemId(schema)) {
-            // schema may not exist as a VFS file because it has just been cached (some test cases do this) 
+            // schema may not exist as a VFS file because it has just been cached (some test cases do this)
             return null;
         }
         try {

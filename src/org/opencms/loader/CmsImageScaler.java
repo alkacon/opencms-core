@@ -1115,7 +1115,7 @@ public class CmsImageScaler {
 
                 // image rescale operation
                 switch (getType()) {
-                // select the "right" method of scaling according to the "t" parameter
+                    // select the "right" method of scaling according to the "t" parameter
                     case 1:
                         // thumbnail generation mode (like 0 but no image enlargement)
                         image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), false);
@@ -1178,7 +1178,9 @@ public class CmsImageScaler {
             }
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, rootPath, toString()), e);
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, rootPath, toString()),
+                    e);
             }
         }
         return result;

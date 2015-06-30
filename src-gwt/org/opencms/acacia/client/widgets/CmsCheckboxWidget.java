@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Provides a standard HTML form check box widget, for use on a widget dialog.<p>
- * 
+ *
  * */
 public class CmsCheckboxWidget extends Composite implements I_CmsEditWidget {
 
@@ -58,7 +58,7 @@ public class CmsCheckboxWidget extends Composite implements I_CmsEditWidget {
     public CmsCheckboxWidget() {
 
         SimplePanel panel = new SimplePanel();
-        // adds the checkbox to the panel. 
+        // adds the checkbox to the panel.
         panel.add(m_checkbox);
 
         // Set the check box's caption, and check it by default.
@@ -157,7 +157,7 @@ public class CmsCheckboxWidget extends Composite implements I_CmsEditWidget {
         if (parent != null) {
             parent.addClassName(I_CmsLayoutBundle.INSTANCE.form().shallowWidget());
         }
-        // control if the value has not change do nothing.        
+        // control if the value has not change do nothing.
         if (m_active == active) {
             return;
         }

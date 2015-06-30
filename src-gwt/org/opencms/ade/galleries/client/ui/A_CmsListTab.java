@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -83,7 +83,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides a widget for the content of a tab.<p>
- * 
+ *
  * @since 8.0.
  */
 public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandler<String>, I_CmsTruncable {
@@ -99,7 +99,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param checkBox the item check box
          */
         protected A_SelectionHandler(CmsCheckBox checkBox) {
@@ -109,8 +109,8 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         /**
          * Returns the select button.<p>
-         * 
-         * @return the select button 
+         *
+         * @return the select button
          */
         public CmsPushButton getSelectButton() {
 
@@ -132,7 +132,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         /**
          * Sets the select button, can be used instead of a double click to select and search.<p>
-         * 
+         *
          * @param button the select button
          */
         public void setSelectButton(CmsPushButton button) {
@@ -142,7 +142,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         /**
          * Returns the check box.<p>
-         * 
+         *
          * @return the check box
          */
         protected CmsCheckBox getCheckBox() {
@@ -185,8 +185,8 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         /**
          * Constructor.<p>
-         * 
-         * @param resourcePath the item resource path 
+         *
+         * @param resourcePath the item resource path
          * @param structureId the structure id
          * @param title the resource title
          * @param resourceType the item resource type
@@ -273,8 +273,8 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * The default constructor with drag handler.<p>
-     * 
-     * @param tabId the tab id 
+     *
+     * @param tabId the tab id
      */
     public A_CmsListTab(GalleryTabId tabId) {
 
@@ -283,8 +283,8 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * Sets up a list tab with a given tab id.<p>
-     *  
-     * @param tabId the tab id 
+     *
+     * @param tabId the tab id
      */
     public A_CmsListTab(String tabId) {
 
@@ -349,7 +349,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * Will be triggered if the value in the select box changes.<p>
-     * 
+     *
      * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
      */
     public void onValueChange(ValueChangeEvent<String> event) {
@@ -381,9 +381,9 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * Sets the value selected in the sort select box, if possible.<p>
-     * 
-     * @param value the new value for the sort select box 
-     * @param fireEvents if true, the change event of the select box is fired 
+     *
+     * @param value the new value for the sort select box
+     * @param fireEvents if true, the change event of the select box is fired
      */
     public void setSortSelectBoxValue(String value, boolean fireEvents) {
 
@@ -402,8 +402,8 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * Adds a widget to the front of the list.<p>
-     * 
-     * @param listItem the list item to add 
+     *
+     * @param listItem the list item to add
      */
     protected void addWidgetToFrontOfList(Widget listItem) {
 
@@ -412,7 +412,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * Add a list item widget to the list panel.<p>
-     * 
+     *
      * @param listItem the list item to add
      */
     protected void addWidgetToList(Widget listItem) {
@@ -422,9 +422,9 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * Add a widget to the option panel.<p>
-     * 
+     *
      * The option panel should contain drop down boxes or other list options.
-     * 
+     *
      * @param widget the widget to add
      */
     protected void addWidgetToOptions(Widget widget) {
@@ -467,21 +467,23 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * Generates a button to create new external link resources.<p>
-     * 
+     *
      * @param parentPath the parent folder site path
-     * 
+     *
      * @return the button widget
      */
     protected CmsPushButton createNewExternalLinkButton(final String parentPath) {
 
-        CmsResourceTypeBean typeInfo = getTabHandler().getTypeInfo(CmsEditExternalLinkDialog.POINTER_RESOURCE_TYPE_NAME);
+        CmsResourceTypeBean typeInfo = getTabHandler().getTypeInfo(
+            CmsEditExternalLinkDialog.POINTER_RESOURCE_TYPE_NAME);
         CmsPushButton createNewButton = null;
         if (typeInfo != null) {
             final String niceName = typeInfo.getTitle();
             final String description = typeInfo.getDescription();
             createNewButton = new CmsPushButton(I_CmsImageBundle.INSTANCE.style().addIcon());
-            createNewButton.setTitle(org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_CREATE_NEW_LINK_DIALOG_TITLE_0));
+            createNewButton.setTitle(
+                org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.GUI_CREATE_NEW_LINK_DIALOG_TITLE_0));
             createNewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
             createNewButton.addClickHandler(new ClickHandler() {
 
@@ -506,8 +508,8 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * Creates the list which should contain the list items of the tab.<p>
-     * 
-     * @return the newly created list widget 
+     *
+     * @return the newly created list widget
      */
     protected CmsList<? extends I_CmsListItem> createScrollList() {
 
@@ -516,9 +518,9 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * Creates a select button.<p>
-     * 
+     *
      * @param selectionHandler the selction handler
-     * 
+     *
      * @return the select button
      */
     protected CmsPushButton createSelectButton(A_SelectionHandler selectionHandler) {
@@ -534,12 +536,12 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * Creates a button widget to select the specified resource.<p>
-     * 
-     * @param resourcePath the item resource path 
+     *
+     * @param resourcePath the item resource path
      * @param structureId the structure id
      * @param title the resource title
      * @param resourceType the item resource type
-     * 
+     *
      * @return the initialized select resource button
      */
     protected CmsPushButton createSelectResourceButton(
@@ -558,30 +560,30 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * Creates an upload button for the given target.<p>
-     * 
+     *
      * @param target the upload target folder
-     * @param isRootPath true if target is a root path 
-     * 
+     * @param isRootPath true if target is a root path
+     *
      * @return the upload button
      */
     protected CmsUploadButton createUploadButtonForTarget(String target, boolean isRootPath) {
 
         CmsDialogUploadButtonHandler buttonHandler = new CmsDialogUploadButtonHandler(
 
-        new Supplier<I_CmsUploadContext>() {
+            new Supplier<I_CmsUploadContext>() {
 
-            public I_CmsUploadContext get() {
+                public I_CmsUploadContext get() {
 
-                return new I_CmsUploadContext() {
+                    return new I_CmsUploadContext() {
 
-                    public void onUploadFinished(List<String> uploadedFiles) {
+                        public void onUploadFinished(List<String> uploadedFiles) {
 
-                        getTabHandler().updateIndex();
-                    }
+                            getTabHandler().updateIndex();
+                        }
 
-                };
-            }
-        });
+                    };
+                }
+            });
 
         buttonHandler.setTargetFolder(target);
         buttonHandler.setIsTargetRootPath(isRootPath);
@@ -598,14 +600,14 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * Returns a list with sort values for this tab.<p>
-     * 
+     *
      * @return list of sort order value/text pairs
      */
     protected abstract LinkedHashMap<String, String> getSortList();
 
     /**
      * Returns if this tab has quick filter enabled.<p>
-     * 
+     *
      * @return <code>true</code> if this tab has quick filter enabled
      */
     protected boolean hasQuickFilter() {
@@ -615,7 +617,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * Returns if the tab has the quick search box.<p>
-     * 
+     *
      * @return <code>true</code> if the tab has the quick search box
      */
     protected boolean hasQuickSearch() {
@@ -665,7 +667,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
     /**
      * Searches in the categories tree or list the item and returns it.<p>
-     * 
+     *
      * @param list the list of items to start from
      * @param categoryPath the category id to search
      * @return the category item widget

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,8 +43,8 @@ public class CmsReplaceMessageKeyPrefix implements CmsMultiMessages.I_KeyFallbac
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param configuration a pipe-separated list of colon-separated key-value pairs, where the key is the prefix and the value is the replacement 
+     *
+     * @param configuration a pipe-separated list of colon-separated key-value pairs, where the key is the prefix and the value is the replacement
      */
     public CmsReplaceMessageKeyPrefix(String configuration) {
 

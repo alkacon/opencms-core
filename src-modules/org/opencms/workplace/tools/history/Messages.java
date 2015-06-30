@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,21 +31,21 @@ import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
 
 /**
- * Convenience class to access the localized messages of this OpenCms package.<p> 
- * 
- * @since 6.0.0 
+ * Convenience class to access the localized messages of this OpenCms package.<p>
+ *
+ * @since 6.0.0
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORY_CLEAR_DELETED_DELETENONE_0 = "GUI_HISTORY_CLEAR_DELETED_DELETENONE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORY_CLEAR_DELETED_DELETEALL_0 = "GUI_HISTORY_CLEAR_DELETED_DELETEALL_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORY_CLEAR_DELETED_KEEPRESTORE_0 = "GUI_HISTORY_CLEAR_DELETED_KEEPRESTORE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CLEARHISTORY_HISTORY_ADMIN_TOOL_GROUP_0 = "GUI_CLEARHISTORY_HISTORY_ADMIN_TOOL_GROUP_0";
 
@@ -131,7 +131,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /**
      * Returns an instance of this localized message accessor.<p>
-     * 
+     *
      * @return an instance of this localized message accessor
      */
     public static I_CmsMessageBundle get() {
@@ -141,7 +141,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /**
      * Returns the bundle name for this OpenCms package.<p>
-     * 
+     *
      * @return the bundle name for this OpenCms package
      */
     public String getBundleName() {

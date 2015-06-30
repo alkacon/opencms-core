@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This bean contains the preview content for the selected item.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsResourceInfoBean implements IsSerializable {
@@ -162,7 +162,7 @@ public class CmsResourceInfoBean implements IsSerializable {
 
     /**
      * Gets the structure id of the resource.<p>
-     * @return the structure id of the resource 
+     * @return the structure id of the resource
      */
     public CmsUUID getStructureId() {
 
@@ -261,8 +261,8 @@ public class CmsResourceInfoBean implements IsSerializable {
 
     /**
      * Sets the resource structure id.<p>
-     * 
-     * @param structureId the resource structure id 
+     *
+     * @param structureId the resource structure id
      */
     public void setStructureId(CmsUUID structureId) {
 

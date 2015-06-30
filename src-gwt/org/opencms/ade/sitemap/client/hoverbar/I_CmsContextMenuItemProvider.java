@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,10 +36,10 @@ public interface I_CmsContextMenuItemProvider {
 
     /**
      * Returns the list of menu entries for the hoverbar.<p>
-     *  
-     * @param hoverbar the hoverbar 
-     * 
-     * @return the list of menu entries 
+     *
+     * @param hoverbar the hoverbar
+     *
+     * @return the list of menu entries
      */
     List<A_CmsSitemapMenuEntry> createContextMenu(CmsSitemapHoverbar hoverbar);
 

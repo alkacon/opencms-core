@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,8 +40,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Displays a print preview of a given list.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListPrintDialog extends CmsDialog {
 
@@ -56,9 +56,9 @@ public class CmsListPrintDialog extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
-     * 
+     *
      * @throws ClassNotFoundException if the list dialog class is not found
      */
     public CmsListPrintDialog(CmsJspActionElement jsp)
@@ -71,11 +71,11 @@ public class CmsListPrintDialog extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
-     * 
+     *
      * @throws ClassNotFoundException if the list dialog class is not found
      */
     public CmsListPrintDialog(PageContext context, HttpServletRequest req, HttpServletResponse res)
@@ -100,15 +100,16 @@ public class CmsListPrintDialog extends CmsDialog {
         html.append(m_list.getName().key(getLocale()));
         html.append("\n\t\t\t</td>");
         html.append("\t\t\t<td class='uplevel'>\n\t\t\t\t");
-        html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-            "id-print",
-            message.key(Messages.GUI_ACTION_PRINT_NAME_0),
-            message.key(Messages.GUI_ACTION_PRINT_HELP_0),
-            true,
-            "list/print.png",
-            null,
-            "print();"));
+        html.append(
+            A_CmsHtmlIconButton.defaultButtonHtml(
+                CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+                "id-print",
+                message.key(Messages.GUI_ACTION_PRINT_NAME_0),
+                message.key(Messages.GUI_ACTION_PRINT_HELP_0),
+                true,
+                "list/print.png",
+                null,
+                "print();"));
         html.append("\n\t\t\t</td>\n");
         html.append("\t\t</tr>\n");
         html.append("\t</table>\n");
@@ -119,7 +120,7 @@ public class CmsListPrintDialog extends CmsDialog {
 
     /**
      * Generates the printable output for the given list.<p>
-     * 
+     *
      * @return html code
      */
     public String generateHtml() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,15 +36,15 @@ import org.opencms.util.CmsUUID;
 
 /**
  * Sitemap context menu disable model page entry.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsDisableMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsDisableMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -84,14 +84,14 @@ public class CmsDisableMenuEntry extends A_CmsSitemapMenuEntry {
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         final CmsUUID id = entry.getId();
         boolean show = CmsSitemapView.getInstance().isModelPageMode()
-            && (CmsSitemapView.getInstance().isModelPageEntry(id) || CmsSitemapView.getInstance().isParentModelPageEntry(
-                id));
+            && (CmsSitemapView.getInstance().isModelPageEntry(id)
+                || CmsSitemapView.getInstance().isParentModelPageEntry(id));
         setVisible(show);
     }
 
     /**
      * Checks if the entry is disabled.<p>
-     * 
+     *
      * @return <code>true</code> if the entry is disabled
      */
     private boolean isEntryDisabled() {

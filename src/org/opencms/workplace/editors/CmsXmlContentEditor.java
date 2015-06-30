@@ -1014,7 +1014,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
             // add empty element button layer
             result.append("<div class=\"xmlButtons\" id=\"xmlElementButtons\" ");
-            result.append("onmouseover=\"checkElementButtons(true);\" onmouseout=\"checkElementButtons(false);\"></div>\n");
+            result.append(
+                "onmouseover=\"checkElementButtons(true);\" onmouseout=\"checkElementButtons(false);\"></div>\n");
 
             // return the HTML
             return result.toString();
@@ -1437,7 +1438,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // initialize a content object from the temporary file
             if ((getParamTempfile() != null) && !"null".equals(getParamTempfile())) {
                 try {
-                    m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
+                    m_file = getCms().readFile(getParamTempfile(), CmsResourceFilter.ALL);
                     m_content = CmsXmlContentFactory.unmarshal(getCloneCms(), m_file);
                 } catch (CmsException e) {
                     // error during initialization, show error page
@@ -1496,8 +1497,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 actionToggleElement();
             } catch (JspException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(org.opencms.workplace.Messages.get().getBundle().key(
-                        org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
+                    LOG.error(
+                        org.opencms.workplace.Messages.get().getBundle().key(
+                            org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
         } else if (EDITOR_ACTION_ELEMENT_REMOVE.equals(getParamAction())) {
@@ -1506,8 +1508,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 actionToggleElement();
             } catch (JspException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(org.opencms.workplace.Messages.get().getBundle().key(
-                        org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
+                    LOG.error(
+                        org.opencms.workplace.Messages.get().getBundle().key(
+                            org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
         } else if (EDITOR_ACTION_ELEMENT_MOVE_DOWN.equals(getParamAction())) {
@@ -1516,8 +1519,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 actionMoveElement();
             } catch (JspException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(org.opencms.workplace.Messages.get().getBundle().key(
-                        org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
+                    LOG.error(
+                        org.opencms.workplace.Messages.get().getBundle().key(
+                            org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
         } else if (EDITOR_ACTION_ELEMENT_MOVE_UP.equals(getParamAction())) {
@@ -1526,8 +1530,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 actionMoveElement();
             } catch (JspException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(org.opencms.workplace.Messages.get().getBundle().key(
-                        org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
+                    LOG.error(
+                        org.opencms.workplace.Messages.get().getBundle().key(
+                            org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
         } else if (EDITOR_ACTION_NEW.equals(getParamAction())) {
@@ -1566,7 +1571,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 // create the temporary file
                 setParamTempfile(createTempFile());
                 // initialize a content object from the created temporary file
-                m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
+                m_file = getCms().readFile(getParamTempfile(), CmsResourceFilter.ALL);
                 m_content = CmsXmlContentFactory.unmarshal(getCloneCms(), m_file);
                 // check the XML content against the given XSD
                 try {
@@ -1686,8 +1691,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 action.append(elementName);
                 action.append("', ");
                 action.append(index);
-                action.append(", '").append(CmsEncoder.escape(newElements.toString(), CmsEncoder.ENCODING_UTF_8)).append(
-                    "'");
+                action.append(", '").append(
+                    CmsEncoder.escape(newElements.toString(), CmsEncoder.ENCODING_UTF_8)).append("'");
                 action.append(");");
                 btAction = action.toString();
             } else if (removeElement) {
@@ -1786,14 +1791,18 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             if (!nested && showErrors && (getValidationHandler().hasErrors())) {
 
                 result.append("<div class=\"ui-widget\">");
-                result.append("<div class=\"ui-state-error ui-corner-all\" style=\"padding: 0pt 0.7em;\"><div style=\"padding: 3px 0;\">");
-                result.append("<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin-right: 0.3em;\"></span>");
+                result.append(
+                    "<div class=\"ui-state-error ui-corner-all\" style=\"padding: 0pt 0.7em;\"><div style=\"padding: 3px 0;\">");
+                result.append(
+                    "<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin-right: 0.3em;\"></span>");
                 boolean differentLocaleErrors = false;
                 if ((getValidationHandler().getErrors(getElementLocale()) == null)
-                    || (getValidationHandler().getErrors().size() > getValidationHandler().getErrors(getElementLocale()).size())) {
+                    || (getValidationHandler().getErrors().size() > getValidationHandler().getErrors(
+                        getElementLocale()).size())) {
 
                     differentLocaleErrors = true;
-                    result.append("<span id=\"xmlerrordialogbutton\" class=\"ui-icon ui-icon-newwin\" style=\"float: left; margin-right: 0.3em;\"></span>");
+                    result.append(
+                        "<span id=\"xmlerrordialogbutton\" class=\"ui-icon ui-icon-newwin\" style=\"float: left; margin-right: 0.3em;\"></span>");
                 }
                 result.append(key(Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_TITLE_0));
                 result.append("</div>");
@@ -1815,9 +1824,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         }
 
                         result.append("<div style=\"padding: 3px;\"><strong>");
-                        result.append(key(
-                            Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_LANG_1,
-                            new Object[] {locale.getLanguage()}));
+                        result.append(
+                            key(
+                                Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_LANG_1,
+                                new Object[] {locale.getLanguage()}));
                         result.append("</strong></div>\n");
                         result.append("<ul>");
 
@@ -1847,12 +1857,13 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     result.append("\twidth: 500,\n");
                     result.append("\tposition: 'center',\n");
                     result.append("\tdialogClass: 'ui-state-error',\n");
-                    result.append("\ttitle: '").append(key(Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_TITLE_0)).append(
-                        "',\n");
+                    result.append("\ttitle: '").append(
+                        key(Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_TITLE_0)).append("',\n");
                     result.append("\tmaxHeight: 600\n");
                     result.append("});\n");
 
-                    result.append("$(\"#xmlerrordialogbutton\").bind(\"click\", function(e) {$(\"#xmlerrordialog\").dialog(\"open\");});\n");
+                    result.append(
+                        "$(\"#xmlerrordialogbutton\").bind(\"click\", function(e) {$(\"#xmlerrordialog\").dialog(\"open\");});\n");
                     result.append("</script>");
                 }
                 result.append("</div></div>");
@@ -1869,10 +1880,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         result.append("\t<li id=\"OcmsTabTab").append(tab.getIdName()).append("\"><a href=\"#OcmsTab");
                         result.append(tab.getIdName());
                         result.append("\"><span>");
-                        result.append(keyDefault(A_CmsWidget.LABEL_PREFIX
-                            + contentDefinition.getInnerName()
-                            + "."
-                            + tab.getTabName(), tab.getTabName()));
+                        result.append(
+                            keyDefault(
+                                A_CmsWidget.LABEL_PREFIX + contentDefinition.getInnerName() + "." + tab.getTabName(),
+                                tab.getTabName()));
                         result.append("</span></a></li>\n");
                     }
                     result.append("</ul>\n");
@@ -1987,8 +1998,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         // mark tab as error tab if tab is present
                         String elemName = CmsXmlUtils.getFirstXpathElement(value.getPath());
                         if (((m_currentTab != null) && !m_errorTabs.contains(m_currentTab))
-                            && (elemName.equals(m_currentTab.getStartName()) || (!CmsXmlUtils.isDeepXpath(value.getPath()) && value.getName().equals(
-                                elemName)))) {
+                            && (elemName.equals(m_currentTab.getStartName())
+                                || (!CmsXmlUtils.isDeepXpath(value.getPath()) && value.getName().equals(elemName)))) {
                             m_errorTabs.add(m_currentTab);
                         }
 
@@ -2002,22 +2013,24 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                             result.append("<tr><td class=\"xmlTdError\"><img src=\"");
                             result.append(getEditorResourceUri());
                             result.append("warning.png\" border=\"0\" alt=\"\" align=\"left\" hspace=\"5\">");
-                            result.append(resolveMacros(getValidationHandler().getWarnings(getElementLocale()).get(key)));
+                            result.append(
+                                resolveMacros(getValidationHandler().getWarnings(getElementLocale()).get(key)));
                             result.append("</td><td></td></tr>\n");
                         } else {
                             result.append("<tr><td></td><td><img src=\"");
                             result.append(getEditorResourceUri());
                             result.append("warning.png");
                             result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdWarning\">");
-                            result.append(resolveMacros(getValidationHandler().getWarnings(getElementLocale()).get(key)));
+                            result.append(
+                                resolveMacros(getValidationHandler().getWarnings(getElementLocale()).get(key)));
                             result.append("</td><td></td></tr>\n");
                         }
 
                         // mark tab as warning tab if tab is present
                         String elemName = CmsXmlUtils.getFirstXpathElement(value.getPath());
                         if (((m_currentTab != null) && !m_warningTabs.contains(m_currentTab))
-                            && (elemName.equals(m_currentTab.getStartName()) || (!CmsXmlUtils.isDeepXpath(value.getPath()) && value.getName().equals(
-                                elemName)))) {
+                            && (elemName.equals(m_currentTab.getStartName())
+                                || (!CmsXmlUtils.isDeepXpath(value.getPath()) && value.getName().equals(elemName)))) {
                             m_warningTabs.add(m_currentTab);
                         }
                     }
@@ -2036,12 +2049,15 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                             result.append("Disabled");
                         }
                         result.append("\">");
-                        result.append(keyDefault(A_CmsWidget.getLabelKey((I_CmsWidgetParameter)value), value.getName()));
+                        result.append(
+                            keyDefault(A_CmsWidget.getLabelKey((I_CmsWidgetParameter)value), value.getName()));
                         if (elementCount > 1) {
                             result.append(" [").append(index + 1).append("]");
                         }
                         result.append(": </td>");
-                        if (showHelpBubble && (widget != null) && (CmsXmlUtils.getXpathIndexInt(value.getPath()) == 1)) {
+                        if (showHelpBubble
+                            && (widget != null)
+                            && (CmsXmlUtils.getXpathIndexInt(value.getPath()) == 1)) {
                             // show help bubble only on first element of each content definition
                             result.append(widget.getHelpBubble(getCms(), this, (I_CmsWidgetParameter)value));
                         } else {
@@ -2067,11 +2083,12 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                             result.append("<td class=\"maxwidth\">");
                             boolean showHelp = (j == 0);
                             superTabOpened = !nested && tabOpened && collapseLabel;
-                            result.append(getXmlEditorForm(
-                                ((CmsXmlNestedContentDefinition)value).getNestedContentDefinition(),
-                                value.getPath() + "/",
-                                showHelp,
-                                superTabOpened));
+                            result.append(
+                                getXmlEditorForm(
+                                    ((CmsXmlNestedContentDefinition)value).getNestedContentDefinition(),
+                                    value.getPath() + "/",
+                                    showHelp,
+                                    superTabOpened));
                             result.append("</td>");
                         }
                     }
@@ -2103,8 +2120,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 for (Iterator<CmsXmlContentTab> i = m_warningTabs.iterator(); i.hasNext();) {
                     CmsXmlContentTab checkTab = i.next();
                     if (!m_errorTabs.contains(checkTab)) {
-                        result.append("\txmlWarningTabs[xmlWarningTabs.length] = \"").append(checkTab.getIdName()).append(
-                            "\";\n");
+                        result.append("\txmlWarningTabs[xmlWarningTabs.length] = \"").append(
+                            checkTab.getIdName()).append("\";\n");
                     }
                 }
                 for (Iterator<CmsXmlContentTab> i = m_errorTabs.iterator(); i.hasNext();) {

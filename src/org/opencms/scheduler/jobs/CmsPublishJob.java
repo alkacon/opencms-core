@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,15 +47,15 @@ import org.apache.commons.logging.Log;
  * Scheduled job for time based publishing.<p>
  *
  * This class is called via the scheduled job backoffice to publish a project at a given time.<p>
- * 
+ *
  * Per default, it publishes all new, edited and deleted resources in the project which are not locked.
  * To unlock all resources in the project before publishing, add the parameter <code>unlock=true</code>
  * in the scheduled job configuration. In addition you are able to perform a link validation before
  * publishing the project by adding the parameter <code>linkcheck=true</code>. It is possible to send
  * an email to a user in OpenCms in case somthing went wrong during this process. To do so specifiy
  * a parameter<code>mail-to-user=username_in_opencms</code>.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsPublishJob implements I_CmsScheduledJob {
 

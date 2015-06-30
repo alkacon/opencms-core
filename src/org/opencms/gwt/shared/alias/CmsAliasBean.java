@@ -19,15 +19,13 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.gwt.shared.alias;
-
-
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -47,14 +45,14 @@ public class CmsAliasBean implements IsSerializable {
      */
     public CmsAliasBean() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
      * Creates a new alias bean.<p>
-     * 
-     * @param sitePath the site path of the alias 
-     * @param mode the alias mode 
+     *
+     * @param sitePath the site path of the alias
+     * @param mode the alias mode
      */
     public CmsAliasBean(String sitePath, CmsAliasMode mode) {
 
@@ -64,8 +62,8 @@ public class CmsAliasBean implements IsSerializable {
 
     /**
      * Returns the alias mode.<p>
-     * 
-     * @return the alias mode 
+     *
+     * @return the alias mode
      */
     public CmsAliasMode getMode() {
 
@@ -74,8 +72,8 @@ public class CmsAliasBean implements IsSerializable {
 
     /**
      * Returns the site-relative alias path.<p>
-     * 
-     * @return the site relative alias path 
+     *
+     * @return the site relative alias path
      */
     public String getSitePath() {
 
@@ -84,8 +82,8 @@ public class CmsAliasBean implements IsSerializable {
 
     /**
      * Sets the alias mode.<p>
-     * 
-     * @param mode the alias mode 
+     *
+     * @param mode the alias mode
      */
     public void setMode(CmsAliasMode mode) {
 
@@ -94,8 +92,8 @@ public class CmsAliasBean implements IsSerializable {
 
     /**
      * Sets the alias site path.<p>
-     * 
-     * @param sitePath the alias site path 
+     *
+     * @param sitePath the alias site path
      */
     public void setSitePath(String sitePath) {
 

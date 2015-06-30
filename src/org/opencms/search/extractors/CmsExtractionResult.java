@@ -333,7 +333,8 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
      * @param multilingualContentItems the map where replacement should take place
      * @return the map with all <code>null</code> values replaced with empty maps.
      */
-    private Map<Locale, Map<String, String>> removeNullEntries(Map<Locale, Map<String, String>> multilingualContentItems) {
+    private Map<Locale, Map<String, String>> removeNullEntries(
+        Map<Locale, Map<String, String>> multilingualContentItems) {
 
         for (Locale locale : multilingualContentItems.keySet()) {
             if (null == multilingualContentItems.get(locale)) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Bean holding basic container element information.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainerElement implements IsSerializable {
@@ -52,9 +52,9 @@ public class CmsContainerElement implements IsSerializable {
 
         /**
          * Evaluates the given state string.<p>
-         * 
+         *
          * @param state the state
-         * 
+         *
          * @return the model group state
          */
         public static ModelGroupState evaluate(String state) {
@@ -180,7 +180,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Copies the container element.<p>
-     * 
+     *
      * @return the new copy of the container element
      */
     public CmsContainerElement copy() {
@@ -250,7 +250,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns the resource type name for elements.<p>
-     * 
+     *
      * @return the resource type name
      */
     public String getResourceType() {
@@ -270,7 +270,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns the sub title.<p>
-     * 
+     *
      * @return the sub title
      */
     public String getSubTitle() {
@@ -280,7 +280,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns the title.<p>
-     * 
+     *
      * @return the title
      */
     public String getTitle() {
@@ -292,7 +292,7 @@ public class CmsContainerElement implements IsSerializable {
      * Returns if the element may have settings.<p>
      *
      * @param containerId the container id
-     * 
+     *
      * @return <code>true</code> if the element may have settings
      */
     public boolean hasSettings(String containerId) {
@@ -322,11 +322,11 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Reads the 'create new' status of the element.<p>
-     * 
-     * When the page containing the element is used a model page, this flag determines whether a copy of the element 
+     *
+     * When the page containing the element is used a model page, this flag determines whether a copy of the element
      * is created when creating a new page from that model page.<p>
-     * 
-     * @return the 'create new' status of the element 
+     *
+     * @return the 'create new' status of the element
      */
     public boolean isCreateNew() {
 
@@ -335,7 +335,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns if the given element is of the type group container.<p>
-     * 
+     *
      * @return <code>true</code> if the given element is of the type group container
      */
     public boolean isGroupContainer() {
@@ -345,7 +345,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns if the given element is of the type inherit container.<p>
-     * 
+     *
      * @return <code>true</code> if the given element is of the type inherit container
      */
     public boolean isInheritContainer() {
@@ -355,7 +355,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns if the element is a model group.<p>
-     * 
+     *
      * @return <code>true</code> if the element is a model group
      */
     public boolean isModelGroup() {
@@ -365,7 +365,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns if all instances of this element should be replaced within a model group.<p>
-     * 
+     *
      * @return <code>true</code> if all instances of this element should be replaced within a model group
      */
     public boolean isModelGroupAlwaysReplace() {
@@ -375,7 +375,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns if the element is new and has not been created in the VFS yet.<p>
-     * 
+     *
      * @return <code>true</code> if the element is not created in the VFS yet
      */
     public boolean isNew() {
@@ -385,8 +385,8 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns true if the new editor is disabled for this element.<p>
-     * 
-     * @return true if the new editor is disabled for this element 
+     *
+     * @return true if the new editor is disabled for this element
      */
     public boolean isNewEditorDisabled() {
 
@@ -405,7 +405,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns the former copy model status.<p>
-     * 
+     *
      * @return the former copy model status
      */
     public boolean isWasModelGroup() {
@@ -425,8 +425,8 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Sets the 'create new' status of the element.<p>
-     * 
-     * @param createNew the new 'create new' status 
+     *
+     * @param createNew the new 'create new' status
      */
     public void setCreateNew(boolean createNew) {
 
@@ -465,7 +465,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Set if the element is a model group.<p>
-     * 
+     *
      * @param isModelGroup <code>true</code> if the element is a model group
      */
     public void setModelGroup(boolean isModelGroup) {
@@ -475,7 +475,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Sets if all instances of this element should be replaced within a model group.<p>
-     * 
+     *
      * @param alwaysReplace if all instances of this element should be replaced within a model group
      */
     public void setModelGroupAlwaysReplace(boolean alwaysReplace) {
@@ -485,7 +485,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Sets the 'new' flag.<p>
-     * 
+     *
      * @param isNew <code>true</code> on a new element
      */
     public void setNew(boolean isNew) {
@@ -495,7 +495,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Disables the new editor for this element.<p>
-     * 
+     *
      * @param disabled if true, the new editor will be disabled for this element
      */
     public void setNewEditorDisabled(boolean disabled) {
@@ -525,7 +525,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Sets the element resource type.<p>
-     * 
+     *
      * @param resourceType the element resource type
      */
     public void setResourceType(String resourceType) {
@@ -545,7 +545,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Sets the sub title.<p>
-     * 
+     *
      * @param subTitle the sub title
      */
     public void setSubTitle(String subTitle) {
@@ -555,7 +555,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Sets the title.<p>
-     * 
+     *
      * @param title the title
      */
     public void setTitle(String title) {

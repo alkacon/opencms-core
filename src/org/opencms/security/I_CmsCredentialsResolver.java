@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,7 +29,7 @@ package org.opencms.security;
 
 /**
  * This interface can be used to override or replace user names or passwords which occur in the OpenCms configuration,
- * for example to hide passwords from users who can read the configuration files. 
+ * for example to hide passwords from users who can read the configuration files.
  */
 public interface I_CmsCredentialsResolver {
 
@@ -47,11 +47,11 @@ public interface I_CmsCredentialsResolver {
 
     /**
      * Translates user names or passwords for authentication.<p>
-     * 
+     *
      * @param credentialType the type of credential to resolve (this is equal to one of the constants defined in this interface)
-     * @param valueFromConfiguration the original value which was read from the configuration file (may be null) 
-     *  
-     * @return the credential value that should be used for authentication 
+     * @param valueFromConfiguration the original value which was read from the configuration file (may be null)
+     *
+     * @return the credential value that should be used for authentication
      */
     String resolveCredential(String credentialType, String valueFromConfiguration);
 }

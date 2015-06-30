@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,8 +33,8 @@ import java.util.Locale;
 
 /**
  * Implementation of a default action in a html list column.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListDefaultAction extends CmsListDirectAction {
 
@@ -46,7 +46,7 @@ public class CmsListDefaultAction extends CmsListDirectAction {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id unique id
      */
     public CmsListDefaultAction(String id) {
@@ -56,7 +56,7 @@ public class CmsListDefaultAction extends CmsListDirectAction {
 
     /**
      * Resturns the id of column to use for the link.<p>
-     * 
+     *
      * @return the id of column to use for the link
      */
     public String getColumnForLink() {
@@ -66,7 +66,7 @@ public class CmsListDefaultAction extends CmsListDirectAction {
 
     /**
      * Resturns the formatter to use for the link.<p>
-     * 
+     *
      * @return the formatter to use for the link
      */
     public I_CmsListFormatter getColumnFormatter() {

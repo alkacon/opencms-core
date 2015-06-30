@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -118,8 +118,8 @@ import com.google.common.collect.Sets;
 
 /**
  * JPA database server implementation of the project driver methods.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
@@ -316,14 +316,15 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             readProjectResource(dbc, projectId, resourcePath);
             projectResourceExists = true;
         } catch (CmsVfsResourceNotFoundException e) {
-            // resource does not exist yet, everything is okay 
+            // resource does not exist yet, everything is okay
             projectResourceExists = false;
         }
 
         if (projectResourceExists) {
-            throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
-                Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
-                dbc.removeSiteRoot(resourcePath)));
+            throw new CmsVfsResourceAlreadyExistsException(
+                Messages.get().container(
+                    Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
+                    dbc.removeSiteRoot(resourcePath)));
         }
 
         try {
@@ -371,9 +372,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
         } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(
-                Messages.ERR_SERIALIZING_PUBLISHLIST_1,
-                publishJob.getPublishHistoryId().toString()), e);
+            throw new CmsDbIoException(
+                Messages.get().container(
+                    Messages.ERR_SERIALIZING_PUBLISHLIST_1,
+                    publishJob.getPublishHistoryId().toString()),
+                e);
         }
     }
 
@@ -433,7 +436,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         // remove the project id form all resources within their project
         unmarkProjectResources(dbc, project);
 
-        // finally delete the project     
+        // finally delete the project
         try {
             CmsDAOProjects p = m_sqlManager.find(dbc, CmsDAOProjects.class, project.getUuid().toString());
             if (p != null) {
@@ -639,7 +642,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // online project stuff
-        ////////////////////////////////////////////////////////////////////////////////////////////        
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         // create the online project
         CmsProject onlineProject = createProject(
@@ -701,7 +704,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         // setup project stuff
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-        // important: must access through driver manager to ensure proper cascading        
+        // important: must access through driver manager to ensure proper cascading
         CmsProject setupProject = m_driverManager.getProjectDriver(dbc).createProject(
             dbc,
             CmsUUID.getConstantUUID(SETUP_PROJECT_NAME),
@@ -714,7 +717,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             CmsProject.PROJECT_TYPE_TEMPORARY);
 
         rootFolder.setState(CmsResource.STATE_CHANGED);
-        // create the root-folder for the offline project       
+        // create the root-folder for the offline project
         CmsResource offlineRootFolder = m_driverManager.getVfsDriver(dbc).createResource(
             dbc,
             setupProject.getUuid(),
@@ -729,14 +732,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             offlineRootFolder,
             CmsDriverManager.NOTHING_CHANGED);
 
-        // important: must access through driver manager to ensure proper cascading        
+        // important: must access through driver manager to ensure proper cascading
         m_driverManager.getProjectDriver(dbc).createProjectResource(
             dbc,
             setupProject.getUuid(),
             offlineRootFolder.getRootPath());
 
         systemFolder.setState(CmsResource.STATE_CHANGED);
-        // create the system-folder for the offline project       
+        // create the system-folder for the offline project
         CmsResource offlineSystemFolder = m_driverManager.getVfsDriver(dbc).createResource(
             dbc,
             setupProject.getUuid(),
@@ -815,9 +818,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         if ((successiveDrivers != null) && !successiveDrivers.isEmpty()) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1,
-                    getClass().getName()));
+                LOG.warn(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1,
+                        getClass().getName()));
             }
         }
     }
@@ -849,7 +853,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 daoLog.setLogType(logEntry.getType().getId());
                 daoLog.setLogData(CmsStringUtil.arrayAsString(logEntry.getData(), "|"));
                 em.persist(daoLog);
-                // here commits on each record, 
+                // here commits on each record,
                 // because there may be a duplicate records
                 // and just ignore them
                 try {
@@ -891,9 +895,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     String.valueOf(n)),
                 I_CmsReport.FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_DELETE_FOLDER_0), I_CmsReport.FORMAT_NOTE);
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                dbc.removeSiteRoot(currentFolder.getRootPath())));
+            report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    dbc.removeSiteRoot(currentFolder.getRootPath())));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             CmsResourceState folderState = fixMovedResource(
@@ -904,10 +909,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 publishTag);
 
             // read the folder online
-            CmsFolder onlineFolder = m_driverManager.readFolder(dbc, currentFolder.getRootPath(), CmsResourceFilter.ALL);
+            CmsFolder onlineFolder = m_driverManager.readFolder(
+                dbc,
+                currentFolder.getRootPath(),
+                CmsResourceFilter.ALL);
 
             // if the folder in the online-project contains any files, these need to be removed.
-            // this can occur if these files were moved in the offline-project   
+            // this can occur if these files were moved in the offline-project
             List<CmsResource> movedFiles = null;
             I_CmsVfsDriver vfsDriver = m_driverManager.getVfsDriver(dbc);
             movedFiles = vfsDriver.readResourceTree(
@@ -932,10 +940,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         delFile.getStructureId(),
                         true);
                     CmsFile offlineFile = new CmsFile(offlineResource);
-                    offlineFile.setContents(vfsDriver.readContent(
-                        dbc,
-                        dbc.currentProject().getUuid(),
-                        offlineFile.getResourceId()));
+                    offlineFile.setContents(
+                        vfsDriver.readContent(dbc, dbc.currentProject().getUuid(), offlineFile.getResourceId()));
                     internalWriteHistory(
                         dbc,
                         offlineFile,
@@ -953,7 +959,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     m_sqlManager.getEntityManager(dbc).getTransaction().begin();
                 } catch (CmsDataAccessException e) {
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(Messages.LOG_REMOVING_RESOURCE_1, delFile.getName()), e);
+                        LOG.warn(
+                            Messages.get().getBundle().key(Messages.LOG_REMOVING_RESOURCE_1, delFile.getName()),
+                            e);
                     }
                 }
             }
@@ -1017,7 +1025,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // remove relations
             try {
                 vfsDriver.deleteRelations(dbc, onlineProject.getUuid(), onlineFolder, CmsRelationFilter.TARGETS);
-                vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), currentFolder, CmsRelationFilter.TARGETS);
+                vfsDriver.deleteRelations(
+                    dbc,
+                    dbc.currentProject().getUuid(),
+                    currentFolder,
+                    CmsRelationFilter.TARGETS);
             } catch (CmsDataAccessException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(
@@ -1041,18 +1053,20 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
             if (LOG.isDebugEnabled()) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEL_FOLDER_3,
-                        currentFolder.getRootPath(),
-                        String.valueOf(m),
-                        String.valueOf(n)));
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_DEL_FOLDER_3,
+                            currentFolder.getRootPath(),
+                            String.valueOf(m),
+                            String.valueOf(n)));
                 }
             }
         } finally {
             // notify the app. that the published folder and it's properties have been modified offline
-            OpenCms.fireCmsEvent(new CmsEvent(
-                I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFolder)));
+            OpenCms.fireCmsEvent(
+                new CmsEvent(
+                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFolder)));
         }
     }
 
@@ -1073,10 +1087,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         /*
          * Never use onlineResource.getState() here!
          * Only use offlineResource.getState() to determine the state of an offline resource!
-         * 
+         *
          * In case a resource has siblings, after a sibling was published the structure
          * and resource states are reset to UNCHANGED -> the state of the corresponding
-         * onlineResource is still NEW, DELETED or CHANGED. 
+         * onlineResource is still NEW, DELETED or CHANGED.
          * Thus, using onlineResource.getState() will inevitably result in unpublished resources!
          */
 
@@ -1090,9 +1104,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
             if (offlineResource.getState().isDeleted()) {
                 report.print(Messages.get().container(Messages.RPT_DELETE_FILE_0), I_CmsReport.FORMAT_NOTE);
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    dbc.removeSiteRoot(offlineResource.getRootPath())));
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        dbc.removeSiteRoot(offlineResource.getRootPath())));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 publishDeletedFile(dbc, onlineProject, offlineResource, publishHistoryId, publishTag);
@@ -1110,18 +1125,20 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     I_CmsReport.FORMAT_OK);
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEL_FILE_3,
-                        String.valueOf(m),
-                        String.valueOf(n),
-                        offlineResource.getRootPath()));
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_DEL_FILE_3,
+                            String.valueOf(m),
+                            String.valueOf(n),
+                            offlineResource.getRootPath()));
                 }
 
             } else if (offlineResource.getState().isChanged()) {
                 report.print(Messages.get().container(Messages.RPT_PUBLISH_FILE_0), I_CmsReport.FORMAT_NOTE);
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    dbc.removeSiteRoot(offlineResource.getRootPath())));
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        dbc.removeSiteRoot(offlineResource.getRootPath())));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 publishChangedFile(
@@ -1145,17 +1162,19 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     I_CmsReport.FORMAT_OK);
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_PUBLISHING_FILE_3,
-                        offlineResource.getRootPath(),
-                        String.valueOf(m),
-                        String.valueOf(n)));
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_PUBLISHING_FILE_3,
+                            offlineResource.getRootPath(),
+                            String.valueOf(m),
+                            String.valueOf(n)));
                 }
             } else if (offlineResource.getState().isNew()) {
                 report.print(Messages.get().container(Messages.RPT_PUBLISH_FILE_0), I_CmsReport.FORMAT_NOTE);
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    dbc.removeSiteRoot(offlineResource.getRootPath())));
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        dbc.removeSiteRoot(offlineResource.getRootPath())));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 publishNewFile(dbc, onlineProject, offlineResource, publishedContentIds, publishHistoryId, publishTag);
@@ -1174,19 +1193,21 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
                 if (LOG.isDebugEnabled()) {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_PUBLISHING_FILE_3,
-                            offlineResource.getRootPath(),
-                            String.valueOf(m),
-                            String.valueOf(n)));
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_PUBLISHING_FILE_3,
+                                offlineResource.getRootPath(),
+                                String.valueOf(m),
+                                String.valueOf(n)));
                     }
                 }
             } else {
                 // state == unchanged !!?? something went really wrong
                 report.print(Messages.get().container(Messages.RPT_PUBLISH_FILE_0), I_CmsReport.FORMAT_NOTE);
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    dbc.removeSiteRoot(offlineResource.getRootPath())));
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        dbc.removeSiteRoot(offlineResource.getRootPath())));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
@@ -1194,20 +1215,22 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
                 if (LOG.isErrorEnabled()) {
                     // the whole resource is printed out here
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.LOG_PUBLISHING_FILE_3,
-                        String.valueOf(m),
-                        String.valueOf(n),
-                        offlineResource));
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_PUBLISHING_FILE_3,
+                            String.valueOf(m),
+                            String.valueOf(n),
+                            offlineResource));
                 }
             }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         } finally {
             // notify the app. that the published file and it's properties have been modified offline
-            OpenCms.fireCmsEvent(new CmsEvent(
-                I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, offlineResource)));
+            OpenCms.fireCmsEvent(
+                new CmsEvent(
+                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, offlineResource)));
         }
     }
 
@@ -1238,7 +1261,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             offlineFile.setContents(offlineContent);
             dbc.setProjectId(projectId);
 
-            // create the file online              
+            // create the file online
             newFile = (CmsFile)offlineFile.clone();
             newFile.setState(CmsResource.STATE_UNCHANGED);
 
@@ -1321,9 +1344,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     String.valueOf(n)),
                 I_CmsReport.FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_PUBLISH_FOLDER_0), I_CmsReport.FORMAT_NOTE);
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                dbc.removeSiteRoot(offlineFolder.getRootPath())));
+            report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    dbc.removeSiteRoot(offlineFolder.getRootPath())));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             CmsResourceState resourceState = fixMovedResource(
@@ -1352,9 +1376,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     if (!offlineFolder.getRootPath().equals("/")
                         && !offlineFolder.getRootPath().equals("/system/")
                         && LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.LOG_WARN_FOLDER_WRONG_STATE_CN_1,
-                            offlineFolder.getRootPath()));
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_WARN_FOLDER_WRONG_STATE_CN_1,
+                                offlineFolder.getRootPath()));
                     }
                     try {
                         onlineFolder = m_driverManager.getVfsDriver(dbc).readFolder(
@@ -1397,9 +1422,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         offlineFolder.getStructureId());
                 } catch (CmsVfsResourceNotFoundException e) {
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.LOG_WARN_FOLDER_WRONG_STATE_NC_1,
-                            offlineFolder.getRootPath()));
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_WARN_FOLDER_WRONG_STATE_NC_1,
+                                offlineFolder.getRootPath()));
                     }
                     try {
                         onlineFolder = m_driverManager.getVfsDriver(dbc).createResource(
@@ -1494,17 +1520,19 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 I_CmsReport.FORMAT_OK);
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_PUBLISHING_FOLDER_3,
-                    String.valueOf(m),
-                    String.valueOf(n),
-                    offlineFolder.getRootPath()));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_PUBLISHING_FOLDER_3,
+                        String.valueOf(m),
+                        String.valueOf(n),
+                        offlineFolder.getRootPath()));
             }
         } finally {
             // notify the app. that the published folder and it's properties have been modified offline
-            OpenCms.fireCmsEvent(new CmsEvent(
-                I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, offlineFolder)));
+            OpenCms.fireCmsEvent(
+                new CmsEvent(
+                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, offlineFolder)));
         }
     }
 
@@ -1548,10 +1576,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // publish new/changed folders
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_START_PUBLISHING_PROJECT_2,
-                    dbc.currentProject().getName(),
-                    dbc.currentUser().getName()));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_START_PUBLISHING_PROJECT_2,
+                        dbc.currentProject().getName(),
+                        dbc.currentUser().getName()));
             }
 
             publishedFolderCount = 0;
@@ -1587,11 +1616,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         CmsLogEntryType type = currentFolder.getState().isNew()
                         ? CmsLogEntryType.RESOURCE_PUBLISHED_NEW
                         : CmsLogEntryType.RESOURCE_PUBLISHED_MODIFIED;
-                        m_driverManager.log(dbc, new CmsLogEntry(
+                        m_driverManager.log(
                             dbc,
-                            currentFolder.getStructureId(),
-                            type,
-                            new String[] {currentFolder.getRootPath()}), true);
+                            new CmsLogEntry(
+                                dbc,
+                                currentFolder.getStructureId(),
+                                type,
+                                new String[] {currentFolder.getRootPath()}),
+                            true);
 
                         // delete old historical entries
                         historyDriver.deleteEntries(
@@ -1607,21 +1639,24 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     } else {
                         // state == unchanged !!?? something went really wrong
                         report.print(Messages.get().container(Messages.RPT_PUBLISH_FOLDER_0), I_CmsReport.FORMAT_NOTE);
-                        report.print(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_ARGUMENT_1,
-                            dbc.removeSiteRoot(currentFolder.getRootPath())));
-                        report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                        report.print(
+                            org.opencms.report.Messages.get().container(
+                                org.opencms.report.Messages.RPT_ARGUMENT_1,
+                                dbc.removeSiteRoot(currentFolder.getRootPath())));
+                        report.print(
+                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                         report.println(
                             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
                             I_CmsReport.FORMAT_ERROR);
 
                         if (LOG.isErrorEnabled()) {
                             // the whole resource is printed out here
-                            LOG.error(Messages.get().getBundle().key(
-                                Messages.LOG_PUBLISHING_FILE_3,
-                                String.valueOf(++publishedFolderCount),
-                                String.valueOf(foldersSize),
-                                currentFolder));
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_PUBLISHING_FILE_3,
+                                    String.valueOf(++publishedFolderCount),
+                                    String.valueOf(foldersSize),
+                                    currentFolder));
                         }
                     }
 
@@ -1689,14 +1724,19 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     // unlock it
                     m_driverManager.unlockResource(dbc, currentResource, true, true);
                     // log it
-                    CmsLogEntryType type = state.isNew() ? CmsLogEntryType.RESOURCE_PUBLISHED_NEW : (state.isDeleted()
+                    CmsLogEntryType type = state.isNew()
+                    ? CmsLogEntryType.RESOURCE_PUBLISHED_NEW
+                    : (state.isDeleted()
                     ? CmsLogEntryType.RESOURCE_PUBLISHED_DELETED
                     : CmsLogEntryType.RESOURCE_PUBLISHED_MODIFIED);
-                    m_driverManager.log(dbc, new CmsLogEntry(
+                    m_driverManager.log(
                         dbc,
-                        currentResource.getStructureId(),
-                        type,
-                        new String[] {currentResource.getRootPath()}), true);
+                        new CmsLogEntry(
+                            dbc,
+                            currentResource.getStructureId(),
+                            type,
+                            new String[] {currentResource.getRootPath()}),
+                        true);
 
                     publishedIds.add(currentResource.getStructureId());
                     dbc.pop();
@@ -1756,11 +1796,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     // unlock it
                     m_driverManager.unlockResource(dbc, currentFolder, true, true);
                     // log it
-                    m_driverManager.log(dbc, new CmsLogEntry(
+                    m_driverManager.log(
                         dbc,
-                        currentFolder.getStructureId(),
-                        CmsLogEntryType.RESOURCE_PUBLISHED_DELETED,
-                        new String[] {currentFolder.getRootPath()}), true);
+                        new CmsLogEntry(
+                            dbc,
+                            currentFolder.getStructureId(),
+                            CmsLogEntryType.RESOURCE_PUBLISHED_DELETED,
+                            new String[] {currentFolder.getRootPath()}),
+                        true);
 
                     dbc.pop();
                 } catch (Throwable t) {
@@ -1774,13 +1817,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             }
 
             if (deletedFoldersSize > 0) {
-                report.println(Messages.get().container(Messages.RPT_DELETE_FOLDERS_END_0), I_CmsReport.FORMAT_HEADLINE);
+                report.println(
+                    Messages.get().container(Messages.RPT_DELETE_FOLDERS_END_0),
+                    I_CmsReport.FORMAT_HEADLINE);
             }
         } catch (OutOfMemoryError o) {
             // clear all caches to reclaim memory
-            OpenCms.fireCmsEvent(new CmsEvent(
-                I_CmsEventListener.EVENT_CLEAR_CACHES,
-                Collections.<String, Object> emptyMap()));
+            OpenCms.fireCmsEvent(
+                new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.<String, Object> emptyMap()));
 
             CmsMessageContainer message = Messages.get().container(Messages.ERR_OUT_OF_MEMORY_0);
             if (LOG.isErrorEnabled()) {
@@ -1848,7 +1892,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         List<CmsLogEntry> entries = new ArrayList<CmsLogEntry>();
 
         try {
-            // compose statement 
+            // compose statement
             StringBuffer queryBuf = new StringBuffer(256);
             queryBuf.append(m_sqlManager.readQuery(C_LOG_READ_ENTRIES));
             CmsPair<String, List<I_CmsQueryParameter>> conditionsAndParameters = prepareLogConditions(filter);
@@ -1889,9 +1933,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDAOProjects p = (CmsDAOProjects)q.getSingleResult();
                 project = internalCreateProject(p);
             } catch (NoResultException e) {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_NO_PROJECT_WITH_ID_1,
-                    String.valueOf(id)));
+                throw new CmsDbEntryNotFoundException(
+                    Messages.get().container(Messages.ERR_NO_PROJECT_WITH_ID_1, String.valueOf(id)));
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
@@ -1916,9 +1959,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDAOProjects p = (CmsDAOProjects)q.getSingleResult();
                 project = internalCreateProject(p);
             } catch (NoResultException e) {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_NO_PROJECT_WITH_NAME_1,
-                    projectFqn));
+                throw new CmsDbEntryNotFoundException(
+                    Messages.get().container(Messages.ERR_NO_PROJECT_WITH_NAME_1, projectFqn));
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
@@ -1945,9 +1987,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             try {
                 resName = (String)q.getSingleResult();
             } catch (NoResultException e) {
-                throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                    Messages.ERR_NO_PROJECTRESOURCE_1,
-                    resourcePath));
+                throw new CmsVfsResourceNotFoundException(
+                    Messages.get().container(Messages.ERR_NO_PROJECTRESOURCE_1, resourcePath));
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
@@ -2037,7 +2078,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#readProjectsForManagerGroup(org.opencms.db.CmsDbContext, org.opencms.file.CmsGroup)
      */
-    public List<CmsProject> readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException {
+    public List<CmsProject> readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group)
+    throws CmsDataAccessException {
 
         List<CmsProject> projects = new ArrayList<CmsProject>();
 
@@ -2060,12 +2102,12 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Returns the projects of a given resource.<p>
-     * 
+     *
      * @param dbc the database context
      * @param rootPath the resource root path
-     * 
+     *
      * @return the projects of the resource, as a list of projects
-     * 
+     *
      * @throws CmsDataAccessException if something goes wrong
      */
     public List<CmsProject> readProjectsForResource(CmsDbContext dbc, String rootPath) throws CmsDataAccessException {
@@ -2145,15 +2187,16 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     state = CmsResourceState.valueOf(resourceState);
                 }
 
-                publishedResources.add(new CmsPublishedResource(
-                    structureId,
-                    resourceId,
-                    publishTag,
-                    rootPath,
-                    resourceType,
-                    structureId.isNullUUID() ? false : CmsFolder.isFolderType(resourceType),
-                    state,
-                    siblingCount));
+                publishedResources.add(
+                    new CmsPublishedResource(
+                        structureId,
+                        resourceId,
+                        publishTag,
+                        rootPath,
+                        resourceType,
+                        structureId.isNullUUID() ? false : CmsFolder.isFolderType(resourceType),
+                        state,
+                        siblingCount));
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
@@ -2176,9 +2219,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDAOPublishJobs pj = (CmsDAOPublishJobs)q.getSingleResult();
                 result = createPublishJobInfoBean(pj);
             } catch (NoResultException e) {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_READ_PUBLISH_JOB_1,
-                    publishHistoryId.toString()));
+                throw new CmsDbEntryNotFoundException(
+                    Messages.get().container(Messages.ERR_READ_PUBLISH_JOB_1, publishHistoryId.toString()));
             }
 
         } catch (PersistenceException e) {
@@ -2225,17 +2267,16 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDAOPublishJobs pj = (CmsDAOPublishJobs)q.getSingleResult();
                 publishList = internalDeserializePublishList(pj.getPublishList());
             } catch (NoResultException e) {
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_READ_PUBLISH_JOB_1,
-                    publishHistoryId.toString()));
+                throw new CmsDataAccessException(
+                    Messages.get().container(Messages.ERR_READ_PUBLISH_JOB_1, publishHistoryId.toString()));
             }
 
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
         } catch (Exception e) {
-            throw new CmsDataAccessException(Messages.get().container(
-                Messages.ERR_PUBLISHLIST_DESERIALIZATION_FAILED_1,
-                publishHistoryId), e);
+            throw new CmsDataAccessException(
+                Messages.get().container(Messages.ERR_PUBLISHLIST_DESERIALIZATION_FAILED_1, publishHistoryId),
+                e);
         }
 
         return publishList;
@@ -2255,9 +2296,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDAOPublishJobs pj = (CmsDAOPublishJobs)q.getSingleResult();
                 bytes = pj.getPublishReport();
             } catch (NoResultException e) {
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_READ_PUBLISH_JOB_1,
-                    publishHistoryId.toString()));
+                throw new CmsDataAccessException(
+                    Messages.get().container(Messages.ERR_READ_PUBLISH_JOB_1, publishHistoryId.toString()));
             }
 
         } catch (PersistenceException e) {
@@ -2340,7 +2380,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
      */
     public void unmarkProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException {
 
-        // finally remove the project id form all resources 
+        // finally remove the project id form all resources
         try {
             Query q = m_sqlManager.createQuery(dbc, C_RESOURCES_UNMARK);
             // create the statement
@@ -2580,9 +2620,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Creates a <code>CmsPublishJobInfoBean</code> from a result set.<p>
-     * 
-     * @param pj the result set 
-     * 
+     *
+     * @param pj the result set
+     *
      * @return an initialized <code>CmsPublishJobInfoBean</code>
      */
     protected CmsPublishJobInfoBean createPublishJobInfoBean(CmsDAOPublishJobs pj) {
@@ -2602,17 +2642,17 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Checks if the given resource (by id) is available in the online project,
-     * if there exists a resource with a different path (a moved file), then the 
+     * if there exists a resource with a different path (a moved file), then the
      * online entry is moved to the right (new) location before publishing.<p>
-     * 
+     *
      * @param dbc the db context
      * @param onlineProject the online project
      * @param offlineResource the offline resource to check
      * @param publishHistoryId the publish history id
      * @param publishTag the publish tag
-     * 
+     *
      * @return <code>true</code> if the resource has actually been moved
-     * 
+     *
      * @throws CmsDataAccessException if something goes wrong
      */
     protected CmsResourceState fixMovedResource(
@@ -2631,7 +2671,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 offlineResource.getStructureId(),
                 true);
             if (onlineResource.getRootPath().equals(offlineResource.getRootPath())) {
-                // resource changed, not moved 
+                // resource changed, not moved
                 return offlineResource.getState();
             }
         } catch (CmsVfsResourceNotFoundException e) {
@@ -2669,9 +2709,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Returns a SQL parameter string for the given data.<p>
-     * 
+     *
      * @param data the data
-     * 
+     *
      * @return the SQL parameter
      */
     protected String getParameterString(Collection<?> data) {
@@ -2692,9 +2732,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Creates a new project from the current row of the given result set.<p>
-     * 
+     *
      * @param p the result set
-     * 
+     *
      * @return the new project
      */
     protected CmsProject internalCreateProject(CmsDAOProjects p) {
@@ -2714,10 +2754,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Builds a publish list from serialized data.<p>
-     * 
+     *
      * @param bytes the byte array containing the serailized data for the publish list
      * @return the initialized publish list
-     * 
+     *
      * @throws IOException if deserialization fails
      * @throws ClassNotFoundException if deserialization fails
      */
@@ -2730,9 +2770,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Creates a new {@link CmsLogEntry} object from the given result set entry.<p>
-     * 
-     * @param daoLog the result set 
-     *  
+     *
+     * @param daoLog the result set
+     *
      * @return the new {@link CmsLogEntry} object
      */
     protected CmsLogEntry internalReadLogEntry(CmsDAOLog daoLog) {
@@ -2747,10 +2787,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Resets the state to UNCHANGED for a specified resource.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param resource the Cms resource
-     * 
+     *
      * @throws CmsDataAccessException if something goes wrong
      */
     protected void internalResetResourceState(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
@@ -2778,7 +2818,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Serialize publish list to write it as byte array to the database.<p>
-     * 
+     *
      * @param publishList the publish list
      * @return byte array containing the publish list data
      * @throws IOException if something goes wrong
@@ -2795,14 +2835,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Writes the needed history entries.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param resource the offline resource
      * @param state the state to store in the publish history entry
      * @param properties the offline properties
      * @param publishHistoryId the current publish process id
      * @param publishTag the current publish process tag
-     * 
+     *
      * @throws CmsDataAccessException if something goes wrong
      */
     protected void internalWriteHistory(
@@ -2841,9 +2881,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Build the whole WHERE SQL statement part for the given log entry filter.<p>
-     * 
+     *
      * @param filter the filter
-     * 
+     *
      * @return a pair containing both the SQL and the parameters for it
      */
     protected CmsPair<String, List<I_CmsQueryParameter>> prepareLogConditions(CmsLogFilter filter) {
@@ -2949,14 +2989,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Publishes a changed file.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param onlineProject the online project
      * @param offlineResource the resource to publish
      * @param publishedResourceIds contains the UUIDs of already published content records
      * @param publishHistoryId the publish history id
      * @param publishTag the publish tag
-     * 
+     *
      * @throws CmsDataAccessException is something goes wrong
      */
     protected void publishChangedFile(
@@ -2973,12 +3013,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             dbc,
             CmsProject.ONLINE_PROJECT_ID,
             offlineResource.getStructureId());
-        CmsResourceState resourceState = existsOnline ? fixMovedResource(
-            dbc,
-            onlineProject,
-            offlineResource,
-            publishHistoryId,
-            publishTag) : offlineResource.getState();
+        CmsResourceState resourceState = existsOnline
+        ? fixMovedResource(dbc, onlineProject, offlineResource, publishHistoryId, publishTag)
+        : offlineResource.getState();
         try {
             // reset the labeled link flag before writing the online file
             int flags = offlineResource.getFlags();
@@ -2986,7 +3023,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             offlineResource.setFlags(flags);
 
             if (existsOnline) {
-                // read the file header online                   
+                // read the file header online
                 onlineResource = m_driverManager.getVfsDriver(dbc).readResource(
                     dbc,
                     onlineProject.getUuid(),
@@ -3097,13 +3134,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Publishes a deleted file.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param onlineProject the online project
      * @param offlineResource the resource to publish
      * @param publishHistoryId the publish history id
      * @param publishTag the publish tag
-     * 
+     *
      * @throws CmsDataAccessException is something goes wrong
      */
     protected void publishDeletedFile(
@@ -3151,10 +3188,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         // write history before deleting
         CmsFile offlineFile = new CmsFile(offlineResource);
-        offlineFile.setContents(m_driverManager.getVfsDriver(dbc).readContent(
-            dbc,
-            dbc.currentProject().getUuid(),
-            offlineFile.getResourceId()));
+        offlineFile.setContents(
+            m_driverManager.getVfsDriver(dbc).readContent(
+                dbc,
+                dbc.currentProject().getUuid(),
+                offlineFile.getResourceId()));
         internalWriteHistory(dbc, offlineFile, resourceState, null, publishHistoryId, publishTag);
 
         int propertyDeleteOption = -1;
@@ -3305,14 +3343,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
     /**
      * Publishes a new file.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param onlineProject the online project
      * @param offlineResource the resource to publish
      * @param publishedContentIds contains the UUIDs of already published content records
      * @param publishHistoryId the publish history id
      * @param publishTag the publish tag
-     * 
+     *
      * @throws CmsDataAccessException is something goes wrong
      */
     protected void publishNewFile(
@@ -3349,7 +3387,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         } catch (CmsVfsResourceAlreadyExistsException e) {
             try {
-                // remove the existing file and ensure that it's content is written 
+                // remove the existing file and ensure that it's content is written
                 // in any case by removing it's resource ID from the set of published resource IDs
                 m_driverManager.getVfsDriver(dbc).removeFile(dbc, onlineProject.getUuid(), offlineResource);
                 publishedContentIds.remove(offlineResource.getResourceId());

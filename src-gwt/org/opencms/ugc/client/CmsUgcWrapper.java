@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,9 +57,9 @@ public class CmsUgcWrapper extends FormPanel {
 
     /**
      * Wraps an existing form element with this widget.<p>
-     * 
-     * @param element the form element to wrap 
-     * @param formSessionId the form session  id 
+     *
+     * @param element the form element to wrap
+     * @param formSessionId the form session  id
      */
     public CmsUgcWrapper(Element element, String formSessionId) {
 
@@ -70,9 +70,9 @@ public class CmsUgcWrapper extends FormPanel {
 
     /**
      * Checks if a form field is a file input field.<p>
-     * 
-     * @param elem the form field to check 
-     * @return true if the given field is a file input field 
+     *
+     * @param elem the form field to check
+     * @return true if the given field is a file input field
      */
     public static boolean isFileField(InputElement elem) {
 
@@ -81,7 +81,7 @@ public class CmsUgcWrapper extends FormPanel {
 
     /**
      * Sets the form session.<p>
-     * 
+     *
      * @param session the form session
      */
     public void setFormSession(CmsClientUgcSession session) {
@@ -91,10 +91,10 @@ public class CmsUgcWrapper extends FormPanel {
 
     /**
      * Uploads files from the given file input fields.<p<
-     * 
-     * @param fields the set of names of fields containing the files to upload 
-     * @param filenameCallback the callback to call with the resulting map from field names to file paths  
-     * @param errorCallback the callback to call with an error message 
+     *
+     * @param fields the set of names of fields containing the files to upload
+     * @param filenameCallback the callback to call with the resulting map from field names to file paths
+     * @param errorCallback the callback to call with an error message
      */
     public void uploadFields(
         final Set<String> fields,
@@ -104,7 +104,7 @@ public class CmsUgcWrapper extends FormPanel {
         disableAllFileFieldsExcept(fields);
         final String id = CmsJsUtils.generateRandomId();
         updateFormAction(id);
-        // Using an array here because we can only store the handler registration after it has been created , but  
+        // Using an array here because we can only store the handler registration after it has been created , but
         final HandlerRegistration[] registration = {null};
         registration[0] = addSubmitCompleteHandler(new SubmitCompleteHandler() {
 
@@ -120,18 +120,18 @@ public class CmsUgcWrapper extends FormPanel {
                     id,
                     new AsyncCallback<Map<String, String>>() {
 
-                        public void onFailure(Throwable caught) {
+                    public void onFailure(Throwable caught) {
 
-                            m_formSession.getContentFormApi().handleError(caught, errorCallback);
+                        m_formSession.getContentFormApi().handleError(caught, errorCallback);
 
-                        }
+                    }
 
-                        public void onSuccess(Map<String, String> fileNames) {
+                    public void onSuccess(Map<String, String> fileNames) {
 
-                            filenameCallback.apply(fileNames);
+                        filenameCallback.apply(fileNames);
 
-                        }
-                    });
+                    }
+                });
                 m_formSession.getContentFormApi().getRpcHelper().executeRpc(requestBuilder);
                 m_formSession.getContentFormApi().getRequestCounter().decrement();
             }
@@ -142,8 +142,8 @@ public class CmsUgcWrapper extends FormPanel {
 
     /**
      * Disables all file input fields except the one with the given name.<p>
-     * 
-     * @param fieldNames the set of names of fields that should not be disabled 
+     *
+     * @param fieldNames the set of names of fields that should not be disabled
      */
     void disableAllFileFieldsExcept(Set<String> fieldNames) {
 
@@ -169,8 +169,8 @@ public class CmsUgcWrapper extends FormPanel {
 
     /**
      * Gets all form fields.<p>
-     * 
-     * @return the list of form fields 
+     *
+     * @return the list of form fields
      */
     List<InputElement> getAllFields() {
 
@@ -185,19 +185,20 @@ public class CmsUgcWrapper extends FormPanel {
 
     /**
      * Updates the form's action attribute.<p>
-     * 
-     * @param id the current form data id 
+     *
+     * @param id the current form data id
      */
     private void updateFormAction(String id) {
 
-        setAction(CmsXmlContentUgcApi.SERVICE_URL
-            + "?"
-            + CmsUgcConstants.PARAM_FORM_DATA_ID
-            + "="
-            + id
-            + "&"
-            + CmsUgcConstants.PARAM_SESSION_ID
-            + "="
-            + m_formSession.getSessionId());
+        setAction(
+            CmsXmlContentUgcApi.SERVICE_URL
+                + "?"
+                + CmsUgcConstants.PARAM_FORM_DATA_ID
+                + "="
+                + id
+                + "&"
+                + CmsUgcConstants.PARAM_SESSION_ID
+                + "="
+                + m_formSession.getSessionId());
     }
 }

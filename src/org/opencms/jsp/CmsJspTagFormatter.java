@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,10 +50,10 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Implementation of the <code>&lt;cms:formatter var="..." val="..." /&gt;</code> tag, 
+ * Implementation of the <code>&lt;cms:formatter var="..." val="..." /&gt;</code> tag,
  * used to access and display XML content item information in a formatter.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
 
@@ -85,7 +85,7 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
     private String m_value;
 
     /**
-     * Empty constructor, required for JSP tags.<p> 
+     * Empty constructor, required for JSP tags.<p>
      */
     public CmsJspTagFormatter() {
 
@@ -93,11 +93,11 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
-     * Constructor used when using <code>formatter</code> from scriptlet code.<p> 
-     * 
+     * Constructor used when using <code>formatter</code> from scriptlet code.<p>
+     *
      * @param context the JSP page context
-     * @param locale the locale to use 
-     * 
+     * @param locale the locale to use
+     *
      * @throws JspException in case something goes wrong
      */
     public CmsJspTagFormatter(PageContext context, Locale locale)
@@ -141,7 +141,7 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
 
     /**
      * Returns the name for the optional attribute that provides direct access to the RDFA map.<p>
-     * 
+     *
      * @return the name for the optional attribute that provides direct access to the RDFA map
      */
     public String getRdfa() {
@@ -151,7 +151,7 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
 
     /**
      * Returns the name for the optional attribute that provides direct access to the content value map.<p>
-     * 
+     *
      * @return the name for the optional attribute that provides direct access to the content value map
      */
     public String getVal() {
@@ -188,7 +188,7 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
 
     /**
      * Sets the name for the optional attribute that provides direct access to the RDFA map.<p>
-     * 
+     *
      * @param rdfa the name for the optional attribute that provides direct access to the RDFA map
      */
     public void setRdfa(String rdfa) {
@@ -202,7 +202,7 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
 
     /**
      * Sets the name for the optional attribute that provides direct access to the content value map.<p>
-     * 
+     *
      * @param val the name for the optional attribute that provides direct access to the content value map
      */
     public void setVal(String val) {
@@ -215,8 +215,8 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
-     * Initializes this formatter tag.<p> 
-     * 
+     * Initializes this formatter tag.<p>
+     *
      * @throws JspException in case something goes wrong
      */
     protected void init() throws JspException {
@@ -229,10 +229,12 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
             // get the resource name from the selected container
             m_element = OpenCms.getADEManager().getCurrentElement(pageContext.getRequest());
             m_element.initResource(m_cms);
-            if (m_cms.getRequestContext().getCurrentProject().isOnlineProject() && !m_element.isReleasedAndNotExpired()) {
-                throw new CmsException(Messages.get().container(
-                    Messages.ERR_RESOURCE_IS_NOT_RELEASE_OR_EXPIRED_1,
-                    m_element.getResource().getRootPath()));
+            if (m_cms.getRequestContext().getCurrentProject().isOnlineProject()
+                && !m_element.isReleasedAndNotExpired()) {
+                throw new CmsException(
+                    Messages.get().container(
+                        Messages.ERR_RESOURCE_IS_NOT_RELEASE_OR_EXPIRED_1,
+                        m_element.getResource().getRootPath()));
             }
             if (m_locale == null) {
                 // no locale set, use locale from users request context

@@ -67,7 +67,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
     public static final String ATTR_IS_IMAGE_LINK = "IS_IMAGE_LINK";
 
     /** Key for a request context attribute to control whether the getRootPath method uses the current site root for workplace requests.
-     *  The getRootPath method clears this attribute when called. 
+     *  The getRootPath method clears this attribute when called.
      */
     public static final String DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS = "DONT_USE_CURRENT_SITE_FOR_WORKPLACE_REQUESTS";
 
@@ -237,8 +237,8 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     exportManager.cacheOnlineLink(cacheKey, uriBaseName);
                 }
                 // use relative links only on pages that get exported
-                useRelativeLinks = uriBaseName.startsWith(OpenCms.getStaticExportManager().getRfsPrefix(
-                    cms.getRequestContext().getSiteRoot() + oriUri));
+                useRelativeLinks = uriBaseName.startsWith(
+                    OpenCms.getStaticExportManager().getRfsPrefix(cms.getRequestContext().getSiteRoot() + oriUri));
             }
 
             String detailPagePart = detailPage == null ? "" : detailPage + ":";
@@ -308,14 +308,15 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     // images are always referenced without a server prefix
                     int imageId;
                     try {
-                        imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
+                        imageId = OpenCms.getResourceManager().getResourceType(
+                            CmsResourceTypeImage.getStaticTypeName()).getTypeId();
                     } catch (CmsLoaderException e1) {
                         // should really never happen
                         LOG.warn(e1.getLocalizedMessage(), e1);
                         imageId = CmsResourceTypeImage.getStaticTypeId();
                     }
-                    boolean hasIsImageLinkAttr = Boolean.parseBoolean(""
-                        + cms.getRequestContext().getAttribute(ATTR_IS_IMAGE_LINK));
+                    boolean hasIsImageLinkAttr = Boolean.parseBoolean(
+                        "" + cms.getRequestContext().getAttribute(ATTR_IS_IMAGE_LINK));
                     if ((linkType != imageId) && !hasIsImageLinkAttr) {
                         // check the secure property of the link
                         boolean secureRequest = cms.getRequestContext().isSecureRequest()
@@ -532,15 +533,16 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                     return absolutePath + suffix;
                 }
                 // HACK: some editor components (e.g. HtmlArea) mix up the editor URL with the current request URL
-                absolutePath = CmsLinkManager.getAbsoluteUri(path, cms.getRequestContext().getSiteRoot()
-                    + CmsWorkplace.VFS_PATH_EDITORS);
+                absolutePath = CmsLinkManager.getAbsoluteUri(
+                    path,
+                    cms.getRequestContext().getSiteRoot() + CmsWorkplace.VFS_PATH_EDITORS);
                 if (OpenCms.getSiteManager().getSiteRoot(absolutePath) != null) {
                     return absolutePath + suffix;
                 }
                 // HACK: same as above, but XmlContent editor has one path element more
-                absolutePath = CmsLinkManager.getAbsoluteUri(path, cms.getRequestContext().getSiteRoot()
-                    + CmsWorkplace.VFS_PATH_EDITORS
-                    + "xmlcontent/");
+                absolutePath = CmsLinkManager.getAbsoluteUri(
+                    path,
+                    cms.getRequestContext().getSiteRoot() + CmsWorkplace.VFS_PATH_EDITORS + "xmlcontent/");
                 if (OpenCms.getSiteManager().getSiteRoot(absolutePath) != null) {
                     return absolutePath + suffix;
                 }
@@ -599,13 +601,13 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
     /**
      * Checks if the link target is a secure link.<p
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param vfsName the path of the link target
-     * @param targetSite the target site containing the detail page 
-     * @param secureRequest true if the currently running request is secure 
-     * 
-     * @return true if the link should be a secure link 
+     * @param targetSite the target site containing the detail page
+     * @param secureRequest true if the currently running request is secure
+     *
+     * @return true if the link should be a secure link
      */
     protected boolean isSecureLink(CmsObject cms, String vfsName, CmsSite targetSite, boolean secureRequest) {
 
@@ -666,7 +668,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             String origSiteRoot = cms.getRequestContext().getSiteRoot();
             try {
                 cms.getRequestContext().setSiteRoot("");
-                // real root paths have priority over detail contents 
+                // real root paths have priority over detail contents
                 if (cms.existsResource(path)) {
                     return null;
                 }

@@ -80,15 +80,6 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
      */
     public static final FieldType STORED_NOT_ANALYSED_TYPE;
 
-    /** The Lucene document. */
-    private Document m_doc;
-
-    /** The fields stored in this document. */
-    private Map<String, Field> m_fields;
-
-    /** Holds the score for this document. */
-    private float m_score;
-
     static {
         STORED_ANALYSED_TYPE = new FieldType();
         STORED_ANALYSED_TYPE.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
@@ -124,6 +115,15 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
         STORED_NOT_ANALYSED_TYPE.setStoreTermVectors(false);
         STORED_NOT_ANALYSED_TYPE.freeze();
     }
+
+    /** The Lucene document. */
+    private Document m_doc;
+
+    /** The fields stored in this document. */
+    private Map<String, Field> m_fields;
+
+    /** Holds the score for this document. */
+    private float m_score;
 
     /**
      * Public constructor.<p>
@@ -276,9 +276,8 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
         if (field instanceof CmsLuceneField) {
             add(((CmsLuceneField)field).createField(value));
         } else {
-            throw (new CmsRuntimeException(Messages.get().container(
-                Messages.LOG_INVALID_FIELD_CLASS_1,
-                field.getClass().getName())));
+            throw (new CmsRuntimeException(
+                Messages.get().container(Messages.LOG_INVALID_FIELD_CLASS_1, field.getClass().getName())));
         }
     }
 

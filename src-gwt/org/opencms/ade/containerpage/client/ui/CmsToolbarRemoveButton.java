@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,14 +36,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 
 /**
  * The remove button holding all remove related methods.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolbarRemoveButton extends A_CmsToolbarOptionButton {
 
-    /** 
+    /**
      * Constructor.<p>
-     * 
+     *
      * @param handler the container-page handler
      */
     public CmsToolbarRemoveButton(CmsContainerpageHandler handler) {

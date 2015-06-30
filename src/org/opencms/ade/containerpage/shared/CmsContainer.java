@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Container bean.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainer implements IsSerializable {
@@ -76,11 +76,11 @@ public class CmsContainer implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param name the container name, also used as id within a container-page
      * @param type the container type
      * @param emptyContainerContent content to display in case the container is empty
-     * @param width the width of the container 
+     * @param width the width of the container
      * @param maxElements the maximum number of elements displayed by this container
      * @param detailView flag indicating this container is used for detail views
      * @param editable flag indicating the container is editable by the current user
@@ -117,15 +117,15 @@ public class CmsContainer implements IsSerializable {
      */
     protected CmsContainer() {
 
-        // do nothing 
+        // do nothing
     }
 
-    /** 
+    /**
      * Splits the type attribute of a container into individual types.<p>
-     * 
-     * @param containerTypeSpec the container type attribute 
-     * 
-     * @return the entries of the type attribute 
+     *
+     * @param containerTypeSpec the container type attribute
+     *
+     * @return the entries of the type attribute
      */
     public static Set<String> splitType(String containerTypeSpec) {
 
@@ -135,7 +135,7 @@ public class CmsContainer implements IsSerializable {
 
     /**
      * Returns the list of the contained elements id's.<p>
-     * 
+     *
      * @return the list of the contained elements id's
      */
     public List<CmsContainerElement> getElements() {
@@ -155,7 +155,7 @@ public class CmsContainer implements IsSerializable {
 
     /**
      * Returns the maximum number of elements allowed in this container.<p>
-     * 
+     *
      * @return the maximum number of elements allowed in this container
      */
     public int getMaxElements() {
@@ -165,7 +165,7 @@ public class CmsContainer implements IsSerializable {
 
     /**
      * Returns the container name, also used as HTML-id for the container DOM-element. Has to be unique within the template.<p>
-     * 
+     *
      * @return the container name
      */
     public String getName() {
@@ -175,7 +175,7 @@ public class CmsContainer implements IsSerializable {
 
     /**
      * Returns the parent container name.<p>
-     * 
+     *
      * @return the parent container name
      */
     public String getParentContainerName() {
@@ -185,7 +185,7 @@ public class CmsContainer implements IsSerializable {
 
     /**
      * Returns the parent instance id.<p>
-     * 
+     *
      * @return the parent instance id
      */
     public String getParentInstanceId() {
@@ -195,7 +195,7 @@ public class CmsContainer implements IsSerializable {
 
     /**
      * Returns the container type. Used to determine the formatter used to render the contained elements.<p>
-     * 
+     *
      * @return the container type
      */
     public String getType() {
@@ -205,8 +205,8 @@ public class CmsContainer implements IsSerializable {
 
     /**
      * Returns the container width.<p>
-     * 
-     * @return the container width 
+     *
+     * @return the container width
      */
     public int getWidth() {
 
@@ -215,7 +215,7 @@ public class CmsContainer implements IsSerializable {
 
     /**
      * Returns <code>true</code> if the container is displayed in detail view only.<p>
-     * 
+     *
      * @return <code>true</code> if the container is displayed in detail view only
      */
     public boolean isDetailOnly() {
@@ -225,7 +225,7 @@ public class CmsContainer implements IsSerializable {
 
     /**
      * Returns if this container is used for detail views.<p>
-     * 
+     *
      * @return <code>true</code> if this container is used for detail views
      */
     public boolean isDetailView() {
@@ -235,7 +235,7 @@ public class CmsContainer implements IsSerializable {
 
     /**
      * Returns if the container is editable by the current user.<p>
-     * 
+     *
      * @return <code>true</code> if the container is editable by the current user
      */
     public boolean isEditable() {
@@ -245,7 +245,7 @@ public class CmsContainer implements IsSerializable {
 
     /**
      * Returns if this is a sub container.<p>
-     * 
+     *
      * @return <code>true</code> this is a sub container
      */
     public boolean isSubContainer() {
@@ -255,7 +255,7 @@ public class CmsContainer implements IsSerializable {
 
     /**
      * Sets the detail only flag.<p>
-     * 
+     *
      * @param detailOnly <code>true</code> if the container is displayed in detail view only
      */
     public void setDeatilOnly(boolean detailOnly) {
@@ -265,7 +265,7 @@ public class CmsContainer implements IsSerializable {
 
     /**
      * Sets the elements contained in this container.<p>
-     * 
+     *
      * @param elements the elements
      */
     public void setElements(List<CmsContainerElement> elements) {

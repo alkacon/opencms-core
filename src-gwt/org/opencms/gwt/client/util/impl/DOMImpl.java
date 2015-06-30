@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,19 +32,19 @@ import com.google.gwt.dom.client.IFrameElement;
 
 /**
  * Helper class for DOM operations not made available by the GWT core classes.<p>
- * 
+ *
  * Implementation for all none MSIE browsers.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class DOMImpl {
 
     /**
      * Creates an iFrame element with the given name attribute.<p>
-     * 
+     *
      * @param doc the document
      * @param name the name attribute value
-     * 
+     *
      * @return the iFrame element
      */
     public com.google.gwt.dom.client.Element createIFrameElement(Document doc, String name) {

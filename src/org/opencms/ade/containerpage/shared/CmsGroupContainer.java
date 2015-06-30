@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import java.util.Set;
 
 /**
  * Group container bean.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsGroupContainer extends CmsContainerElement {
@@ -58,7 +58,7 @@ public class CmsGroupContainer extends CmsContainerElement {
 
     /**
      * Returns the list of the contained elements id's.<p>
-     * 
+     *
      * @return the list of the contained elements id's
      */
     public List<CmsContainerElement> getElements() {
@@ -68,7 +68,7 @@ public class CmsGroupContainer extends CmsContainerElement {
 
     /**
      * Returns the container types.<p>
-     * 
+     *
      * @return the container types
      */
     public Set<String> getTypes() {
@@ -88,7 +88,7 @@ public class CmsGroupContainer extends CmsContainerElement {
 
     /**
      * Sets the elements contained in this container.<p>
-     * 
+     *
      * @param elements the elements
      */
     public void setElements(List<CmsContainerElement> elements) {

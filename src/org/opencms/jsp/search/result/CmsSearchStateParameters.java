@@ -117,7 +117,8 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                     final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
                     String facetParamKey = null;
                     try {
-                        facetParamKey = m_result.getController().getFieldFacets().getFieldFacetController().get(facet).getConfig().getIgnoreMaxParamKey();
+                        facetParamKey = m_result.getController().getFieldFacets().getFieldFacetController().get(
+                            facet).getConfig().getIgnoreMaxParamKey();
                     } catch (Exception e) {
                         // Facet did not exist
                         LOG.warn(Messages.get().getBundle().key(Messages.LOG_FACET_NOT_CONFIGURED_1, facet), e);
@@ -144,7 +145,8 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                 @Override
                 public Object transform(final Object facet) {
 
-                    Map<String, I_CmsSearchStateParameters> m_uncheckEntries = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+                    Map<String, I_CmsSearchStateParameters> m_uncheckEntries = CmsCollectionsGenericWrapper.createLazyMap(
+                        new Transformer() {
 
                         @Override
                         public Object transform(final Object facetItem) {
@@ -215,7 +217,8 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                     final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
                     String facetParamKey = null;
                     try {
-                        facetParamKey = m_result.getController().getFieldFacets().getFieldFacetController().get(facet).getConfig().getIgnoreMaxParamKey();
+                        facetParamKey = m_result.getController().getFieldFacets().getFieldFacetController().get(
+                            facet).getConfig().getIgnoreMaxParamKey();
                     } catch (Exception e) {
                         // Facet did not exist
                         LOG.warn(Messages.get().getBundle().key(Messages.LOG_FACET_NOT_CONFIGURED_1, facet), e);
@@ -262,7 +265,8 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                     final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
                     String facetParamKey = null;
                     try {
-                        facetParamKey = m_result.getController().getFieldFacets().getFieldFacetController().get(facet).getConfig().getParamKey();
+                        facetParamKey = m_result.getController().getFieldFacets().getFieldFacetController().get(
+                            facet).getConfig().getParamKey();
                     } catch (Exception e) {
                         // Facet did not exist
                         LOG.warn(Messages.get().getBundle().key(Messages.LOG_FACET_NOT_CONFIGURED_1, facet), e);
@@ -336,7 +340,8 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
                 @Override
                 public Object transform(final Object facet) {
 
-                    Map<String, I_CmsSearchStateParameters> m_checkEntries = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+                    Map<String, I_CmsSearchStateParameters> m_checkEntries = CmsCollectionsGenericWrapper.createLazyMap(
+                        new Transformer() {
 
                         @Override
                         public Object transform(final Object facetItem) {

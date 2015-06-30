@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,10 +32,10 @@ import javax.swing.UIManager;
 /**
  * Ant task for a highly configurable Swing GUI based selection dialog.
  * <p>
- * 
+ *
  * Task that prompts user for selection to allow interactive builds.
  * <p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
@@ -75,13 +75,14 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
 
     /**
      * For debuggin only.
-     * 
+     *
      * @param args cmdline args.
      */
     public static void main(String[] args) {
 
         CmsAntTaskSelectionTreePrompt prompt = new CmsAntTaskSelectionTreePrompt();
-        prompt.setAllValues("org.opencms.test,org.opencms.test.subtest,org.opencms.code,org.opencms.blabla,com.lgt.module,com.lgt.code,com.lgt.dummy");
+        prompt.setAllValues(
+            "org.opencms.test,org.opencms.test.subtest,org.opencms.code,org.opencms.blabla,com.lgt.module,com.lgt.code,com.lgt.dummy");
         prompt.setTitle("title");
 
         prompt.execute();
@@ -90,14 +91,15 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
 
     /**
      * Run the task.<p>
-     * 
+     *
      * Sets the given property to <code>__ABORT__</code> if canceled, or to a list of selected
      * modules if not.<p>
-     * 
+     *
      * @throws org.apache.tools.ant.BuildException in case an error occurs
-     * 
+     *
      * @see org.apache.tools.ant.Task#execute()
      */
+    @Override
     public void execute() throws org.apache.tools.ant.BuildException {
 
         log("Prompting user for " + m_property);
@@ -115,7 +117,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     /**
      * Returns the <code>{@link #LIST_SEPARATOR}</code> separated list of all available modules.
      * <p>
-     * 
+     *
      * @return Returns the all-modules list
      */
     public String getAllValues() {
@@ -126,7 +128,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     /**
      * Returns the <code>{@link #LIST_SEPARATOR}</code> separated list of pre-selected modules.
      * <p>
-     * 
+     *
      * @return Returns the pre-selected module list
      */
     public String getDefaultValue() {
@@ -137,7 +139,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     /**
      * Returns the expansionLevels.
      * <p>
-     * 
+     *
      * @return the expansionLevels
      */
     public int getExpansionLevels() {
@@ -149,7 +151,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     /**
      * Returns the prompt.
      * <p>
-     * 
+     *
      * @return the prompt
      */
     public String getPrompt() {
@@ -160,7 +162,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     /**
      * Returns the property to store the user selection.
      * <p>
-     * 
+     *
      * @return Returns the m_propertyName.
      */
     public String getProperty() {
@@ -171,7 +173,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     /**
      * Returns the title.
      * <p>
-     * 
+     *
      * @return the title
      */
     public String getTitle() {
@@ -183,6 +185,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
      * Initializes this task.
      * <p>
      */
+    @Override
     public void init() {
 
         super.init();
@@ -196,7 +199,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     /**
      * Returns the Single Selection flag.
      * <p>
-     * 
+     *
      * @return the single Selection flag
      */
     public boolean isSingleSelection() {
@@ -207,9 +210,10 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     /**
      * Overridden to allow debugging.
      * <p>
-     * 
+     *
      * @see org.apache.tools.ant.Task#log(java.lang.String)
      */
+    @Override
     public void log(String arg0) {
 
         try {
@@ -223,9 +227,10 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     /**
      * Overridden to allow debugging.
      * <p>
-     * 
+     *
      * @see org.apache.tools.ant.Task#log(java.lang.String, int)
      */
+    @Override
     public void log(String arg0, int arg1) {
 
         try {
@@ -238,29 +243,29 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     /**
      * Sets the <code>{@link #LIST_SEPARATOR}</code> separated list of all available modules.
      * <p>
-     * 
+     *
      * @param allValues all-modules list to set
      */
     public void setAllValues(String allValues) {
 
-        this.m_allValues = allValues;
+        m_allValues = allValues;
     }
 
     /**
      * Sets the <code>{@link #LIST_SEPARATOR}</code> separated list of pre-selected modules.
      * <p>
-     * 
+     *
      * @param defaultValue the pre-selected module list to set
      */
     public void setDefaultValue(String defaultValue) {
 
-        this.m_defaultValue = defaultValue;
+        m_defaultValue = defaultValue;
     }
 
     /**
      * Sets the expansionLevels.
      * <p>
-     * 
+     *
      * @param expansionLevels the expansionLevels to set
      */
     public void setExpansionLevels(int expansionLevels) {
@@ -272,7 +277,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     /**
      * Sets the prompt.
      * <p>
-     * 
+     *
      * @param prompt the prompt to set
      */
     public void setPrompt(String prompt) {
@@ -282,18 +287,18 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
 
     /**
      * Sets the property for storing the selected value.
-     * 
+     *
      * @param property The property to set.
      */
     public void setProperty(String property) {
 
-        this.m_property = property;
+        m_property = property;
     }
 
     /**
      * Sets the single Selection flag.
      * <p>
-     * 
+     *
      * @param singleSelection the single Selection flag to set
      */
     public void setSingleSelection(boolean singleSelection) {
@@ -304,7 +309,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     /**
      * Sets the title.
      * <p>
-     * 
+     *
      * @param title the title to set
      */
     public void setTitle(String title) {

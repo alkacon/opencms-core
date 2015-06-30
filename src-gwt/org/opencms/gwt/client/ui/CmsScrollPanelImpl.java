@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -81,7 +81,7 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param owner the owner element
          * @param fadeElement the element to fade in and out on hover
          */
@@ -286,7 +286,7 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
 
     /**
      * Returns the vertical scroll bar.<p>
-     * 
+     *
      * @return the vertical scroll bar
      */
     protected VerticalScrollbar getVerticalScrollBar() {
@@ -407,7 +407,7 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
 
     /**
      * Set the scrollbar used for vertical scrolling.
-     * 
+     *
      * @param scrollbar the scrollbar, or null to clear it
      * @param width the width of the scrollbar in pixels
      */

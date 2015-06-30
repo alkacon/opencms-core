@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,10 +33,10 @@ import java.util.Locale;
 
 /**
  * Report class used for the logfile.<p>
- * 
+ *
  * This prints all messages in the logfile at INFO level.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsLogReport extends A_CmsReport {
 
@@ -47,11 +47,11 @@ public class CmsLogReport extends A_CmsReport {
     private Class<?> m_clazz;
 
     /**
-     * Constructs a new report using the provided locale for the output language, 
+     * Constructs a new report using the provided locale for the output language,
      * using the provided Java class for the log channel.<p>
-     * 
+     *
      * @param locale the locale to use for the report output messages
-     * @param clazz the the class for the logger channel 
+     * @param clazz the the class for the logger channel
      */
     public CmsLogReport(Locale locale, Class<?> clazz) {
 

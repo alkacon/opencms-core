@@ -107,16 +107,20 @@ public class CmsUploadPropertyDialog {
     public CmsUploadPropertyDialog() {
 
         m_frameDialog.setContent(m_dialogContent);
-        m_dialogContent.addStyleName(org.opencms.ade.postupload.client.ui.css.I_CmsLayoutBundle.INSTANCE.dialogCss().propertyDialog());
+        m_dialogContent.addStyleName(
+            org.opencms.ade.postupload.client.ui.css.I_CmsLayoutBundle.INSTANCE.dialogCss().propertyDialog());
         try {
             m_dialogData = (CmsPostUploadDialogBean)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
                 getDialogService(),
                 CmsPostUploadDialogBean.DICT_NAME);
             m_resources = new ArrayList<CmsUUID>(m_dialogData.getResources().keySet());
         } catch (Exception e) {
-            CmsErrorDialog.handleException(new Exception("Deserialization of upload hook data failed."
-                + "This may be caused by expired java-script resources, "
-                + " please clear your browser cache and try again.", e));
+            CmsErrorDialog.handleException(
+                new Exception(
+                    "Deserialization of upload hook data failed."
+                        + "This may be caused by expired java-script resources, "
+                        + " please clear your browser cache and try again.",
+                    e));
 
         }
         if (!m_dialogData.getResources().isEmpty()) {
@@ -367,14 +371,16 @@ public class CmsUploadPropertyDialog {
 
         if (m_dialogData.getResources().size() > 1) {
             if (m_dialogIndex == 0) {
-                m_buttonBack.disable(org.opencms.ade.postupload.client.Messages.get().key(
-                    org.opencms.ade.postupload.client.Messages.GUI_DIALOG_INFO_FIRST_RESOURCE_0));
+                m_buttonBack.disable(
+                    org.opencms.ade.postupload.client.Messages.get().key(
+                        org.opencms.ade.postupload.client.Messages.GUI_DIALOG_INFO_FIRST_RESOURCE_0));
             } else {
                 m_buttonBack.enable();
             }
             if (m_dialogIndex == (m_dialogData.getResources().size() - 1)) {
-                m_buttonNext.disable(org.opencms.ade.postupload.client.Messages.get().key(
-                    org.opencms.ade.postupload.client.Messages.GUI_DIALOG_INFO_LAST_RESOURCE_0));
+                m_buttonNext.disable(
+                    org.opencms.ade.postupload.client.Messages.get().key(
+                        org.opencms.ade.postupload.client.Messages.GUI_DIALOG_INFO_LAST_RESOURCE_0));
             } else {
                 m_buttonNext.enable();
             }

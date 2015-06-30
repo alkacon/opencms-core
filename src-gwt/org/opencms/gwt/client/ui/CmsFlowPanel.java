@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * A basic panel which is like GWT's FlowPanel, except it allows you to choose the HTML tag
  * to use.<p>
  * Implements {@link com.google.gwt.event.dom.client.HasAllMouseHandlers}.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsFlowPanel extends ComplexPanel implements HasAllMouseHandlers {
@@ -66,10 +66,10 @@ public class CmsFlowPanel extends ComplexPanel implements HasAllMouseHandlers {
         this(CmsDomUtil.Tag.div.name());
     }
 
-    /** 
+    /**
      * Wrapping constructor.<p>
-     * 
-     * @param element the element to wrap 
+     *
+     * @param element the element to wrap
      */
     public CmsFlowPanel(Element element) {
 
@@ -79,7 +79,7 @@ public class CmsFlowPanel extends ComplexPanel implements HasAllMouseHandlers {
 
     /**
      * Creates an empty flow panel with a given tag name.
-     * 
+     *
      * @param tag the HTML tag name to use
      */
     @UiConstructor
@@ -90,7 +90,7 @@ public class CmsFlowPanel extends ComplexPanel implements HasAllMouseHandlers {
 
     /**
      * Adds a new child widget to the panel.
-     * 
+     *
      * @param w the widget to be added
      */
     @Override
@@ -149,9 +149,9 @@ public class CmsFlowPanel extends ComplexPanel implements HasAllMouseHandlers {
 
     /**
      * Inserts a widget at a given position.<p>
-     * 
+     *
      * @param w the widget to insert
-     * @param beforeIndex the position before which the widget should be inserted 
+     * @param beforeIndex the position before which the widget should be inserted
      */
     public void insert(Widget w, int beforeIndex) {
 

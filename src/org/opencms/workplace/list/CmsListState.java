@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import com.google.common.base.Objects;
 
 /**
  * Class for storing the state of a list.<p>
- * 
+ *
  * A list state includes:<br>
  * <ul>
  * <li>The current sorted Column</li>
@@ -40,8 +40,8 @@ import com.google.common.base.Objects;
  * <li>The current search Filter</li>
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListState {
 
@@ -67,7 +67,7 @@ public class CmsListState {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param list the list to read the state from
      */
     public CmsListState(CmsHtmlList list) {

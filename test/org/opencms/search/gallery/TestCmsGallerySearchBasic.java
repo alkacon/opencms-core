@@ -128,9 +128,10 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
             }
             System.out.print(CmsStringUtil.padRight(type, 10));
             if (res.getDateLastModified() != null) {
-                System.out.print(CmsStringUtil.padRight(
-                    "" + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN),
-                    17));
+                System.out.print(
+                    CmsStringUtil.padRight(
+                        "" + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN),
+                        17));
             }
             System.out.println("score: " + res.getScore());
             if (showExcerpt) {

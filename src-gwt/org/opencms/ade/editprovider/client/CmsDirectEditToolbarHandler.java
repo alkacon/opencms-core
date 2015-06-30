@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * A toolbar handler for the Toolbar direct edit provider.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
@@ -92,11 +92,11 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
      */
     public void activateSelection() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
-     * De-activates the current button.<p> 
+     * De-activates the current button.<p>
      */
     public void deactivateCurrentButton() {
 
@@ -144,9 +144,9 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
 
     /**
      * Inserts the context menu.<p>
-     *  
+     *
      * @param menuBeans the menu beans from the server
-     * @param structureId the structure id of the resource at which the workplace should be opened 
+     * @param structureId the structure id of the resource at which the workplace should be opened
      */
     public void insertContextMenu(List<CmsContextMenuEntryBean> menuBeans, CmsUUID structureId) {
 
@@ -202,7 +202,7 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
 
     /**
      * Sets the currently active tool-bar button.<p>
-     * 
+     *
      * @param button the button
      */
     public void setActiveButton(I_CmsToolbarButton button) {
@@ -210,9 +210,9 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
         m_activeButton = button;
     }
 
-    /** 
+    /**
      * Sets the context menu button.<p>
-     * 
+     *
      * @param button the context menu button
      */
     public void setContextMenuButton(CmsToolbarContextButton button) {

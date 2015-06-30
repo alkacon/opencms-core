@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,8 +48,8 @@ import org.apache.commons.logging.Log;
  *
  * It has a lot of variables that are directly accessed (which isn't good style, I know)
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsFlexCacheKey {
 
@@ -120,29 +120,30 @@ public class CmsFlexCacheKey {
     private static final String CACHE_22_CONTAINER_ELEMENT = "container-element";
 
     /** The list of keywords of the Flex cache language. */
-    private static final List<String> CACHE_COMMANDS = Arrays.asList(new String[] {
-        CACHE_00_ALWAYS,
-        CACHE_01_NEVER,
-        CACHE_02_URI,
-        CACHE_03_USER,
-        CACHE_04_PARAMS,
-        CACHE_05_NO_PARAMS,
-        CACHE_06_TIMEOUT,
-        CACHE_07_SESSION,
-        CACHE_08_SCHEMES,
-        CACHE_09_PORTS,
-        CACHE_10_FALSE,
-        CACHE_11_PARSE_ERROR,
-        CACHE_12_TRUE,
-        CACHE_13_IP,
-        CACHE_14_ELEMENT,
-        CACHE_15_LOCALE,
-        CACHE_16_ENCODING,
-        CACHE_17_SITE,
-        CACHE_18_ATTRS,
-        CACHE_19_NO_ATTRS,
-        CACHE_20_DEVICE,
-        CACHE_22_CONTAINER_ELEMENT});
+    private static final List<String> CACHE_COMMANDS = Arrays.asList(
+        new String[] {
+            CACHE_00_ALWAYS,
+            CACHE_01_NEVER,
+            CACHE_02_URI,
+            CACHE_03_USER,
+            CACHE_04_PARAMS,
+            CACHE_05_NO_PARAMS,
+            CACHE_06_TIMEOUT,
+            CACHE_07_SESSION,
+            CACHE_08_SCHEMES,
+            CACHE_09_PORTS,
+            CACHE_10_FALSE,
+            CACHE_11_PARSE_ERROR,
+            CACHE_12_TRUE,
+            CACHE_13_IP,
+            CACHE_14_ELEMENT,
+            CACHE_15_LOCALE,
+            CACHE_16_ENCODING,
+            CACHE_17_SITE,
+            CACHE_18_ATTRS,
+            CACHE_19_NO_ATTRS,
+            CACHE_20_DEVICE,
+            CACHE_22_CONTAINER_ELEMENT});
 
     /** Marker to identify use of certain String key members (uri, ip etc.). */
     private static final String IS_USED = "/ /";
@@ -215,16 +216,16 @@ public class CmsFlexCacheKey {
 
     /**
      * This constructor is used when building a cache key from set of cache directives.<p>
-     * 
-     * These directives are attached to the properties of the requested resource 
-     * on a property called "cache". 
-     * The value of this poperty that is passed in this constructor as "cacheDirectives" 
+     *
+     * These directives are attached to the properties of the requested resource
+     * on a property called "cache".
+     * The value of this poperty that is passed in this constructor as "cacheDirectives"
      * is parsed to build the keys data structure.<p>
      *
-     * In case a parsing error occures, the value of this key is set to "cache=never", 
-     * and the hadParseError() flag is set to true. 
+     * In case a parsing error occures, the value of this key is set to "cache=never",
+     * and the hadParseError() flag is set to true.
      * This is done to ensure that a valid key is always constructed with the constructor.<p>
-     * 
+     *
      * @param resourcename the full name of the resource including site root
      * @param cacheDirectives the cache directives of the resource (value of the property "cache")
      * @param online must be true for an online resource, false for offline resources
@@ -244,9 +245,9 @@ public class CmsFlexCacheKey {
     }
 
     /**
-     * Calculates the cache key name that is used as key in 
+     * Calculates the cache key name that is used as key in
      * the first level of the FlexCache.<p>
-     * 
+     *
      * @param resourcename the full name of the resource including site root
      * @param online must be true for an online resource, false for offline resources
      *
@@ -258,8 +259,8 @@ public class CmsFlexCacheKey {
     }
 
     /**
-     * Appends a flex cache key value to the given buffer.<p> 
-     *  
+     * Appends a flex cache key value to the given buffer.<p>
+     *
      * @param str the buffer to append to
      * @param key the key to append
      * @param value the value to append
@@ -281,7 +282,7 @@ public class CmsFlexCacheKey {
      * occurred, which can happen if the cache directives String
      * passed to the constructor using the response is
      * not build according to the Flex cache language syntax.<p>
-     * 
+     *
      * @return true if a parse error did occur, false otherwise
      */
     public boolean hadParseError() {
@@ -292,16 +293,16 @@ public class CmsFlexCacheKey {
     /**
      * Compares this key to the other key passed as parameter,
      * from comparing the two keys, a variation String is constructed.<p>
-     * 
+     *
      * This method is the "heart" of the key matching process.<p>
      *
-     * The assumtion is that this key should be the one constructed for the response, 
+     * The assumtion is that this key should be the one constructed for the response,
      * while the parameter key should have been constructed from the request.<p>
      *
      * A short example how this works:
      * If the cache key is "cache=user" and the request is done from a guest user
      * the constructed variation will be "user=(guest)".<p>
-     * 
+     *
      * @param key the key to match this key with
      * @return null if not cachable, or the Variation String if cachable
      */
@@ -529,7 +530,7 @@ public class CmsFlexCacheKey {
         }
     }
 
-    /** 
+    /**
      * @see java.lang.Object#toString()
      *
      * @return a complete String representation for this key
@@ -679,7 +680,7 @@ public class CmsFlexCacheKey {
             str.append(");");
         }
         if (m_timeout >= 0) {
-            // add timeout 
+            // add timeout
             str.append(CACHE_06_TIMEOUT);
             str.append("=(");
             str.append(m_timeout);
@@ -767,7 +768,7 @@ public class CmsFlexCacheKey {
     }
 
     /**
-     * Parse a String in the Flex cache language and construct 
+     * Parse a String in the Flex cache language and construct
      * the key data structure from this.<p>
      *
      * @param key the String to parse (usually read from the file property "cache")
@@ -916,11 +917,11 @@ public class CmsFlexCacheKey {
         }
     }
 
-    /** 
+    /**
      * A helper method for the parsing process which parses
      * Strings like groups=(a, b, c).<p>
      *
-     * @param value the String to parse 
+     * @param value the String to parse
      * @return a Map that contains of the parsed values, only the keyset of the Map is needed later
      */
     private Set<String> parseValueList(String value) {

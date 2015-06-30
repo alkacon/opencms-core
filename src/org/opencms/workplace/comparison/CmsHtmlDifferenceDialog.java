@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,9 +41,9 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides a GUI for the file comparison dialog.<p> 
- * 
- * @since 6.0.0 
+ * Provides a GUI for the file comparison dialog.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
 
@@ -58,7 +58,7 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsHtmlDifferenceDialog(CmsJspActionElement jsp) {
@@ -68,7 +68,7 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -80,7 +80,7 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
 
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
-     * 
+     *
      * @throws Exception if writing to the JSP out fails
      */
     @Override
@@ -108,20 +108,21 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
         String onClic2 = "javascript:document.forms['diff-form'].textmode.value = '";
         onClic2 += MODE_HTML;
         onClic2 += "'; document.forms['diff-form'].submit();";
-        out.println(getTwoButtonsHtml(
-            Messages.get().container(Messages.GUI_DIFF_MODE_TEXT_0).key(getLocale()),
-            Messages.get().container(Messages.GUI_DIFF_MODE_HTML_0).key(getLocale()),
-            onClic1,
-            onClic2,
-            MODE_HTML.equals(getParamTextmode())));
+        out.println(
+            getTwoButtonsHtml(
+                Messages.get().container(Messages.GUI_DIFF_MODE_TEXT_0).key(getLocale()),
+                Messages.get().container(Messages.GUI_DIFF_MODE_HTML_0).key(getLocale()),
+                onClic1,
+                onClic2,
+                MODE_HTML.equals(getParamTextmode())));
 
         out.println("</p>");
         out.println(dialogBlockStart(null));
         out.println("<table cellspacing='0' cellpadding='0' class='xmlTable'>\n<tr><td><pre style='overflow:auto'>");
         try {
-            CmsHtmlDifferenceConfiguration conf = new CmsHtmlDifferenceConfiguration(getMode() == CmsDiffViewMode.ALL
-            ? -1
-            : getLinesBeforeSkip(), getLocale());
+            CmsHtmlDifferenceConfiguration conf = new CmsHtmlDifferenceConfiguration(
+                getMode() == CmsDiffViewMode.ALL ? -1 : getLinesBeforeSkip(),
+                getLocale());
             String originalSource = getOriginalSource();
             String copySource = getCopySource();
             if (MODE_TEXT.equals(getParamTextmode())) {
@@ -135,14 +136,13 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
                 String htmlDiff = Diff.diffAsHtml(getOriginalSource(), getCopySource(), conf);
                 if (CmsStringUtil.isNotEmpty(htmlDiff)) {
                     // extracted text is equal, but html differs
-                    out.println(Messages.get().container(Messages.GUI_COMPARE_IDENTICAL_TEXT_DIFFERENT_HTML_0).key(
-                        getLocale()));
+                    out.println(
+                        Messages.get().container(Messages.GUI_COMPARE_IDENTICAL_TEXT_DIFFERENT_HTML_0).key(
+                            getLocale()));
                 } else if (getMode() == CmsDiffViewMode.ALL) {
                     // print original source, if there are no differences
-                    out.println(wrapLinesWithUnchangedStyle(CmsStringUtil.substitute(
-                        CmsStringUtil.escapeHtml(originalSource),
-                        "<br/>",
-                        "")));
+                    out.println(wrapLinesWithUnchangedStyle(
+                        CmsStringUtil.substitute(CmsStringUtil.escapeHtml(originalSource), "<br/>", "")));
                 }
             }
         } catch (Exception e) {
@@ -170,7 +170,7 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#validateParamaters()
      */
     @Override

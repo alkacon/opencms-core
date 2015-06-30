@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -75,7 +75,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Provides the method for the gallery dialog.<p>
- * 
+ *
  * @since 8.0.
  */
 public class CmsGalleryDialog extends Composite
@@ -167,8 +167,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * The constructor.<p>
-     * 
-     * @param galleryHandler the gallery handler 
+     *
+     * @param galleryHandler the gallery handler
      */
     public CmsGalleryDialog(I_CmsGalleryHandler galleryHandler) {
 
@@ -177,8 +177,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * The default constructor for the gallery dialog.<p>
-     * 
-     * @param galleryHandler the gallery handler   
+     *
+     * @param galleryHandler the gallery handler
      * @param style the style for the panel
      */
     public CmsGalleryDialog(I_CmsGalleryHandler galleryHandler, CmsTabbedPanelStyle style) {
@@ -236,7 +236,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Displays the search result in the result tab.<p>
-     * 
+     *
      * @param searchObj the search object
      */
     public void fillResultTab(CmsGallerySearchBean searchObj) {
@@ -259,7 +259,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Fill the tabs with the content provided from the info bean. <p>
-     * 
+     *
      * @param controller the reference to the gallery controller
      */
     public void fillTabs(CmsGalleryController controller) {
@@ -338,7 +338,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Returns the categories tab widget.<p>
-     * 
+     *
      * @return the categories widget
      */
     public CmsCategoriesTab getCategoriesTab() {
@@ -348,8 +348,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Returns the gallery controller.<p>
-     * 
-     * @return the gallery controller 
+     *
+     * @return the gallery controller
      */
     public CmsGalleryController getController() {
 
@@ -358,7 +358,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Returns the HTML id of the dialog element.<p>
-     * 
+     *
      * @return the HTML id of the dialog element
      */
     public String getDialogId() {
@@ -378,7 +378,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Returns the galleries tab widget.<p>
-     * 
+     *
      * @return the galleries widget
      */
     public CmsGalleriesTab getGalleriesTab() {
@@ -418,7 +418,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Returns the results tab widget.<p>
-     * 
+     *
      * @return the results widget
      */
     public CmsResultsTab getResultsTab() {
@@ -448,10 +448,10 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Gets the tab with a given tab id, or null if the dialog has no such tab.<p>
-     * 
-     * @param tabId the tab id to look for 
-     * 
-     * @return the tab with the given tab id, or null 
+     *
+     * @param tabId the tab id to look for
+     *
+     * @return the tab with the given tab id, or null
      */
     public A_CmsTab getTab(GalleryTabId tabId) {
 
@@ -465,7 +465,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Returns the types tab widget.<p>
-     * 
+     *
      * @return the types widget
      */
     public CmsTypesTab getTypesTab() {
@@ -475,8 +475,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Returns the VFS tab widget.<p>
-     * 
-     * @return the VFS tab widget 
+     *
+     * @return the VFS tab widget
      */
     public CmsVfsTab getVfsTab() {
 
@@ -485,7 +485,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Returns the widget handler.<p>
-     * 
+     *
      * @return the widget handler
      */
     public I_CmsGalleryWidgetHandler getWidgetHandler() {
@@ -495,7 +495,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Hides or shows the show-preview-button.<p>
-     * 
+     *
      * @param hide <code>true</code> to hide the button
      */
     public void hideShowPreviewButton(boolean hide) {
@@ -505,7 +505,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Returns if the gallery is used as a native widget.<p>
-     * 
+     *
      * @return <code>true</code> if the gallery is used as a native widget
      */
     public boolean isNativeWidget() {
@@ -515,8 +515,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Returns true if the formats from this dialog object should be prioritized by the format handler.<p>
-     * 
-     * @return the value of the 'override formats' flag 
+     *
+     * @return the value of the 'override formats' flag
      */
     public boolean isOverrideFormats() {
 
@@ -575,7 +575,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Selects a tab by the given id.<p>
-     * 
+     *
      * @param tabId the tab id
      * @param fireEvent <code>true</code> to fire the tab event
      */
@@ -589,7 +589,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Selects a tab.<p>
-     * 
+     *
      * @param tabIndex the tab index to beselected
      * @param isInitial flag for initial search
      */
@@ -601,8 +601,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Sets the size of the gallery parent panel and triggers the event to the tab.<p>
-     * 
-     * @param width the new width 
+     *
+     * @param width the new width
      * @param height the new height
      */
     public void setDialogSize(int width, int height) {
@@ -648,8 +648,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Sets the 'override formats' flag, which tells the format handler to prioritize the formats from the gallery dialog object.<p>
-     * 
-     * @param overrideFormats the new value for the 'override formats' flag 
+     *
+     * @param overrideFormats the new value for the 'override formats' flag
      */
     public void setOverrideFormats(boolean overrideFormats) {
 
@@ -658,7 +658,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Sets the preview visibility.<p>
-     * 
+     *
      * @param visible the preview visibility
      */
     public void setPreviewVisible(boolean visible) {
@@ -685,7 +685,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Sets the widget handler.<p>
-     * 
+     *
      * @param widgetHandler the widget handler
      */
     public void setWidgetHandler(I_CmsGalleryWidgetHandler widgetHandler) {
@@ -705,7 +705,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Updates the dialog size according to the requirements of the selected tab.<p>
-     * 
+     *
      * @param tab the selected tab
      */
     public void updateSizeForTab(A_CmsTab tab) {
@@ -757,10 +757,10 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /**
      * Creates a tab text accessor for a given text.<p>
-     * 
-     * @param pos the index of the tab 
-     * 
-     * @return the tab text accessor for the tab at index pos 
+     *
+     * @param pos the index of the tab
+     *
+     * @return the tab text accessor for the tab at index pos
      */
     protected HasText getTabTextAccessor(final int pos) {
 

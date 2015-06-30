@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,14 +31,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A document type specifies which document factory class is used to pull the 
- * content of an OpenCms document into a Lucene index document.<p> 
- * 
+ * A document type specifies which document factory class is used to pull the
+ * content of an OpenCms document into a Lucene index document.<p>
+ *
  * The appropriate document factory class gets triggerd while the search index is built
- * for OpenCms documents matching the specified resource type and/or mimetype combination 
+ * for OpenCms documents matching the specified resource type and/or mimetype combination
  * in a document factory class instance.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSearchDocumentType {
 
@@ -65,7 +65,7 @@ public class CmsSearchDocumentType {
 
     /**
      * Adds a mimetype.<p>
-     * 
+     *
      * @param mimeType a mimetype
      */
     public void addMimeType(String mimeType) {
@@ -75,7 +75,7 @@ public class CmsSearchDocumentType {
 
     /**
      * Adds the class name of a resource type.<p>
-     * 
+     *
      * @param resourceType the class name of a resource type
      */
     public void addResourceType(String resourceType) {

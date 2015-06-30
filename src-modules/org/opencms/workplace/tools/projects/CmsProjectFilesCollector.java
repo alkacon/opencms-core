@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,8 +51,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Collector for {@link org.opencms.file.CmsResource} objects from a project.<p>
- * 
- * @since 6.1.0 
+ *
+ * @since 6.1.0
  */
 public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
 
@@ -70,9 +70,9 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
 
     /**
      * Constructor, creates a new instance.<p>
-     * 
+     *
      * @param wp the workplace object
-     * @param projectId the id of the project 
+     * @param projectId the id of the project
      * @param state the state of the resources to filter
      */
     public CmsProjectFilesCollector(A_CmsListExplorerDialog wp, CmsUUID projectId, CmsResourceState state) {
@@ -101,6 +101,7 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
+    @Override
     public List getResources(CmsObject cms, Map params) throws CmsException {
 
         CmsUUID projectId = CmsProject.ONLINE_PROJECT_ID;
@@ -144,6 +145,7 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
+    @Override
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
         // no-op

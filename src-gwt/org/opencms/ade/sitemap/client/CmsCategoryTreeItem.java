@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,8 +43,8 @@ public class CmsCategoryTreeItem extends CmsTreeItem {
 
     /**
      * Creates a new tree item.<p>
-     * 
-     * @param entry the data for the tree item 
+     *
+     * @param entry the data for the tree item
      */
     public CmsCategoryTreeItem(CmsCategoryTreeEntry entry) {
 
@@ -52,12 +52,12 @@ public class CmsCategoryTreeItem extends CmsTreeItem {
         m_structureId = entry.getId();
     }
 
-    /** 
+    /**
      * Creates the list info bean for a tree item from a category bean.<p>
-     * 
+     *
      * @param entry the category data
-     *  
-     * @return the list info bean 
+     *
+     * @return the list info bean
      */
     public static CmsListInfoBean createCategoryListInfo(CmsCategoryTreeEntry entry) {
 
@@ -68,8 +68,8 @@ public class CmsCategoryTreeItem extends CmsTreeItem {
 
     /**
      * Gets the structure id.<p>
-     * 
-     * @return the structure id 
+     *
+     * @return the structure id
      */
     public CmsUUID getStructureId() {
 

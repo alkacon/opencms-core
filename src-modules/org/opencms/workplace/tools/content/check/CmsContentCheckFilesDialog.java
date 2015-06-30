@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,8 +46,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Result List Dialog.<p>
- * 
- * @since 6.1.2 
+ *
+ * @since 6.1.2
  */
 public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
 
@@ -68,7 +68,7 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsContentCheckFilesDialog(CmsJspActionElement jsp) {
@@ -78,7 +78,7 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -91,6 +91,7 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -99,6 +100,7 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -107,6 +109,7 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
@@ -126,6 +129,7 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -170,6 +174,7 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -181,20 +186,23 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // create list item detail for errors
         CmsListItemDetails errorDetails = new CmsListItemDetails(LIST_DETAIL_ERROR);
         errorDetails.setAtColumn(LIST_COLUMN_NAME);
         //errorDetails.setVisible(false);
-        errorDetails.setShowActionName(Messages.get().container(Messages.GUI_CHECKCONTENT_DETAIL_SHOW_ERRORINFO_NAME_0));
-        errorDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_CHECKCONTENT_DETAIL_SHOW_ERRORINFO_HELP_0));
-        errorDetails.setHideActionName(Messages.get().container(Messages.GUI_CHECKCONTENT_DETAIL_HIDE_ERRORINFO_NAME_0));
-        errorDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_CHECKCONTENT_DETAIL_HIDE_ERRORINFO_HELP_0));
-        errorDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_CHECKCONTENT_LABEL_ERROR_0)));
+        errorDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_CHECKCONTENT_DETAIL_SHOW_ERRORINFO_NAME_0));
+        errorDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_CHECKCONTENT_DETAIL_SHOW_ERRORINFO_HELP_0));
+        errorDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_CHECKCONTENT_DETAIL_HIDE_ERRORINFO_NAME_0));
+        errorDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_CHECKCONTENT_DETAIL_HIDE_ERRORINFO_HELP_0));
+        errorDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_CHECKCONTENT_LABEL_ERROR_0)));
 
         // add error info item detail to meta data
         metadata.addItemDetails(errorDetails);
@@ -203,16 +211,16 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
         CmsListItemDetails warningDetails = new CmsListItemDetails(LIST_DETAIL_WARNING);
         warningDetails.setAtColumn(LIST_COLUMN_NAME);
         //warningDetails.setVisible(false);
-        warningDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_CHECKCONTENT_DETAIL_SHOW_WARNINGINFO_NAME_0));
-        warningDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_CHECKCONTENT_DETAIL_SHOW_WARNINGINFO_NAME_0));
-        warningDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_CHECKCONTENT_DETAIL_SHOW_WARNINGINFO_NAME_0));
-        warningDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_CHECKCONTENT_DETAIL_HIDE_WARNINGINFO_HELP_0));
-        warningDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_CHECKCONTENT_LABEL_WARNING_0)));
+        warningDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_CHECKCONTENT_DETAIL_SHOW_WARNINGINFO_NAME_0));
+        warningDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_CHECKCONTENT_DETAIL_SHOW_WARNINGINFO_NAME_0));
+        warningDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_CHECKCONTENT_DETAIL_SHOW_WARNINGINFO_NAME_0));
+        warningDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_CHECKCONTENT_DETAIL_HIDE_WARNINGINFO_HELP_0));
+        warningDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_CHECKCONTENT_LABEL_WARNING_0)));
 
         // add warning info item detail to meta data
         metadata.addItemDetails(warningDetails);
@@ -223,9 +231,10 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
-        // no LMA        
+        // no LMA
     }
 
 }

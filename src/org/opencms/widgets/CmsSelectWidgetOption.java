@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,53 +38,53 @@ import org.apache.commons.logging.Log;
 
 /**
  * An option of a select type widget.<p>
- * 
+ *
  * If options are passed from XML content schema definitions as widget configuration options,
  * the following syntax is used for defining the option values:<p>
- * 
+ *
  * <code>value='{text}' default='{true|false}' option='{text}' help='{text}|{more option definitions}</code><p>
- * 
- * For example:<p>  
- * 
+ *
+ * For example:<p>
+ *
  * <code>value='value1' default='true' option='option1' help='help1'|value='value2' option='option2' help='help2'</code><p>
- * 
- * The elements <code>default</code>, <code>option</code> and <code>help</code> are all optional, only a 
- * <code>value</code> must be present in the input. 
+ *
+ * The elements <code>default</code>, <code>option</code> and <code>help</code> are all optional, only a
+ * <code>value</code> must be present in the input.
  * There should be only one <code>default</code> set to <code>true</code>
- * in the input, if more than one is detected, only the first <code>default</code> found is actually used. 
- * If no <code>option</code> is given, the value of <code>option</code> defaults to the value of the given <code>value</code>. 
- * If no <code>help</code> is given, the default is <code>null</code>.<p> 
- * 
+ * in the input, if more than one is detected, only the first <code>default</code> found is actually used.
+ * If no <code>option</code> is given, the value of <code>option</code> defaults to the value of the given <code>value</code>.
+ * If no <code>help</code> is given, the default is <code>null</code>.<p>
+ *
  * Shortcut syntax options:<p>
- * 
+ *
  * If you don't specify the <code>value</code> key, the value is assumed to start at the first position of an
- * option definition. In this case the value must not be surrounded by the <code>'</code> chars. 
+ * option definition. In this case the value must not be surrounded by the <code>'</code> chars.
  * Example: <code>value='some value' default='true'</code> can also be written as <code>some value default='true'</code>.<p>
- * 
+ *
  * Only if you use the short value definition as described above, a default value can be marked with a <code>*</code>
  * at the end of the value definition.
  * Example: <code>value='some value' default='true'</code> can also be written as <code>some value*</code>.<p>
- * 
+ *
  * Only if you use the short value definition as described above, you can also append the <code>option</code>
  * to the <code>value</code> using a <code>:</code>. In this case no <code>'</code> must surround the <code>option</code>.
- * Please keep in mind that in this case the value 
+ * Please keep in mind that in this case the value
  * itself can not longer contain a <code>:</code> char, since it would then be interpreted as a delimiter.
  * Example: <code>value='some value' option='some option'</code> can also be written as <code>some value:some option</code>.<p>
- * 
+ *
  * Any combinations of the above described shortcuts are allowed in the configuration option String.
  * Here are some more examples of valid configuration option Strings:<p>
- * 
+ *
  * <code>1*|2|3|4|5|6|7</code><br>
  * <code>1 default='true'|2|3|4|5|6|7</code><br>
  * <code>value='1' default='true'|value='2'|value='3'</code><br>
  * <code>value='1'|2*|value='3'</code><br>
  * <code>1*:option text|2|3|4</code><br>
  * <code>1* option='option text' help='some'|2|3|4</code><p>
- * 
- * Please note: If an entry in the configuration String is malformed, this error is silently ignored (but written 
+ *
+ * Please note: If an entry in the configuration String is malformed, this error is silently ignored (but written
  * to the log channel of this class at <code>INFO</code>level.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSelectWidgetOption {
 
@@ -129,7 +129,7 @@ public class CmsSelectWidgetOption {
 
     /**
      * Creates a new select option for the given value.<p>
-     *  
+     *
      * @param value the value of this select option
      */
     public CmsSelectWidgetOption(String value) {
@@ -139,7 +139,7 @@ public class CmsSelectWidgetOption {
 
     /**
      * Creates a new select option form the given values.<p>
-     * 
+     *
      * @param value the value of this select option
      * @param isDefault indicates if this is the default value of the selection (default is <code>false</code>)
      */
@@ -150,7 +150,7 @@ public class CmsSelectWidgetOption {
 
     /**
      * Creates a new select option form the given values.<p>
-     * 
+     *
      * @param value the value of this select option
      * @param isDefault indicates if this is the default value of the selection (default is <code>false</code>)
      * @param optionText the (optional) display text of this select option
@@ -162,7 +162,7 @@ public class CmsSelectWidgetOption {
 
     /**
      * Creates a new select option form the given values.<p>
-     * 
+     *
      * @param value the value of this select option
      * @param isDefault indicates if this is the default value of the selection (default is <code>false</code>)
      * @param optionText the (optional) display text of this select option
@@ -178,12 +178,12 @@ public class CmsSelectWidgetOption {
 
     /**
      * Returns a select widget configuration String created from the given list of select options.<p>
-     * 
-     * If an element found in the given list is not of type 
+     *
+     * If an element found in the given list is not of type
      * <code>{@link CmsSelectWidgetOption}</code>, it is ignored.<p>
-     * 
+     *
      * @param options the list of select options to create the configuration String for
-     * 
+     *
      * @return a select widget configuration String created from the given list of select options
      */
     public static String createConfigurationString(List<CmsSelectWidgetOption> options) {
@@ -206,14 +206,14 @@ public class CmsSelectWidgetOption {
     }
 
     /**
-     * Returns the default option from the given list of select options, 
-     * or <code>null</code> in case there is no default option in the given list.<p> 
-     * 
-     * If an element found in the given list is not of type 
+     * Returns the default option from the given list of select options,
+     * or <code>null</code> in case there is no default option in the given list.<p>
+     *
+     * If an element found in the given list is not of type
      * <code>{@link CmsSelectWidgetOption}</code>, this is ignored.<p>
-     * 
+     *
      * @param options the list of select options to get the default from
-     * 
+     *
      * @return the default option from the given list of select options, or <code>null</code> in case there is no default option
      */
     public static CmsSelectWidgetOption getDefaultOption(List<CmsSelectWidgetOption> options) {
@@ -234,14 +234,14 @@ public class CmsSelectWidgetOption {
     }
 
     /**
-     * Returns a list of default options from the given list of select options.<p> 
-     * 
-     * If an element found in the given list is not of type 
+     * Returns a list of default options from the given list of select options.<p>
+     *
+     * If an element found in the given list is not of type
      * <code>{@link CmsSelectWidgetOption}</code>, this is ignored.<p>
-     * 
+     *
      * @param options the list of select options to get the default from
-     * 
-     * @return a list of <code>{@link CmsSelectWidgetOption}</code> objects 
+     *
+     * @return a list of <code>{@link CmsSelectWidgetOption}</code> objects
      */
     public static List<CmsSelectWidgetOption> getDefaultOptions(List<CmsSelectWidgetOption> options) {
 
@@ -262,15 +262,15 @@ public class CmsSelectWidgetOption {
     }
 
     /**
-     * Parses a widget configuration String for select option values.<p> 
-     * 
+     * Parses a widget configuration String for select option values.<p>
+     *
      * If the input is <code>null</code> or empty, a <code>{@link Collections#EMPTY_LIST}</code>
      * is returned.<p>
-     * 
+     *
      * Please note: No exception is thrown in case the input is malformed, all malformed entries are silently ignored.<p>
-     * 
+     *
      * @param input the widget input string to parse
-     * 
+     *
      * @return a List of <code>{@link CmsSelectWidgetOption}</code> elements
      */
     public static List<CmsSelectWidgetOption> parseOptions(String input) {
@@ -312,9 +312,8 @@ public class CmsSelectWidgetOption {
                     // shortcut syntax, value key must be at first position
                     if ((posDefault == 0) || (posOption == 0) || (posHelp == 0)) {
                         // malformed part - no value given
-                        throw new CmsWidgetException(Messages.get().container(
-                            Messages.ERR_MALFORMED_SELECT_OPTIONS_1,
-                            input));
+                        throw new CmsWidgetException(
+                            Messages.get().container(Messages.ERR_MALFORMED_SELECT_OPTIONS_1, input));
                     }
                     posValue = 0;
                     shortValue = true;

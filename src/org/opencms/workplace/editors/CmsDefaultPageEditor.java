@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,11 +54,11 @@ import javax.servlet.jsp.JspException;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for building editors for the CmsDefaultPage page type.<p> 
- * 
+ * Provides methods for building editors for the CmsDefaultPage page type.<p>
+ *
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class CmsDefaultPageEditor extends CmsEditor {
 
@@ -107,7 +107,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDefaultPageEditor(CmsJspActionElement jsp) {
@@ -139,7 +139,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         if (!getParamElementlanguage().equals(getParamOldelementlanguage())) {
             initBodyElementName(getParamOldelementname());
         }
-        // get the new editor content 
+        // get the new editor content
         initContent();
     }
 
@@ -171,7 +171,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     @Override
     public void actionClear(boolean forceUnlock) {
 
-        // delete the temporary file        
+        // delete the temporary file
         deleteTempFile();
         boolean directEditMode = Boolean.valueOf(getParamDirectedit()).booleanValue();
         boolean modified = Boolean.valueOf(getParamModified()).booleanValue();
@@ -190,7 +190,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Performs the delete locale action.<p>
-     * 
+     *
      * @throws JspException if something goes wrong
      */
     public void actionDeleteElementLocale() throws JspException {
@@ -226,9 +226,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Performs a configurable action performed by the editor.<p>
-     * 
+     *
      * The default action is: save resource, clear temporary files and publish the resource directly.<p>
-     * 
+     *
      * @throws IOException if a forward fails
      * @throws JspException if including a JSP fails
      * @throws ServletException if a forward fails
@@ -248,7 +248,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Performs the exit editor action and deletes the temporary file.<p>
-     * 
+     *
      * @see org.opencms.workplace.editors.CmsEditor#actionExit()
      */
     @Override
@@ -266,7 +266,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Performs the preview page action in a new browser window.<p>
-     * 
+     *
      * @throws IOException if redirect fails
      * @throws JspException if inclusion of error page fails
      */
@@ -304,14 +304,14 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         }
 
         if (getAction() != ACTION_CANCEL) {
-            // save successful, set save action         
+            // save successful, set save action
             setAction(ACTION_SAVE);
         }
     }
 
     /**
      * Builds the html String for the element language selector.<p>
-     *  
+     *
      * @param attributes optional attributes for the &lt;select&gt; tag
      * @return the html for the element language selectbox
      */
@@ -322,7 +322,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Builds the html String for the element name selector.<p>
-     *  
+     *
      * @param attributes optional attributes for the &lt;select&gt; tag
      * @return the html for the element name selectbox
      */
@@ -360,7 +360,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Builds the html for the font face select box of a WYSIWYG editor.<p>
-     * 
+     *
      * @param attributes optional attributes for the &lt;select&gt; tag
      * @return the html for the font face select box
      */
@@ -376,7 +376,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Escapes the content and title parameters to display them in the editor form.<p>
-     * 
+     *
      * This method has to be called on the JSP right before the form display html is created.<p>     *
      */
     public void escapeParams() {
@@ -387,7 +387,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Returns the current element locale.<p>
-     * 
+     *
      * @return the current element locale
      */
     public Locale getElementLocale() {
@@ -400,7 +400,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Returns the current element name.<p>
-     * 
+     *
      * @return the current element name
      */
     public String getParamElementname() {
@@ -410,7 +410,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Returns the old element name.<p>
-     * 
+     *
      * @return the old element name
      */
     public String getParamOldelementname() {
@@ -420,7 +420,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Returns the OpenCms VFS uri of the style sheet of the current page.<p>
-     * 
+     *
      * @return the OpenCms VFS uri of the style sheet of the current page
      */
     public String getUriStyleSheet() {
@@ -454,15 +454,17 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Returns the OpenCms VFS uri of the template of the current page.<p>
-     * 
+     *
      * @return the OpenCms VFS uri of the template of the current page
      */
     public String getUriTemplate() {
 
         String result = "";
         try {
-            result = getCms().readPropertyObject(getParamTempfile(), CmsPropertyDefinition.PROPERTY_TEMPLATE, true).getValue(
-                "");
+            result = getCms().readPropertyObject(
+                getParamTempfile(),
+                CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                true).getValue("");
         } catch (CmsException e) {
             LOG.warn(Messages.get().getBundle().key(Messages.LOG_READ_TEMPLATE_PROP_FAILED_0), e);
         }
@@ -471,7 +473,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Sets the current element name.<p>
-     * 
+     *
      * @param elementName the current element name
      */
     public void setParamElementname(String elementName) {
@@ -481,7 +483,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Sets the old element name.<p>
-     * 
+     *
      * @param oldElementName the old element name
      */
     public void setParamOldelementname(String oldElementName) {
@@ -491,7 +493,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Returns the list of active elements of the page.<p>
-     * 
+     *
      * @return the list of active elements of the page
      */
     protected List<CmsDialogElement> getElementList() {
@@ -546,15 +548,16 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Initializes the body element name of the editor.<p>
-     * 
+     *
      * This has to be called after the element language has been set with setParamBodylanguage().<p>
-     * 
+     *
      * @param elementName the name of the element to initialize or null, if default element should be used
      */
     protected void initBodyElementName(String elementName) {
 
         if ((elementName == null)
-            || (m_page.hasValue(elementName, getElementLocale()) && !m_page.isEnabled(elementName, getElementLocale()))) {
+            || (m_page.hasValue(elementName, getElementLocale())
+                && !m_page.isEnabled(elementName, getElementLocale()))) {
             // elementName not specified or given element is disabled, determine default element
             List<String> allElements = m_page.getNames(getElementLocale());
             int elementCount = allElements.size();
@@ -582,7 +585,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 // default legacy element present, use it
                 setParamElementname(CmsDefaultPageEditor.XML_BODY_ELEMENT);
             } else {
-                // use the first element from the element list 
+                // use the first element from the element list
                 setParamElementname(elements.get(0));
             }
         } else {
@@ -591,9 +594,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         }
     }
 
-    /** 
+    /**
      * This method has to be called after initializing the body element name and language.<p>
-     * 
+     *
      * @see org.opencms.workplace.editors.CmsEditor#initContent()
      */
     @Override
@@ -627,7 +630,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Saves the editor content to the temporary file.<p>
-     * 
+     *
      * @param body the body name to write
      * @param locale the body locale to write
      * @throws CmsException if writing the file fails
@@ -683,7 +686,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /**
      * Manipulates the content String for different editor views and the save operation.<p>
-     * 
+     *
      * @param save if set to true, the result String is not escaped and the content parameter is not updated
      * @return the prepared content String
      */

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
 
 /**
  * Allows to run a specific method of an {@link org.opencms.test.OpenCmsTestCase} case concurrently.<p>
- * 
+ *
  * @since 6.5.0
  */
 public class OpenCmsThreadedTestCaseSuite {
@@ -96,14 +96,14 @@ public class OpenCmsThreadedTestCaseSuite {
 
     /**
      * Returns a list of {@link OpenCmsThreadedTestCase} instances that will be executed concurrently by this suite.<p>
-     * 
+     *
      * @param count the number of concurrent executions
      * @param testCase the base test case instance to execute a method from
      * @param method the method name from the test case to execute
      * @param parameters the parameters of the test case
-     * 
+     *
      * @return a list of {@link OpenCmsThreadedTestCase} instances that will be executed concurrently by this suite
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     private static OpenCmsThreadedTestCase[] initThreads(
@@ -136,12 +136,12 @@ public class OpenCmsThreadedTestCaseSuite {
 
     /**
      * Returns the maximum allowed runtime of this test suite.<p>
-     * 
-     * If the given limit is exceeded, then this suite will stop waiting for 
-     * the running test cases to finish and generate an internal exception.<p> 
+     *
+     * If the given limit is exceeded, then this suite will stop waiting for
+     * the running test cases to finish and generate an internal exception.<p>
      *
      * The default is the number of threads multiplied by 100 milliseconds.<p>
-     * 
+     *
      * @return the maximum allowed runtime of this test suite
      */
     public long getAllowedRuntime() {
@@ -151,7 +151,7 @@ public class OpenCmsThreadedTestCaseSuite {
 
     /**
      * Returns the runtime of this test suite.<p>
-     * 
+     *
      * @return the runtime of this test suite
      */
     public long getRuntime() {
@@ -174,9 +174,9 @@ public class OpenCmsThreadedTestCaseSuite {
     /**
      * Runs the initialized test concurrent test cases.<p>
      *
-     * Returns the array of generated {@link OpenCmsThreadedTestCase} instances, which contain information 
+     * Returns the array of generated {@link OpenCmsThreadedTestCase} instances, which contain information
      * about the individual test results.<p>*
-     * 
+     *
      * @return the array of generated {@link OpenCmsThreadedTestCase} instances
      */
     public OpenCmsThreadedTestCase[] run() {
@@ -216,11 +216,12 @@ public class OpenCmsThreadedTestCaseSuite {
 
                 if ((runCount > 0) && (runTime >= m_allowedRuntime)) {
                     // allowed runtime was exceeded, generate exception that is stored be the member later
-                    throw new RuntimeException("There where "
-                        + runCount
-                        + " threads still running after "
-                        + (m_allowedRuntime / 1000.0)
-                        + " seconds");
+                    throw new RuntimeException(
+                        "There where "
+                            + runCount
+                            + " threads still running after "
+                            + (m_allowedRuntime / 1000.0)
+                            + " seconds");
                 }
 
             } catch (Throwable e) {
@@ -236,7 +237,7 @@ public class OpenCmsThreadedTestCaseSuite {
 
     /**
      * Sets the maximum allowed runtime of this test suite.<p>
-     * 
+     *
      * @param allowedRuntime the maximum allowed runtime of this test suite to set
      */
     public void setAllowedRuntime(long allowedRuntime) {

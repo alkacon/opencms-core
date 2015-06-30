@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,9 +37,9 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Base report class.<p> 
- * 
- * @since 6.0.0 
+ * Base report class.<p>
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsReport implements I_CmsReport {
 
@@ -123,7 +123,7 @@ public abstract class A_CmsReport implements I_CmsReport {
     /**
      * Returns the original site root of the user who started this report,
      * or <code>null</code> if the original site root has not been set.<p>
-     * 
+     *
      * @return the original site root of the user who started this report
      */
     public String getSiteRoot() {
@@ -210,16 +210,16 @@ public abstract class A_CmsReport implements I_CmsReport {
 
     /**
      * Removes the report site root prefix from the absolute path in the resource name,
-     * that is adjusts the resource name for the report site root.<p> 
-     * 
+     * that is adjusts the resource name for the report site root.<p>
+     *
      * If the site root for this report has not been set,
      * or the resource name does not start with the report site root,
      * the name it is left untouched.<p>
-     * 
+     *
      * @param resourcename the resource name (full path)
-     * 
+     *
      * @return the resource name adjusted for the report site root
-     * 
+     *
      * @see CmsRequestContext#removeSiteRoot(String)
      */
     public String removeSiteRoot(String resourcename) {
@@ -246,7 +246,7 @@ public abstract class A_CmsReport implements I_CmsReport {
 
     /**
      * Returns the default report message bundle.<p>
-     * 
+     *
      * @return the default report message bundle
      */
     protected CmsMessages getMessages() {
@@ -256,7 +256,7 @@ public abstract class A_CmsReport implements I_CmsReport {
 
     /**
      * Initializes some member variables for this report.<p>
-     * 
+     *
      * @param locale the locale for this report
      * @param siteRoot the site root of the user who started this report (may be <code>null</code>)
      */
@@ -280,7 +280,7 @@ public abstract class A_CmsReport implements I_CmsReport {
 
     /**
      * Prints a String to the report, using the indicated formatting.<p>
-     * 
+     *
      * Use the constants starting with <code>FORMAT</code> from this interface
      * to indicate which formatting to use.<p>
      *
@@ -291,7 +291,7 @@ public abstract class A_CmsReport implements I_CmsReport {
 
     /**
      * Prints a String with line break to the report.<p>
-     * 
+     *
      * @param value the message container to add
      */
     protected void println(String value) {
@@ -301,7 +301,7 @@ public abstract class A_CmsReport implements I_CmsReport {
 
     /**
      * Prints a String with line break to the report, using the indicated formatting.<p>
-     * 
+     *
      * Use the constants starting with <code>C_FORMAT</code> from this interface
      * to indicate which formatting to use.<p>
      *
@@ -316,7 +316,7 @@ public abstract class A_CmsReport implements I_CmsReport {
 
     /**
      * Sets the time of the last report entry.<p>
-     * 
+     *
      * @param time the time of the actual entry
      */
     protected void setLastEntryTime(long time) {

@@ -210,9 +210,10 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
             List<CmsResource> resources = getInternalResources(getWp().getCms(), params);
             List<CmsListItem> ret = new ArrayList<CmsListItem>();
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_COLLECTOR_PROCESS_ITEMS_START_1,
-                    new Integer(resources.size())));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_COLLECTOR_PROCESS_ITEMS_START_1,
+                        new Integer(resources.size())));
             }
             getWp().applyColumnVisibilities();
             CmsHtmlList list = getWp().getList();
@@ -264,14 +265,16 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 if (thread != null) {
                     count++;
                     if (thread.isInterrupted()) {
-                        throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
-                            org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
+                        throw new CmsIllegalStateException(
+                            org.opencms.workplace.commons.Messages.get().container(
+                                org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
                     }
                     thread.setProgress(((count * 40) / resources.size()) + progressOffset);
-                    thread.setDescription(org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
-                        org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP2_2,
-                        new Integer(count),
-                        new Integer(resources.size())));
+                    thread.setDescription(
+                        org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
+                            org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP2_2,
+                            new Integer(count),
+                            new Integer(resources.size())));
                 }
 
                 Object obj = itRes.next();
@@ -309,7 +312,8 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                     if ((metadata.getColumnDefinition(state.getColumn()) != null)
                         && metadata.getColumnDefinition(state.getColumn()).isSorteable()) {
                         // sort
-                        I_CmsListItemComparator c = metadata.getColumnDefinition(state.getColumn()).getListItemComparator();
+                        I_CmsListItemComparator c = metadata.getColumnDefinition(
+                            state.getColumn()).getListItemComparator();
                         Collections.sort(ret, c.getComparator(state.getColumn(), getWp().getLocale()));
                         if (state.getOrder().equals(CmsListOrderEnum.ORDER_DESCENDING)) {
                             Collections.reverse(ret);
@@ -318,9 +322,10 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 }
             }
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_COLLECTOR_PROCESS_ITEMS_END_1,
-                    new Integer(ret.size())));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_COLLECTOR_PROCESS_ITEMS_END_1,
+                        new Integer(ret.size())));
             }
             return ret;
         }
@@ -427,9 +432,10 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 resources = getInternalResources(cms, params);
             }
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_COLLECTOR_GET_RESULTS_END_1,
-                    new Integer(resources.size())));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_COLLECTOR_GET_RESULTS_END_1,
+                        new Integer(resources.size())));
             }
             return resources;
         }

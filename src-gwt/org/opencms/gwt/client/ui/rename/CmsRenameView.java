@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,7 +60,7 @@ public class CmsRenameView extends Composite {
 
     /** The UiBinder interface for this widget. */
     interface I_CmsRenameViewUiBinder extends UiBinder<Widget, CmsRenameView> {
-        // empy UiBinder interface 
+        // empy UiBinder interface
     }
 
     /** An enum representing the widget state. */
@@ -120,9 +120,9 @@ public class CmsRenameView extends Composite {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param renameInfo the information for the resource which is being renamed
-     * @param renameCallback the callback which should be called when the resource has been successfully renamed 
+     * @param renameCallback the callback which should be called when the resource has been successfully renamed
      */
     public CmsRenameView(CmsRenameInfoBean renameInfo, AsyncCallback<String> renameCallback) {
 
@@ -157,8 +157,8 @@ public class CmsRenameView extends Composite {
 
     /**
      * Gets the buttons which should be inserted into the parent dialog.<p>
-     * 
-     * @return the list of buttons for the parent dialog 
+     *
+     * @return the list of buttons for the parent dialog
      */
     public List<CmsPushButton> getDialogButtons() {
 
@@ -170,8 +170,8 @@ public class CmsRenameView extends Composite {
 
     /**
      * Sets the dialog in which this view is contained.<p>
-     * 
-     * @param popup the dialog containing this view 
+     *
+     * @param popup the dialog containing this view
      */
     public void setDialog(CmsPopup popup) {
 
@@ -180,8 +180,8 @@ public class CmsRenameView extends Composite {
 
     /**
      * Event handler for the Cancel button.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_cancelButton")
     protected void onClickCancel(ClickEvent e) {
@@ -191,8 +191,8 @@ public class CmsRenameView extends Composite {
 
     /**
      * Event handler for the OK button.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_okButton")
     protected void onClickOk(ClickEvent e) {
@@ -237,8 +237,8 @@ public class CmsRenameView extends Composite {
 
     /**
      * Changes the state of the widget.<p>
-     * 
-     * @param state the state to change to 
+     *
+     * @param state the state to change to
      */
     void changeState(State state) {
 
@@ -263,7 +263,7 @@ public class CmsRenameView extends Composite {
         }
     }
 
-    /** 
+    /**
      * Closes the dialog containing this widget.<p>
      */
     void close() {
@@ -271,10 +271,10 @@ public class CmsRenameView extends Composite {
         m_dialog.hide();
     }
 
-    /** 
+    /**
      * Gets the new name entered by the user.<p>
-     * 
-     * @return the new name 
+     *
+     * @return the new name
      */
     String getValue() {
 
@@ -283,8 +283,8 @@ public class CmsRenameView extends Composite {
 
     /**
      * Sets the validation error in the widget.<p>
-     * 
-     * @param error the validation error message   
+     *
+     * @param error the validation error message
      */
     void setValidationError(String error) {
 

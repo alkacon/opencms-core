@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,62 +40,62 @@ public interface I_CmsWorkplaceAppConfiguration {
 
     /**
      * Gets the id of the app category in which this app should be displayed (null for the root category).
-     *  
-     * @return the app category id 
+     *
+     * @return the app category id
      */
     String getAppCategory();
 
     /**
      * Returns a new app instance.<p>
-     * 
+     *
      * @return a new app instance
      */
     I_CmsWorkplaceApp getAppInstance();
 
     /**
      * Gets the help text for the app in the given locale.<p>
-     * 
-     * @param locale the locale to use 
-     * 
-     * @return the help text 
+     *
+     * @param locale the locale to use
+     *
+     * @return the help text
      */
     String getHelpText(Locale locale);
 
     /**
      * Returns the app icon resource.<p>
-     * 
+     *
      * @return the icon resource
      */
     Resource getIcon();
 
     /**
      * Returns the unique app id.
-     * 
+     *
      * @return the app id
      */
     String getId();
 
     /**
      * Returns the display name of the app.<p>
-     * 
+     *
      * @param locale the user locale
-     * 
+     *
      * @return the app name
      */
     String getName(Locale locale);
 
     /**
      * Gets an integer used to sort apps in a category.<p>
-     * 
+     *
      * @return the integer used as a sort key
      */
     int getOrder();
 
     /**
      * Returns the visibility status of the app for the given user context.<p>
-     * 
+     *
      * @param cms the user context
-     * 
+     *
      * @return the visibility status
      */
     CmsAppVisibilityStatus getVisibility(CmsObject cms);

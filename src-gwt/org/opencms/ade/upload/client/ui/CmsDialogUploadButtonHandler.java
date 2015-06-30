@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -71,7 +71,7 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
 
     /**
      * Creates a new upload button handler.<p>
-     * 
+     *
      * @param contextFactory the context factory to use for upload contexts
      */
     public CmsDialogUploadButtonHandler(Supplier<I_CmsUploadContext> contextFactory) {
@@ -81,10 +81,10 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
 
     /**
      * Creates a new upload button handler.<p>
-     * 
+     *
      * @param contextFactory the context factory to use for upload contexts
      * @param targetFolder the target folder
-     * @param isRootPath true fi the target folder is a root path 
+     * @param isRootPath true fi the target folder is a root path
      */
     public CmsDialogUploadButtonHandler(
         Supplier<I_CmsUploadContext> contextFactory,
@@ -105,7 +105,8 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
         fileInput.getElement().getStyle().setFontSize(200, Unit.PX);
         fileInput.setAllowMultipleFiles(true);
         fileInput.setName("upload");
-        fileInput.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().uploadFileInput());
+        fileInput.addStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().uploadFileInput());
     }
 
     /**
@@ -120,14 +121,13 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
                 m_uploadDialog.setContext(context);
                 updateDialog();
                 // the current upload button is located outside the dialog, reinitialize it with a new button handler instance
-                m_button.reinitButton(new CmsDialogUploadButtonHandler(
-                    m_contextFactory,
-                    m_targetFolder,
-                    m_isTargetRootPath));
+                m_button.reinitButton(
+                    new CmsDialogUploadButtonHandler(m_contextFactory, m_targetFolder, m_isTargetRootPath));
             } catch (Exception e) {
-                CmsErrorDialog.handleException(new Exception(
-                    "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
-                    e));
+                CmsErrorDialog.handleException(
+                    new Exception(
+                        "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                        e));
                 return;
             }
         }
@@ -137,7 +137,7 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
 
     /**
      * Opens the upload dialog for the given file references.<p>
-     * 
+     *
      * @param files the file references
      */
     public void openDialogWithFiles(List<CmsFileInfo> files) {
@@ -149,14 +149,13 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
                 m_uploadDialog.setContext(context);
                 updateDialog();
                 // the current upload button is located outside the dialog, reinitialize it with a new button handler instance
-                m_button.reinitButton(new CmsDialogUploadButtonHandler(
-                    m_contextFactory,
-                    m_targetFolder,
-                    m_isTargetRootPath));
+                m_button.reinitButton(
+                    new CmsDialogUploadButtonHandler(m_contextFactory, m_targetFolder, m_isTargetRootPath));
             } catch (Exception e) {
-                CmsErrorDialog.handleException(new Exception(
-                    "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
-                    e));
+                CmsErrorDialog.handleException(
+                    new Exception(
+                        "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                        e));
                 return;
             }
         }
@@ -174,8 +173,8 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
 
     /**
      * Sets the close handler for the dialog.<p>
-     * 
-     * @param closeHandler the close handler 
+     *
+     * @param closeHandler the close handler
      */
     public void setCloseHandler(CloseHandler<PopupPanel> closeHandler) {
 
@@ -186,8 +185,8 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
 
     /**
      * Chooses whether the target folder should be interpreted as a root path.<p>
-     * 
-     * @param isTargetRootPath true if the target folder should be treated as a root path 
+     *
+     * @param isTargetRootPath true if the target folder should be treated as a root path
      */
     public void setIsTargetRootPath(boolean isTargetRootPath) {
 
@@ -196,8 +195,8 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
 
     /**
      * Sets the upload target folder.<p>
-     * 
-     * @param targetFolder the upload target folder 
+     *
+     * @param targetFolder the upload target folder
      */
     public void setTargetFolder(String targetFolder) {
 
@@ -207,8 +206,8 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
 
     /**
      * Sets the upload dialog instance.<p>
-     * 
-     * @param uploadDialog the upload dialog instance 
+     *
+     * @param uploadDialog the upload dialog instance
      */
     public void setUploadDialog(A_CmsUploadDialog uploadDialog) {
 

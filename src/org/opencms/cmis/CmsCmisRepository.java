@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -144,11 +144,11 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
         /**
          * Creates a single mapping entry.<p>
-         * 
-         * @param key the mapping key 
-         * @param permission the permission 
-         * 
-         * @return the mapping entry 
+         *
+         * @param key the mapping key
+         * @param permission the permission
+         *
+         * @return the mapping entry
          */
         private static PermissionMapping createMapping(String key, String permission) {
 
@@ -161,11 +161,11 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
         /**
          * Adds a permission mapping.<p>
-         * 
-         * @param key the key 
+         *
+         * @param key the key
          * @param permission the permissions
-         *  
-         * @return the instance itself  
+         *
+         * @return the instance itself
          */
         public PermissionMappings add(String key, String permission) {
 
@@ -236,11 +236,11 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /**
      * Creates a permission definition.<p>
-     * 
-     * @param permission the permission name 
-     * @param description the permission description 
-     * 
-     * @return the new permission definition 
+     *
+     * @param permission the permission name
+     * @param description the permission description
+     *
+     * @return the new permission definition
      */
     private static PermissionDefinition createPermission(String permission, String description) {
 
@@ -631,15 +631,16 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
             for (CmsResource child : limiter) {
                 // build and add child object
                 ObjectInFolderDataImpl objectInFolder = new ObjectInFolderDataImpl();
-                objectInFolder.setObject(helper.collectObjectData(
-                    context,
-                    cms,
-                    child,
-                    filterCollection,
-                    renditionFilter,
-                    includeAllowableActions,
-                    false,
-                    includeRelationships));
+                objectInFolder.setObject(
+                    helper.collectObjectData(
+                        context,
+                        cms,
+                        child,
+                        filterCollection,
+                        renditionFilter,
+                        includeAllowableActions,
+                        false,
+                        includeRelationships));
                 if (includePathSegment) {
                     objectInFolder.setPathSegment(child.getName());
                 }
@@ -916,7 +917,15 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
             // set object info of the the object
             if (context.isObjectInfoRequired()) {
-                helper.collectObjectData(context, cms, file, null, "cmis:none", false, false, IncludeRelationships.NONE);
+                helper.collectObjectData(
+                    context,
+                    cms,
+                    file,
+                    null,
+                    "cmis:none",
+                    false,
+                    false,
+                    IncludeRelationships.NONE);
             }
 
             // get parent folder
@@ -1148,7 +1157,8 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
             Collections.<String> emptyList());
         for (String className : renditionProviderClasses) {
             try {
-                I_CmsCmisRenditionProvider provider = (I_CmsCmisRenditionProvider)(Class.forName(className).newInstance());
+                I_CmsCmisRenditionProvider provider = (I_CmsCmisRenditionProvider)(Class.forName(
+                    className).newInstance());
                 String id = provider.getId();
                 m_renditionProviders.put(id, provider);
             } catch (Throwable e) {
@@ -1257,15 +1267,16 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
             resultObjectList.setObjects(objectDataList);
             for (CmsResource resource : results) {
                 // build and add child object
-                objectDataList.add(helper.collectObjectData(
-                    context,
-                    cms,
-                    resource,
-                    filterCollection,
-                    renditionFilter,
-                    includeAllowableActions,
-                    false,
-                    includeRelationships));
+                objectDataList.add(
+                    helper.collectObjectData(
+                        context,
+                        cms,
+                        resource,
+                        filterCollection,
+                        renditionFilter,
+                        includeAllowableActions,
+                        false,
+                        includeRelationships));
             }
             resultObjectList.setHasMoreItems(Boolean.valueOf(!results.isEmpty()));
             resultObjectList.setNumItems(BigInteger.valueOf(results.getVisibleHitCount()));
@@ -1397,15 +1408,15 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /**
      * Initializes a CMS context for the authentication data contained in a call context.<p>
-     * 
+     *
      * @param context the call context
-     * @return the initialized CMS context 
+     * @return the initialized CMS context
      */
     protected CmsObject getCmsObject(CmsCmisCallContext context) {
 
         try {
             if (context.getUsername() == null) {
-                // user name can be null 
+                // user name can be null
                 CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
                 cms.getRequestContext().setCurrentProject(m_adminCms.getRequestContext().getCurrentProject());
                 return cms;
@@ -1424,16 +1435,16 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /**
      *  Gets the relationship data for a given resource.<p>
-     * 
-     * @param context the call context 
+     *
+     * @param context the call context
      * @param cms the CMS context
-     * @param resource the resource 
-     * @param relationshipDirection the relationship direction 
-     * @param filterSet the property filter 
-     * @param includeAllowableActions true if allowable actions should be included 
-     * @return the list of relationship data 
-     * 
-     * @throws CmsException if something goes wrong 
+     * @param resource the resource
+     * @param relationshipDirection the relationship direction
+     * @param filterSet the property filter
+     * @param includeAllowableActions true if allowable actions should be included
+     * @return the list of relationship data
+     *
+     * @throws CmsException if something goes wrong
      */
     protected List<ObjectData> getRelationshipObjectData(
         CmsCmisCallContext context,
@@ -1478,10 +1489,10 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /**
      * Gets the rendition providers matching the given filter.<p>
-     * 
-     * @param filter the rendition filter 
-     * 
-     * @return the rendition providers matching the filter 
+     *
+     * @param filter the rendition filter
+     *
+     * @return the rendition providers matching the filter
      */
     protected List<I_CmsCmisRenditionProvider> getRenditionProviders(CmsCmisRenditionFilter filter) {
 
@@ -1498,11 +1509,11 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /**
      * Extracts the resource type from a set of CMIS properties.<p>
-     * 
-     * @param properties the CMIS properties 
-     * @param defaultValue the default value 
-     * 
-     * @return the resource type property, or the default value if the property was not found 
+     *
+     * @param properties the CMIS properties
+     * @param defaultValue the default value
+     *
+     * @return the resource type property, or the default value if the property was not found
      */
     protected String getResourceTypeFromProperties(Map<String, PropertyData<?>> properties, String defaultValue) {
 
@@ -1516,8 +1527,8 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /**
      * Gets the type manager instance.<p>
-     * 
-     * @return the type manager instance 
+     *
+     * @return the type manager instance
      */
     protected CmsCmisTypeManager getTypeManager() {
 
@@ -1526,10 +1537,10 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /**
      * Gets the correct helper object for a given object id to perform operations on the corresponding object.<p>
-     * 
-     * @param objectId the object id 
-     * 
-     * @return the helper object to use for the given object id 
+     *
+     * @param objectId the object id
+     *
+     * @return the helper object to use for the given object id
      */
     I_CmsCmisObjectHelper getHelper(String objectId) {
 
@@ -1544,15 +1555,15 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /**
      * Helper method for executing a query.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param index the index to use for the query 
-     * @param query the query to perform 
-     * @param start the start offset 
-     * @param rows the number of results to return 
-     * 
-     * @return the list of search results 
-     * @throws CmsSearchException if something goes wrong 
+     *
+     * @param cms the CMS context to use
+     * @param index the index to use for the query
+     * @param query the query to perform
+     * @param start the start offset
+     * @param rows the number of results to return
+     *
+     * @return the list of search results
+     * @throws CmsSearchException if something goes wrong
      */
     CmsSolrResultList solrSearch(CmsObject cms, CmsSolrIndex index, String query, int start, int rows)
     throws CmsSearchException {
@@ -1566,16 +1577,16 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /**
      * Helper method to collect the descendants of a given folder.<p>
-     *  
-     * @param context the call context 
-     * @param cms the CMS context 
-     * @param folder the parent folder  
-     * @param list the list to which the descendants should be added 
-     * @param foldersOnly flag to exclude files from the result 
-     * @param depth the maximum depth 
-     * @param filter the property filter 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includePathSegments flag to include path segments 
+     *
+     * @param context the call context
+     * @param cms the CMS context
+     * @param folder the parent folder
+     * @param list the list to which the descendants should be added
+     * @param foldersOnly flag to exclude files from the result
+     * @param depth the maximum depth
+     * @param filter the property filter
+     * @param includeAllowableActions flag to include allowable actions
+     * @param includePathSegments flag to include path segments
      */
     private void gatherDescendants(
         CmsCmisCallContext context,
@@ -1608,15 +1619,16 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
                 // add to list
                 ObjectInFolderDataImpl objectInFolder = new ObjectInFolderDataImpl();
-                objectInFolder.setObject(helper.collectObjectData(
-                    context,
-                    cms,
-                    child,
-                    filter,
-                    "cmis:none",
-                    includeAllowableActions,
-                    false,
-                    IncludeRelationships.NONE));
+                objectInFolder.setObject(
+                    helper.collectObjectData(
+                        context,
+                        cms,
+                        child,
+                        filter,
+                        "cmis:none",
+                        includeAllowableActions,
+                        false,
+                        IncludeRelationships.NONE));
                 if (includePathSegments) {
                     objectInFolder.setPathSegment(child.getName());
                 }
@@ -1648,8 +1660,8 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /**
      * Gets the index to use for queries.<p>
-     * 
-     * @return the index to use for queries 
+     *
+     * @return the index to use for queries
      */
     private CmsSolrIndex getIndex() {
 
@@ -1662,8 +1674,8 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /**
      * Gets the relation object helper.<p>
-     * 
-     * @return the relation object helper 
+     *
+     * @return the relation object helper
      */
     private CmsCmisRelationHelper getRelationHelper() {
 
@@ -1672,8 +1684,8 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
 
     /**
      * Gets the resource object helper.<p>
-     * 
-     * @return the resource object helper 
+     *
+     * @return the resource object helper
      */
     private CmsCmisResourceHelper getResourceHelper() {
 

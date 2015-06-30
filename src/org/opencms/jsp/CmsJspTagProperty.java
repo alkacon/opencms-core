@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,57 +46,57 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides access to the properties of a resource in the OpenCms VFS .<p>
- * 
+ *
  * Of particular importance is the setting of the <code>file</code> attribute,
  * which can take the following values.<p>
- * 
- * This attribute allows you to specify where to search for the property.<BR>            
- * The following values are supported: 
+ *
+ * This attribute allows you to specify where to search for the property.<BR>
+ * The following values are supported:
  * </P>
  * <DL>
  *   <DT><b>uri</b> (default)</DT>
- *   <DD>  Look up  the property on the file with the 
+ *   <DD>  Look up  the property on the file with the
  *   uri requested by the user.</DD>
  *   <DT><b>search.uri</b> or <b>search</b></DT>
- *   <DD>Look up the property by also checking all parent folders for the property, 
- *   starting with the file with uri requested by the user and 
+ *   <DD>Look up the property by also checking all parent folders for the property,
+ *   starting with the file with uri requested by the user and
  *   going "upward" if the property was not found there.</DD>
  *   <DT><b>element.uri</b></DT>
- *   <DD>Look up the property on the currently 
- *   processed sub - element. This is useful in templates or other pages that 
+ *   <DD>Look up the property on the currently
+ *   processed sub - element. This is useful in templates or other pages that
  *   consist of many elements.</DD>
  *   <DT><b>search.element.uri</b></DT>
- *   <DD>Look up the property by also checking all parent folders for the 
- *   property, starting with the file with the currently processed sub - 
+ *   <DD>Look up the property by also checking all parent folders for the
+ *   property, starting with the file with the currently processed sub -
  *   element and going "upward" if the property was not found there.</DD>
- *   <DT>sitemap</DT> 
- *   <DD>reads from the current sitemap entry</DD> 
- *   <DT>search.sitemap</DT> 
- *   <DD>Look up the property by also checking all parent sitemap entries 
- *   for the property, starting with the current sitemap entry and 
+ *   <DT>sitemap</DT>
+ *   <DD>reads from the current sitemap entry</DD>
+ *   <DT>search.sitemap</DT>
+ *   <DD>Look up the property by also checking all parent sitemap entries
+ *   for the property, starting with the current sitemap entry and
  *   going "upward" if the property was not found there.</DD>
- *   <DT>container</DT> 
- *   <DD>reads from the current container element</DD> 
+ *   <DT>container</DT>
+ *   <DD>reads from the current container element</DD>
  *   <DT><B>{some-file-uri}</B></DT>
- *   <DD>Look up the property on that exact file 
- *   uri in the OpenCms VFS,<EM> fallback if no other valid option is 
+ *   <DD>Look up the property on that exact file
+ *   uri in the OpenCms VFS,<EM> fallback if no other valid option is
  *   selected for the file attribute.</EM></DD>
  * </DL>
- *   
- * <P>There are also some deprecated options for the "file" value that are 
+ *
+ * <P>There are also some deprecated options for the "file" value that are
  * still supported but should not longer be used:</P>
  * <DL>
  *   <DT>parent</DT>
- *   <DD>same as <STRONG>uri</STRONG></DD> 
- *   <DT>search-parent</DT> 
- *   <DD>same as <STRONG>search.uri</STRONG></DD> 
+ *   <DD>same as <STRONG>uri</STRONG></DD>
+ *   <DT>search-parent</DT>
+ *   <DD>same as <STRONG>search.uri</STRONG></DD>
  *   <DT>this</DT>
- *   <DD>same as <STRONG>element.uri</STRONG></DD> 
- *   <DT>search-this</DT> 
+ *   <DD>same as <STRONG>element.uri</STRONG></DD>
+ *   <DT>search-this</DT>
  *   <DD>same as <STRONG>search.element.uri</STRONG></DD>
  * </DL>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsJspTagProperty extends TagSupport {
 
@@ -104,30 +104,23 @@ public class CmsJspTagProperty extends TagSupport {
     private enum FileUse {
 
         /** Use element uri. */
-        ELEMENT_URI("element.uri"),
-        /** Use parent (same as {@link #URI}). */
-        PARENT("parent"),
-        /** Use search (same as {@link #SEARCH_URI}). */
-        SEARCH("search"),
-        /** Use search element uri. */
-        SEARCH_ELEMENT_URI("search.element.uri"),
-        /** Use search parent (same as {@link #SEARCH_URI}). */
-        SEARCH_PARENT("search-parent"),
-        /** Use seach this (same as {@link #SEARCH_ELEMENT_URI}). */
-        SEARCH_THIS("search-this"),
-        /** Use search uri. */
+        ELEMENT_URI("element.uri"), /** Use parent (same as {@link #URI}). */
+        PARENT("parent"), /** Use search (same as {@link #SEARCH_URI}). */
+        SEARCH("search"), /** Use search element uri. */
+        SEARCH_ELEMENT_URI("search.element.uri"), /** Use search parent (same as {@link #SEARCH_URI}). */
+        SEARCH_PARENT("search-parent"), /** Use seach this (same as {@link #SEARCH_ELEMENT_URI}). */
+        SEARCH_THIS("search-this"), /** Use search uri. */
         SEARCH_URI("search.uri"),
         /** Use sitemap entries. */
         /** Use this (same as {@link #ELEMENT_URI}). */
-        THIS("this"),
-        /** Use uri. */
+        THIS("this"), /** Use uri. */
         URI("uri");
 
         /** Property name. */
         private String m_name;
 
         /** Constructor.<p>
-         * @param name the string representation of the constant  
+         * @param name the string representation of the constant
          **/
         private FileUse(String name) {
 
@@ -136,9 +129,9 @@ public class CmsJspTagProperty extends TagSupport {
 
         /**
          * Parses a string into an enumeration element.<p>
-         * 
+         *
          * @param name the name of the element
-         * 
+         *
          * @return the element with the given name or <code>null</code> if not found
          */
         public static FileUse parse(String name) {
@@ -151,9 +144,9 @@ public class CmsJspTagProperty extends TagSupport {
             return null;
         }
 
-        /** 
+        /**
          * Returns the name.<p>
-         * 
+         *
          * @return the name
          */
         public String getName() {
@@ -182,12 +175,12 @@ public class CmsJspTagProperty extends TagSupport {
 
     /**
      * Internal action method.<p>
-     * 
+     *
      * @param action the search action
      * @param req the current request
-     * 
+     *
      * @return String the value of the property or <code>null</code> if not found (and no defaultValue provided)
-     *      
+     *
      * @throws CmsException if something goes wrong
      */
     public static Map<String, String> propertiesTagAction(String action, ServletRequest req) throws CmsException {
@@ -218,7 +211,7 @@ public class CmsJspTagProperty extends TagSupport {
                     break;
                 case ELEMENT_URI:
                 case THIS:
-                    // read properties of this file            
+                    // read properties of this file
                     vfsUri = controller.getCurrentRequest().getElementUri();
                     break;
                 case SEARCH_ELEMENT_URI:
@@ -231,7 +224,7 @@ public class CmsJspTagProperty extends TagSupport {
                     // just to prevent the warning since all cases are handled
             }
         } else {
-            // read properties of the file named in the attribute  
+            // read properties of the file named in the attribute
             vfsUri = CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri());
             search = false;
         }
@@ -246,15 +239,15 @@ public class CmsJspTagProperty extends TagSupport {
 
     /**
      * Internal action method.<p>
-     * 
+     *
      * @param property the property to look up
      * @param action the search action
      * @param defaultValue the default value
      * @param escape if the result html should be escaped or not
      * @param req the current request
-     * 
+     *
      * @return the value of the property or <code>null</code> if not found (and no defaultValue was provided)
-     *      
+     *
      * @throws CmsException if something goes wrong
      */
     public static String propertyTagAction(
@@ -269,7 +262,7 @@ public class CmsJspTagProperty extends TagSupport {
             value = defaultValue;
         }
         if (escape) {
-            // HTML escape the value 
+            // HTML escape the value
             value = CmsEncoder.escapeHtml(value);
         }
         return value;
@@ -294,7 +287,7 @@ public class CmsJspTagProperty extends TagSupport {
 
         ServletRequest req = pageContext.getRequest();
 
-        // This will always be true if the page is called through OpenCms 
+        // This will always be true if the page is called through OpenCms
         if (CmsFlexController.isCmsRequest(req)) {
 
             try {
@@ -317,7 +310,7 @@ public class CmsJspTagProperty extends TagSupport {
 
     /**
      * Returns the default value.<p>
-     * 
+     *
      * @return the default value
      */
     public String getDefault() {
@@ -327,7 +320,7 @@ public class CmsJspTagProperty extends TagSupport {
 
     /**
      * The value of the escape html flag.<p>
-     * 
+     *
      * @return the value of the escape html flag
      */
     public String getEscapeHtml() {
@@ -337,7 +330,7 @@ public class CmsJspTagProperty extends TagSupport {
 
     /**
      * Returns the file name.<p>
-     * 
+     *
      * @return the file name
      */
     public String getFile() {
@@ -347,7 +340,7 @@ public class CmsJspTagProperty extends TagSupport {
 
     /**
      * Returns the property name.<p>
-     * 
+     *
      * @return String the property name
      */
     public String getName() {
@@ -370,9 +363,9 @@ public class CmsJspTagProperty extends TagSupport {
 
     /**
      * Sets the default value.<p>
-     * 
+     *
      * This is used if a selected property is not found.<p>
-     * 
+     *
      * @param def the default value
      */
     public void setDefault(String def) {
@@ -384,7 +377,7 @@ public class CmsJspTagProperty extends TagSupport {
 
     /**
      * Set the escape html flag.<p>
-     * 
+     *
      * @param value should be <code>"true"</code> or <code>"false"</code> (all values other then <code>"true"</code> are
      * considered to be false)
      */
@@ -397,7 +390,7 @@ public class CmsJspTagProperty extends TagSupport {
 
     /**
      * Sets the file name.<p>
-     * 
+     *
      * @param file the file name
      */
     public void setFile(String file) {
@@ -409,7 +402,7 @@ public class CmsJspTagProperty extends TagSupport {
 
     /**
      * Sets the property name.<p>
-     * 
+     *
      * @param name the property name to set
      */
     public void setName(String name) {

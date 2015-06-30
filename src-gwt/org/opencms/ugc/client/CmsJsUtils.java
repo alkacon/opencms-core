@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,11 +44,11 @@ public class CmsJsUtils {
     public static final Random RANDOM = new Random();
 
     /**
-     * Converts a Javascript object to a map from strings to strings, ignoring all properties 
+     * Converts a Javascript object to a map from strings to strings, ignoring all properties
      * of the object whose value is not a string.<p>
-     * 
-     * @param jso the Javascript object to convert 
-     * @return the map containing the string-valued properties of the Javascript object 
+     *
+     * @param jso the Javascript object to convert
+     * @return the map containing the string-valued properties of the Javascript object
      */
     public static Map<String, String> convertJsObjectToMap(JavaScriptObject jso) {
 
@@ -65,11 +65,11 @@ public class CmsJsUtils {
     }
 
     /**
-     * Converts a map whose keys and values are strings to a Javascript object with the keys as attributes and the 
+     * Converts a map whose keys and values are strings to a Javascript object with the keys as attributes and the
      * corresponding values as the attribute values.<p>
-     * 
-     * @param stringMap the map to convert 
-     * @return the Javascript object with the attributes defined by the map 
+     *
+     * @param stringMap the map to convert
+     * @return the Javascript object with the attributes defined by the map
      */
     public static JavaScriptObject convertMapToJsObject(Map<String, String> stringMap) {
 
@@ -87,8 +87,8 @@ public class CmsJsUtils {
 
     /**
      * Generates a random id.<p>
-     * 
-     * @return the random id 
+     *
+     * @return the random id
      */
     public static String generateRandomId() {
 

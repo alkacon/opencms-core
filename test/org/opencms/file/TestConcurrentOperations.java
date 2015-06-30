@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,7 +55,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestConcurrentOperations(String arg0) {
@@ -65,7 +65,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -100,11 +100,11 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
 
     /**
      * Concurrent creation test method.<p>
-     * 
+     *
      * @param cms the OpenCms user context to use
      * @param count the count for this test
      * @param value used to pass a counter value between the councurrent tests
-     * 
+     *
      * @throws Exception in case the resource could not be created (which is expected)
      */
     public void doConcurrentCreationOperation(CmsObject cms, Integer count, Integer[] value) throws Exception {
@@ -114,19 +114,17 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
         String name = "/testfolder/sub1/sub2/sub3/subtestfolder" + val;
         CmsResource res = cms.createResource(name, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
         value[0] = new Integer(++val);
-        System.out.println("++++++++++++++++++ Finished creation of folder "
-            + res.getRootPath()
-            + " - count: "
-            + count.intValue());
+        System.out.println(
+            "++++++++++++++++++ Finished creation of folder " + res.getRootPath() + " - count: " + count.intValue());
     }
 
     /**
      * Concurrent publish project test method.<p>
-     * 
+     *
      * @param cms the OpenCms user context to use
      * @param count the count for this test
      * @param value used to pass a counter value between the councurrent tests
-     * 
+     *
      * @throws Exception if something goes wrong, unexpected
      */
     public void doConcurrentPublishProjectOperation(CmsObject cms, Integer count, Integer[] value) throws Exception {
@@ -140,11 +138,11 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
 
     /**
      * Concurrent publish resource test method.<p>
-     * 
+     *
      * @param cms the OpenCms user context to use
      * @param count the count for this test
      * @param value used to pass a counter value between the councurrent tests
-     * 
+     *
      * @throws Exception if something goes wrong, unexpected
      */
     public void doConcurrentPublishResourceOperation(CmsObject cms, Integer count, Integer[] value) throws Exception {
@@ -160,11 +158,11 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
 
     /**
      * Concurrent publish resource test method.<p>
-     * 
+     *
      * @param cms the OpenCms user context to use
      * @param count the count for this test
      * @param value used to pass a counter value between the councurrent tests
-     * 
+     *
      * @throws Exception if something goes wrong, unexpected
      */
     public void doConcurrentPublishResourceWithRelatedOperation(CmsObject cms, Integer count, Integer[] value)
@@ -198,7 +196,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
 
     /**
      * Tests concurrent creation a resource with the same name.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testConcurrentCreationIssue() throws Exception {
@@ -298,7 +296,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
 
     /**
      * Test concurrently publish same project.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testConcurrentPublishProject() throws Throwable {
@@ -353,7 +351,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
 
     /**
      * Test concurrently publish same resource.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testConcurrentPublishResource() throws Throwable {
@@ -408,7 +406,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
 
     /**
      * Test concurrently publish same resource with related resources, this does the same than the GUI.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testConcurrentPublishResourceWithRelated() throws Throwable {

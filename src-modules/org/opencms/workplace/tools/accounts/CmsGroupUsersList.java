@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,8 +59,8 @@ import com.google.common.collect.Lists;
 
 /**
  * User groups view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsGroupUsersList extends A_CmsGroupUsersList {
 
@@ -84,7 +84,7 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsGroupUsersList(CmsJspActionElement jsp) {
@@ -94,9 +94,9 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
-     * @param lazy the lazy flag 
+     * @param lazy the lazy flag
      */
     public CmsGroupUsersList(CmsJspActionElement jsp, boolean lazy) {
 
@@ -105,7 +105,7 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -117,11 +117,11 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
-     * @param lazy the lazy flag 
+     * @param lazy the lazy flag
      */
     public CmsGroupUsersList(PageContext context, HttpServletRequest req, HttpServletResponse res, boolean lazy) {
 
@@ -142,7 +142,7 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
      * Protected constructor.<p>
      * @param jsp an initialized JSP action element
      * @param listId the id of the specialized list
-     * @param lazy the lazy flag 
+     * @param lazy the lazy flag
      */
     protected CmsGroupUsersList(CmsJspActionElement jsp, String listId, boolean lazy) {
 
@@ -217,10 +217,10 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
 
     /**
      * Gets the search parameters.<p>
-     *  
-     * @return the search parameters 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the search parameters
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsUserSearchParameters getSearchParams() throws CmsException {
 
@@ -241,10 +241,10 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
 
     /**
      * Gets the sort key for a column.<p>
-     * 
-     * @param column the column 
-     * 
-     * @return the sort key 
+     *
+     * @param column the column
+     *
+     * @return the sort key
      */
     protected SortKey getSortKey(String column) {
 
@@ -329,7 +329,8 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
         CmsListMultiAction removeMultiAction = new CmsListMultiAction(LIST_MACTION_REMOVE);
         removeMultiAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_REMOVE_NAME_0));
         removeMultiAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_REMOVE_HELP_0));
-        removeMultiAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_REMOVE_CONF_0));
+        removeMultiAction.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_USERS_LIST_MACTION_REMOVE_CONF_0));
         removeMultiAction.setIconPath(ICON_MULTI_MINUS);
         metadata.addMultiAction(removeMultiAction);
     }

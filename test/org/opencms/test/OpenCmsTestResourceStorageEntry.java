@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ import java.util.List;
 
 /**
  * A single entry of the OpenCmsTestResourceStorage.<p>
- * 
+ *
  */
 public class OpenCmsTestResourceStorageEntry {
 
@@ -127,11 +127,11 @@ public class OpenCmsTestResourceStorageEntry {
 
     /**
      * Creates a new OpenCmsTestResourceStorageEntry.<p>
-     * 
+     *
      * @param cms current CmsObject
      * @param resourceName the complete name of the resource
      * @param res the CmsResource to store.
-     * @throws CmsException if something goes wrong 
+     * @throws CmsException if something goes wrong
      */
     public OpenCmsTestResourceStorageEntry(CmsObject cms, String resourceName, CmsResource res)
     throws CmsException {
@@ -355,7 +355,7 @@ public class OpenCmsTestResourceStorageEntry {
 
     /**
      * Gets the number of references to the resource.<p>
-     * 
+     *
      * @return the number of links
      */
     public int getSiblingCount() {
@@ -377,7 +377,7 @@ public class OpenCmsTestResourceStorageEntry {
 
     /**
      * Returns the id of the structure record of this resource.<p>
-     * 
+     *
      * @return the id of the structure record of this resource
      */
     public CmsUUID getStructureId() {
@@ -397,7 +397,7 @@ public class OpenCmsTestResourceStorageEntry {
 
     /**
      * Returns the user id of the user who created this resource.<p>
-     * 
+     *
      * @return the user id
      */
     public CmsUUID getUserCreated() {
@@ -417,7 +417,7 @@ public class OpenCmsTestResourceStorageEntry {
 
     /**
      * Returns true if this resource was touched.<p>
-     * 
+     *
      * @return boolean true if this resource was touched
      */
     public boolean isTouched() {

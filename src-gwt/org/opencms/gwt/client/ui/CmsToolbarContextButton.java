@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The context tool-bar menu button.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandler> {
@@ -82,7 +82,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param handler the container-page handler
      */
     public CmsToolbarContextButton(final I_CmsToolbarHandler handler) {
@@ -116,7 +116,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
 
     /**
      * Unregister the resize handler.<p>
-     * 
+     *
      * @see org.opencms.gwt.client.ui.I_CmsToolbarButton#onToolbarDeactivate()
      */
     public void onToolbarDeactivate() {
@@ -140,9 +140,9 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
 
     }
 
-    /** 
+    /**
      * Sets the menu context.<p>
-     * 
+     *
      * @param menuContext the new menu context
      */
     public void setMenuContext(AdeContext menuContext) {
@@ -152,8 +152,8 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
 
     /**
      * Creates the menu and adds it to the panel.<p>
-     * 
-     * @param menuEntries the menu entries 
+     *
+     * @param menuEntries the menu entries
      */
     public void showMenu(List<I_CmsContextMenuEntry> menuEntries) {
 
@@ -162,7 +162,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
             m_menu = new CmsContextMenu(menuEntries, true, getPopup());
             // add the resize handler for the menu
             m_resizeRegistration = Window.addResizeHandler(m_menu);
-            // set the menu as widget for the panel 
+            // set the menu as widget for the panel
             m_menuPanel.setWidget(0, 0, m_menu);
             if (m_menuCloseHandler != null) {
                 m_menuCloseHandler.removeHandler();

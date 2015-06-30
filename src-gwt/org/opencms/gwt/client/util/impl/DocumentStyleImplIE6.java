@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,9 +31,9 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Helper class to retrieve the computed style of an element.<p>
- * 
+ *
  * This implementation is used for MSIE 7 and 8 browsers.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class DocumentStyleImplIE6 extends DocumentStyleImplIE9 {
@@ -43,6 +43,6 @@ public class DocumentStyleImplIE6 extends DocumentStyleImplIE9 {
      */
     @Override
     public native void clearOpacity(Element element) /*-{
-        element.style.removeAttribute("filter");
-    }-*/;
+                                                     element.style.removeAttribute("filter");
+                                                     }-*/;
 }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,7 +67,7 @@ public class CmsNotificationMessage extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param mode the notification mode
      * @param type the message type
      * @param message the message content
@@ -87,7 +87,7 @@ public class CmsNotificationMessage extends Composite {
 
     /**
      * Returns if the given message is of a blocking mode.<p>
-     * 
+     *
      * @return <code>true</code> if the given message is of a blocking mode
      */
     public boolean isBlockingMode() {
@@ -97,7 +97,7 @@ public class CmsNotificationMessage extends Composite {
 
     /**
      * Returns if the given message is of a busy mode.<p>
-     * 
+     *
      * @return <code>true</code> if the given message is of a busy mode
      */
     public boolean isBusyMode() {
@@ -107,7 +107,7 @@ public class CmsNotificationMessage extends Composite {
 
     /**
      * Handles the close button click event.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_closeButton")
@@ -118,9 +118,9 @@ public class CmsNotificationMessage extends Composite {
 
     /**
      * Returns the class name for the given type.<p>
-     * 
+     *
      * @param type the type
-     * 
+     *
      * @return the class name
      */
     private String classForType(Type type) {

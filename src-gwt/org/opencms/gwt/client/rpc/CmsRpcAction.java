@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,9 +40,9 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
 
 /**
  * Consistently manages RPCs errors and 'loading' state.<p>
- * 
+ *
  * @param <T> The type of the expected return value
- * 
+ *
  * @since 8.0
  */
 public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
@@ -61,7 +61,7 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
 
     /**
      * Executes the current RPC call.<p>
-     * 
+     *
      * Initializes client-server communication and will
      */
     public abstract void execute();
@@ -70,7 +70,7 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
      * Executes a synchronized request.<p>
      *
      * @return the RPC result
-     * 
+     *
      * @see #execute()
      */
     public T executeSync() {
@@ -81,7 +81,7 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
 
     /**
      * Handle errors.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.rpc.AsyncCallback#onFailure(java.lang.Throwable)
      */
     public void onFailure(Throwable t) {
@@ -90,7 +90,7 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
             // a status code 0 indicates the client aborted the request, most likely when leaving the page, this should be ignored
             return;
         } else if ((t instanceof StatusCodeException) && (((StatusCodeException)t).getStatusCode() == 500)) {
-            // a server error 500 most likely indicates an expired session and there for insufficient user rights to access any GWT service 
+            // a server error 500 most likely indicates an expired session and there for insufficient user rights to access any GWT service
             CmsErrorDialog dialog = new CmsErrorDialog(Messages.get().key(Messages.GUI_SESSION_EXPIRED_0), null);
             dialog.center();
         } else {
@@ -134,11 +134,11 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
 
     /**
      * Starts the timer for showing the 'loading' state.<p>
-     * 
+     *
      * Note: Has to be called manually before calling the RPC service.<p>
-     * 
+     *
      * @param delay the delay in milliseconds
-     * @param blocking shows an blocking overlay if <code>true</code> 
+     * @param blocking shows an blocking overlay if <code>true</code>
      */
     public void start(int delay, final boolean blocking) {
 
@@ -162,9 +162,9 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
 
     /**
      * Stops the timer.<p>
-     * 
+     *
      * Note: Has to be called manually on success.<p>
-     * 
+     *
      * @param displayDone <code>true</code> if you want to tell the user that the operation was successful
      */
     public void stop(boolean displayDone) {
@@ -184,19 +184,19 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
 
     /**
      * Handles the result when received from server.<p>
-     * 
+     *
      * @param result the result from server
-     * 
+     *
      * @see AsyncCallback#onSuccess(Object)
      */
     protected abstract void onResponse(T result);
 
     /**
      * Shows the 'loading message'.<p>
-     * 
+     *
      * Overwrite to customize the message.<p>
-     * 
-     * @param blocking shows an blocking overlay if <code>true</code> 
+     *
+     * @param blocking shows an blocking overlay if <code>true</code>
      */
     protected void show(boolean blocking) {
 

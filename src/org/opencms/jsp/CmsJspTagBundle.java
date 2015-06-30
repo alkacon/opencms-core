@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,11 +47,11 @@ import org.apache.taglibs.standard.tag.el.fmt.BundleTag;
 
 /**
  * Provides tag access to OpenCms resource bundles.<p>
- * 
+ *
  * This replaces the <code>&lt;fmt:bundle basename=""&gt;</code> tag which is not capable of using OpenCms resource bundles.<p>
- * 
+ *
  * You can use <code>&lt;fmt:message key=""&gt;</code> tags inside the <code>&lt;cms:bundle basename=""&gt;</code> tag as usual.
- * 
+ *
  * @since 8.5.2
  */
 public class CmsJspTagBundle extends BundleTag {
@@ -79,7 +79,7 @@ public class CmsJspTagBundle extends BundleTag {
      * Returns the initialized localization context.<p>
      * @param pc the current page context
      * @param basename the bas name of the bundle
-     * 
+     *
      * @return the initialized localization context
      */
     public static LocalizationContext getLocalizationContext(PageContext pc, String basename) {
@@ -201,7 +201,7 @@ public class CmsJspTagBundle extends BundleTag {
 
     /**
      * Internal action method.<p>
-     * 
+     *
      * @return EVAL_BODY_BUFFERED
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
@@ -214,7 +214,7 @@ public class CmsJspTagBundle extends BundleTag {
 
     /**
      * Returns the basename attribute value.<p>
-     * 
+     *
      * @return the basename attribute value
      */
     public String getBasename() {
@@ -224,7 +224,7 @@ public class CmsJspTagBundle extends BundleTag {
 
     /**
      * Returns the localization context to use.<p>
-     * 
+     *
      * @see org.apache.taglibs.standard.tag.common.fmt.BundleSupport#getLocalizationContext()
      */
     @Override
@@ -236,9 +236,9 @@ public class CmsJspTagBundle extends BundleTag {
 
     /**
      * Sets the basename attribute value.<p>
-     * 
+     *
      * @param bn the basename attribute value
-     * 
+     *
      * @see org.apache.taglibs.standard.tag.el.fmt.BundleTag#setBasename(java.lang.String)
      */
     @Override

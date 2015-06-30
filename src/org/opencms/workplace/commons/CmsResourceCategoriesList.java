@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Resource categories view.<p>
- * 
+ *
  * @since 6.9.2
  */
 public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
@@ -64,7 +64,7 @@ public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsResourceCategoriesList(CmsJspActionElement jsp) {
@@ -74,7 +74,7 @@ public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -167,8 +167,8 @@ public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
         stateAction1.setName(Messages.get().container(Messages.GUI_CATEGORIES_LIST_DEFACTION_REMOVE_NAME_0));
         stateAction1.setHelpText(Messages.get().container(Messages.GUI_CATEGORIES_LIST_DEFACTION_REMOVE_HELP_0));
         stateAction1.setIconPath(ICON_MINUS);
-        stateAction1.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_CATEGORIES_LIST_DEFACTION_REMOVE_CONF_MORE_0));
+        stateAction1.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_CATEGORIES_LIST_DEFACTION_REMOVE_CONF_MORE_0));
         stateCol.addDirectAction(stateAction1);
         // add remove action without confirmation message
         CmsListDirectAction stateAction2 = new CmsListDirectAction(LIST_ACTION_REMOVE2) {

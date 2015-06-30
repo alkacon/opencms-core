@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,14 +47,14 @@ public class CmsRewriteAliasValidationReply implements IsSerializable {
      */
     public CmsRewriteAliasValidationReply() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
      * Adds a validation error to this object.<p>
-     * 
-     * @param id the id of a rewrite alias for which the validation failed 
-     * @param error the validation error message 
+     *
+     * @param id the id of a rewrite alias for which the validation failed
+     * @param error the validation error message
      */
     public void addError(CmsUUID id, String error) {
 
@@ -63,8 +63,8 @@ public class CmsRewriteAliasValidationReply implements IsSerializable {
 
     /**
      * Gets the map of error messages by rewrite alias id.<p>
-     * 
-     * @return the map of error messages 
+     *
+     * @return the map of error messages
      */
     public Map<CmsUUID, String> getErrors() {
 

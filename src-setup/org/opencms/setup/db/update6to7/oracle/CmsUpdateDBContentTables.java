@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import java.util.Map;
 
 /**
  * Oracle implementation of the generic update of the contents tables.<p>
- * 
+ *
  * @since 7.0.0
  */
 public class CmsUpdateDBContentTables extends org.opencms.setup.db.update6to7.CmsUpdateDBContentTables {
@@ -59,7 +59,7 @@ public class CmsUpdateDBContentTables extends org.opencms.setup.db.update6to7.Cm
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the sql queries properties file could not be read
      */
     public CmsUpdateDBContentTables()

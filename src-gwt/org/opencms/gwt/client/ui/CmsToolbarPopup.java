@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,10 +63,10 @@ public class CmsToolbarPopup extends CmsPopup {
 
     /**
      * Creates a new toolbar popup.<p>
-     * 
-     * @param button the toolbar button to which this popup belongs 
-     * @param toolbarMode the toolbar mode flag 
-     * @param baseElement the base element of the toolbar button 
+     *
+     * @param button the toolbar button to which this popup belongs
+     * @param toolbarMode the toolbar mode flag
+     * @param baseElement the base element of the toolbar button
      */
     public CmsToolbarPopup(ButtonBase button, boolean toolbarMode, Element baseElement) {
 
@@ -82,7 +82,7 @@ public class CmsToolbarPopup extends CmsPopup {
 
     /**
      * Calculates the popup height to use.<p>
-     * 
+     *
      * @return the height
      */
     public static int getAvailableHeight() {
@@ -96,7 +96,7 @@ public class CmsToolbarPopup extends CmsPopup {
 
     /**
      * Calculates the popup width to use.<p>
-     * 
+     *
      * @return the width
      */
     public static int getAvailableWidth() {
@@ -110,12 +110,12 @@ public class CmsToolbarPopup extends CmsPopup {
 
     /**
      * Positions the menu popup the button.<p>
-     * 
-     * @param popup the popup to position 
+     *
+     * @param popup the popup to position
      * @param button the toolbar button
      * @param toolbarWidth the width of the toolbar
      * @param isToolbarMode a flag indicating whether the button is in toolbar mode
-     * @param arrow the arrow shaped connector element  
+     * @param arrow the arrow shaped connector element
      */
     protected static void positionPopup(
         CmsPopup popup,
@@ -156,12 +156,12 @@ public class CmsToolbarPopup extends CmsPopup {
             contentLeft = maxRight - contentWidth;
         }
 
-        // limit the right position if the popup is right outside the window 
+        // limit the right position if the popup is right outside the window
         if ((contentLeft + contentWidth + spaceAssurance) > windowWidth) {
             contentLeft = windowWidth - contentWidth - spaceAssurance;
         }
 
-        // limit the left position if the popup is left outside the window 
+        // limit the left position if the popup is left outside the window
         if (contentLeft < spaceAssurance) {
             contentLeft = spaceAssurance;
         }
@@ -183,7 +183,8 @@ public class CmsToolbarPopup extends CmsPopup {
         int arrowTop = -(arrowHeight - 2);
         String arrowClass = I_CmsLayoutBundle.INSTANCE.dialogCss().menuArrowTop();
 
-        int contentTop = (((buttonPosition.getTop() + buttonPosition.getHeight()) - Window.getScrollTop()) + arrowHeight) - 2;
+        int contentTop = (((buttonPosition.getTop() + buttonPosition.getHeight()) - Window.getScrollTop())
+            + arrowHeight) - 2;
         if (!isToolbarMode) {
             contentTop = (buttonPosition.getTop() + buttonPosition.getHeight() + arrowHeight) - 2;
             int contentHeight = popup.getOffsetHeight();
@@ -192,8 +193,8 @@ public class CmsToolbarPopup extends CmsPopup {
             if (((contentHeight + spaceAssurance) < windowHeight)
                 && ((buttonPosition.getTop() - Window.getScrollTop()) > contentHeight)
                 && (((contentHeight + spaceAssurance + contentTop) - Window.getScrollTop()) > windowHeight)) {
-                // content fits into the window height, 
-                // there is enough space above the button 
+                // content fits into the window height,
+                // there is enough space above the button
                 // and there is to little space below the button
                 // so show above
                 contentTop = ((buttonPosition.getTop() - arrowHeight) + 2) - contentHeight;
@@ -230,7 +231,7 @@ public class CmsToolbarPopup extends CmsPopup {
 
         m_isToolbarMode = isToolbarMode;
         if (m_isToolbarMode) {
-            // important, so a click on the button won't trigger the auto-close 
+            // important, so a click on the button won't trigger the auto-close
             addAutoHidePartner(m_baseElement);
         } else {
             removeAutoHidePartner(m_baseElement);
@@ -239,7 +240,7 @@ public class CmsToolbarPopup extends CmsPopup {
 
     /**
      * Returns the toolbar width.<p>
-     * 
+     *
      * @return the toolbar width
      */
     private int getToolbarWidth() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -74,13 +74,13 @@ import org.apache.commons.logging.Log;
 /**
  * Provides the general helper methods to generate the content of a gallery dialog used in the XML content editors,
  * WYSIWYG editors and context menu. It <p>
- * 
+ *
  * It is also used for AJAX requests to dynamically switch galleries or categories and get additional information
  * for the currently active item of the dialog.<p>
- * 
+ *
  * Extend this class for every gallery type (e.g. image gallery or download gallery) to build.<p>
- * 
- * @since 7.5.0 
+ *
+ * @since 7.5.0
  */
 public abstract class A_CmsAjaxGallery extends CmsDialog {
 
@@ -190,7 +190,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public A_CmsAjaxGallery(CmsJspActionElement jsp) {
@@ -203,7 +203,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -215,10 +215,10 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Creates a new gallery instance of the given gallery type name.<p>
-     * 
+     *
      * @param galleryTypeName the gallery type name to create the instance for
      * @param jsp an initialized JSP action element
-     * 
+     *
      * @return a new gallery instance of the given gallery type name
      */
     public static A_CmsAjaxGallery createInstance(String galleryTypeName, CmsJspActionElement jsp) {
@@ -226,8 +226,9 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
         if (jsp != null) {
             // must have a valid JSP in order to read from the user session
             HttpSession session = jsp.getRequest().getSession();
-            // lookup the workplace settings 
-            CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+            // lookup the workplace settings
+            CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(
+                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
             if (settings != null) {
                 if (CmsStringUtil.isEmpty(galleryTypeName)) {
                     // look up the gallery type from the settings
@@ -271,7 +272,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
             // return the result
             return galleryInstance;
         } catch (Exception e) {
-            // requested type is not configured          
+            // requested type is not configured
             CmsMessageContainer message;
             if (jsp == null) {
                 message = Messages.get().container(
@@ -292,7 +293,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Returns a list of galleries which have the required gallery type id.<p>
-     * 
+     *
      * @param galleryTypeId type id of the gallery
      * @param cms the initialized CmsObject for the current user
      * @return a list of galleries
@@ -333,7 +334,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Initializes the gallery dialog before redirecting.<p>
-     * 
+     *
      * @param wp the workplace object
      */
     public static void initGallery(CmsDialog wp) {
@@ -390,7 +391,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Returns a list of galleries which have the required gallery type id.<p>
-     * 
+     *
      * @return a list of galleries
      */
     public List<CmsResource> getGalleries() {
@@ -400,7 +401,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Returns a list of gallery items (resources) for the currently selected gallery and resource type id.<p>
-     * 
+     *
      * @return a list of gallery items (resources)
      */
     public List<CmsResource> getGalleryItems() {
@@ -426,7 +427,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                     // error reading resources
                     LOG.error(e.getLocalizedMessage(), e);
                 } catch (NullPointerException e) {
-                    // ignore this exception    
+                    // ignore this exception
                 }
             }
         }
@@ -435,30 +436,30 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Returns the type id of the gallery items that should be listed.<p>
-     * 
+     *
      * In case of downloadgallery use '-1' to list all resources excluding folders.<p>
-     * 
+     *
      * @return the type id of the gallery items that should be listed
      */
     public abstract int getGalleryItemsTypeId();
 
     /**
      * Returns the type id of this gallery instance.<p>
-     * 
+     *
      * @return the type id of this gallery instance
      */
     public abstract int getGalleryTypeId();
 
     /**
      * Returns the type name of this gallery instance.<p>
-     * 
+     *
      * @return the type name of this gallery instance
      */
     public abstract String getGalleryTypeName();
 
     /**
      * Returns the (optional) parameters of this gallery instance.<p>
-     * 
+     *
      * @return the (optional) parameters of this gallery instance
      */
     public String getGalleryTypeParams() {
@@ -468,7 +469,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Returns the current mode of the dialog.<p>
-     * 
+     *
      * This is necessary to distinguish between widget mode, view mode and editor mode.<p>
      *
      * @return the current mode of the dialog
@@ -506,7 +507,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Returns the list mode for getting the items, either {@link #LISTMODE_CATEGORY} or {@link #LISTMODE_GALLERY}.<p>
-     * 
+     *
      * @return the list mode for getting the item
      */
     public String getParamListMode() {
@@ -526,7 +527,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Returns the extended folder resource type this gallery is based on.<p>
-     * 
+     *
      * @return the extended folder resource type this gallery is based on
      */
     public CmsResourceTypeFolderExtended getResourceType() {
@@ -536,7 +537,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Initialization method that is called after the gallery instance has been created.<p>
-     * 
+     *
      * It can be overwritten in the inherited class, e.g. {@link org.opencms.workplace.galleries.CmsAjaxImageGallery#init()}.<p>
      */
     public void init() {
@@ -546,7 +547,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Returns if the dialog mode is the "editor" mode.<p>
-     * 
+     *
      * @return <code>true</code> if the dialog mode is the "editor" mode, otherwise <code>false</code>
      */
     public boolean isModeEditor() {
@@ -556,7 +557,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Returns if the dialog mode is the "view" mode.<p>
-     * 
+     *
      * @return <code>true</code> if the dialog mode is the "view" mode, otherwise <code>false</code>
      */
     public boolean isModeView() {
@@ -566,7 +567,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Returns if the dialog mode is the "widget" mode.<p>
-     * 
+     *
      * @return <code>true</code> if the dialog mode is the "editor" mode, otherwise <code>false</code>
      */
     public boolean isModeWidget() {
@@ -576,7 +577,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Sets the current mode of the dialog.<p>
-     * 
+     *
      * This is necessary to distinguish between widget mode and editor mode.<p>
      *
      * @param dialogMode the current mode of the dialog
@@ -608,7 +609,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Sets the list mode for getting the items, either {@link #LISTMODE_CATEGORY} or {@link #LISTMODE_GALLERY}.<p>
-     * 
+     *
      * @param paramListMode the list mode for getting the items
      */
     public void setParamListMode(String paramListMode) {
@@ -628,7 +629,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Sets the extended folder resource type this gallery is based on.<p>
-     * 
+     *
      * @param type the extended folder resource type this gallery is based on
      */
     public void setResourceType(CmsResourceTypeFolderExtended type) {
@@ -638,7 +639,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Builds the Javascript to set the currently active item object.<p>
-     * 
+     *
      * @param itemUrl the URL of the currently selected item
      */
     protected void buildJsonActiveItem(String itemUrl) {
@@ -684,7 +685,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
             // error reading categories
         }
 
-        // the next lines sort the categories according to their path 
+        // the next lines sort the categories according to their path
         Map<String, CmsCategory> sorted = new TreeMap<String, CmsCategory>();
 
         Iterator<CmsCategory> i = foundCategories.iterator();
@@ -733,7 +734,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Creates a JSON object with the information found on the given gallery URL.<p>
-     * 
+     *
      * @param galleryUrl the given gallery URL
      */
     protected void buildJsonGalleryItem(String galleryUrl) {
@@ -746,8 +747,10 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                     CmsResource res = getCms().readResource(galleryUrl);
                     String path = getCms().getSitePath(res);
                     // read the gallery title
-                    String title = getCms().readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
-                        "");
+                    String title = getCms().readPropertyObject(
+                        res,
+                        CmsPropertyDefinition.PROPERTY_TITLE,
+                        false).getValue("");
                     try {
                         // 1: gallery title
                         jsonObj.put("title", title);
@@ -786,7 +789,9 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
         // check the value of last Used, if gallery is opened for the first time
         if (CmsStringUtil.isEmpty(lastUsed)) {
             // start gallery settings for this gallery type for the current user
-            String startGallerySetting = getSettings().getUserSettings().getStartGallery(getGalleryTypeName(), getCms());
+            String startGallerySetting = getSettings().getUserSettings().getStartGallery(
+                getGalleryTypeName(),
+                getCms());
             if (startGallerySetting != null) {
                 // handle the case, "global settings" are selected
                 if (startGallerySetting.equals(CmsPreferences.INPUT_DEFAULT)) {
@@ -853,7 +858,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Fills the JSON object with the information used for all resource types.<p>
-     * 
+     *
      * <ul>
      * <li><code>sitepath</code>: site path to the resource.</li>
      * <li><code>linkpath</code>: substituted url of the resource.</li>
@@ -868,7 +873,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
      * <li><code>directpublish</code>: flag to indicate if the user has write direct publish permission for given resource.</li>
      * <li><code>description</code>: description property of the resource.</li>
      * </ul>
-     * 
+     *
      * @param jsonObj containing information used by all possible resource
      * @param res the resource to create the object from
      * @param sitePath site path to the object
@@ -883,14 +888,12 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
             // 3: file item title
             jsonObj.put(
                 "title",
-                CmsStringUtil.escapeJavaScript(getJsp().property(
-                    CmsPropertyDefinition.PROPERTY_TITLE,
-                    sitePath,
-                    res.getName())));
+                CmsStringUtil.escapeJavaScript(
+                    getJsp().property(CmsPropertyDefinition.PROPERTY_TITLE, sitePath, res.getName())));
             // 4: file size (in kb)
-            jsonObj.put("size", (res.getLength() / 1024)
-                + " "
-                + key(org.opencms.workplace.galleries.Messages.GUI_LABEL_KILOBYTES_0));
+            jsonObj.put(
+                "size",
+                (res.getLength() / 1024) + " " + key(org.opencms.workplace.galleries.Messages.GUI_LABEL_KILOBYTES_0));
             // 5: file creation date (formatted)
             jsonObj.put("datecreated", getMessages().getDateTime(res.getDateCreated()));
             // 6: file modification date (formatted)
@@ -966,9 +969,9 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Returns a JSON object containing information of the given resource for usage in the gallery.<p>
-     * 
-     * The content of the JSON object consists of a common and a specific part of the given resource.<p> 
-     * 
+     *
+     * The content of the JSON object consists of a common and a specific part of the given resource.<p>
+     *
      * @param res the resource to create the object from
      * @return the JSON object containing information from the given resource
      */
@@ -987,7 +990,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Fills the JSON object with the specific information used for this resource type.<p>
-     *   
+     *
      * @param jsonObj containing information used by all possible resource
      * @param res the resource to create the object from
      * @param sitePath site path to the object
@@ -996,7 +999,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Builds the JSON code to create items for the folder.<p>
-     * 
+     *
      * @param resourceitems the file resource to build the displayed items
      * @param parentFolder the parent folder of the collected files (for a gallery)
      */
@@ -1012,13 +1015,16 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
         if (CmsStringUtil.isNotEmpty(parentFolder)) {
             // check if there are changes in the currently selected gallery and the user has direct edit permissions
             try {
-                if ((OpenCms.getPublishManager().getPublishList(getCms(), getCms().readResource(parentFolder), false).size() > 0)) {
+                if ((OpenCms.getPublishManager().getPublishList(
+                    getCms(),
+                    getCms().readResource(parentFolder),
+                    false).size() > 0)) {
                     isPublishEnabled = true;
                 }
             } catch (CmsException e) {
                 // ignore, gallery can not be published
             }
-            // check if the user has direst publish permissions, 
+            // check if the user has direst publish permissions,
             // used to enable the gallerypublish button, if user has enough permissions
             try {
                 if (getCms().hasPermissions(
@@ -1029,7 +1035,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                     hasDirectPublish = true;
                 }
             } catch (CmsException e) {
-                // ignore, no publish permissions for gallery  
+                // ignore, no publish permissions for gallery
             }
             try {
                 // check if the user has write permissions,
@@ -1075,9 +1081,9 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     /**
      * Changes the content of the CmsResource.<p>
      * This function should be overwritten in {@link org.opencms.workplace.galleries.CmsAjaxLinkGallery}.<p>
-     * 
+     *
      * @param itemUrl the item URL
-     * 
+     *
      */
     protected void changeItemLinkUrl(String itemUrl) {
 
@@ -1087,7 +1093,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Changes the title property value of the given item.<p>
-     * 
+     *
      * @param itemUrl the item URL on which the title is changed
      */
     protected void changeItemTitle(String itemUrl) {
@@ -1148,7 +1154,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
             } catch (NullPointerException e) {
-                // ignore this exception    
+                // ignore this exception
                 if (LOG.isErrorEnabled()) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
@@ -1183,7 +1189,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /**
      * Changes the value of the property title for the specified resource.<p>
-     *  
+     *
      * @param res the resource to change the property value
      */
     protected void writeTitleProperty(CmsResource res) {

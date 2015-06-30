@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,14 +54,14 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Generates a CSV file for a given list.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUsersCsvDownloadDialog(CmsJspActionElement jsp) {
@@ -71,7 +71,7 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -101,7 +101,7 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Generates the CSV file for the given users.<p>
-     * 
+     *
      * @return CSV file
      */
     public String generateCsv() {
@@ -155,9 +155,8 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
                 buffer.append(separator);
                 String curValue = itValues.next();
                 try {
-                    Method method = CmsUser.class.getMethod("get"
-                        + curValue.substring(0, 1).toUpperCase()
-                        + curValue.substring(1));
+                    Method method = CmsUser.class.getMethod(
+                        "get" + curValue.substring(0, 1).toUpperCase() + curValue.substring(1));
                     String curOutput = (String)method.invoke(exportUser);
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) || curOutput.equals("null")) {
                         curOutput = (String)exportUser.getAdditionalInfo(curValue);
@@ -197,9 +196,9 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -218,8 +217,10 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
             result.append("function download(){\n");
             result.append("\twindow.open(\"").append(
                 getJsp().link(
-                    CmsRequestUtil.appendParameter(getDownloadPath(), A_CmsOrgUnitDialog.PARAM_OUFQN, getParamOufqn()))).append(
-                "\", \"usecvs\");\n");
+                    CmsRequestUtil.appendParameter(
+                        getDownloadPath(),
+                        A_CmsOrgUnitDialog.PARAM_OUFQN,
+                        getParamOufqn()))).append("\", \"usecvs\");\n");
             result.append("}\n");
             result.append("window.setTimeout(\"download()\",500);\n");
             result.append("</script>\n");
@@ -246,17 +247,18 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Returns the export options data.<p>
-     * 
+     *
      * @return the export options data
      */
     protected Map<String, List<String>> getData() {
 
-        return (Map<String, List<String>>)((Map<String, Object>)getSettings().getDialogObject()).get(CmsUserDataExportDialog.class.getName());
+        return (Map<String, List<String>>)((Map<String, Object>)getSettings().getDialogObject()).get(
+            CmsUserDataExportDialog.class.getName());
     }
 
     /**
      * Returns the download path.<p>
-     * 
+     *
      * @return the download path
      */
     protected String getDownloadPath() {
@@ -266,11 +268,11 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Returns a map with the users to export added.<p>
-     * 
+     *
      * @param exportUsers the map to add the users
-     * 
+     *
      * @return a map with the users to export added
-     * 
+     *
      * @throws CmsException if getting users failed
      */
     protected Map<CmsUUID, CmsUser> getExportAllUsers(Map<CmsUUID, CmsUser> exportUsers) throws CmsException {
@@ -290,12 +292,12 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Returns a map with the users to export added.<p>
-     * 
-     * @param groups the selected groups 
+     *
+     * @param groups the selected groups
      * @param exportUsers the map to add the users
-     * 
+     *
      * @return a map with the users to export added
-     * 
+     *
      * @throws CmsException if getting groups or users of group failed
      */
     protected Map<CmsUUID, CmsUser> getExportUsersFromGroups(List<String> groups, Map<CmsUUID, CmsUser> exportUsers)
@@ -319,12 +321,12 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Returns a map with the users to export added.<p>
-     * 
+     *
      * @param roles the selected roles
      * @param exportUsers the map to add the users
-     * 
+     *
      * @return a map with the users to export added
-     * 
+     *
      * @throws CmsException if getting roles or users of role failed
      */
     protected Map<CmsUUID, CmsUser> getExportUsersFromRoles(List<String> roles, Map<CmsUUID, CmsUser> exportUsers)
@@ -353,9 +355,9 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Checks if the user can be exported.<p>
-     * 
+     *
      * @param exportUser the suer to check
-     * 
+     *
      * @return <code>true</code> if the user can be exported
      */
     protected boolean isExportable(CmsUser exportUser) {

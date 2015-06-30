@@ -201,10 +201,14 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
                         // map all attributes for a resource
                         switch (attribute) {
                             case dateContent:
-                                content = DateTools.timeToString(res.getDateContent(), DateTools.Resolution.MILLISECOND);
+                                content = DateTools.timeToString(
+                                    res.getDateContent(),
+                                    DateTools.Resolution.MILLISECOND);
                                 break;
                             case dateCreated:
-                                content = DateTools.timeToString(res.getDateCreated(), DateTools.Resolution.MILLISECOND);
+                                content = DateTools.timeToString(
+                                    res.getDateCreated(),
+                                    DateTools.Resolution.MILLISECOND);
                                 break;
                             case dateExpired:
                                 long expirationDate = res.getDateExpired();
@@ -361,10 +365,8 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
         CmsSearchFieldMappingType mappingType = CmsSearchFieldMappingType.valueOf(type);
         if (mappingType == null) {
             // invalid mapping type has been used, throw an exception
-            throw new CmsRuntimeException(new CmsMessageContainer(
-                Messages.get(),
-                Messages.ERR_FIELD_TYPE_UNKNOWN_1,
-                new Object[] {type}));
+            throw new CmsRuntimeException(
+                new CmsMessageContainer(Messages.get(), Messages.ERR_FIELD_TYPE_UNKNOWN_1, new Object[] {type}));
         }
         setType(mappingType);
     }

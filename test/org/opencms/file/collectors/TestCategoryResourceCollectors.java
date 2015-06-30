@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,13 +51,13 @@ import junit.framework.TestSuite;
 
 /**
  * Unit test for the {@link CmsCategoryResourceCollector}.<p>
- * 
+ *
  */
 public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCategoryResourceCollectors(String arg0) {
@@ -67,9 +67,9 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Initializes the resources needed for the tests.<p>
-     * 
+     *
      * @param cms the cms object
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public static void initResources(CmsObject cms) throws Exception {
@@ -134,7 +134,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -178,7 +178,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Test the collection of resources for a category in a given folder filtered by a resource type and no specified resource type.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCollectAllInFolderResourceType() throws Throwable {
@@ -189,9 +189,10 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
         I_CmsResourceCollector collector = new CmsCategoryResourceCollector();
 
-        List resources = collector.getResults(cms, "allKeyValuePairFiltered", "resource=/folder1/|resourceType="
-            + resTypeIdPlain
-            + "|categoryTypes=business/");
+        List resources = collector.getResults(
+            cms,
+            "allKeyValuePairFiltered",
+            "resource=/folder1/|resourceType=" + resTypeIdPlain + "|categoryTypes=business/");
 
         assertEquals(1, resources.size());
 
@@ -202,7 +203,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Test the collection of resources for given categories in a given folder sorted by the category.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCollectAllInFolderSortByCategory() throws Throwable {
@@ -236,7 +237,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Test the collection of resources for given categories in a given folder sorted by the date.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCollectAllInFolderSortByDate() throws Throwable {
@@ -284,7 +285,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Prints the given list of search results to STDOUT.<p>
-     * 
+     *
      * @param resources the list to print
      */
     public static void printResults(List resources) {
@@ -298,14 +299,16 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
             count++;
             System.out.print(CmsStringUtil.padRight("" + count, 4));
             System.out.print(CmsStringUtil.padRight(res.getRootPath(), 40));
-            System.out.println(CmsStringUtil.padRight(""
-                + CmsDateUtil.getDateTime(new Date(res.getDateLastModified()), DateFormat.LONG, Locale.GERMAN), 17));
+            System.out.println(
+                CmsStringUtil.padRight(
+                    "" + CmsDateUtil.getDateTime(new Date(res.getDateLastModified()), DateFormat.LONG, Locale.GERMAN),
+                    17));
         }
     }
 
     /**
      * Test the collection of resources for a category / given categories in a given folder with inculding the sub tree of the folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCollectAllInFolderSubTree() throws Throwable {
@@ -342,7 +345,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Test the collection of resources for a category filtered by a resource type and no specified resource type.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCollectAllResourcesResourceType() throws Throwable {
@@ -353,9 +356,10 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
         I_CmsResourceCollector collector = new CmsCategoryResourceCollector();
 
-        List resources = collector.getResults(cms, "allKeyValuePairFiltered", "resourceType="
-            + resTypeIdPlain
-            + "|categoryTypes=business/");
+        List resources = collector.getResults(
+            cms,
+            "allKeyValuePairFiltered",
+            "resourceType=" + resTypeIdPlain + "|categoryTypes=business/");
 
         assertEquals(2, resources.size());
 
@@ -366,7 +370,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Test the collection of resources for given categories sorted by category.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCollectAllResourcesSortByCategory() throws Throwable {
@@ -415,7 +419,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Test the collection of resources for given categories sorted by date.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCollectAllResourcesSortByDate() throws Throwable {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 
 /**
- * Utility to login users to the OpenCms workplace.<p> 
+ * Utility to login users to the OpenCms workplace.<p>
  */
 public class CmsLoginHelper extends CmsJspLoginBean {
 
@@ -93,7 +93,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param username the user name
          * @param pcType the pc type
          * @param oufqn the ou fqn
@@ -119,7 +119,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
         /**
          * Returns the locale.<p>
-         * 
+         *
          * @return the locale
          */
         public Locale getLocale() {
@@ -129,7 +129,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
         /**
          * Returns the ou fqn.<p>
-         * 
+         *
          * @return the ou fqn
          */
         public String getOufqn() {
@@ -139,7 +139,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
         /**
          * Returns the pc type.<p>
-         * 
+         *
          * @return the pc type
          */
         public String getPcType() {
@@ -149,7 +149,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
         /**
          * Returns the requested resource.<p>
-         * 
+         *
          * @return the requested resource
          */
         public String getRequestedResource() {
@@ -159,7 +159,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
         /**
          * Returns the requested workplace app.<p>
-         * 
+         *
          * @return the requested workplace app
          */
         public String getRequestedWorkplaceApp() {
@@ -169,7 +169,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
         /**
          * Returns the user name.<p>
-         * 
+         *
          * @return the user name
          */
         public String getUsername() {
@@ -179,7 +179,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
         /**
          * Returns whether the pc type is private.<p>
-         * 
+         *
          * @return <code>true</code> if the pc type is private
          */
         public boolean isPrivatePc() {
@@ -250,10 +250,10 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /**
      * Gets the copyright information HTML.<p>
-     * 
-     * @param locale the locale for which to get the copyright info 
-     * 
-     * @return the copyright info HTML 
+     *
+     * @param locale the locale for which to get the copyright info
+     *
+     * @return the copyright info HTML
      */
     public static String getCopyrightHtml(Locale locale) {
 
@@ -274,10 +274,10 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /**
      * Returns the direct edit path from the user settings, or <code>null</code> if not set.<p>
-     * 
-     * @param cms the CMS context to use 
+     *
+     * @param cms the CMS context to use
      * @param userSettings the user settings
-     * 
+     *
      * @return the direct edit path
      */
     public static String getDirectEditPath(CmsObject cms, CmsUserSettings userSettings) {
@@ -305,10 +305,10 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /**
      * Returns the login parameters for the current request.<p>
-     * 
+     *
      * @param cms the cms context
      * @param request the request
-     * 
+     *
      * @return the login parameters
      */
     public static LoginParameters getLoginParameters(
@@ -370,11 +370,11 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /**
      * Gets the list of OUs which should be selectable in the login dialog.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param predefOu the predefined OU 
-     * 
-     * @return the list of organizational units for the OU selector 
+     *
+     * @param cms the CMS context to use
+     * @param predefOu the predefined OU
+     *
+     * @return the list of organizational units for the OU selector
      */
     public static List<CmsOrganizationalUnit> getOrgUnitsForLoginDialog(CmsObject cms, String predefOu) {
 
@@ -402,9 +402,9 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /**
      * Gets the window title for a given locale.<p>
-     * 
-     * @param locale the locale 
-     * @return the window title 
+     *
+     * @param locale the locale
+     * @return the window title
      */
     public static String getTitle(Locale locale) {
 
@@ -413,10 +413,10 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             + OpenCms.getSystemInfo().getVersionNumber();
     }
 
-    /** 
+    /**
      * Initializes the site and project for a CMS context after login, and returns the workplace settings for the corresponding user.<p>
-     * 
-     * @param cms the CMS context which should be initialized 
+     *
+     * @param cms the CMS context which should be initialized
      * @return the workplace set
      */
     public static CmsWorkplaceSettings initSiteAndProject(CmsObject cms) {
@@ -432,7 +432,8 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
         try {
             CmsProject project = cms.readProject(settings.getStartProject());
-            if (OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, project.getOuFqn(), false).contains(project)) {
+            if (OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, project.getOuFqn(), false).contains(
+                project)) {
                 // user has access to the project, set this as current project
                 workplaceSettings.setProject(project.getUuid());
                 cms.getRequestContext().setCurrentProject(project);
@@ -451,13 +452,13 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /**
      * Sets the cookie data.<p>
-     * 
-     * @param pcType the pctype value 
-     * @param username the username value 
+     *
+     * @param pcType the pctype value
+     * @param username the username value
      * @param oufqn the oufqn value
-     *   
-     * @param request the current request 
-     * @param response the current response 
+     *
+     * @param request the current request
+     * @param response the current response
      */
     public static void setCookieData(
         String pcType,
@@ -485,7 +486,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             ouFqnCookie.setValue(oufqn);
             setCookie(ouFqnCookie, false, request, response);
         } else if (OpenCms.getLoginManager().isEnableSecurity() && PCTYPE_PUBLIC.equals(pcType)) {
-            // delete user name and organizational unit cookies 
+            // delete user name and organizational unit cookies
             Cookie userNameCookie = getCookie(request, COOKIE_USERNAME);
             setCookie(userNameCookie, true, request, response);
             Cookie ouFqnCookie = getCookie(request, COOKIE_OUFQN);
@@ -496,11 +497,11 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /**
      * Checks that the user name and password are not empty, and returns an error message if they are.<p>
-     * 
-     * @param username the user name 
+     *
+     * @param username the user name
      * @param password the password
-     * 
-     * @return the error message, or null if the user name and password are OK 
+     *
+     * @return the error message, or null if the user name and password are OK
      */
     public static CmsMessageContainer validateUserAndPasswordNotEmpty(String username, String password) {
 
@@ -520,10 +521,10 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /**
      * Returns the cookie with the given name, if not cookie is found a new one is created.<p>
-     * 
-     * @param request the current request 
+     *
+     * @param request the current request
      * @param name the name of the cookie
-     * 
+     *
      * @return the cookie
      */
     protected static Cookie getCookie(HttpServletRequest request, String name) {
@@ -539,11 +540,11 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /**
      * Sets the cookie in the response.<p>
-     * 
+     *
      * @param cookie the cookie to set
      * @param delete flag to determine if the cookir should be deleted
      * @param request the current request
-     * @param response the current response 
+     * @param response the current response
      */
     protected static void setCookie(
         Cookie cookie,
@@ -571,9 +572,9 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /**
      * Returns the locale for the given request.<p>
-     * 
+     *
      * @param req the request
-     * 
+     *
      * @return the locale
      */
     private static Locale getLocaleForRequest(HttpServletRequest req) {
@@ -593,9 +594,9 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /**
      * Returns the pc type of the current request.<p>
-     * 
+     *
      * @param request the request
-     * 
+     *
      * @return the pc type
      */
     private static String getPcType(HttpServletRequest request) {
@@ -621,11 +622,11 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /**
      * Returns the pre defined ou fqn.<p>
-     * 
+     *
      * @param cms the cms context
      * @param request the request
      * @param logout in case of a logout
-     * 
+     *
      * @return the ou fqn
      */
     private static String getPreDefOuFqn(CmsObject cms, HttpServletRequest request, boolean logout) {

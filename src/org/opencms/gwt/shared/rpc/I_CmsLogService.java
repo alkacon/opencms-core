@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,9 +31,9 @@ import com.google.gwt.user.client.rpc.RemoteService;
 
 /**
  * Handles client side logging.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.gwt.CmsLogService
  * @see org.opencms.gwt.shared.rpc.I_CmsLogService
  * @see org.opencms.gwt.shared.rpc.I_CmsLogServiceAsync
@@ -42,7 +42,7 @@ public interface I_CmsLogService extends RemoteService {
 
     /**
      * Logs client messages on the server.<p>
-     * 
+     *
      * @param ticket the optional client-side generated ticket
      * @param message the message to log
      */

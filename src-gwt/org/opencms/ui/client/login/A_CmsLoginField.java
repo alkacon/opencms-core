@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,8 +35,8 @@ import com.vaadin.client.ui.VTextField;
 
 /**
  * Abstract superclass for the user name and password fields of the login dialog.<p>
- * 
- * Since these fields may be pre-filled by the browser password manager and not by the server side 
+ *
+ * Since these fields may be pre-filled by the browser password manager and not by the server side
  * component, they require some special handling.<p>
  */
 public class A_CmsLoginField extends VTextField {
@@ -46,8 +46,8 @@ public class A_CmsLoginField extends VTextField {
 
     /**
      * Creates a new instance based on an existing dom input element.<p>
-     * 
-     * @param element the input element to use for the widget 
+     *
+     * @param element the input element to use for the widget
      */
     protected A_CmsLoginField(Element element) {
 
@@ -57,8 +57,8 @@ public class A_CmsLoginField extends VTextField {
 
     /**
      * @see com.vaadin.client.ui.VTextField#updateFieldContent(java.lang.String)
-     * 
-     * We have to override this method to prevent its value being overwritten by Vaadin and to make 
+     *
+     * We have to override this method to prevent its value being overwritten by Vaadin and to make
      * sure that the real value is sent to the server.
      */
     @Override

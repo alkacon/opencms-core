@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog to edit new or existing organizational unit in the administration view.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
@@ -60,7 +60,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsOrgUnitEditDialog(CmsJspActionElement jsp) {
@@ -70,7 +70,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -217,10 +217,12 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
             }
             addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "webusers", PAGES[0], new CmsDisplayWidget()));
         }
-        addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "resources", PAGES[0], new CmsVfsFileWidget(
-            false,
-            getCms().getRequestContext().getSiteRoot(),
-            false)));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_orgUnitBean,
+                "resources",
+                PAGES[0],
+                new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot(), false)));
     }
 
     /**

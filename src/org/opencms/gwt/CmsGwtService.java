@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,7 +60,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
 
 /**
  * Wrapper for GWT services served through OpenCms.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsGwtService extends RemoteServiceServlet {
@@ -92,14 +92,14 @@ public class CmsGwtService extends RemoteServiceServlet {
     }
 
     /**
-     * Checks the permissions of the current user to match the required security level.<p> 
-     * 
+     * Checks the permissions of the current user to match the required security level.<p>
+     *
      * Note that the current request and response are not available yet.<p>
-     * 
+     *
      * Override if needed.<p>
-     * 
-     * @param cms the current cms object 
-     * 
+     *
+     * @param cms the current cms object
+     *
      * @throws CmsRoleViolationException if the security level can not be satisfied
      */
     public void checkPermissions(CmsObject cms) throws CmsRoleViolationException {
@@ -109,10 +109,10 @@ public class CmsGwtService extends RemoteServiceServlet {
 
     /**
      * Logs and re-throws the given exception for RPC responses.<p>
-     * 
+     *
      * @param t the exception
-     * 
-     * @throws CmsRpcException the converted exception 
+     *
+     * @throws CmsRpcException the converted exception
      */
     public void error(Throwable t) throws CmsRpcException {
 
@@ -132,9 +132,9 @@ public class CmsGwtService extends RemoteServiceServlet {
 
     /**
      * Returns the current request.<p>
-     * 
+     *
      * @return the current request
-     * 
+     *
      * @see #getThreadLocalRequest()
      */
     public HttpServletRequest getRequest() {
@@ -144,9 +144,9 @@ public class CmsGwtService extends RemoteServiceServlet {
 
     /**
      * Returns the current response.<p>
-     * 
+     *
      * @return the current response
-     * 
+     *
      * @see #getThreadLocalResponse()
      */
     public HttpServletResponse getResponse() {
@@ -182,7 +182,7 @@ public class CmsGwtService extends RemoteServiceServlet {
 
     /**
      * Logs the given exception.<p>
-     * 
+     *
      * @param t the exception to log
      */
     public void logError(Throwable t) {
@@ -219,8 +219,8 @@ public class CmsGwtService extends RemoteServiceServlet {
 
     /**
      * Sets the service context.<p>
-     * 
-     * @param context the new service context 
+     *
+     * @param context the new service context
      */
     public synchronized void setContext(CmsGwtServiceContext context) {
 
@@ -229,7 +229,7 @@ public class CmsGwtService extends RemoteServiceServlet {
 
     /**
      * Sets the current request.<p>
-     * 
+     *
      * @param request the request to set
      */
     public synchronized void setRequest(HttpServletRequest request) {
@@ -242,7 +242,7 @@ public class CmsGwtService extends RemoteServiceServlet {
 
     /**
      * Sets the current response.<p>
-     * 
+     *
      * @param response the response to set
      */
     public synchronized void setResponse(HttpServletResponse response) {
@@ -271,7 +271,7 @@ public class CmsGwtService extends RemoteServiceServlet {
 
     /**
      * We do not want that the server goes to fetch files from the servlet context.<p>
-     * 
+     *
      * @see com.google.gwt.user.server.rpc.RemoteServiceServlet#doGetSerializationPolicy(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
      */
     @Override
@@ -296,11 +296,11 @@ public class CmsGwtService extends RemoteServiceServlet {
     /**
      * Locks the given resource with a temporary, if not already locked by the current user.
      * Will throw an exception if the resource could not be locked for the current user.<p>
-     * 
+     *
      * @param resource the resource to lock
-     * 
+     *
      * @return the assigned lock
-     * 
+     *
      * @throws CmsException if the resource could not be locked
      */
     protected CmsLockActionRecord ensureLock(CmsResource resource) throws CmsException {
@@ -309,9 +309,10 @@ public class CmsGwtService extends RemoteServiceServlet {
         LockChange change = LockChange.unchanged;
         List<CmsResource> blockingResources = cms.getBlockingLockedResources(resource);
         if ((blockingResources != null) && !blockingResources.isEmpty()) {
-            throw new CmsException(Messages.get().container(
-                Messages.ERR_RESOURCE_HAS_BLOCKING_LOCKED_CHILDREN_1,
-                cms.getSitePath(resource)));
+            throw new CmsException(
+                Messages.get().container(
+                    Messages.ERR_RESOURCE_HAS_BLOCKING_LOCKED_CHILDREN_1,
+                    cms.getSitePath(resource)));
         }
         CmsUser user = cms.getRequestContext().getCurrentUser();
         CmsLock lock = cms.getLock(resource);
@@ -328,15 +329,15 @@ public class CmsGwtService extends RemoteServiceServlet {
     }
 
     /**
-     * 
+     *
      * Locks the given resource with a temporary, if not already locked by the current user.
      * Will throw an exception if the resource could not be locked for the current user.<p>
-     * 
-     * @param structureId the structure id of the resource 
-     * 
+     *
+     * @param structureId the structure id of the resource
+     *
      * @return the assigned lock
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsLockActionRecord ensureLock(CmsUUID structureId) throws CmsException {
 
@@ -347,11 +348,11 @@ public class CmsGwtService extends RemoteServiceServlet {
     /**
      * Locks the given resource with a temporary, if not already locked by the current user.
      * Will throw an exception if the resource could not be locked for the current user.<p>
-     * 
+     *
      * @param sitepath the site-path of the resource to lock
-     * 
+     *
      * @return the assigned lock
-     * 
+     *
      * @throws CmsException if the resource could not be locked
      */
     protected CmsLockActionRecord ensureLock(String sitepath) throws CmsException {
@@ -361,7 +362,7 @@ public class CmsGwtService extends RemoteServiceServlet {
 
     /**
      * Ensures that the user session is still valid.<p>
-     * 
+     *
      * @throws CmsException if the current user is the guest user
      */
     protected void ensureSession() throws CmsException {
@@ -374,10 +375,10 @@ public class CmsGwtService extends RemoteServiceServlet {
 
     /**
      * Converts a list of properties to a map.<p>
-     * 
-     * @param properties the list of properties 
-     * 
-     * @return a map from property names to properties 
+     *
+     * @param properties the list of properties
+     *
+     * @return a map from property names to properties
      */
     protected Map<String, CmsProperty> getPropertiesByName(List<CmsProperty> properties) {
 
@@ -391,7 +392,7 @@ public class CmsGwtService extends RemoteServiceServlet {
 
     /**
      * Tries to unlock a resource.<p>
-     * 
+     *
      * @param resource the resource to unlock
      */
     protected void tryUnlock(CmsResource resource) {

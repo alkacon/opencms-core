@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import java.util.List;
 /**
  * Wrapper class for
  * the different style of icon buttons.<p>
- * 
+ *
  * The possibles values are:<br>
  * <ul>
  *   <li>BigIconText</li>
@@ -46,8 +46,8 @@ import java.util.List;
  *   <li>SmallIconOnly</li>
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public final class CmsHtmlIconButtonStyleEnum {
 
@@ -64,14 +64,15 @@ public final class CmsHtmlIconButtonStyleEnum {
     private static final CmsHtmlIconButtonStyleEnum[] VALUE_ARRAY = {BIG_ICON_TEXT, SMALL_ICON_TEXT, SMALL_ICON_ONLY};
 
     /** List of ordering constants.     */
-    public static final List<CmsHtmlIconButtonStyleEnum> VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
+    public static final List<CmsHtmlIconButtonStyleEnum> VALUES = Collections.unmodifiableList(
+        Arrays.asList(VALUE_ARRAY));
 
     /** Internal representation. */
     private final String m_style;
 
     /**
      * Private constructor.<p>
-     * 
+     *
      * @param style internal representation
      */
     private CmsHtmlIconButtonStyleEnum(String style) {
@@ -83,9 +84,9 @@ public final class CmsHtmlIconButtonStyleEnum {
      * Parses an string into an element of this enumeration.<p>
      *
      * @param value the style to parse
-     * 
+     *
      * @return the enumeration element
-     * 
+     *
      * @throws CmsIllegalArgumentException if the given instance for the argument is not found
      */
     public static CmsHtmlIconButtonStyleEnum valueOf(String value) throws CmsIllegalArgumentException {
@@ -97,15 +98,16 @@ public final class CmsHtmlIconButtonStyleEnum {
                 return target;
             }
         }
-        throw new CmsIllegalArgumentException(Messages.get().container(
-            Messages.ERR_LIST_ENUM_PARSE_2,
-            new Integer(value),
-            CmsHtmlIconButtonStyleEnum.class.getName()));
+        throw new CmsIllegalArgumentException(
+            Messages.get().container(
+                Messages.ERR_LIST_ENUM_PARSE_2,
+                new Integer(value),
+                CmsHtmlIconButtonStyleEnum.class.getName()));
     }
 
     /**
      * Returns the style string.<p>
-     * 
+     *
      * @return the style string
      */
     public String getStyle() {

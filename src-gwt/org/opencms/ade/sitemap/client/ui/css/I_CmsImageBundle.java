@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.resources.client.ClientBundle;
 
 /**
  * Resource bundle to access CSS and image resources.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsImageBundle extends ClientBundle {
@@ -44,65 +44,65 @@ public interface I_CmsImageBundle extends ClientBundle {
     /** The button CSS. */
     public interface I_CmsButtonCss extends I_CmsDragCss {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String context();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String hoverbar();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String hoverbarContext();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String hoverbarGoto();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String hoverbarGotoSub();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String hoverbarMove();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String hoverbarParent();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String showPage();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String undelete();
@@ -113,21 +113,21 @@ public interface I_CmsImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
-     * @return the image bundle instance for big icons 
+     *
+     * @return the image bundle instance for big icons
      */
     I_CmsBigIconBundle bigIcons();
 
     /**
      * Access method.<p>
-     * 
-     * @return the image bundle instance for icons 
+     *
+     * @return the image bundle instance for icons
      */
     I_CmsIconBundle icons();
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the button CSS
      */
     @Source("button.css")
@@ -135,8 +135,8 @@ public interface I_CmsImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
-     * @return the image bundle instance for other images 
+     *
+     * @return the image bundle instance for other images
      */
     org.opencms.gwt.client.ui.css.I_CmsImageBundle otherImages();
 

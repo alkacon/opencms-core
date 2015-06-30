@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,14 +61,14 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * The change resource type dialog handles the change of a resource type of a single VFS file.<p>
- * 
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/chtype.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsChtype extends A_CmsListResourceTypeDialog {
 
@@ -92,7 +92,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsChtype(CmsJspActionElement jsp) {
@@ -108,7 +108,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -120,14 +120,15 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
     /**
      * Uploads the specified file and replaces the VFS file.<p>
-     * 
+     *
      * @throws JspException if inclusion of error dialog fails
      */
     public void actionChtype() throws JspException {
 
         int plainId;
         try {
-            plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+            plainId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypePlain.getStaticTypeName()).getTypeId();
         } catch (CmsLoaderException e) {
             // this should really never happen
             plainId = CmsResourceTypePlain.getStaticTypeId();
@@ -171,10 +172,10 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
     /**
      * Builds a default button row with a continue and cancel button.<p>
-     * 
+     *
      * Override this to have special buttons for your dialog.<p>
-     * 
-     * @return the button row 
+     *
+     * @return the button row
      */
     @Override
     public String dialogButtons() {
@@ -187,19 +188,18 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
     /**
      * Builds a button row with an optional "ok", "advanced" and a "cancel" button.<p>
-     * 
+     *
      * @param okAttrs optional attributes for the ok button
      * @param advancedAttrs optional attributes for the advanced button
      * @param cancelAttrs optional attributes for the cancel button
-     * @return the button row 
+     * @return the button row
      */
     public String dialogButtonsOkAdvancedCancel(String okAttrs, String advancedAttrs, String cancelAttrs) {
 
         if (!m_advancedMode && m_limitedRestypes && OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
-            return dialogButtons(new int[] {BUTTON_OK, BUTTON_ADVANCED, BUTTON_CANCEL}, new String[] {
-                okAttrs,
-                advancedAttrs,
-                cancelAttrs});
+            return dialogButtons(
+                new int[] {BUTTON_OK, BUTTON_ADVANCED, BUTTON_CANCEL},
+                new String[] {okAttrs, advancedAttrs, cancelAttrs});
         } else {
             return dialogButtonsOkCancel(okAttrs, cancelAttrs);
         }
@@ -228,7 +228,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
     /**
      * Returns the html code to add directly before the list inside the form element.<p>
-     * 
+     *
      * @return the html code to add directly before the list inside the form element
      */
     @Override
@@ -350,7 +350,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
                     changeable = true;
                 } else if (!isFolder && !OpenCms.getResourceManager().getResourceType(resTypeId).isFolder()) {
 
-                    // changeable is true if current resource is NOT a folder and this resource type also NOT                    
+                    // changeable is true if current resource is NOT a folder and this resource type also NOT
                     changeable = true;
                 }
 
@@ -367,11 +367,13 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
                     // add found setting to list
                     CmsListItem item = getList().newItem(Integer.toString(resTypeId));
                     item.set(LIST_COLUMN_NAME, key(settings.getKey()));
-                    item.set(LIST_COLUMN_ICON, "<img src=\""
-                        + getSkinUri()
-                        + CmsWorkplace.RES_PATH_FILETYPES
-                        + settings.getIcon()
-                        + "\" style=\"width: 16px; height: 16px;\" />");
+                    item.set(
+                        LIST_COLUMN_ICON,
+                        "<img src=\""
+                            + getSkinUri()
+                            + CmsWorkplace.RES_PATH_FILETYPES
+                            + settings.getIcon()
+                            + "\" style=\"width: 16px; height: 16px;\" />");
                     ret.add(item);
                 }
             }
@@ -391,7 +393,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
         super.initWorkplaceRequestValues(settings, request);
 
-        // check the required permissions to change the resource type      
+        // check the required permissions to change the resource type
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
@@ -399,7 +401,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_OK.equals(getParamAction())) {
             // ok button pressed, change file type
             setAction(ACTION_OK);
@@ -411,7 +413,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
             setAction(ACTION_CANCEL);
             getJsp().getRequest().getSession(true).removeAttribute(SESSION_ATTR_ADVANCED);
         } else {
-            // build title for change file type dialog     
+            // build title for change file type dialog
             setParamTitle(key(Messages.GUI_CHTYPE_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
 

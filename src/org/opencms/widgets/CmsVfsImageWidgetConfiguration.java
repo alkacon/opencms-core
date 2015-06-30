@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,9 +40,9 @@ import java.util.List;
 
 /**
  * Configuration options for the VFS image widget.<p>
- * 
+ *
  * The configuration options are read from the configuration String of the widget.<p>
- * 
+ *
  * The configuration String has to be formatted as JSON object, with the following possible keys:<p>
  * <ul>
  * <li><code>class</code>: optional class implementing {@link I_CmsImageWidgetDynamicConfiguration} to dynamically
@@ -62,13 +62,13 @@ import java.util.List;
  * <li><code>usedescription</code>: indicates if the description input field for the image should be shown or not.</li>
  * <li><code>useformat</code>: indicates if the format select box for the image should be shown or not.</li>
  * </ul>
- * 
+ *
  * An example configuration can look like this:<p>
- * <code>{scaleparams: 'q:70,r:2,c:CCCC00', type: 'gallery', startup: '/demo_en/images/', 
+ * <code>{scaleparams: 'q:70,r:2,c:CCCC00', type: 'gallery', startup: '/demo_en/images/',
  * usedescription: true, useformat: true, formatnames: 'imageleft:Image left|imageright:Image right|imagetop:Image top',
  * formatvalues: ['150x?', '250x300', '?x250']}</code><p>
- * 
- * @since 7.5.0 
+ *
+ * @since 7.5.0
  */
 public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguration {
 
@@ -113,7 +113,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Generates an initialized configuration for the image widget using the given configuration string.<p>
-     * 
+     *
      * @param cms an initialized instance of a CmsObject
      * @param widgetDialog the dialog where the widget is used on
      * @param param the widget parameter to generate the widget for
@@ -131,7 +131,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Returns the list of image format values matching the options for the format select box.<p>
-     * 
+     *
      * @return the list of image format values matching the options for the format select box
      */
     public List<String> getFormatValues() {
@@ -141,7 +141,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Returns the scale parameters to apply to a scaled image (e.g. quality, type).<p>
-     * 
+     *
      * @return scale the parameters to apply to a scaled image
      */
     public String getScaleParams() {
@@ -151,7 +151,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Returns the list of select options for the format select box, must contain {@link CmsSelectWidgetOption} objects.<p>
-     * 
+     *
      * @return the list of select options for the format select box
      */
     public List<CmsSelectWidgetOption> getSelectFormat() {
@@ -161,9 +161,9 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Returns the select options for the format select box as String.<p>
-     * 
+     *
      * The String has the following structure <code>format name 1:localized name 1|format name 2:localized name 2|...</code>.<p>
-     * 
+     *
      * @return the select options for the format select box
      */
     public String getSelectFormatString() {
@@ -173,7 +173,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Returns if the description field should be shown.<p>
-     * 
+     *
      * @return true if the description field should be shown, otherwise false
      */
     public boolean isShowDescription() {
@@ -183,7 +183,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Returns if the format select box should be shown.<p>
-     * 
+     *
      * @return true if the format select box should be shown, otherwise false
      */
     public boolean isShowFormat() {
@@ -193,7 +193,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Initializes the widget configuration using the given configuration string.<p>
-     * 
+     *
      * @param cms an initialized instance of a CmsObject
      * @param widgetDialog the dialog where the widget is used on
      * @param param the widget parameter to generate the widget for
@@ -243,7 +243,8 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
                 setFormatValues(formatValueList);
             }
             if (dynConf != null) {
-                setFormatValues(dynConf.getFormatValues(cms, widgetDialog, param, getSelectFormat(), getFormatValues()));
+                setFormatValues(
+                    dynConf.getFormatValues(cms, widgetDialog, param, getSelectFormat(), getFormatValues()));
             }
         }
         // determine the initial image list settings
@@ -261,7 +262,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Sets the list of image format values matching the options for the format select box.<p>
-     * 
+     *
      * @param formatValues the list of image format values matching the options for the format select box
      */
     private void setFormatValues(List<String> formatValues) {
@@ -271,7 +272,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Sets the scale parameters to apply to a scaled image (e.g. quality, type).<p>
-     * 
+     *
      * @param scaleParams the scale parameters to apply to a scaled image
      */
     private void setScaleParams(String scaleParams) {
@@ -281,7 +282,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Sets the list of select options for the format select box, must contain {@link CmsSelectWidgetOption} objects.<p>
-     * 
+     *
      * @param selectFormat the list of select options for the format select box
      */
     private void setSelectFormat(List<CmsSelectWidgetOption> selectFormat) {
@@ -291,7 +292,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Sets the select options for the format select box as String.<p>
-     * 
+     *
      * @param formatString the select options for the format select box as String
      */
     private void setSelectFormatString(String formatString) {
@@ -301,7 +302,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Sets if the description field should be shown.<p>
-     * 
+     *
      * @param showDescription true if the description field should be shown, otherwise false
      */
     private void setShowDescription(boolean showDescription) {
@@ -311,7 +312,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Sets if the format select box should be shown.<p>
-     * 
+     *
      * @param showFormat true if the format select box should be shown, otherwise false
      */
     private void setShowFormat(boolean showFormat) {
@@ -321,7 +322,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
 
     /**
      * Returns the values as a parameter string.<p>
-     * 
+     *
      * @return the values as a parameter string
      * */
     @Override

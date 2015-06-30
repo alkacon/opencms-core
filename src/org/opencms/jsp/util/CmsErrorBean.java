@@ -19,16 +19,13 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.jsp.util;
-
-import java.util.Locale;
-import java.util.Properties;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
@@ -42,10 +39,13 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Locale;
+import java.util.Properties;
+
 /**
  * Class to display the error dialog.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsErrorBean {
 
@@ -81,7 +81,7 @@ public class CmsErrorBean {
 
     /**
      * Constructs a new error bean.<p>
-     * 
+     *
      * @param cms the current CmsObject
      * @param throwable the exception that was caught
      */
@@ -117,7 +117,7 @@ public class CmsErrorBean {
 
     /**
      * Returns the error message to be displayed.<p>
-     * 
+     *
      * @return the error message to be displayed
      */
     public String getErrorMessage() {
@@ -141,12 +141,12 @@ public class CmsErrorBean {
         return result.toString();
     }
 
-    /** 
+    /**
      * Returns the localized Message, if the argument is a CmsException, or
      * the message otherwise.<p>
-     * 
+     *
      * @param t the Throwable to get the message from
-     * 
+     *
      * @return returns the localized Message, if the argument is a CmsException, or
      * the message otherwise
      */
@@ -242,9 +242,9 @@ public class CmsErrorBean {
         resolver.addMacro("label_error", m_messages.key(Messages.GUI_ERROR_0, new Object[] {}));
         resolver.addMacro("errorstack", CmsException.getFormattedErrorstack(m_throwable));
         resolver.addMacro("message", CmsStringUtil.escapeHtml(getErrorMessage()));
-        resolver.addMacro("styleuri", OpenCms.getLinkManager().substituteLink(
-            m_cms,
-            "/system/workplace/commons/style/workplace.css"));
+        resolver.addMacro(
+            "styleuri",
+            OpenCms.getLinkManager().substituteLink(m_cms, "/system/workplace/commons/style/workplace.css"));
         if (CmsStringUtil.isEmpty(m_buttons)) {
             resolver.addMacro("buttons", getDefaultButtonsHtml());
         } else {
@@ -255,16 +255,18 @@ public class CmsErrorBean {
         if (CmsStringUtil.isNotEmpty(m_hiddenParams)) {
             resolver.addMacro("hiddenparams", m_hiddenParams);
         }
-        resolver.addMacro("erroricon", OpenCms.getLinkManager().substituteLink(
-            m_cms,
-            "/system/workplace/resources/commons/error.png"));
+        resolver.addMacro(
+            "erroricon",
+            OpenCms.getLinkManager().substituteLink(m_cms, "/system/workplace/resources/commons/error.png"));
         Properties errorpage = new Properties();
         try {
             errorpage.load(CmsErrorBean.class.getClassLoader().getResourceAsStream(ERRORPAGE));
         } catch (Throwable th) {
-            CmsLog.INIT.error(org.opencms.main.Messages.get().getBundle().key(
-                org.opencms.main.Messages.INIT_ERR_LOAD_HTML_PROPERTY_FILE_1,
-                ERRORPAGE), th);
+            CmsLog.INIT.error(
+                org.opencms.main.Messages.get().getBundle().key(
+                    org.opencms.main.Messages.INIT_ERR_LOAD_HTML_PROPERTY_FILE_1,
+                    ERRORPAGE),
+                th);
         }
         return resolver.resolveMacros(errorpage.getProperty("ERRORPAGE"));
     }

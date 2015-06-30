@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,7 +39,7 @@ import com.google.gwt.user.client.Command;
 
 /**
  * Provides a widget for the binary preview dialog .<p>
- * 
+ *
  * @since 8.0.
  */
 public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBean> {
@@ -52,11 +52,11 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
 
     /**
      * The constructor.<p>
-     * 
+     *
      * @param dialogMode the dialog mode
      * @param dialogHeight the dialog height to set
-     * @param dialogWidth the dialog width to set     
-     * @param disableSelection true if selection from the preview should be disabled 
+     * @param dialogWidth the dialog width to set
+     * @param disableSelection true if selection from the preview should be disabled
      */
     public CmsBinaryPreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth, boolean disableSelection) {
 
@@ -75,7 +75,7 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
 
     /**
      * Fills the content of the preview panel part.<p>
-     * 
+     *
      * @param infoBean the resource info
      */
     public void fillPreviewPanel(CmsResourceInfoBean infoBean) {
@@ -94,7 +94,7 @@ public class CmsBinaryPreviewDialog extends A_CmsPreviewDialog<CmsResourceInfoBe
 
     /**
      * Initializes the preview.<p>
-     * 
+     *
      * @param handler the preview handler
      */
     public void init(CmsBinaryPreviewHandler handler) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,11 +38,11 @@ import com.google.common.collect.Multimaps;
 
 /**
  * Special collection class which allows lookup from keys to values  and from values to sets of keys.<p>
- * 
+ *
  * It also  implements efficient removal of values, not just keys.<p>
- * 
+ *
  * @param <K> the key type
- * @param <V> the value type 
+ * @param <V> the value type
  */
 public class CmsManyToOneMap<K, V> {
 
@@ -57,13 +57,13 @@ public class CmsManyToOneMap<K, V> {
      */
     public CmsManyToOneMap() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
      * Creates a new instance by copying the data from another one.<p>
-     * 
-     * @param other the other map to copy the data from 
+     *
+     * @param other the other map to copy the data from
      */
     public CmsManyToOneMap(CmsManyToOneMap<K, V> other) {
 
@@ -74,9 +74,9 @@ public class CmsManyToOneMap<K, V> {
 
     /**
      * Gets the value for a key.<p>
-     * 
-     * @param key the key 
-     * @return the value for the key, or null 
+     *
+     * @param key the key
+     * @return the value for the key, or null
      */
     public V get(K key) {
 
@@ -85,9 +85,9 @@ public class CmsManyToOneMap<K, V> {
 
     /**
      * Associates a value with a key.<p>
-     * 
-     * @param key the key 
-     * @param value the value 
+     *
+     * @param key the key
+     * @param value the value
      */
     public void put(K key, V value) {
 
@@ -98,8 +98,8 @@ public class CmsManyToOneMap<K, V> {
 
     /**
      * Removes the entry with the given key.<p>
-     * 
-     * @param key the key 
+     *
+     * @param key the key
      */
     public void remove(K key) {
 
@@ -111,8 +111,8 @@ public class CmsManyToOneMap<K, V> {
 
     /**
      * Removes all entries with the given value.<p>
-     * 
-     * @param value the value 
+     *
+     * @param value the value
      */
     public void removeValue(V value) {
 
@@ -124,8 +124,8 @@ public class CmsManyToOneMap<K, V> {
 
     /**
      * Gets the (immutable) map from keys to values.
-     *  
-     * @return the map from keys to values 
+     *
+     * @return the map from keys to values
      */
     Map<K, V> getForwardMap() {
 
@@ -134,8 +134,8 @@ public class CmsManyToOneMap<K, V> {
 
     /**
      * Gets the multimap from values to keys.<p>
-     * 
-     * @return the multimap from values to keys 
+     *
+     * @return the multimap from values to keys
      */
     Multimap<V, K> getReverseMap() {
 

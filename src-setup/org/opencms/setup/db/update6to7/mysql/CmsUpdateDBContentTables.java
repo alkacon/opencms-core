@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ public class CmsUpdateDBContentTables extends org.opencms.setup.db.update6to7.Cm
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the query properties cannot be read
      */
     public CmsUpdateDBContentTables()
@@ -59,9 +59,9 @@ public class CmsUpdateDBContentTables extends org.opencms.setup.db.update6to7.Cm
 
     /**
      * Creates the CMS_CONTENTS table if it does not exist yet.<p>
-     *  
+     *
      * @param dbCon the db connection interface
-     * 
+     *
      * @throws SQLException if something goes wrong
      */
     @Override

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,9 +37,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * A Direct Edit provider class which also offers some limited ADE functionality, 
+ * A Direct Edit provider class which also offers some limited ADE functionality,
  * like for example the Publish dialog.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolbarDirectEditProvider extends CmsAdvancedDirectEditProvider {
@@ -52,19 +52,19 @@ public class CmsToolbarDirectEditProvider extends CmsAdvancedDirectEditProvider 
      */
     public CmsToolbarDirectEditProvider() {
 
-        // ensure that the generated data elements get an id 
+        // ensure that the generated data elements get an id
         m_useIds = true;
     }
 
     /**
-     * Returns the direct edit include HTML to insert in the page beginning.<p> 
-     * 
-     * @param context the page context 
+     * Returns the direct edit include HTML to insert in the page beginning.<p>
+     *
+     * @param context the page context
      * @param params the parameters for the direct edit includes
-     *  
+     *
      * @return the direct edit include HTML to insert in the page beginning
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public String getIncludes(PageContext context, CmsDirectEditParams params) throws Exception {
 

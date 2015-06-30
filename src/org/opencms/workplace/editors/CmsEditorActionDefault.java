@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,9 +43,9 @@ import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
 /**
- * Provides a method to perform a user defined action when editing a page.<p> 
- * 
- * @since 6.0.0 
+ * Provides a method to perform a user defined action when editing a page.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
 
@@ -68,7 +68,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         editor.actionClear(true);
         // create the publish link to redirect to
         String publishLink = jsp.link(CmsWorkplace.PATH_DIALOGS + "publishresource.jsp");
-        // define the parameters which are necessary for publishing the resource 
+        // define the parameters which are necessary for publishing the resource
         StringBuffer params = new StringBuffer(256);
         params.append("?").append(CmsDialog.PARAM_RESOURCE).append("=").append(editor.getParamResource());
         params.append("&").append(CmsDialog.PARAM_ACTION).append("=").append(CmsDialog.DIALOG_CONFIRMED);
@@ -82,9 +82,10 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         }
         params.append("&").append(CmsPublishProject.PARAM_RELATEDRESOURCES).append("=").append(pubRelated);
         params.append("&").append(CmsDialog.PARAM_TITLE).append("=");
-        params.append(CmsEncoder.escapeWBlanks(editor.key(Messages.GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0)
-            + ": "
-            + editor.getParamResource(), CmsEncoder.ENCODING_UTF_8));
+        params.append(
+            CmsEncoder.escapeWBlanks(
+                editor.key(Messages.GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0) + ": " + editor.getParamResource(),
+                CmsEncoder.ENCODING_UTF_8));
         params.append("&").append(CmsDialog.PARAM_REDIRECT).append("=").append(CmsStringUtil.TRUE);
         params.append("&").append(CmsDialog.PARAM_CLOSELINK).append("=");
         if (Boolean.valueOf(editor.getParamDirectedit()).booleanValue()) {

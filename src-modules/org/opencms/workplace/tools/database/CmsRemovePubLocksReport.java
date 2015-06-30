@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * A report for displaying the remove publish lock process.<p>
- * 
+ *
  * @since 7.0.2
  */
 public class CmsRemovePubLocksReport extends A_CmsListReport {
@@ -55,7 +55,7 @@ public class CmsRemovePubLocksReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsRemovePubLocksReport(CmsJspActionElement jsp) {
@@ -66,7 +66,7 @@ public class CmsRemovePubLocksReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -79,7 +79,7 @@ public class CmsRemovePubLocksReport extends A_CmsListReport {
 
     /**
      * Returns the comma-separated list of resources.<p>
-     * 
+     *
      * @return the comma-separated list of resources
      */
     public String getParamResources() {
@@ -89,11 +89,12 @@ public class CmsRemovePubLocksReport extends A_CmsListReport {
 
     /**
      * Returns the <b>unstarted</b> <code>Thread</code> that will do the work.<p>
-     * 
+     *
      * @return the <b>unstarted</b> <code>Thread</code> that will do the work
-     * 
-     * @see org.opencms.workplace.list.A_CmsListReport#initializeThread() 
+     *
+     * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
+    @Override
     public I_CmsReportThread initializeThread() {
 
         List resources = new ArrayList();
@@ -108,7 +109,7 @@ public class CmsRemovePubLocksReport extends A_CmsListReport {
 
     /**
      * Sets the comma-separated list of resources.<p>
-     * 
+     *
      * @param paramIndexes the comma-separated list of resources
      */
     public void setParamResources(String paramIndexes) {

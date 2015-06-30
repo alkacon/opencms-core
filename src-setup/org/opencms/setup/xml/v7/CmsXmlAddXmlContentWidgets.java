@@ -16,10 +16,10 @@
  *
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
- * 
+ *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,8 +56,8 @@ import org.dom4j.Node;
 
 /**
  * Adds the new xml content widgets.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsXmlAddXmlContentWidgets extends A_CmsXmlVfs {
 
@@ -131,7 +131,7 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsXmlVfs {
 
     /**
      * Returns the widget data.<p>
-     * 
+     *
      * @return the widget data
      */
     private Map<String, String> getWidgetData() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,8 +29,8 @@ package org.opencms.workplace.tools.content.check;
 
 import org.opencms.file.CmsObject;
 import org.opencms.workplace.explorer.CmsResourceUtil;
-import org.opencms.workplace.list.A_CmsListResourceCollector;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
+import org.opencms.workplace.list.A_CmsListResourceCollector;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
@@ -40,8 +40,8 @@ import java.util.Map;
 
 /**
  * Collector for receiving {@link org.opencms.file.CmsResource} objects from a {@link CmsContentCheckResult}.<p>
- * 
- * @since 6.1.2 
+ *
+ * @since 6.1.2
  */
 public class CmsContentCheckCollector extends A_CmsListResourceCollector {
 
@@ -62,9 +62,9 @@ public class CmsContentCheckCollector extends A_CmsListResourceCollector {
 
     /**
      * Constructor, creates a new CmsContentCheckCollector.<p>
-     * 
+     *
      * @param wp the workplace object
-     * 
+     *
      * @param results a CmsContentCheckResult object, containing the results of the content check.
      */
     public CmsContentCheckCollector(A_CmsListExplorerDialog wp, CmsContentCheckResult results) {
@@ -87,6 +87,7 @@ public class CmsContentCheckCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
+    @Override
     public List getResources(CmsObject cms, Map params) {
 
         if (params.containsKey(PARAM_ERROR)) {
@@ -104,6 +105,7 @@ public class CmsContentCheckCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
+    @Override
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
         // no-op

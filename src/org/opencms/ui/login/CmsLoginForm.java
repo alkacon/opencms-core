@@ -19,15 +19,13 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.ui.login;
-
-import elemental.events.KeyboardEvent.KeyCode;
 
 import org.opencms.i18n.CmsMessages;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -50,6 +48,8 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.VerticalLayout;
+
+import elemental.events.KeyboardEvent.KeyCode;
 
 /**
  * Login form.<p>
@@ -86,9 +86,9 @@ public class CmsLoginForm extends VerticalLayout {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param controller the login controller 
-     * @param locale the locale to use 
+     *
+     * @param controller the login controller
+     * @param locale the locale to use
      */
     @SuppressWarnings("serial")
     public CmsLoginForm(CmsLoginController controller, Locale locale) {
@@ -108,7 +108,9 @@ public class CmsLoginForm extends VerticalLayout {
         m_securityField.setItemCaption(
             "private",
             messages.key(org.opencms.workplace.Messages.GUI_LOGIN_PCTYPE_PRIVATE_0));
-        m_securityField.setItemCaption("public", messages.key(org.opencms.workplace.Messages.GUI_LOGIN_PCTYPE_PUBLIC_0));
+        m_securityField.setItemCaption(
+            "public",
+            messages.key(org.opencms.workplace.Messages.GUI_LOGIN_PCTYPE_PUBLIC_0));
         setWidth("700px");
 
         m_logo.setSource(new ExternalResource(CmsWorkplace.getResourceUri("commons/login_logo.png")));
@@ -128,18 +130,18 @@ public class CmsLoginForm extends VerticalLayout {
 
     /**
      * Gets the OU.<p>
-     * 
-     * @return the OU 
+     *
+     * @return the OU
      */
     public String getOrgUnit() {
 
         return m_ouSelect.getValue();
     }
 
-    /** 
+    /**
      * Gets the password.<p>
-     * 
-     * @return the password 
+     *
+     * @return the password
      */
     public String getPassword() {
 
@@ -148,8 +150,8 @@ public class CmsLoginForm extends VerticalLayout {
 
     /**
      * Gets the PC type.<p>
-     * 
-     * @return the PC type 
+     *
+     * @return the PC type
      */
     public String getPcType() {
 
@@ -158,8 +160,8 @@ public class CmsLoginForm extends VerticalLayout {
 
     /**
      * Gets the user.<p>
-     * 
-     * @return the user 
+     *
+     * @return the user
      */
     public String getUser() {
 
@@ -168,8 +170,8 @@ public class CmsLoginForm extends VerticalLayout {
 
     /**
      * Selects a specific org unit.<p>
-     * 
-     * @param preselectedOu the OU to select 
+     *
+     * @param preselectedOu the OU to select
      */
     public void selectOrgUnit(String preselectedOu) {
 
@@ -179,8 +181,8 @@ public class CmsLoginForm extends VerticalLayout {
 
     /**
      * Sets the org units available for selection.<p>
-     * 
-     * @param ous the ous 
+     *
+     * @param ous the ous
      */
     public void setSelectableOrgUnits(List<CmsOrganizationalUnit> ous) {
 

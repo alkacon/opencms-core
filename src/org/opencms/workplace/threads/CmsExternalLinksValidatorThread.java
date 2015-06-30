@@ -1,7 +1,7 @@
 /*
  * File   :
- * Date   : 
- * Version: 
+ * Date   :
+ * Version:
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,8 +40,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Thread for extern link validation. <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsExternalLinksValidatorThread extends A_CmsReportThread {
 
@@ -56,7 +56,7 @@ public class CmsExternalLinksValidatorThread extends A_CmsReportThread {
 
     /**
      * Constructor, creates a new CmsExternLinkValidationThread.<p>
-     * 
+     *
      * @param cms the current CmsObject
      */
     public CmsExternalLinksValidatorThread(CmsObject cms) {
@@ -85,7 +85,7 @@ public class CmsExternalLinksValidatorThread extends A_CmsReportThread {
     public void run() {
 
         try {
-            // do the validation                
+            // do the validation
             m_externLinkValidator.validateLinks(m_cms);
         } catch (Throwable e) {
             getReport().println(e);

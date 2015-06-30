@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,37 +66,37 @@ import org.apache.commons.fileupload.FileItem;
 
 /**
  * Dialog to define an extended HTML import in the administration view.<p>
- * 
+ *
  * WARNING: If the zip file is to great to upload, then only a log entry
  * is created from the following method and this dialog is only refreshed:<p>
  * {@link org.opencms.util.CmsRequestUtil#readMultipartFileItems(HttpServletRequest)}. <p>
- * 
+ *
  * There are three modes to show the dialog:<p>
- * 
+ *
  * <ul>
- *  <li>{@link #MODE_DEFAULT} 
+ *  <li>{@link #MODE_DEFAULT}
  *      <ul>
- *          <li>HTTP-Upload is not shown.</li> 
+ *          <li>HTTP-Upload is not shown.</li>
  *          <li>default values are saved by action commit.</li>
  *      </ul>
  *  </li>
- *  <li>{@link #MODE_STANDARD} 
+ *  <li>{@link #MODE_STANDARD}
  *      <ul>
- *          <li>HTTP-Upload is shown.</li> 
+ *          <li>HTTP-Upload is shown.</li>
  *          <li>the HTML files would be imported by action commit.</li>
  *      </ul>
  *  </li>
- *  <li>{@link #MODE_ADVANCED} 
+ *  <li>{@link #MODE_ADVANCED}
  *      <ul>
- *          <li>This dialog is needed for the advanced button in the new Dialog for the user.</li> 
- *          <li>HTTP-Upload is shown.</li> 
- *          <li>DestinationDir is not shown.</li> 
- *          <li>InputDir is not shown.</li> 
+ *          <li>This dialog is needed for the advanced button in the new Dialog for the user.</li>
+ *          <li>HTTP-Upload is shown.</li>
+ *          <li>DestinationDir is not shown.</li>
+ *          <li>InputDir is not shown.</li>
  *          <li>the HTML files would be imported by action commit.</li>
  *      </ul>
  *  </li>
  * </ul>
- * 
+ *
  */
 public class CmsHtmlImportDialog extends CmsWidgetDialog {
 
@@ -132,7 +132,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsHtmlImportDialog(CmsJspActionElement jsp) {
@@ -142,7 +142,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -155,6 +155,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         List errors = new ArrayList();
@@ -167,7 +168,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
 
                 m_htmlimport.validate(null, true);
 
-                // fill the extended 
+                // fill the extended
                 fillExtendedHtmlImportDefault();
 
                 // save the default values in the file
@@ -207,6 +208,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -240,9 +242,10 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
 
     /**
      * This must be overwrite, because we need additional the 'enctype' parameter.<p>
-     * 
+     *
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlContent()
      */
+    @Override
     protected String defaultActionHtmlContent() {
 
         StringBuffer result = new StringBuffer(2048);
@@ -265,6 +268,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initHtmlImportObject();
@@ -277,20 +281,21 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
             addWidget(getDialogParameter("httpDir", new CmsHttpUploadWidget()));
         }
         if (!isDisplayMode(MODE_ADVANCED)) {
-            addWidget(getDialogParameter("destinationDir", new CmsVfsFileWidget(
-                false,
-                getCms().getRequestContext().getSiteRoot())));
+            addWidget(getDialogParameter(
+                "destinationDir",
+                new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot())));
         }
 
-        addWidget(getDialogParameter("imageGallery", new CmsVfsFileWidget(
-            false,
-            getCms().getRequestContext().getSiteRoot())));
-        addWidget(getDialogParameter("downloadGallery", new CmsVfsFileWidget(
-            false,
-            getCms().getRequestContext().getSiteRoot())));
-        addWidget(getDialogParameter("linkGallery", new CmsVfsFileWidget(
-            false,
-            getCms().getRequestContext().getSiteRoot())));
+        addWidget(
+            getDialogParameter(
+                "imageGallery",
+                new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot())));
+        addWidget(
+            getDialogParameter(
+                "downloadGallery",
+                new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot())));
+        addWidget(
+            getDialogParameter("linkGallery", new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot())));
 
         addWidget(getDialogParameter("template", new CmsSelectWidget(getTemplates())));
         addWidget(getDialogParameter("element", new CmsInputWidget()));
@@ -304,7 +309,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     }
 
     /**
-     * This function fills the <code> {@link CmsHtmlImport} </code> Object based on 
+     * This function fills the <code> {@link CmsHtmlImport} </code> Object based on
      * the values in the import/export configuration file. <p>
      */
     protected void fillHtmlImport() {
@@ -328,6 +333,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#fillWidgetValues(javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void fillWidgetValues(HttpServletRequest request) {
 
         Map parameters;
@@ -362,7 +368,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
         Iterator i = getWidgets().iterator();
 
         while (i.hasNext()) {
-            // check for all widget base parameters            
+            // check for all widget base parameters
             CmsWidgetDialogParameter base = (CmsWidgetDialogParameter)i.next();
 
             List params = new ArrayList();
@@ -404,12 +410,12 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     }
 
     /**
-     * This function creates a <code> {@link CmsWidgetDialogParameter} </code> Object based 
+     * This function creates a <code> {@link CmsWidgetDialogParameter} </code> Object based
      * on the given properties.<p>
-     * 
+     *
      * @param property the base object property to map the parameter to / from
      * @param widget the widget used for this dialog-parameter
-     * 
+     *
      * @return a <code> {@link CmsWidgetDialogParameter} </code> Object
      */
     protected CmsWidgetDialogParameter getDialogParameter(String property, I_CmsWidget widget) {
@@ -420,6 +426,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -432,7 +439,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
 
         Object o;
         String uri = getJsp().getRequestContext().getUri();
-        if (uri == null || uri.endsWith(IMPORT_STANDARD_PATH)) {
+        if ((uri == null) || uri.endsWith(IMPORT_STANDARD_PATH)) {
             m_dialogMode = MODE_STANDARD;
         } else if (uri.endsWith(IMPORT_DEFAULT_PATH)) {
             m_dialogMode = MODE_DEFAULT;
@@ -463,6 +470,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -472,7 +480,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     }
 
     /**
-     * This function fills the <code> {@link CmsExtendedHtmlImportDefault} </code> Object based on 
+     * This function fills the <code> {@link CmsExtendedHtmlImportDefault} </code> Object based on
      * the current values in the dialog. <p>
      */
     private void fillExtendedHtmlImportDefault() {
@@ -496,7 +504,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
 
     /**
      * Returns a list with all available local's.<p>
-     * 
+     *
      * @return a list with all available local's
      */
     private List getLocales() {
@@ -522,7 +530,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
 
     /**
      * Returns a list with all available templates.<p>
-     * 
+     *
      * @return a list with all available templates
      */
     private List getTemplates() {
@@ -551,9 +559,9 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
 
     /**
      * Checks if given mode is to show.<p>
-     * 
-     * @param mode [ {@link #MODE_DEFAULT} | {@link #MODE_STANDARD} | {@link #MODE_ADVANCED} ] 
-     * 
+     *
+     * @param mode [ {@link #MODE_DEFAULT} | {@link #MODE_STANDARD} | {@link #MODE_ADVANCED} ]
+     *
      * @return <code>true</code> if the given display mode is to shown
      */
     private boolean isDisplayMode(String mode) {
@@ -562,18 +570,18 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     }
 
     /**
-     * This function reads the file item and if its exits then the 
+     * This function reads the file item and if its exits then the
      * file is saved in the temporary directory of the system.<p>
-     * 
+     *
      * @param fi the file item from the multipart-request
-     * 
+     *
      * @throws CmsException if something goes wrong.
      */
     private void writeHttpImportDir(FileItem fi) throws CmsException {
 
         try {
 
-            if (fi != null && CmsStringUtil.isNotEmptyOrWhitespaceOnly(fi.getName())) {
+            if ((fi != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(fi.getName())) {
                 //write the file in the tmp-directory of the system
                 byte[] content = fi.get();
                 File importFile = File.createTempFile("import_html", ".zip");
@@ -591,7 +599,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
 
     /**
      * Checks if a multipart-request file item exists and returns it.<p>
-     * 
+     *
      * @return <code>true</code> if a multipart-request file exists
      */
     private FileItem getHttpImportFileItem() {
@@ -612,7 +620,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
             }
         }
 
-        if (fi != null && CmsStringUtil.isNotEmptyOrWhitespaceOnly(fi.getName())) {
+        if ((fi != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(fi.getName())) {
             result = fi;
         }
         return result;

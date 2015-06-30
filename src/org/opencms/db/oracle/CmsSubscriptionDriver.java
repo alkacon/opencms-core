@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import java.sql.SQLException;
 
 /**
  * Oracle implementation of the subscription driver.<p>
- * 
+ *
  *  @since 8.0.0
  */
 public class CmsSubscriptionDriver extends org.opencms.db.generic.CmsSubscriptionDriver {
@@ -101,9 +101,8 @@ public class CmsSubscriptionDriver extends org.opencms.db.generic.CmsSubscriptio
                         // do nothing only move through all rows because of mssql odbc driver
                     }
                 } else {
-                    throw new CmsDbConsistencyException(Messages.get().container(
-                        Messages.ERR_COUNTING_VISITED_RESOURCES_1,
-                        user.getName()));
+                    throw new CmsDbConsistencyException(
+                        Messages.get().container(Messages.ERR_COUNTING_VISITED_RESOURCES_1, user.getName()));
                 }
 
                 int maxCount = OpenCms.getSubscriptionManager().getMaxVisitedCount();
@@ -121,9 +120,9 @@ public class CmsSubscriptionDriver extends org.opencms.db.generic.CmsSubscriptio
                     stmt.executeUpdate();
                 }
             } catch (SQLException e) {
-                throw new CmsDbSqlException(Messages.get().container(
-                    Messages.ERR_GENERIC_SQL_1,
-                    CmsDbSqlException.getErrorQuery(stmt)), e);
+                throw new CmsDbSqlException(
+                    Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                    e);
             } finally {
                 m_sqlManager.closeAll(dbc, conn, stmt, res);
             }

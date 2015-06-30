@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -79,14 +79,14 @@ import com.google.common.base.Joiner;
 
 /**
  * The new resource upload dialog handles the upload of single files or zipped files.<p>
- * 
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/newresource_upload.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsNewResourceUpload extends CmsNewResource {
 
@@ -127,7 +127,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public static final Map<String, String> DEFAULT_APPLET_WINDOW_COLORS = new HashMap<String, String>();
 
     /** The value for the resource upload applet action. */
-    // Warning: This constant has to be kept in sync with the same named constant in org.opencms.applet.FileUploadApplet!    
+    // Warning: This constant has to be kept in sync with the same named constant in org.opencms.applet.FileUploadApplet!
     public static final String DIALOG_CHECK_OVERWRITE = "checkoverwrite";
 
     /** The name for the resource form submission action. */
@@ -217,7 +217,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsNewResourceUpload(CmsJspActionElement jsp) {
@@ -227,7 +227,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -239,12 +239,12 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Builds the html for the list of possible types for the uploaded file.<p>
-     * 
-     * This method can be used by all workplace dialog classes to build 
+     *
+     * This method can be used by all workplace dialog classes to build
      * radio input buttons to select a resource type.<p>
-     * 
+     *
      * @param dialog the dialog class instance which creates the type list
-     * @param useTypeId if true, the resource type ID will be used for value attributes, otherwise the resource type names 
+     * @param useTypeId if true, the resource type ID will be used for value attributes, otherwise the resource type names
      * @return the list of possible files for the uploaded resource
      */
     public static String buildTypeList(CmsDialog dialog, boolean useTypeId) {
@@ -282,7 +282,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     if (isFolder && OpenCms.getResourceManager().getResourceType(resTypeId).isFolder()) {
                         changeable = true;
                     } else if (!isFolder && !OpenCms.getResourceManager().getResourceType(resTypeId).isFolder()) {
-                        // changeable is true if current resource is NOT a folder and this resource type also NOT                    
+                        // changeable is true if current resource is NOT a folder and this resource type also NOT
                         changeable = true;
                     }
 
@@ -326,16 +326,17 @@ public class CmsNewResourceUpload extends CmsNewResource {
             }
         } catch (CmsException e) {
             // error reading the VFS resource, log error
-            LOG.error(org.opencms.workplace.commons.Messages.get().getBundle().key(
-                org.opencms.workplace.commons.Messages.ERR_BUILDING_RESTYPE_LIST_1,
-                dialog.getParamResource()));
+            LOG.error(
+                org.opencms.workplace.commons.Messages.get().getBundle().key(
+                    org.opencms.workplace.commons.Messages.ERR_BUILDING_RESTYPE_LIST_1,
+                    dialog.getParamResource()));
         }
         return result.toString();
     }
 
     /**
      * Creates the HTML code of the file upload applet with all required parameters.<p>
-     * 
+     *
      * @param jsp an initialized action element
      * @param locale the locale to use for the applet
      * @param currentFolder the folder to upload the resources to
@@ -540,12 +541,12 @@ public class CmsNewResourceUpload extends CmsNewResource {
     }
 
     /**
-     * Returns the proper constant for preselection of a file filter of the upload applet depending on the current 
+     * Returns the proper constant for preselection of a file filter of the upload applet depending on the current
      * folder to upload to. <p>
-     * 
+     *
      * @param cms the current users context
-     * @param currentFolder the folder to upload to 
-     * @return one of <code>{@link #APPLET_FILEFILTER_IMAGES}</code>, <code>{@link #APPLET_FILEFILTER_OFFICE}</code>, 
+     * @param currentFolder the folder to upload to
+     * @return one of <code>{@link #APPLET_FILEFILTER_IMAGES}</code>, <code>{@link #APPLET_FILEFILTER_OFFICE}</code>,
      *      <code>{@link #APPLET_FILEFILTER_WEB}</code>
      */
     private static String getAppletFileFilterPreselectionConstant(CmsObject cms, String currentFolder) {
@@ -563,22 +564,22 @@ public class CmsNewResourceUpload extends CmsNewResource {
             }
         } catch (CmsException e) {
             System.err.println(e);
-            // ignore this, gallery type will simply not be supported for pre selection of the file type selector in the upload applet 
+            // ignore this, gallery type will simply not be supported for pre selection of the file type selector in the upload applet
         }
         return result;
     }
 
     /**
      * Used to close the current JSP dialog.<p>
-     * 
+     *
      * This method overwrites the close dialog method in the super class,
      * because in case a new file was uploaded and the cancel button pressed,
      * the uploaded file has to be deleted.<p>
-     *  
+     *
      * It tries to include the URI stored in the workplace settings.
-     * This URI is determined by the frame name, which has to be set 
+     * This URI is determined by the frame name, which has to be set
      * in the frame name parameter.<p>
-     * 
+     *
      * @throws JspException if including an element fails
      */
     @Override
@@ -630,7 +631,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
                         Map<String, String[]> params = new HashMap<String, String[]>();
                         params.put(
                             PARAM_RESOURCES,
-                            new String[] {(String)getJsp().getRequest().getSession().getAttribute(ATTR_UPLOADED_FILES)});
+                            new String[] {
+                                (String)getJsp().getRequest().getSession().getAttribute(ATTR_UPLOADED_FILES)});
                         params.put(PARAM_CLOSELINK, new String[] {getParamCloseLink()});
                         try {
                             forwardEditProperties(params);
@@ -647,7 +649,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Updates the file type and renames the file if desired.<p>
-     * 
+     *
      * @throws JspException if inclusion of error dialog fails
      */
     public void actionUpdateFile() throws JspException {
@@ -682,7 +684,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Uploads the specified file and unzips it, if selected.<p>
-     * 
+     *
      * @throws JspException if inclusion of error dialog fails
      */
     public void actionUpload() throws JspException {
@@ -696,7 +698,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
             try {
                 userSettings.save(getCms());
             } catch (CmsException e) {
-                // it's not fatal if the client folder for the applet file chooser is not possible 
+                // it's not fatal if the client folder for the applet file chooser is not possible
                 if (LOG.isErrorEnabled()) {
                     LOG.error(
                         Messages.get().getBundle(getLocale()).key(
@@ -729,9 +731,10 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 // check file size
                 if ((maxFileSizeBytes > 0) && (size > maxFileSizeBytes)) {
                     // file size is larger than maximum allowed file size, throw an error
-                    throw new CmsWorkplaceException(Messages.get().container(
-                        Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1,
-                        new Long(maxFileSizeBytes / 1024)));
+                    throw new CmsWorkplaceException(
+                        Messages.get().container(
+                            Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1,
+                            new Long(maxFileSizeBytes / 1024)));
                 }
                 byte[] content = fi.get();
                 fi.delete();
@@ -776,7 +779,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     setParamResource(computeFullResourceName());
                     // determine the resource type id from the given information
                     int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
-                    int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+                    int plainId = OpenCms.getResourceManager().getResourceType(
+                        CmsResourceTypePlain.getStaticTypeName()).getTypeId();
                     String uploadFolder = CmsResource.getParentFolder(getParamResource());
                     getJsp().getRequest().getSession().setAttribute(ATTR_UPLOAD_FOLDER, uploadFolder);
                     if (!getCms().existsResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION)) {
@@ -840,7 +844,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Builds the list of possible types for the uploaded file.<p>
-     * 
+     *
      * @return the list of possible files for the uploaded resource
      */
     public String buildTypeList() {
@@ -850,7 +854,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Creates the HTML code of the file upload applet with all required parameters.<p>
-     * 
+     *
      * @return string containing the applet HTML code
      */
     public String createAppletCode() {
@@ -878,9 +882,10 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 if (params.get(PARAM_CLOSELINK) == null) {
                     params.put(
                         PARAM_CLOSELINK,
-                        new String[] {OpenCms.getLinkManager().getServerLink(
-                            getJsp().getCmsObject(),
-                            CmsWorkplace.FILE_EXPLORER_FILELIST)});
+                        new String[] {
+                            OpenCms.getLinkManager().getServerLink(
+                                getJsp().getCmsObject(),
+                                CmsWorkplace.FILE_EXPLORER_FILELIST)});
                 }
                 String uploadedFilesString = (String)getJsp().getRequest().getSession().getAttribute(
                     ATTR_UPLOADED_FILES);
@@ -896,7 +901,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Returns the close link.<p>
-     * 
+     *
      * @return the close link
      */
     public String getCloseLink() {
@@ -929,7 +934,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Returns the new resource name of the uploaded file.<p>
-     * 
+     *
      * @return the new resource name of the uploaded file
      */
     public String getParamNewResourceName() {
@@ -963,7 +968,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Returns true if the upload file should be unzipped, otherwise false.<p>
-     * 
+     *
      * @return true if the upload file should be unzipped, otherwise false
      */
     public String getParamUnzipFile() {
@@ -973,7 +978,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Returns the upload error message for the error dialog.<p>
-     * 
+     *
      * @return the upload error message for the error dialog
      */
     public String getParamUploadError() {
@@ -983,7 +988,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Returns the upload file name.<p>
-     * 
+     *
      * @return the upload file name
      */
     public String getParamUploadFile() {
@@ -993,7 +998,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Returns the upload folder name.<p>
-     * 
+     *
      * @return the upload folder name
      */
     public String getParamUploadFolder() {
@@ -1003,8 +1008,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Gets a HTML comment string which contains the data about which files have been uploaded.<p>
-     * 
-     * @return a HTML comment containing the uploaded files data 
+     *
+     * @return a HTML comment containing the uploaded files data
      */
     public String getUploadedFiles() {
 
@@ -1013,8 +1018,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Gets a HTML comment string which contains the data about the upload hook to use.<p>
-     * 
-     * @return a HTML comment containing the upload hook data 
+     *
+     * @return a HTML comment containing the upload hook data
      */
     public String getUploadHook() {
 
@@ -1025,12 +1030,12 @@ public class CmsNewResourceUpload extends CmsNewResource {
         return "<!--CMS_UPLOAD_HOOK=" + uploadHook + "-->";
     }
 
-    /** 
-     * Replies on the request of the upload applet for checking potential overwrites of VFS resources 
-     * with the line based resources that do exist on the host. <p> 
-     * 
-     * @param request the request sent by the applet 
-     * 
+    /**
+     * Replies on the request of the upload applet for checking potential overwrites of VFS resources
+     * with the line based resources that do exist on the host. <p>
+     *
+     * @param request the request sent by the applet
+     *
      * @return the line based resources that do exist on the host
      */
     public String handleUploadOverwriteCheckRequest(HttpServletRequest request) {
@@ -1063,7 +1068,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Overrode this to pass along the upload folder parameter.
-     * 
+     *
      * @see org.opencms.workplace.CmsWorkplace#sendForward(java.lang.String, java.util.Map)
      */
     @Override
@@ -1087,8 +1092,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Sets the 'closing after unzip' flag.<p>
-     * 
-     * @param closingAfterUnzip the new value of the 'closing after unzip' flag 
+     *
+     * @param closingAfterUnzip the new value of the 'closing after unzip' flag
      */
     public void setClosingAfterUnzip(boolean closingAfterUnzip) {
 
@@ -1097,7 +1102,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Sets the client upload folder name.<p>
-     * 
+     *
      * @param clientFolder the client upload folder name
      */
     public void setParamClientFolder(String clientFolder) {
@@ -1107,7 +1112,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Sets the new resource name of the uploaded file.<p>
-     * 
+     *
      * @param newResourceName the new resource name of the uploaded file
      */
     public void setParamNewResourceName(String newResourceName) {
@@ -1137,7 +1142,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Sets if the upload file should be unzipped.<p>
-     * 
+     *
      * @param unzipFile true if the upload file should be unzipped
      */
     public void setParamUnzipFile(String unzipFile) {
@@ -1147,7 +1152,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Sets the upload error message for the error dialog.<p>
-     * 
+     *
      * @param uploadError the upload error message for the error dialog
      */
     public void setParamUploadError(String uploadError) {
@@ -1157,7 +1162,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Sets the upload file name.<p>
-     * 
+     *
      * @param uploadFile the upload file name
      */
     public void setParamUploadFile(String uploadFile) {
@@ -1167,7 +1172,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Sets the upload folder name.<p>
-     * 
+     *
      * @param uploadFolder the upload folder name
      */
     public void setParamUploadFolder(String uploadFolder) {
@@ -1177,7 +1182,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /**
      * Returns if the upload file should be unzipped.<p>
-     * 
+     *
      * @return true if the upload file should be unzipped, otherwise false
      */
     public boolean unzipUpload() {
@@ -1192,8 +1197,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         String siteRoot = jsp.getRequestContext().getSiteRoot();
-        // In case of the upload applet the site stored in the user preferences must NOT be made the current 
-        // site even if we have a new session! Since the upload applet will create a new session for the upload itself, 
+        // In case of the upload applet the site stored in the user preferences must NOT be made the current
+        // site even if we have a new session! Since the upload applet will create a new session for the upload itself,
         // we must make sure to use the site of the request, NOT the site stored in the user preferences.
         // The default logic will erase the request site in case of a new session.
         // With this workaround the site from the request is made the current site as required.
@@ -1214,7 +1219,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_OK.equals(getParamAction())) {
             setAction(ACTION_OK);
         } else if (DIALOG_SUBMITFORM.equals(getParamAction())) {
@@ -1236,7 +1241,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     setAction(ACTION_GWT);
                     break;
             }
-            // build title for new resource dialog     
+            // build title for new resource dialog
             setParamTitle(key(Messages.GUI_NEWRESOURCE_UPLOAD_0));
         }
     }

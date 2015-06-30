@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,9 +39,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/** 
- * This class drops the CMS_BACKUP tables that are no longer used after all the transfers are finished.<p> 
- * 
+/**
+ * This class drops the CMS_BACKUP tables that are no longer used after all the transfers are finished.<p>
+ *
  * The tables to drop are
  * <ul>
  * <li>CMS_BACKUP_PROJECTRESOURCES</li>
@@ -51,7 +51,7 @@ import java.util.Map;
  * <li>CMS_BACKUP_RESOURCES</li>
  * <li>CMS_BACKUP_STRUCTURE</li>
  * </ul>
- * 
+ *
  * @since 7.0.0
  */
 public class CmsUpdateDBDropBackupTables extends A_CmsUpdateDBPart {
@@ -79,7 +79,7 @@ public class CmsUpdateDBDropBackupTables extends A_CmsUpdateDBPart {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the query properties cannot be read
      */
     public CmsUpdateDBDropBackupTables()

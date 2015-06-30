@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,10 +63,10 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
 
     /**
      * Creates the TinyMCE toolbar config string from a Javascript config object.<p>
-     * 
-     * @param jso a Javascript array of toolbar items 
-     * 
-     * @return the TinyMCE toolbar config string 
+     *
+     * @param jso a Javascript array of toolbar items
+     *
+     * @return the TinyMCE toolbar config string
      */
     protected static String createContextMenu(JavaScriptObject jso) {
 
@@ -80,10 +80,10 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
 
     /**
      * Creates the TinyMCE toolbar config string from a Javascript config object.<p>
-     * 
-     * @param jso a Javascript array of toolbar items 
-     * 
-     * @return the TinyMCE toolbar config string 
+     *
+     * @param jso a Javascript array of toolbar items
+     *
+     * @return the TinyMCE toolbar config string
      */
     protected static String createToolbar(JavaScriptObject jso) {
 
@@ -121,9 +121,9 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
 
     /**
      * Generates the tinyMCE editor options according to the configuration.<p>
-     * 
+     *
      * @param configuration the widget configuration
-     * 
+     *
      * @return the tinyMCE options
      */
     private native JavaScriptObject generateOptionsForTiny(String configuration)/*-{
@@ -138,13 +138,13 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
                                                                                 file_browser_callback : $wnd.cmsTinyMceFileBrowser
                                                                                 };
                                                                                 if (config.downloadGalleryConfig) {
-                                                                                    options.downloadGalleryConfig = config.downloadGalleryConfig; 
+                                                                                    options.downloadGalleryConfig = config.downloadGalleryConfig;
                                                                                 }
-                                                                                
+
                                                                                 if (config.imageGalleryConfig) {
-                                                                                    options.imageGalleryConfig = config.imageGalleryConfig; 
+                                                                                    options.imageGalleryConfig = config.imageGalleryConfig;
                                                                                 }
-                                                                                
+
                                                                                 if (config.language) {
                                                                                 options.language = config.language;
                                                                                 }

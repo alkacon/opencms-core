@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Factory class to create gallery dialog with or without parameter.<p>
- * 
+ *
  * @since 8.0.
  */
 public final class CmsGalleryFactory {
@@ -60,7 +60,7 @@ public final class CmsGalleryFactory {
 
     /**
      * Returns a gallery dialog object.<p>
-     * 
+     *
      * @return gallery dialog
      */
     @SuppressWarnings("unused")
@@ -100,9 +100,10 @@ public final class CmsGalleryFactory {
             CmsGallerySearchBean search = getSearchBeanFromDict();
             new CmsGalleryController(new CmsGalleryControllerHandler(galleryDialog), data, search);
         } catch (SerializationException e) {
-            CmsErrorDialog.handleException(new Exception(
-                "Deserialization of gallery data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
-                e));
+            CmsErrorDialog.handleException(
+                new Exception(
+                    "Deserialization of gallery data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                    e));
         }
 
         return galleryDialog;
@@ -110,11 +111,11 @@ public final class CmsGalleryFactory {
 
     /**
      * Creates a new gallery dialog.<p>
-     * 
-     * @param galleryHandler the gallery handler 
+     *
+     * @param galleryHandler the gallery handler
      * @param data the gallery data
-     * 
-     * @return the gallery dialog instance 
+     *
+     * @return the gallery dialog instance
      */
     @SuppressWarnings("unused")
     public static CmsGalleryDialog createDialog(I_CmsGalleryHandler galleryHandler, CmsGalleryDataBean data) {
@@ -126,22 +127,24 @@ public final class CmsGalleryFactory {
 
     /**
      * Creates a gallery widget pop-up.<p>
-     * 
+     *
      * @param handler the widget handler, used to set the widgets value
      * @param conf the gallery configuration
-     * 
+     *
      * @return the generated pop-up
      */
-    public static CmsGalleryPopup createGalleryPopup(I_CmsGalleryWidgetHandler handler, I_CmsGalleryConfiguration conf) {
+    public static CmsGalleryPopup createGalleryPopup(
+        I_CmsGalleryWidgetHandler handler,
+        I_CmsGalleryConfiguration conf) {
 
         return new CmsGalleryPopup(handler, conf);
     }
 
     /**
      * Deserializes the prefetched gallery data.<p>
-     * 
+     *
      * @return the gallery data
-     * 
+     *
      * @throws SerializationException in case deserialization fails
      */
     private static CmsGalleryDataBean getGalleryDataFromDict() throws SerializationException {
@@ -153,9 +156,9 @@ public final class CmsGalleryFactory {
 
     /**
      * Deserializes the prefetched gallery search.<p>
-     * 
+     *
      * @return the gallery data
-     * 
+     *
      * @throws SerializationException in case deserialization fails
      */
     private static CmsGallerySearchBean getSearchBeanFromDict() throws SerializationException {

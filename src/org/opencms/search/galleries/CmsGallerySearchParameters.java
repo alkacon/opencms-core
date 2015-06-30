@@ -385,10 +385,11 @@ public class CmsGallerySearchParameters {
         }
 
         // Set date created time filter
-        query.addFilterQuery(CmsSearchUtil.getDateCreatedTimeRangeFilterQuery(
-            CmsSearchField.FIELD_DATE_CREATED,
-            getDateCreatedRange().m_startTime,
-            getDateCreatedRange().m_endTime));
+        query.addFilterQuery(
+            CmsSearchUtil.getDateCreatedTimeRangeFilterQuery(
+                CmsSearchField.FIELD_DATE_CREATED,
+                getDateCreatedRange().m_startTime,
+                getDateCreatedRange().m_endTime));
 
         // Set date last modified time filter
         query.addFilterQuery(CmsSearchUtil.getDateCreatedTimeRangeFilterQuery(

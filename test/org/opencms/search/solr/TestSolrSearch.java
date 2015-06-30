@@ -57,13 +57,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.common.util.DateUtil;
+
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * Tests if Solr search queries are able to do what was earlier done with Lucene.<p>
@@ -172,13 +172,14 @@ public class TestSolrSearch extends OpenCmsTestCase {
         CmsSolrResultList results = index.search(getCmsObject(), query);
         long facetTextCount = results.getFacetQuery().get("text:OpenCms").intValue();
         long facetTitleCount = results.getFacetQuery().get("Title_prop:OpenCms").intValue();
-        echo("Found '"
-            + results.getFacetField("Title_exact").getValueCount()
-            + "' facets for the field \"Title_exact\" and '"
-            + facetTextCount
-            + "' of them containing the word: \"OpenCms\" in the field 'text' and '"
-            + facetTitleCount
-            + "' of them containing the word \"OpenCms\" in the field 'Title_prop!'");
+        echo(
+            "Found '"
+                + results.getFacetField("Title_exact").getValueCount()
+                + "' facets for the field \"Title_exact\" and '"
+                + facetTextCount
+                + "' of them containing the word: \"OpenCms\" in the field 'text' and '"
+                + facetTitleCount
+                + "' of them containing the word \"OpenCms\" in the field 'Title_prop!'");
 
         query = new CmsSolrQuery(getCmsObject(), CmsRequestUtil.createParameterMap("q=text:OpenCms"));
         results = index.search(getCmsObject(), query);
@@ -906,7 +907,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
         // parameters should be stronger than request context and members
         query = new CmsSolrQuery(
             getCmsObject(),
-            CmsRequestUtil.createParameterMap("q=test&fq=parent-folders:\"/\"&fq=con_locales:fr&fl=content_fr&rows=50&qt=edismax&fq=type:v8news&fq=expired:[NOW TO *]&fq=released:[* TO NOW]"));
+            CmsRequestUtil.createParameterMap(
+                "q=test&fq=parent-folders:\"/\"&fq=con_locales:fr&fl=content_fr&rows=50&qt=edismax&fq=type:v8news&fq=expired:[NOW TO *]&fq=released:[* TO NOW]"));
         query.setText("test");
         query.setTextSearchFields("pla");
         query.setLocales(Locale.GERMAN);
@@ -941,13 +943,15 @@ public class TestSolrSearch extends OpenCmsTestCase {
         int score = results.get(0).getScore(maxScore);
         assertTrue("Best match by score must always be 100 but is " + score, score == 100);
         for (int i = 1; i < results.size(); i++) {
-            assertTrue("Resource "
-                + results.get(i - 1).getRootPath()
-                + " not sorted as expected - index ["
-                + (i - 1)
-                + "/"
-                + i
-                + "]", results.get(i - 1).getScore(maxScore) >= results.get(i).getScore(maxScore));
+            assertTrue(
+                "Resource "
+                    + results.get(i - 1).getRootPath()
+                    + " not sorted as expected - index ["
+                    + (i - 1)
+                    + "/"
+                    + i
+                    + "]",
+                results.get(i - 1).getScore(maxScore) >= results.get(i).getScore(maxScore));
         }
 
         // second run use Title sort order

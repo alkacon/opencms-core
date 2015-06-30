@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -70,7 +70,7 @@ public class CmsAppViewLayout extends CssLayout {
 
     /**
      * Returns the app area component.<p>
-     * 
+     *
      * @return the app area component
      */
     public ComponentContainer getAppContainer() {
@@ -80,7 +80,7 @@ public class CmsAppViewLayout extends CssLayout {
 
     /**
      * Sets the app title.<p>
-     * 
+     *
      * @param title the title
      */
     public void setAppTitle(String title) {
@@ -91,7 +91,7 @@ public class CmsAppViewLayout extends CssLayout {
 
     /**
      * Sets the menu component.<p>
-     * 
+     *
      * @param menu the menu
      */
     public void setMenu(Component menu) {
@@ -101,7 +101,7 @@ public class CmsAppViewLayout extends CssLayout {
 
     /**
      * Sets the menu title.<p>
-     * 
+     *
      * @param title the title
      */
     public void setMenuTitle(String title) {

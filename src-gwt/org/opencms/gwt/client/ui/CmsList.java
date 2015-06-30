@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,9 +45,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A very basic list implementation to hold {@link CmsListItemWidget}.<p>
- * 
- * @param <I> the specific list item implementation 
- * 
+ *
+ * @param <I> the specific list item implementation
+ *
  * @since 8.0.0
  */
 public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_CmsTruncable, I_CmsDropTarget {
@@ -103,9 +103,9 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /**
      * Adds an item to the list.<p>
-     * 
+     *
      * @param item the item to add
-     * 
+     *
      * @see #add(Widget)
      */
     public void addItem(I item) {
@@ -156,11 +156,11 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /**
      * Returns the list item at the given position.<p>
-     * 
+     *
      * @param index the position
-     * 
+     *
      * @return the list item
-     * 
+     *
      * @see #getWidget(int)
      */
     public I getItem(int index) {
@@ -170,11 +170,11 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /**
      * Returns the list item with the given id.<p>
-     * 
+     *
      * @param itemId the id of the item to retrieve
-     * 
+     *
      * @return the list item
-     * 
+     *
      * @see #getWidget(int)
      */
     public I getItem(String itemId) {
@@ -184,9 +184,9 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /**
      * Returns the given item position.<p>
-     * 
+     *
      * @param item the item to get the position for
-     * 
+     *
      * @return the item position
      */
     public int getItemPosition(I item) {
@@ -205,7 +205,7 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /**
      * Inserts the given widget at the given position.<p>
-     * 
+     *
      * @param widget the widget to insert
      * @param position the position
      */
@@ -219,7 +219,7 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /**
      * Inserts the given item at the given position.<p>
-     * 
+     *
      * @param item the item to insert
      * @param position the position
      */
@@ -239,7 +239,7 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /**
      * Returns if the list will always return <code>true</code> on check target requests within drag and drop.<p>
-     * 
+     *
      * @return <code>true</code> if take all is enabled for drag and drop
      */
     public boolean isDNDTakeAll() {
@@ -283,11 +283,11 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /**
      * Removes an item from the list.<p>
-     * 
+     *
      * @param item the item to remove
-     * 
+     *
      * @return the removed item
-     * 
+     *
      * @see #remove(Widget)
      */
     public I removeItem(I item) {
@@ -298,11 +298,11 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /**
      * Removes an item from the list.<p>
-     * 
+     *
      * @param itemId the id of the item to remove
-     * 
+     *
      * @return the removed item
-     * 
+     *
      * @see #remove(Widget)
      */
     public I removeItem(String itemId) {
@@ -371,7 +371,7 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /**
      * Sets if the list will always return <code>true</code> on check target requests within drag and drop.<p>
-     * 
+     *
      * @param takeAll <code>true</code> to enable take all for drag and drop
      */
     public void setDNDTakeAll(boolean takeAll) {
@@ -405,7 +405,7 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /**
      * Changes the id for the given item.<p>
-     * 
+     *
      * @param item the item to change the id for
      * @param id the new id
      */
@@ -418,7 +418,7 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /**
      * Registers the given item on this list.<p>
-     * 
+     *
      * @param item the item to register
      */
     protected void registerItem(I item) {
@@ -433,7 +433,7 @@ public class CmsList<I extends I_CmsListItem> extends ComplexPanel implements I_
 
     /**
      * Sets the current drag'n drop place holder.<p>
-     * 
+     *
      * @param placeholder the element to set as place holder
      */
     protected void setPlaceholder(Element placeholder) {

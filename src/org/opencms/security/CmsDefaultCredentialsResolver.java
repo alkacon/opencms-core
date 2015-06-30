@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,7 +28,7 @@
 package org.opencms.security;
 
 /**
- * Default implementation of a I_CmsCredentialResolver, which does nothing but return the 
+ * Default implementation of a I_CmsCredentialResolver, which does nothing but return the
  * credential which was passed in.<p>
  */
 public class CmsDefaultCredentialsResolver implements I_CmsCredentialsResolver {

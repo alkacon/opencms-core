@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import java.util.Date;
 
 /**
  * The class represents a lock to a {@link I_CmsRepositoryItem}.<p>
- * 
+ *
  * @since 6.2.4
  */
 public class CmsRepositoryLockInfo {
@@ -171,7 +171,7 @@ public class CmsRepositoryLockInfo {
 
     /**
      * Return true if the lock has expired.
-     * 
+     *
      * @return true if the lock has expired
      */
     public boolean hasExpired() {
@@ -181,7 +181,7 @@ public class CmsRepositoryLockInfo {
 
     /**
      * Return true if the lock is exclusive.
-     * 
+     *
      * @return true if the lock is exclusive
      */
     public boolean isExclusive() {
@@ -262,7 +262,7 @@ public class CmsRepositoryLockInfo {
 
     /**
      * Get a string representation of this lock info.<p>
-     * 
+     *
      * @return a string representation of this lock
      */
     @Override

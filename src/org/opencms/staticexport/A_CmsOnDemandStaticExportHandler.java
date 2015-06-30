@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,12 +36,12 @@ import org.apache.commons.logging.Log;
 
 /**
  * Abstract implementation for the <code>{@link I_CmsStaticExportHandler}</code> interface.<p>
- * 
- * This handler is most suitable for dynamic sites that use the static export 
+ *
+ * This handler is most suitable for dynamic sites that use the static export
  * as optimization for non-dynamic content.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see I_CmsStaticExportHandler
  */
 public abstract class A_CmsOnDemandStaticExportHandler extends A_CmsStaticExportHandler {
@@ -61,15 +61,16 @@ public abstract class A_CmsOnDemandStaticExportHandler extends A_CmsStaticExport
             count++;
             try {
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().getBundle().key(
-                        Messages.LOG_WAITING_STATIC_EXPORT_3,
-                        getClass().getName(),
-                        new Integer(count),
-                        new Integer(CmsStaticExportManager.HANDLER_FINISH_TIME)));
+                    LOG.info(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_WAITING_STATIC_EXPORT_3,
+                            getClass().getName(),
+                            new Integer(count),
+                            new Integer(CmsStaticExportManager.HANDLER_FINISH_TIME)));
                 }
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                // if interrupted we ignore the handler, this will produce some log messages but should be ok 
+                // if interrupted we ignore the handler, this will produce some log messages but should be ok
                 count = CmsStaticExportManager.HANDLER_FINISH_TIME;
             }
         }

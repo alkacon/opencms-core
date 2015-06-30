@@ -325,16 +325,15 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport implements
                 // read the JSON config file
                 CmsFile configFile = m_cms.readFile(m_configFile);
                 OpenCms.getLocaleManager();
-                String configString = new String(configFile.getContents(), CmsLocaleManager.getResourceEncoding(
-                    m_cms,
-                    configFile));
+                String configString = new String(
+                    configFile.getContents(),
+                    CmsLocaleManager.getResourceEncoding(m_cms, configFile));
                 config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(configString));
             } else { // assume XML
                 CmsFile file = m_cms.readFile(m_configFile);
                 CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(m_cms, file);
-                config = new CmsSearchConfiguration(new CmsXMLSearchConfigurationParser(
-                    xmlContent,
-                    m_cms.getRequestContext().getLocale()));
+                config = new CmsSearchConfiguration(
+                    new CmsXMLSearchConfigurationParser(xmlContent, m_cms.getRequestContext().getLocale()));
             }
             m_searchController = new CmsSearchController(config);
 
@@ -376,7 +375,9 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport implements
             info.setId((new CmsUUID()).getStringValue());
             if (CmsJspTagEditable.getDirectEditProvider(pageContext) != null) {
                 try {
-                    CmsJspTagEditable.getDirectEditProvider(pageContext).insertDirectEditListMetadata(pageContext, info);
+                    CmsJspTagEditable.getDirectEditProvider(pageContext).insertDirectEditListMetadata(
+                        pageContext,
+                        info);
                 } catch (JspException e) {
                     // TODO: improve + localize error message
                     LOG.error("Could not write content info.", e);

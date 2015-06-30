@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,30 +35,30 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * A locale handler returns the locale name to use for the given request context.<p>
- * 
+ *
  * By implementing this interface, and configuring OpenCms
  * accordingly, the behaviour for the m_locale selection can be fine-tuned
  * to the exact need of the OpenCms installation.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsLocaleHandler {
 
     /**
      * Returns the i18n information to use in the request context.<p>
-     * 
+     *
      * @param req the current http request
      * @param user the current user
      * @param project the current project
      * @param resource the URI of the requested resource (with full site root added)
-     * 
+     *
      * @return the i18n information to use for the given request context
      */
     CmsI18nInfo getI18nInfo(HttpServletRequest req, CmsUser user, CmsProject project, String resource);
 
     /**
      * Will be called during system startup.<p>
-     * 
+     *
      * @param cms an initialized cms permission context for VFS access
      */
     void initHandler(CmsObject cms);

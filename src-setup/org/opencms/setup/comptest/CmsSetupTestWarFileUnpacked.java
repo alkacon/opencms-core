@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import java.io.File;
 
 /**
  * Tests if the OpenCms WAR file is unpacked.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsSetupTestWarFileUnpacked implements I_CmsSetupTest {
 
@@ -67,8 +67,9 @@ public class CmsSetupTestWarFileUnpacked implements I_CmsSetupTest {
             testResult.setResult(RESULT_PASSED);
         } else {
             testResult.setRed();
-            testResult.setInfo("OpenCms cannot be installed unless the OpenCms WAR file is unpacked! "
-                + "Please check the settings of your servlet container or unpack the WAR file manually.");
+            testResult.setInfo(
+                "OpenCms cannot be installed unless the OpenCms WAR file is unpacked! "
+                    + "Please check the settings of your servlet container or unpack the WAR file manually.");
             testResult.setHelp("WAR file NOT unpacked");
             testResult.setResult(RESULT_FAILED);
         }

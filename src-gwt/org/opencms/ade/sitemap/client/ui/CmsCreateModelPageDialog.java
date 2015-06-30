@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,17 +41,19 @@ public class CmsCreateModelPageDialog extends A_CmsNewModelPageDialog {
     /** The model group flag. */
     private boolean m_isModelGroup;
 
-    /** 
+    /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the controller
      * @param isModelGroup in case of a model group page
      */
     public CmsCreateModelPageDialog(CmsSitemapController controller, boolean isModelGroup) {
 
-        super(isModelGroup
-        ? Messages.get().key(Messages.GUI_CREATE_MODEL_GROUP_PAGE_DIALOG_TITLE_0)
-        : Messages.get().key(Messages.GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0), null);
+        super(
+            isModelGroup
+            ? Messages.get().key(Messages.GUI_CREATE_MODEL_GROUP_PAGE_DIALOG_TITLE_0)
+            : Messages.get().key(Messages.GUI_CREATE_MODEL_PAGE_DIALOG_TITLE_0),
+            null);
         m_isModelGroup = isModelGroup;
         m_controller = controller;
     }

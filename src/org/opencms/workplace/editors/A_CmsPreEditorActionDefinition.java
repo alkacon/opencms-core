@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,10 +36,10 @@ import org.opencms.workplace.CmsDialog;
 
 /**
  * Defines an action to be performed before the workplace editor is opened for the first time.<p>
- * 
+ *
  * Implements the basic methods to handle the resource type.<p>
- * 
- * @since 6.5.4 
+ *
+ * @since 6.5.4
  */
 public abstract class A_CmsPreEditorActionDefinition implements I_CmsPreEditorActionDefinition {
 
@@ -110,7 +110,7 @@ public abstract class A_CmsPreEditorActionDefinition implements I_CmsPreEditorAc
      */
     public final void initConfiguration() {
 
-        // final since subclasses should NOT implement this        
+        // final since subclasses should NOT implement this
     }
 
     /**

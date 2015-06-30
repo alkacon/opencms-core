@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,23 +48,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Test;
-
 import org.antlr.stringtemplate.StringTemplate;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import junit.framework.Test;
+
 /**
  * Tests for the ADE configuration mechanism which read the configuration data from multiple files in the VFS.<p>
- * 
+ *
  */
 public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Test constructor.<p>
-     * 
-     * @param name the name of the test 
+     *
+     * @param name the name of the test
      */
     public TestLiveConfig(String name) {
 
@@ -97,9 +97,9 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
         StringTemplate st = new StringTemplate(template);
         st.setAttribute("types", types);
-        st.setAttribute("masterConfigs", masterConfigId != null
-        ? Collections.singletonList(masterConfigId)
-        : Collections.emptyList());
+        st.setAttribute(
+            "masterConfigs",
+            masterConfigId != null ? Collections.singletonList(masterConfigId) : Collections.emptyList());
         return st.toString();
     }
 
@@ -113,8 +113,8 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Returns the test suite.<p>
-     * 
-     * @return the test suite 
+     *
+     * @return the test suite
      */
     public static Test suite() {
 
@@ -125,12 +125,12 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests cross-site detail page links.<p>
-     * 
+     *
      * @throws Exception -
      */
     public void testCrossSiteDetailPageLinks1() throws Exception {
 
-        // Link from site foo to site bar, where a detail page exists in foo 
+        // Link from site foo to site bar, where a detail page exists in foo
 
         CmsObject cms = getCmsObject();
         cms.getRequestContext().setSiteRoot("/sites/foo");
@@ -143,13 +143,13 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests cross-site detail page links.<p>
-     * 
+     *
      * @throws Exception -
      */
     public void testCrossSiteDetailPageLinks1a() throws Exception {
 
         // Link from site foo to site bar, where a detail page exists in foo
-        // (using a site path that also exists in site foo) 
+        // (using a site path that also exists in site foo)
 
         OpenCmsTestLogAppender.setBreakOnError(false);
         CmsObject cms = getCmsObject();
@@ -163,12 +163,12 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests cross-site detail page links.<p>
-     * 
+     *
      * @throws Exception -
      */
     public void testCrossSiteDetailPageLinks2() throws Exception {
 
-        // Link from site bar to site foo, where a detail page exists in foo 
+        // Link from site bar to site foo, where a detail page exists in foo
 
         CmsObject cms = getCmsObject();
         cms.getRequestContext().setSiteRoot("/sites/bar");
@@ -181,7 +181,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests deletion of configuration files.<p>
-     * 
+     *
      * @throws Exception -
      */
     public void testDeleted() throws Exception {
@@ -203,12 +203,12 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests finding detail pages.<p>
-     * 
+     *
      * @throws Exception -
      */
     public void testDetailPage1() throws Exception {
 
-        // root site 
+        // root site
         waitForUpdate(false);
         CmsObject cms = rootCms();
         String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
@@ -264,7 +264,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests the master configuration feature.<p>
-     * 
+     *
      * @throws Exception -
      */
     public void testMasterConfiguration() throws Exception {
@@ -323,7 +323,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests that newly created module configurations are reflected in the configuration objects.<p>
-     * 
+     *
      * @throws Exception -
      */
     public void testModuleConfig1() throws Exception {
@@ -359,7 +359,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests that when moving a configuration file, the configuration will be correct.<p>
-     * 
+     *
      * @throws Exception -
      */
     public void testMove1() throws Exception {
@@ -378,7 +378,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests that when detail pages are moved, the configuration will still return the correct URIs.<p>
-     * 
+     *
      * @throws Exception -
      */
     public void testMoveDetailPages() throws Exception {
@@ -440,7 +440,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Tests that publishing a deleted configuration file changes the online configuration.<p>
-     * 
+     *
      * @throws Exception -
      */
     public void testPublishDeleted() throws Exception {
@@ -559,8 +559,8 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Waits until the configuration update task has been run.<p>
-     * 
-     * @param online true if we should wait for the Online task, false for the Offline task 
+     *
+     * @param online true if we should wait for the Online task, false for the Offline task
      */
     public void waitForUpdate(boolean online) {
 
@@ -569,11 +569,11 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Helper method to compare attributes of configured resource types with a list of expected values.<p>
-     * 
-     * @param cms the CMS context 
-     * @param path the path used to access the configuration 
+     *
+     * @param cms the CMS context
+     * @param path the path used to access the configuration
      * @param attr the attribute which should be retrieved from the configured resource types
-     * @param expected the expected resource type names 
+     * @param expected the expected resource type names
      */
     protected void checkResourceTypes(CmsObject cms, String path, String attr, String... expected) {
 
@@ -589,11 +589,11 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Helper method to compare attributes of configured resource types with a set  of expected values.<p>
-     * 
-     * @param cms the CMS context 
-     * @param path the path used to access the configuration 
+     *
+     * @param cms the CMS context
+     * @param path the path used to access the configuration
      * @param attr the attribute which should be retrieved from the configured resource types
-     * @param expected the expected resource type names 
+     * @param expected the expected resource type names
      */
     protected void checkResourceTypesSet(CmsObject cms, String path, String attr, String... expected) {
 
@@ -609,9 +609,9 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Helper method for deleting a resource.<p>
-     * 
-     * @param res the resource to delete 
-     * @throws Exception if something goes wrong 
+     *
+     * @param res the resource to delete
+     * @throws Exception if something goes wrong
      */
     protected void delete(CmsResource res) throws Exception {
 
@@ -622,16 +622,16 @@ public class TestLiveConfig extends OpenCmsTestCase {
         try {
             cms.unlockResource(sitePath);
         } catch (CmsException e) {
-            // ignore 
+            // ignore
         }
     }
 
     /**
      * Gets an attribute from a resource type configuration object.<p>
-     * 
-     * @param typeConfig the type configuration object 
-     * @param attr the attribute name  
-     * @return the attribute from the resource type configuration object  
+     *
+     * @param typeConfig the type configuration object
+     * @param attr the attribute name
+     * @return the attribute from the resource type configuration object
      */
     protected String getAttribute(CmsResourceTypeConfig typeConfig, String attr) {
 
@@ -648,9 +648,9 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Helper method for creating a list of given elements.<p>
-     * 
+     *
      * @param elems the elements
-     * @return a list containing the elements 
+     * @return a list containing the elements
      */
     protected <X> List<X> list(X... elems) {
 
@@ -663,8 +663,8 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Helper method for creating a CMS context in the Online Project.<p>
-     * 
-     * @return the CMS context 
+     *
+     * @return the CMS context
      * @throws Exception -
      */
     protected CmsObject onlineCms() throws Exception {
@@ -710,9 +710,9 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     /**
      * Helper method for getting a CMS object in the root site.<p>
-     * 
-     * @return a CMS context in the root site 
-     * 
+     *
+     * @return a CMS context in the root site
+     *
      * @throws CmsException  -
      */
     protected CmsObject rootCms() throws CmsException {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,15 +41,15 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Simple SAX event handler that generates a XML (or HTML) file from the events caught.<p>
- * 
- * This can be used for writing large XML files where keeping a DOM structure 
- * in memory might cause out-of-memory issues, like e.g. when writing the 
+ *
+ * This can be used for writing large XML files where keeping a DOM structure
+ * in memory might cause out-of-memory issues, like e.g. when writing the
  * OpenCms export files.<p>
- * 
+ *
  * It can also be used if a <code>{@link org.xml.sax.ContentHandler}</code> is needed that should
  * generate a XML / HTML file from a series of SAX events.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
@@ -59,10 +59,10 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /** The file encoding to use. */
     private String m_encoding;
 
-    /** 
-     * Indicates if characters that are not part of the selected encoding 
+    /**
+     * Indicates if characters that are not part of the selected encoding
      * are to be replaced with the XML <code>&amp;#123;</code> entity representation
-     * in the generated output (not in CDATA elements). 
+     * in the generated output (not in CDATA elements).
      */
     private boolean m_escapeUnknownChars;
 
@@ -88,7 +88,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     private Writer m_writer;
 
     /**
-     * Creates a SAX event handler that generates XML / HTML Strings from the events caught 
+     * Creates a SAX event handler that generates XML / HTML Strings from the events caught
      * using a new <code>{@link StringWriter}</code> and the OpenCms default encoding.<p>
      */
     public CmsXmlSaxWriter() {
@@ -97,9 +97,9 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     }
 
     /**
-     * Creates a SAX event handler that generates XML / HTML Strings from the events caught 
+     * Creates a SAX event handler that generates XML / HTML Strings from the events caught
      * using a new <code>{@link StringWriter}</code> and the given encoding.<p>
-     * 
+     *
      * @param encoding the encoding for the XML file
      */
     public CmsXmlSaxWriter(String encoding) {
@@ -108,10 +108,10 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     }
 
     /**
-     * Creates a SAX event handler that generates XML / HTML Strings from the events caught 
+     * Creates a SAX event handler that generates XML / HTML Strings from the events caught
      * using a new <code>{@link StringWriter}</code> and the given encoding.<p>
-     * 
-     * @param writer the Writer to write to output to 
+     *
+     * @param writer the Writer to write to output to
      */
     public CmsXmlSaxWriter(Writer writer) {
 
@@ -121,8 +121,8 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /**
      * A SAX event handler that generates XML / HTML Strings from the events caught and writes them
      * to the given Writer.<p>
-     * 
-     * @param writer the Writer to write to output to 
+     *
+     * @param writer the Writer to write to output to
      * @param encoding the encoding for the XML file
      */
     public CmsXmlSaxWriter(Writer writer, String encoding) {
@@ -244,7 +244,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
     /**
      * Returns the encoding this XML Sax writer was initialized with.<p>
-     *  
+     *
      * @return the encoding this XML Sax writer was initialized with
      */
     public String getEncoding() {
@@ -254,7 +254,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
     /**
      * Returns the Writer where the XML is written to.<p>
-     * 
+     *
      * @return the Writer where the XML is written to
      */
     public Writer getWriter() {
@@ -262,12 +262,12 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
         return m_writer;
     }
 
-    /** 
-     * Returns <code>true</code> if charactes that are not part of the selected encoding 
+    /**
+     * Returns <code>true</code> if charactes that are not part of the selected encoding
      * are to be replaced with the HTML <code>&amp;#123;</code> entity representation
      * in the generated output (not in CDATA elements).<p>
-     * 
-     * @return <code>true</code> if charactes that are not part of the selected encoding 
+     *
+     * @return <code>true</code> if charactes that are not part of the selected encoding
      *      are to be replaced with the HTML entity representation
      */
     public boolean isEscapeUnknownChars() {
@@ -275,9 +275,9 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
         return m_escapeUnknownChars;
     }
 
-    /** 
+    /**
      * Returns <code>true</code> if XML entities are to be encoded in the generated output (not in CDATA elements).<p>
-     * 
+     *
      * @return <code>true</code> if XML entities are to be encoded in the generated output (not in CDATA elements)
      */
     public boolean isEscapeXml() {
@@ -287,7 +287,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
     /**
      * Sets the encoding to use for the generated output.<p>
-     * 
+     *
      * @param value the encoding to use for the generated output
      */
     public void setEncoding(String value) {
@@ -296,10 +296,10 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     }
 
     /**
-     * If set to <code>true</code>, then charactes that are not part of the selected encoding 
+     * If set to <code>true</code>, then charactes that are not part of the selected encoding
      * are to be replaced with the XML <code>&amp;#123;</code> entity representation
      * in the generated output (not in CDATA elements).<p>
-     * 
+     *
      * @param value indicates to escape unknown characters with XML entities or not
      */
     public void setEscapeUnknownChars(boolean value) {
@@ -308,9 +308,9 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     }
 
     /**
-     * If set to <code>true</code>, then 
+     * If set to <code>true</code>, then
      * XML entities are to be encoded in the generated output (not in CDATA elements).<p>
-     * 
+     *
      * @param value indicates to to escape characters with XML entities or not
      */
     public void setEscapeXml(boolean value) {
@@ -385,7 +385,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
                 write("=\"");
                 String value = attributes.getValue(i);
                 if (m_escapeXml) {
-                    // XML should be escaped 
+                    // XML should be escaped
                     // escape HTML entities ('<' becomes '&lt;')
                     value = CmsEncoder.escapeXml(value, true);
                     if (m_escapeUnknownChars) {
@@ -410,12 +410,12 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
     /**
      * Resolves the local vs. the qualified name.<p>
-     * 
+     *
      * If the local name is the empty String "", the qualified name is used.<p>
-     * 
+     *
      * @param localName the local name
      * @param qualifiedName the qualified XML 1.0 name
-     * @return the resolved name to use 
+     * @return the resolved name to use
      */
     private String resolveName(String localName, String qualifiedName) {
 
@@ -428,7 +428,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
     /**
      * Writes s String to the output stream.<p>
-     * 
+     *
      * @param s the String to write
      * @throws SAXException in case of I/O errors
      */
@@ -443,7 +443,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
     /**
      * Writes a linebreak to the output stream, also handles the indentation.<p>
-     *  
+     *
      * @throws SAXException in case of I/O errors
      */
     private void writeNewLine() throws SAXException {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,15 +41,15 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Provides methods for building the top frame Javascript code for the Explorer view of the OpenCms Workplace.<p> 
- * 
+ * Provides methods for building the top frame Javascript code for the Explorer view of the OpenCms Workplace.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/views/top_js.jsp
  * </ul>
  * <p>
- * 
- * @since 6.2.0 
+ *
+ * @since 6.2.0
  */
 public class CmsExplorerInit extends CmsWorkplace {
 
@@ -58,7 +58,7 @@ public class CmsExplorerInit extends CmsWorkplace {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsExplorerInit(CmsJspActionElement jsp) {
@@ -69,7 +69,7 @@ public class CmsExplorerInit extends CmsWorkplace {
 
     /**
      * Builds the Javascript for the Workplace context menus.<p>
-     * 
+     *
      * @return the Javascript for the Workplace context menus
      */
     public String buildContextMenues() {
@@ -88,7 +88,7 @@ public class CmsExplorerInit extends CmsWorkplace {
                 CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                     type.getTypeName());
                 if (settings != null) {
-                    // append the context menu of the current resource type 
+                    // append the context menu of the current resource type
                     result.append(settings.getJSEntries(settings, type.getTypeId(), getMessages()));
                 }
             }
@@ -101,7 +101,7 @@ public class CmsExplorerInit extends CmsWorkplace {
 
     /**
      * Returns the file settings for the Workplace explorer view.<p>
-     * 
+     *
      * @return the file settings for the Workplace explorer view
      */
     public int getExplorerSettings() {
@@ -113,7 +113,7 @@ public class CmsExplorerInit extends CmsWorkplace {
 
     /**
      * Returns the server name for initializing the explorer view.<p>
-     * 
+     *
      * @return the server name
      */
     public String getServerName() {
@@ -123,7 +123,7 @@ public class CmsExplorerInit extends CmsWorkplace {
 
     /**
      * Returns the server path for initializing the explorer view.<p>
-     * 
+     *
      * @return the server path
      */
     public String getServerPath() {
@@ -133,7 +133,7 @@ public class CmsExplorerInit extends CmsWorkplace {
 
     /**
      * Returns the setting for the upload button for initializing the explorer view.<p>
-     * 
+     *
      * @return the setting for the upload button
      */
     public String getShowFileUploadButtons() {
@@ -143,7 +143,7 @@ public class CmsExplorerInit extends CmsWorkplace {
 
     /**
      * Returns the name of the current user for initializing the explorer view.<p>
-     * 
+     *
      * @return the name of the user
      */
     public String getUserName() {

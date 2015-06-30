@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,10 +38,10 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 /**
  * Defines a menu item rule that sets the visibility to active if the current resource is changed
  * and locked by the current user or the autolock feature is enabled.<p>
- * 
+ *
  * It sets the visibility to inactive for new resources and to invisible for deleted resources,
  * for folders it sets the visibility to active for unchanged resources.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsMirPrSameLockedActiveChangedAl extends A_CmsMenuItemRule {
@@ -56,7 +56,8 @@ public class CmsMirPrSameLockedActiveChangedAl extends A_CmsMenuItemRule {
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         } else if (resourceUtil[0].getResource().getState().isNew()
             || (resourceUtil[0].getResource().isFile() && resourceUtil[0].getResource().getState().isUnchanged())) {
-            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0);
+            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0);
         }
         try {
             if (!resourceUtil[0].isEditable()
@@ -65,7 +66,8 @@ public class CmsMirPrSameLockedActiveChangedAl extends A_CmsMenuItemRule {
                     CmsPermissionSet.ACCESS_WRITE,
                     false,
                     CmsResourceFilter.ALL)) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0);
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                    Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0);
             }
         } catch (CmsException e) {
             // error checking permissions, disable entry completely
@@ -82,9 +84,11 @@ public class CmsMirPrSameLockedActiveChangedAl extends A_CmsMenuItemRule {
         if (resourceUtil[0].isInsideProject()) {
             CmsLock lock = resourceUtil[0].getLock();
             boolean lockedForPublish = resourceUtil[0].getProjectState().isLockedForPublishing();
-            return (!lockedForPublish && !lock.isShared() && lock.isOwnedInProjectBy(
-                cms.getRequestContext().getCurrentUser(),
-                cms.getRequestContext().getCurrentProject()))
+            return (!lockedForPublish
+                && !lock.isShared()
+                && lock.isOwnedInProjectBy(
+                    cms.getRequestContext().getCurrentUser(),
+                    cms.getRequestContext().getCurrentProject()))
                 || (!lockedForPublish && lock.isNullLock() && OpenCms.getWorkplaceManager().autoLockResources());
         }
         // resource is not locked by the user in current project or not locked with enabled autolock, rule does not match

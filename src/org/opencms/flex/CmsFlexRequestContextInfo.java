@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,15 +30,15 @@ package org.opencms.flex;
 import org.opencms.file.CmsResource;
 
 /**
- * Contains information about the OpenCms request context required by the 
+ * Contains information about the OpenCms request context required by the
  * Flex implementation.<p>
- * 
- * An instance of this class is attached to every <code>CmsRequestContext</code> as 
+ *
+ * An instance of this class is attached to every <code>CmsRequestContext</code> as
  * an attribute as soon as the request context is wrapped in a flex response.
- * Information about the "last modified" and "expire" times of VFS resources are 
- * stored in this Object.<p> 
- * 
- * @since 6.0.0 
+ * Information about the "last modified" and "expire" times of VFS resources are
+ * stored in this Object.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsFlexRequestContextInfo {
 
@@ -59,7 +59,7 @@ public class CmsFlexRequestContextInfo {
 
     /**
      * Returns the "expires" date for this context.<p>
-     * 
+     *
      * @return the "expires" date for this context
      */
     public long getDateExpires() {
@@ -69,7 +69,7 @@ public class CmsFlexRequestContextInfo {
 
     /**
      * Returns the "last modified" date for this context.<p>
-     * 
+     *
      * @return the "last modified" date for this context
      */
     public long getDateLastModified() {
@@ -79,7 +79,7 @@ public class CmsFlexRequestContextInfo {
 
     /**
      * Merges this context info with the values from the other context info.<p>
-     *  
+     *
      * @param other the context info to merge with
      */
     public void merge(CmsFlexRequestContextInfo other) {
@@ -90,7 +90,7 @@ public class CmsFlexRequestContextInfo {
 
     /**
      * Updates the "expires" date for this context with the given value.<p>
-     * 
+     *
      * @param dateExpires the value to update the "expires" date with
      */
     public void updateDateExpires(long dateExpires) {
@@ -106,12 +106,12 @@ public class CmsFlexRequestContextInfo {
 
     /**
      * Updates the "last modified" date for this context with the given value.<p>
-     * 
+     *
      * The currently stored value is only updated with the new value if
      * the new value is either larger (i.e. newer) then the stored value,
      * or if the new value is less then zero, which indicates that the "last modified"
      * optimization can not be used because the element is dynamic.<p>
-     * 
+     *
      * @param dateLastModified the value to update the "last modified" date with
      */
     public void updateDateLastModified(long dateLastModified) {
@@ -124,7 +124,7 @@ public class CmsFlexRequestContextInfo {
     /**
      * Updates both the "last modified" and the "expires" date
      * for this context with the given values.<p>
-     * 
+     *
      * @param dateLastModified the value to update the "last modified" date with
      * @param dateExpires the value to update the "expires" date with
      */
@@ -137,10 +137,10 @@ public class CmsFlexRequestContextInfo {
     /**
      * Updates the "last modified" date for this context as well as the
      * "expires" date with the values from a given resource.<p>
-     * 
-     * The "expires" date is the calculated from the given date values 
+     *
+     * The "expires" date is the calculated from the given date values
      * of resource release and expiration and also the current time.<p>
-     * 
+     *
      * @param resource the resource to use for updating the context values
      */
     public void updateFromResource(CmsResource resource) {

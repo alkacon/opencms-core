@@ -74,7 +74,10 @@ public class CmsCollectorPublishListHelper {
      * @param collectorInfo the collector information
      * @param collectorLimit the number of resources which should be fetched via the collector
      */
-    public CmsCollectorPublishListHelper(CmsObject cms, I_CmsContentLoadCollectorInfo collectorInfo, int collectorLimit) {
+    public CmsCollectorPublishListHelper(
+        CmsObject cms,
+        I_CmsContentLoadCollectorInfo collectorInfo,
+        int collectorLimit) {
 
         if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             throw new IllegalArgumentException("CmsObject must not be set to the Online project!");

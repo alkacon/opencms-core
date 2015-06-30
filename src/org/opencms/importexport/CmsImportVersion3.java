@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,15 +67,15 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 
 /**
- * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for 
+ * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for
  * the import version 3.<p>
- * 
+ *
  * This import format was used in OpenCms 5.1.2 - 5.1.6.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.importexport.A_CmsImport
- * 
+ *
  * @deprecated this import class is no longer in use and should only be used to import old export files
  */
 @Deprecated
@@ -106,7 +106,7 @@ public class CmsImportVersion3 extends A_CmsImport {
 
     /**
      * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document)
-     * 
+     *
      * @deprecated use {@link #importData(CmsObject, I_CmsReport, CmsImportParameters)} instead
      */
     @Deprecated
@@ -118,9 +118,10 @@ public class CmsImportVersion3 extends A_CmsImport {
         ZipFile importZip,
         Document docXml) throws CmsImportExportException {
 
-        CmsImportParameters params = new CmsImportParameters(importResource != null
-        ? importResource.getAbsolutePath()
-        : importZip.getName(), importPath, true);
+        CmsImportParameters params = new CmsImportParameters(
+            importResource != null ? importResource.getAbsolutePath() : importZip.getName(),
+            importPath,
+            true);
 
         try {
             importData(cms, report, params);
@@ -202,7 +203,7 @@ public class CmsImportVersion3 extends A_CmsImport {
 
     /**
      * Imports the resources and writes them to the cms.<p>
-     * 
+     *
      * @throws CmsImportExportException if something goes wrong
      */
     @SuppressWarnings("unchecked")
@@ -226,9 +227,10 @@ public class CmsImportVersion3 extends A_CmsImport {
             immutableResources = Collections.EMPTY_LIST;
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_IMPORTEXPORT_IMMUTABLE_RESOURCES_SIZE_1,
-                Integer.toString(immutableResources.size())));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_IMPORTEXPORT_IMMUTABLE_RESOURCES_SIZE_1,
+                    Integer.toString(immutableResources.size())));
         }
         // get the wanted page type for imported pages
         m_convertToXmlPage = OpenCms.getImportExportManager().convertToXmlPage();
@@ -240,10 +242,11 @@ public class CmsImportVersion3 extends A_CmsImport {
             int importSize = fileNodes.size();
             // walk through all files in manifest
             for (int i = 0; i < fileNodes.size(); i++) {
-                m_report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(i + 1),
-                    String.valueOf(importSize)));
+                m_report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(i + 1),
+                        String.valueOf(importSize)));
                 currentElement = fileNodes.get(i);
                 // get all information for a file-import
                 // <source>
@@ -276,7 +279,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                 }
                 // <usercreated>
                 usercreated = getChildElementTextValue(currentElement, A_CmsImport.N_USERCREATED);
-                // <flags>              
+                // <flags>
                 flags = getChildElementTextValue(currentElement, A_CmsImport.N_FLAGS);
 
                 String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);
@@ -292,14 +295,15 @@ public class CmsImportVersion3 extends A_CmsImport {
                 if (resourceNotImmutable) {
                     // print out the information to the report
                     m_report.print(Messages.get().container(Messages.RPT_IMPORTING_0), I_CmsReport.FORMAT_NOTE);
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        translatedName));
+                    m_report.print(
+                        org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            translatedName));
                     //m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0));
                     // get all properties
                     properties = readPropertiesFromManifest(currentElement, deleteProperties);
 
-                    // import the resource               
+                    // import the resource
                     CmsResource res = importResource(
                         source,
                         destination,
@@ -349,7 +353,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                                 // add the entry to the list
                                 aceList.add(getImportAccessControlEntry(res, principalId, allowed, denied, acflags));
                             } catch (CmsDataAccessException e) {
-                                // user or group not found, so do not import the ace                                
+                                // user or group not found, so do not import the ace
                             }
                         }
                         importAccessControlEntries(res, aceList);
@@ -357,16 +361,18 @@ public class CmsImportVersion3 extends A_CmsImport {
                     } else {
                         // resource import failed, since no CmsResource was created
                         m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.FORMAT_NOTE);
-                        m_report.println(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_ARGUMENT_1,
-                            translatedName));
+                        m_report.println(
+                            org.opencms.report.Messages.get().container(
+                                org.opencms.report.Messages.RPT_ARGUMENT_1,
+                                translatedName));
                     }
                 } else {
                     // skip the file import, just print out the information to the report
                     m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.FORMAT_NOTE);
-                    m_report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        translatedName));
+                    m_report.println(
+                        org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            translatedName));
                 }
             }
 
@@ -386,7 +392,7 @@ public class CmsImportVersion3 extends A_CmsImport {
 
     /**
      * Imports a resource (file or folder) into the cms.<p>
-     * 
+     *
      * @param source the path to the source-file
      * @param destination the path to the destination-file in the cms
      * @param type the resource-type of the file
@@ -394,10 +400,10 @@ public class CmsImportVersion3 extends A_CmsImport {
      * @param datelastmodified the last modification date of the resource
      * @param userlastmodified the user who made the last modifications to the resource
      * @param datecreated the creation date of the resource
-     * @param usercreated the user who created 
-     * @param flags the flags of the resource     
+     * @param usercreated the user who created
+     * @param flags the flags of the resource
      * @param properties a list with properties for this resource
-     * 
+     *
      * @return imported resource
      */
     private CmsResource importResource(
@@ -429,7 +435,7 @@ public class CmsImportVersion3 extends A_CmsImport {
             // get all required information to create a CmsResource
             I_CmsResourceType resType;
 
-            // get UUIDs for the user   
+            // get UUIDs for the user
             CmsUUID newUserlastmodified;
             CmsUUID newUsercreated;
             // check if user created and user lastmodified are valid users in this system.
@@ -477,7 +483,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                 resType = OpenCms.getResourceManager().getResourceType(type);
             }
 
-            // get UUIDs for the resource and content        
+            // get UUIDs for the resource and content
             CmsUUID newUuidresource = null;
             if ((uuidresource != null) && (!resType.isFolder())) {
                 // create a UUID from the provided string
@@ -487,8 +493,9 @@ public class CmsImportVersion3 extends A_CmsImport {
                 newUuidresource = new CmsUUID();
             }
 
-            // create a new CmsResource                         
-            CmsResource resource = new CmsResource(new CmsUUID(), // structure ID is always a new UUID
+            // create a new CmsResource
+            CmsResource resource = new CmsResource(
+                new CmsUUID(), // structure ID is always a new UUID
                 newUuidresource,
                 destination,
                 resType.getTypeId(),
@@ -532,7 +539,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                 // Sleep some time after an error so that the report output has a chance to keep up
                 Thread.sleep(1000);
             } catch (Exception e) {
-                // 
+                //
             }
         }
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Not resource categories view.<p>
- * 
+ *
  * @since 6.9.2
  */
 public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
@@ -61,7 +61,7 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsNotResourceCategoriesList(CmsJspActionElement jsp) {
@@ -71,7 +71,7 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -139,11 +139,12 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
         while (itResourceRelations.hasNext()) {
             CmsCategory category = itResourceRelations.next();
             if (result.contains(category)
-                && resourceRelations.containsAll(getCategoryService().readCategories(
-                    getJsp().getCmsObject(),
-                    category.getPath(),
-                    true,
-                    getParamResource()))) {
+                && resourceRelations.containsAll(
+                    getCategoryService().readCategories(
+                        getJsp().getCmsObject(),
+                        category.getPath(),
+                        true,
+                        getParamResource()))) {
                 result.remove(category);
             }
         }
@@ -168,7 +169,8 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
 
                 CmsListColumnDefinition listColumnDefinition = getList().getMetadata().getColumnDefinition(
                     LIST_COLUMN_STATE);
-                CmsListDirectAction stateAction = (CmsListDirectAction)listColumnDefinition.getDirectAction(LIST_ACTION_ADD);
+                CmsListDirectAction stateAction = (CmsListDirectAction)listColumnDefinition.getDirectAction(
+                    LIST_ACTION_ADD);
                 if (!stateAction.isEnabled()) {
                     StringBuffer ret = new StringBuffer();
                     ret.append("<span style=\"color: graytext;\">");

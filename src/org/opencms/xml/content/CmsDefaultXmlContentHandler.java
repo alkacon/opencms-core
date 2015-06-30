@@ -491,6 +491,40 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The principal list separator. */
     private static final String PRINCIPAL_LIST_SEPARATOR = ",";
 
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in 2 separates file for easier editing
+        // 2 files are required in case an extended schema want to use the default definitions,
+        // but with an extended "appinfo" node
+        byte[] appinfoSchemaTypes;
+        try {
+            // first read the default types
+            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE_TYPES),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
+        byte[] appinfoSchema;
+        try {
+            // now read the default base schema
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
+    }
+
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
 
@@ -607,36 +641,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The visibility configurations by element path. */
     private Map<String, VisibilityConfiguration> m_visibilityConfigurations;
-
-    /**
-     * Static initializer for caching the default appinfo validation schema.<p>
-     */
-    static {
-
-        // the schema definition is located in 2 separates file for easier editing
-        // 2 files are required in case an extended schema want to use the default definitions,
-        // but with an extended "appinfo" node
-        byte[] appinfoSchemaTypes;
-        try {
-            // first read the default types
-            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(Messages.get().container(
-                org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                APPINFO_SCHEMA_FILE_TYPES), e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
-        byte[] appinfoSchema;
-        try {
-            // now read the default base schema
-            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(Messages.get().container(
-                org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                APPINFO_SCHEMA_FILE), e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
-    }
 
     /**
      * Creates a new instance of the default XML content handler.<p>
@@ -1186,7 +1190,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 }
                 // only continue if not already removed and if a rule match
                 if (alreadyRemoved
-                    || ((m_relationChecks.get(path) == null) && (m_relationChecks.get(CmsXmlUtils.removeXpath(path)) == null))) {
+                    || ((m_relationChecks.get(path) == null)
+                        && (m_relationChecks.get(CmsXmlUtils.removeXpath(path)) == null))) {
                     continue;
                 }
 
@@ -1197,10 +1202,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 if (validateLink(cms, value, null)) {
                     // invalid link
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_XMLCONTENT_CHECK_WARNING_2,
-                            path,
-                            value.getStringValue(cms)));
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_XMLCONTENT_CHECK_WARNING_2,
+                                path,
+                                value.getStringValue(cms)));
                     }
                     // find the node to remove
                     String parentPath = path;
@@ -1209,10 +1215,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         parentPath = CmsXmlUtils.removeLastXpathElement(parentPath);
                         // log info
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().getBundle().key(
-                                Messages.LOG_XMLCONTENT_CHECK_PARENT_2,
-                                path,
-                                parentPath));
+                            LOG.debug(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_XMLCONTENT_CHECK_PARENT_2,
+                                    path,
+                                    parentPath));
                         }
                     }
                     value = document.getValue(parentPath, locale);
@@ -1268,7 +1275,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             String[] pathElements = path.split("/");
             I_CmsXmlSchemaType type = value.getDocument().getContentDefinition().getSchemaType(pathElements[0]);
             for (int i = 1; i < pathElements.length; i++) {
-                type = ((CmsXmlNestedContentDefinition)type).getNestedContentDefinition().getSchemaType(pathElements[i]);
+                type = ((CmsXmlNestedContentDefinition)type).getNestedContentDefinition().getSchemaType(
+                    pathElements[i]);
                 String subPath = getSubPath(pathElements, i);
                 searchSetting = type.getContentDefinition().getContentHandler().getSearchSettings().get(subPath);
                 if (searchSetting != null) {
@@ -1489,16 +1497,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         I_CmsXmlSchemaType schemaType = contentDefinition.getSchemaType(elementName);
         if (schemaType == null) {
             // no element with the given name
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_CHECK_INVALID_ELEM_1,
-                elementName));
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_XMLCONTENT_CHECK_INVALID_ELEM_1, elementName));
         }
         if (!CmsXmlVfsFileValue.TYPE_NAME.equals(schemaType.getTypeName())
             && !CmsXmlVarLinkValue.TYPE_NAME.equals(schemaType.getTypeName())) {
             // element is not a OpenCmsVfsFile
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_CHECK_INVALID_TYPE_1,
-                elementName));
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_XMLCONTENT_CHECK_INVALID_TYPE_1, elementName));
         }
 
         // cache the check rule data
@@ -1524,9 +1530,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     // if invalidate type = node, then the node needs to be optional
                     if (contentDefinition.getSchemaType(path).getMinOccurs() > 0) {
                         // element is not optional
-                        throw new CmsXmlException(Messages.get().container(
-                            Messages.ERR_XMLCONTENT_CHECK_NOT_OPTIONAL_1,
-                            path));
+                        throw new CmsXmlException(
+                            Messages.get().container(Messages.ERR_XMLCONTENT_CHECK_NOT_OPTIONAL_1, path));
                     }
                     // no need to further check
                     break;
@@ -1555,9 +1560,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         String configurationValue) throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_CONFIG_ELEM_UNKNOWN_1,
-                elementName));
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_XMLCONTENT_CONFIG_ELEM_UNKNOWN_1, elementName));
         }
 
         m_configurationValues.put(elementName, configurationValue);
@@ -1580,9 +1584,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         String resolveMacrosValue) throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException(org.opencms.xml.types.Messages.get().container(
-                Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1,
-                elementName));
+            throw new CmsXmlException(
+                org.opencms.xml.types.Messages.get().container(
+                    Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1,
+                    elementName));
         }
         // store mappings as xpath to allow better control about what is mapped
         String xpath = CmsXmlUtils.createXpath(elementName, 1);
@@ -1610,7 +1615,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         if ((schemaType != null) && schemaType.isSimpleType()) {
             if ((schemaType.getMinOccurs() == 0)
-                && (CmsXmlVfsFileValue.TYPE_NAME.equals(schemaType.getTypeName()) || CmsXmlVarLinkValue.TYPE_NAME.equals(schemaType.getTypeName()))
+                && (CmsXmlVfsFileValue.TYPE_NAME.equals(schemaType.getTypeName())
+                    || CmsXmlVarLinkValue.TYPE_NAME.equals(schemaType.getTypeName()))
                 && !m_relationChecks.containsKey(elementPath)
                 && !m_relations.containsKey(elementPath)) {
                 // add default check rule for the element
@@ -1644,13 +1650,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      *
      * @throws CmsXmlException in case an unknown element name is used
      */
-    protected void addDisplayType(CmsXmlContentDefinition contentDefinition, String elementName, DisplayType displayType)
-    throws CmsXmlException {
+    protected void addDisplayType(
+        CmsXmlContentDefinition contentDefinition,
+        String elementName,
+        DisplayType displayType) throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_CONFIG_ELEM_UNKNOWN_1,
-                elementName));
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_XMLCONTENT_CONFIG_ELEM_UNKNOWN_1, elementName));
         }
         m_displayTypes.put(elementName, displayType);
     }
@@ -1672,9 +1679,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         String useDefault) throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_INVALID_ELEM_MAPPING_1,
-                elementName));
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ELEM_MAPPING_1, elementName));
         }
 
         // store mappings as xpath to allow better control about what is mapped
@@ -1749,9 +1755,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_INVALID_ELEM_SEARCHSETTINGS_1,
-                elementName));
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ELEM_SEARCHSETTINGS_1, elementName));
         }
         // store the search exclusion as defined
         m_searchSettings.put(elementName, value);
@@ -1776,9 +1781,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         boolean isWarning) throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_INVALID_ELEM_VALIDATION_1,
-                elementName));
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ELEM_VALIDATION_1, elementName));
         }
 
         if (isWarning) {
@@ -1807,9 +1811,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_INVALID_ELEM_LAYOUTWIDGET_1,
-                elementName));
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ELEM_LAYOUTWIDGET_1, elementName));
         }
 
         // get the base widget from the XML content type manager
@@ -1828,20 +1831,23 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         widget = (I_CmsWidget)specialWidgetClass.newInstance();
                     }
                 } catch (Exception e) {
-                    throw new CmsXmlException(Messages.get().container(
-                        Messages.ERR_XMLCONTENT_INVALID_CUSTOM_CLASS_3,
-                        widgetClassOrAlias,
-                        elementName,
-                        contentDefinition.getSchemaLocation()), e);
+                    throw new CmsXmlException(
+                        Messages.get().container(
+                            Messages.ERR_XMLCONTENT_INVALID_CUSTOM_CLASS_3,
+                            widgetClassOrAlias,
+                            elementName,
+                            contentDefinition.getSchemaLocation()),
+                        e);
                 }
             }
             if (widget == null) {
                 // no valid widget found
-                throw new CmsXmlException(Messages.get().container(
-                    Messages.ERR_XMLCONTENT_INVALID_WIDGET_3,
-                    widgetClassOrAlias,
-                    elementName,
-                    contentDefinition.getSchemaLocation()));
+                throw new CmsXmlException(
+                    Messages.get().container(
+                        Messages.ERR_XMLCONTENT_INVALID_WIDGET_3,
+                        widgetClassOrAlias,
+                        elementName,
+                        contentDefinition.getSchemaLocation()));
             }
         }
         m_elementWidgets.put(elementName, widget);
@@ -2084,14 +2090,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             String maxWidthStr = element.attributeValue(APPINFO_ATTR_MAXWIDTH);
             String preview = element.attributeValue(APPINFO_ATTR_PREVIEW);
             String searchContent = element.attributeValue(APPINFO_ATTR_SEARCHCONTENT);
-            m_formatters.add(new CmsFormatterBean(
-                type,
-                jspRootPath,
-                minWidthStr,
-                maxWidthStr,
-                preview,
-                searchContent,
-                contentDefinition.getSchemaLocation()));
+            m_formatters.add(
+                new CmsFormatterBean(
+                    type,
+                    jspRootPath,
+                    minWidthStr,
+                    maxWidthStr,
+                    preview,
+                    searchContent,
+                    contentDefinition.getSchemaLocation()));
         }
     }
 
@@ -2206,10 +2213,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         String master = root.attributeValue(APPINFO_ATTR_URI);
         if (master == null) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_MISSING_MODELFOLDER_URI_2,
-                root.getName(),
-                contentDefinition.getSchemaLocation()));
+            throw new CmsXmlException(
+                Messages.get().container(
+                    Messages.ERR_XMLCONTENT_MISSING_MODELFOLDER_URI_2,
+                    root.getName(),
+                    contentDefinition.getSchemaLocation()));
         }
         m_modelFolder = master;
     }
@@ -2225,10 +2233,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         String preview = root.attributeValue(APPINFO_ATTR_URI);
         if (preview == null) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_MISSING_PREVIEW_URI_2,
-                root.getName(),
-                contentDefinition.getSchemaLocation()));
+            throw new CmsXmlException(
+                Messages.get().container(
+                    Messages.ERR_XMLCONTENT_MISSING_PREVIEW_URI_2,
+                    root.getName(),
+                    contentDefinition.getSchemaLocation()));
         }
         m_previewLocation = preview;
     }
@@ -2292,10 +2301,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
             String messageBundleName = root.attributeValue(APPINFO_ATTR_NAME);
             if (messageBundleName == null) {
-                throw new CmsXmlException(Messages.get().container(
-                    Messages.ERR_XMLCONTENT_MISSING_RESOURCE_BUNDLE_NAME_2,
-                    root.getName(),
-                    contentDefinition.getSchemaLocation()));
+                throw new CmsXmlException(
+                    Messages.get().container(
+                        Messages.ERR_XMLCONTENT_MISSING_RESOURCE_BUNDLE_NAME_2,
+                        root.getName(),
+                        contentDefinition.getSchemaLocation()));
             }
             if (!m_messageBundleNames.contains(messageBundleName)) {
                 // avoid duplicates
@@ -2443,7 +2453,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     List<String> copyFields = CmsStringUtil.splitAsList(copyFieldNames, ',');
                     String defaultValue = solrElement.attributeValue(APPINFO_ATTR_DEFAULT);
                     String defaultBoost = String.valueOf(CmsSearchField.BOOST_DEFAULT);
-                    float boost = Float.valueOf(solrElement.attributeValue(APPINFO_ATTR_BOOST, defaultBoost)).floatValue();
+                    float boost = Float.valueOf(
+                        solrElement.attributeValue(APPINFO_ATTR_BOOST, defaultBoost)).floatValue();
                     CmsSolrField field = new CmsSolrField(targetField, copyFields, locale, defaultValue, boost);
 
                     // create the field mappings for this element
@@ -2541,7 +2552,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 String tabName = element.attributeValue(APPINFO_ATTR_NAME, elementName);
                 if (elementName != null) {
                     // add the element tab
-                    m_tabs.add(new CmsXmlContentTab(elementName, Boolean.valueOf(collapseValue).booleanValue(), tabName));
+                    m_tabs.add(
+                        new CmsXmlContentTab(elementName, Boolean.valueOf(collapseValue).booleanValue(), tabName));
                 }
             }
             // check if first element has been defined as tab
@@ -2800,10 +2812,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                             } else {
                                 property = mapping.substring(MAPTO_PROPERTY.length());
                             }
-                            rootCms.writePropertyObject(filename, new CmsProperty(
-                                property,
-                                CmsProperty.DELETE_VALUE,
-                                shared ? CmsProperty.DELETE_VALUE : null));
+                            rootCms.writePropertyObject(
+                                filename,
+                                new CmsProperty(
+                                    property,
+                                    CmsProperty.DELETE_VALUE,
+                                    shared ? CmsProperty.DELETE_VALUE : null));
                         } else if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
                             if (mapping.equals(MAPTO_ATTRIBUTE + ATTRIBUTE_DATERELEASED)) {
                                 rootCms.setDateReleased(filename, CmsResource.DATE_RELEASED_DEFAULT, false);
@@ -2965,7 +2979,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     if (!CmsCategoryService.getInstance().readCategories(cms, catPath, false, refPath).isEmpty()) {
                         errorHandler.addError(
                             value,
-                            Messages.get().getBundle(value.getLocale()).key(Messages.GUI_CATEGORY_CHECK_NOLEAF_ERROR_0));
+                            Messages.get().getBundle(value.getLocale()).key(
+                                Messages.GUI_CATEGORY_CHECK_NOLEAF_ERROR_0));
                     }
                 }
             }
@@ -3321,11 +3336,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         fieldMapping.setType(CmsSearchFieldMappingType.DYNAMIC);
                         fieldMapping.setParam(element.getStringValue());
                     } catch (Exception e) {
-                        throw new CmsXmlException(Messages.get().container(
-                            Messages.ERR_XML_SCHEMA_MAPPING_CLASS_NOT_EXIST_3,
-                            mappingClass,
-                            contentDefinition.getTypeName(),
-                            contentDefinition.getSchemaLocation()));
+                        throw new CmsXmlException(
+                            Messages.get().container(
+                                Messages.ERR_XML_SCHEMA_MAPPING_CLASS_NOT_EXIST_3,
+                                mappingClass,
+                                contentDefinition.getTypeName(),
+                                contentDefinition.getSchemaLocation()));
                     }
 
                 }
@@ -3696,7 +3712,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             }
         }
         if (mapToUrlName) {
-            CmsMappingResolutionContext context = (CmsMappingResolutionContext)(cms.getRequestContext().getAttribute(ATTR_MAPPING_RESOLUTION_CONTEXT));
+            CmsMappingResolutionContext context = (CmsMappingResolutionContext)(cms.getRequestContext().getAttribute(
+                ATTR_MAPPING_RESOLUTION_CONTEXT));
             for (CmsResource resourceForUrlNameMapping : urlNameMappingResources) {
                 if (!CmsResource.isTemporaryFileName(resourceForUrlNameMapping.getRootPath())) {
                     String mappedName = stringValue;

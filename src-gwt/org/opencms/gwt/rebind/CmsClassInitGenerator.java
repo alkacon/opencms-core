@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 /**
  * This generator class generates a class with a method which calls all static initClass()
  * methods of classes that implement the {@link org.opencms.gwt.client.I_CmsHasInit} marker interface.<p>
- *  
+ *
  *  @since 8.0.0
  */
 public class CmsClassInitGenerator extends Generator {
@@ -81,8 +81,9 @@ public class CmsClassInitGenerator extends Generator {
                 }
                 initTypes.add(subtype);
             } catch (NotFoundException e) {
-                logger.log(TreeLogger.ERROR, "Could not find initClass() method in class "
-                    + subtype.getQualifiedSourceName());
+                logger.log(
+                    TreeLogger.ERROR,
+                    "Could not find initClass() method in class " + subtype.getQualifiedSourceName());
                 throw new UnableToCompleteException();
             }
         }
@@ -92,10 +93,10 @@ public class CmsClassInitGenerator extends Generator {
 
     /**
      * This method generates the source code for the class initializer class.<p>
-     * 
-     * @param logger the logger to be used 
+     *
+     * @param logger the logger to be used
      * @param context the generator context
-     * @param subclasses the classes for which the generated code should the initClass() method 
+     * @param subclasses the classes for which the generated code should the initClass() method
      */
     public void generateClass(TreeLogger logger, GeneratorContext context, List<JClassType> subclasses) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -87,7 +87,7 @@ public class CmsModelGroupHelper {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param configData the configuration data
      * @param sessionCache the session cache
@@ -107,42 +107,43 @@ public class CmsModelGroupHelper {
 
     /**
      * Creates a new model group resource.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param configData the configuration data
-     * 
+     *
      * @return the new resource
-     * 
+     *
      * @throws CmsException in case creating the resource fails
      */
     public static CmsResource createModelGroup(CmsObject cms, CmsADEConfigData configData) throws CmsException {
 
-        CmsResourceTypeConfig typeConfig = configData.getResourceType(CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
+        CmsResourceTypeConfig typeConfig = configData.getResourceType(
+            CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME);
         return typeConfig.createNewElement(cms, configData.getBasePath());
     }
 
     /**
      * Returns if the given resource is a model group resource.<p>
-     * 
+     *
      * @param resource the resource
-     * 
+     *
      * @return <code>true</code> if the given resource is a model group resource
      */
     public static boolean isModelGroupResource(CmsResource resource) {
 
-        return CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(OpenCms.getResourceManager().getResourceType(
-            resource).getTypeName());
+        return CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(
+            OpenCms.getResourceManager().getResourceType(resource).getTypeName());
     }
 
     /**
      * Adds the model group elements to the page.<p>
-     * 
+     *
      * @param elements the requested elements
      * @param page the page
      * @param locale the content locale
-     * 
+     *
      * @return the adjusted page
-     * 
+     *
      * @throws CmsException in case something goes wrong
      */
     public CmsContainerPageBean prepareforModelGroupContent(
@@ -259,9 +260,9 @@ public class CmsModelGroupHelper {
 
     /**
      * Reads the present model groups and merges their containers into the page.<p>
-     * 
+     *
      * @param page the container page
-     * 
+     *
      * @return the resulting container page
      */
     public CmsContainerPageBean readModelGroups(CmsContainerPageBean page) {
@@ -281,13 +282,14 @@ public class CmsModelGroupHelper {
                             break;
                         }
                         String baseInstanceId = baseElement.getInstanceId();
-                        CmsContainerElementBean replaceElement = getModelReplacementElement(element, baseElement, false);
+                        CmsContainerElementBean replaceElement = getModelReplacementElement(
+                            element,
+                            baseElement,
+                            false);
                         m_sessionCache.setCacheContainerElement(replaceElement.editorHash(), replaceElement);
                         elements.add(replaceElement);
-                        resultContainers.addAll(readModelContainers(
-                            baseInstanceId,
-                            element.getInstanceId(),
-                            modelGroupPage));
+                        resultContainers.addAll(
+                            readModelContainers(baseInstanceId, element.getInstanceId(), modelGroupPage));
                     } else {
                         elements.add(element);
                     }
@@ -296,12 +298,13 @@ public class CmsModelGroupHelper {
                 }
             }
             if (hasModels) {
-                resultContainers.add(new CmsContainerBean(
-                    container.getName(),
-                    container.getType(),
-                    container.getParentInstanceId(),
-                    container.getMaxElements(),
-                    elements));
+                resultContainers.add(
+                    new CmsContainerBean(
+                        container.getName(),
+                        container.getType(),
+                        container.getParentInstanceId(),
+                        container.getMaxElements(),
+                        elements));
             } else {
                 resultContainers.add(container);
             }
@@ -311,9 +314,9 @@ public class CmsModelGroupHelper {
 
     /**
      * Removes the model group containers.<p>
-     * 
+     *
      * @param page the container page state
-     * 
+     *
      * @return the container page without the model group containers
      */
     public CmsContainerPageBean removeModelGroupContainers(CmsContainerPageBean page) {
@@ -338,8 +341,8 @@ public class CmsModelGroupHelper {
                 List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
                 for (CmsContainerElementBean element : container.getElements()) {
                     if (modelInstances.contains(element.getInstanceId())) {
-                        CmsUUID modelId = new CmsUUID(element.getIndividualSettings().get(
-                            CmsContainerElement.MODEL_GROUP_ID));
+                        CmsUUID modelId = new CmsUUID(
+                            element.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_ID));
                         CmsContainerElementBean replacer = new CmsContainerElementBean(
                             modelId,
                             element.getFormatterId(),
@@ -350,12 +353,13 @@ public class CmsModelGroupHelper {
                         elements.add(element);
                     }
                 }
-                containers.add(new CmsContainerBean(
-                    container.getName(),
-                    container.getType(),
-                    container.getParentInstanceId(),
-                    container.getMaxElements(),
-                    elements));
+                containers.add(
+                    new CmsContainerBean(
+                        container.getName(),
+                        container.getType(),
+                        container.getParentInstanceId(),
+                        container.getMaxElements(),
+                        elements));
 
             }
         }
@@ -364,9 +368,9 @@ public class CmsModelGroupHelper {
 
     /**
      * Saves the model groups of the given container page.<p>
-     * 
+     *
      * @param page the container page
-     * 
+     *
      * @return the container page referencing the saved model groups
      */
     public CmsContainerPageBean saveModelGroups(CmsContainerPageBean page) {
@@ -407,7 +411,9 @@ public class CmsModelGroupHelper {
                         }
                     }
                     CmsContainerPageBean modelPage = new CmsContainerPageBean(modelContainers);
-                    CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(m_cms, m_cms.readFile(modelGroup));
+                    CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(
+                        m_cms,
+                        m_cms.readFile(modelGroup));
                     xmlCnt.save(m_cms, modelPage);
                     tryUnlock(modelGroup);
                 } catch (CmsException e) {
@@ -434,12 +440,13 @@ public class CmsModelGroupHelper {
                         elements.add(element);
                     }
                 }
-                containers.add(new CmsContainerBean(
-                    container.getName(),
-                    container.getType(),
-                    container.getParentInstanceId(),
-                    container.getMaxElements(),
-                    elements));
+                containers.add(
+                    new CmsContainerBean(
+                        container.getName(),
+                        container.getType(),
+                        container.getParentInstanceId(),
+                        container.getMaxElements(),
+                        elements));
 
             }
         }
@@ -449,10 +456,10 @@ public class CmsModelGroupHelper {
 
     /**
      * Returns the descending instance id's to the given element instance.<p>
-     * 
+     *
      * @param instanceId the instance id
      * @param containersByParent the container page containers by parent instance id
-     * 
+     *
      * @return the containers
      */
     private Set<String> collectDescendingInstances(
@@ -473,11 +480,11 @@ public class CmsModelGroupHelper {
 
     /**
      * Collects the model group structure.<p>
-     * 
+     *
      * @param modelInstanceId the model instance id
      * @param replaceModelId the local instance id
      * @param containerByParent the model group page containers by parent instance id
-     * 
+     *
      * @return the collected containers
      */
     private List<CmsContainerBean> collectModelStructure(
@@ -494,18 +501,17 @@ public class CmsModelGroupHelper {
                     CmsContainerElementBean copyElement = initNewInstanceId(element);
                     m_sessionCache.setCacheContainerElement(copyElement.editorHash(), copyElement);
                     elements.add(copyElement);
-                    result.addAll(collectModelStructure(
-                        element.getInstanceId(),
-                        copyElement.getInstanceId(),
-                        containerByParent));
+                    result.addAll(
+                        collectModelStructure(element.getInstanceId(), copyElement.getInstanceId(), containerByParent));
                 }
                 String adjustedName = replaceModelId + container.getName().substring(modelInstanceId.length());
-                result.add(new CmsContainerBean(
-                    adjustedName,
-                    container.getType(),
-                    replaceModelId,
-                    container.getMaxElements(),
-                    elements));
+                result.add(
+                    new CmsContainerBean(
+                        adjustedName,
+                        container.getType(),
+                        replaceModelId,
+                        container.getMaxElements(),
+                        elements));
             }
         }
         return result;
@@ -513,13 +519,13 @@ public class CmsModelGroupHelper {
 
     /**
      * Creates new resources for elements marked with create as new.<p>
-     * 
+     *
      * @param cms the cms context
      * @param modelContainers the model containers
      * @param locale the content locale
-     * 
+     *
      * @return the updated model containers
-     * 
+     *
      * @throws CmsException in case something goes wrong
      */
     private List<CmsContainerBean> createNewElementsForModelGroup(
@@ -537,11 +543,12 @@ public class CmsModelGroupHelper {
                     String typeName = OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName();
                     CmsResourceTypeConfig typeConfig = m_configData.getResourceType(typeName);
                     if (typeConfig == null) {
-                        throw new IllegalArgumentException("Can not copy template model element '"
-                            + element.getResource().getRootPath()
-                            + "' because the resource type '"
-                            + typeName
-                            + "' is not available in this sitemap.");
+                        throw new IllegalArgumentException(
+                            "Can not copy template model element '"
+                                + element.getResource().getRootPath()
+                                + "' because the resource type '"
+                                + typeName
+                                + "' is not available in this sitemap.");
                     }
                     CmsResource newResource = typeConfig.createNewElement(
                         cloneCms,
@@ -582,9 +589,9 @@ public class CmsModelGroupHelper {
 
     /**
      * Locks the given resource.<p>
-     * 
+     *
      * @param resource the resource to lock
-     * 
+     *
      * @throws CmsException in case locking fails
      */
     private void ensureLock(CmsResource resource) throws CmsException {
@@ -600,9 +607,9 @@ public class CmsModelGroupHelper {
 
     /**
      * Collects the page containers by parent instance id
-     * 
+     *
      * @param page the page
-     * 
+     *
      * @return the containers by parent id
      */
     private Map<String, List<CmsContainerBean>> getContainerByParent(CmsContainerPageBean page) {
@@ -622,11 +629,11 @@ public class CmsModelGroupHelper {
 
     /**
      * Unmarshals the given resource.<p>
-     * 
+     *
      * @param resource the resource
-     * 
+     *
      * @return the container page bean
-     * 
+     *
      * @throws CmsException in case unmarshalling fails
      */
     private CmsContainerPageBean getContainerPageBean(CmsResource resource) throws CmsException {
@@ -637,9 +644,9 @@ public class CmsModelGroupHelper {
 
     /**
      * Returns the model group base element.<p>
-     * 
+     *
      * @param modelGroupPage the model group page
-     * 
+     *
      * @return the base element
      */
     private CmsContainerElementBean getModelBaseElement(CmsContainerPageBean modelGroupPage) {
@@ -650,11 +657,11 @@ public class CmsModelGroupHelper {
 
     /**
      * Returns the the element to be rendered as the model group base.<p>
-     * 
+     *
      * @param element the original element
      * @param baseElement the model group base
      * @param allowCopyModel if copy models are allowed
-     * 
+     *
      * @return the element
      */
     private CmsContainerElementBean getModelReplacementElement(
@@ -696,9 +703,9 @@ public class CmsModelGroupHelper {
 
     /**
      * Initializes a new instance id for the given container element.<p>
-     * 
+     *
      * @param element the container element
-     * 
+     *
      * @return the new element instance
      */
     private CmsContainerElementBean initNewInstanceId(CmsContainerElementBean element) {
@@ -710,11 +717,11 @@ public class CmsModelGroupHelper {
 
     /**
      * Returns the model containers.<p>
-     * 
+     *
      * @param modelInstanceId the model instance id
      * @param localInstanceId the local instance id
      * @param modelPage the model page bean
-     * 
+     *
      * @return the model group containers
      */
     private List<CmsContainerBean> readModelContainers(
@@ -734,7 +741,7 @@ public class CmsModelGroupHelper {
 
     /**
      * Tries to unlock a resource.<p>
-     * 
+     *
      * @param resource the resource to unlock
      */
     private void tryUnlock(CmsResource resource) {

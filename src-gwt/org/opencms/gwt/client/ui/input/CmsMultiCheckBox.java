@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,9 +57,9 @@ import com.google.gwt.user.client.ui.Panel;
 
 /**
  * A form widget consisting of a group of checkboxes.<p>
- * 
+ *
  * @since 8.0.0
- *  
+ *
  */
 public class CmsMultiCheckBox extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasFocusHandlers {
@@ -81,10 +81,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasFoc
 
     /**
      * Constructs a new checkbox group from a list of string pairs.<p>
-     * 
+     *
      * The first string of every pair is the value of the checkbox, the second string is the label.
-     * 
-     * @param items a list of pairs of strings. 
+     *
+     * @param items a list of pairs of strings.
      */
     public CmsMultiCheckBox(List<CmsPair<String, String>> items) {
 
@@ -94,11 +94,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasFoc
 
     /**
      * Constructs a new checkbox group from a map from strings to strings.<p>
-     * 
+     *
      * The keys of the map are used as the selection values of the checkboxes, while the value
-     * for a given key in the map is used as the label for the checkbox which is displayed to the user. 
-     * 
-     * @param items the map of checkbox options 
+     * for a given key in the map is used as the label for the checkbox which is displayed to the user.
+     *
+     * @param items the map of checkbox options
      */
     public CmsMultiCheckBox(Map<String, String> items) {
 
@@ -142,7 +142,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasFoc
 
     /**
      * Returns a list of all checkboxes.<p>
-     * 
+     *
      * @return a list of checkboxes
      * */
     public List<CmsCheckBox> getCheckboxes() {
@@ -178,7 +178,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasFoc
 
     /**
      * Returns the set of values of the selected checkboxes.<p>
-     * 
+     *
      * @return a set of strings
      */
     public Set<String> getSelected() {
@@ -248,8 +248,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasFoc
 
     /**
      * Sets the value of the widget.<p>
-     * 
-     * @param value the new value 
+     *
+     * @param value the new value
      */
     @SuppressWarnings("unchecked")
     public void setFormValue(Object value) {
@@ -281,8 +281,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasFoc
 
     /**
      * Enables or disables italics display in the checkbox labels.<p>
-     *  
-     * @param weak true if italics display should be enabled 
+     *
+     * @param weak true if italics display should be enabled
      */
     public void setTextWeak(boolean weak) {
 
@@ -297,8 +297,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasFoc
 
     /**
      * Fires the value change event for the widget.<p>
-     * 
-     * @param newValue the new value 
+     *
+     * @param newValue the new value
      */
     protected void fireValueChanged(String newValue) {
 
@@ -307,10 +307,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasFoc
 
     /**
      * Initializes the widget given a map of select options.<p>
-     * 
-     * The keys of the map are the values of the select options, while the values of the map 
+     *
+     * The keys of the map are the values of the select options, while the values of the map
      * are the labels which should be used for the checkboxes.
-     * 
+     *
      * @param items the map of select options
      */
     protected void init(Map<String, String> items) {
@@ -329,7 +329,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasFoc
         for (Map.Entry<String, String> entry : items.entrySet()) {
             String value = entry.getValue();
             CmsCheckBox checkbox = new CmsCheckBox(value);
-            // wrap the check boxes in FlowPanels to arrange them vertically 
+            // wrap the check boxes in FlowPanels to arrange them vertically
             FlowPanel checkboxWrapper = new FlowPanel();
             checkboxWrapper.add(checkbox);
             checkbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,10 +34,10 @@ import java.util.Locale;
 
 /**
  * Formatter for dates.<p>
- * 
+ *
  * The 'never' message will be displayed if the date is null or <code>{@link Date#getTime()}==0</code>.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListDateMacroFormatter extends CmsListMacroFormatter {
 
@@ -49,7 +49,7 @@ public class CmsListDateMacroFormatter extends CmsListMacroFormatter {
 
     /**
      * Default constructor that sets the mask to use.<p>
-     * 
+     *
      * @param mask pattern for <code>{@link java.text.MessageFormat}</code>
      * @param never message (without args) for the 'never' message
      */
@@ -60,7 +60,7 @@ public class CmsListDateMacroFormatter extends CmsListMacroFormatter {
 
     /**
      * Default constructor that sets the mask to use.<p>
-     * 
+     *
      * @param mask pattern for <code>{@link java.text.MessageFormat}</code>
      * @param never message (without args) for the 'never' message
      * @param neverTime the time considered as 'never', default is <code>0</code>
@@ -74,7 +74,7 @@ public class CmsListDateMacroFormatter extends CmsListMacroFormatter {
 
     /**
      * Returns a default date formatter object.<p>
-     * 
+     *
      * @return a default date formatter object
      */
     public static I_CmsListFormatter getDefaultDateFormatter() {
@@ -86,9 +86,9 @@ public class CmsListDateMacroFormatter extends CmsListMacroFormatter {
 
     /**
      * Returns a default date formatter object.<p>
-     * 
+     *
      * @param never time considered as never
-     * 
+     *
      * @return a default date formatter object
      */
     public static I_CmsListFormatter getDefaultDateFormatter(long never) {

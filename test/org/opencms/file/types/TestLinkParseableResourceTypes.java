@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,7 +62,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestLinkParseableResourceTypes(String arg0) {
@@ -72,7 +72,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -118,7 +118,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test chType method, change type link parseable with non link parseable.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testChTypeLinkParseable() throws Throwable {
@@ -162,7 +162,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test chType method, change type non link parseable with link parseable.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testChTypeNonLinkParseable() throws Throwable {
@@ -206,7 +206,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test copyResource method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCopyResource() throws Throwable {
@@ -253,7 +253,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test createResource method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCreateResource() throws Throwable {
@@ -299,7 +299,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test createSibling method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCreateSibling() throws Throwable {
@@ -346,7 +346,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test deleteResource method for a folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testDeleteFolder() throws Throwable {
@@ -387,7 +387,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test deleteResource method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testDeleteResource() throws Throwable {
@@ -458,7 +458,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test importResource method for link parseable resources.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testImportResourceLinkParseable() throws Throwable {
@@ -536,7 +536,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test importResource method for non link parseable resources.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testImportResourceNonLinkParseable() throws Throwable {
@@ -603,7 +603,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test the links after the setup.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testInitialSetup() throws Throwable {
@@ -630,7 +630,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test moveResource method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testMoveResource() throws Throwable {
@@ -674,7 +674,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test replaceResource method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReplaceLinkParseableResource() throws Throwable {
@@ -724,7 +724,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test replaceResource method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReplaceNonLinkParseableResource() throws Throwable {
@@ -770,7 +770,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test undoChanges method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChanges() throws Throwable {
@@ -825,7 +825,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
     /**
      * Test writeFile method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testWriteFile() throws Throwable {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,8 +44,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides access to the data of the currently logged in user.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsJspTagUser extends TagSupport {
 
@@ -79,7 +79,7 @@ public class CmsJspTagUser extends TagSupport {
 
     /**
      * Internal action method.<p>
-     * 
+     *
      * @param property the selected user property
      * @param req the current request
      * @return String the value of the selected user property
@@ -155,7 +155,7 @@ public class CmsJspTagUser extends TagSupport {
 
         javax.servlet.ServletRequest req = pageContext.getRequest();
 
-        // This will always be true if the page is called through OpenCms 
+        // This will always be true if the page is called through OpenCms
         if (CmsFlexController.isCmsRequest(req)) {
 
             try {
@@ -174,7 +174,7 @@ public class CmsJspTagUser extends TagSupport {
 
     /**
      * Returns the property name.<p>
-     * 
+     *
      * @return String the property name
      */
     public String getProperty() {
@@ -194,7 +194,7 @@ public class CmsJspTagUser extends TagSupport {
 
     /**
      * Sets the property name.<p>
-     * 
+     *
      * @param name the property name
      */
     public void setProperty(String name) {

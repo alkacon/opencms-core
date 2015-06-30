@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,8 +56,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Group selection dialog.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsGroupSelectionList extends A_CmsListDialog {
 
@@ -90,7 +90,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsGroupSelectionList(CmsJspActionElement jsp) {
@@ -106,7 +106,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -129,9 +129,8 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
         html.append("\t\t<tr>\n");
         html.append("\t\t\t<td>\n");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamUser())) {
-            html.append(Messages.get().getBundle(getLocale()).key(
-                Messages.GUI_GROUPSELECTION_USER_TITLE_1,
-                getParamUser()));
+            html.append(
+                Messages.get().getBundle(getLocale()).key(Messages.GUI_GROUPSELECTION_USER_TITLE_1, getParamUser()));
         } else {
             html.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_GROUPSELECTION_INTRO_TITLE_0));
         }
@@ -234,9 +233,9 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
 
     /**
      * Returns the groups to show for selection.<p>
-     * 
-     * @return A list of group objects 
-     * 
+     *
+     * @return A list of group objects
+     *
      * @throws CmsException if womething goes wrong
      */
     protected List<CmsGroup> getGroups() throws CmsException {
@@ -271,7 +270,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
 
         List<CmsListItem> ret = new ArrayList<CmsListItem>();
 
-        // get content        
+        // get content
         List<CmsGroup> groups = getGroups();
         Iterator<CmsGroup> itGroups = groups.iterator();
         while (itGroups.hasNext()) {
@@ -353,7 +352,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
     @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
-        // no-op        
+        // no-op
     }
 
     /**

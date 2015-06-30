@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,7 +55,7 @@ import org.dom4j.Element;
 
 /**
  * XML updater class for adding context menu rules specific to ADE.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
@@ -70,8 +70,8 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param insertAfter the class of the menu item rule after which the new menu item rules should be inserted 
+         *
+         * @param insertAfter the class of the menu item rule after which the new menu item rules should be inserted
          */
         public UpdateInsertContainerpageRule(String insertAfter) {
 
@@ -86,12 +86,13 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
             Element elem = (Element)doc.selectSingleNode(xpath);
             if ((elem != null)
-                && (elem.selectSingleNode(CmsWorkplaceConfiguration.N_MENUITEMRULE
-                    + "[@"
-                    + I_CmsXmlConfiguration.A_CLASS
-                    + "='"
-                    + CmsMirSitemapInvisible.class.getName()
-                    + "']") == null)) {
+                && (elem.selectSingleNode(
+                    CmsWorkplaceConfiguration.N_MENUITEMRULE
+                        + "[@"
+                        + I_CmsXmlConfiguration.A_CLASS
+                        + "='"
+                        + CmsMirSitemapInvisible.class.getName()
+                        + "']") == null)) {
                 updateMenuRule(elem, m_insertAfter);
                 return true;
             }
@@ -172,8 +173,9 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
                 {"publishscheduled", "org.opencms.workplace.explorer.menu.CmsMirPrOtherInvisible"}};
 
             for (String[] nameAndClass : names) {
-                m_updateActions.put(xpathForMenuRule(nameAndClass[0]), new UpdateInsertContainerpageRule(
-                    nameAndClass[1]));
+                m_updateActions.put(
+                    xpathForMenuRule(nameAndClass[0]),
+                    new UpdateInsertContainerpageRule(nameAndClass[1]));
             }
             m_updateActions.put(xpathForMenuRule("containerpage"), new CmsXmlUpdateAction() {
 
@@ -188,12 +190,9 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
                                 "containerpage",
                                 "org.opencms.workplace.explorer.menu.CmsMirContainerPageActive"),
                             "");
-                        CmsSetupXmlHelper.setValue(
-                            doc,
-                            xpathForMenuItemRule(
-                                "containerpage",
-                                "org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible"),
-                            "");
+                        CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule(
+                            "containerpage",
+                            "org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible"), "");
                     }
                     return false;
                 }
@@ -213,12 +212,9 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
                                 "adecheckfile",
                                 "org.opencms.workplace.explorer.menu.CmsMirContainerPageActiveAndFileAvailable"),
                             "");
-                        CmsSetupXmlHelper.setValue(
-                            doc,
-                            xpathForMenuItemRule(
-                                "adecheckfile",
-                                "org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible"),
-                            "");
+                        CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule(
+                            "adecheckfile",
+                            "org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible"), "");
                         return true;
                     }
                     return false;
@@ -413,7 +409,10 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
                     if (elem == null) {
                         for (String classname : classNames) {
-                            CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule("containerpage-wpuser", classname), "");
+                            CmsSetupXmlHelper.setValue(
+                                doc,
+                                xpathForMenuItemRule("containerpage-wpuser", classname),
+                                "");
                         }
                         return true;
                     }
@@ -429,10 +428,10 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
     /**
      * Updates a single context menu entry's rules.<p>
-     * 
+     *
      * @param elem the parent element
-     *  
-     * @param className the class name 
+     *
+     * @param className the class name
      */
     protected void updateMenuRule(Element elem, String className) {
 
@@ -452,12 +451,12 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
     /**
      * Returns the xpath for a specific menu item rule.<p>
-     * 
+     *
      * @param name the name of the menu rule
-     *  
-     * @param className the class of the menu item rule 
-     * 
-     * @return the xpath for that menu item rule 
+     *
+     * @param className the class of the menu item rule
+     *
+     * @return the xpath for that menu item rule
      */
     protected String xpathForMenuItemRule(String name, String className) {
 
@@ -473,10 +472,10 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
     /**
      * Returns the xpath for a specific menu rule.<p>
-     * 
+     *
      * @param name the menu rule
-     * 
-     * @return the xpath for that menu rule 
+     *
+     * @return the xpath for that menu rule
      */
     protected String xpathForMenuRule(String name) {
 
@@ -494,10 +493,10 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
     /**
      * Returns the xpath for a specific explorer type.<p>
-     * 
-     * @param explorerType the explorer type 
-     * 
-     * @return the xpath for that explorer type 
+     *
+     * @param explorerType the explorer type
+     *
+     * @return the xpath for that explorer type
      */
     protected String xpathForType(String explorerType) {
 
@@ -516,10 +515,10 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
     /**
      * Creates a menu item rule element.<p>
-     * 
+     *
      * @param cls the class for the menu item rule
-     *  
-     * @return the menu item rule element 
+     *
+     * @return the menu item rule element
      */
     private Element createMenuItemRule(String cls) {
 
@@ -530,8 +529,8 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
 
     /**
      * Returns the xpath for the explorertypes node.<p>
-     * 
-     * @return the xpath for the explorertypes node 
+     *
+     * @return the xpath for the explorertypes node
      */
     private String xpathForExplorerTypes() {
 

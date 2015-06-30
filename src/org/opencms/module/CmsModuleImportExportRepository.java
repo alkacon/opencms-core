@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,7 +60,7 @@ import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 
-/** 
+/**
  * Class which manages import/export of modules from repositories configured in opencms-importexport.xml.<p>
  */
 public class CmsModuleImportExportRepository {
@@ -97,11 +97,11 @@ public class CmsModuleImportExportRepository {
 
     /**
      * Deletes the module corresponding to the given virtual module file name.<p>
-     * 
-     * @param fileName the file name 
-     * @return true if the module could be deleted 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param fileName the file name
+     * @return true if the module could be deleted
+     *
+     * @throws CmsException if something goes wrong
      */
     public synchronized boolean deleteModule(String fileName) throws CmsException {
 
@@ -115,15 +115,15 @@ public class CmsModuleImportExportRepository {
 
     }
 
-    /** 
+    /**
      * Exports a module and returns the export zip file content in a byte array.<p>
-     *  
+     *
      * @param virtualModuleFileName the virtual file name for the module
-     * @param project the project from which the module should be exported  
-     * 
-     * @return the module export data 
-     * 
-     * @throws CmsException if something goes wrong 
+     * @param project the project from which the module should be exported
+     *
+     * @return the module export data
+     *
+     * @throws CmsException if something goes wrong
      */
     @SuppressWarnings("resource")
     public synchronized byte[] getExportedModuleData(String virtualModuleFileName, CmsProject project)
@@ -179,8 +179,8 @@ public class CmsModuleImportExportRepository {
 
     /**
      * Gets the list of modules as file names.<p>
-     * 
-     * @return the list of modules as file names 
+     *
+     * @return the list of modules as file names
      */
     public List<String> getModuleFileNames() {
 
@@ -191,17 +191,17 @@ public class CmsModuleImportExportRepository {
         return result;
     }
 
-    /** 
+    /**
      * Imports module data.<p>
-     * 
-     * @param name the module file name 
-     * @param content the module ZIP file data 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param name the module file name
+     * @param content the module ZIP file data
+     * @throws CmsException if something goes wrong
      */
     public synchronized void importModule(String name, byte[] content) throws CmsException {
 
         if (content.length == 0) {
-            // Happens when using CmsResourceWrapperModules with JLAN and createResource is called 
+            // Happens when using CmsResourceWrapperModules with JLAN and createResource is called
             LOG.debug("Zero-length module import content, ignoring it...");
         } else {
             ensureFoldersExist();
@@ -229,8 +229,8 @@ public class CmsModuleImportExportRepository {
 
     /**
      * Initializes the CMS context.<p>
-     * 
-     * @param adminCms the admin CMS context 
+     *
+     * @param adminCms the admin CMS context
      */
     public void initialize(CmsObject adminCms) {
 
@@ -239,20 +239,20 @@ public class CmsModuleImportExportRepository {
 
     /**
      * Computes a module hash, which should change when a module changes and stay the same when the module doesn't change.<p>
-     * 
-     * We only use the modification time of the module resources and their descendants and the modification time of the metadata 
-     * for computing it. 
-     * 
+     *
+     * We only use the modification time of the module resources and their descendants and the modification time of the metadata
+     * for computing it.
+     *
      * @param module the module for which to compute the module signature
-     * @param project the project in which to compute the module hash  
-     * @return the module signature 
-     * @throws CmsException if something goes wrong 
+     * @param project the project in which to compute the module hash
+     * @return the module signature
+     * @throws CmsException if something goes wrong
      */
     private String computeModuleHash(CmsModule module, CmsProject project) throws CmsException {
 
         LOG.info("Getting module hash for " + module.getName());
         // This method may be called very frequently during a short time, but it is unlikely
-        // that a module changes multiple times in a few seconds, so we use a timed cache here   
+        // that a module changes multiple times in a few seconds, so we use a timed cache here
         String cachedValue = m_newModuleHashCache.get(module);
         if (cachedValue != null) {
             LOG.info("Using cached value for module hash of " + module.getName());
@@ -262,7 +262,7 @@ public class CmsModuleImportExportRepository {
         CmsObject cms = OpenCms.initCmsObject(m_adminCms);
         cms.getRequestContext().setCurrentProject(project);
 
-        // We compute a hash code from the paths of all resources belonging to the module and their respective modification dates. 
+        // We compute a hash code from the paths of all resources belonging to the module and their respective modification dates.
         List<String> entries = Lists.newArrayList();
         for (String path : module.getResources()) {
             List<CmsResource> resources = cms.readResources(path, CmsResourceFilter.IGNORE_EXPIRATION, true);
@@ -276,12 +276,12 @@ public class CmsModuleImportExportRepository {
         return "" + inputString.hashCode();
     }
 
-    /** 
+    /**
      * Creates a randomized path for the temporary file used to store the import data.<p>
-     * 
+     *
      * @param name the module name
-     *  
-     * @return the generated path 
+     *
+     * @return the generated path
      */
     private String createImportZipPath(String name) {
 
@@ -294,10 +294,10 @@ public class CmsModuleImportExportRepository {
         return path;
     }
 
-    /** 
+    /**
      * Creates a new report for an export/import.<p>
-     * 
-     * @return the new report  
+     *
+     * @return the new report
      */
     private I_CmsReport createReport() {
 
@@ -320,10 +320,10 @@ public class CmsModuleImportExportRepository {
 
     /**
      * Gets the virtual file name to use for the given module.<p>
-     * 
-     * @param module the module for which to get the file name 
      *
-     * @return the file name 
+     * @param module the module for which to get the file name
+     *
+     * @return the file name
      */
     private String getFileNameForModule(CmsModule module) {
 
@@ -332,10 +332,10 @@ public class CmsModuleImportExportRepository {
 
     /**
      * Gets the module which corresponds to the given virtual file name.<p>
-     * 
-     * @param fileName the file name 
-     * 
-     * @return the module which corresponds to the given file name 
+     *
+     * @param fileName the file name
+     *
+     * @return the module which corresponds to the given file name
      */
     private CmsModule getModuleForFileName(String fileName) {
 
@@ -349,12 +349,12 @@ public class CmsModuleImportExportRepository {
 
     /**
      * Checks if a given module needs to be re-exported.<p>
-     * 
-     * @param module the module to check 
-     * @param moduleFile the file representing the exported module (doesn't necessarily exist) 
-     * @param project the project in which to check 
-     * 
-     * @return true if the module needs to be exported 
+     *
+     * @param module the module to check
+     * @param moduleFile the file representing the exported module (doesn't necessarily exist)
+     * @param project the project in which to check
+     *
+     * @return true if the module needs to be exported
      */
     private boolean needToExportModule(CmsModule module, File moduleFile, CmsProject project) {
 
@@ -374,12 +374,13 @@ public class CmsModuleImportExportRepository {
                 LOG.error(e.getLocalizedMessage(), e);
             }
 
-            LOG.info("Comparing module hashes for "
-                + module.getName()
-                + " to check if export is needed: old = "
-                + oldModuleSignature
-                + ",  new="
-                + newModuleSignature);
+            LOG.info(
+                "Comparing module hashes for "
+                    + module.getName()
+                    + " to check if export is needed: old = "
+                    + oldModuleSignature
+                    + ",  new="
+                    + newModuleSignature);
             if ((newModuleSignature == null) || !Objects.equal(oldModuleSignature, newModuleSignature)) {
                 if (newModuleSignature != null) {
                     m_moduleHashCache.put(module, newModuleSignature);

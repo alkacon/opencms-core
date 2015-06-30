@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,10 +29,10 @@ package org.opencms.gwt.client.ui.contextmenu;
 
 /**
  * Interface for classes that provide context menu commands.<p>
- * 
+ *
  * Implementing classes need to implement the static method getContextMenuCommand() returning a
  * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand}.<p>
- * 
+ *
  * @since version 8.0.1
  */
 public interface I_CmsHasContextMenuCommand {

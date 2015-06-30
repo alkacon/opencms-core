@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,20 +31,20 @@ import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 
 import java.util.Map;
 
-/** 
+/**
  * Interface for creating different types of widgets depending on a key.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsFormWidgetMultiFactory {
 
     /**
      * Creates a new form widget.<p>
-     * 
-     * @param key the key identifying the widget type 
-     * 
-     * @param widgetParams the widget initialization parameters 
-     * @return the created form widget 
+     *
+     * @param key the key identifying the widget type
+     *
+     * @param widgetParams the widget initialization parameters
+     * @return the created form widget
      */
     I_CmsFormWidget createFormWidget(String key, Map<String, String> widgetParams);
 

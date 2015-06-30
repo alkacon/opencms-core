@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,15 +49,15 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for building the security and export settings dialog.<p> 
- * 
+ * Provides methods for building the security and export settings dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/secure.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSecure extends CmsDialog {
 
@@ -84,7 +84,7 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSecure(CmsJspActionElement jsp) {
@@ -94,7 +94,7 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -106,7 +106,7 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Performs the Security and Export Change.<p>
-     * 
+     *
      * @throws JspException if including a JSP sub element is not successful
      */
     public void actionChangeSecureExport() throws JspException {
@@ -125,7 +125,7 @@ public class CmsSecure extends CmsDialog {
             writeProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, getParamExportname());
             writeProperty(CmsPropertyDefinition.PROPERTY_SECURE, getParamSecure());
 
-            // change the flag of the resource so that it is internal            
+            // change the flag of the resource so that it is internal
             CmsResource resource = getCms().readResource(filename, CmsResourceFilter.IGNORE_EXPIRATION);
             if (resource.isInternal() && !Boolean.valueOf(getParamIntern()).booleanValue()) {
                 getCms().chflags(filename, resource.getFlags() & (~CmsResource.FLAG_INTERNAL));
@@ -145,30 +145,31 @@ public class CmsSecure extends CmsDialog {
      * Builds the radio input to set the export and secure property.
      *
      * @param propName the name of the property to build the radio input for
-     * 
+     *
      * @return html for the radio input
-     * 
+     *
      * @throws CmsException if the reading of a property fails
      */
     public String buildRadio(String propName) throws CmsException {
 
         String propVal = readProperty(propName);
         StringBuffer result = new StringBuffer("<table border=\"0\"><tr>");
-        result.append("<td><input type=\"radio\" value=\"true\" onClick=\"checkNoIntern()\" name=\"").append(propName).append(
-            "\" ").append(Boolean.valueOf(propVal).booleanValue() ? "checked=\"checked\"" : "").append(
-            "/></td><td id=\"tablelabel\">").append(key(Messages.GUI_LABEL_TRUE_0)).append("</td>");
-        result.append("<td><input type=\"radio\" value=\"false\" onClick=\"checkNoIntern()\" name=\"").append(propName).append(
-            "\" ").append(Boolean.valueOf(propVal).booleanValue() ? "" : "checked=\"checked\"").append(
-            "/></td><td id=\"tablelabel\">").append(key(Messages.GUI_LABEL_FALSE_0)).append("</td>");
-        result.append("<td><input type=\"radio\" value=\"\" onClick=\"checkNoIntern()\" name=\"").append(propName).append(
-            "\" ").append(CmsStringUtil.isEmpty(propVal) ? "checked=\"checked\"" : "").append(
-            "/></td><td id=\"tablelabel\">").append(getPropertyInheritanceInfo(propName)).append("</td></tr></table>");
+        result.append("<td><input type=\"radio\" value=\"true\" onClick=\"checkNoIntern()\" name=\"").append(
+            propName).append("\" ").append(Boolean.valueOf(propVal).booleanValue() ? "checked=\"checked\"" : "").append(
+                "/></td><td id=\"tablelabel\">").append(key(Messages.GUI_LABEL_TRUE_0)).append("</td>");
+        result.append("<td><input type=\"radio\" value=\"false\" onClick=\"checkNoIntern()\" name=\"").append(
+            propName).append("\" ").append(Boolean.valueOf(propVal).booleanValue() ? "" : "checked=\"checked\"").append(
+                "/></td><td id=\"tablelabel\">").append(key(Messages.GUI_LABEL_FALSE_0)).append("</td>");
+        result.append("<td><input type=\"radio\" value=\"\" onClick=\"checkNoIntern()\" name=\"").append(
+            propName).append("\" ").append(CmsStringUtil.isEmpty(propVal) ? "checked=\"checked\"" : "").append(
+                "/></td><td id=\"tablelabel\">").append(getPropertyInheritanceInfo(propName)).append(
+                    "</td></tr></table>");
         return result.toString();
     }
 
     /**
      * Returns the value of the export parameter.<p>
-     * 
+     *
      * @return the value of the export parameter
      */
     public String getParamExport() {
@@ -178,7 +179,7 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Returns the value of the export name parameter.<p>
-     * 
+     *
      * @return the value of the export name parameter
      */
     public String getParamExportname() {
@@ -188,7 +189,7 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Returns the value of the intern parameter.<p>
-     * 
+     *
      * @return the value of the intern parameter
      */
     public String getParamIntern() {
@@ -198,7 +199,7 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Returns the value of the secure parameter.<p>
-     * 
+     *
      * @return the value of the secure parameter
      */
     public String getParamSecure() {
@@ -208,10 +209,10 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Returns the information from which the property is inherited.<p>
-     * 
+     *
      * @param propName the name of the property
      * @return a String containing the information from which the property is inherited and inherited value
-     * @throws CmsException if the reading of the Property fails 
+     * @throws CmsException if the reading of the Property fails
      */
     public String getPropertyInheritanceInfo(String propName) throws CmsException {
 
@@ -235,7 +236,7 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Returns the path under which the resource is accessible.<p>
-     *  
+     *
      * @return the path under which the resource is accessible
      */
     public String getResourceUrl() {
@@ -245,7 +246,7 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Returns true if the export user has read permission on a specified resource.<p>
-     * 
+     *
      * @return true, if the export user has the permission to read the resource
      */
     public boolean exportUserHasReadPermission() {
@@ -269,7 +270,7 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Returns value of the the intern property of the resource.<p>
-     *  
+     *
      * @return the value of the intern property of the resource
      */
     public String readInternProp() {
@@ -287,9 +288,9 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Returns value of the property of the resource.<p>
-     * 
-     * @param propertyName the name of the property to read 
-     * 
+     *
+     * @param propertyName the name of the property to read
+     *
      * @return the value of the secure property of the resource
      */
     public String readProperty(String propertyName) {
@@ -310,9 +311,9 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * returns if the resource to be changed is a folder.<p>
-     * 
+     *
      * @return true if the resource is a folder
-     * 
+     *
      * @throws CmsException if the reading of the resource fails
      */
     public boolean resourceIsFolder() throws CmsException {
@@ -322,7 +323,7 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Sets the value of the export parameter.<p>
-     * 
+     *
      * @param value for the export parameter
      */
     public void setParamExport(String value) {
@@ -332,7 +333,7 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Sets the value of the export name parameter.<p>
-     * 
+     *
      * @param value for the export name parameter
      */
     public void setParamExportname(String value) {
@@ -342,7 +343,7 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Sets the value of the intern parameter.<p>
-     * 
+     *
      * @param value for the intern parameter
      */
     public void setParamIntern(String value) {
@@ -352,7 +353,7 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Sets the value of the secure parameter.<p>
-     * 
+     *
      * @param value for the secure parameter
      */
     public void setParamSecure(String value) {
@@ -362,7 +363,7 @@ public class CmsSecure extends CmsDialog {
 
     /**
      * Determines whether to show the export settings dialog depending on the users settings.<p>
-     * 
+     *
      * @return true if dialogs should be shown, otherwise false
      */
     public boolean showExportSettings() {
@@ -379,7 +380,7 @@ public class CmsSecure extends CmsDialog {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
-        // check the required permissions to change the resource properties      
+        // check the required permissions to change the resource properties
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
@@ -387,7 +388,7 @@ public class CmsSecure extends CmsDialog {
 
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_CHSECEXP);
         } else if (DIALOG_LOCKS_CONFIRMED.equals(getParamAction())) {
@@ -396,19 +397,18 @@ public class CmsSecure extends CmsDialog {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for chnav dialog    
-            setParamTitle(key(
-                Messages.GUI_SECURE_EXPORT_RESOURCE_1,
-                new Object[] {CmsResource.getName(getParamResource())}));
+            // build title for chnav dialog
+            setParamTitle(
+                key(Messages.GUI_SECURE_EXPORT_RESOURCE_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
     }
 
     /**
      * Writes a property value for a resource.<p>
-     * 
+     *
      * @param propertyName the name of the property
      * @param propertyValue the new value of the property
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected void writeProperty(String propertyName, String propertyValue) throws CmsException {
@@ -456,7 +456,7 @@ public class CmsSecure extends CmsDialog {
             newResourceValue = CmsProperty.DELETE_VALUE;
         }
 
-        // change property only if it has been changed            
+        // change property only if it has been changed
         if (!oldResourceValue.equals(newResourceValue) || !oldStructureValue.equals(newStructureValue)) {
             getCms().writePropertyObject(getParamResource(), newProp);
         }

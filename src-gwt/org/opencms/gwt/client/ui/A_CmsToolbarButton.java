@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,12 +33,12 @@ import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import com.google.gwt.dom.client.Document;
 
 /**
- * Abstract button class implementing common methods 
- * of {@link org.opencms.gwt.client.ui.I_CmsToolbarButton} 
+ * Abstract button class implementing common methods
+ * of {@link org.opencms.gwt.client.ui.I_CmsToolbarButton}
  * for container-page tool-bar buttons.<p>
- * 
- * @param <HANDLER> the handler class to use for the button type 
- * 
+ *
+ * @param <HANDLER> the handler class to use for the button type
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsToolbarButton<HANDLER extends I_CmsToolbarHandler> extends CmsToggleButton
@@ -55,7 +55,7 @@ implements I_CmsToolbarButton {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param buttonData the button data to use
      * @param handler the container-page handler
      */
@@ -123,7 +123,7 @@ implements I_CmsToolbarButton {
 
     /**
      * Toggle function. Shows of the element option buttons only the ones associated with this button.<p>
-     * 
+     *
      * @param show <code>true</code> if to show the buttons
      */
     public void showSingleElementOption(boolean show) {
@@ -137,7 +137,7 @@ implements I_CmsToolbarButton {
 
     /**
      * Returns the container-page handler.<p>
-     * 
+     *
      * @return the container-page handler
      */
     protected HANDLER getHandler() {

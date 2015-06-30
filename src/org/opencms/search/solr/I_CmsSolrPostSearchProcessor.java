@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,26 +41,26 @@ import org.apache.solr.common.SolrInputDocument;
  * The post document processor can be used in order to
  * manipulate search results after the OpenCms permission
  * check has been done.<p>
- * 
- * NOTE: Currently it is only possible to use this interface 
+ *
+ * NOTE: Currently it is only possible to use this interface
  * if you run an embedded Solr server instance.<p>
- * 
+ *
  * @since 8.5.0
  */
 public interface I_CmsSolrPostSearchProcessor {
 
     /**
-     * (Re-)Initializes the post processor.<p> 
+     * (Re-)Initializes the post processor.<p>
      */
     void init();
 
     /**
      * Performs the post processing.<p>
-     * 
+     *
      * @param searchCms the CMS object
      * @param resource the resource for the found document
      * @param document the document itself
-     * 
+     *
      * @return the manipulated Solr document
      */
     SolrDocument process(CmsObject searchCms, CmsResource resource, SolrInputDocument document);

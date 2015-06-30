@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,19 +41,19 @@ import java.util.Map;
 /**
  * An access control list contains the permission sets of all principals for a distinct resource
  * that are calculated on the permissions defined by various access control entries.<p>
- * 
+ *
  * <p>To each single resource, access control entries of type <code>CmsAccessControlEntry</code> can be assigned.
  * An access control entry defines the permissions (both allowed and explicitly denied) of a user or group for this resource.</p>
- * 
- * <p>By calling the method <code>getAccessControlList</code> the list is generated on the resource. It contains the result of 
- * merging both access control entries defined immediately on the resource and inherited along the folder hierarchie in the 
+ *
+ * <p>By calling the method <code>getAccessControlList</code> the list is generated on the resource. It contains the result of
+ * merging both access control entries defined immediately on the resource and inherited along the folder hierarchie in the
  * OpenCms virtual file system (controlled by flags in the entry).</p>
- * 
+ *
  * <p>To check the permissions of a user on a distinct resource, the method <code>hasPermissions</code> in the driver manager
  * is called in each operation. This method acts as access guard and matches the required permissions for the operation
  * against the allowed and denied permissions defined for the user or groups of this user.</p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsAccessControlList {
 
@@ -73,7 +73,7 @@ public class CmsAccessControlList {
 
     /**
      * Adds an access control entry to the access control list.<p>
-     * 
+     *
      * @param entry the access control entry to add
      */
     public void add(CmsAccessControlEntry entry) {
@@ -88,7 +88,7 @@ public class CmsAccessControlList {
 
     /**
      * Returns a clone of this Objects instance.<p>
-     * 
+     *
      * @return a clone of this instance
      */
     @Override
@@ -105,7 +105,7 @@ public class CmsAccessControlList {
 
     /**
      * Returns the permission map of this access control list.<p>
-     * 
+     *
      * @return permission map
      */
     public Map<CmsUUID, CmsPermissionSetCustom> getPermissionMap() {
@@ -115,11 +115,11 @@ public class CmsAccessControlList {
 
     /**
      * Calculates the permissions of the given user and his groups from the access control list.<p>
-     *  
+     *
      * @param user the user
      * @param groups the groups of this user
      * @param roles the roles of this user
-     * 
+     *
      * @return the summarized permission set of the user
      */
     public CmsPermissionSetCustom getPermissions(CmsUser user, List<CmsGroup> groups, List<CmsRole> roles) {
@@ -165,9 +165,9 @@ public class CmsAccessControlList {
 
     /**
      * Returns the permission set of a principal as stored in the access control list.<p>
-     * 
+     *
      * @param principalId the id of the principal (group or user)
-     * 
+     *
      * @return the current permissions of this single principal
      */
     public CmsPermissionSetCustom getPermissions(CmsUUID principalId) {
@@ -178,11 +178,11 @@ public class CmsAccessControlList {
     /**
      * Calculates the permissions of the given user and his groups from the access control list.<p>
      * The permissions are returned as permission string in the format {{+|-}{r|w|v|c|i}}*.
-     * 
+     *
      * @param user the user
      * @param groups the groups of this user
      * @param roles the roles of this user
-     * 
+     *
      * @return a string that displays the permissions
      */
     public String getPermissionString(CmsUser user, List<CmsGroup> groups, List<CmsRole> roles) {
@@ -192,7 +192,7 @@ public class CmsAccessControlList {
 
     /**
      * Returns the principals with specific permissions stored in this access control list.<p>
-     * 
+     *
      * @return enumeration of principals (each group or user)
      */
     public List<CmsUUID> getPrincipals() {
@@ -205,7 +205,7 @@ public class CmsAccessControlList {
     /**
      * Sets the allowed permissions of a given access control entry as allowed permissions in the access control list.<p>
      * The denied permissions are left unchanged.
-     * 
+     *
      * @param entry the access control entry
      */
     public void setAllowedPermissions(CmsAccessControlEntry entry) {
@@ -221,7 +221,7 @@ public class CmsAccessControlList {
     /**
      * Sets the denied permissions of a given access control entry as denied permissions in the access control list.<p>
      * The allowed permissions are left unchanged.
-     * 
+     *
      * @param entry the access control entry
      */
     public void setDeniedPermissions(CmsAccessControlEntry entry) {

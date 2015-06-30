@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,12 +58,8 @@ public class TestCmsJob implements Job {
      */
     public void execute(JobExecutionContext context) {
 
-        System.out.println(getClass().getName()
-            + " "
-            + m_myCount
-            + " is starting (running: "
-            + TestCmsJob.m_running
-            + ").");
+        System.out.println(
+            getClass().getName() + " " + m_myCount + " is starting (running: " + TestCmsJob.m_running + ").");
         TestCmsJob.m_running++;
         try {
             Thread.sleep(1000 + (long)(4000.0 * Math.random()));
@@ -71,11 +67,7 @@ public class TestCmsJob implements Job {
             e.printStackTrace();
         }
         TestCmsJob.m_running--;
-        System.out.println(getClass().getName()
-            + " "
-            + m_myCount
-            + " is finished (running: "
-            + TestCmsJob.m_running
-            + ").");
+        System.out.println(
+            getClass().getName() + " " + m_myCount + " is finished (running: " + TestCmsJob.m_running + ").");
     }
 }

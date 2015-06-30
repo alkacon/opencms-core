@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,8 +63,8 @@ import com.google.common.collect.Lists;
 
 /**
  * User selection dialog.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsUserSelectionList extends A_CmsListDialog {
 
@@ -94,7 +94,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUserSelectionList(CmsJspActionElement jsp) {
@@ -110,7 +110,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param lazy signals whether lazy initialization should be used or not
      */
@@ -128,7 +128,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -140,7 +140,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -165,7 +165,9 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         html.append("\t\t\t<td>\n");
         String param = "";
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamGroup())) {
-            param = Messages.get().getBundle(getLocale()).key(Messages.GUI_USERSELECTION_GROUP_BLOCK_1, getParamGroup());
+            param = Messages.get().getBundle(getLocale()).key(
+                Messages.GUI_USERSELECTION_GROUP_BLOCK_1,
+                getParamGroup());
         }
         html.append(key(Messages.GUI_USERSELECTION_INTRO_TITLE_1, new Object[] {param}));
         html.append("\n\t\t\t</td>");
@@ -252,7 +254,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
 
             List<CmsListItem> ret = new ArrayList<CmsListItem>();
 
-            // get content        
+            // get content
             List<CmsPrincipal> users = getUsers();
             Iterator<CmsPrincipal> itUsers = users.iterator();
             while (itUsers.hasNext()) {
@@ -281,10 +283,10 @@ public class CmsUserSelectionList extends A_CmsListDialog {
 
     /**
      * Gets the user search parameters.<p>
-     * 
-     * @return the user search parameters 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the user search parameters
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsUserSearchParameters getSearchParams() throws CmsException {
 
@@ -312,9 +314,9 @@ public class CmsUserSelectionList extends A_CmsListDialog {
 
     /**
      * Gets the sort key to use.<p>
-     * 
-     * @param column the list column id 
-     * @return the sort key 
+     *
+     * @param column the list column id
+     * @return the sort key
      */
     protected SortKey getSortKey(String column) {
 
@@ -331,9 +333,9 @@ public class CmsUserSelectionList extends A_CmsListDialog {
 
     /**
      * Returns the list of users for selection.<p>
-     * 
+     *
      * @return a list of users
-     * 
+     *
      * @throws CmsException if womething goes wrong
      */
     protected List<CmsPrincipal> getUsers() throws CmsException {
@@ -353,10 +355,10 @@ public class CmsUserSelectionList extends A_CmsListDialog {
 
     /**
      * Makes a list item from a user.<p>
-     * 
-     * @param user the user 
-     * 
-     * @return the list item 
+     *
+     * @param user the user
+     *
+     * @return the list item
      */
     protected CmsListItem makeListItem(CmsUser user) {
 
@@ -440,7 +442,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
-        // no-op        
+        // no-op
     }
 
     /**

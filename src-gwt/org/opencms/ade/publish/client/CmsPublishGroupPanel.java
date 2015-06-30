@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -75,7 +75,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A panel representing a single publish group.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPublishGroupPanel extends Composite {
@@ -142,14 +142,14 @@ public class CmsPublishGroupPanel extends Composite {
 
     /**
      * Constructs a new instance.<p>
-     * 
-     * @param publishGroup the group for which to build the group panel 
+     *
+     * @param publishGroup the group for which to build the group panel
      * @param title the title of the group
      * @param groupIndex the index of the group which this panel should render
      * @param selectionChangeHandler the handler for selection changes for publish resources
      * @param model the data model for the publish resources
      * @param controllersById the map of selection controllers to which this panel's selection controllers should be added
-     * @param menuHandler the context menu handler 
+     * @param menuHandler the context menu handler
      * @param editorHandler the content editor handler
      * @param showProblemsOnly if true, sets this panel into "show resources with problems only" mode
      */
@@ -195,11 +195,11 @@ public class CmsPublishGroupPanel extends Composite {
 
     /**
      * Creates a basic list item widget for a given publish resource bean.<p>
-     * 
+     *
      * @param resourceBean the publish resource bean
-     * @param slotMapping maps button slot ids to actual button indexes 
-     * 
-     * @return the list item widget representing the publish resource bean 
+     * @param slotMapping maps button slot ids to actual button indexes
+     *
+     * @return the list item widget representing the publish resource bean
      */
     public static CmsListItemWidget createListItemWidget(final CmsPublishResource resourceBean, int[] slotMapping) {
 
@@ -250,11 +250,11 @@ public class CmsPublishGroupPanel extends Composite {
 
     /**
      * Fills a slot for a button in a publish list item widget.<p>
-     *  
-     * @param listItemWidget the list item widget 
-     * @param index the slot index 
-     * @param widget the widget which should be displayed in the slot 
-     * @param slotMapping array mapping logical slot ids to button indexes 
+     *
+     * @param listItemWidget the list item widget
+     * @param index the slot index
+     * @param widget the widget which should be displayed in the slot
+     * @param slotMapping array mapping logical slot ids to button indexes
      */
     private static void fillButtonSlot(CmsListItemWidget listItemWidget, int index, Widget widget, int[] slotMapping) {
 
@@ -266,12 +266,12 @@ public class CmsPublishGroupPanel extends Composite {
         }
     }
 
-    /** 
-     * Utility method for getting the title of a publish resource bean, or a default title 
+    /**
+     * Utility method for getting the title of a publish resource bean, or a default title
      * if the bean has no title.<p>
-     * 
+     *
      * @param resourceBean the resource bean for which the title should be retrieved
-     *  
+     *
      * @return the bean's title, or a default title
      */
     private static String getTitle(CmsPublishResource resourceBean) {
@@ -286,7 +286,7 @@ public class CmsPublishGroupPanel extends Composite {
     /**
      * Adds the list item for the next publish resource and returns  true on success, while
      * also incrementing the internal item index.<p>
-     * 
+     *
      * @return true if an item was added
      */
     public boolean addNextItem() {
@@ -306,8 +306,8 @@ public class CmsPublishGroupPanel extends Composite {
 
     /**
      * Returns true if there are more potential items to add.<p>
-     * 
-     * @return true if there are possibly more items 
+     *
+     * @return true if there are possibly more items
      */
     public boolean hasMoreItems() {
 
@@ -322,10 +322,10 @@ public class CmsPublishGroupPanel extends Composite {
         m_selectGroup.getElement().getStyle().setVisibility(Visibility.HIDDEN);
     }
 
-    /** 
+    /**
      * Updates the check box state for this group.<p>
-     * 
-     * @param value the state to use for updating the check box 
+     *
+     * @param value the state to use for updating the check box
      */
     public void updateCheckboxState(CmsPublishItemStateSummary value) {
 
@@ -336,8 +336,8 @@ public class CmsPublishGroupPanel extends Composite {
 
     /**
      * Returns true if the corresponding group has no  resources with problems.<p>
-     * 
-     * @return true if the group for this panel has no resources with problems 
+     *
+     * @return true if the group for this panel has no resources with problems
      */
     protected boolean hasNoProblemResources() {
 
@@ -348,8 +348,8 @@ public class CmsPublishGroupPanel extends Composite {
 
     /**
      * Returns true if the corresponding group has only resources with problems.<p>
-     * 
-     * @return true if the group for this panel has only resources with problems. 
+     *
+     * @return true if the group for this panel has only resources with problems.
      */
     protected boolean hasOnlyProblemResources() {
 
@@ -360,7 +360,7 @@ public class CmsPublishGroupPanel extends Composite {
 
     /**
      * Adds a resource bean to this group.<p>
-     * 
+     *
      * @param resourceBean the resource bean which should be added
      */
     private void addItem(CmsPublishResource resourceBean) {
@@ -375,22 +375,25 @@ public class CmsPublishGroupPanel extends Composite {
 
     /**
      * Creates a widget from resource bean data.<p>
-     * 
+     *
      * @param resourceBean the resource bean for which a widget should be constructed
      * @param status the publish item status
-     * @param isSubItem true if this is not a top-level publish item  
-     * 
+     * @param isSubItem true if this is not a top-level publish item
+     *
      * @return a widget representing the resource bean
      */
-    private CmsTreeItem buildItem(final CmsPublishResource resourceBean, CmsPublishItemStatus status, boolean isSubItem) {
+    private CmsTreeItem buildItem(
+        final CmsPublishResource resourceBean,
+        CmsPublishItemStatus status,
+        boolean isSubItem) {
 
         CmsListItemWidget itemWidget = createListItemWidget(resourceBean, DEFAULT_SLOT_MAPPING);
         if ((m_editorHandler != null) && resourceBean.getPermissionInfo().hasWritePermission()) {
             CmsPushButton editButton = new CmsPushButton();
             editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
             editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-            editButton.setTitle(org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
+            editButton.setTitle(
+                org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
             editButton.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -430,7 +433,7 @@ public class CmsPublishGroupPanel extends Composite {
         row.setOpen(false);
         row.addStyleName(CSS.publishRow());
 
-        // we do not need most of the interactive elements for the sub-items 
+        // we do not need most of the interactive elements for the sub-items
         if (!isSubItem) {
             ClickHandler checkboxHandler = new ClickHandler() {
 
@@ -482,7 +485,7 @@ public class CmsPublishGroupPanel extends Composite {
     }
 
     /**
-     * Initializes the "select all/none" buttons, adds them to the group header and 
+     * Initializes the "select all/none" buttons, adds them to the group header and
      * attaches event handlers to them.<p>
      */
     private void initSelectButtons() {

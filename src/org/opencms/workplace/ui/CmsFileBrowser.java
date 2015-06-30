@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import com.vaadin.ui.Tree.CollapseListener;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
 
-/** 
+/**
  * File browser component containing both a VFS folder tree and a list of files in a table.<p>
  */
 public class CmsFileBrowser extends A_CmsCustomComponent {
@@ -112,8 +112,8 @@ public class CmsFileBrowser extends A_CmsCustomComponent {
 
     /**
      * Filles the file table with the resources from the given path.<p>
-     * 
-     * @param sitePath a folder site path 
+     *
+     * @param sitePath a folder site path
      */
     public void populateFileTable(String sitePath) {
 
@@ -125,7 +125,7 @@ public class CmsFileBrowser extends A_CmsCustomComponent {
         }
     }
 
-    /** 
+    /**
      * Popuplates the folder tree.<p>
      */
     public void populateFolderTree() {
@@ -136,7 +136,7 @@ public class CmsFileBrowser extends A_CmsCustomComponent {
         try {
             CmsResource siteRoot = getCmsObject().readResource("/", FOLDERS);
             Item rootItem = container.addItem(siteRoot.getStructureId());
-            // use the root path as name for site root folder 
+            // use the root path as name for site root folder
             rootItem.getItemProperty("resourceName").setValue(siteRoot.getRootPath());
             List<CmsResource> folderResources = getCmsObject().readResources("/", FOLDERS, false);
             for (CmsResource resource : folderResources) {

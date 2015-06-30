@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,8 +37,8 @@ import org.apache.lucene.index.IndexOptions;
 
 /**
  * An individual field configuration in a Lucene search index.<p>
- * 
- * @since 7.0.0 
+ *
+ * @since 7.0.0
  */
 public class CmsLuceneField extends CmsSearchField {
 
@@ -97,12 +97,12 @@ public class CmsLuceneField extends CmsSearchField {
 
     /**
      * Creates a new search field configuration.<p>
-     * 
+     *
      * The field will be tokenized if it is indexed.
-     * The field will not be in the excerpt. 
+     * The field will not be in the excerpt.
      * The boost value is the default, that is no special boost is used.
-     * There is no default value.<p> 
-     * 
+     * There is no default value.<p>
+     *
      * @param name the name of the field, see {@link #setName(String)}
      * @param displayName the display name of this field, see {@link #setDisplayName(String)}
      * @param isStored controls if the field is stored and in the excerpt, see {@link #setStored(boolean)}
@@ -115,7 +115,7 @@ public class CmsLuceneField extends CmsSearchField {
 
     /**
      * Creates a new search field configuration.<p>
-     * 
+     *
      * @param name the name of the field, see {@link #setName(String)}
      * @param displayName the display name of this field, see {@link #setDisplayName(String)}
      * @param isStored controls if the field is stored, see {@link #setStored(boolean)}
@@ -151,7 +151,7 @@ public class CmsLuceneField extends CmsSearchField {
 
     /**
      * Creates a new search field configuration.<p>
-     * 
+     *
      * @param name the name of the field, see {@link #setName(String)}
      * @param displayName the display name of this field, see {@link #setDisplayName(String)}
      * @param isStored controls if the field is stored, see {@link #setStored(boolean)}
@@ -176,14 +176,14 @@ public class CmsLuceneField extends CmsSearchField {
 
     /**
      * Creates a field from the configuration and the provided content.<p>
-     * 
+     *
      * The configured name of the field as provided by {@link #getName()} is used.<p>
-     * 
-     * If no valid content is provided (that is the content is either <code>null</code> or 
+     *
+     * If no valid content is provided (that is the content is either <code>null</code> or
      * only whitespace), then no field is created and <code>null</code> is returned.<p>
-     * 
+     *
      * @param content the content to create the field with
-     * 
+     *
      * @return a field created from the configuration and the provided content
      */
     public Field createField(String content) {
@@ -193,13 +193,13 @@ public class CmsLuceneField extends CmsSearchField {
 
     /**
      * Creates a field with the given name from the configuration and the provided content.<p>
-     * 
-     * If no valid content is provided (that is the content is either <code>null</code> or 
+     *
+     * If no valid content is provided (that is the content is either <code>null</code> or
      * only whitespace), then no field is created and <code>null</code> is returned.<p>
-     * 
+     *
      * @param name the name of the field to create
      * @param content the content to create the field with
-     * 
+     *
      * @return a field with the given name from the configuration and the provided content
      */
     public Field createField(String name, String content) {
@@ -240,7 +240,7 @@ public class CmsLuceneField extends CmsSearchField {
 
     /**
      * Returns the boost factor of this field as String value for display use.<p>
-     * 
+     *
      * @return the boost factor of this field as String value for display use
      */
     public String getBoostDisplay() {
@@ -253,7 +253,7 @@ public class CmsLuceneField extends CmsSearchField {
 
     /**
      * Returns the display name of the field.<p>
-     * 
+     *
      * @return the display name of the field
      */
     public String getDisplayName() {
@@ -280,9 +280,9 @@ public class CmsLuceneField extends CmsSearchField {
 
     /**
      * Returns the String value state of this field if it is indexed (and possibly tokenized) in the Lucene index.<p>
-     * 
+     *
      * @return the String value state of this field if it is indexed (and possibly tokenized) in the Lucene index
-     * 
+     *
      * @see #isTokenizedAndIndexed()
      * @see #isIndexed()
      */
@@ -312,7 +312,7 @@ public class CmsLuceneField extends CmsSearchField {
     /**
      * Returns <code>true</code> if the content of this field is compressed.<p>
      *
-     * If the field is compressed, it must also be stored, this means 
+     * If the field is compressed, it must also be stored, this means
      * {@link #isStored()} will always return <code>true</code> for compressed fields.<p>
      *
      * @return <code>true</code> if the content of this field is compressed
@@ -324,7 +324,7 @@ public class CmsLuceneField extends CmsSearchField {
 
     /**
      * Returns true if the field should be displayed.<p>
-     * 
+     *
      * @return returns true if the field should be displayed otherwise false
      */
     public boolean isDisplayed() {
@@ -338,7 +338,7 @@ public class CmsLuceneField extends CmsSearchField {
      * A field can only be used in the excerpt if it is stored, see {@link #isStored()}.<p>
      *
      * @return <code>true</code> if this fields content is used in the search result excerpt
-     * 
+     *
      * @see #isStored()
      */
     public boolean isInExcerptAndStored() {
@@ -348,7 +348,7 @@ public class CmsLuceneField extends CmsSearchField {
 
     /**
      * Returns <code>true</code> if the content of this field is tokenized in the Lucene index.<p>
-     * 
+     *
      * Please refer to the Lucene documentation about the concept behind tokenized and untokenized fields.<p>
      *
      * @return <code>true</code> if the content of this field is tokenized in the Lucene index
@@ -360,13 +360,13 @@ public class CmsLuceneField extends CmsSearchField {
 
     /**
      * Returns <code>true</code> if the content of this field is tokenized in the Lucene index.<p>
-     * 
+     *
      * A field can only be tokenized if it is also indexed, see {@link #isIndexed()}.<p>
-     * 
+     *
      * Please refer to the Lucene documentation about the concept behind tokenized and untokenized fields.<p>
      *
      * @return <code>true</code> if the content of this field is tokenized in the Lucene index
-     * 
+     *
      * @see #isStored()
      * @see #isIndexed()
      */
@@ -401,7 +401,7 @@ public class CmsLuceneField extends CmsSearchField {
      * The parameter must be a name of a class the implements the Lucene {@link Analyzer} interface.
      *
      * @param analyzerName the analyzer class name to set
-     * 
+     *
      * @throws Exception in case of problems creating the analyzer class instance
      */
     public void setAnalyzer(String analyzerName) throws Exception {
@@ -413,9 +413,9 @@ public class CmsLuceneField extends CmsSearchField {
 
     /**
      * Sets the boost factor of this field (only for display use).<p>
-     * 
+     *
      * @param boost the boost factor to set
-     * 
+     *
      * @see #setBoost(String)
      */
     public void setBoostDisplay(String boost) {
@@ -426,7 +426,7 @@ public class CmsLuceneField extends CmsSearchField {
     /**
      * Controls if this field value will be stored compressed or not.<p>
      *
-     * If this is set to <code>true</code>, the value for {@link #isStored()} will also 
+     * If this is set to <code>true</code>, the value for {@link #isStored()} will also
      * be set to <code>true</code>, since compressed fields are always stored.<p>
      *
      * @param compressed if <code>true</code>, the field value will be stored compressed
@@ -440,8 +440,8 @@ public class CmsLuceneField extends CmsSearchField {
     }
 
     /**
-     * Controls if the field is displayed or not.<p> 
-     * 
+     * Controls if the field is displayed or not.<p>
+     *
      * @param displayed if true the field is displayed
      */
     public void setDisplayed(boolean displayed) {
@@ -450,8 +450,8 @@ public class CmsLuceneField extends CmsSearchField {
     }
 
     /**
-     * Sets the display name. If the given name equals IGNORE_DISPLAY_NAME the field is not displayed.<p> 
-     * 
+     * Sets the display name. If the given name equals IGNORE_DISPLAY_NAME the field is not displayed.<p>
+     *
      * @param displayName the display name to set
      */
     public void setDisplayName(String displayName) {
@@ -478,19 +478,19 @@ public class CmsLuceneField extends CmsSearchField {
     }
 
     /**
-     * Controls if the content of this field is indexed (and possibly tokenized) in the Lucene index from a String parameter.<p> 
-     * 
+     * Controls if the content of this field is indexed (and possibly tokenized) in the Lucene index from a String parameter.<p>
+     *
      * This sets the values for {@link #isIndexed()} as well as {@link #isTokenizedAndIndexed()}.<p>
-     * 
+     *
      * The parameter can have the following values:
      * <ul>
      * <li><b>"true"</b> or <b>"tokenized"</b>: The field is indexed and tokenized.
      * <li><b>"false"</b> or <b>"no"</b>: The field is not indexed and not tokenized.
      * <li><b>"untokenized"</b>: The field is indexed but not tokenized.
      * </ul>
-     * 
+     *
      * @param indexed the index setting to use
-     * 
+     *
      * @see #setIndexed(boolean)
      * @see #setTokenized(boolean)
      */
@@ -519,9 +519,9 @@ public class CmsLuceneField extends CmsSearchField {
 
     /**
      * Controls if this fields content is used in the search result excerpt.<p>
-     * 
+     *
      * @param excerpt if <code>"true"</code>, then this fields content is used in the search excerpt
-     * 
+     *
      * @see #setInExcerpt(boolean)
      */
     public void setInExcerpt(String excerpt) {
@@ -530,10 +530,10 @@ public class CmsLuceneField extends CmsSearchField {
     }
 
     /**
-     * Controls if the content of this field is stored in the Lucene index from a String parameter.<p> 
-     * 
+     * Controls if the content of this field is stored in the Lucene index from a String parameter.<p>
+     *
      * @param stored if <code>"true"</code>, then the field content is stored
-     * 
+     *
      * @see #setStored(boolean)
      */
     public void setStored(String stored) {
@@ -563,7 +563,7 @@ public class CmsLuceneField extends CmsSearchField {
      * Please refer to the Lucene documentation about the concept behind tokenized and untokenized fields.<p>
      *
      * @param tokenized if <code>true</code>, then the field content is tokenized
-     * 
+     *
      * @see #setStored(boolean)
      */
     public void setTokenized(boolean tokenized) {

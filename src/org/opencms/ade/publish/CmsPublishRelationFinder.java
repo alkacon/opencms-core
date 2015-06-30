@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -69,7 +69,7 @@ public class CmsPublishRelationFinder {
         private static final long serialVersionUID = 1L;
 
         /**
-         * Constructor.<p> 
+         * Constructor.<p>
          */
         public ResourceMap() {
 
@@ -92,8 +92,8 @@ public class CmsPublishRelationFinder {
 
         /**
          * Returns the sum of all sizes of set values.<p>
-         * 
-         * @return the total size  
+         *
+         * @return the total size
          */
         public int totalSize() {
 
@@ -132,11 +132,11 @@ public class CmsPublishRelationFinder {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param cms the CMS context to use 
+     *
+     * @param cms the CMS context to use
      * @param resources the resources for which the related resources should be found
      * @param keepOriginalUnchangedResources true if unchanged resources from the original resource list should be kept
-     * @param relProvider provider for additional related resources   
+     * @param relProvider provider for additional related resources
      */
     public CmsPublishRelationFinder(
         CmsObject cms,
@@ -156,9 +156,9 @@ public class CmsPublishRelationFinder {
 
     /**
      * Gets the related resources in the form of a ResourceMap.<p>
-     * 
+     *
      * @return a ResourceMap which has resources from the original set of resources as keys, and sets of related resources as values
-     *  
+     *
      */
     public ResourceMap getPublishRelatedResources() {
 
@@ -174,9 +174,9 @@ public class CmsPublishRelationFinder {
     /**
      * Removes unchanged resources from the top level, and if they have children which do not occur anywhere else,
      * moves these children to the top level.<p>
-     * 
-     * @param publishRelatedResources the resource map to modify 
-     * @param reachability the reachability map 
+     *
+     * @param publishRelatedResources the resource map to modify
+     * @param reachability the reachability map
      */
     public void removeUnchangedTopLevelResources(ResourceMap publishRelatedResources, ResourceMap reachability) {
 
@@ -193,18 +193,18 @@ public class CmsPublishRelationFinder {
             }
         }
 
-        // we want the resources which *only* occur as children of unchanged parents 
+        // we want the resources which *only* occur as children of unchanged parents
         childrenOfUnchangedParents.removeAll(other);
 
         for (CmsResource parent : unchangedParents) {
             publishRelatedResources.remove(parent);
         }
 
-        // Try to find hierarchical relationships in childrenOfUnchangedParents 
+        // Try to find hierarchical relationships in childrenOfUnchangedParents
         while (findAndMoveParentWithChildren(childrenOfUnchangedParents, reachability, publishRelatedResources)) {
-            // do nothing 
+            // do nothing
         }
-        // only the resources with no 'children' are left, transfer them to the target map 
+        // only the resources with no 'children' are left, transfer them to the target map
         for (CmsResource remainingResource : childrenOfUnchangedParents) {
             publishRelatedResources.get(remainingResource);
         }
@@ -212,8 +212,8 @@ public class CmsPublishRelationFinder {
 
     /**
      * Computes the "reachability map", given the map of direct relations between resources.<p>
-     * 
-     * @param relatedResources a map containing the direct relations between resources  
+     *
+     * @param relatedResources a map containing the direct relations between resources
      * @return a map from resources to the sets of resources which are reachable via relations
      */
     private ResourceMap computeReachability(ResourceMap relatedResources) {
@@ -229,7 +229,7 @@ public class CmsPublishRelationFinder {
             oldSize = result.totalSize();
             for (CmsResource source : result.keySet()) {
                 for (CmsResource target : result.get(source)) {
-                    // need to check if the key is present, otherwise we may get a ConcurrentModificationException 
+                    // need to check if the key is present, otherwise we may get a ConcurrentModificationException
                     if (result.containsKey(target)) {
                         newReachableResources.get(source).addAll(result.get(target));
                     }
@@ -243,8 +243,8 @@ public class CmsPublishRelationFinder {
 
     /**
      * Gets a ResourceMap which contains, for each resource reachable from the original set of resources, the directly related resources.<p>
-     * 
-     * @return a map from resources to their directly related resources 
+     *
+     * @return a map from resources to their directly related resources
      */
     private ResourceMap computeRelatedResources() {
 
@@ -268,14 +268,14 @@ public class CmsPublishRelationFinder {
         return relatedResources;
     }
 
-    /** 
+    /**
      * Tries to find a parent with related children in a set, and moves them to a result ResourceMap.<p>
-     * 
-     * @param originalSet the original set 
-     * @param reachability the reachability ResourceMap 
-     * @param result the target ResourceMap to move the parent/children to 
-     * 
-     * @return true if a parent with children could be found (and moved) 
+     *
+     * @param originalSet the original set
+     * @param reachability the reachability ResourceMap
+     * @param result the target ResourceMap to move the parent/children to
+     *
+     * @return true if a parent with children could be found (and moved)
      */
     private boolean findAndMoveParentWithChildren(
         Set<CmsResource> originalSet,
@@ -305,9 +305,9 @@ public class CmsPublishRelationFinder {
 
     /**
      * Gets the resources which are reachable from the original set of resources and are not unchanged.<p>
-     * 
-     * @param reachable the resource map of reachable resources 
-     * @return the resources which are unchanged and reachable from the original set of resources 
+     *
+     * @param reachable the resource map of reachable resources
+     * @return the resources which are unchanged and reachable from the original set of resources
      */
     private ResourceMap getChangedResourcesReachableFromOriginalResources(ResourceMap reachable) {
 
@@ -327,9 +327,9 @@ public class CmsPublishRelationFinder {
 
     /**
      * Fetches the directly related resources for a given resource.<p>
-     * 
-     * @param currentResource the resource for which to get the related resources 
-     * @return the directly related resources 
+     *
+     * @param currentResource the resource for which to get the related resources
+     * @return the directly related resources
      */
     private Set<CmsResource> getDirectlyRelatedResources(CmsResource currentResource) {
 
@@ -345,7 +345,7 @@ public class CmsPublishRelationFinder {
         }
         try {
             CmsResource parentFolder = m_cms.readParentFolder(currentResource.getStructureId());
-            if (parentFolder != null) { // parent folder of root folder is null 
+            if (parentFolder != null) { // parent folder of root folder is null
                 if (parentFolder.getState().isNew() || currentResource.isFile()) {
                     directlyRelatedResources.add(parentFolder);
                 }
@@ -357,9 +357,8 @@ public class CmsPublishRelationFinder {
         }
 
         try {
-            directlyRelatedResources.addAll(m_relatedResourceProvider.getAdditionalRelatedResources(
-                m_cms,
-                currentResource));
+            directlyRelatedResources.addAll(
+                m_relatedResourceProvider.getAdditionalRelatedResources(m_cms, currentResource));
         } catch (Exception e) {
             LOG.error(
                 "Error processing additional related resource for "
@@ -371,11 +370,11 @@ public class CmsPublishRelationFinder {
         return directlyRelatedResources;
     }
 
-    /** 
+    /**
      * Reads the relations from a given resource, and returns an empty list if an error occurs while reading them.<p>
-     *  
+     *
      * @param currentResource the resource for which to get the relation
-     * @return the outgoing relations 
+     * @return the outgoing relations
      */
     private List<CmsRelation> getRelationsFromResource(CmsResource currentResource) {
 
@@ -389,9 +388,9 @@ public class CmsPublishRelationFinder {
     /**
      * Reads a resource with a given id, but will get a resource from a cache if it has already been read before.<p>
      * If an error occurs, null will be returned.
-     * 
-     * @param structureId the structure id 
-     * @return the resource with the given structure id 
+     *
+     * @param structureId the structure id
+     * @return the resource with the given structure id
      */
     private CmsResource getResource(CmsUUID structureId) {
 
@@ -409,9 +408,9 @@ public class CmsPublishRelationFinder {
 
     /**
      * Checks if the resource is unchanged *and* should be removed.<p>
-     * 
-     * @param item the resource to check 
-     * @return true if the resource is unchanged and should be removed 
+     *
+     * @param item the resource to check
+     * @return true if the resource is unchanged and should be removed
      */
     private boolean isUnchangedAndShouldBeRemoved(CmsResource item) {
 
@@ -423,8 +422,8 @@ public class CmsPublishRelationFinder {
 
     /**
      * Removes those resources as keys from the resource map which also occur as related resources under a different key.<p>
-     * 
-     * @param publishRelatedResources the resource map from which to remove the duplicate items 
+     *
+     * @param publishRelatedResources the resource map from which to remove the duplicate items
      */
     private void removeNestedItemsFromTopLevel(ResourceMap publishRelatedResources) {
 
@@ -446,9 +445,9 @@ public class CmsPublishRelationFinder {
 
     /**
      * Checks if the resource should be added to the related resources even if the relation pointing to it is a weak relation.<p>
-     * 
-     * @param weakRelationTarget the relation target resource 
-     * @return true if the resource should be added as a related resource 
+     *
+     * @param weakRelationTarget the relation target resource
+     * @return true if the resource should be added as a related resource
      */
     private boolean shouldAddWeakRelationTarget(CmsResource weakRelationTarget) {
 

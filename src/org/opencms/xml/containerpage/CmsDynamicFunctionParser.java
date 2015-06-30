@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,13 +63,13 @@ public class CmsDynamicFunctionParser {
 
     /**
      * Parses a dynamic function bean given a resource.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param res the resource from which to read the dynamic function 
-     * 
-     * @return the dynamic function bean created from the resource 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param res the resource from which to read the dynamic function
+     *
+     * @return the dynamic function bean created from the resource
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsDynamicFunctionBean parseFunctionBean(CmsObject cms, CmsResource res) throws CmsException {
 
@@ -80,13 +80,13 @@ public class CmsDynamicFunctionParser {
 
     /**
      * Parses a dynamic function bean from an in-memory XML content object.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param content the XML content from which to read the dynamic function bean 
-     * 
+     *
+     * @param cms the current CMS context
+     * @param content the XML content from which to read the dynamic function bean
+     *
      * @return the dynamic function bean read from the XML content
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsDynamicFunctionBean parseFunctionBean(CmsObject cms, CmsXmlContent content) throws CmsException {
 
@@ -104,15 +104,18 @@ public class CmsDynamicFunctionParser {
     }
 
     /**
-     * Parses all the additional formats from the XML content.<p> 
-     * 
-     * @param cms the current CMS context 
-     * @param location the location from which to parse the additional formats 
-     * @param functionRes the dynamic function resource 
-     * 
-     * @return the list of parsed formats 
+     * Parses all the additional formats from the XML content.<p>
+     *
+     * @param cms the current CMS context
+     * @param location the location from which to parse the additional formats
+     * @param functionRes the dynamic function resource
+     *
+     * @return the list of parsed formats
      */
-    protected List<Format> getAdditionalFormats(CmsObject cms, I_CmsXmlContentLocation location, CmsResource functionRes) {
+    protected List<Format> getAdditionalFormats(
+        CmsObject cms,
+        I_CmsXmlContentLocation location,
+        CmsResource functionRes) {
 
         List<I_CmsXmlContentValueLocation> locations = location.getSubValues("AdditionalFormat");
         List<Format> formats = new ArrayList<Format>();
@@ -126,11 +129,11 @@ public class CmsDynamicFunctionParser {
 
     /**
      * Gets the function formatter resource, possibly from the cache.<p>
-     * 
-     * @param cms the current CMS context 
-     * @return the function formatter resource 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @return the function formatter resource
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsResource getFunctionFormatter(CmsObject cms) throws CmsException {
 
@@ -148,11 +151,11 @@ public class CmsDynamicFunctionParser {
 
     /**
      * Gets the locale to use for parsing the dynamic function.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param xmlContent the xml content from which the dynamic function should be read 
-     * 
-     * @return the locale from which the dynamic function should be read 
+     *
+     * @param cms the current CMS context
+     * @param xmlContent the xml content from which the dynamic function should be read
+     *
+     * @return the locale from which the dynamic function should be read
      */
     protected Locale getLocaleToUse(CmsObject cms, CmsXmlContent xmlContent) {
 
@@ -173,11 +176,11 @@ public class CmsDynamicFunctionParser {
 
     /**
      * Parses the main format from the XML content.<p>
-     * @param cms the current CMS context 
-     * @param location the location from which to parse main format 
-     * @param functionRes the dynamic function resource 
-     * 
-     * @return the parsed main format 
+     * @param cms the current CMS context
+     * @param location the location from which to parse main format
+     * @param functionRes the dynamic function resource
+     *
+     * @return the parsed main format
      */
     protected Format getMainFormat(CmsObject cms, I_CmsXmlContentLocation location, CmsResource functionRes) {
 
@@ -201,10 +204,10 @@ public class CmsDynamicFunctionParser {
     /**
      * Gets the string value of an XML content location.<p>
      *
-     * @param cms the current CMS context 
-     * @param location an XML content location 
-     * 
-     * @return the string value of that XML content location 
+     * @param cms the current CMS context
+     * @param location an XML content location
+     *
+     * @return the string value of that XML content location
      */
     protected String getString(CmsObject cms, I_CmsXmlContentValueLocation location) {
 
@@ -216,12 +219,12 @@ public class CmsDynamicFunctionParser {
 
     /**
      * Converts a (possibly null) content value location to a string.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param location the content value location 
+     *
+     * @param cms the current CMS context
+     * @param location the content value location
      * @param defaultValue the value to return if the location is null
-     *  
-     * @return the string value of the content value location 
+     *
+     * @return the string value of the content value location
      */
     protected String getStringValue(CmsObject cms, I_CmsXmlContentValueLocation location, String defaultValue) {
 
@@ -233,15 +236,18 @@ public class CmsDynamicFunctionParser {
 
     /**
      * Parses an additional format from the XML content.<p>
-     * 
-     * @param cms the current CMS context 
-     * 
-     * @param location the location from which to parse the additional format 
-     * @param functionRes the dynamic function resource 
-     * 
-     * @return the additional format 
+     *
+     * @param cms the current CMS context
+     *
+     * @param location the location from which to parse the additional format
+     * @param functionRes the dynamic function resource
+     *
+     * @return the additional format
      */
-    protected Format parseAdditionalFormat(CmsObject cms, I_CmsXmlContentValueLocation location, CmsResource functionRes) {
+    protected Format parseAdditionalFormat(
+        CmsObject cms,
+        I_CmsXmlContentValueLocation location,
+        CmsResource functionRes) {
 
         I_CmsXmlContentValueLocation jspLoc = location.getSubValue("FunctionProvider");
         CmsUUID structureId = jspLoc.asId(cms);
@@ -257,13 +263,13 @@ public class CmsDynamicFunctionParser {
 
     /**
      * Parses a dynamic function bean.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param location the location from which to parse the dynamic function bean 
-     * @param functionRes the dynamic function resource 
-     * @param functionFormatter the function formatter resource 
-     * 
-     * @return the parsed dynamic function bean 
+     *
+     * @param cms the current CMS context
+     * @param location the location from which to parse the dynamic function bean
+     * @param functionRes the dynamic function resource
+     * @param functionFormatter the function formatter resource
+     *
+     * @return the parsed dynamic function bean
      */
     protected CmsDynamicFunctionBean parseFunctionBean(
         CmsObject cms,
@@ -285,11 +291,11 @@ public class CmsDynamicFunctionParser {
 
     /**
      * Parses a request parameter for the JSP from the XML content.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param valueLocation the location from which to parse the parameter
-     * 
-     * @return the parsed parameter key/value pair  
+     *
+     * @return the parsed parameter key/value pair
      */
     protected CmsPair<String, String> parseParameter(CmsObject cms, I_CmsXmlContentValueLocation valueLocation) {
 
@@ -300,12 +306,12 @@ public class CmsDynamicFunctionParser {
 
     /**
      * Parses all parameters for the JSP from the XML content.<p>
-     * 
+     *
      * @param cms the current CMS context
-     * @param location the location from which to read the parameters 
+     * @param location the location from which to read the parameters
      * @param name the name of the tag from which to read the parameters
-     *  
-     * @return the parsed map of parameters 
+     *
+     * @return the parsed map of parameters
      */
     protected Map<String, String> parseParameters(CmsObject cms, I_CmsXmlContentLocation location, String name) {
 
@@ -320,11 +326,11 @@ public class CmsDynamicFunctionParser {
 
     /**
      * Helper method for parsing a settings definition.<p>
-     * 
+     *
      * @param cms the current CMS context
-     * @param field the node from which to read the settings definition 
-     * 
-     * @return the parsed setting definition 
+     * @param field the node from which to read the settings definition
+     *
+     * @return the parsed setting definition
      */
     protected CmsXmlContentProperty parseProperty(CmsObject cms, I_CmsXmlContentLocation field) {
 
@@ -362,11 +368,11 @@ public class CmsDynamicFunctionParser {
 
     /**
      * Parses the settings for the dynamic function from the XML content.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param location the location from which to read the dynamic function settings 
-     * @param functionResource the dynamic function resource 
-     * 
+     *
+     * @param cms the current CMS context
+     * @param location the location from which to read the dynamic function settings
+     * @param functionResource the dynamic function resource
+     *
      * @return the parsed map of settings for the dynamic function
      */
     protected Map<String, CmsXmlContentProperty> parseSettings(

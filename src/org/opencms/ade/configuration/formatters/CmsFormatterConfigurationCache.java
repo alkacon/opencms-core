@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,11 +55,11 @@ import com.google.common.collect.Maps;
 
 /**
  * A cache object which holds a collection of formatter configuration beans read from the VFS.<p>
- * 
+ *
  * This class does not immediately update the cached formatter collection when changes in the VFS occur, but instead
  * schedules an update action with a slight delay, so that if many formatters are changed in a short time, only one update
- * operation is needed.<p> 
- * 
+ * operation is needed.<p>
+ *
  * Two instances of this cache are needed, one for the Online project and one for Offline projects.<p>
  **/
 public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationCache {
@@ -94,11 +94,11 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
 
     /**
      * Creates a new formatter configuration cache instance.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param name the cache name 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context to use
+     * @param name the cache name
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsFormatterConfigurationCache(CmsObject cms, String name)
     throws CmsException {
@@ -117,9 +117,9 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
         markForUpdate(RELOAD_MARKER);
     }
 
-    /** 
+    /**
      * Gets the cache instance name.<p>
-     * 
+     *
      * @return the cache instance name
      */
     public String getName() {
@@ -127,10 +127,10 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
         return m_name;
     }
 
-    /** 
+    /**
      * Gets the collection of cached formatters.<p>
-     * 
-     * @return the collection of cached formatters 
+     *
+     * @return the collection of cached formatters
      */
     public CmsFormatterConfigurationCacheState getState() {
 
@@ -149,11 +149,11 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
             // clear cache event, reload all formatter configurations
             reload();
         } else {
-            // normal case: incremental update 
+            // normal case: incremental update
             Map<CmsUUID, I_CmsFormatterBean> formattersToUpdate = Maps.newHashMap();
             for (CmsUUID structureId : copiedIds) {
                 I_CmsFormatterBean formatterBean = readFormatter(structureId);
-                // formatterBean may be null here 
+                // formatterBean may be null here
                 formattersToUpdate.put(structureId, formatterBean);
             }
             m_state = m_state.createUpdatedCopy(formattersToUpdate);
@@ -217,14 +217,14 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
 
     /**
      * Waits until no update action is scheduled.<p>
-     * 
+     *
      * Should only be used in tests.<p>
      */
     public synchronized void waitForUpdate() {
 
         while (m_scheduledUpdate) {
             try {
-                // use wait, not Thread.sleep, so the object monitor is released 
+                // use wait, not Thread.sleep, so the object monitor is released
                 wait(300);
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
@@ -232,12 +232,12 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
         }
     }
 
-    /** 
+    /**
      * Reads a formatter given its structure id and returns it, or null if the formatter couldn't be read.<p>
-     * 
-     * @param structureId the structure id of the formatter configuration 
-     * 
-     * @return the formatter bean, or null if no formatter could be read for some reason 
+     *
+     * @param structureId the structure id of the formatter configuration
+     *
+     * @return the formatter bean, or null if no formatter could be read for some reason
      */
     protected CmsFormatterBean readFormatter(CmsUUID structureId) {
 
@@ -255,21 +255,23 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
                 // normal case if resources get deleted, should not be written to the error channel
                 LOG.info("Could not read formatter with id " + structureId);
             } else {
-                LOG.error("Error while trying to read formatter configuration "
-                    + formatterRes.getRootPath()
-                    + ":    "
-                    + e.getLocalizedMessage(), e);
+                LOG.error(
+                    "Error while trying to read formatter configuration "
+                        + formatterRes.getRootPath()
+                        + ":    "
+                        + e.getLocalizedMessage(),
+                    e);
             }
         }
         return formatterBean;
     }
 
-    /** 
+    /**
      * Checks if an update of the formatter is needed and if so, adds its structure id to the update set.<p>
-     * 
-     * @param structureId the structure id of the formatter 
-     * @param path the path of the formatter 
-     * @param resourceType the resource type 
+     *
+     * @param structureId the structure id of the formatter
+     * @param path the path of the formatter
+     * @param resourceType the resource type
      */
     private void checkIfUpdateIsNeeded(CmsUUID structureId, String path, int resourceType) {
 
@@ -283,8 +285,8 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
 
     /**
      * Adds a formatter structure id to the update set, and schedule an update task unless one is already scheduled.<p>
-     * 
-     * @param structureId the structure id of the formatter configuration 
+     *
+     * @param structureId the structure id of the formatter configuration
      */
     private synchronized void markForUpdate(CmsUUID structureId) {
 

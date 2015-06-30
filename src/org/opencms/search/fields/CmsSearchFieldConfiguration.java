@@ -67,6 +67,11 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
     /** The name for the standard field configuration. */
     public static final String STR_STANDARD = "standard";
 
+    static {
+        LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT);
+        LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT_BLOB);
+    }
+
     /** The description of the configuration. */
     private String m_description;
 
@@ -84,11 +89,6 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /** The name of the configuration. */
     private String m_name;
-
-    static {
-        LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT);
-        LAZY_FIELDS.add(CmsSearchField.FIELD_CONTENT_BLOB);
-    }
 
     /**
      * Creates a new, empty field configuration.<p>
@@ -244,7 +244,13 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         document = appendProperties(document, cms, resource, extraction, properties, propertiesSearched);
         document = appendCategories(document, cms, resource, extraction, properties, propertiesSearched);
         document = appendFieldMappings(document, cms, resource, extraction, properties, propertiesSearched);
-        document = appendAdditionalValuesToDcoument(document, cms, resource, extraction, properties, propertiesSearched);
+        document = appendAdditionalValuesToDcoument(
+            document,
+            cms,
+            resource,
+            extraction,
+            properties,
+            propertiesSearched);
         document = setBoost(document, cms, resource, extraction, properties, propertiesSearched);
 
         return document;

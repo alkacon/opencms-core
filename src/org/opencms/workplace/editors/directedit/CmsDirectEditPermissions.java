@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,37 +30,37 @@ package org.opencms.workplace.editors.directedit;
 /**
  * Constants to indicate the direct edit permissions of a user for a VFS resource,
  * used to describe if and how to show the direct edit buttons for the resource.<p>
- * 
+ *
  * @since 6.2.3
  */
 public final class CmsDirectEditPermissions {
 
-    /** 
-     * Describes the "disabled" permission.<p> 
-     * 
+    /**
+     * Describes the "disabled" permission.<p>
+     *
      * User has general permissions to direct edit a resource, but this is currently not possible
      * because for example another user has locked the resource.<p>
-     *  
+     *
      * Direct edit buttons are displayed, but "grayed out".
      */
     public static final CmsDirectEditPermissions DISABLED = new CmsDirectEditPermissions(1);
 
-    /** 
-     * Describes the "enabled" permission.<p> 
-     * 
+    /**
+     * Describes the "enabled" permission.<p>
+     *
      * User has permissions to direct edit a resource, the resource is also available for direct edit.<p>
-     *  
+     *
      * Direct edit buttons are displayed and active.
      */
     public static final CmsDirectEditPermissions ENABLED = new CmsDirectEditPermissions(2);
 
-    /** 
-     * Describes the "inactive" permission.<p> 
-     * 
+    /**
+     * Describes the "inactive" permission.<p>
+     *
      * User has no permissions to direct edit a resource.
-     * This may be because of write permissions, or because the resource is not part of the current 
+     * This may be because of write permissions, or because the resource is not part of the current
      * project, or for other reasons.<p>
-     *  
+     *
      * Direct edit buttons are not displayed at all.
      */
     public static final CmsDirectEditPermissions INACTIVE = new CmsDirectEditPermissions(0);
@@ -79,7 +79,7 @@ public final class CmsDirectEditPermissions {
 
     /**
      * Hides the public constructor.<p>
-     * 
+     *
      * @param value the direct edit mode
      */
     private CmsDirectEditPermissions(int value) {

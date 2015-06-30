@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,11 +40,11 @@ import org.apache.commons.logging.Log;
 
 /**
  * A value of the google map widget.<p>
- * 
+ *
  * This is the parsed value of an element of the type <code>String</code> using the widget <code>GoogleMapWidget</code>.
- * 
+ *
  * <code>lat:50.953412,lng:6.956534,zoom:13,width:400,height:300,mode:dynamic,type:hybrid</code><p>
- * 
+ *
  * Available options are:
  * <ul>
  * <li><code>lat:50.953412</code>: the latitude</li>
@@ -55,11 +55,11 @@ import org.apache.commons.logging.Log;
  * <li><code>mode:'static'</code>: the front-end map's mode should be dynamic or static</li>
  * <li><code>type:'hybrid'</code>: the map type, which can be normal, hybrid, satellite and physical</li>
  * </ul>
- * 
+ *
  * @author Michael Moossen
- * 
- * @version $Revision: 1.1 $ 
- * 
+ *
+ * @version $Revision: 1.1 $
+ *
  * @since 7.0.5
  */
 public class CmsLocationPickerWidgetValue {
@@ -80,7 +80,7 @@ public class CmsLocationPickerWidgetValue {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param modeValue the mode value
          */
         private MapMode(String modeValue) {
@@ -90,9 +90,9 @@ public class CmsLocationPickerWidgetValue {
 
         /**
          * Parses the client side mode representation, required as 'static' is a java keyword.<p>
-         * 
+         *
          * @param mode the mode name
-         * 
+         *
          * @return the mode
          */
         public static MapMode parseMode(String mode) {
@@ -108,7 +108,7 @@ public class CmsLocationPickerWidgetValue {
 
         /**
          * Returns the mode.<p>
-         * 
+         *
          * @return the mode
          */
         public String getMode() {
@@ -118,7 +118,7 @@ public class CmsLocationPickerWidgetValue {
 
         /**
          * Checks if <code>this</code> is {@link #dynamicMode}.<p>
-         * 
+         *
          * @return <code>true</code>, if <code>this</code> is {@link #dynamicMode}
          */
         public boolean isDynamic() {
@@ -128,7 +128,7 @@ public class CmsLocationPickerWidgetValue {
 
         /**
          * Checks if <code>this</code> is {@link #staticMode}.<p>
-         * 
+         *
          * @return <code>true</code>, if <code>this</code> is {@link #staticMode}
          */
         public boolean isStatic() {
@@ -155,7 +155,7 @@ public class CmsLocationPickerWidgetValue {
 
         /**
          * Checks if <code>this</code> is {@link #hybrid}.<p>
-         * 
+         *
          * @return <code>true</code>, if <code>this</code> is {@link #hybrid}
          */
         public boolean isHybrid() {
@@ -165,7 +165,7 @@ public class CmsLocationPickerWidgetValue {
 
         /**
          * Checks if <code>this</code> is {@link #roadmap}.<p>
-         * 
+         *
          * @return <code>true</code>, if <code>this</code> is {@link #roadmap}
          */
         public boolean isMap() {
@@ -175,7 +175,7 @@ public class CmsLocationPickerWidgetValue {
 
         /**
          * Checks if <code>this</code> is {@link #satellite}.<p>
-         * 
+         *
          * @return <code>true</code>, if <code>this</code> is {@link #satellite}
          */
         public boolean isSatellite() {
@@ -185,7 +185,7 @@ public class CmsLocationPickerWidgetValue {
 
         /**
          * Checks if <code>this</code> is {@link #terrain}.<p>
-         * 
+         *
          * @return <code>true</code>, if <code>this</code> is {@link #terrain}
          */
         public boolean isTerrain() {
@@ -277,7 +277,7 @@ public class CmsLocationPickerWidgetValue {
 
     /**
      * Creates a new widget value object, configured by the given value String.<p>
-     * 
+     *
      * @param value the value String to parse
      */
     public CmsLocationPickerWidgetValue(String value) {
@@ -505,7 +505,7 @@ public class CmsLocationPickerWidgetValue {
 
     /**
      * Parses the given configuration String.<p>
-     * 
+     *
      * @param configuration the configuration String to parse
      */
     protected void parseOptions(String configuration) {

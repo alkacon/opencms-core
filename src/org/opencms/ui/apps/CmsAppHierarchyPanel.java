@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,8 +56,8 @@ public class CmsAppHierarchyPanel extends VerticalLayout {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param buttonProvider the object to which we delegate the creation of app buttons 
+     *
+     * @param buttonProvider the object to which we delegate the creation of app buttons
      */
     public CmsAppHierarchyPanel(I_CmsAppButtonProvider buttonProvider) {
 
@@ -70,11 +70,11 @@ public class CmsAppHierarchyPanel extends VerticalLayout {
         m_appButtonProvider = buttonProvider;
     }
 
-    /** 
+    /**
      * Adds a child category panel.<p>
-     * 
-     * @param label the label 
-     * @param child the child widget 
+     *
+     * @param label the label
+     * @param child the child widget
      */
     public void addChild(String label, CmsAppHierarchyPanel child) {
 
@@ -84,11 +84,11 @@ public class CmsAppHierarchyPanel extends VerticalLayout {
         addComponent(panel);
     }
 
-    /** 
+    /**
      * Displays the given tree of categories and apps in the tree.<p>
-     * 
-     * @param rootNode the rootNode to render in this panel 
-     * @param locale the locale to use 
+     *
+     * @param rootNode the rootNode to render in this panel
+     * @param locale the locale to use
      */
     public void fill(CmsAppCategoryNode rootNode, Locale locale) {
 

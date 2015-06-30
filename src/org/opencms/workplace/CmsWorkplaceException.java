@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,10 +31,10 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
- * Signals that an exceptional program flow happens in the workplace. Most often this 
- * is triggered by wrong configurations or user input.<p> 
- * 
- * @since 6.0.0 
+ * Signals that an exceptional program flow happens in the workplace. Most often this
+ * is triggered by wrong configurations or user input.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsWorkplaceException extends CmsException {
 
@@ -43,7 +43,7 @@ public class CmsWorkplaceException extends CmsException {
 
     /**
      * Creates a new localized Exception.<p>
-     * 
+     *
      * @param container the localized message container to use
      */
     public CmsWorkplaceException(CmsMessageContainer container) {
@@ -53,7 +53,7 @@ public class CmsWorkplaceException extends CmsException {
 
     /**
      * Creates a new localized Exception that also containes a root cause.<p>
-     * 
+     *
      * @param container the localized message container to use
      * @param cause the Exception root cause
      */

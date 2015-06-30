@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,8 +32,8 @@ import org.opencms.main.CmsException;
 
 /**
  * Signals that an attempt to read an object from a data source, that
- * is supposed to exist, was not successfull.<p> 
- * 
+ * is supposed to exist, was not successfull.<p>
+ *
  * @since 6.0.0
  */
 public class CmsDbEntryNotFoundException extends CmsDbException {

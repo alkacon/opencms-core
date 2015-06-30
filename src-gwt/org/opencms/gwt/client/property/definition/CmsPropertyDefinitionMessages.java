@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,8 +43,8 @@ public class CmsPropertyDefinitionMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message 
+     *
+     * @return the message
      */
     public static String alreadyExists() {
 
@@ -53,8 +53,8 @@ public class CmsPropertyDefinitionMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message 
+     *
+     * @return the message
      */
     public static String cancel() {
 
@@ -63,8 +63,8 @@ public class CmsPropertyDefinitionMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message 
+     *
+     * @return the message
      */
     public static String labelExistingProperties() {
 
@@ -73,8 +73,8 @@ public class CmsPropertyDefinitionMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message 
+     *
+     * @return the message
      */
     public static String labelNewProperty() {
 
@@ -83,8 +83,8 @@ public class CmsPropertyDefinitionMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message 
+     *
+     * @return the message
      */
     public static String messageDialogCaption() {
 
@@ -93,8 +93,8 @@ public class CmsPropertyDefinitionMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message 
+     *
+     * @return the message
      */
     public static final String messageEmpty() {
 
@@ -103,8 +103,8 @@ public class CmsPropertyDefinitionMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message 
+     *
+     * @return the message
      */
     public static String messageInvalidName() {
 
@@ -115,8 +115,8 @@ public class CmsPropertyDefinitionMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message 
+     *
+     * @return the message
      */
     public static String ok() {
 

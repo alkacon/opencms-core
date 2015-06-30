@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,20 +46,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Abstract dialog class for editing or creating a <code>{@link org.opencms.search.CmsSearchIndexSource}</code>.<p> 
- * 
- * The <code>{@link #PARAM_INDEXSOURCE}</code> ("indexsource") is supported 
+ * Abstract dialog class for editing or creating a <code>{@link org.opencms.search.CmsSearchIndexSource}</code>.<p>
+ *
+ * The <code>{@link #PARAM_INDEXSOURCE}</code> ("indexsource") is supported
  * by means of widget technology (setter / getter).<p>
- * 
- * Also - for accessing search functionality a member <code>{@link #m_searchManager}</code> 
+ *
+ * Also - for accessing search functionality a member <code>{@link #m_searchManager}</code>
  * is accessible for implementations. <p>
- * 
- * If the property "admintoolhandler-args" contains the sequence "path:/searchindex/new-indexsource", 
- * a new indexsource will be created at first visit of this page 
- * (<code>{@link #initUserObject()}</code>). Else this dialog will be for editing an existing 
+ *
+ * If the property "admintoolhandler-args" contains the sequence "path:/searchindex/new-indexsource",
+ * a new indexsource will be created at first visit of this page
+ * (<code>{@link #initUserObject()}</code>). Else this dialog will be for editing an existing
  * indexsource and the request parameter "indexsource" is mandatory. <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
 
@@ -69,12 +69,12 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
     /** Defines which pages are valid for this dialog. */
     protected static final String[] PAGES = {"page1"};
 
-    /** 
-     * The request parameter for the indexsource to work with when contacting 
+    /**
+     * The request parameter for the indexsource to work with when contacting
      * this dialog from another. <p>
-     * 
+     *
      * It may be empty if we are on the new indexsource dialog (/searchindex/new-indexsource.jsp).<p>
-     *      
+     *
      **/
     public static final String PARAM_INDEXSOURCE = "indexsource";
 
@@ -89,7 +89,7 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public A_CmsEditIndexSourceDialog(CmsJspActionElement jsp) {
@@ -99,7 +99,7 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -110,7 +110,7 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Writes the updated search configuration back to the XML 
+     * Writes the updated search configuration back to the XML
      * configuration file and refreshes the complete list.<p>
      */
     protected static void writeConfiguration() {
@@ -145,7 +145,7 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
 
     /**
      * Returns the request parameter value for parameter indexsource. <p>
-     * 
+     *
      * @return the request parameter value for parameter indexsource
      */
     public String getParamIndexsource() {
@@ -155,7 +155,7 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
 
     /**
      * Sets the request parameter value for parameter indexsource. <p>
-     * 
+     *
      * @param indexsource the request parameter value for parameter indexsource
      */
     public void setParamIndexsource(String indexsource) {
@@ -165,12 +165,12 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
 
     /**
      * Initializes the user object (a <code>{@link org.opencms.search.CmsSearchIndex}</code> instance.<p>
-     * 
-     * Implementation always have to call <code>"super.defineWidgets()"</code> first as 
-     * this action may only be done here (relies on filled request parameters, the next 
-     * following operation <code>{@link CmsWidgetDialog#createDialogHtml()}</code> will 
+     *
+     * Implementation always have to call <code>"super.defineWidgets()"</code> first as
+     * this action may only be done here (relies on filled request parameters, the next
+     * following operation <code>{@link CmsWidgetDialog#createDialogHtml()}</code> will
      * rely on this. <p>
-     * 
+     *
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
     @Override
@@ -192,7 +192,7 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
 
     /**
      * Returns the root path of this dialog (path relative to "/system/workplace/admin").<p>
-     * 
+     *
      * @return the root path of this dialog (path relative to "/system/workplace/admin")
      */
     protected String getToolPath() {
@@ -214,7 +214,7 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
 
     /**
      * Initializes the user object to work with depending on the dialog state and request parameters.<p>
-     * 
+     *
      * Two initializations of the user object on first dialog call are possible:
      * <ul>
      * <li>edit an existing search index</li>
@@ -236,9 +236,9 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Overridden to initialize the internal <code>CmsSearchManager</code> before initWorkplaceRequestValues -> 
+     * Overridden to initialize the internal <code>CmsSearchManager</code> before initWorkplaceRequestValues ->
      * defineWidgets ->  will access it (NPE). <p>
-     * 
+     *
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
      */
     @Override
@@ -270,7 +270,7 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
 
     /**
      * Checks if the new search index dialog has to be displayed.<p>
-     * 
+     *
      * @return <code>true</code> if the new search index dialog has to be displayed
      */
     protected boolean isNewIndexSource() {
@@ -287,9 +287,8 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
         if (!isNewIndexSource()) {
             // test the needed parameters
             if ((getParamIndexsource() == null) && (getJsp().getRequest().getParameter("name.0") == null)) {
-                throw new CmsIllegalStateException(Messages.get().container(
-                    Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
-                    PARAM_INDEXSOURCE));
+                throw new CmsIllegalStateException(
+                    Messages.get().container(Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1, PARAM_INDEXSOURCE));
             }
         }
     }

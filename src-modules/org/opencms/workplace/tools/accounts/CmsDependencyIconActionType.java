@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * Wrapper class for
  * the different types of icon actions the dependency lists.<p>
- * 
+ *
  * The possibles values are:<br>
  * <ul>
  *   <li>{@link #RESOURCE}</li>
@@ -45,7 +45,7 @@ import java.util.List;
  *   <li>{@link #USER}</li>
  * </ul>
  * <p>
- * 
+ *
  * @since 6.0.0
  */
 public final class CmsDependencyIconActionType {
@@ -63,14 +63,15 @@ public final class CmsDependencyIconActionType {
     private static final CmsDependencyIconActionType[] VALUE_ARRAY = {RESOURCE, GROUP, USER};
 
     /** List of mode constants. */
-    public static final List<CmsDependencyIconActionType> VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
+    public static final List<CmsDependencyIconActionType> VALUES = Collections.unmodifiableList(
+        Arrays.asList(VALUE_ARRAY));
 
     /** Internal representation. */
     private final String m_mode;
 
     /**
      * Private constructor.<p>
-     * 
+     *
      * @param mode the view mode
      */
     private CmsDependencyIconActionType(String mode) {
@@ -82,10 +83,10 @@ public final class CmsDependencyIconActionType {
      * Parses an string into an element of this enumeration.<p>
      *
      * @param value the id to parse
-     * 
+     *
      * @return the enumeration element
-     * 
-     * @throws CmsIllegalArgumentException if the given value could not be matched against a 
+     *
+     * @throws CmsIllegalArgumentException if the given value could not be matched against a
      *         <code>{@link CmsDependencyIconActionType}</code> type.
      */
     public static CmsDependencyIconActionType valueOf(String value) throws CmsIllegalArgumentException {
@@ -97,15 +98,16 @@ public final class CmsDependencyIconActionType {
                 return target;
             }
         }
-        throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
-            org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
-            value,
-            CmsDependencyIconActionType.class.getName()));
+        throw new CmsIllegalArgumentException(
+            org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
+                value,
+                CmsDependencyIconActionType.class.getName()));
     }
 
     /**
      * Returns the id string.<p>
-     * 
+     *
      * @return the id string
      */
     public String getId() {

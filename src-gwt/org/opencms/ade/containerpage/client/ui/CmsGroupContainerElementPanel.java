@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Group-container element. To be used for content elements within a container-page.<p>
  * The group-container acts as a draggable element and if edited as a container.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel implements I_CmsDropContainer {
@@ -82,7 +82,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param element the DOM element
      * @param parent the drag parent
      * @param clientId the client id
@@ -91,11 +91,11 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      * @param noEditReason the no edit reason, if empty, editing is allowed
      * @param title the resource title
      * @param subTitle the sub title
-     * @param hasSettings should be true if the element has settings which can be edited 
+     * @param hasSettings should be true if the element has settings which can be edited
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
      * @param hasWritePermission indicates if the current user has write permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
-     * @param elementView the element view of the element 
+     * @param elementView the element view of the element
      */
     public CmsGroupContainerElementPanel(
         Element element,
@@ -221,10 +221,10 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
         return null;
     }
 
-    /** 
+    /**
      * Gets the consumed group elements.<p>
-     * 
-     * @return the list of children 
+     *
+     * @return the list of children
      */
     public List<CmsContainerPageElementPanel> getGroupChildren() {
 
@@ -350,7 +350,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
 
     /**
      * Returns if this element represents a group container.<p>
-     * 
+     *
      * @return <code>true</code> if this element represents a group container
      */
     public boolean isGroupContainer() {
@@ -360,7 +360,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
 
     /**
      * Returns if this element represents an inherit container.<p>
-     * 
+     *
      * @return <code>true</code> if this element represents an inherit container
      */
     public boolean isInheritContainer() {
@@ -485,7 +485,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
 
     /**
      * Sets the editing marker. Used to highlight the container background while editing.<p>
-     *  
+     *
      * @param editingMarker the editing marker element
      */
     public void setEditingMarker(Element editingMarker) {
@@ -495,7 +495,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
 
     /**
      * Sets the editing placeholder.<p>
-     * 
+     *
      * @param editingPlaceholder the editing placeholder element
      */
     public void setEditingPlaceholder(Element editingPlaceholder) {

@@ -161,7 +161,8 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     public static final String KEY_VALIDATION_VALUE = "validation.value";
 
     /** Identified for "magic" parameter commands. */
-    static final String[] VALUE_NAMES_ARRAY = {"uri", // 0
+    static final String[] VALUE_NAMES_ARRAY = {
+        "uri", // 0
         "filename", // 1
         "folder", // 2
         "default.encoding", // 3
@@ -235,7 +236,12 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             return false;
         }
 
-        return (((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER_OLD) && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START_OLD) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END_OLD))) || ((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER) && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START) && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END))));
+        return (((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER_OLD)
+            && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START_OLD)
+                && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END_OLD)))
+            || ((input.charAt(0) == I_CmsMacroResolver.MACRO_DELIMITER)
+                && ((input.charAt(1) == I_CmsMacroResolver.MACRO_START)
+                    && (input.charAt(input.length() - 1) == I_CmsMacroResolver.MACRO_END))));
     }
 
     /**

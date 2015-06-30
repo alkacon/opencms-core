@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,12 +58,12 @@ public class CmsTestConfigData extends CmsADEConfigData {
 
     /**
      * Creates a new configuration data object.<p>
-     * 
-     * @param basePath the base path 
+     *
+     * @param basePath the base path
      * @param resourceTypeConfig the resource type configuration
-     * @param propertyConfig the  property configuration 
-     * @param detailPageInfos the detail page configuration 
-     * @param modelPages the model page configuration 
+     * @param propertyConfig the  property configuration
+     * @param detailPageInfos the detail page configuration
+     * @param modelPages the model page configuration
      */
     public CmsTestConfigData(
         String basePath,
@@ -72,22 +72,25 @@ public class CmsTestConfigData extends CmsADEConfigData {
         List<CmsDetailPageInfo> detailPageInfos,
         List<CmsModelPageConfig> modelPages) {
 
-        super(new CmsADEConfigDataInternal(
+        super(
+            new CmsADEConfigDataInternal(
+                null,
+                false,
+                basePath,
+                null,
+                resourceTypeConfig,
+                false,
+                propertyConfig,
+                false,
+                detailPageInfos,
+                modelPages,
+                new ArrayList<CmsFunctionReference>(),
+                false,
+                false,
+                false,
+                new CmsFormatterChangeSet()),
             null,
-            false,
-            basePath,
-            null,
-            resourceTypeConfig,
-            false,
-            propertyConfig,
-            false,
-            detailPageInfos,
-            modelPages,
-            new ArrayList<CmsFunctionReference>(),
-            false,
-            false,
-            false,
-            new CmsFormatterChangeSet()), null, null);
+            null);
     }
 
     /**
@@ -103,10 +106,10 @@ public class CmsTestConfigData extends CmsADEConfigData {
         }
     }
 
-    /** 
+    /**
      * Sets the CmsObject for testing.<p>
-     * 
-     * @param cms the CmsObject for testing 
+     *
+     * @param cms the CmsObject for testing
      */
     public void initialize(CmsObject cms) {
 
@@ -124,9 +127,9 @@ public class CmsTestConfigData extends CmsADEConfigData {
 
     /**
      * Registers a schema formatter which will be returned from getSchemaFormatters if a resource with the matching type is passed in.<p>
-     * 
-     * @param typeId  the resource type id 
-     * @param formatters the formatters for the resource type 
+     *
+     * @param typeId  the resource type id
+     * @param formatters the formatters for the resource type
      */
     public void registerSchemaFormatters(int typeId, CmsFormatterConfiguration formatters) {
 
@@ -135,8 +138,8 @@ public class CmsTestConfigData extends CmsADEConfigData {
 
     /**
      * Sets the "create contents locally" flag.<p>
-     * 
-     * @param createContentsLocally the flag to control whether contents from inherited resource types are stored in the local .content folder 
+     *
+     * @param createContentsLocally the flag to control whether contents from inherited resource types are stored in the local .content folder
      */
     public void setCreateContentsLocally(boolean createContentsLocally) {
 
@@ -145,8 +148,8 @@ public class CmsTestConfigData extends CmsADEConfigData {
 
     /**
      * Sets the "discard inherited model pages" flag.<p>
-     *  
-     * @param discardInheritedModelPages the flag to control whether inherited model pages are discarded 
+     *
+     * @param discardInheritedModelPages the flag to control whether inherited model pages are discarded
     */
     public void setDiscardInheritedModelPages(boolean discardInheritedModelPages) {
 
@@ -155,8 +158,8 @@ public class CmsTestConfigData extends CmsADEConfigData {
 
     /**
      * Sets the "discard inherited properties" flag.<p>
-     * 
-     * @param discardInheritedProperties the flag to control whether inherited properties are discarded 
+     *
+     * @param discardInheritedProperties the flag to control whether inherited properties are discarded
      */
     public void setDiscardInheritedProperties(boolean discardInheritedProperties) {
 
@@ -165,8 +168,8 @@ public class CmsTestConfigData extends CmsADEConfigData {
 
     /**
      * Sets the formatter change set.<p>
-     * 
-     * @param changeSet the formatter change set 
+     *
+     * @param changeSet the formatter change set
      */
     public void setFormatterChangeSet(CmsFormatterChangeSet changeSet) {
 
@@ -175,8 +178,8 @@ public class CmsTestConfigData extends CmsADEConfigData {
 
     /**
      * Sets the formatter cache state.<p>
-     * 
-     * @param formatters the formatter cache state 
+     *
+     * @param formatters the formatter cache state
      */
     public void setFormatters(CmsFormatterConfigurationCacheState formatters) {
 
@@ -185,8 +188,8 @@ public class CmsTestConfigData extends CmsADEConfigData {
 
     /**
      * Sets the "discard inherited types" flag.<p>
-     * 
-     * @param discardInheritedTypes the flag to control whether inherited types are discarded 
+     *
+     * @param discardInheritedTypes the flag to control whether inherited types are discarded
      */
     public void setIsDiscardInheritedTypes(boolean discardInheritedTypes) {
 
@@ -195,8 +198,8 @@ public class CmsTestConfigData extends CmsADEConfigData {
 
     /**
      * Marks this as a module configuration or normal sitemap configuration.<p>
-     * 
-     * @param isModuleConfig true if this is a module configuration 
+     *
+     * @param isModuleConfig true if this is a module configuration
      */
     public void setIsModuleConfig(boolean isModuleConfig) {
 
@@ -205,8 +208,8 @@ public class CmsTestConfigData extends CmsADEConfigData {
 
     /**
      * Sets the parent configuration object.<p>
-     * 
-     * @param parent the parent configuration object 
+     *
+     * @param parent the parent configuration object
      */
     public void setParent(CmsADEConfigData parent) {
 

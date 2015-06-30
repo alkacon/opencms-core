@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,8 +58,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Widget dialog that sets the export options to export VFS resources to the OpenCms server.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDatabaseExportDialog extends CmsWidgetDialog {
 
@@ -74,7 +74,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDatabaseExportDialog(CmsJspActionElement jsp) {
@@ -84,7 +84,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -97,6 +97,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() throws IOException, ServletException {
 
         List errors = new ArrayList();
@@ -121,6 +122,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -160,6 +162,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the sexport object to use for the dialog
@@ -174,39 +177,42 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_exportParams, "path", PAGES[0], new CmsComboWidget(exportFiles)));
         }
 
-        addWidget(new CmsWidgetDialogParameter(m_exportParams, "exportResourceData", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(
+            new CmsWidgetDialogParameter(m_exportParams, "exportResourceData", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_exportParams, "exportAccountData", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_exportParams, "exportProjectData", PAGES[0], new CmsCheckboxWidget()));
 
-        addWidget(new CmsWidgetDialogParameter(
-            m_exportParams,
-            "includeUnchangedResources",
-            PAGES[0],
-            new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_exportParams, "includeSystemFolder", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(
-            m_exportParams,
-            "contentAge",
-            "0",
-            PAGES[0],
-            new CmsCalendarWidget(),
-            0,
-            1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_exportParams,
+                "includeUnchangedResources",
+                PAGES[0],
+                new CmsCheckboxWidget()));
+        addWidget(
+            new CmsWidgetDialogParameter(m_exportParams, "includeSystemFolder", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(
+            new CmsWidgetDialogParameter(m_exportParams, "contentAge", "0", PAGES[0], new CmsCalendarWidget(), 0, 1));
         addWidget(new CmsWidgetDialogParameter(m_exportParams, "recursive", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_exportParams, "inProject", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_exportParams, "exportAsFiles", PAGES[0], new CmsCheckboxWidget()));
 
-        addWidget(new CmsWidgetDialogParameter(m_exportParams, "resources", "/", PAGES[0], new CmsVfsFileWidget(
-            false,
-            getCms().getRequestContext().getSiteRoot()), 1, CmsWidgetDialogParameter.MAX_OCCURENCES));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_exportParams,
+                "resources",
+                "/",
+                PAGES[0],
+                new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot()),
+                1,
+                CmsWidgetDialogParameter.MAX_OCCURENCES));
 
     }
 
     /**
      * Returns the present export files on the server to show in the combo box.<p>
-     * 
-     * The result list elements are of type <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code>.<p> 
-     * 
+     *
+     * The result list elements are of type <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code>.<p>
+     *
      * @return the present export files on the server to show in the combo box
      */
     protected List getComboExportFiles() {
@@ -224,6 +230,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -262,6 +269,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -273,6 +281,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation

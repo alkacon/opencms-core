@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,29 +31,29 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 
 /**
  * The interface for a string model.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsStringModel extends HasValueChangeHandlers<String> {
 
-    /** 
+    /**
      * Returns the model id.<p>
-     * @return the model id 
+     * @return the model id
      */
     String getId();
 
     /**
      * Returns the model value.<p>
-     * 
-     * @return the model value 
+     *
+     * @return the model value
      */
     String getValue();
 
     /**
      * Sets the model value.<p>
-     * 
-     * @param value the new model value 
-     * @param notify if true, value change listeners will be notified of the new value 
+     *
+     * @param value the new model value
+     * @param notify if true, value change listeners will be notified of the new value
      */
     void setValue(String value, boolean notify);
 }

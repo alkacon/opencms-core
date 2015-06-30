@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import javax.persistence.Table;
 
 /**
  * This data access object represents a counter entry inside the table "cms_counters".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -62,7 +62,7 @@ public class CmsDAOCounters {
 
     /**
      * A public constructor for generating a new contents object with an unique id.<p>
-     * 
+     *
      * @param name the name
      */
     public CmsDAOCounters(String name) {
@@ -72,7 +72,7 @@ public class CmsDAOCounters {
 
     /**
      * Returns the count.<p>
-     * 
+     *
      * @return the count
      */
     public int getCounter() {
@@ -82,7 +82,7 @@ public class CmsDAOCounters {
 
     /**
      * Returns the name.<p>
-     * 
+     *
      * @return the name
      */
     public String getName() {
@@ -92,21 +92,21 @@ public class CmsDAOCounters {
 
     /**
      * Sets the count.<p>
-     * 
+     *
      * @param counter the count to set
      */
     public void setCounter(int counter) {
 
-        this.m_counter = counter;
+        m_counter = counter;
     }
 
     /**
      * Sets the name.<p>
-     * 
+     *
      * @param name the name to set
      */
     public void setName(String name) {
 
-        this.m_name = name;
+        m_name = name;
     }
 }

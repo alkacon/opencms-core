@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,8 +35,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Thread for merging content pages.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsMergePagesThread extends A_CmsReportThread {
 
@@ -47,7 +47,7 @@ public class CmsMergePagesThread extends A_CmsReportThread {
 
     /**
      * Constructor, creates a new  CmsMergePagesThread.<p>
-     * 
+     *
      * @param cms the current CmsObject
      * @param mergePages the initialized CmsMergePages Object
      */
@@ -62,6 +62,7 @@ public class CmsMergePagesThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -70,6 +71,7 @@ public class CmsMergePagesThread extends A_CmsReportThread {
     /**
      * The run method which starts the merging process.<p>
      */
+    @Override
     public synchronized void run() {
 
         try {

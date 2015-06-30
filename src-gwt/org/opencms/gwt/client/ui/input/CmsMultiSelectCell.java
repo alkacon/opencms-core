@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,10 +42,10 @@ import com.google.gwt.user.client.ui.Grid;
 /**
  * Implements a select cell that can contain multiple entries.
  * And its value is a list of all selected entry values.
- * The {@link #getValue()} returns the parsed String 
- * representation of the selected values, using a pipe 
+ * The {@link #getValue()} returns the parsed String
+ * representation of the selected values, using a pipe
  * '|' as separator.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsMultiSelectCell extends A_CmsSelectCell {
@@ -64,7 +64,7 @@ public class CmsMultiSelectCell extends A_CmsSelectCell {
 
     /**
      * Creates a CmsMultiSelectCell.<p>
-     * 
+     *
      * @param optins the values witch should be shown
      */
     @SuppressWarnings("boxing")
@@ -79,7 +79,7 @@ public class CmsMultiSelectCell extends A_CmsSelectCell {
             String value = entry.getKey();
             items.put(value, entry.getValue().getFirst());
             CmsCheckBox checkbox = new CmsCheckBox(value);
-            // wrap the check boxes in FlowPanels to arrange them vertically 
+            // wrap the check boxes in FlowPanels to arrange them vertically
             m_checkboxWrapper.setWidget(y, i % modolo, checkbox);
             i++;
             if ((i % modolo) == 0) {
@@ -94,7 +94,7 @@ public class CmsMultiSelectCell extends A_CmsSelectCell {
 
     /**
      * Returns the selected CmsCheckBox.<p>
-     * 
+     *
      * @param i the value of the selected CmsCheckBox
      * @return CmsCheckBox Returns the selected CmsCheckBox
      */
@@ -105,7 +105,7 @@ public class CmsMultiSelectCell extends A_CmsSelectCell {
 
     /**
      * Returns all CmsSelectBoxes.<p>
-     * 
+     *
      * @return a list of CmsCheckBox
      */
     public List<CmsCheckBox> getCheckbox() {
@@ -115,7 +115,7 @@ public class CmsMultiSelectCell extends A_CmsSelectCell {
 
     /**
      * Returns the opener text.<p>
-     * 
+     *
      * @return the opener text
      */
     public String getOpenerText() {
@@ -125,7 +125,7 @@ public class CmsMultiSelectCell extends A_CmsSelectCell {
 
     /**
      * Returns the set of values of the selected checkboxes.<p>
-     * 
+     *
      * @return a set of strings
      */
     public Set<String> getSelected() {
@@ -155,7 +155,7 @@ public class CmsMultiSelectCell extends A_CmsSelectCell {
 
     /**
     * Sets the opener text.<p>
-    *  
+    *
     * @param openerText the new opener text
     */
     public void setOpenerText(String openerText) {
@@ -167,8 +167,8 @@ public class CmsMultiSelectCell extends A_CmsSelectCell {
 
     /**
      * Helper function to generate the grid layout.<p>
-     * @param count 
-     * 
+     * @param count
+     *
      *@return the new grid
      * */
     private Grid getGridLayout(int count) {

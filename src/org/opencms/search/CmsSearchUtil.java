@@ -85,9 +85,10 @@ public final class CmsSearchUtil {
             if (subsite != null) {
                 subsite = cms.getRequestContext().removeSiteRoot(subsite);
             } else if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_GALLERIES_COULD_NOT_EVALUATE_SUBSITE_1,
-                    params.getReferencePath()));
+                LOG.warn(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_GALLERIES_COULD_NOT_EVALUATE_SUBSITE_1,
+                        params.getReferencePath()));
             }
         } else if (LOG.isWarnEnabled()) {
             LOG.warn(Messages.get().getBundle().key(Messages.LOG_GALLERIES_NO_REFERENCE_PATH_PROVIDED_0));
@@ -170,7 +171,10 @@ public final class CmsSearchUtil {
      *
      * @return the list of search roots for that option
      */
-    public static List<String> getSearchRootsForScope(CmsGallerySearchScope scope, String siteParam, String subSiteParam) {
+    public static List<String> getSearchRootsForScope(
+        CmsGallerySearchScope scope,
+        String siteParam,
+        String subSiteParam) {
 
         List<String> result = new ArrayList<String>();
         if (scope == CmsGallerySearchScope.everything) {

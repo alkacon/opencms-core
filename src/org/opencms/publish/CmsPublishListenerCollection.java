@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,7 +39,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Publish job information bean.<p>
- * 
+ *
  * @since 6.5.5
  */
 public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEventListener> {
@@ -55,7 +55,7 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param publishEngine the publish engine
      */
     protected CmsPublishListenerCollection(CmsPublishEngine publishEngine) {
@@ -65,7 +65,7 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
 
     /**
      * Fires an abort event to all listeners.<p>
-     * 
+     *
      * @param userId the id of the user that aborted the job
      * @param publishJob the publish job that is going to be aborted.
      */
@@ -81,9 +81,11 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
             } catch (Throwable t) {
                 // catch every thing including runtime exceptions
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_PUBLISH_JOB_ABORT_ERROR_1,
-                        listener.getClass().getName()), t);
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_PUBLISH_JOB_ABORT_ERROR_1,
+                            listener.getClass().getName()),
+                        t);
                 }
                 if (publishJob.m_publishJob.getPublishReport() != null) {
                     publishJob.m_publishJob.getPublishReport().println(t);
@@ -91,7 +93,7 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
             }
         }
         if ((userId != null) && userId.equals(publishJob.getUserId())) {
-            // prevent showing messages if the owner aborted the job by himself 
+            // prevent showing messages if the owner aborted the job by himself
             return;
         }
         // popup the abort message
@@ -104,7 +106,7 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
 
     /**
      * Fires an enqueue event to all listeners.<p>
-     * 
+     *
      * @param publishJob the publish job that is going to be enqueued.
      */
     protected void fireEnqueued(CmsPublishJobBase publishJob) {
@@ -119,9 +121,11 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
             } catch (Throwable t) {
                 // catch every thing including runtime exceptions
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_PUBLISH_JOB_ENQUEUE_ERROR_1,
-                        listener.getClass().getName()), t);
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_PUBLISH_JOB_ENQUEUE_ERROR_1,
+                            listener.getClass().getName()),
+                        t);
                 }
                 if (publishJob.m_publishJob.getPublishReport() != null) {
                     publishJob.m_publishJob.getPublishReport().println(t);
@@ -132,7 +136,7 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
 
     /**
      * Fires a finish event to all listeners.<p>
-     * 
+     *
      * @param publishJob the publish job that has been finished.
      */
     protected void fireFinish(CmsPublishJobRunning publishJob) {
@@ -147,9 +151,11 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
             } catch (Throwable t) {
                 // catch every thing including runtime exceptions
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_PUBLISH_JOB_FINISH_ERROR_1,
-                        listener.getClass().getName()), t);
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_PUBLISH_JOB_FINISH_ERROR_1,
+                            listener.getClass().getName()),
+                        t);
                 }
                 if (publishJob.m_publishJob.getPublishReport() != null) {
                     publishJob.m_publishJob.getPublishReport().println(t);
@@ -178,7 +184,7 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
 
     /**
      * Fires a remove event to all listeners.<p>
-     * 
+     *
      * @param publishJob the publish job that is going to be removed.
      */
     protected void fireRemove(CmsPublishJobFinished publishJob) {
@@ -193,9 +199,11 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
             } catch (Throwable t) {
                 // catch every thing including runtime exceptions
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_PUBLISH_JOB_REMOVE_ERROR_1,
-                        listener.getClass().getName()), t);
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_PUBLISH_JOB_REMOVE_ERROR_1,
+                            listener.getClass().getName()),
+                        t);
                 }
                 if (publishJob.m_publishJob.getPublishReport() != null) {
                     publishJob.m_publishJob.getPublishReport().println(t);
@@ -206,7 +214,7 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
 
     /**
      * Fires a start event to all listeners.<p>
-     * 
+     *
      * @param publishJob the publish job that is going to start.
      */
     protected void fireStart(CmsPublishJobEnqueued publishJob) {
@@ -221,9 +229,11 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
             } catch (Throwable t) {
                 // catch every thing including runtime exceptions
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_PUBLISH_JOB_START_ERROR_1,
-                        listener.getClass().getName()), t);
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_PUBLISH_JOB_START_ERROR_1,
+                            listener.getClass().getName()),
+                        t);
                 }
                 if (publishJob.m_publishJob.getPublishReport() != null) {
                     publishJob.m_publishJob.getPublishReport().println(t);
@@ -232,7 +242,8 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
         }
         // popup the start message
         boolean busyStart = ((System.currentTimeMillis() - publishJob.getEnqueueTime()) > 2000);
-        boolean bigJob = ((publishJob.getPublishList().size() > 25) || (OpenCms.getStaticExportManager().getHandler() instanceof CmsAfterPublishStaticExportHandler));
+        boolean bigJob = ((publishJob.getPublishList().size() > 25)
+            || (OpenCms.getStaticExportManager().getHandler() instanceof CmsAfterPublishStaticExportHandler));
         if (busyStart || bigJob) {
             String msgText = Messages.get().getBundle(publishJob.getLocale()).key(
                 Messages.GUI_PUBLISH_JOB_STARTED_1,

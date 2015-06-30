@@ -189,7 +189,8 @@ public final class CmsSpellcheckDictionaryIndexer {
                     final CmsFile cmsFile = cms.readFile(resource);
 
                     // Read zip file content
-                    final ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream(cmsFile.getContents()));
+                    final ZipInputStream zipStream = new ZipInputStream(
+                        new ByteArrayInputStream(cmsFile.getContents()));
 
                     // Holds several entries (files) of the zipfile
                     ZipEntry entry = zipStream.getNextEntry();

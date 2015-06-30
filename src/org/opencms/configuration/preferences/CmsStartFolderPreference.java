@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,8 +44,8 @@ public class CmsStartFolderPreference extends CmsBuiltinPreference {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param name the preference name 
+     *
+     * @param name the preference name
      */
     public CmsStartFolderPreference(String name) {
 
@@ -59,7 +59,8 @@ public class CmsStartFolderPreference extends CmsBuiltinPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
             null, //type
             null, //widget
             null, //widgetconfig
@@ -80,7 +81,8 @@ public class CmsStartFolderPreference extends CmsBuiltinPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
             "string", //type
             "gallery", //widget
             "configuration:{\"tabconfig\":\"folders\", \"gallerymode\":\"widget\"}", //widgetconfig

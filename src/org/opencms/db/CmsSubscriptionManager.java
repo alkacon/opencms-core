@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import java.util.List;
 
 /**
  * Manager that provides methods to subscribe resources to users, read subscribed or unvisited resources and more.<p>
- * 
+ *
  * @since 8.0
  */
 public class CmsSubscriptionManager {
@@ -78,13 +78,13 @@ public class CmsSubscriptionManager {
 
     /**
      * Returns the date when the resource was last visited by the user.<p>
-     * 
+     *
      * @param cms the current users context
      * @param user the user to check the date
      * @param resource the resource to check the date
-     * 
+     *
      * @return the date when the resource was last visited by the user
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public long getDateLastVisitedBy(CmsObject cms, CmsUser user, CmsResource resource) throws CmsException {
@@ -94,13 +94,13 @@ public class CmsSubscriptionManager {
 
     /**
      * Returns the date when the resource was last visited by the user.<p>
-     * 
+     *
      * @param cms the current users context
      * @param user the user to check the date
      * @param resourcePath the name of the resource to check the date
-     * 
+     *
      * @return the date when the resource was last visited by the user
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public long getDateLastVisitedBy(CmsObject cms, CmsUser user, String resourcePath) throws CmsException {
@@ -111,7 +111,7 @@ public class CmsSubscriptionManager {
 
     /**
      * Returns the maximum number of visited resources to store per user.<p>
-     * 
+     *
      * @return the maximum number of visited resources to store per user
      */
     public int getMaxVisitedCount() {
@@ -124,7 +124,7 @@ public class CmsSubscriptionManager {
 
     /**
      * Returns the name of the database pool to use.<p>
-     * 
+     *
      * @return the name of the database pool to use
      */
     public String getPoolName() {
@@ -138,9 +138,9 @@ public class CmsSubscriptionManager {
 
     /**
      * Initializes this subscription manager with the OpenCms system configuration.<p>
-     * 
+     *
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
-     * 
+     *
      * @throws CmsRoleViolationException in case the given opencms object does not have <code>{@link CmsRole#ROOT_ADMIN}</code> permissions
      */
     public void initialize(CmsObject cms) throws CmsRoleViolationException {
@@ -151,7 +151,7 @@ public class CmsSubscriptionManager {
 
     /**
      * Returns if the subscription functionality is enabled.<p>
-     * 
+     *
      * @return <code>true</code> if the subscription functionality is enabled, otherwise <code>false</code>
      */
     public boolean isEnabled() {
@@ -161,11 +161,11 @@ public class CmsSubscriptionManager {
 
     /**
      * Mark the given resource as visited by the user.<p>
-     * 
+     *
      * @param cms the current users context
      * @param resource the resource to mark as visited
      * @param user the user that visited the resource
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void markResourceAsVisitedBy(CmsObject cms, CmsResource resource, CmsUser user) throws CmsException {
@@ -178,11 +178,11 @@ public class CmsSubscriptionManager {
 
     /**
      * Mark the given resource as visited by the user.<p>
-     * 
+     *
      * @param cms the current users context
      * @param resourcePath the name of the resource to mark as visited
      * @param user the user that visited the resource
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void markResourceAsVisitedBy(CmsObject cms, String resourcePath, CmsUser user) throws CmsException {
@@ -193,12 +193,12 @@ public class CmsSubscriptionManager {
 
     /**
      * Returns all resources subscribed by the given user or group.<p>
-     * 
+     *
      * @param cms the current users context
      * @param principal the principal to read the subscribed resources
-     * 
+     *
      * @return all resources subscribed by the given user or group
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public List<CmsResource> readAllSubscribedResources(CmsObject cms, CmsPrincipal principal) throws CmsException {
@@ -208,12 +208,12 @@ public class CmsSubscriptionManager {
 
     /**
      * Returns the resources that were visited by a user set in the filter.<p>
-     * 
+     *
      * @param cms the current users context
      * @param filter the filter that is used to get the visited resources
-     * 
+     *
      * @return the resources that were visited by a user set in the filter
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public List<CmsResource> readResourcesVisitedBy(CmsObject cms, CmsVisitedByFilter filter) throws CmsException {
@@ -223,16 +223,16 @@ public class CmsSubscriptionManager {
 
     /**
      * Returns the subscribed history resources that were deleted.<p>
-     * 
+     *
      * @param cms the current users context
      * @param user the user that subscribed to the resource
      * @param includeGroups indicates if the users groups should also be checked for subscribed deleted resources
      * @param folderPath the folder path of the deleted resources, if <code>null</code> all deleted resources will be returned
      * @param includeSubFolders indicates if the sub folders of the specified folder path should be considered, too
-     * @param deletedFrom the time stamp from which the resources should have been deleted 
-     * 
+     * @param deletedFrom the time stamp from which the resources should have been deleted
+     *
      * @return the subscribed history resources that were deleted
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public List<I_CmsHistoryResource> readSubscribedDeletedResources(
@@ -267,12 +267,12 @@ public class CmsSubscriptionManager {
 
     /**
      * Returns the resources that were subscribed by a user or group set in the filter.<p>
-     * 
+     *
      * @param cms the current users context
      * @param filter the filter that is used to get the subscribed resources
-     * 
+     *
      * @return the resources that were subscribed by a user or group set in the filter
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public List<CmsResource> readSubscribedResources(CmsObject cms, CmsSubscriptionFilter filter) throws CmsException {
@@ -282,7 +282,7 @@ public class CmsSubscriptionManager {
 
     /**
      * Sets if the subscription functionality is enabled.<p>
-     * 
+     *
      * @param enabled the flag indicating if the subscription functionality is enabled
      */
     public void setEnabled(boolean enabled) {
@@ -295,7 +295,7 @@ public class CmsSubscriptionManager {
 
     /**
      * Sets if the subscription functionality is enabled.<p>
-     * 
+     *
      * @param enabled the flag indicating if the subscription functionality is enabled
      */
     public void setEnabled(String enabled) {
@@ -308,7 +308,7 @@ public class CmsSubscriptionManager {
 
     /**
      * Sets the maximum number of visited resources to store per user.<p>
-     * 
+     *
      * @param maxVisitedCount the maximum number of visited resources to store per user
      */
     public void setMaxVisitedCount(String maxVisitedCount) {
@@ -327,7 +327,7 @@ public class CmsSubscriptionManager {
 
     /**
      * Sets the name of the database pool to use.<p>
-     * 
+     *
      * @param poolName the name of the database pool to use
      */
     public void setPoolName(String poolName) {
@@ -340,7 +340,7 @@ public class CmsSubscriptionManager {
 
     /**
      * Sets the security manager during initialization.<p>
-     * 
+     *
      * @param securityManager the security manager
      */
     public void setSecurityManager(CmsSecurityManager securityManager) {
@@ -353,10 +353,10 @@ public class CmsSubscriptionManager {
 
     /**
      * Marks a subscribed resource as deleted.<p>
-     * 
+     *
      * @param cms the current users context
      * @param resource the subscribed resource to mark as deleted
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void setSubscribedResourceAsDeleted(CmsObject cms, CmsResource resource) throws CmsException {
@@ -369,11 +369,11 @@ public class CmsSubscriptionManager {
 
     /**
      * Subscribes the user or group to the resource.<p>
-     * 
+     *
      * @param cms the current users context
      * @param principal the principal that subscribes to the resource
      * @param resource the resource to subscribe to
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void subscribeResourceFor(CmsObject cms, CmsPrincipal principal, CmsResource resource) throws CmsException {
@@ -386,11 +386,11 @@ public class CmsSubscriptionManager {
 
     /**
      * Subscribes the user or group to the resource.<p>
-     * 
+     *
      * @param cms the current users context
      * @param principal the principal that subscribes to the resource
      * @param resourcePath the name of the resource to subscribe to
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void subscribeResourceFor(CmsObject cms, CmsPrincipal principal, String resourcePath) throws CmsException {
@@ -401,10 +401,10 @@ public class CmsSubscriptionManager {
 
     /**
      * Unsubscribes all deleted resources that were deleted before the specified time stamp.<p>
-     * 
+     *
      * @param cms the current users context
      * @param deletedTo the time stamp to which the resources have been deleted
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void unsubscribeAllDeletedResources(CmsObject cms, long deletedTo) throws CmsException {
@@ -417,10 +417,10 @@ public class CmsSubscriptionManager {
 
     /**
     * Unsubscribes the user or group from all resources.<p>
-    * 
+    *
     * @param cms the current users context
     * @param principal the principal that unsubscribes from all resources
-    * 
+    *
     * @throws CmsException if something goes wrong
     */
     public void unsubscribeAllResourcesFor(CmsObject cms, CmsPrincipal principal) throws CmsException {
@@ -433,14 +433,15 @@ public class CmsSubscriptionManager {
 
     /**
      * Unsubscribes the principal from the resource.<p>
-     * 
+     *
      * @param cms the current users context
      * @param principal the principal that unsubscribes from the resource
      * @param resource the resource to unsubscribe from
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
-    public void unsubscribeResourceFor(CmsObject cms, CmsPrincipal principal, CmsResource resource) throws CmsException {
+    public void unsubscribeResourceFor(CmsObject cms, CmsPrincipal principal, CmsResource resource)
+    throws CmsException {
 
         if (!isEnabled()) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_SUBSCRIPTION_MANAGER_DISABLED_0));
@@ -450,11 +451,11 @@ public class CmsSubscriptionManager {
 
     /**
      * Unsubscribes the principal from the resource.<p>
-     * 
+     *
      * @param cms the current users context
      * @param principal the principal that unsubscribes from the resource
      * @param resourcePath the name of the resource to unsubscribe from
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void unsubscribeResourceFor(CmsObject cms, CmsPrincipal principal, String resourcePath) throws CmsException {
@@ -465,10 +466,10 @@ public class CmsSubscriptionManager {
 
     /**
      * Unsubscribes all groups and users from the resource.<p>
-     * 
+     *
      * @param cms the current users context
      * @param resource the resource to unsubscribe all groups and users from
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void unsubscribeResourceForAll(CmsObject cms, CmsResource resource) throws CmsException {
@@ -481,10 +482,10 @@ public class CmsSubscriptionManager {
 
     /**
      * Unsubscribes all groups and users from the resource.<p>
-     * 
+     *
      * @param cms the current users context
      * @param resourcePath the name of the resource to unsubscribe all groups and users from
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void unsubscribeResourceForAll(CmsObject cms, String resourcePath) throws CmsException {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,7 +66,7 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param menuBeans the context menu entry beans
      */
     public CmsSitemapToolbarHandler(List<CmsContextMenuEntryBean> menuBeans) {
@@ -86,7 +86,7 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
      */
     public void activateSelection() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -174,7 +174,7 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
 
     /**
      * Sets the currently active tool-bar button.<p>
-     * 
+     *
      * @param button the button
      */
     public void setActiveButton(I_CmsToolbarButton button) {

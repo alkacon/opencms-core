@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,8 +58,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * List item which uses a float panel for layout.<p>
- *  
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsListItem extends Composite implements I_CmsListItem {
 
@@ -71,7 +71,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param draggable the draggable
          */
         MoveHandle(CmsListItem draggable) {
@@ -153,7 +153,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     /** Indicating this box has a reduced height. */
     private boolean m_smallView;
 
-    /** 
+    /**
      * Default constructor.<p>
      */
     public CmsListItem() {
@@ -163,11 +163,11 @@ public class CmsListItem extends Composite implements I_CmsListItem {
         initWidget(m_panel);
     }
 
-    /** 
+    /**
      * Default constructor.<p>
-     * 
+     *
      * @param checkBox the checkbox
-     * @param widget the widget to use 
+     * @param widget the widget to use
      */
     public CmsListItem(CmsCheckBox checkBox, CmsListItemWidget widget) {
 
@@ -175,10 +175,10 @@ public class CmsListItem extends Composite implements I_CmsListItem {
         initContent(checkBox, widget);
     }
 
-    /** 
+    /**
      * Default constructor.<p>
-     * 
-     * @param widget the widget to use 
+     *
+     * @param widget the widget to use
      */
     public CmsListItem(CmsListItemWidget widget) {
 
@@ -196,7 +196,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Adds a decoration widget to the list item.<p>
-     * 
+     *
      * @param widget the widget
      * @param width the widget width
      */
@@ -208,9 +208,9 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Gets the checkbox of this list item.<p>
-     * 
+     *
      * This method will return a checkbox if this list item has one, or null if it doesn't.
-     * 
+     *
      * @return a check box or null
      */
     public CmsCheckBox getCheckBox() {
@@ -228,8 +228,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Gets the data belonging to the list item.<p>
-     * 
-     * @return the data belonging to the list item 
+     *
+     * @return the data belonging to the list item
      */
     @SuppressWarnings("unchecked")
     public <T> T getData() {
@@ -239,7 +239,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Returns the decoration widgets of this list item.<p>
-     * 
+     *
      * @return the decoration widgets
      */
     public List<Widget> getDecorationWidgets() {
@@ -249,8 +249,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Gets the class for the DND helper.<p>
-     * 
-     * @return the class for the DND helper 
+     *
+     * @return the class for the DND helper
      */
     public String getDndHelperClass() {
 
@@ -259,8 +259,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Gets the class for the DND parent.<p>
-     * 
-     * @return the class for the DND parent 
+     *
+     * @return the class for the DND parent
      */
     public String getDndParentClass() {
 
@@ -299,10 +299,10 @@ public class CmsListItem extends Composite implements I_CmsListItem {
                 elem.removeFromParent();
             }
 
-            // we append the drag helper to the body to prevent any kind of issues 
+            // we append the drag helper to the body to prevent any kind of issues
             // (ie when the parent is styled with overflow:hidden)
-            // and we put it additionally inside a absolute positioned provisional parent  
-            // ON the original parent for the eventual animation when releasing 
+            // and we put it additionally inside a absolute positioned provisional parent
+            // ON the original parent for the eventual animation when releasing
             Element parentElement = getElement().getParentElement();
             if (parentElement == null) {
                 parentElement = target.getElement();
@@ -330,9 +330,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
             m_provisionalParent.getStyle().setLeft(parentElement.getAbsoluteLeft(), Unit.PX);
             int newMoveHandleLeft = moveHandleLeft(m_helper);
             int newElemLeft = m_helper.getAbsoluteLeft();
-            m_offsetDelta = Optional.fromNullable(new int[] {
-                ((newMoveHandleLeft - oldMoveHandleLeft) + oldElemLeft) - newElemLeft,
-                0});
+            m_offsetDelta = Optional.fromNullable(
+                new int[] {((newMoveHandleLeft - oldMoveHandleLeft) + oldElemLeft) - newElemLeft, 0});
             m_provisionalParent.getStyle().setZIndex(I_CmsLayoutBundle.INSTANCE.constants().css().zIndexDND());
         }
         // ensure mouse out
@@ -353,7 +352,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Returns the list item widget of this list item, or null if this item doesn't have a list item widget.<p>
-     * 
+     *
      * @return a list item widget or null
      */
     public CmsListItemWidget getListItemWidget() {
@@ -366,7 +365,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Returns the main widget.<p>
-     * 
+     *
      * @return the main widget
      */
     public Widget getMainWidget() {
@@ -376,7 +375,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Returns the move handle.<p>
-     * 
+     *
      * @return the move handle
      */
     public I_CmsDragHandle getMoveHandle() {
@@ -386,7 +385,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Returns the parent list.<p>
-     * 
+     *
      * @return the parent list
      */
     @SuppressWarnings("unchecked")
@@ -423,11 +422,11 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Initializes the move handle with the given drag and drop handler and adds it to the list item widget.<p>
-     * 
+     *
      * This method will not work for list items that don't have a list-item-widget.<p>
-     * 
+     *
      * @param dndHandler the drag and drop handler
-     * 
+     *
      * @return <code>true</code> if initialization was successful
      */
     public boolean initMoveHandle(CmsDNDHandler dndHandler) {
@@ -437,13 +436,13 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Initializes the move handle with the given drag and drop handler and adds it to the list item widget.<p>
-     * 
+     *
      * This method will not work for list items that don't have a list-item-widget.<p>
-     * 
+     *
      * @param dndHandler the drag and drop handler
-     * 
-     * @param addFirst if true, adds the move handle as first child 
-     * 
+     *
+     * @param addFirst if true, adds the move handle as first child
+     *
      * @return <code>true</code> if initialization was successful
      */
     public boolean initMoveHandle(CmsDNDHandler dndHandler, boolean addFirst) {
@@ -492,17 +491,17 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Sets the data for this list item.<p>
-     * 
-     * @param data the data to set 
+     *
+     * @param data the data to set
      */
     public void setData(Object data) {
 
         m_data = data;
     }
 
-    /** 
+    /**
      * Sets the class for the DND helper.<p>
-     * 
+     *
      * @param dndHelperClass the class for the DND helper
      */
     public void setDndHelperClass(String dndHelperClass) {
@@ -512,8 +511,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Sets the class for the DND parent.<p>
-     * 
-     * @param dndParentClass the class for the DND parent 
+     *
+     * @param dndParentClass the class for the DND parent
      */
     public void setDndParentClass(String dndParentClass) {
 
@@ -534,14 +533,15 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Sets the decoration style to fit with the small view of list items.<p>
-     * 
+     *
      * @param smallView true if the decoration has to fit with the small view of list items
      */
     public void setSmallView(boolean smallView) {
 
         m_smallView = smallView;
         if (m_smallView) {
-            m_decoratedPanel.addDecorationBoxStyle(I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().decorationBoxSmall());
+            m_decoratedPanel.addDecorationBoxStyle(
+                I_CmsLayoutBundle.INSTANCE.floatDecoratedPanelCss().decorationBoxSmall());
         }
     }
 
@@ -569,8 +569,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Adds a check box to this list item.<p>
-     * 
-     * @param checkbox the check box 
+     *
+     * @param checkbox the check box
      */
     protected void addCheckBox(CmsCheckBox checkbox) {
 
@@ -583,8 +583,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Helper method for adding a decoration widget and updating the decoration width accordingly.<p>
-     * 
-     * @param widget the decoration widget to add 
+     *
+     * @param widget the decoration widget to add
      * @param width the intended width of the decoration widget
      * @param first if true, inserts the widget at the front of the decorations, else at the end.
      */
@@ -596,10 +596,10 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Adds the main widget to the list item.<p>
-     * 
-     * In most cases, the widget will be a list item widget. If this is the case, then further calls to {@link CmsListItem#getListItemWidget()} will 
+     *
+     * In most cases, the widget will be a list item widget. If this is the case, then further calls to {@link CmsListItem#getListItemWidget()} will
      * return the widget which was passed as a parameter to this method. Otherwise, the method will return null.<p>
-     * 
+     *
      * @param widget the main content widget
      */
     protected void addMainWidget(Widget widget) {
@@ -614,9 +614,9 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Clones the given item to be used as a place holder.<p>
-     * 
+     *
      * @param listItem the item to clone
-     * 
+     *
      * @return the cloned item
      */
     protected Element cloneForPlaceholder(CmsListItem listItem) {
@@ -651,7 +651,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * This method is a convenience method which sets the checkbox and main widget of this widget, and then calls {@link CmsListItem#initContent()}.<p>
-     *  
+     *
      * @param checkbox the checkbox to add
      * @param mainWidget the mainWidget to add
      */
@@ -664,8 +664,8 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * This method is a convenience method which sets the main widget of this widget, and then calls {@link CmsListItem#initContent()}.<p>
-     * 
-     * @param mainWidget the main widget to add 
+     *
+     * @param mainWidget the main widget to add
      */
     protected void initContent(Widget mainWidget) {
 
@@ -674,11 +674,11 @@ public class CmsListItem extends Composite implements I_CmsListItem {
     }
 
     /**
-     * Gets the left edge of the move handle located in the element.<p> 
-     * 
-     * @param elem the element to search in 
-     * 
-     * @return the left edge of the move handle  
+     * Gets the left edge of the move handle located in the element.<p>
+     *
+     * @param elem the element to search in
+     *
+     * @return the left edge of the move handle
      */
     protected int moveHandleLeft(Element elem) {
 
@@ -687,7 +687,7 @@ public class CmsListItem extends Composite implements I_CmsListItem {
 
     /**
      * Removes a decoration widget.<p>
-     * 
+     *
      * @param widget the widget to remove
      * @param width the widget width
      */

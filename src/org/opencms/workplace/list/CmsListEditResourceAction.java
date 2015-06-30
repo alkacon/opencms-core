@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,8 +36,8 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 
 /**
  * Opens the selected resource in a new window.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListEditResourceAction extends CmsListDirectAction {
 
@@ -49,7 +49,7 @@ public class CmsListEditResourceAction extends CmsListDirectAction {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id the unique id
      * @param resColumnPathId the id of the column with the resource root path
      */
@@ -119,7 +119,9 @@ public class CmsListEditResourceAction extends CmsListDirectAction {
         if (getResourceName() != null) {
             try {
                 // if resource type if editable
-                if (OpenCms.getWorkplaceManager().getEditorHandler().getEditorUri(getResourceName(), getWp().getJsp()) != null) {
+                if (OpenCms.getWorkplaceManager().getEditorHandler().getEditorUri(
+                    getResourceName(),
+                    getWp().getJsp()) != null) {
                     // check lock state
                     CmsLock lock = getResourceUtil().getLock();
                     if (lock.isNullLock() || lock.isOwnedBy((getWp().getCms().getRequestContext().getCurrentUser()))) {
@@ -155,7 +157,7 @@ public class CmsListEditResourceAction extends CmsListDirectAction {
 
     /**
      * Returns the most possible right resource name.<p>
-     * 
+     *
      * @return the most possible right resource name
      */
     private String getResourceName() {

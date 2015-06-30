@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,13 +49,13 @@ import junit.framework.TestSuite;
 
 /**
  * Unit test for the "writeProperty" method of the CmsObject.<p>
- * 
+ *
  */
 public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestProperty(String arg0) {
@@ -65,7 +65,7 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -111,7 +111,7 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Tests reading and writing property lists.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testPropertyLists() throws Exception {
@@ -135,7 +135,7 @@ public class TestProperty extends OpenCmsTestCase {
         assertEquals(1, prop.getStructureValueList().size());
         assertNull(prop.getResourceValueList());
 
-        // now set the title as a list        
+        // now set the title as a list
         List list = new ArrayList();
         String value = "";
         for (int i = 1; i <= 10; i++) {
@@ -214,7 +214,7 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Tests reading and writing property maps.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testPropertyMaps() throws Exception {
@@ -233,7 +233,7 @@ public class TestProperty extends OpenCmsTestCase {
         assertEquals(2, prop.getStructureValueMap().size());
         assertEquals("1", prop.getStructureValueMap().get("a"));
 
-        // now set the title as a map        
+        // now set the title as a map
         Map map = new HashMap(3);
         map.put("k1", "v1");
         map.put("k2", "v2|=");
@@ -455,7 +455,7 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Tests the writePropertyObjects method for removing of properties.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCreateProperties() throws Throwable {
@@ -472,7 +472,7 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Tests the proper behaviour for case sensitiveness in property definition names.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCaseSensitiveProperties() throws Throwable {
@@ -491,7 +491,7 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Tests the writePropertyObject method for removing of properties.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCreateProperty() throws Throwable {
@@ -504,7 +504,7 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Tests the writePropertyObjects method for removing of multiple properties.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testRemoveProperties() throws Throwable {
@@ -521,7 +521,7 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Tests the writePropertyObject method for removing of a single property.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testRemoveProperty() throws Throwable {
@@ -534,7 +534,7 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Tests the writeProperties method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testWriteProperties() throws Throwable {
@@ -551,7 +551,7 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Tests the writePropertyObject method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testWriteProperty() throws Throwable {
@@ -564,7 +564,7 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Tests the writePropertyObject method for writing of a property on a folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testWritePropertyOnFolder() throws Throwable {
@@ -577,7 +577,7 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Tests the writePropertyObject method for writing of a property on a folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadResourcesWithProperty() throws Throwable {
@@ -600,7 +600,7 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Test default property creation (from resource type configuration).<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testDefaultPropertyCreation() throws Throwable {
@@ -652,12 +652,12 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Tests an issue with shared properties after deletion of the original sibling.<p>
-     * 
+     *
      * Scenario:
-     * A file A has property P set with value V as shared property. Now A is renamed to B. 
+     * A file A has property P set with value V as shared property. Now A is renamed to B.
      * Then B is published directly with all siblings (A is now deleted and removed).
-     * Issue: Property P is now empty in B, but should still have the V value.<p> 
-     * 
+     * Issue: Property P is now empty in B, but should still have the V value.<p>
+     *
      * @throws Throwable if something goes wrong
      */
     public void testSharedPropertyIssue1() throws Throwable {
@@ -702,14 +702,14 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Tests the NULL_PROPERTY.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testNullProperty() throws Exception {
 
         // get the null property
         CmsProperty nullProperty = CmsProperty.getNullProperty();
-        // create another property        
+        // create another property
         CmsProperty p = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Some title", null);
         // do a comparison
         assertFalse("Created property must not be equal to NULL_PROPERTY", p.equals(nullProperty));
@@ -720,7 +720,7 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Tests changing the values of a frozen property.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testFrozenProperty() throws Throwable {

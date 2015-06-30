@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,12 +51,12 @@ import org.apache.commons.logging.Log;
 
 /**
  * Describes an OpenCms module.<p>
- * 
+ *
  * OpenCms modules provide a standard mechanism to extend the OpenCms functionality.
- * Modules can contain VFS data, Java classes and a number of configuration options.<p> 
- * 
- * @since 6.0.0 
- * 
+ * Modules can contain VFS data, Java classes and a number of configuration options.<p>
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.module.I_CmsModuleAction
  * @see org.opencms.module.A_CmsModuleAction
  */
@@ -180,13 +180,13 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Creates a new module description with the specified values.<p>
-     * 
+     *
      * @param name the name of this module, must be a valid Java package name
      * @param niceName the "nice" display name of this module
      * @param group the group of this module
      * @param actionClass the (optional) module class name
      * @param importScript the script to execute when the module is imported
-     * @param importSite the site root into which this module should be imported  
+     * @param importSite the site root into which this module should be imported
      * @param description the description of this module
      * @param version the version of this module
      * @param authorName the name of the author of this module
@@ -284,7 +284,7 @@ public class CmsModule implements Comparable<CmsModule> {
     /**
      * Checks if this module depends on another given module,
      * will return the dependency, or <code>null</code> if no dependency was found.<p>
-     * 
+     *
      * @param module the other module to check against
      * @return the dependency, or null if no dependency was found
      */
@@ -307,9 +307,9 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Checks if all resources of the module are present.<p>
-     * 
+     *
      * @param cms an initialized OpenCms user context which must have read access to all module resources
-     * 
+     *
      * @throws CmsIllegalArgumentException in case not all module resources exist or can be read with the given OpenCms user context
      */
     public void checkResources(CmsObject cms) throws CmsIllegalArgumentException {
@@ -320,7 +320,7 @@ public class CmsModule implements Comparable<CmsModule> {
     /**
      * Clones a CmsModule which is not set to frozen.<p>
      * This clones module can be used to be update the module information.
-     * 
+     *
      * @see java.lang.Object#clone()
      */
     @Override
@@ -403,9 +403,9 @@ public class CmsModule implements Comparable<CmsModule> {
      * Two instances of a module are considered equal if their name is equal.<p>
      *
      * @param obj the object to compare
-     * 
+     *
      * @return true if the objects are equal
-     *  
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      * @see #isIdentical(CmsModule)
      */
@@ -437,7 +437,7 @@ public class CmsModule implements Comparable<CmsModule> {
     /**
      * Returns the module action instance of this module, or <code>null</code>
      * if no module action instance is configured.<p>
-     * 
+     *
      * @return the module action instance of this module
      */
     public I_CmsModuleAction getActionInstance() {
@@ -467,7 +467,7 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Gets the module configuration path.<p>
-     * 
+     *
      * @return the module configuration path
      */
     public String getConfigurationPath() {
@@ -562,9 +562,9 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Gets the import site.<p>
-     * 
+     *
      * If this is not empty, then it will be used as the site root for importing and exporting this module.<p>
-     * 
+     *
      * @return the import site
      */
     public String getImportSite() {
@@ -574,7 +574,7 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Returns the name of this module.<p>
-     * 
+     *
      * The module name must be a valid java package name.<p>
      *
      * @return the name of this module
@@ -594,10 +594,10 @@ public class CmsModule implements Comparable<CmsModule> {
         return m_niceName;
     }
 
-    /** 
+    /**
      * Gets the timestamp of this object's creation time.<p>
-     * 
-     * @return the object creation timestamp 
+     *
+     * @return the object creation timestamp
      */
     public long getObjectCreateTime() {
 
@@ -606,7 +606,7 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Returns a parameter value from the module parameters.<p>
-     * 
+     *
      * @param key the parameter to return the value for
      * @return the parameter value from the module parameters
      */
@@ -618,7 +618,7 @@ public class CmsModule implements Comparable<CmsModule> {
     /**
      * Returns a parameter value from the module parameters,
      * or a given default value in case the parameter is not set.<p>
-     * 
+     *
      * @param key the parameter to return the value for
      * @param defaultValue the default value in case there is no value stored for this key
      * @return the parameter value from the module parameters
@@ -631,7 +631,7 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Returns the configured (immutable) module parameters.<p>
-     * 
+     *
      * @return the configured (immutable) module parameters
      */
     public SortedMap<String, String> getParameters() {
@@ -710,8 +710,8 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Returns the createFormattersFolder flag.<p>
-     * 
-     * @return the createFormattersFolder flag 
+     *
+     * @return the createFormattersFolder flag
      */
     public boolean isCreateFormattersFolder() {
 
@@ -770,22 +770,22 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Checks if this module is identical with another module.<p>
-     * 
+     *
      * Modules A, B are <b>identical</b> if <i>all</i> values of A are equal to B.
-     * The values from {@link #getUserInstalled()} and {@link #getDateInstalled()} 
+     * The values from {@link #getUserInstalled()} and {@link #getDateInstalled()}
      * are ignored for this test.<p>
-     *  
+     *
      * Modules A, B are <b>equal</b> if just the name of A is equal to the name of B.<p>
-     * 
+     *
      * @param other the module to compare with
-     * 
+     *
      * @return if the modules are identical
-     * 
+     *
      * @see #equals(Object)
      */
     public boolean isIdentical(CmsModule other) {
 
-        // some code redundancy here but this is easier to debug 
+        // some code redundancy here but this is easier to debug
         if (!isEqual(m_name, other.m_name)) {
             return false;
         }
@@ -815,12 +815,12 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the class name of this modules (optional) action class.<p>
-     * 
+     *
      * Providing <code>null</code> as a value indicates that this module does not use an action class.<p>
-     * 
+     *
      * <i>Please note:</i>It's not possible to set the action class name once the module
-     * configuration has been frozen.<p> 
-     * 
+     * configuration has been frozen.<p>
+     *
      * @param value the class name of this modules (optional) action class to set
      */
     public void setActionClass(String value) {
@@ -830,10 +830,8 @@ public class CmsModule implements Comparable<CmsModule> {
             m_actionClass = null;
         } else {
             if (!CmsStringUtil.isValidJavaClassName(value)) {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_MODULE_ACTION_CLASS_2,
-                    value,
-                    getName()));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(Messages.ERR_MODULE_ACTION_CLASS_2, value, getName()));
             }
             m_actionClass = value;
         }
@@ -841,11 +839,11 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the author email of this module.<p>
-     * 
-     * 
+     *
+     *
      * <i>Please note:</i>It's not possible to set the modules author email once the module
      * configuration has been frozen.<p>
-     * 
+     *
      * @param value the module description to set
      */
     public void setAuthorEmail(String value) {
@@ -856,11 +854,11 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the author name of this module.<p>
-     * 
-     * 
+     *
+     *
      * <i>Please note:</i>It's not possible to set the modules author name once the module
      * configuration has been frozen.<p>
-     * 
+     *
      * @param value the module description to set
      */
     public void setAuthorName(String value) {
@@ -891,7 +889,7 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the createFormattersFolder flag.<p>
-     * 
+     *
      * @param createFormattersFolder the createFormattersFolder flag to set
      */
     public void setCreateFormattersFolder(boolean createFormattersFolder) {
@@ -951,11 +949,11 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the date created of this module.<p>
-     * 
-     * 
+     *
+     *
      * <i>Please note:</i>It's not possible to set the module date created once the module
      * configuration has been frozen.<p>
-     * 
+     *
      * @param value the date created to set
      */
     public void setDateCreated(long value) {
@@ -966,11 +964,11 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the installation date of this module.<p>
-     * 
-     * 
+     *
+     *
      * <i>Please note:</i>It's not possible to set the installation date once the module
      * configuration has been frozen.<p>
-     * 
+     *
      * @param value the installation date this module
      */
     public void setDateInstalled(long value) {
@@ -992,11 +990,11 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the description of this module.<p>
-     * 
-     * 
+     *
+     *
      * <i>Please note:</i>It's not possible to set the modules description once the module
      * configuration has been frozen.<p>
-     * 
+     *
      * @param value the module description to set
      */
     public void setDescription(String value) {
@@ -1027,11 +1025,11 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the group name of this module.<p>
-     * 
-     * 
+     *
+     *
      * <i>Please note:</i>It's not possible to set the modules group name once the module
      * configuration has been frozen.<p>
-     * 
+     *
      * @param value the module group name to set
      */
     public void setGroup(String value) {
@@ -1053,8 +1051,8 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the import site.<p>
-     * 
-     * @param importSite the import site 
+     *
+     * @param importSite the import site
      */
     public void setImportSite(String importSite) {
 
@@ -1067,12 +1065,12 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the name of this module.<p>
-     * 
+     *
      * The module name must be a valid java package name.<p>
-     * 
+     *
      * <i>Please note:</i>It's not possible to set the modules name once the module
      * configuration has been frozen.<p>
-     * 
+     *
      * @param value the module name to set
      */
     public void setName(String value) {
@@ -1086,10 +1084,10 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the "nice" display name of this module.<p>
-     * 
+     *
      * <i>Please note:</i>It's not possible to set the modules "nice" name once the module
-     * configuration has been frozen.<p> 
-     * 
+     * configuration has been frozen.<p>
+     *
      * @param value the "nice" display name of this module to set
      */
     public void setNiceName(String value) {
@@ -1104,11 +1102,11 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the parameters of this module.<p>
-     * 
-     * 
+     *
+     *
      * <i>Please note:</i>It's not possible to set the module parameters once the module
      * configuration has been frozen.<p>
-     * 
+     *
      * @param parameters the module parameters to set
      */
     public void setParameters(SortedMap<String, String> parameters) {
@@ -1119,11 +1117,11 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the resources of this module.<p>
-     * 
-     * 
+     *
+     *
      * <i>Please note:</i>It's not possible to set the module resources once the module
      * configuration has been frozen.<p>
-     * 
+     *
      * @param value the module resources to set
      */
     public void setResources(List<String> value) {
@@ -1144,11 +1142,11 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the user who installed of this module.<p>
-     * 
-     * 
+     *
+     *
      * <i>Please note:</i>It's not possible to set the user installed once the module
      * configuration has been frozen.<p>
-     * 
+     *
      * @param value the user who installed this module
      */
     public void setUserInstalled(String value) {
@@ -1159,7 +1157,7 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Checks if this modules configuration is frozen.<p>
-     * 
+     *
      * @throws CmsIllegalArgumentException in case the configuration is already frozen
      */
     protected void checkFrozen() throws CmsIllegalArgumentException {
@@ -1171,10 +1169,10 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Initializes this module, also freezing the module configuration.<p>
-     * 
+     *
      * @param cms an initialized OpenCms user context
-     * 
-     * @throws CmsRoleViolationException if the given users does not have the <code>{@link CmsRole#DATABASE_MANAGER}</code> role 
+     *
+     * @throws CmsRoleViolationException if the given users does not have the <code>{@link CmsRole#DATABASE_MANAGER}</code> role
      */
     protected void initialize(CmsObject cms) throws CmsRoleViolationException {
 
@@ -1188,7 +1186,7 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Sets the module action instance for this module.<p>
-     * 
+     *
      * @param actionInstance the module action instance for this module
      */
     /*package*/void setActionInstance(I_CmsModuleAction actionInstance) {
@@ -1200,10 +1198,10 @@ public class CmsModule implements Comparable<CmsModule> {
     /**
      * Resolves the module property "additionalresources" to the resource list and
      * vice versa.<p>
-     * 
-     * This "special" module property is required as long as we do not have a new 
-     * GUI for editing of module resource entries. Once we have the new GUI, the 
-     * handling of "additionalresources" will be moved to the import of the module 
+     *
+     * This "special" module property is required as long as we do not have a new
+     * GUI for editing of module resource entries. Once we have the new GUI, the
+     * handling of "additionalresources" will be moved to the import of the module
      * and done only if the imported module is a 5.0 module.<p>
      */
     private void initOldAdditionalResources() {
@@ -1230,9 +1228,9 @@ public class CmsModule implements Comparable<CmsModule> {
 
     /**
      * Checks if two objects are either both null, or equal.<p>
-     * 
+     *
      * @param a the first object to check
-     * @param b the second object to check 
+     * @param b the second object to check
      * @return true if the two object are either both null, or equal
      */
     private boolean isEqual(Object a, Object b) {

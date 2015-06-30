@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A specific bean holding all info to be displayed in the categories tab.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializable {
@@ -64,7 +64,7 @@ public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializa
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param category the server-side category
      */
     public CmsCategoryBean(CmsCategory category) {
@@ -80,7 +80,7 @@ public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializa
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param categoryTreeEntry the category tree entry to copy
      */
     public CmsCategoryBean(CmsCategoryTreeEntry categoryTreeEntry) {
@@ -97,15 +97,21 @@ public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializa
 
     /**
      * The constructor.<p>
-     * 
-     * @param id the category id 
-     * @param title the title to set 
+     *
+     * @param id the category id
+     * @param title the title to set
      * @param description the subtitle to set
      * @param path the category path
      * @param basePath the category base path
      * @param rootPath the category root path
      */
-    public CmsCategoryBean(CmsUUID id, String title, String description, String path, String basePath, String rootPath) {
+    public CmsCategoryBean(
+        CmsUUID id,
+        String title,
+        String description,
+        String path,
+        String basePath,
+        String rootPath) {
 
         m_id = id;
         m_title = title;
@@ -175,7 +181,7 @@ public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializa
 
     /**
      * Returns the category site path.<p>
-     * 
+     *
      * @return the category site path
      */
     public String getSitePath() {
@@ -195,9 +201,9 @@ public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializa
 
     /**
      * Returns if the category matches the given filter.<p>
-     * 
+     *
      * @param filter the filter to match
-     * 
+     *
      * @return <code>true</code> if the gallery matches the given filter.<p>
      */
     public boolean matchesFilter(String filter) {
@@ -228,7 +234,7 @@ public class CmsCategoryBean implements I_CmsHasTitle, I_CmsHasPath, IsSerializa
 
     /**
      * Sets the category site path.<p>
-     * 
+     *
      * @param sitePath category site path
      */
     public void setSitePath(String sitePath) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,8 +49,8 @@ import org.dom4j.Node;
 
 /**
  * Adds the availability context menu node.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsXmlAddAvailabilityContextMenu extends A_CmsXmlWorkplace {
 
@@ -105,7 +105,8 @@ public class CmsXmlAddAvailabilityContextMenu extends A_CmsXmlWorkplace {
 
         // /opencms/workplace/explorertypes
         return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
-            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
+            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(
+                CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
     }
 
     /**
@@ -138,7 +139,7 @@ public class CmsXmlAddAvailabilityContextMenu extends A_CmsXmlWorkplace {
             xp.append("='commons/${res}.jsp']");
             m_xpaths = new ArrayList<String>();
             // ${etype}: folder, imagegallery, xmlcontent, xmlpage, plain, image, jsp, binary, XMLTemplate
-            // ${res}: availability, undochanges, undelete 
+            // ${res}: availability, undochanges, undelete
             Map<String, String> subs = new HashMap<String, String>();
             subs.put("${res}", "availability");
             subs.put("${etype}", CmsResourceTypeFolder.getStaticTypeName());

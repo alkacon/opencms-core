@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,7 +59,7 @@ public class CmsReplaceHandler implements I_CmsUploadButtonHandler {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param structureId the structure id of the resource to replace
      */
     public CmsReplaceHandler(CmsUUID structureId) {
@@ -76,7 +76,8 @@ public class CmsReplaceHandler implements I_CmsUploadButtonHandler {
         fileInput.getElement().getStyle().setFontSize(200, Unit.PX);
         fileInput.setAllowMultipleFiles(false);
         fileInput.setName("replace");
-        fileInput.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().uploadFileInput());
+        fileInput.addStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().uploadFileInput());
     }
 
     /**
@@ -104,7 +105,7 @@ public class CmsReplaceHandler implements I_CmsUploadButtonHandler {
 
     /**
      * Sets the dialog close handler.<p>
-     * 
+     *
      * @param closeHandler the close handler
      */
     public void setCloseHandler(CloseHandler<PopupPanel> closeHandler) {

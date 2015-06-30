@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,8 +50,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides a widget for an extended image selection using the advanced gallery dialog.<p>
- * 
- * @since 7.5.0 
+ *
+ * @since 7.5.0
  */
 public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
 
@@ -87,7 +87,7 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
 
     /**
      * Creates an image widget with the specified configuration options.<p>
-     * 
+     *
      * @param configuration the configuration (possible options) for the image widget
      */
     public CmsVfsImageWidget(String configuration) {
@@ -147,10 +147,16 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
         result.append("</td>");
 
         result.append(widgetDialog.dialogHorizontalSpacer(10));
-        result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+        result.append(
+            "<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
 
-        result.append(widgetDialog.button(getOpenGalleryCall(cms, widgetDialog, param, idHash), null, getGalleryName()
-            + "gallery", Messages.getButtonName(getGalleryName()), widgetDialog.getButtonStyle()));
+        result.append(
+            widgetDialog.button(
+                getOpenGalleryCall(cms, widgetDialog, param, idHash),
+                null,
+                getGalleryName() + "gallery",
+                Messages.getButtonName(getGalleryName()),
+                widgetDialog.getButtonStyle()));
 
         // create preview button
         String previewClass = "hide";
@@ -164,12 +170,13 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
         result.append(id);
         result.append("\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-        result.append(widgetDialog.button(
-            getOpenPreviewCall(widgetDialog, PREFIX_IMAGE + param.getId()),
-            null,
-            "preview.png",
-            Messages.GUI_BUTTON_PREVIEW_0,
-            widgetDialog.getButtonStyle()));
+        result.append(
+            widgetDialog.button(
+                getOpenPreviewCall(widgetDialog, PREFIX_IMAGE + param.getId()),
+                null,
+                "preview.png",
+                Messages.GUI_BUTTON_PREVIEW_0,
+                widgetDialog.getButtonStyle()));
         result.append("</tr></table></td>");
 
         result.append("</tr></table></td>");
@@ -441,8 +448,8 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
                 currentElement.append("%3F__scale%3D'+document.getElementById('");
                 currentElement.append(PREFIX_SCALE).append(param.getId()).append("').getAttribute('value')+'");
                 currentElement.append("%26format%3D'+escape(document.getElementById('").append(PREFIX_FORMAT).append(
-                    param.getId()).append("')[document.getElementById('").append(PREFIX_FORMAT).append(param.getId()).append(
-                    "').selectedIndex].value)+'");
+                    param.getId()).append("')[document.getElementById('").append(PREFIX_FORMAT).append(
+                        param.getId()).append("').selectedIndex].value)+'");
             }
         }
         result.put(I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT, currentElement.toString());
@@ -451,15 +458,15 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
 
     /**
      * Returns the currently selected value of the select widget.<p>
-     * 
-     * If a value is found in the given parameter, this is used. Otherwise 
+     *
+     * If a value is found in the given parameter, this is used. Otherwise
      * the default value of the select options are used. If there is neither a parameter value
-     * nor a default value, <code>null</code> is returned.<p> 
-     * 
+     * nor a default value, <code>null</code> is returned.<p>
+     *
      * @param cms the current users OpenCms context
      * @param selectOptions the available select options
      * @param currentValue the current value that is selected
-     * 
+     *
      * @return the currently selected value of the select widget
      */
     protected String getSelectedValue(CmsObject cms, List<CmsSelectWidgetOption> selectOptions, String currentValue) {

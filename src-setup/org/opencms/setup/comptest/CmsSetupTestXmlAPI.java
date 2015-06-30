@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,8 +33,8 @@ import org.dom4j.io.SAXReader;
 
 /**
  * Test for the XML API.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsSetupTestXmlAPI implements I_CmsSetupTest {
 
@@ -67,17 +67,19 @@ public class CmsSetupTestXmlAPI implements I_CmsSetupTest {
 
         if (exc == null) {
             testResult.setResult("passed");
-            testResult.setHelp("OpenCms requires Xerces version 2 to run. Usually this should be available as part of the servlet environment.");
+            testResult.setHelp(
+                "OpenCms requires Xerces version 2 to run. Usually this should be available as part of the servlet environment.");
             testResult.setGreen();
         } else {
             testResult.setResult("not passed");
             testResult.setRed();
-            testResult.setInfo("OpenCms requires Xerces XML API to be configured. "
-                + "Be sure to set following Java System parameters:<br><pre>"
-                + "javax.xml.parsers.DocumentBuilderFactory=org.apache.xerces.jaxp.DocumentBuilderFactoryImpl\n"
-                + "javax.xml.parsers.SAXParserFactory=org.apache.xerces.jaxp.SAXParserFactoryImpl\n"
-                + "javax.xml.transform.TransformerFactory=org.apache.xalan.processor.TransformerFactoryImpl\n"
-                + "org.xml.sax.driver=org.apache.xerces.parsers.SAXParser</pre>");
+            testResult.setInfo(
+                "OpenCms requires Xerces XML API to be configured. "
+                    + "Be sure to set following Java System parameters:<br><pre>"
+                    + "javax.xml.parsers.DocumentBuilderFactory=org.apache.xerces.jaxp.DocumentBuilderFactoryImpl\n"
+                    + "javax.xml.parsers.SAXParserFactory=org.apache.xerces.jaxp.SAXParserFactoryImpl\n"
+                    + "javax.xml.transform.TransformerFactory=org.apache.xalan.processor.TransformerFactoryImpl\n"
+                    + "org.xml.sax.driver=org.apache.xerces.parsers.SAXParser</pre>");
             testResult.setHelp(exc.getClass().getName() + ": " + exc.getMessage());
         }
         return testResult;

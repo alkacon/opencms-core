@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A file input field.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsFileInput extends Widget implements HasName, HasChangeHandlers {
@@ -72,7 +72,7 @@ public class CmsFileInput extends Widget implements HasName, HasChangeHandlers {
 
     /**
      * Returns an array of CmsFile objects.<p>
-     * 
+     *
      * @return an array of CmsFile objects
      */
     public CmsFileInfo[] getFiles() {
@@ -95,7 +95,7 @@ public class CmsFileInput extends Widget implements HasName, HasChangeHandlers {
 
     /**
      * Returns <code>true</code> if multiple file selection is allowed, <code>false</code> otherwise.<p>
-     * 
+     *
      * @return <code>true</code> if multiple file selection is allowed, <code>false</code> otherwise
      */
     public boolean isAllowedMultipleFiles() {
@@ -105,7 +105,7 @@ public class CmsFileInput extends Widget implements HasName, HasChangeHandlers {
 
     /**
      * Returns <code>true</code> if the input field is disabled <code>false</code> otherwise.<p>
-     * 
+     *
      * @return <code>true</code> if the input field is disabled <code>false</code> otherwise
      */
     public boolean isDisabled() {
@@ -115,7 +115,7 @@ public class CmsFileInput extends Widget implements HasName, HasChangeHandlers {
 
     /**
      * Sets the the flag for allowing multiple file selection.<p>
-     * 
+     *
      * @param allow <code>true</code> if the multiple file selection should be allowed
      */
     public void setAllowMultipleFiles(boolean allow) {
@@ -125,7 +125,7 @@ public class CmsFileInput extends Widget implements HasName, HasChangeHandlers {
 
     /**
      * Sets the disabled flag.<p>
-     * 
+     *
      * @param disabled <code>true</code> if the input field should be disabled
      */
     public void setDisabled(boolean disabled) {
@@ -143,7 +143,7 @@ public class CmsFileInput extends Widget implements HasName, HasChangeHandlers {
 
     /**
      * Returns <code>true</code> if the control supports the HTML5 FileAPI and <code>false</code> otherwise.<p>
-     *  
+     *
      * @return <code>true</code> if the control supports the HTML5 FileAPI and <code>false</code> otherwise
      */
     public boolean supportsFileAPI() {

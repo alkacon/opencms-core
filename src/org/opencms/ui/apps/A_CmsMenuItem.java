@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,7 +50,7 @@ public abstract class A_CmsMenuItem implements I_CmsMenuItem {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param labelKey the label message key
      * @param icon the icon
      */
@@ -80,9 +80,9 @@ public abstract class A_CmsMenuItem implements I_CmsMenuItem {
 
     /**
      * Returns the label for the given locale.<p>
-     * 
+     *
      * @param locale the user locale
-     * 
+     *
      * @return the label
      */
     protected String getLabel(Locale locale) {

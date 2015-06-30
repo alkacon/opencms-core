@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,9 +50,9 @@ public class CmsDynamicFunctionBeanWrapper {
 
     /**
      * Creates a new wrapper instance.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param functionBean the dynamic function bean to wrap 
+     *
+     * @param cms the CMS context to use
+     * @param functionBean the dynamic function bean to wrap
      */
     public CmsDynamicFunctionBeanWrapper(CmsObject cms, CmsDynamicFunctionBean functionBean) {
 
@@ -62,8 +62,8 @@ public class CmsDynamicFunctionBeanWrapper {
 
     /**
      * Gets the lazy map for accessing the various function formats.<p>
-     * 
-     * @return a map which allows access to the various function formats 
+     *
+     * @return a map which allows access to the various function formats
      */
     public Object getFormatFor() {
 
@@ -101,8 +101,8 @@ public class CmsDynamicFunctionBeanWrapper {
 
     /**
      * Gets the JSP file name of the wrapped dynamic function bean's main format.<p>
-     * 
-     * @return a jsp file name 
+     *
+     * @return a jsp file name
      */
     public String getJsp() {
 
@@ -116,8 +116,8 @@ public class CmsDynamicFunctionBeanWrapper {
 
     /**
      * Gets the parameters of the wrapped dynamic function bean's main format.<p>
-     * 
-     * @return the map of parameters 
+     *
+     * @return the map of parameters
      */
     public Map<String, String> getParam() {
 
@@ -126,8 +126,8 @@ public class CmsDynamicFunctionBeanWrapper {
 
     /**
      * Gets the parameters of the wrapped dynamic function bean's main format.<p>
-     * 
-     * @return the map of parameters 
+     *
+     * @return the map of parameters
      */
     public Map<String, String> getParameters() {
 

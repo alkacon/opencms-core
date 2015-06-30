@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,9 +51,9 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides a report for exporting modules.<p> 
- * 
- * @since 6.0.0 
+ * Provides a report for exporting modules.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsModulesListExportReport extends A_CmsListReport {
 
@@ -65,7 +65,7 @@ public class CmsModulesListExportReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsModulesListExportReport(CmsJspActionElement jsp) {
@@ -75,7 +75,7 @@ public class CmsModulesListExportReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -87,7 +87,7 @@ public class CmsModulesListExportReport extends A_CmsListReport {
 
     /**
      * Gets the module parameter.<p>
-     * 
+     *
      * @return the module parameter
      */
     public String getParamModule() {
@@ -95,8 +95,8 @@ public class CmsModulesListExportReport extends A_CmsListReport {
         return m_paramModule;
     }
 
-    /** 
-     * 
+    /**
+     *
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
     @Override
@@ -107,7 +107,7 @@ public class CmsModulesListExportReport extends A_CmsListReport {
         return exportThread;
     }
 
-    /** 
+    /**
      * Sets the module parameter.<p>
      * @param paramModule the module parameter
      */
@@ -173,9 +173,10 @@ public class CmsModulesListExportReport extends A_CmsListReport {
         moduleExportHandler.setFileName(filename);
         moduleExportHandler.setModuleName(moduleName.replace('\\', '/'));
         moduleExportHandler.setAdditionalResources(resources);
-        moduleExportHandler.setDescription(Messages.get().getBundle(getLocale()).key(
-            Messages.GUI_MODULES_LIST_EXPORT_REPORT_HANDLER_NAME_1,
-            moduleExportHandler.getModuleName()));
+        moduleExportHandler.setDescription(
+            Messages.get().getBundle(getLocale()).key(
+                Messages.GUI_MODULES_LIST_EXPORT_REPORT_HANDLER_NAME_1,
+                moduleExportHandler.getModuleName()));
 
         return moduleExportHandler;
     }

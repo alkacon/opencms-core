@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ public class TestParameterConfiguration extends OpenCmsTestCase {
 
     /**
      * Tests escaping and unescaping values in the parameter configuration.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testEscapeUnescapeParameterConfiguration() throws Exception {
@@ -63,7 +63,7 @@ public class TestParameterConfiguration extends OpenCmsTestCase {
 
     /**
      * Test merging the parameter configuration.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testMergeParameterConfiguration() throws Exception {
@@ -91,7 +91,7 @@ public class TestParameterConfiguration extends OpenCmsTestCase {
 
     /**
      * Test reading the parameter configuration.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testReadParameterConfiguration() throws Exception {
@@ -124,17 +124,17 @@ public class TestParameterConfiguration extends OpenCmsTestCase {
             assertEquals("Objects for " + key + " not equal", extProp.getProperty(key), value);
         }
     }
-    
+
     /**
      * Tests the extraction of properties.
-     * 
+     *
      * @throws Exception
      */
     public void testExtractionOfPrefixedConfiguration() throws Exception {
 
         CmsParameterConfiguration config = new CmsParameterConfiguration();
 
-        config.add("a",    "value_a");
+        config.add("a", "value_a");
         config.add("a.b1", "value_a.b1");
         config.add("a.b2", "value_a.b2");
         config.add("a.b1.c1", "value_a.b1.c1"); // These three will be retrieved

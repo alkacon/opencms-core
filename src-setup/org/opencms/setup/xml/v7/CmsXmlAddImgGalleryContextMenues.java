@@ -8,7 +8,7 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,8 +44,8 @@ import org.dom4j.Node;
 
 /**
  * Adds the new rename and comment context menues for image galleries.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsXmlAddImgGalleryContextMenues extends A_CmsXmlWorkplace {
 
@@ -101,23 +101,32 @@ public class CmsXmlAddImgGalleryContextMenues extends A_CmsXmlWorkplace {
             }
         } else {
             if (node == null) {
-                CmsSetupXmlHelper.setValue(document, xpath
-                    + "/"
-                    + CmsWorkplaceConfiguration.N_DEFAULTPROPERTIES
-                    + "/@"
-                    + I_CmsXmlConfiguration.A_ENABLED, Boolean.TRUE.toString());
-                CmsSetupXmlHelper.setValue(document, xpath
-                    + "/"
-                    + CmsWorkplaceConfiguration.N_DEFAULTPROPERTIES
-                    + "/@"
-                    + CmsWorkplaceConfiguration.A_SHOWNAVIGATION, Boolean.TRUE.toString());
-                CmsSetupXmlHelper.setValue(document, xpath
-                    + "/"
-                    + CmsWorkplaceConfiguration.N_DEFAULTPROPERTIES
-                    + "[1]/"
-                    + I_CmsXmlConfiguration.N_PROPERTY
-                    + "/@"
-                    + I_CmsXmlConfiguration.A_NAME, CmsPropertyDefinition.PROPERTY_TITLE);
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath
+                        + "/"
+                        + CmsWorkplaceConfiguration.N_DEFAULTPROPERTIES
+                        + "/@"
+                        + I_CmsXmlConfiguration.A_ENABLED,
+                    Boolean.TRUE.toString());
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath
+                        + "/"
+                        + CmsWorkplaceConfiguration.N_DEFAULTPROPERTIES
+                        + "/@"
+                        + CmsWorkplaceConfiguration.A_SHOWNAVIGATION,
+                    Boolean.TRUE.toString());
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath
+                        + "/"
+                        + CmsWorkplaceConfiguration.N_DEFAULTPROPERTIES
+                        + "[1]/"
+                        + I_CmsXmlConfiguration.N_PROPERTY
+                        + "/@"
+                        + I_CmsXmlConfiguration.A_NAME,
+                    CmsPropertyDefinition.PROPERTY_TITLE);
 
                 xpath += "/" + CmsWorkplaceConfiguration.N_CONTEXTMENU;
                 setMenuEntry(document, xpath, "explorer.context.lock", "commons/lock.jsp", "d d aaaa dddd dddd", "10");
@@ -135,14 +144,17 @@ public class CmsXmlAddImgGalleryContextMenues extends A_CmsXmlWorkplace {
                     "commons/unlock.jsp",
                     "d d dddd aaaa dddd",
                     "30");
-                CmsSetupXmlHelper.setValue(document, xpath
-                    + "/"
-                    + CmsWorkplaceConfiguration.N_SEPARATOR
-                    + "[@"
-                    + I_CmsXmlConfiguration.A_ORDER
-                    + "='40']"
-                    + "/@"
-                    + I_CmsXmlConfiguration.A_ORDER, "40");
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath
+                        + "/"
+                        + CmsWorkplaceConfiguration.N_SEPARATOR
+                        + "[@"
+                        + I_CmsXmlConfiguration.A_ORDER
+                        + "='40']"
+                        + "/@"
+                        + I_CmsXmlConfiguration.A_ORDER,
+                    "40");
                 setMenuEntry(
                     document,
                     xpath,
@@ -157,14 +169,17 @@ public class CmsXmlAddImgGalleryContextMenues extends A_CmsXmlWorkplace {
                     "commons/publishresource.jsp",
                     "d d aaaa aaaa dddd",
                     "60");
-                CmsSetupXmlHelper.setValue(document, xpath
-                    + "/"
-                    + CmsWorkplaceConfiguration.N_SEPARATOR
-                    + "[@"
-                    + I_CmsXmlConfiguration.A_ORDER
-                    + "='70']"
-                    + "/@"
-                    + I_CmsXmlConfiguration.A_ORDER, "70");
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath
+                        + "/"
+                        + CmsWorkplaceConfiguration.N_SEPARATOR
+                        + "[@"
+                        + I_CmsXmlConfiguration.A_ORDER
+                        + "='70']"
+                        + "/@"
+                        + I_CmsXmlConfiguration.A_ORDER,
+                    "70");
                 setMenuEntry(
                     document,
                     xpath,
@@ -172,14 +187,17 @@ public class CmsXmlAddImgGalleryContextMenues extends A_CmsXmlWorkplace {
                     "commons/opengallery.jsp",
                     "d d iiii aaai dddd",
                     "80");
-                CmsSetupXmlHelper.setValue(document, xpath
-                    + "/"
-                    + CmsWorkplaceConfiguration.N_SEPARATOR
-                    + "[@"
-                    + I_CmsXmlConfiguration.A_ORDER
-                    + "='100']"
-                    + "/@"
-                    + I_CmsXmlConfiguration.A_ORDER, "100");
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath
+                        + "/"
+                        + CmsWorkplaceConfiguration.N_SEPARATOR
+                        + "[@"
+                        + I_CmsXmlConfiguration.A_ORDER
+                        + "='100']"
+                        + "/@"
+                        + I_CmsXmlConfiguration.A_ORDER,
+                    "100");
                 setMenuEntry(document, xpath, "explorer.context.copy", "commons/copy.jsp", "d d iiii aaai dddd", "150");
                 setMenuEntry(document, xpath, "explorer.context.move", "commons/move.jsp", "d d iiii aaai dddd", "170");
                 setMenuEntry(
@@ -217,14 +235,17 @@ public class CmsXmlAddImgGalleryContextMenues extends A_CmsXmlWorkplace {
                     "commons/undelete.jsp",
                     "d d ddda ddda dddd",
                     "220");
-                CmsSetupXmlHelper.setValue(document, xpath
-                    + "/"
-                    + CmsWorkplaceConfiguration.N_SEPARATOR
-                    + "[@"
-                    + I_CmsXmlConfiguration.A_ORDER
-                    + "='240']"
-                    + "/@"
-                    + I_CmsXmlConfiguration.A_ORDER, "240");
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath
+                        + "/"
+                        + CmsWorkplaceConfiguration.N_SEPARATOR
+                        + "[@"
+                        + I_CmsXmlConfiguration.A_ORDER
+                        + "='240']"
+                        + "/@"
+                        + I_CmsXmlConfiguration.A_ORDER,
+                    "240");
                 setMenuEntry(
                     document,
                     xpath,
@@ -253,14 +274,17 @@ public class CmsXmlAddImgGalleryContextMenues extends A_CmsXmlWorkplace {
                     "commons/chnav.jsp",
                     "d d iiii aaai dddd",
                     "310");
-                CmsSetupXmlHelper.setValue(document, xpath
-                    + "/"
-                    + CmsWorkplaceConfiguration.N_SEPARATOR
-                    + "[@"
-                    + I_CmsXmlConfiguration.A_ORDER
-                    + "='340']"
-                    + "/@"
-                    + I_CmsXmlConfiguration.A_ORDER, "340");
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath
+                        + "/"
+                        + CmsWorkplaceConfiguration.N_SEPARATOR
+                        + "[@"
+                        + I_CmsXmlConfiguration.A_ORDER
+                        + "='340']"
+                        + "/@"
+                        + I_CmsXmlConfiguration.A_ORDER,
+                    "340");
                 setMenuEntry(document, xpath, "explorer.context.property", "commons/property.jsp", "", "360");
                 return true;
             }
@@ -276,7 +300,8 @@ public class CmsXmlAddImgGalleryContextMenues extends A_CmsXmlWorkplace {
 
         // /opencms/workplace/explorertypes
         return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
-            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
+            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(
+                CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
     }
 
     /**

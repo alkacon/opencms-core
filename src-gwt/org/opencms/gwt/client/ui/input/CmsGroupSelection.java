@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,16 +55,16 @@ import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * Basic group selection.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsGroupSelection extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /**
      * Event preview handler.<p>
-     * 
+     *
      * To be used while popup open.<p>
      */
     protected class CloseEventPreviewHandler implements NativePreviewHandler {
@@ -148,8 +148,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /**
      * Constructor.<p>
-     * 
-     * @param iconImage the image of the icon shown in the 
+     *
+     * @param iconImage the image of the icon shown in the
 
      */
     public CmsGroupSelection(String iconImage) {
@@ -165,7 +165,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
             public void onBlur(BlurEvent event) {
 
-                if ((m_selectionInput.m_textbox.getValue().length() * 6.88) > m_selectionInput.m_textbox.getOffsetWidth()) {
+                if ((m_selectionInput.m_textbox.getValue().length()
+                    * 6.88) > m_selectionInput.m_textbox.getOffsetWidth()) {
                     setTitle(m_selectionInput.m_textbox.getValue());
                 }
                 m_selectionInput.showFader();
@@ -247,7 +248,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /**
      * Returns the text contained in the text area.<p>
-     * 
+     *
      * @return the text in the text area
      */
     public String getText() {
@@ -257,7 +258,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /**
      * Returns the text box container of this widget.<p>
-     * 
+     *
      * @return the text box container
      */
     public CmsSelectionInput getTextAreaContainer() {
@@ -307,8 +308,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /**
      * Sets the value of the widget.<p>
-     * 
-     * @param value the new value 
+     *
+     * @param value the new value
      */
     public void setFormValue(Object value) {
 
@@ -333,7 +334,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /**
      * Sets the name of the input field.<p>
-     * 
+     *
      * @param name of the input field
      * */
     public void setName(String name) {
@@ -344,11 +345,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /**
      * Sets the parameters for the popup.<p>
-     * 
-     * @param flags the flaq parameter 
+     *
+     * @param flags the flaq parameter
      * @param ouFqn the ouFqn parameter
      * @param userName the user Name parameter
-     * 
+     *
      * */
     public void setParameter(Integer flags, String ouFqn, String userName) {
 
@@ -359,7 +360,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /**
      * Sets the text in the text area.<p>
-     * 
+     *
      * @param text the new text
      */
     public void setText(String text) {
@@ -378,8 +379,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /**
      * Creates the URL for the gallery dialog IFrame.<p>
-     * 
-     * @return the URL for the gallery dialog IFrame 
+     *
+     * @return the URL for the gallery dialog IFrame
      */
     protected String buildGalleryUrl() {
 
@@ -403,7 +404,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /**
      * Opens the Group selection.
-     * 
+     *
      * @param url the url of the popup
      * @param title the title of the popup
      * */
@@ -421,7 +422,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /**
      * Sets the widget value and fires the change event if necessary.<p>
-     * 
+     *
      * @param value the value to set
      */
     private void setValueFromNative(String value) {

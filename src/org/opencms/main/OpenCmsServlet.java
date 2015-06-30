@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,30 +48,30 @@ import org.apache.commons.logging.Log;
 
 /**
  * This the main servlet of the OpenCms system.<p>
- * 
+ *
  * From here, all operations that are results of HTTP requests are invoked.
  * Any incoming request is handled in multiple steps:
- * 
- * <ol><li>The requesting <code>{@link org.opencms.file.CmsUser}</code> is authenticated 
+ *
+ * <ol><li>The requesting <code>{@link org.opencms.file.CmsUser}</code> is authenticated
  * and a <code>{@link org.opencms.file.CmsObject}</code> with this users context information
  * is created. This <code>{@link org.opencms.file.CmsObject}</code> is used to access all functions of OpenCms, limited by
  * the authenticated users permissions. If the user is not identified, it is set to the default user, usually named "Guest".</li>
- * 
- * <li>The requested <code>{@link org.opencms.file.CmsResource}</code> is loaded into OpenCms and depending on its type 
- * (and the users persmissions to display or modify it), 
+ *
+ * <li>The requested <code>{@link org.opencms.file.CmsResource}</code> is loaded into OpenCms and depending on its type
+ * (and the users persmissions to display or modify it),
  * it is send to one of the OpenCms <code>{@link org.opencms.loader.I_CmsResourceLoader}</code> implementations
  * do be processed.</li>
- * 
+ *
  * <li>
- * The <code>{@link org.opencms.loader.I_CmsResourceLoader}</code> will then decide what to do with the 
- * contents of the requested <code>{@link org.opencms.file.CmsResource}</code>. 
- * In case of a JSP resource the JSP handling mechanism is invoked with the <code>{@link org.opencms.loader.CmsJspLoader}</code>, 
+ * The <code>{@link org.opencms.loader.I_CmsResourceLoader}</code> will then decide what to do with the
+ * contents of the requested <code>{@link org.opencms.file.CmsResource}</code>.
+ * In case of a JSP resource the JSP handling mechanism is invoked with the <code>{@link org.opencms.loader.CmsJspLoader}</code>,
  * in case of an image (or another static resource) this will be returned by the <code>{@link org.opencms.loader.CmsDumpLoader}</code>
  * etc.
  * </li></ol>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.main.CmsShell
  * @see org.opencms.file.CmsObject
  * @see org.opencms.main.OpenCms
@@ -113,7 +113,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
     /**
      * OpenCms servlet main request handling method.<p>
-     * 
+     *
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
@@ -144,20 +144,20 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             // this is a request to an OpenCms handler URI
             invokeHandler(req, res);
         } else if (path.endsWith(HANDLE_GWT)) {
-            // handle GWT rpc services  
+            // handle GWT rpc services
             String serviceName = CmsResource.getName(path);
             serviceName = serviceName.substring(0, serviceName.length() - HANDLE_GWT.length());
             OpenCmsCore.getInstance().invokeGwtService(serviceName, req, res, getServletConfig());
         } else {
-            // standard request to a URI in the OpenCms VFS 
+            // standard request to a URI in the OpenCms VFS
             OpenCmsCore.getInstance().showResource(req, res);
         }
     }
 
     /**
-     * OpenCms servlet POST request handling method, 
+     * OpenCms servlet POST request handling method,
      * will just call {@link #doGet(HttpServletRequest, HttpServletResponse)}.<p>
-     * 
+     *
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
@@ -196,7 +196,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                     cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
                     exportData = OpenCms.getStaticExportManager().getExportData(req, cms);
                 } catch (CmsException e) {
-                    // unlikely to happen 
+                    // unlikely to happen
                     if (LOG.isWarnEnabled()) {
                         LOG.warn(
                             Messages.get().getBundle().key(
@@ -235,7 +235,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
         super.init(config);
         try {
-            // upgrade the runlevel 
+            // upgrade the runlevel
             // usually this should have already been done by the context listener
             // however, after a fresh install / setup this will be done from here
             OpenCmsCore.getInstance().upgradeRunlevel(config.getServletContext());
@@ -248,7 +248,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 if (CmsServletContainerSettings.isServletThrowsException()) {
                     throw new ServletException(e.getMessage());
                 } else {
-                    // this is needed since some servlet containers does not like the servlet to throw exceptions, 
+                    // this is needed since some servlet containers does not like the servlet to throw exceptions,
                     // like BEA WLS 9.x and Resin
                     LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_GENERIC_0), e);
                 }
@@ -260,9 +260,9 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
     /**
      * Manages requests to internal OpenCms request handlers.<p>
-     * 
+     *
      * @param req the current request
-     * @param res the current response 
+     * @param res the current response
      * @throws ServletException in case an error occurs
      * @throws ServletException in case an error occurs
      * @throws IOException in case an error occurs
@@ -279,10 +279,10 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     }
 
     /**
-     * Displays an error code handler loaded from the OpenCms VFS, 
+     * Displays an error code handler loaded from the OpenCms VFS,
      * or if such a page does not exist,
      * displays the default servlet container error code.<p>
-     *  
+     *
      * @param req the current request
      * @param res the current response
      * @param errorCode the error code to display
@@ -292,11 +292,12 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     protected void openErrorHandler(HttpServletRequest req, HttpServletResponse res, int errorCode)
     throws IOException, ServletException {
 
-        String handlerUri = (new StringBuffer(64)).append(HANDLE_VFS_PATH).append(errorCode).append(HANDLE_VFS_SUFFIX).toString();
+        String handlerUri = (new StringBuffer(64)).append(HANDLE_VFS_PATH).append(errorCode).append(
+            HANDLE_VFS_SUFFIX).toString();
         CmsObject cms;
         CmsFile file;
         try {
-            // create OpenCms context, this will be set in the root site            
+            // create OpenCms context, this will be set in the root site
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
             cms.getRequestContext().setUri(handlerUri);
             cms.getRequestContext().setSecureRequest(OpenCms.getSiteManager().usesSecureSite(req));

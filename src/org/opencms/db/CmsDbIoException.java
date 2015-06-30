@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import org.opencms.main.CmsException;
 
 /**
  * Signals that an IO exception occurred when reading from or writing to the OpenCms database.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsDbIoException extends CmsDbException {
@@ -42,7 +42,7 @@ public class CmsDbIoException extends CmsDbException {
 
     /**
      * Creates a new localized Exception.<p>
-     * 
+     *
      * @param container the localized message container to use
      */
     public CmsDbIoException(CmsMessageContainer container) {
@@ -52,7 +52,7 @@ public class CmsDbIoException extends CmsDbException {
 
     /**
      * Creates a new localized Exception that also containes a root cause.<p>
-     * 
+     *
      * @param container the localized message container to use
      * @param cause the Exception root cause
      */

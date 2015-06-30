@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * List of already finished publish jobs.<p>
- * 
+ *
  * @since 6.5.5
  */
 public class CmsPublishHistory {
@@ -60,7 +60,7 @@ public class CmsPublishHistory {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param publishEngine the publish engine instance
      */
     protected CmsPublishHistory(final CmsPublishEngine publishEngine) {
@@ -70,15 +70,16 @@ public class CmsPublishHistory {
 
     /**
      * Returns (and initializes) the queue.<p>
-     * 
+     *
      * @param size the history size
-     * 
+     *
      * @return the queue buffer
      */
     public static Buffer getQueue(int size) {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_PUBLISH_HISTORY_SIZE_SET_1, new Integer(size)));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_PUBLISH_HISTORY_SIZE_SET_1, new Integer(size)));
         }
 
         return BufferUtils.synchronizedBuffer(TypedBuffer.decorate(new CircularFifoBuffer(size) {
@@ -88,7 +89,7 @@ public class CmsPublishHistory {
 
             /**
              * Called when the queue is full to remove the oldest element.<p>
-             * 
+             *
              * @see org.apache.commons.collections.buffer.BoundedFifoBuffer#remove()
              */
             @Override
@@ -109,9 +110,9 @@ public class CmsPublishHistory {
 
     /**
      * Adds the given publish job to the list.<p>
-     * 
+     *
      * @param publishJob the publish job object to add
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected void add(CmsPublishJobInfoBean publishJob) throws CmsException {
@@ -138,7 +139,7 @@ public class CmsPublishHistory {
 
     /**
      * Returns an unmodifiable list representation of this list.<p>
-     * 
+     *
      * @return a list of {@link CmsPublishJobFinished} objects
      */
     protected List<CmsPublishJobFinished> asList() {
@@ -154,7 +155,7 @@ public class CmsPublishHistory {
     }
 
     /**
-     * Initializes the internal FIFO queue with publish jobs from the database.<p> 
+     * Initializes the internal FIFO queue with publish jobs from the database.<p>
      */
     protected void initialize() {
 
@@ -181,9 +182,9 @@ public class CmsPublishHistory {
 
     /**
      * Removes the given job from the list.<p>
-     * 
+     *
      * @param publishJob the publish job to remove
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected void remove(CmsPublishJobInfoBean publishJob) throws CmsException {

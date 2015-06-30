@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,14 +44,14 @@ import com.google.gwt.user.client.ui.HTML;
 
 /**
  * The result list item widget.<p>
- * 
+ *
  * Enabling the image tile view.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsResultItemWidget extends CmsListItemWidget {
 
-    /** 
+    /**
      * Widget containing the image(s) for a result list item..<p>
      */
     public class ImageTile extends HTML implements I_CmsDragHandle {
@@ -61,15 +61,15 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
         /**
          * Creates a new instance with the given content.<p>
-         * 
-         * @param content the HTML content 
+         *
+         * @param content the HTML content
          */
         public ImageTile(String content) {
 
             super(content);
         }
 
-        /** 
+        /**
          * @see org.opencms.gwt.client.dnd.I_CmsDragHandle#getDraggable()
          */
         public I_CmsDraggable getDraggable() {
@@ -79,8 +79,8 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
         /**
          * Sets the draggable widget.<p>
-         * 
-         * @param draggable the draggable widget 
+         *
+         * @param draggable the draggable widget
          */
         public void setDraggable(I_CmsDraggable draggable) {
 
@@ -103,7 +103,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param infoBean the resource info bean
      */
     public CmsResultItemWidget(CmsResultItemBean infoBean) {
@@ -122,8 +122,10 @@ public class CmsResultItemWidget extends CmsListItemWidget {
             }
             String timeParam = "&time=" + System.currentTimeMillis();
             // insert tile view image div
-            ImageTile imageTile = new ImageTile("<img src=\"" + src + getBigImageScaleParam()
-            // add time stamp to override browser image caching
+            ImageTile imageTile = new ImageTile("<img src=\""
+                + src
+                + getBigImageScaleParam()
+                // add time stamp to override browser image caching
                 + timeParam
                 + "\" class=\""
                 + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().bigImage()
@@ -148,10 +150,10 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     }
 
-    /** 
+    /**
      * Gets the image tile.<p>
-     * 
-     * @return the image tile 
+     *
+     * @return the image tile
      */
     public ImageTile getImageTile() {
 
@@ -160,7 +162,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     /**
      * Indicates wther there is a tile view available for this widget.<p>
-     * 
+     *
      * @return <code>true</code> if a tiled view is available
      */
     public boolean hasTileView() {
@@ -170,8 +172,8 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     /**
      * Initializes the title attribute of the subtitle line.<p>
-     * 
-     * @param subtitleTitle the value to set 
+     *
+     * @param subtitleTitle the value to set
      */
     public void setSubtitleTitle(final String subtitleTitle) {
 
@@ -199,9 +201,9 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     /**
      * Generates the HTML for the item tool-tip.<p>
-     * 
+     *
      * @param infoBean the item info
-     * 
+     *
      * @return the generated HTML
      */
     private String generateTooltipHtml(CmsListInfoBean infoBean) {
@@ -220,7 +222,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     /**
      * Returns the scale parameter for big thumbnail images.<p>
-     * 
+     *
      * @return the scale parameter
      */
     private String getBigImageScaleParam() {
@@ -234,9 +236,9 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     /**
      * Returns the scale parameter for small thumbnail images.<p>
-     * 
+     *
      * @param infoBean the resource info
-     * 
+     *
      * @return the scale parameter
      */
     private String getSmallImageScaleParam(CmsResultItemBean infoBean) {

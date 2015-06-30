@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Composite;
  * Provides a display only widget, for use on a widget dialog.<br>
  * If there is no value in the content xml, the value<br>
  * set in the configuration string of the xsd is shown.<p>
- *  
+ *
  * */
 public class CmsLocationPickerWidget extends Composite implements I_CmsEditWidget, I_HasResizeOnShow {
 
@@ -54,7 +54,7 @@ public class CmsLocationPickerWidget extends Composite implements I_CmsEditWidge
 
     /**
      * Creates a new display widget.<p>
-     * 
+     *
      * @param config The configuration string given from OpenCms XSD.
      */
     public CmsLocationPickerWidget(String config) {
@@ -81,7 +81,7 @@ public class CmsLocationPickerWidget extends Composite implements I_CmsEditWidge
 
     /**
      * Represents a value change event.<p>
-     * 
+     *
      */
     public void fireChangeEvent() {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,9 +53,9 @@ public class CmsAliasEditValidationRequest implements IsSerializable {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param originalData the original data 
-     * @param editedData the edited data  
+     *
+     * @param originalData the original data
+     * @param editedData the edited data
      * @param newEntry the new entry which has been added (may be null)
      */
     public CmsAliasEditValidationRequest(
@@ -70,8 +70,8 @@ public class CmsAliasEditValidationRequest implements IsSerializable {
 
     /**
      * Gets the edited data.<p>
-     * 
-     * @return the edited data 
+     *
+     * @return the edited data
      */
     public List<CmsAliasTableRow> getEditedData() {
 
@@ -80,7 +80,7 @@ public class CmsAliasEditValidationRequest implements IsSerializable {
 
     /**
      * Gets the new entry added by the user.<p>
-     * 
+     *
      * @return the new entry, or null if there is no new entry
      */
     public CmsAliasTableRow getNewEntry() {
@@ -90,7 +90,7 @@ public class CmsAliasEditValidationRequest implements IsSerializable {
 
     /**
      * Gets the original data list.<p>
-     * 
+     *
      * @return the original list of data
      */
     public List<CmsAliasTableRow> getOriginalData() {
@@ -100,8 +100,8 @@ public class CmsAliasEditValidationRequest implements IsSerializable {
 
     /**
      * Sets the edited data list.<p>
-     * 
-     * @param data the edited data list 
+     *
+     * @param data the edited data list
      */
     public void setEditedData(List<CmsAliasTableRow> data) {
 
@@ -109,9 +109,9 @@ public class CmsAliasEditValidationRequest implements IsSerializable {
         m_editedData.addAll(data);
     }
 
-    /** 
+    /**
      * Sets the new entry.<p>
-     * 
+     *
      * @param newEntry the new entry
      */
     public void setNewEntry(CmsAliasTableRow newEntry) {
@@ -121,8 +121,8 @@ public class CmsAliasEditValidationRequest implements IsSerializable {
 
     /**
      * Sets the original data list.<p>
-     * 
-     * @param originalData the original data list 
+     *
+     * @param originalData the original data list
      */
     public void setOriginalData(List<CmsAliasTableRow> originalData) {
 

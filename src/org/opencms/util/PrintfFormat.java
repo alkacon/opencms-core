@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,27 +28,27 @@
 //
 // (c) 2000 Sun Microsystems, Inc.
 // ALL RIGHTS RESERVED
-// 
-// License Grant-
-// 
-// 
-// Permission to use, copy, modify, and distribute this Software and its 
-// documentation for NON-COMMERCIAL or COMMERCIAL purposes and without fee is 
-// hereby granted.  
-// 
-// This Software is provided "AS IS".  All express warranties, including any 
-// implied warranty of merchantability, satisfactory quality, fitness for a 
-// particular purpose, or non-infringement, are disclaimed, except to the extent 
-// that such disclaimers are held to be legally invalid.
-// 
-// You acknowledge that Software is not designed, licensed or intended for use in 
-// the design, construction, operation or maintenance of any nuclear facility 
-// ("High Risk Activities").  Sun disclaims any express or implied warranty of 
-// fitness for such uses.  
 //
-// Please refer to the file http://www.sun.com/policies/trademarks/ for further 
-// important trademark information and to 
-// http://java.sun.com/nav/business/index.html for further important licensing 
+// License Grant-
+//
+//
+// Permission to use, copy, modify, and distribute this Software and its
+// documentation for NON-COMMERCIAL or COMMERCIAL purposes and without fee is
+// hereby granted.
+//
+// This Software is provided "AS IS".  All express warranties, including any
+// implied warranty of merchantability, satisfactory quality, fitness for a
+// particular purpose, or non-infringement, are disclaimed, except to the extent
+// that such disclaimers are held to be legally invalid.
+//
+// You acknowledge that Software is not designed, licensed or intended for use in
+// the design, construction, operation or maintenance of any nuclear facility
+// ("High Risk Activities").  Sun disclaims any express or implied warranty of
+// fitness for such uses.
+//
+// Please refer to the file http://www.sun.com/policies/trademarks/ for further
+// important trademark information and to
+// http://java.sun.com/nav/business/index.html for further important licensing
 // information for the Java Technology.
 //
 
@@ -139,7 +139,7 @@ import java.util.Vector;
  *          current position is the start of a line.
  *</td></tr>
  *<tr><td>\f</td><td>form-feed</td><td>Moves the
- *          printing position to the initial 
+ *          printing position to the initial
  *          printing position of the next logical
  *          page.
  *</td></tr>
@@ -196,7 +196,7 @@ import java.util.Vector;
  * </p>
  *<p>
  * An optional h specifies that a following d, i, o,
- * x, or X conversion character applies to a type 
+ * x, or X conversion character applies to a type
  * short argument (the argument will be promoted
  * according to the integral promotions and its value
  * converted to type short before printing).</p>
@@ -379,7 +379,7 @@ import java.util.Vector;
  *
  * <dt>s,S<dd>The argument is taken to be a string and
  *        bytes from the string are written until the
- *        end of the string or the number of bytes 
+ *        end of the string or the number of bytes
  *        indicated by the precision specification of
  *        the argument is reached.  If the precision
  *        is omitted from the argument, it is taken to
@@ -433,7 +433,7 @@ import java.util.Vector;
  *<ul>
  * <li>%c is the same as %C.
  * <li>%s is the same as %S.
- * <li>u, p, and n conversion characters. 
+ * <li>u, p, and n conversion characters.
  * <li>%ws format.
  * <li>h modifier applied to an n conversion character.
  * <li>l (ell) modifier applied to the c, n, or s
@@ -455,8 +455,8 @@ import java.util.Vector;
  * <p>
  * Most of this specification is quoted from the Unix
  * man page for the sprintf utility.</p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class PrintfFormat {
 
@@ -489,7 +489,7 @@ public class PrintfFormat {
      * only) exception is that the minimum number of
      * exponent digits is 3 instead of 2 for e and E
      * formats when the optional L is used before the
-     * e, E, g, or G conversion character.  The 
+     * e, E, g, or G conversion character.  The
      * optional L does not imply conversion to a long
      * long double.
      */
@@ -604,7 +604,7 @@ public class PrintfFormat {
          * d, i, o, u, x, or X conversions.  The number of
          * digits to appear after the radix character for
          * the e, E, and f conversions.  The maximum number
-         *  of significant digits for the g and G 
+         *  of significant digits for the g and G
          * conversions.  The maximum number of bytes to be
          * printed from a string in s and S conversions.
          */
@@ -685,14 +685,12 @@ public class PrintfFormat {
                             }
                         }
                     } else {
-                        throw new CmsIllegalArgumentException(Messages.get().container(
-                            Messages.ERR_INVALID_CONVERSION_SPEC_1,
-                            fmtArg));
+                        throw new CmsIllegalArgumentException(
+                            Messages.get().container(Messages.ERR_INVALID_CONVERSION_SPEC_1, fmtArg));
                     }
                 } else {
-                    throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_INVALID_CONVERSION_SPEC_1,
-                        fmtArg));
+                    throw new CmsIllegalArgumentException(
+                        Messages.get().container(Messages.ERR_INVALID_CONVERSION_SPEC_1, fmtArg));
                 }
             } else {
                 throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_CONTROL_STRING_START_0));
@@ -701,7 +699,7 @@ public class PrintfFormat {
 
         /**
          * Internal helper.<p>
-         * 
+         *
          * @return the result
          */
         int getArgumentPosition() {
@@ -710,8 +708,8 @@ public class PrintfFormat {
         }
 
         /**
-         * Internal helper.<p> 
-         * 
+         * Internal helper.<p>
+         *
          * @return the result
          */
         int getArgumentPositionForFieldWidth() {
@@ -721,7 +719,7 @@ public class PrintfFormat {
 
         /**
          * Internal helper.<p>
-         * 
+         *
          * @return the result
          */
         int getArgumentPositionForPrecision() {
@@ -949,10 +947,11 @@ public class PrintfFormat {
             if ((m_conversionCharacter == 's') || (m_conversionCharacter == 'S')) {
                 s2 = printSFormat(s.toString());
             } else {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
-                    "String",
-                    new Character(m_conversionCharacter)));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(
+                        Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
+                        "String",
+                        new Character(m_conversionCharacter)));
             }
             return s2;
         }
@@ -981,7 +980,7 @@ public class PrintfFormat {
 
         /**
          * Internal helper.<p>
-         * 
+         *
          * @return the result
          */
         boolean isPositionalFieldWidth() {
@@ -991,7 +990,7 @@ public class PrintfFormat {
 
         /**
          * Internal helper.<p>
-         * 
+         *
          * @return the result
          */
         boolean isPositionalPrecision() {
@@ -1000,8 +999,8 @@ public class PrintfFormat {
         }
 
         /**
-         * Internal helper.<p> 
-         * 
+         * Internal helper.<p>
+         *
          * @return the result
          */
         boolean isPositionalSpecification() {
@@ -1155,7 +1154,8 @@ public class PrintfFormat {
                         carry = ((ca1[icarry - 1] == '1')
                             || (ca1[icarry - 1] == '3')
                             || (ca1[icarry - 1] == '5')
-                            || (ca1[icarry - 1] == '7') || (ca1[icarry - 1] == '9'));
+                            || (ca1[icarry - 1] == '7')
+                            || (ca1[icarry - 1] == '9'));
                     }
                 }
             }
@@ -1191,7 +1191,7 @@ public class PrintfFormat {
          * e, E, g, or G conversion character. The optional
          * L does not imply conversion to a long long
          * double.
-         * 
+         *
          * @param x the x parameter
          * @param eChar the eChar parameter
          * @return the result
@@ -1594,7 +1594,7 @@ public class PrintfFormat {
          * The precision, if set, is the number of digits
          * to appear after the radix character.  Padding is
          * with trailing 0s.
-         * 
+         *
          * @param x the paramater
          * @return the result
          */
@@ -2357,7 +2357,7 @@ public class PrintfFormat {
          *
          * For o format, the flag character '-', means that
          * the output should be left justified within the
-         * field.  The default is to pad with blanks on the 
+         * field.  The default is to pad with blanks on the
          * left.  The '#' flag character means that the
          * output begins with a leading 0 and the precision
          * is increased by 1.
@@ -2458,7 +2458,7 @@ public class PrintfFormat {
          *
          * For o format, the flag character '-', means that
          * the output should be left justified within the
-         * field.  The default is to pad with blanks on the 
+         * field.  The default is to pad with blanks on the
          * left.  The '#' flag character means that the
          * output begins with a leading 0 and the precision
          * is increased by 1.
@@ -3095,7 +3095,7 @@ public class PrintfFormat {
 
         /**
          * Store the digits <code>n</code> in *n$ forms.
-         * 
+         *
          * @return the result
          */
         private boolean setFieldWidthArgPosition() {
@@ -3221,7 +3221,7 @@ public class PrintfFormat {
 
         /**
          * Store the digits <code>n</code> in *n$ forms.
-         * 
+         *
          * @return the result
          */
         private boolean setPrecisionArgPosition() {
@@ -3331,7 +3331,7 @@ public class PrintfFormat {
         m_dfs = new DecimalFormatSymbols(locale);
         int ePos = 0;
         ConversionSpecification sFmt = null;
-        String unCS = this.nonControl(fmtArg, 0);
+        String unCS = nonControl(fmtArg, 0);
         if (unCS != null) {
             sFmt = new ConversionSpecification();
             sFmt.setLiteral(unCS);
@@ -3384,7 +3384,7 @@ public class PrintfFormat {
             ePos = Math.min(ePos + 1, fmtArg.length());
             sFmt = new ConversionSpecification(fmtArg.substring(m_cPos, ePos));
             m_vFmt.addElement(sFmt);
-            unCS = this.nonControl(fmtArg, ePos);
+            unCS = nonControl(fmtArg, ePos);
             if (unCS != null) {
                 sFmt = new ConversionSpecification();
                 sFmt.setLiteral(unCS);

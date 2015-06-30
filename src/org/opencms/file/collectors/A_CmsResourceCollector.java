@@ -355,10 +355,11 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
     protected void checkParams() {
 
         if ((m_defaultCollectorName == null) || (m_defaultCollectorParam == null)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_COLLECTOR_DEFAULTS_INVALID_2,
-                m_defaultCollectorName,
-                m_defaultCollectorParam));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(
+                    Messages.ERR_COLLECTOR_DEFAULTS_INVALID_2,
+                    m_defaultCollectorName,
+                    m_defaultCollectorParam));
         }
     }
 

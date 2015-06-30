@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,9 +42,9 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Sitemap action used to generate the sitemap editor.<p>
- * 
+ *
  * See jsp file <tt>/system/modules/org.opencms.ade.sitemap/sitemap.jsp</tt>.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSitemapActionElement extends CmsGwtActionElement {
@@ -60,10 +60,10 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param context the JSP page context object
-     * @param req the JSP request 
-     * @param res the JSP response 
+     * @param req the JSP request
+     * @param res the JSP response
      */
     public CmsSitemapActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
@@ -106,7 +106,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
     }
 
     /**
-     * Returns the needed server data for client-side usage.<p> 
+     * Returns the needed server data for client-side usage.<p>
      *
      * @return the needed server data for client-side usage
      */
@@ -114,7 +114,9 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
 
         if (m_sitemapData == null) {
             try {
-                m_sitemapData = CmsVfsSitemapService.prefetch(getRequest(), getCmsObject().getRequestContext().getUri());
+                m_sitemapData = CmsVfsSitemapService.prefetch(
+                    getRequest(),
+                    getCmsObject().getRequestContext().getUri());
             } catch (CmsRpcException e) {
                 // ignore, should never happen, and it is already logged
             }
@@ -124,7 +126,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
 
     /**
      * Returns the editor title.<p>
-     * 
+     *
      * @return the editor title
      */
     public String getTitle() {

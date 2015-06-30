@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,15 +39,15 @@ public class CmsLoginTargetOpener extends FlowPanel {
 
     /**
      * Opens the login target for the given user name and password.<p>
-     * 
-     * @param target the login target 
-     * @param user the user 
-     * @param password the password 
+     *
+     * @param target the login target
+     * @param user the user
+     * @param password the password
      */
     public void openTarget(final String target, final String user, final String password) {
 
-        // Post a hidden form with user name and password fields, 
-        // to hopefully trigger the browser's password manager 
+        // Post a hidden form with user name and password fields,
+        // to hopefully trigger the browser's password manager
         final FormPanel form = new FormPanel("_self");
         Document doc = Document.get();
         InputElement userField = doc.createTextInputElement();

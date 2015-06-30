@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import javax.servlet.http.Part;
 
 /**
  * Very incomplete implementation of <code>HttpServletRequest</code> for testing.<p>
- * 
+ *
  */
 public class OpenCmsTestServletRequest implements HttpServletRequest {
 
@@ -324,9 +324,10 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
 
     /**
      * @see javax.servlet.ServletRequest#getRealPath(java.lang.String)
-     * 
-     * @deprecated deprecated in Java standard, but still required to implement 
+     *
+     * @deprecated deprecated in Java standard, but still required to implement
      */
+    @Deprecated
     public String getRealPath(String arg0) {
 
         throw new RuntimeException("Not implemented");
@@ -477,9 +478,10 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
 
     /**
      * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromUrl()
-     * 
+     *
      * @deprecated deprecated in Java standard, but still required to implement
      */
+    @Deprecated
     public boolean isRequestedSessionIdFromUrl() {
 
         throw new RuntimeException("Not implemented");

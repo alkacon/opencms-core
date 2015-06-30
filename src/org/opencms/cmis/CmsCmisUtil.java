@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -83,10 +83,10 @@ public final class CmsCmisUtil {
 
     /**
      * Adds an action to a set of actions if a condition is fulfilled.<p>
-     * 
-     * @param aas the set of actions 
-     * @param action the action to add 
-     * @param condition the value of the condition for adding the action 
+     *
+     * @param aas the set of actions
+     * @param action the action to add
+     * @param condition the value of the condition for adding the action
      */
     public static void addAction(Set<Action> aas, Action action, boolean condition) {
 
@@ -97,13 +97,13 @@ public final class CmsCmisUtil {
 
     /**
      * Helper method to add the dynamic properties for a resource.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param typeManager the type manager instance 
-     * @param props the properties to which the dynamic properties should be added 
-     * @param typeId the type id 
-     * @param resource the resource 
-     * @param filter the property filter 
+     *
+     * @param cms the current CMS context
+     * @param typeManager the type manager instance
+     * @param props the properties to which the dynamic properties should be added
+     * @param typeId the type id
+     * @param resource the resource
+     * @param filter the property filter
      */
     public static void addDynamicProperties(
         CmsObject cms,
@@ -130,14 +130,14 @@ public final class CmsCmisUtil {
 
     /**
      * Adds bigint property to a PropertiesImpl.<p>
-     * 
-     * 
-     * @param typeManager the type manager 
-     * @param props the properties 
-     * @param typeId the type id 
-     * @param filter the property filter string 
-     * @param id the property id 
-     * @param value the property value 
+     *
+     *
+     * @param typeManager the type manager
+     * @param props the properties
+     * @param typeId the type id
+     * @param filter the property filter string
+     * @param id the property id
+     * @param value the property value
      */
     public static void addPropertyBigInteger(
         CmsCmisTypeManager typeManager,
@@ -156,13 +156,13 @@ public final class CmsCmisUtil {
 
     /**
      * Adds a boolean property to a PropertiesImpl.<p>
-     * 
+     *
      * @param typeManager
-     * @param props the properties 
-     * @param typeId the type id 
-     * @param filter the property filter string 
-     * @param id the property id 
-     * @param value the property value 
+     * @param props the properties
+     * @param typeId the type id
+     * @param filter the property filter string
+     * @param id the property id
+     * @param value the property value
      */
     public static void addPropertyBoolean(
         CmsCmisTypeManager typeManager,
@@ -181,13 +181,13 @@ public final class CmsCmisUtil {
 
     /**
      * Adds a date/time property to a PropertiesImpl.<p>
-     * 
+     *
      * @param typeManager the type manager
-     * @param props the properties 
-     * @param typeId the type id 
-     * @param filter the property filter string 
-     * @param id the property id 
-     * @param value the property value 
+     * @param props the properties
+     * @param typeId the type id
+     * @param filter the property filter string
+     * @param id the property id
+     * @param value the property value
      */
     public static void addPropertyDateTime(
         CmsCmisTypeManager typeManager,
@@ -206,11 +206,11 @@ public final class CmsCmisUtil {
 
     /**
      * Adds the default value of property if defined.
-     *  
+     *
      * @param props the Properties object
      * @param propDef the property definition
-     *  
-     * @return true if the property could be added 
+     *
+     * @return true if the property could be added
      */
     @SuppressWarnings("unchecked")
     public static boolean addPropertyDefault(PropertiesImpl props, PropertyDefinition<?> propDef) {
@@ -262,13 +262,13 @@ public final class CmsCmisUtil {
 
     /**
      * Helper method for adding an id-valued property.<p>
-     * 
+     *
      * @param typeManager the type manager
-     * @param props the properties to add to 
-     * @param typeId the type id 
-     * @param filter the property filter 
-     * @param id the property id 
-     * @param value the property value 
+     * @param props the properties to add to
+     * @param typeId the type id
+     * @param filter the property filter
+     * @param id the property id
+     * @param value the property value
      */
     public static void addPropertyId(
         CmsCmisTypeManager typeManager,
@@ -289,13 +289,13 @@ public final class CmsCmisUtil {
 
     /**
      * Helper method for adding an id-list-valued property.<p>
-     * 
+     *
      * @param typeManager
-     * @param props the properties to add to 
-     * @param typeId the type id 
-     * @param filter the property filter 
-     * @param id the property id 
-     * @param value the property value 
+     * @param props the properties to add to
+     * @param typeId the type id
+     * @param filter the property filter
+     * @param id the property id
+     * @param value the property value
      */
     public static void addPropertyIdList(
         CmsCmisTypeManager typeManager,
@@ -314,13 +314,13 @@ public final class CmsCmisUtil {
 
     /**
      * Adds an integer property to a PropertiesImpl.<p>
-     * 
+     *
      * @param typeManager the type manager
-     * @param props the properties 
-     * @param typeId the type id 
-     * @param filter the property filter string 
-     * @param id the property id 
-     * @param value the property value 
+     * @param props the properties
+     * @param typeId the type id
+     * @param filter the property filter string
+     * @param id the property id
+     * @param value the property value
      */
     public static void addPropertyInteger(
         CmsCmisTypeManager typeManager,
@@ -335,13 +335,13 @@ public final class CmsCmisUtil {
 
     /**
      * Adds a string property to a PropertiesImpl.<p>
-     *  
+     *
      * @param typeManager
-     * @param props the properties 
-     * @param typeId the type id 
-     * @param filter the property filter string 
-     * @param id the property id 
-     * @param value the property value 
+     * @param props the properties
+     * @param typeId the type id
+     * @param filter the property filter string
+     * @param id the property id
+     * @param value the property value
      */
     public static void addPropertyString(
         CmsCmisTypeManager typeManager,
@@ -361,14 +361,14 @@ public final class CmsCmisUtil {
 
     /**
      * Checks whether a property can be added to a Properties.
-     * 
+     *
      * @param typeManager
      * @param properties the properties object
-     * @param typeId the type id 
+     * @param typeId the type id
      * @param filter the property filter
      * @param id the property id
-     *  
-     * @return true if the property should be added 
+     *
+     * @return true if the property should be added
      */
     public static boolean checkAddProperty(
         CmsCmisTypeManager typeManager,
@@ -408,8 +408,8 @@ public final class CmsCmisUtil {
 
     /**
      * Checks whether a name is a valid OpenCms resource name and throws an exception otherwise.<p>
-     * 
-     * @param name the name to check 
+     *
+     * @param name the name to check
      */
     public static void checkResourceName(String name) {
 
@@ -422,14 +422,14 @@ public final class CmsCmisUtil {
 
     /**
      * Tries to lock a resource and throws an exception if it can't be locked.<p>
-     * 
+     *
      * Returns true only if the resource wasn't already locked before.<p>
-     * 
-     * @param cms the CMS context 
-     * @param resource the resource to lock 
-     * @return true if the resource wasn't already locked 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context
+     * @param resource the resource to lock
+     * @return true if the resource wasn't already locked
+     *
+     * @throws CmsException if something goes wrong
      */
     public static boolean ensureLock(CmsObject cms, CmsResource resource) throws CmsException {
 
@@ -443,10 +443,10 @@ public final class CmsCmisUtil {
 
     /**
      * Gets a user-readable name for a principal id read from an ACE.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param principalId the principal id from the ACE  
-     * @return the name of the principle 
+     *
+     * @param cms the current CMS context
+     * @param principalId the principal id from the ACE
+     * @return the name of the principle
      */
     public static String getAcePrincipalName(CmsObject cms, CmsUUID principalId) {
 
@@ -469,10 +469,10 @@ public final class CmsCmisUtil {
 
     /**
      * Converts an OpenCms ACE to a list of basic CMIS permissions.<p>
-     * 
-     * @param ace the access control entry 
-     * 
-     * @return the list of permissions 
+     *
+     * @param ace the access control entry
+     *
+     * @return the list of permissions
      */
     public static List<String> getCmisPermissions(CmsAccessControlEntry ace) {
 
@@ -496,9 +496,9 @@ public final class CmsCmisUtil {
 
     /**
      * Converts an OpenCms access control entry to a list of CMIS permissions which represent native OpenCms permissions.<p>
-     * 
-     * @param ace the access control entry 
-     * @return the list of permissions for the entry 
+     *
+     * @param ace the access control entry
+     * @return the list of permissions for the entry
      */
     public static List<String> getNativePermissions(CmsAccessControlEntry ace) {
 
@@ -509,11 +509,11 @@ public final class CmsCmisUtil {
 
     /**
      * Converts an OpenCms access control bitset to a list of CMIS permissions representing native OpenCms permissions.<p>
-     * 
-     * @param permissionBits the permission bits 
+     *
+     * @param permissionBits the permission bits
      * @param denied if the permission bitset refers to a list of denied rather than allowed permissions
-     *   
-     * @return the list of native permissions 
+     *
+     * @return the list of native permissions
      */
     public static List<String> getNativePermissions(int permissionBits, boolean denied) {
 
@@ -542,7 +542,7 @@ public final class CmsCmisUtil {
 
     /**
      * Wrap OpenCms into OpenCMIS exceptions and rethrow them.<p>
-     * 
+     *
      * @param e the exception to handle
      */
     public static void handleCmsException(CmsException e) {
@@ -558,13 +558,13 @@ public final class CmsCmisUtil {
 
     /**
      * Checks whether the given resource has any children.<p>
-     * 
+     *
      * @param cms the CMS context
      * @param resource the resource to check
-     *  
-     * @return true if the resource has children 
-     * 
-     * @throws CmsException if something goes wrong  
+     *
+     * @return true if the resource has children
+     *
+     * @throws CmsException if something goes wrong
      */
     public static boolean hasChildren(CmsObject cms, CmsResource resource) throws CmsException {
 
@@ -573,9 +573,9 @@ public final class CmsCmisUtil {
 
     /**
      * Converts milliseconds into a calendar object.
-     * 
-     * @param millis a time given in milliseconds after epoch 
-     * @return the calendar object for the given time 
+     *
+     * @param millis a time given in milliseconds after epoch
+     * @return the calendar object for the given time
      */
     public static GregorianCalendar millisToCalendar(long millis) {
 
@@ -589,9 +589,9 @@ public final class CmsCmisUtil {
      * Splits a filter statement into a collection of properties. If
      * <code>filter</code> is <code>null</code>, empty or one of the properties
      * is '*' , an empty collection will be returned.
-     * 
-     * @param filter the filter string 
-     * @return the set of components of the filter 
+     *
+     * @param filter the filter string
+     * @return the set of components of the filter
      */
     public static Set<String> splitFilter(String filter) {
 

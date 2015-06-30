@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,16 +37,16 @@ import org.opencms.workplace.CmsDialog;
 import javax.servlet.http.HttpSession;
 
 /**
- * Base class for all editors that turns of time warp deletion inherited from 
- * <code>{@link org.opencms.workplace.CmsWorkplace}</code>.<p> 
- * 
- * @since 6.0.0 
+ * Base class for all editors that turns of time warp deletion inherited from
+ * <code>{@link org.opencms.workplace.CmsWorkplace}</code>.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsEditorBase extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsEditorBase(CmsJspActionElement jsp) {
@@ -56,8 +56,8 @@ public class CmsEditorBase extends CmsDialog {
 
     /**
      * Checks that the current user is a workplace user.<p>
-     * 
-     * @throws CmsRoleViolationException if the user does not have the required role 
+     *
+     * @throws CmsRoleViolationException if the user does not have the required role
      */
     @Override
     protected void checkRole() throws CmsRoleViolationException {
@@ -71,8 +71,8 @@ public class CmsEditorBase extends CmsDialog {
     @Override
     protected void initTimeWarp(CmsUserSettings settings, HttpSession session) {
 
-        // overridden to avoid deletion of the configured time warp: 
-        // this is triggered by editors and in auto time warping a direct edit 
-        // must not delete a potential auto warped request time 
+        // overridden to avoid deletion of the configured time warp:
+        // this is triggered by editors and in auto time warping a direct edit
+        // must not delete a potential auto warped request time
     }
 }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -76,21 +76,19 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
     /** The virtual folder which can be used to export modules. */
     public static final String EXPORT_PATH = BASE_PATH + "/export";
 
-    /** 
+    /**
      * Map containing the last update time for a given import folder path.<p>
-     * 
-     * Why do we need this if we just want to write files in the import folder and not read them? 
-     * The reason is that when using this wrapper with the JLAN CIFS connector, some clients check 
+     *
+     * Why do we need this if we just want to write files in the import folder and not read them?
+     * The reason is that when using this wrapper with the JLAN CIFS connector, some clients check
      * on the status of the import file before they write any data to it, and fail mysteriously if it isn't found,
-     * so we have to pretend that the file actually exists after creating it. 
+     * so we have to pretend that the file actually exists after creating it.
      **/
     ConcurrentHashMap<String, Long> m_importFileUpdateCache = new ConcurrentHashMap<String, Long>();
 
     /** List of virtual folders made available by this resource wrapper. */
-    public static final List<String> FOLDERS = Collections.unmodifiableList(Arrays.asList(
-        BASE_PATH,
-        IMPORT_PATH,
-        EXPORT_PATH));
+    public static final List<String> FOLDERS = Collections.unmodifiableList(
+        Arrays.asList(BASE_PATH, IMPORT_PATH, EXPORT_PATH));
 
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#addResourcesToFolder(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResourceFilter)
@@ -189,7 +187,7 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
     @Override
     public CmsFile readFile(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        // this method isn't actually called when using the JLAN repository, because readResource already returns a CmsFile when needed 
+        // this method isn't actually called when using the JLAN repository, because readResource already returns a CmsFile when needed
         cms.getRequestContext().removeAttribute(CmsJlanDiskInterface.NO_FILESIZE_REQUIRED);
 
         CmsResource res = readResource(cms, resourcename, filter);
@@ -247,7 +245,7 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
         return isFakePath(resourcename);
     }
 
-    /** 
+    /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#writeFile(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
     @Override
@@ -267,12 +265,12 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
 
     /**
      * Creates a fake CmsResource of type 'binary'.<p>
-     * 
-     * @param rootPath  the root path 
-     * 
-     * @return the fake resource  
-     * 
-     * @throws CmsLoaderException if the binary type is missing  
+     *
+     * @param rootPath  the root path
+     *
+     * @return the fake resource
+     *
+     * @throws CmsLoaderException if the binary type is missing
      */
     protected CmsResource createFakeBinaryFile(String rootPath) throws CmsLoaderException {
 
@@ -281,13 +279,13 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
 
     /**
      * Creates a fake CmsResource of type 'binary'.<p>
-     * 
+     *
      * @param rootPath  the root path
-     * @param dateLastModified the last modification date to use  
-     * 
+     * @param dateLastModified the last modification date to use
+     *
      * @return the fake resource
-     * 
-     * @throws CmsLoaderException if the binary type is missing  
+     *
+     * @throws CmsLoaderException if the binary type is missing
      */
     protected CmsResource createFakeBinaryFile(String rootPath, long dateLastModified) throws CmsLoaderException {
 
@@ -333,12 +331,12 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
 
     /**
      * Creates a fake CmsResource of type 'folder'.<p>
-     * 
-     * @param rootPath the root path 
      *
-     * @return the fake resource 
-     * 
-     * @throws CmsLoaderException if the 'folder' type can not be found 
+     * @param rootPath the root path
+     *
+     * @return the fake resource
+     *
+     * @throws CmsLoaderException if the 'folder' type can not be found
      */
     protected CmsResource createFakeFolder(String rootPath) throws CmsLoaderException {
 
@@ -387,11 +385,11 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
 
     /**
      * Gets the virtual resources for the base folder.<p>
-     * 
-     * @param cms the current CMS context 
-     * @return the virtual resources for the base folder 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @return the virtual resources for the base folder
+     *
+     * @throws CmsException if something goes wrong
      */
     private List<CmsResource> getVirtualResourcesForBasePath(CmsObject cms) throws CmsException {
 
@@ -400,11 +398,11 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
 
     /**
      * Gets the virtual resources for the export folder.<p>
-     * 
-     * @param cms the CMS context 
+     *
+     * @param cms the CMS context
      * @return the list of resources for the export folder
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     private List<CmsResource> getVirtualResourcesForExport(CmsObject cms) throws CmsException {
 
@@ -420,10 +418,10 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
 
     /**
      * Gets the virtual resources for the import folder.<p>
-     * 
-     * @param cms the CMS context 
-     * 
-     * @return the virtual resources for the import folder 
+     *
+     * @param cms the CMS context
+     *
+     * @return the virtual resources for the import folder
      */
     private List<CmsResource> getVirtualResourcesForImport(CmsObject cms) {
 
@@ -431,13 +429,13 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
         return result;
     }
 
-    /** 
+    /**
      * Gets the virtual resources to add to the root folder.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @return the virtual resources for the root folder 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context to use
+     * @return the virtual resources for the root folder
+     *
+     * @throws CmsException if something goes wrong
      */
     private List<CmsResource> getVirtualResourcesForRoot(CmsObject cms) throws CmsException {
 
@@ -448,9 +446,9 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
     /**
      * Checks if the the import file is available.<p>
      *
-     * @param resourcepath the resource path 
-     * 
-     * @return true if the import file is available 
+     * @param resourcepath the resource path
+     *
+     * @return true if the import file is available
      */
     private boolean hasImportFile(String resourcepath) {
 
@@ -464,10 +462,10 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
 
     /**
      * Returns true if the given path is a fake path handled by this resource wrapper.<p>
-     * 
-     * @param resourcename the path 
-     * 
-     * @return true if the path is a fake path handled by this resource wrapper 
+     *
+     * @param resourcename the path
+     *
+     * @return true if the path is a fake path handled by this resource wrapper
      */
     private boolean isFakePath(String resourcename) {
 
@@ -481,10 +479,10 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
 
     /**
      * Checks if a given path is a direct descendant of another path.<p>
-     * 
-     * @param expectedParent the expected parent folder 
-     * @param path a path  
-     * @return true if the path is a direct child of expectedParent 
+     *
+     * @param expectedParent the expected parent folder
+     * @param path a path
+     * @return true if the path is a direct child of expectedParent
      */
     private boolean matchParentPath(String expectedParent, String path) {
 
@@ -497,12 +495,12 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
 
     /**
      * Checks if a path matches another part.<p>
-     * 
+     *
      * This is basically an equality test, but ignores the presence/absence of trailing slashes.
-     * 
-     * @param expected the expected path 
-     * @param actual the actual path 
-     * @return true if the actual path matches the expected path 
+     *
+     * @param expected the expected path
+     * @param actual the actual path
+     * @return true if the actual path matches the expected path
      */
     private boolean matchPath(String expected, String actual) {
 

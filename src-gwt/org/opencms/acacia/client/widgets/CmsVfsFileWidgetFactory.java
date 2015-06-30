@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,9 +55,8 @@ public class CmsVfsFileWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit
      */
     public I_CmsFormEditWidget createFormWidget(String configuration) {
 
-        return new CmsFormWidgetWrapper(new CmsFileWidget(
-            Messages.get().key(Messages.GUI_WIDGET_SELECT_FILE_0),
-            configuration));
+        return new CmsFormWidgetWrapper(
+            new CmsFileWidget(Messages.get().key(Messages.GUI_WIDGET_SELECT_FILE_0), configuration));
     }
 
     /**

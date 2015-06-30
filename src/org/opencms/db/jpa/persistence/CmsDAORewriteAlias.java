@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,8 +67,8 @@ public class CmsDAORewriteAlias {
 
     /**
      * Gets the alias id.<p>
-     * 
-     * @return the alias id 
+     *
+     * @return the alias id
      */
     public String getId() {
 
@@ -77,7 +77,7 @@ public class CmsDAORewriteAlias {
 
     /**
      * Gets the alias mode.<p>
-     * 
+     *
      * @return the alias mode
      */
     public int getMode() {
@@ -87,8 +87,8 @@ public class CmsDAORewriteAlias {
 
     /**
      * Gets the alias pattern.<p>
-     * 
-     * @return the alias pattern 
+     *
+     * @return the alias pattern
      */
     public String getPattern() {
 
@@ -96,9 +96,9 @@ public class CmsDAORewriteAlias {
     }
 
     /**
-     * Gets the replacement string.<p> 
-     * 
-     * @return the replacement string 
+     * Gets the replacement string.<p>
+     *
+     * @return the replacement string
      */
     public String getReplacement() {
 
@@ -106,9 +106,9 @@ public class CmsDAORewriteAlias {
     }
 
     /**
-     * Gets the site root.<p> 
-     * 
-     * @return the site root 
+     * Gets the site root.<p>
+     *
+     * @return the site root
      */
     public String getSiteRoot() {
 
@@ -117,8 +117,8 @@ public class CmsDAORewriteAlias {
 
     /**
      * Sets the alias id.<p>
-     * 
-     * @param id the alias id 
+     *
+     * @param id the alias id
      */
     public void setId(String id) {
 
@@ -127,8 +127,8 @@ public class CmsDAORewriteAlias {
 
     /**
      * Sets the alias mode.<p>
-     * 
-     * @param mode the alias mode 
+     *
+     * @param mode the alias mode
      */
     public void setMode(int mode) {
 
@@ -137,7 +137,7 @@ public class CmsDAORewriteAlias {
 
     /**
      * Sets the alias pattern.<p>
-     * 
+     *
      * @param pattern the alias pattern
      */
     public void setPattern(String pattern) {
@@ -147,8 +147,8 @@ public class CmsDAORewriteAlias {
 
     /**
      * Sets the replacement string.<p>
-     * 
-     * @param replacement the replacement string 
+     *
+     * @param replacement the replacement string
      */
     public void setReplacement(String replacement) {
 
@@ -157,8 +157,8 @@ public class CmsDAORewriteAlias {
 
     /**
      * Sets the site root.<p>
-     * 
-     * @param siteRoot the site root 
+     *
+     * @param siteRoot the site root
      */
     public void setSiteRoot(String siteRoot) {
 
