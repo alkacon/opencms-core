@@ -199,7 +199,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
                 finishLoading();
                 return false;
             }
-            boolean hasMore = CmsPublishSelectPanel.this.addNextItem();
+            boolean hasMore = addNextItem();
             if (!hasMore) {
                 finishLoading();
                 return false;
@@ -359,10 +359,10 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         boolean enableAddContents = false;
         boolean addContent = false;
         try {
-            enableAddContents = Boolean.parseBoolean(publishOptions.getParameters().get(
-                CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS));
-            addContent = Boolean.parseBoolean(publishOptions.getParameters().get(
-                CmsPublishOptions.PARAM_INCLUDE_CONTENTS));
+            enableAddContents = Boolean.parseBoolean(
+                publishOptions.getParameters().get(CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS));
+            addContent = Boolean.parseBoolean(
+                publishOptions.getParameters().get(CmsPublishOptions.PARAM_INCLUDE_CONTENTS));
         } catch (Exception e) {
             // ignore; enableAddContents remains the default value
         }
@@ -1028,8 +1028,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Gets the context menu handler for the publish items' context menus.<p>
-     * 
-     * @return the context menu handler 
+     *
+     * @return the context menu handler
      */
     CmsContextMenuHandler getContextMenuHandler() {
 
@@ -1039,7 +1039,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Returns the content editor handler.<p>
-     * 
+     *
      * @return the content editor handler
      */
     I_CmsContentEditorHandler getEditorHandler() {
@@ -1147,7 +1147,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         if (numProblems > 0) {
             HorizontalPanel errorBox = new HorizontalPanel();
             Label warnIcon = new Label();
-            warnIcon.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.gwtImages().style().warningIcon());
+            warnIcon.addStyleName(
+                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.gwtImages().style().warningIcon());
             String message = Messages.get().key(Messages.GUI_PUBLISH_DIALOG_PROBLEM_1, "" + numProblems);
             errorBox.add(warnIcon);
             errorBox.add(new Label(message));

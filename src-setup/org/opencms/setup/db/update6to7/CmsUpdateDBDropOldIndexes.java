@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,9 +43,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class drops all indexes of each table of the database.<p> 
+ * This class drops all indexes of each table of the database.<p>
  * This is done so that the indexes can be updated to the version 6.2.3 and afterwards to version 7
- * 
+ *
  * @since 7.0.0
  */
 public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
@@ -112,7 +112,7 @@ public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the query properties cannot be read
      */
     public CmsUpdateDBDropOldIndexes()
@@ -187,13 +187,13 @@ public class CmsUpdateDBDropOldIndexes extends A_CmsUpdateDBPart {
 
     /**
      * Gets the indexes for a table.<p>
-     * 
+     *
      * @param dbCon the db connection interface
      * @param tablename the table to get the indexes from
-     * 
+     *
      * @return a list of indexes
-     * 
-     * @throws SQLException if somehting goes wrong 
+     *
+     * @throws SQLException if somehting goes wrong
      */
     private List<String> getIndexes(CmsSetupDb dbCon, String tablename) throws SQLException {
 

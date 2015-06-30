@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -96,7 +96,7 @@ public final class CmsColorReplaceHelper {
     /** The map of substitutions. */
     public static Map<String, String> SUBSTITUTION_MAP = mapFromArray(SUBSTITUTION_LIST);
 
-    /** 
+    /**
      * Private constructor.<p>
      */
     private CmsColorReplaceHelper() {
@@ -105,9 +105,9 @@ public final class CmsColorReplaceHelper {
 
     /**
      * Looks up a replacement color by name.<p>
-     * 
-     * @param name the name of the color 
-     * @return the replacement color 
+     *
+     * @param name the name of the color
+     * @return the replacement color
      */
     public static String lookupColor(String name) {
 
@@ -116,8 +116,8 @@ public final class CmsColorReplaceHelper {
 
     /**
      * Main method which processes the files.<p>
-     * 
-     * @param args arguments are ignored 
+     *
+     * @param args arguments are ignored
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
@@ -148,9 +148,9 @@ public final class CmsColorReplaceHelper {
 
     /**
      * Constructs a map from an array of string pairs.<p>
-     * 
-     * @param stringData an array of string pairs with  the first component being a |-separated list of map keys, and the second component the map value 
-     * @return the map for the given data 
+     *
+     * @param stringData an array of string pairs with  the first component being a |-separated list of map keys, and the second component the map value
+     * @return the map for the given data
      */
     public static Map<String, String> mapFromArray(String[][] stringData) {
 
@@ -165,9 +165,9 @@ public final class CmsColorReplaceHelper {
 
     /**
      * Performs color substitutions on a single line of text.<p>
-     * 
-     * @param line the original line 
-     * @return the processed line 
+     *
+     * @param line the original line
+     * @return the processed line
      */
     public static String processLine(String line) {
 

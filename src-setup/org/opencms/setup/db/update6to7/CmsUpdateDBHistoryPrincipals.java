@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,13 +38,13 @@ import java.util.List;
 
 /**
  * This class inserts formerly deleted users/groups in the CMS_HISTORY_PRINCIPALS table.<p>
- * 
+ *
  * These users/groups are read out of the following tables:
  * <ul>
  * <li>CMS_BACKUP_RESOURCES</li>
  * <li>CMS_BACKUP_PROJECTS</li>
  * </ul>
- * 
+ *
  * @since 7.0.0
  */
 public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
@@ -81,7 +81,7 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the sql queries properties file could not be read
      */
     public CmsUpdateDBHistoryPrincipals()
@@ -93,9 +93,9 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
 
     /**
      * Creates the CMS_HISTORY_PRINCIPALS table if it does not exist yet.<p>
-     *  
+     *
      * @param dbCon the db connection interface
-     * 
+     *
      * @throws SQLException if soemthing goes wrong
      */
     protected void createHistPrincipalsTable(CmsSetupDb dbCon) throws SQLException {
@@ -126,11 +126,11 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
 
     /**
      * Checks if the CMS_HISTORY_PRINCIPALS already has data in it.<p>
-     * 
+     *
      * @param dbCon the db connection interface
      * @return true if there is already data in the table, false if it is empty
-     * 
-     * @throws SQLException if something goes wrong 
+     *
+     * @throws SQLException if something goes wrong
      */
     private boolean hasData(CmsSetupDb dbCon) throws SQLException {
 
@@ -156,10 +156,10 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
 
     /**
      * Inserts deleted users/groups in the history principals table.<p>
-     * 
+     *
      * @param dbCon the db connection interface
      * @return true if the USER_DATEDELETED needs updating, false if not
-     * 
+     *
      * @throws SQLException if something goes wrong
      */
     private boolean insertHistoryPrincipals(CmsSetupDb dbCon) throws SQLException {

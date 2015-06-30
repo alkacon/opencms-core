@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,19 +38,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * A <code>CmsWidgetDialog</code> that starts a (confirmed) delete dialog for 
- * an fieldconfiguration.<p> 
- * 
- * The constraint for allowing deletion of the fieldconfiguration: It must not be referenced by 
+ * A <code>CmsWidgetDialog</code> that starts a (confirmed) delete dialog for
+ * an fieldconfiguration.<p>
+ *
+ * The constraint for allowing deletion of the fieldconfiguration: It must not be referenced by
  * any searchindex.<p>
- * 
+ *
  * @since 6.5.5
  */
 public class CmsDeleteFieldConfigurationDialog extends A_CmsFieldConfigurationDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
 
@@ -62,7 +62,7 @@ public class CmsDeleteFieldConfigurationDialog extends A_CmsFieldConfigurationDi
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -87,8 +87,8 @@ public class CmsDeleteFieldConfigurationDialog extends A_CmsFieldConfigurationDi
             m_searchManager.removeSearchFieldConfiguration(m_fieldconfiguration);
             clearDialogObject();
             writeConfiguration();
-            // if we go back to /searchindex/singleindex (overview) the deleted searchindex is not 
-            // there any more in the CmsSearchManager and CmsOverviewSearchIndex.getUserObject will 
+            // if we go back to /searchindex/singleindex (overview) the deleted searchindex is not
+            // there any more in the CmsSearchManager and CmsOverviewSearchIndex.getUserObject will
             // find null -> defineWidgets will provide null as bean...
             setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/searchindex/fieldconfigurations"));
 
@@ -101,9 +101,9 @@ public class CmsDeleteFieldConfigurationDialog extends A_CmsFieldConfigurationDi
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -129,7 +129,7 @@ public class CmsDeleteFieldConfigurationDialog extends A_CmsFieldConfigurationDi
 
         result.append(createWidgetTableEnd());
 
-        // See CmsWidgetDialog.dialogButtonsCustom(): if no widgets are defined that are non-display-only widgets, 
+        // See CmsWidgetDialog.dialogButtonsCustom(): if no widgets are defined that are non-display-only widgets,
         // no dialog buttons (Ok, Cancel) will be visible....
         result.append(dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[2]));
         return result.toString();

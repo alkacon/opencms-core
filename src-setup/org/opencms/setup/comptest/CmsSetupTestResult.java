@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,8 +29,8 @@ package org.opencms.setup.comptest;
 
 /**
  * Contains info about the result of a setup test.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSetupTestResult {
 
@@ -57,8 +57,8 @@ public class CmsSetupTestResult {
 
     /**
      * Creates a new setup test result.<p>
-     * 
-     * @param test the test to keep track of 
+     *
+     * @param test the test to keep track of
      */
     public CmsSetupTestResult(I_CmsSetupTest test) {
 
@@ -74,7 +74,7 @@ public class CmsSetupTestResult {
     /**
      * Returns the help string what to do if a test failed.<p>
      * This string will be displayed in a help bubble.<p>
-     * 
+     *
      * @return the help string what to do if a test failed
      */
     public String getHelp() {
@@ -84,7 +84,7 @@ public class CmsSetupTestResult {
 
     /**
      * Returns the description of the test, e.g. "Test xy failed due to...".<p>
-     * 
+     *
      * @return the description of the test
      */
     public String getInfo() {
@@ -94,7 +94,7 @@ public class CmsSetupTestResult {
 
     /**
      * Returns the name of the test, e.g. "Operating system test".<p>
-     * 
+     *
      * @return the name of the test
      */
     public String getName() {
@@ -104,7 +104,7 @@ public class CmsSetupTestResult {
 
     /**
      * Returns the result of the test, e.g. "Detected Apache Tomcat/4.1.24...".<p>
-     * 
+     *
      * @return the result of the test
      */
     public String getResult() {
@@ -114,7 +114,7 @@ public class CmsSetupTestResult {
 
     /**
      * Returns true, if the conditions the test were fulfilled.<p>
-     * 
+     *
      * @return true, if the conditions the test were fulfilled
      */
     public boolean isGreen() {
@@ -125,7 +125,7 @@ public class CmsSetupTestResult {
     /**
      * Returns true if the test found a violated condition.
      * It is assumed that it will be impossible to run OpenCms.<p>
-     * 
+     *
      * @return true if the test found a violated a condition
      */
     public boolean isRed() {
@@ -136,7 +136,7 @@ public class CmsSetupTestResult {
     /**
      * Returns true if the test found a questionable condition.
      * It is possible that OpenCms will not run.<p>
-     * 
+     *
      * @return true if the test found a questionable condition
      */
     public boolean isYellow() {
@@ -157,7 +157,7 @@ public class CmsSetupTestResult {
     /**
      * Sets the help string what to do if a test failed.<p>
      * This string will be displayed in a help bubble.<p>
-     * 
+     *
      * @param help the help string what to do if a test failed
      */
     protected void setHelp(String help) {
@@ -167,8 +167,8 @@ public class CmsSetupTestResult {
 
     /**
      * Sets the description of the test, e.g. "Test xy failed due to...".<p>
-     * 
-     * @param info the description of the test 
+     *
+     * @param info the description of the test
      */
     protected void setInfo(String info) {
 
@@ -177,7 +177,7 @@ public class CmsSetupTestResult {
 
     /**
      * Sets the name of the test, e.g. "Operating system test".<p>
-     * 
+     *
      * @param name the name of the test
      */
     protected void setName(String name) {
@@ -197,12 +197,12 @@ public class CmsSetupTestResult {
 
     /**
      * Sets the result of the test, e.g. "Detected Apache Tomcat/4.1.24...".<p>
-     * 
+     *
      * @param result the result of the test
      */
     protected void setResult(String result) {
 
-        this.m_result = result;
+        m_result = result;
     }
 
     /**

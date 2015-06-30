@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,7 +56,7 @@ public class CmsAliasModeColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, 
 
     /**
      * Creates a new column instance.<p>
-     * 
+     *
      * @param table the table for which this column is used
      */
     public CmsAliasModeColumn(CmsAliasCellTable table) {
@@ -82,8 +82,8 @@ public class CmsAliasModeColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, 
 
     /**
      * Creates the options for the select box.<p>
-     * 
-     * @return the options for the select box 
+     *
+     * @return the options for the select box
      */
     public static List<String> createOptions() {
 
@@ -96,7 +96,7 @@ public class CmsAliasModeColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, 
 
     /**
      * Gets the comparator used for this column.<p>
-     * 
+     *
      * @return the comparator used for this column
      */
     public static Comparator<CmsAliasTableRow> getComparator() {
@@ -112,10 +112,10 @@ public class CmsAliasModeColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, 
 
     /**
      * Translates a user-readable mode name to the internal mode value.<p>
-     * 
+     *
      * @param name the user-readable mode name
-     * 
-     * @return the internal mode value 
+     *
+     * @return the internal mode value
      */
     static CmsAliasMode getModeFromName(String name) {
 

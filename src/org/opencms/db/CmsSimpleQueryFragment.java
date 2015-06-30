@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * A simple query fragment which takes its SQL string and query parameters as
  * constructor arguments.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSimpleQueryFragment implements I_CmsQueryFragment {
@@ -46,9 +46,9 @@ public class CmsSimpleQueryFragment implements I_CmsQueryFragment {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param fragment the SQL fragment 
-     * @param params the query parameters 
+     *
+     * @param fragment the SQL fragment
+     * @param params the query parameters
      */
     public CmsSimpleQueryFragment(String fragment, List<Object> params) {
 
@@ -58,9 +58,9 @@ public class CmsSimpleQueryFragment implements I_CmsQueryFragment {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param fragment the SQL fragment  
-     * @param params the query parameters 
+     *
+     * @param fragment the SQL fragment
+     * @param params the query parameters
      */
     public CmsSimpleQueryFragment(String fragment, Object... params) {
 

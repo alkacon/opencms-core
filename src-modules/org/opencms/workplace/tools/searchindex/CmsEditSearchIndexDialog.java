@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,16 +50,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * 
+ *
  * Dialog to edit new or existing search index in the administration view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsEditSearchIndexDialog(CmsJspActionElement jsp) {
@@ -69,7 +69,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -81,12 +81,12 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
-     * 
+     *
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
     @Override
@@ -125,8 +125,14 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         } else {
             addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "name", PAGES[0], new CmsDisplayWidget()));
         }
-        addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "rebuildMode", "", PAGES[0], new CmsSelectWidget(
-            getRebuildModeWidgetConfiguration()), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(
+            getSearchIndexIndex(),
+            "rebuildMode",
+            "",
+            PAGES[0],
+            new CmsSelectWidget(getRebuildModeWidgetConfiguration()),
+            0,
+            1));
         addWidget(new CmsWidgetDialogParameter(
             getSearchIndexIndex(),
             "localeString",
@@ -135,8 +141,14 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
             new CmsSelectWidget(getLocaleWidgetConfiguration()),
             0,
             1));
-        addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "project", "", PAGES[0], new CmsSelectWidget(
-            getProjectWidgetConfiguration()), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(
+            getSearchIndexIndex(),
+            "project",
+            "",
+            PAGES[0],
+            new CmsSelectWidget(getProjectWidgetConfiguration()),
+            0,
+            1));
         addWidget(new CmsWidgetDialogParameter(
             getSearchIndexIndex(),
             "fieldConfigurationName",
@@ -149,7 +161,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Creates the options  for the search field configuration.<p>
-     * 
+     *
      * @return the option list
      */
     private List<CmsSelectWidgetOption> getFieldConfigurationWidgetConfiguration() {
@@ -177,7 +189,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Returns the locale widget configuration.<p>
-     * 
+     *
      * @return the locale widget configuration
      */
     private List<CmsSelectWidgetOption> getLocaleWidgetConfiguration() {
@@ -194,7 +206,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Returns the project widget configuration.<p>
-     * 
+     *
      * @return the project widget configuration
      */
     private List<CmsSelectWidgetOption> getProjectWidgetConfiguration() {
@@ -215,7 +227,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Returns the rebuild mode widget configuration.<p>
-     * 
+     *
      * @return the rebuild mode widget configuration
      */
     private List<CmsSelectWidgetOption> getRebuildModeWidgetConfiguration() {

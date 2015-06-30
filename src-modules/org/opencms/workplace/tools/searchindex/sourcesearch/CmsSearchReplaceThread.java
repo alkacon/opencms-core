@@ -238,7 +238,9 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
 
             // show the resources
             // save the matched file list in the session
-            m_session.setAttribute(CmsSearchReplaceSettings.ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST, m_matchedResources);
+            m_session.setAttribute(
+                CmsSearchReplaceSettings.ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST,
+                m_matchedResources);
         } else {
             // do not show the resources, because there were errors while searching
         }
@@ -282,8 +284,8 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 // search and replace
                 byte[] result = null;
                 boolean xpath = false;
-                if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_settings.getXpath()) || m_settings.isOnlyContentValues())
-                    && CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_settings.getXpath())
+                    || m_settings.isOnlyContentValues()) && CmsResourceTypeXmlContent.isXmlContent(resource)) {
                     xpath = true;
                 }
                 if (!xpath) {
@@ -515,9 +517,10 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 String.valueOf(counter),
                 String.valueOf(resCount)),
             I_CmsReport.FORMAT_NOTE);
-        report.print(org.opencms.report.Messages.get().container(
-            org.opencms.report.Messages.RPT_ARGUMENT_1,
-            report.removeSiteRoot(resource.getRootPath())));
+        report.print(
+            org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_ARGUMENT_1,
+                report.removeSiteRoot(resource.getRootPath())));
         report.print(
             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
             I_CmsReport.FORMAT_DEFAULT);
@@ -634,8 +637,9 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         if (m_settings.isSolrSearch()) {
             CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(m_settings.getSource());
             if (index != null) {
-                CmsSolrQuery query = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(m_settings.getQuery()
-                    + "&fl=path,type"));
+                CmsSolrQuery query = new CmsSolrQuery(
+                    null,
+                    CmsRequestUtil.createParameterMap(m_settings.getQuery() + "&fl=path,type"));
                 query.setSearchRoots(m_settings.getPaths());
                 if ((m_settings.getTypesArray() != null) && (m_settings.getTypesArray().length > 0)) {
                     query.setResourceTypes(m_settings.getTypesArray());
@@ -649,7 +653,8 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 }
             }
         } else {
-            CmsResourceFilter filter = CmsResourceFilter.ALL.addRequireFile().addExcludeState(CmsResource.STATE_DELETED).addRequireTimerange().addRequireVisible();
+            CmsResourceFilter filter = CmsResourceFilter.ALL.addRequireFile().addExcludeState(
+                CmsResource.STATE_DELETED).addRequireTimerange().addRequireVisible();
             if ((m_settings.getTypesArray() != null) && (m_settings.getTypesArray().length > 0)) {
                 for (String resTypeName : m_settings.getTypesArray()) {
                     try {

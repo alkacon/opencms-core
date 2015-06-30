@@ -18,8 +18,8 @@
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
- * project website: http://www.opencms.org 
- * 
+ * project website: http://www.opencms.org
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,12 +42,12 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.apache.commons.logging.Log;
 
 /**
- * Implements the <code>&lt;cms:link&gt;[filename]&lt;/cms:link&gt;</code> 
+ * Implements the <code>&lt;cms:link&gt;[filename]&lt;/cms:link&gt;</code>
  * tag to add OpenCms managed links to a JSP page, required for link
- * management and the static 
+ * management and the static
  * export to work properly.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsJspTagLink extends BodyTagSupport {
 
@@ -61,24 +61,24 @@ public class CmsJspTagLink extends BodyTagSupport {
     private String m_baseUri;
 
     /**
-     * Returns a link to a file in the OpenCms VFS 
-     * that has been adjusted according to the web application path and the 
+     * Returns a link to a file in the OpenCms VFS
+     * that has been adjusted according to the web application path and the
      * OpenCms static export rules.<p>
-     * 
+     *
      * The current OpenCms user context URI will be used as source of the link.</p>
-     * 
+     *
      * Since OpenCms version 7.0.2, you can also use this method in case you are not sure
-     * if the link is internal or external, as  
+     * if the link is internal or external, as
      * {@link CmsLinkManager#substituteLinkForUnknownTarget(org.opencms.file.CmsObject, String)}
      * is used to calculate the link target.<p>
-     * 
+     *
      * Relative links are converted to absolute links, using the current element URI as base.<p>
-     * 
+     *
      * @param target the link that should be calculated, can be relative or absolute
      * @param req the current request
-     * 
+     *
      * @return the target link adjusted according to the web application path and the OpenCms static export rules
-     * 
+     *
      * @see org.opencms.staticexport.CmsLinkManager#substituteLinkForUnknownTarget(org.opencms.file.CmsObject, String)
      */
     public static String linkTagAction(String target, ServletRequest req) {
@@ -88,22 +88,22 @@ public class CmsJspTagLink extends BodyTagSupport {
 
     /**
      * Returns a link to a file in the OpenCms VFS
-     * that has been adjusted according to the web application path and the 
+     * that has been adjusted according to the web application path and the
      * OpenCms static export rules.<p>
-     * 
+     *
      * If the <code>baseUri</code> parameter is provided, this will be treated as the source of the link,
      * if this is <code>null</code> then the current OpenCms user context URI will be used as source.</p>
-     * 
+     *
      * Relative links are converted to absolute links, using the current element URI as base.<p>
-     * 
+     *
      * @param target the link that should be calculated, can be relative or absolute
      * @param req the current request
-     * @param baseUri the base URI for the link source 
-     * 
+     * @param baseUri the base URI for the link source
+     *
      * @return the target link adjusted according to the web application path and the OpenCms static export rules
-     * 
+     *
      * @see #linkTagAction(String, ServletRequest)
-     * 
+     *
      * @since 8.0.3
      */
     public static String linkTagAction(String target, ServletRequest req, String baseUri) {
@@ -117,7 +117,7 @@ public class CmsJspTagLink extends BodyTagSupport {
                 cms = OpenCms.initCmsObject(cms);
                 cms.getRequestContext().setUri(baseUri);
             } catch (CmsException e) {
-                // should not happen, if it does we can't do anything useful and will just keep the original object                
+                // should not happen, if it does we can't do anything useful and will just keep the original object
             }
         }
         // generate the link
@@ -126,9 +126,9 @@ public class CmsJspTagLink extends BodyTagSupport {
 
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
-     * 
+     *
      * @return EVAL_PAGE
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     @Override
@@ -136,15 +136,15 @@ public class CmsJspTagLink extends BodyTagSupport {
 
         ServletRequest req = pageContext.getRequest();
 
-        // This will always be true if the page is called through OpenCms 
+        // This will always be true if the page is called through OpenCms
         if (CmsFlexController.isCmsRequest(req)) {
             try {
-                // Get link-string from the body and reset body 
+                // Get link-string from the body and reset body
                 String link = getBodyContent().getString();
                 getBodyContent().clear();
                 // Calculate the link substitution
                 String newlink = linkTagAction(link, req, getBaseUri());
-                // Write the result back to the page                
+                // Write the result back to the page
                 getBodyContent().print(newlink);
                 getBodyContent().writeOut(pageContext.getOut());
 
@@ -160,7 +160,7 @@ public class CmsJspTagLink extends BodyTagSupport {
 
     /**
      * Returns the base URI used to create the link target.<p>
-     * 
+     *
      * @return  the base URI used to create the link target
      */
     public String getBaseUri() {
@@ -179,7 +179,7 @@ public class CmsJspTagLink extends BodyTagSupport {
 
     /**
      * Sets the base URI used to create the link target.<p>
-     * 
+     *
      * @param baseUri the base URI used to create the link target
      */
     public void setBaseUri(String baseUri) {

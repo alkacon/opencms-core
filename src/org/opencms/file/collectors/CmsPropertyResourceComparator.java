@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,10 +46,10 @@ import java.util.Map;
 
 /**
  * Comparator for sorting resource objects based on a selected property value.<p>
- * 
+ *
  * Serves as {@link java.util.Comparator} for resources and as comparator key for the resource
  * at the same time. Uses lazy initializing of comparator keys in a resource.<p>
- *  
+ *
  * @since 8.0.4
  */
 public class CmsPropertyResourceComparator implements Serializable, Comparator<CmsResource> {
@@ -74,9 +74,9 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
 
     /**
      * Creates a new instance of this comparator key.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
-     * @param property the name of the sort property (case sensitive)  
+     * @param property the name of the sort property (case sensitive)
      * @param asc the sort order (true=asc, false=desc)
      */
     public CmsPropertyResourceComparator(CmsObject cms, String property, boolean asc) {
@@ -89,11 +89,11 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
 
     /**
      * Creates a new instance of this comparator key.<p>
-     * 
+     *
      * @param resource the resource to create the key for
      * @param cms the current OpenCms user context
-     * @param property the name of the sort property (case sensitive)  
-     * 
+     * @param property the name of the sort property (case sensitive)
+     *
      * @return a new instance of this comparator key
      */
     private static CmsPropertyResourceComparator create(CmsResource resource, CmsObject cms, String property) {
@@ -126,7 +126,7 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
             m_keys.put(res1.getStructureId(), key1);
         }
 
-        // select a different sort methode for strings or number values                
+        // select a different sort methode for strings or number values
         if (isNumeric(key0.getPropertyValue()) && isNumeric(key1.getPropertyValue())) {
             // double can do it all.... ;-)
             double dKey0 = Double.parseDouble(key0.getPropertyValue());
@@ -166,7 +166,7 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
 
     /**
      * Returns the property value of this resource comparator key.<p>
-     * 
+     *
      * @return property value of this resource comparator key
      */
     public String getPropertyValue() {
@@ -179,11 +179,11 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
     }
 
     /**
-     * Initializes the comparator key based on the member variables.<p> 
-     * 
-     * @param resource the resource to use 
+     * Initializes the comparator key based on the member variables.<p>
+     *
+     * @param resource the resource to use
      * @param cms the current OpenCms user contxt
-     * @param property the name of the sort property (case sensitive)  
+     * @param property the name of the sort property (case sensitive)
      */
     private void init(CmsResource resource, CmsObject cms, String property) {
 
@@ -198,9 +198,8 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
             }
         } catch (CmsDbEntryNotFoundException dbe) {
             // property are not configured
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_COLLECTOR_PARAM_PROPERTY_NOT_FOUND_1,
-                property));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_COLLECTOR_PARAM_PROPERTY_NOT_FOUND_1, property));
         } catch (CmsException cmse) {
             // something's gone wrong...
             cmse.printStackTrace();
@@ -208,8 +207,8 @@ public class CmsPropertyResourceComparator implements Serializable, Comparator<C
     }
 
     /**
-     * Check if a string contains a numeric value.<p> 
-     * 
+     * Check if a string contains a numeric value.<p>
+     *
      * @param value string to check if is a numeric value
      *
      * @return true for a numeric value in the string

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,25 +34,24 @@ import org.opencms.util.CmsUUID;
 
 /**
  * Test event listener implementation, restarting the engine while a publish job is running.<p>
- * 
+ *
  * @since 6.5.5
  */
 public class TestPublishEventListener2 implements I_CmsPublishEventListener {
 
     /** The cms object. */
     private CmsObject m_cms;
-    
-    
+
     /**
      * Constructor for passing a cms object.<p>
-     * 
+     *
      * @param cms the cms object
      */
     public TestPublishEventListener2(CmsObject cms) {
-        
+
         m_cms = cms;
     }
-    
+
     /**
      * @see org.opencms.publish.I_CmsPublishEventListener#onAbort(CmsUUID, org.opencms.publish.CmsPublishJobEnqueued)
      */

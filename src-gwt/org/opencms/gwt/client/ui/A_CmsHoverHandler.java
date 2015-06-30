@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import com.google.gwt.user.client.Timer;
 
 /**
  * On hover intent handler.<p>
- * 
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsHoverHandler implements MouseOutHandler, MouseOverHandler {
@@ -81,14 +81,14 @@ public abstract class A_CmsHoverHandler implements MouseOutHandler, MouseOverHan
 
     /**
      * Will be executed for starting the hover effect.<p>
-     * 
+     *
      * @param event the mouse event
      */
     protected abstract void onHoverIn(MouseOverEvent event);
 
     /**
      * Will be executed for finishing the hover effect.<p>
-     * 
+     *
      * @param event the mouse event
      */
     protected abstract void onHoverOut(MouseOutEvent event);

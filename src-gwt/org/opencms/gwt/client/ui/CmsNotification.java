@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.Timer;
 
 /**
  * User feedback provider.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsNotification {
@@ -96,7 +96,7 @@ public final class CmsNotification {
 
     /**
      * Returns the singleton instance.<p>
-     * 
+     *
      * @return the singleton instance
      */
     public static CmsNotification get() {
@@ -119,7 +119,7 @@ public final class CmsNotification {
 
     /**
      * Returns if the notification widget is set. Only if the widget is set, notifications can be shown.<p>
-     * 
+     *
      * @return <code>true</code> if the notification widget is set
      */
     public boolean hasWidget() {
@@ -129,7 +129,7 @@ public final class CmsNotification {
 
     /**
      * Removes the given notification message.<p>
-     * 
+     *
      * @param message the message to remove
      */
     public void removeMessage(CmsNotificationMessage message) {
@@ -142,7 +142,7 @@ public final class CmsNotification {
 
     /**
      * Sends a new notification, that will be removed automatically.<p>
-     * 
+     *
      * @param type the notification type
      * @param message the message
      */
@@ -167,7 +167,7 @@ public final class CmsNotification {
 
     /**
      * Sends a new blocking alert notification that can be closed by the user.<p>
-     * 
+     *
      * @param type the notification type
      * @param message the message
      */
@@ -182,11 +182,11 @@ public final class CmsNotification {
 
     /**
      * Sends a new blocking notification that can not be removed by the user.<p>
-     * 
+     *
      * @param type the notification type
      * @param message the message
-     * 
-     * @return the message, use to hide the message 
+     *
+     * @return the message, use to hide the message
      */
     public CmsNotificationMessage sendBusy(Type type, final String message) {
 
@@ -200,9 +200,9 @@ public final class CmsNotification {
 
     /**
      * Sends a new notification after all other events have been processed.<p>
-     * 
-     * @param type the notification type 
-     * @param message the message 
+     *
+     * @param type the notification type
+     * @param message the message
      */
     public void sendDeferred(final Type type, final String message) {
 
@@ -221,11 +221,11 @@ public final class CmsNotification {
 
     /**
      * Sends a new sticky notification that can not be removed by the user.<p>
-     * 
+     *
      * @param type the notification type
      * @param message the message
-     * 
-     *  @return the message, use to hide the message 
+     *
+     *  @return the message, use to hide the message
      */
     public CmsNotificationMessage sendSticky(Type type, String message) {
 

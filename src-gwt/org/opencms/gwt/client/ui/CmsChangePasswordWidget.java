@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -94,8 +94,8 @@ public class CmsChangePasswordWidget extends Composite {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param finishAction the action to execute when the password is successfully changed 
+     *
+     * @param finishAction the action to execute when the password is successfully changed
      */
     public CmsChangePasswordWidget(Runnable finishAction) {
 
@@ -113,9 +113,9 @@ public class CmsChangePasswordWidget extends Composite {
      */
     public static void showDialog() {
 
-        final CmsPopup popup = new CmsPopup(Messages.get().key(
-            Messages.GUI_PASSWORD_CHANGE_TITLE_1,
-            CmsCoreProvider.get().getUserInfo().getName()), 500);
+        final CmsPopup popup = new CmsPopup(
+            Messages.get().key(Messages.GUI_PASSWORD_CHANGE_TITLE_1, CmsCoreProvider.get().getUserInfo().getName()),
+            500);
         popup.setModal(true);
         popup.setGlassEnabled(true);
         CmsPushButton okButton = new CmsPushButton();
@@ -189,10 +189,10 @@ public class CmsChangePasswordWidget extends Composite {
         action.execute();
     }
 
-    /** 
+    /**
      * Displays an error message.<p>
-     * 
-     * @param error the error message to display 
+     *
+     * @param error the error message to display
      */
     protected void showError(String error) {
 

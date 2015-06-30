@@ -18,8 +18,8 @@
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
- * project website: http://www.opencms.org 
- * 
+ * project website: http://www.opencms.org
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -81,27 +81,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.commons.io.filefilter.FileFilterUtils;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
 import org.dom4j.util.NodeComparator;
 
-/** 
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+/**
  * Extends the JUnit standard with methods to handle an OpenCms database
  * test instance.<p>
- * 
- * The required configuration files are located in the 
+ *
+ * The required configuration files are located in the
  * <code>${test.data.path}/WEB-INF</code> folder structure.<p>
- * 
+ *
  * To run this test you might have to change the database connection
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class OpenCmsTestCase extends TestCase {
@@ -245,7 +245,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public OpenCmsTestCase(String arg0) {
@@ -255,7 +255,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      * @param initialize indicates if the configuration will be initialized
      */
@@ -278,14 +278,14 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Generates a sub tree of folders with files.<p>
-     * 
+     *
      * @param cms the cms context
      * @param vfsFolder name of the folder
      * @param numberOfFiles the number of files to generate
      * @param fileTypeDistribution a percentage: x% binary files and (1-x)% text files
-     * 
+     *
      * @return the number of files generated
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public static int generateContent(CmsObject cms, String vfsFolder, int numberOfFiles, double fileTypeDistribution)
@@ -308,8 +308,14 @@ public class OpenCmsTestCase extends TestCase {
             propertyDistribution);
 
         // generate text files
-        writtenFiles += generateResources(cms, "org/opencms/search/extractors/test1.html", vfsFolder, numberOfFiles
-            - numberOfBinaryFiles, CmsResourceTypePlain.getStaticTypeId(), maxProps, propertyDistribution);
+        writtenFiles += generateResources(
+            cms,
+            "org/opencms/search/extractors/test1.html",
+            vfsFolder,
+            numberOfFiles - numberOfBinaryFiles,
+            CmsResourceTypePlain.getStaticTypeId(),
+            maxProps,
+            propertyDistribution);
 
         System.out.println("" + writtenFiles + " files written in Folder " + vfsFolder);
 
@@ -318,7 +324,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Generates a sub tree of folders with files.<p>
-     * 
+     *
      * @param cms the cms context
      * @param vfsFolder where to create the subtree
      * @param maxWidth an upper bound for the number of subfolder a folder should have
@@ -327,9 +333,9 @@ public class OpenCmsTestCase extends TestCase {
      * @param propertyDistribution a percentage: x% shared props and (1-x)% individuals props
      * @param maxNumberOfFiles upper bound for the number of files in each folder
      * @param fileTypeDistribution a percentage: x% binary files and (1-x)% text files
-     * 
+     *
      * @return the number of really written files
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public static int generateContent(
@@ -378,8 +384,14 @@ public class OpenCmsTestCase extends TestCase {
                 propertyDistribution);
 
             // generate text files
-            writtenFiles += generateResources(cms, "org/opencms/search/extractors/test1.html", vfsName, numberOfFiles
-                - numberOfBinaryFiles, CmsResourceTypePlain.getStaticTypeId(), maxProps, propertyDistribution);
+            writtenFiles += generateResources(
+                cms,
+                "org/opencms/search/extractors/test1.html",
+                vfsName,
+                numberOfFiles - numberOfBinaryFiles,
+                CmsResourceTypePlain.getStaticTypeId(),
+                maxProps,
+                propertyDistribution);
 
             // in depth recursion
             writtenFiles += generateContent(
@@ -399,9 +411,9 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Generate a new random name.<p>
-     * 
+     *
      * @param maxLen upper bound for the length of the name
-     * 
+     *
      * @return a random name
      */
     public static String generateName(int maxLen) {
@@ -417,14 +429,14 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Generates random properties.<p>
-     * 
+     *
      * @param cms the cms context
      * @param maxProps upper bound for number of properties to create for each resource
      * @param propValueLength upper bound for the number of char for the values
      * @param propertyDistribution a percentage: x% shared props and (1-x)% individuals props
-     * 
+     *
      * @return a list of <code>{@link CmsProperty}</code> objects
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public static List<CmsProperty> generateProperties(
@@ -449,10 +461,8 @@ public class OpenCmsTestCase extends TestCase {
                 props.add(new CmsProperty(propDef.getName(), null, generateName(propValueLength)));
             } else {
                 // resource and structure props
-                props.add(new CmsProperty(
-                    propDef.getName(),
-                    generateName(propValueLength),
-                    generateName(propValueLength)));
+                props.add(
+                    new CmsProperty(propDef.getName(), generateName(propValueLength), generateName(propValueLength)));
             }
         }
 
@@ -461,7 +471,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Generates n new resources in a given folder.<p>
-     * 
+     *
      * @param cms the cms context
      * @param rfsName the rfs file for the content
      * @param vfsFolder the folder to create the resources in
@@ -469,9 +479,9 @@ public class OpenCmsTestCase extends TestCase {
      * @param type the type of the resource
      * @param maxProps upper bound for number of properties to create for each resource
      * @param propertyDistribution a percentage: x% shared props and (1-x)% individuals props
-     * 
+     *
      * @return the number of really written files
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public static int generateResources(
@@ -509,12 +519,12 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Generates a wrapper for a test class which handles setting up the OpenCms instance.<p>
-     * 
-     * @param testClass the test class to wrap 
-     * @param importFolder the RFS folder with the test data to import 
+     *
+     * @param testClass the test class to wrap
+     * @param importFolder the RFS folder with the test data to import
      * @param targetFolder the VFS target folder for the test data
-     *  
-     * @return the wrapped test 
+     *
+     * @return the wrapped test
      */
     public static Test generateSetupTestWrapper(
         final Class<? extends Test> testClass,
@@ -551,11 +561,11 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Generates a test suite by creating a test instance for all test* methods in the given test class and adding them to a new suite.<p>
-     * 
-     * @param testClass the test class 
-     * 
-     * @return the test suite for the given class 
-     * 
+     *
+     * @param testClass the test class
+     *
+     * @return the test suite for the given class
+     *
      * @throws NoSuchMethodException in case of problems
      * @throws InstantiationException in case of problems
      * @throws IllegalAccessException in case of problems
@@ -579,11 +589,11 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Generates n new users for a given group.<p>
-     * 
+     *
      * @param cms the cms context
      * @param groupName the group name, group will be creating if group does not exists
      * @param n number of users to generate
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public static void generateUsers(CmsObject cms, String groupName, int n) throws CmsException {
@@ -606,10 +616,10 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Gets the list of all names of classes which exist as class files in a directory in the classpath (not in JARs) and whose path contains 'opencms' or 'alkacon'.
-     * 
+     *
      * @return the list of all opencms class on the class path
-     *  
-     * @throws Exception if something goes  wrong 
+     *
+     * @throws Exception if something goes  wrong
      */
     public static List<String> getClassNames() throws Exception {
 
@@ -648,7 +658,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Returns the currently used database/configuration.<p>
-     * 
+     *
      * @return he currently used database/configuration
      */
     public static String getDbProduct() {
@@ -657,12 +667,12 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Returns the path to a file in the test data configuration, 
+     * Returns the path to a file in the test data configuration,
      * or <code>null</code> if the given file can not be found.<p>
-     * 
+     *
      * This methods searches the given file in all configured test data paths.
      * It returns the file found first.<p>
-     * 
+     *
      * @param filename the file name to look up
      * @return the path to a file in the test data configuration
      */
@@ -686,7 +696,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Does a database import from the given RFS folder to the given VFS folder.<p>
-     * 
+     *
      * @param importFolder the RFS folder to import from
      * @param targetFolder the VFS folder to import into
      */
@@ -694,10 +704,10 @@ public class OpenCmsTestCase extends TestCase {
 
         // turn off exceptions after error logging during setup (won't work otherwise)
         OpenCmsTestLogAppender.setBreakOnError(false);
-        // output a message 
+        // output a message
         System.out.println("\n\n\n----- Starting test case: Importing OpenCms VFS data -----");
 
-        // kill any old shell that might have remained from a previous test 
+        // kill any old shell that might have remained from a previous test
         if (m_shell != null) {
             try {
                 m_shell.exit();
@@ -718,7 +728,7 @@ public class OpenCmsTestCase extends TestCase {
             System.err,
             false);
 
-        // open the test script 
+        // open the test script
         File script;
         CmsObject cms = null;
 
@@ -752,7 +762,7 @@ public class OpenCmsTestCase extends TestCase {
             cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
             cms.getRequestContext().setSiteRoot("/sites/default/");
 
-            // output a message 
+            // output a message
             System.out.println("----- Starting test cases -----");
         } catch (Throwable t) {
             t.printStackTrace(System.err);
@@ -771,22 +781,22 @@ public class OpenCmsTestCase extends TestCase {
         if (m_testDataPath == null) {
             m_testDataPath = new ArrayList<String>(4);
 
-            // test wether we are instantiated within the 
-            // AllTest suite and therefore the OpenCmsTestProperties are 
+            // test wether we are instantiated within the
+            // AllTest suite and therefore the OpenCmsTestProperties are
             // already set up:
             try {
                 OpenCmsTestProperties.getInstance();
             } catch (RuntimeException rte) {
                 OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
             }
-            // set data path 
+            // set data path
             addTestDataPath(OpenCmsTestProperties.getInstance().getTestDataPath());
         }
     }
 
     /**
      * Removes the initialized OpenCms database and all temporary files created during the test run.<p>
-     * 
+     *
      * Tries to ascertain the name of the test class from the stack trace.<p>
      */
     public static void removeOpenCms() {
@@ -796,7 +806,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Removes the initialized OpenCms database and all temporary files created during the test run.<p>
-     * 
+     *
      * @param testName the name of the test class (for writing it to the console)
      */
     public static void removeOpenCms(String testName) {
@@ -863,10 +873,10 @@ public class OpenCmsTestCase extends TestCase {
 
         // turn off exceptions after error logging during setup (won't work otherwise)
         OpenCmsTestLogAppender.setBreakOnError(false);
-        // output a message 
+        // output a message
         System.out.println("\n\n\n----- Restarting OpenCms -----");
 
-        // kill any old shell that might have remained from a previous test 
+        // kill any old shell that might have remained from a previous test
         if (m_shell != null) {
             try {
                 m_shell.exit();
@@ -892,13 +902,13 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Sets up a complete OpenCms instance with configuration from the config-ori folder, 
+     * Sets up a complete OpenCms instance with configuration from the config-ori folder,
      * creating the usual projects, and importing a default database.<p>
-     * 
+     *
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
-     * 
-     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     *
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/"
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder) {
 
@@ -906,14 +916,14 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Sets up a complete OpenCms instance with configuration from the config-ori folder, 
+     * Sets up a complete OpenCms instance with configuration from the config-ori folder,
      * creating the usual projects, and importing a default database.<p>
-     * 
+     *
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
      * @param publish flag to signalize if the publish script should be called
-     * 
-     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     *
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/"
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, boolean publish) {
 
@@ -921,14 +931,14 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Sets up a complete OpenCms instance with configuration from the config-ori folder, 
+     * Sets up a complete OpenCms instance with configuration from the config-ori folder,
      * creating the usual projects, and importing a default database.<p>
-     * 
+     *
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
      * @param specialConfigFolder the folder that contains the special configuration files for this setup
-     * 
-     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     *
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/"
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, String specialConfigFolder) {
 
@@ -938,30 +948,34 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Sets up a complete OpenCms instance, creating the usual projects,
      * and importing a default database.<p>
-     * 
+     *
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
      * @param configFolder the folder to copy the configuration files
      * @param publish publish only if set
-     * 
-     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     *
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/"
      */
-    public static CmsObject setupOpenCms(String importFolder, String targetFolder, String configFolder, boolean publish) {
+    public static CmsObject setupOpenCms(
+        String importFolder,
+        String targetFolder,
+        String configFolder,
+        boolean publish) {
 
         return setupOpenCms(importFolder, targetFolder, configFolder, null, null, publish);
     }
 
     /**
-     * Sets up a complete OpenCms instance with configuration from the config-ori folder, 
+     * Sets up a complete OpenCms instance with configuration from the config-ori folder,
      * creating the usual projects, and importing a default database.<p>
-     * 
+     *
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
      * @param specialConfigFolder the folder that contains the special configuration files for this setup
      * @param testName the name of the test class (for writing it to the console)
-     * 
-     * 
-     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     *
+     *
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/"
      */
     public static CmsObject setupOpenCms(
         String importFolder,
@@ -975,15 +989,15 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Sets up a complete OpenCms instance, creating the usual projects,
      * and importing a default database.<p>
-     * 
+     *
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
      * @param configFolder the folder to copy the standard configuration files from
      * @param specialConfigFolder the folder that contains the special configuration fiiles for this setup
      * @param testName the name of the test class (for writing it to the console)
      * @param publish publish only if set
-     * 
-     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
+     *
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/"
      */
     public static CmsObject setupOpenCms(
         String importFolder,
@@ -1029,12 +1043,13 @@ public class OpenCmsTestCase extends TestCase {
         String defaultWebAppName,
         boolean publish) {
 
-        printInfoBox(new String[] {
-            "Setting up OpenCms test class:",
-            testName,
-            "",
-            "Importing from: " + importFolder,
-            "Importing to  : " + targetFolder});
+        printInfoBox(
+            new String[] {
+                "Setting up OpenCms test class:",
+                testName,
+                "",
+                "Importing from: " + importFolder,
+                "Importing to  : " + targetFolder});
 
         // set default values, if parameters are null
         configFolder = configFolder == null ? getTestDataPath("WEB-INF/config." + m_dbProduct + "/") : configFolder;
@@ -1060,10 +1075,8 @@ public class OpenCmsTestCase extends TestCase {
         }
 
         // create the OpenCms "config" folder
-        File configFile = new File(m_testDataPath.get(0)
-            + "WEB-INF"
-            + File.separator
-            + CmsSystemInfo.FOLDER_CONFIG_DEFAULT);
+        File configFile = new File(
+            m_testDataPath.get(0) + "WEB-INF" + File.separator + CmsSystemInfo.FOLDER_CONFIG_DEFAULT);
         if (!configFile.exists()) {
             configFile.mkdir();
         }
@@ -1158,7 +1171,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Adds an additional path to the list of test data configuration files.<p>
-     * 
+     *
      * @param dataPath the path to add
      */
     protected static synchronized void addTestDataPath(String dataPath) {
@@ -1176,7 +1189,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Check the setup DB for errors that might have occurred.<p>
-     * 
+     *
      * @param setupDb the setup DB object to check
      */
     protected static void checkErrors(CmsSetupDb setupDb) {
@@ -1193,9 +1206,9 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Returns the class name of the current test class from the current stack trace.<p>
-     * 
+     *
      * Methods in this class, that is {@link OpenCmsTestCase} are ignored.<p>
-     * 
+     *
      * @return the class name of the current test class from the current stack trace
      */
     protected static String getCurrentTestClass() {
@@ -1208,7 +1221,7 @@ public class OpenCmsTestCase extends TestCase {
             if (result.indexOf(OpenCmsTestCase.class.getName()) == -1) {
                 // first method name NOT from this class is what we want
                 int pos = result.indexOf('$');
-                // cut off any trailing "$1" just because it looks nicer in the output 
+                // cut off any trailing "$1" just because it looks nicer in the output
                 if (pos != -1) {
                     result = result.substring(0, pos);
                 }
@@ -1220,9 +1233,9 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Returns an initialized replacer map.<p>
-     * 
+     *
      * @param connectionData the connection data to derive the replacer information
-     * 
+     *
      * @return an initialized replacer map
      */
     protected static Map<String, String> getReplacer(ConnectionData connectionData) {
@@ -1240,10 +1253,10 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Returns the path to the data files used by the setup wizard.<p>
-     * 
-     * Whenever possible use this path to ensure that the files 
+     *
+     * Whenever possible use this path to ensure that the files
      * used for testing are actually the same as for the setup.<p>
-     * 
+     *
      * @return the path to the data files used by the setup wizard
      */
     protected static synchronized String getSetupDataPath() {
@@ -1266,9 +1279,9 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Returns an initialized DB setup object.<p>
-     * 
+     *
      * @param connection the connection data
-     * 
+     *
      * @return the initialized setup DB object
      */
     protected static CmsSetupDb getSetupDb(ConnectionData connection) {
@@ -1284,7 +1297,7 @@ public class OpenCmsTestCase extends TestCase {
             connection.m_userName,
             connection.m_userPassword);
 
-        // check for errors 
+        // check for errors
         if (!DB_ORACLE.equals(m_dbProduct)) {
             checkErrors(setupDb);
         }
@@ -1294,7 +1307,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Imports a resource into the Cms.<p>
-     * 
+     *
      * @param cms an initialized CmsObject
      * @param importFile the name (absolute Path) of the import resource (zip or folder)
      * @param targetPath the name (absolute Path) of the target folder in the VFS
@@ -1312,17 +1325,17 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Imports a resource from the RFS test directories to the VFS.<p> 
-     * 
+     * Imports a resource from the RFS test directories to the VFS.<p>
+     *
      * The imported resource will be automatically unlocked.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param rfsPath the RTF path of the resource to import, must be a path accessibly by the current class loader
      * @param vfsPath the VFS path for the imported resource
      * @param type the type for the imported resource
      * @param properties the properties for the imported resource
      * @return the imported resource
-     * 
+     *
      * @throws Exception if the import fails
      */
     protected static CmsResource importTestResource(
@@ -1347,8 +1360,8 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Prints  a nicely formatted info box to System.out.<p> 
-     * 
+     * Prints  a nicely formatted info box to System.out.<p>
+     *
      * @param lines the lines to print
      */
     protected static void printInfoBox(String[] lines) {
@@ -1375,7 +1388,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Removes the OpenCms database test instance.<p>
-     * 
+     *
      * @param setupConnection the setup connection
      * @param defaultConnection the default connection
      * @param handleErrors flag to indicate if errors should be handled/checked
@@ -1421,7 +1434,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Creates a new OpenCms test database including the tables.<p>
-     * 
+     *
      * Any existing instance of the test database is forcefully removed first.<p>
      */
     protected static void setupDatabase() {
@@ -1436,7 +1449,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Creates a new OpenCms test database including the tables.<p>
-     * 
+     *
      * @param setupConnection the setup connection
      * @param defaultConnection the default connection
      * @param handleErrors flag to indicate if errors should be handled/checked
@@ -1520,13 +1533,14 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Copies the configuration files from the given folder to the "config" folder.
-     * 
+     *
      * @param newConfig the folder with the configuration files to copy
      */
     @SuppressWarnings("deprecation")
     private static void copyConfiguration(String newConfig) {
 
-        File configDir = new File(getTestDataPath("WEB-INF" + File.separatorChar + CmsSystemInfo.FOLDER_CONFIG_DEFAULT));
+        File configDir = new File(
+            getTestDataPath("WEB-INF" + File.separatorChar + CmsSystemInfo.FOLDER_CONFIG_DEFAULT));
         File configOriDir = new File(newConfig);
 
         FileFilter filter = FileFilterUtils.orFileFilter(
@@ -1563,7 +1577,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares an access control entry of a resource with a given access control entry.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param ace the access control entry to compare or null if to compare with the stored values
@@ -1611,7 +1625,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares an access control list of a resource with a given access control permission.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param principal the principal of the permission set or null if to compare with the stored values
@@ -1634,10 +1648,11 @@ public class OpenCmsTestCase extends TestCase {
 
             // now see if we have collected any no-matches
             if (noMatches.length() > 0) {
-                fail("error comparing permission sets of resource "
-                    + resourceName
-                    + " with stored values: "
-                    + noMatches);
+                fail(
+                    "error comparing permission sets of resource "
+                        + resourceName
+                        + " with stored values: "
+                        + noMatches);
             }
 
             if (permission != null) {
@@ -1647,7 +1662,8 @@ public class OpenCmsTestCase extends TestCase {
                 CmsPermissionSet resPermission = permissionMap.get(principal);
                 if (resPermission != null) {
                     if (!resPermission.equals(permission)) {
-                        fail("[Permission set not equal " + principal + ":" + permission + " != " + resPermission + "]");
+                        fail(
+                            "[Permission set not equal " + principal + ":" + permission + " != " + resPermission + "]");
                     }
                 } else {
                     fail("[Permission set not found " + principal + ":" + permission + "]");
@@ -1660,7 +1676,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares an access control list of a resource with a given access control permission.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param modifiedResource the name of the which had its permissions changed
      * @param resourceName the name of the resource to compare
@@ -1700,10 +1716,11 @@ public class OpenCmsTestCase extends TestCase {
 
             // now see if we have collected any no-matches
             if (noMatches.length() > 0) {
-                fail("error comparing permission sets of resource "
-                    + resourceName
-                    + " with stored values: "
-                    + noMatches);
+                fail(
+                    "error comparing permission sets of resource "
+                        + resourceName
+                        + " with stored values: "
+                        + noMatches);
             }
 
             if (permission != null) {
@@ -1713,7 +1730,8 @@ public class OpenCmsTestCase extends TestCase {
                 CmsPermissionSet resPermission = permissionMap.get(principal);
                 if (resPermission != null) {
                     if (!resPermission.equals(permission)) {
-                        fail("[Permission set not equal " + principal + ":" + permission + " != " + resPermission + "]");
+                        fail(
+                            "[Permission set not equal " + principal + ":" + permission + " != " + resPermission + "]");
                     }
                 } else {
                     fail("[Permission set not found " + principal + ":" + permission + "]");
@@ -1727,7 +1745,7 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Tests if a pattern can be found in a content string.<p>
      * Fails if the pattern is not found.
-     * 
+     *
      * @param content the content string
      * @param pattern the pattern to search for
      */
@@ -1741,7 +1759,7 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Tests if a pattern cannot  be found in a content string.<p>
      * Fails if the pattern is found.
-     * 
+     *
      * @param content the content string
      * @param pattern the pattern to search for
      */
@@ -1754,7 +1772,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current content of a (file) resource with a given content.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param content the content to compare
@@ -1784,7 +1802,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Tests if the current content date of a resource is equals to the given date.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param dateContent the content date
@@ -1796,15 +1814,16 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             if (res.getDateContent() != dateContent) {
-                fail("[DateContent "
-                    + dateContent
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(dateContent)
-                    + " != "
-                    + res.getDateContent()
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(res.getDateContent())
-                    + "]");
+                fail(
+                    "[DateContent "
+                        + dateContent
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(dateContent)
+                        + " != "
+                        + res.getDateContent()
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(res.getDateContent())
+                        + "]");
             }
 
         } catch (CmsException e) {
@@ -1814,7 +1833,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Tests if the the current date content of a resource is later than the given date.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param dateContent the content date
@@ -1826,15 +1845,16 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             if (res.getDateContent() < dateContent) {
-                fail("[DateContent "
-                    + dateContent
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(dateContent)
-                    + " > "
-                    + res.getDateContent()
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(res.getDateContent())
-                    + "]");
+                fail(
+                    "[DateContent "
+                        + dateContent
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(dateContent)
+                        + " > "
+                        + res.getDateContent()
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(res.getDateContent())
+                        + "]");
             }
 
         } catch (CmsException e) {
@@ -1844,7 +1864,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current date created of a resource with a given date.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param dateCreated the creation date
@@ -1856,15 +1876,16 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             if (res.getDateCreated() != dateCreated) {
-                fail("[DateCreated "
-                    + dateCreated
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(dateCreated)
-                    + " != "
-                    + res.getDateCreated()
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(res.getDateCreated())
-                    + "]");
+                fail(
+                    "[DateCreated "
+                        + dateCreated
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(dateCreated)
+                        + " != "
+                        + res.getDateCreated()
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(res.getDateCreated())
+                        + "]");
 
             }
 
@@ -1875,7 +1896,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Tests if the the creation date of a resource is later then a given date.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param dateCreated the creation date
@@ -1887,15 +1908,16 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             if (res.getDateCreated() < dateCreated) {
-                fail("[DateCreated "
-                    + dateCreated
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(dateCreated)
-                    + " > "
-                    + res.getDateCreated()
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(res.getDateCreated())
-                    + "]");
+                fail(
+                    "[DateCreated "
+                        + dateCreated
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(dateCreated)
+                        + " > "
+                        + res.getDateCreated()
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(res.getDateCreated())
+                        + "]");
             }
 
         } catch (CmsException e) {
@@ -1905,7 +1927,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current expiration date of a resource with a given date.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param dateExpired the expiration date
@@ -1917,15 +1939,16 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             if (res.getDateExpired() != dateExpired) {
-                fail("[DateExpired "
-                    + dateExpired
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(dateExpired)
-                    + " != "
-                    + res.getDateExpired()
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(res.getDateExpired())
-                    + "]");
+                fail(
+                    "[DateExpired "
+                        + dateExpired
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(dateExpired)
+                        + " != "
+                        + res.getDateExpired()
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(res.getDateExpired())
+                        + "]");
 
             }
 
@@ -1936,7 +1959,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current date last modified of a resource with a given date.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param dateLastModified the last modification date
@@ -1948,15 +1971,16 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             if (res.getDateLastModified() != dateLastModified) {
-                fail("[DateLastModified "
-                    + dateLastModified
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(dateLastModified)
-                    + " != "
-                    + res.getDateLastModified()
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(res.getDateLastModified())
-                    + "]");
+                fail(
+                    "[DateLastModified "
+                        + dateLastModified
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(dateLastModified)
+                        + " != "
+                        + res.getDateLastModified()
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(res.getDateLastModified())
+                        + "]");
             }
 
         } catch (CmsException e) {
@@ -1966,7 +1990,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Tests if the the current date last modified of a resource is later than the given date.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param dateLastModified the last modification date
@@ -1978,15 +2002,16 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             if (res.getDateLastModified() < dateLastModified) {
-                fail("[DateLastModified "
-                    + dateLastModified
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(dateLastModified)
-                    + " > "
-                    + res.getDateLastModified()
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(res.getDateLastModified())
-                    + "]");
+                fail(
+                    "[DateLastModified "
+                        + dateLastModified
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(dateLastModified)
+                        + " > "
+                        + res.getDateLastModified()
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(res.getDateLastModified())
+                        + "]");
             }
 
         } catch (CmsException e) {
@@ -1996,7 +2021,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current release date of a resource with a given date.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param dateReleased the release date
@@ -2008,15 +2033,16 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             if (res.getDateReleased() != dateReleased) {
-                fail("[DateReleased "
-                    + dateReleased
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(dateReleased)
-                    + " != "
-                    + res.getDateReleased()
-                    + " i.e. "
-                    + CmsDateUtil.getHeaderDate(res.getDateReleased())
-                    + "]");
+                fail(
+                    "[DateReleased "
+                        + dateReleased
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(dateReleased)
+                        + " != "
+                        + res.getDateReleased()
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(res.getDateReleased())
+                        + "]");
 
             }
 
@@ -2027,7 +2053,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Tests if the given exceptions are equal (or both null).<p>
-     * 
+     *
      * @param e1 first exception to compare
      * @param e2 second exception to compare
      */
@@ -2054,7 +2080,7 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Tests if the given jobs are internally equal.<p>
      * (May have different wrapper classes)
-     * 
+     *
      * @param j1 first job to compare
      * @param j2 second job to compare
      * @param comparePublishLists if the publish lists should be compared, too
@@ -2073,13 +2099,16 @@ public class OpenCmsTestCase extends TestCase {
             && job1.getProjectName().equals(job2.getProjectName())
             && job1.getUserId().equals(job2.getUserId())
             && job1.getLocale().equals(job2.getLocale())
-            && (job1.getFlags() == job2.getFlags()) && (job1.getSize() == job2.getSize()))) {
+            && (job1.getFlags() == job2.getFlags())
+            && (job1.getSize() == job2.getSize()))) {
 
             fail("Publish jobs are not equal");
         }
 
         if (compareTime) {
-            if (!((job1.getEnqueueTime() == job2.getEnqueueTime()) && (job1.getStartTime() == job2.getStartTime()) && (job1.getFinishTime() == job2.getFinishTime()))) {
+            if (!((job1.getEnqueueTime() == job2.getEnqueueTime())
+                && (job1.getStartTime() == job2.getStartTime())
+                && (job1.getFinishTime() == job2.getFinishTime()))) {
 
                 fail("Publish jobs do not have the same timestamps");
             }
@@ -2094,7 +2123,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Tests if the given xml document objects are equals (or both null).<p>
-     * 
+     *
      * @param d1 first document to compare
      * @param d2 second document to compare
      */
@@ -2111,16 +2140,17 @@ public class OpenCmsTestCase extends TestCase {
         if ((d1 != null) && (d2 != null)) {
             InternalNodeComparator comparator = new InternalNodeComparator();
             if (comparator.compare((Node)d1, (Node)d2) != 0) {
-                fail("Comparison of documents failed: "
-                    + "name = "
-                    + d1.getName()
-                    + ", "
-                    + "path = "
-                    + comparator.m_node1.getUniquePath()
-                    + "\nNode 1:"
-                    + comparator.m_node1.asXML()
-                    + "\nNode 2:"
-                    + comparator.m_node2.asXML());
+                fail(
+                    "Comparison of documents failed: "
+                        + "name = "
+                        + d1.getName()
+                        + ", "
+                        + "path = "
+                        + comparator.m_node1.getUniquePath()
+                        + "\nNode 1:"
+                        + comparator.m_node1.asXML()
+                        + "\nNode 2:"
+                        + comparator.m_node2.asXML());
             }
         }
     }
@@ -2128,7 +2158,7 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Compares a given resource to its stored version containing the state before a CmsObject
      * method was called.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resource the resource to compare
      * @param filter the filter contianing the flags defining which attributes to compare
@@ -2148,7 +2178,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares a stored Cms resource with another Cms resource instance using a specified filter.<p>
-     * 
+     *
      * @param cms the current user's Cms object
      * @param storedResource a stored Cms resource representing the state before an operation
      * @param res a Cms resource representing the state after an operation
@@ -2412,12 +2442,12 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Compares a resource to its stored version containing the state before a CmsObject
      * method was called.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param filter the filter contianing the flags defining which attributes to compare
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void assertFilter(CmsObject cms, String resourceName, OpenCmsTestResourceFilter filter) throws CmsException {
 
@@ -2439,13 +2469,17 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares a resource to another given resource using a specified filter.<p>
-     * 
+     *
      * @param cms the current user's Cms object
      * @param resourceName1 resource #1
      * @param resourceName2 resource #2
      * @param filter the filter contianing the flags defining which attributes to compare
      */
-    public void assertFilter(CmsObject cms, String resourceName1, String resourceName2, OpenCmsTestResourceFilter filter) {
+    public void assertFilter(
+        CmsObject cms,
+        String resourceName1,
+        String resourceName2,
+        OpenCmsTestResourceFilter filter) {
 
         try {
             CmsResource res1 = cms.readResource(resourceName1, CmsResourceFilter.ALL);
@@ -2467,7 +2501,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Tests whether a resource has currently a specified flag set.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param flag a flag to check
@@ -2490,11 +2524,11 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Checks if the given resource has the correct history count, also
      * check if all entries in the history can be read.<p>
-     * 
+     *
      * @param cms the current user OpenCms context
      * @param resourcename the name of the resource to check the history for
      * @param versionCount the expected version number of the resource
-     *  
+     *
      * @throws Exception if the test fails
      */
     public void assertHistory(CmsObject cms, String resourcename, int versionCount) throws Exception {
@@ -2535,20 +2569,20 @@ public class OpenCmsTestCase extends TestCase {
             }
             count--;
         }
-        // finally assert the list size if equal to the history version 
+        // finally assert the list size if equal to the history version
         assertEquals(versionCount - (unchanged ? 0 : 1), versions.size());
     }
 
     /**
      * Checks if the given resource has the correct history count, also
      * check if all entries in the history can be read.<p>
-     * 
+     *
      * Use this method only for resources that has been restored.<p>
-     * 
+     *
      * @param cms the current user OpenCms context
      * @param resourcename the name of the resource to check the history for
      * @param versionCount the expected version number of the resource
-     *  
+     *
      * @throws Exception if the test fails
      */
     public void assertHistoryForRestored(CmsObject cms, String resourcename, int versionCount) throws Exception {
@@ -2579,13 +2613,13 @@ public class OpenCmsTestCase extends TestCase {
             assertEquals(count, hFile.getVersion());
             count--;
         }
-        // finally assert the list size if equal to the history version 
+        // finally assert the list size if equal to the history version
         assertEquals(versionCount - (unchanged ? 0 : 1), versions.size());
     }
 
     /**
      * Ensures that the given resource is a folder.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to check for a folder
      */
@@ -2607,8 +2641,8 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Tests if the specified object is identical with another object.<p> 
-     * 
+     * Tests if the specified object is identical with another object.<p>
+     *
      * @param o1 an object
      * @param o2 another object
      */
@@ -2620,8 +2654,8 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Tests if the specified object is not identical with another object.<p> 
-     * 
+     * Tests if the specified object is not identical with another object.<p>
+     *
      * @param o1 an object
      * @param o2 another object
      */
@@ -2634,7 +2668,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Validates if a specified resource is somehow locked to the current user.<p>
-     * 
+     *
      * @param cms the current user's Cms object
      * @param resourceName the name of the resource to validate
      */
@@ -2646,11 +2680,12 @@ public class OpenCmsTestCase extends TestCase {
             CmsLock lock = cms.getLock(res);
 
             if (lock.isNullLock() || !lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
-                fail("[Lock "
-                    + resourceName
-                    + " requires must be locked to user "
-                    + cms.getRequestContext().getCurrentUser().getId()
-                    + "]");
+                fail(
+                    "[Lock "
+                        + resourceName
+                        + " requires must be locked to user "
+                        + cms.getRequestContext().getCurrentUser().getId()
+                        + "]");
             }
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
@@ -2659,11 +2694,11 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Validates if a specified resource has a lock of a given type for the current user.<p>
-     * 
+     *
      * @param cms the current user's Cms object
      * @param resourceName the name of the resource to validate
      * @param lockType the type of the lock
-     * 
+     *
      * @see CmsLockType
      */
     public void assertLock(CmsObject cms, String resourceName, CmsLockType lockType) {
@@ -2673,12 +2708,12 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Validates if a specified resource has a lock of a given type and is locked for a principal.<p>
-     * 
+     *
      * @param cms the current user's Cms object
      * @param resourceName the name of the resource to validate
      * @param lockType the type of the lock
      * @param user the user to check the lock with
-     * 
+     *
      * @see CmsLockType
      */
     public void assertLock(CmsObject cms, String resourceName, CmsLockType lockType, CmsUser user) {
@@ -2693,19 +2728,20 @@ public class OpenCmsTestCase extends TestCase {
                     fail("[Lock " + resourceName + " must be unlocked]");
                 }
             } else if (lock.isNullLock() || (lock.getType() != lockType) || !lock.isOwnedBy(user)) {
-                fail("[Lock "
-                    + resourceName
-                    + " requires a lock of type "
-                    + lockType
-                    + " for user "
-                    + user.getId()
-                    + " ("
-                    + user.getName()
-                    + ") but has a lock of type "
-                    + lock.getType()
-                    + " for user "
-                    + lock.getUserId()
-                    + "]");
+                fail(
+                    "[Lock "
+                        + resourceName
+                        + " requires a lock of type "
+                        + lockType
+                        + " for user "
+                        + user.getId()
+                        + " ("
+                        + user.getName()
+                        + ") but has a lock of type "
+                        + lock.getType()
+                        + " for user "
+                        + lock.getUserId()
+                        + "]");
             }
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
@@ -2715,7 +2751,7 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Validates the project status of a resource,
      * i.e. if a resource has a "red flag" or not.<p>
-     * 
+     *
      * @param cms the current user's Cms object
      * @param resourceName the name of the resource to validate
      * @param shouldHaveRedFlag true, if the resource should currently have a red flag
@@ -2749,12 +2785,12 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Asserts the given permission string with the access control entry for the given resource and principal.<p>
-     * 
+     *
      * @param cms the cms object
      * @param resourceName the resource name
      * @param principal the principal
      * @param permissionString the permission string to compare
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void assertPermissionString(
@@ -2767,9 +2803,11 @@ public class OpenCmsTestCase extends TestCase {
         while (it.hasNext()) {
             CmsAccessControlEntry ace = it.next();
             if (ace.getPrincipal().equals(principal.getId())) {
-                assertEquals(permissionString, ace.getPermissions().getPermissionString()
-                    + ace.getInheritingString()
-                    + ace.getResponsibleString());
+                assertEquals(
+                    permissionString,
+                    ace.getPermissions().getPermissionString()
+                        + ace.getInheritingString()
+                        + ace.getResponsibleString());
                 return;
             }
         }
@@ -2780,7 +2818,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current project of a resource with a given CmsProject.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param project the project
@@ -2802,7 +2840,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current properties of a resource with the stored values and a given, changed property.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param property the changed property
@@ -2842,7 +2880,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current properties of a resource with the stored values and a list of changed property.<p>
-     * 
+     *
      * @param cms an initialized CmsObject
      * @param resourceName the name of the resource to compare
      * @param excludeList a list of CmsProperties to exclude
@@ -2894,7 +2932,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Tests if a properetydefintion does exist.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param propertyDefinition the propertsdefinition
      */
@@ -2916,9 +2954,9 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Tests the list the propertydefinitions are identical to a given list except one exlclude propertydefintion.<p>
-     * 
+     *
      * @param cms the CmsObject
-     * @param propertyDefintions the list of propertydefintions 
+     * @param propertyDefintions the list of propertydefintions
      * @param exclude the exclude propertydefinition
      */
     public void assertPropertydefinitions(
@@ -2941,7 +2979,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current properties of a resource with the stored values.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      */
@@ -2964,7 +3002,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current properties of a resource with the stored values and a given, new property.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param property the changed property
@@ -3004,7 +3042,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current properties of a resource with the stored values and a list of new property.<p>
-     * 
+     *
      * @param cms an initialized CmsObject
      * @param resourceName the name of the resource to compare
      * @param excludeList a list of CmsProperties to exclude
@@ -3056,7 +3094,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current properties of a resource with the stored values and a given, deleted property.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param property the deleted property
@@ -3097,7 +3135,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current properties of a resource with the stored values and a list of deleted properties.<p>
-     * 
+     *
      * @param cms an initialized CmsObject
      * @param resourceName the name of the resource to compare
      * @param excludeList a list of CmsProperties to exclude
@@ -3151,7 +3189,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Asserts the equality of the two given relations.<p>
-     * 
+     *
      * @param expected the expected relation
      * @param actual the actual result
      */
@@ -3166,7 +3204,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current resource id of a resource with a given id.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param resourceId the id
@@ -3187,7 +3225,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Ensures that the given resource is of a certain type.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to check
      * @param resourceType the resource type to check for
@@ -3208,7 +3246,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Validates if the current sibling count of a resource matches the given number.<p>
-     * 
+     *
      * @param cms the current user's Cms object
      * @param resourceName the name of the resource to compare
      * @param count the number of additional siblings
@@ -3230,10 +3268,10 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Validates if the current sibling count of a resource has been incremented
      * compared to it's previous sibling count.<p>
-     * 
+     *
      * @param cms the current user's Cms object
      * @param resourceName the name of the resource to compare
-     * @param increment the number of additional siblings compared to the original state 
+     * @param increment the number of additional siblings compared to the original state
      */
     public void assertSiblingCountIncremented(CmsObject cms, String resourceName, int increment) {
 
@@ -3245,13 +3283,14 @@ public class OpenCmsTestCase extends TestCase {
             OpenCmsTestResourceStorageEntry entry = m_currentResourceStrorage.get(resourceName);
 
             if (res.getSiblingCount() != (entry.getSiblingCount() + increment)) {
-                fail("[SiblingCount "
-                    + res.getSiblingCount()
-                    + " != "
-                    + entry.getSiblingCount()
-                    + "+"
-                    + increment
-                    + "]");
+                fail(
+                    "[SiblingCount "
+                        + res.getSiblingCount()
+                        + " != "
+                        + entry.getSiblingCount()
+                        + "+"
+                        + increment
+                        + "]");
             }
 
         } catch (Exception e) {
@@ -3261,7 +3300,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current state of a resource with a given state.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param state the state
@@ -3283,7 +3322,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current structure id of a resource with a given id.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param structureId the id
@@ -3305,7 +3344,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current type of a resource with a given type.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param type the type
@@ -3327,7 +3366,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the user who created a resource with a given user.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param user the last modification user
@@ -3349,7 +3388,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares the current user last modified of a resource with a given user.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param user the last modification user
@@ -3371,7 +3410,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Tests if the current version of a resource is equals to the given version number.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to compare
      * @param version the version number to check
@@ -3400,7 +3439,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Should return the additional connection name.<p>
-     * 
+     *
      * @return the name of the additional connection
      */
     public String getConnectionName() {
@@ -3410,7 +3449,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Returns the name of the database product.<p>
-     * 
+     *
      * @return returns either oracle or mysql
      */
     public String getDatabaseProduct() {
@@ -3420,7 +3459,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Gets an pre-calculate resource state from the storage.<p>
-     * 
+     *
      * @param resourceName the name of the resource to get  the state
      * @return precalculated resource state
      * @throws Exception in case something goes wrong
@@ -3450,11 +3489,11 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Stores the state (e.g. attributes, properties, content, lock state and ACL) of 
+     * Stores the state (e.g. attributes, properties, content, lock state and ACL) of
      * a resource in the internal resource storage.<p>
-     * 
+     *
      * If the resourceName is the name of a folder in the vfs, all subresoruces are stored as well.
-     *   
+     *
      * @param cms an initialized CmsObject
      * @param resourceName the name of the resource in the vfs
      */
@@ -3464,12 +3503,12 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Stores the state (e.g. attributes, properties, content, lock state and ACL) of 
+     * Stores the state (e.g. attributes, properties, content, lock state and ACL) of
      * a resource in the internal resource storage.<p>
-     * 
-     * If the resourceName is the name of a folder in the vfs and storeSubresources is true, 
+     *
+     * If the resourceName is the name of a folder in the vfs and storeSubresources is true,
      * all subresoruces are stored as well.
-     * 
+     *
      * @param cms an initialized CmsObject
      * @param resourceName the name of the resource in the vfs
      * @param storeSubresources indicates to store subresources of folders
@@ -3485,8 +3524,10 @@ public class OpenCmsTestCase extends TestCase {
                 m_currentResourceStrorage.add(cms, resourceName, resource);
             } else {
                 // this is a folder, so first add the folder itself to the storage
-                m_currentResourceStrorage.add(cms, resourceName
-                    + (resourceName.charAt(resourceName.length() - 1) != '/' ? "/" : ""), resource);
+                m_currentResourceStrorage.add(
+                    cms,
+                    resourceName + (resourceName.charAt(resourceName.length() - 1) != '/' ? "/" : ""),
+                    resource);
 
                 if (!storeSubresources) {
                     return;
@@ -3502,12 +3543,13 @@ public class OpenCmsTestCase extends TestCase {
                 }
             }
         } catch (CmsException e) {
-            fail("cannot read resource "
-                + resourceName
-                + " or "
-                + resName
-                + " "
-                + CmsException.getStackTraceAsString(e));
+            fail(
+                "cannot read resource "
+                    + resourceName
+                    + " or "
+                    + resName
+                    + " "
+                    + CmsException.getStackTraceAsString(e));
         }
     }
 
@@ -3526,10 +3568,10 @@ public class OpenCmsTestCase extends TestCase {
         }
     }
 
-    /** 
+    /**
      * Deletes a given resource if possible.<p>
-     * 
-     * @param path the path of the resource to delete 
+     *
+     * @param path the path of the resource to delete
      * @throws CmsException in case somthing goes wrong
      */
     protected void delete(String path) throws CmsException {
@@ -3546,7 +3588,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Deletes the given file from the rfs.<p>
-     * 
+     *
      * @param absolutePath the absolute path of the file
      */
     protected void deleteFile(String absolutePath) {
@@ -3567,7 +3609,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Writes a message to the current output stream.<p>
-     * 
+     *
      * @param message the message to write
      */
     protected void echo(String message) {
@@ -3584,7 +3626,7 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Returns an initialized CmsObject with admin user permissions,
      * running in the "/sites/default" site root.<p>
-     * 
+     *
      * @return an initialized CmsObject with admin user permissions
      * @throws CmsException in case of OpenCms access errors
      */
@@ -3606,13 +3648,13 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Imports a module (zipfile) from the default module directory, 
+     * Imports a module (zipfile) from the default module directory,
      * creating a temporary project for this.<p>
      *
      * @param importFile the name of the import module located in the default module directory
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, org.opencms.report.I_CmsReport, CmsImportParameters)
      */
     protected void importModuleFromDefault(String importFile) throws Exception {
@@ -3649,7 +3691,7 @@ public class OpenCmsTestCase extends TestCase {
 
         OpenCmsTestLogAppender.setBreakOnError(false);
 
-        // output a message 
+        // output a message
         System.out.println("\n\n\n----- Restarting shell -----");
 
         m_shell.exit();
@@ -3669,7 +3711,7 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Overrides the main test start method in order to output automatic markers.<p>
-     * 
+     *
      * @see junit.framework.TestCase#runTest()
      */
     @Override
@@ -3691,7 +3733,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param cms the CmsObject
      * @param resourceName the name of the resource the properties belong to
      * @param storedResource the stored resource corresponding to the resourcename
-     * @param excludeList the list of ccess entries to exclude in the test or null   
+     * @param excludeList the list of ccess entries to exclude in the test or null
      * @return string of non matching access entries
      * @throws CmsException if something goes wrong
      */
@@ -3749,11 +3791,11 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Compares two vectors of access control entires.<p>
-     * 
+     *
      * @param source the source vector to compare
      * @param target  the destination vector to compare
      * @param exclude the exclude list
-     * @return list of non matching access control entires 
+     * @return list of non matching access control entires
      */
     private List<CmsAccessControlEntry> compareAce(
         List<CmsAccessControlEntry> source,
@@ -3847,7 +3889,7 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Compares two lists of propertydefintions excluding an exclude propertydefintion. 
+     * Compares two lists of propertydefintions excluding an exclude propertydefintion.
      * @param source the source list of propertydefintions
      * @param target the target list of propertydefintions
      * @param exclude the exclude propertydefintion
@@ -3871,13 +3913,13 @@ public class OpenCmsTestCase extends TestCase {
 
     /**
      * Creates a user compare fail message.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param message the message to show
      * @param user1 the id of the first (expected) user
      * @param user2 the id of the second (found) user
      * @return a user compare fail message
-     * 
+     *
      * @throws CmsException if one of the users can't be read
      */
     private String createUserFailMessage(CmsObject cms, String message, CmsUUID user1, CmsUUID user2)
@@ -3901,7 +3943,7 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Creates a map of all parent resources of a OpenCms resource.<p>
      * The resource UUID is used as key, the full resource path is used as the value.
-     * 
+     *
      * @param cms the CmsObject
      * @param resourceName the name of the resource to get the parent map from
      * @return HashMap of parent resources
@@ -3926,7 +3968,7 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Initializes the OpenCms/database configuration 
+     * Initializes the OpenCms/database configuration
      * by reading the appropriate values from opencms.properties.<p>
      */
     private void initConfiguration() {
@@ -3957,103 +3999,61 @@ public class OpenCmsTestCase extends TestCase {
             String key = "setup";
             m_setupConnection = new ConnectionData();
             m_setupConnection.m_dbName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "dbName");
-            m_setupConnection.m_jdbcUrl = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "jdbcUrl");
+            m_setupConnection.m_jdbcUrl = m_configuration.get(
+                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "jdbcUrl");
             m_setupConnection.m_userName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "user");
-            m_setupConnection.m_userPassword = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                + "."
-                + key
-                + "."
-                + "password");
-            m_setupConnection.m_jdbcDriver = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                + "."
-                + key
-                + "."
-                + CmsDbPool.KEY_JDBC_DRIVER);
-            m_setupConnection.m_jdbcUrl = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                + "."
-                + key
-                + "."
-                + CmsDbPool.KEY_JDBC_URL);
-            m_setupConnection.m_jdbcUrlParams = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                + "."
-                + key
-                + "."
-                + CmsDbPool.KEY_JDBC_URL_PARAMS);
+            m_setupConnection.m_userPassword = m_configuration.get(
+                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "password");
+            m_setupConnection.m_jdbcDriver = m_configuration.get(
+                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_DRIVER);
+            m_setupConnection.m_jdbcUrl = m_configuration.get(
+                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_URL);
+            m_setupConnection.m_jdbcUrlParams = m_configuration.get(
+                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_URL_PARAMS);
 
             key = "default";
             m_defaultConnection = new ConnectionData();
-            m_defaultConnection.m_dbName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "dbName");
-            m_defaultConnection.m_userName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                + "."
-                + key
-                + "."
-                + CmsDbPool.KEY_USERNAME);
-            m_defaultConnection.m_userPassword = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                + "."
-                + key
-                + "."
-                + CmsDbPool.KEY_PASSWORD);
-            m_defaultConnection.m_jdbcDriver = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                + "."
-                + key
-                + "."
-                + CmsDbPool.KEY_JDBC_DRIVER);
-            m_defaultConnection.m_jdbcUrl = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                + "."
-                + key
-                + "."
-                + CmsDbPool.KEY_JDBC_URL);
-            m_defaultConnection.m_jdbcUrlParams = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                + "."
-                + key
-                + "."
-                + CmsDbPool.KEY_JDBC_URL_PARAMS);
+            m_defaultConnection.m_dbName = m_configuration.get(
+                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "dbName");
+            m_defaultConnection.m_userName = m_configuration.get(
+                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_USERNAME);
+            m_defaultConnection.m_userPassword = m_configuration.get(
+                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_PASSWORD);
+            m_defaultConnection.m_jdbcDriver = m_configuration.get(
+                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_DRIVER);
+            m_defaultConnection.m_jdbcUrl = m_configuration.get(
+                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_URL);
+            m_defaultConnection.m_jdbcUrlParams = m_configuration.get(
+                CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_URL_PARAMS);
 
             key = getConnectionName();
             if (m_configuration.get(CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "dbName") != null) {
                 m_additionalConnection = new ConnectionData();
-                m_additionalConnection.m_dbName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                    + "."
-                    + key
-                    + "."
-                    + "dbName");
-                m_additionalConnection.m_userName = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                    + "."
-                    + key
-                    + "."
-                    + CmsDbPool.KEY_USERNAME);
-                m_additionalConnection.m_userPassword = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                    + "."
-                    + key
-                    + "."
-                    + CmsDbPool.KEY_PASSWORD);
-                m_additionalConnection.m_jdbcDriver = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                    + "."
-                    + key
-                    + "."
-                    + CmsDbPool.KEY_JDBC_DRIVER);
-                m_additionalConnection.m_jdbcUrl = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                    + "."
-                    + key
-                    + "."
-                    + CmsDbPool.KEY_JDBC_URL);
-                m_additionalConnection.m_jdbcUrlParams = m_configuration.get(CmsDbPool.KEY_DATABASE_POOL
-                    + "."
-                    + key
-                    + "."
-                    + CmsDbPool.KEY_JDBC_URL_PARAMS);
+                m_additionalConnection.m_dbName = m_configuration.get(
+                    CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + "dbName");
+                m_additionalConnection.m_userName = m_configuration.get(
+                    CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_USERNAME);
+                m_additionalConnection.m_userPassword = m_configuration.get(
+                    CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_PASSWORD);
+                m_additionalConnection.m_jdbcDriver = m_configuration.get(
+                    CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_DRIVER);
+                m_additionalConnection.m_jdbcUrl = m_configuration.get(
+                    CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_URL);
+                m_additionalConnection.m_jdbcUrlParams = m_configuration.get(
+                    CmsDbPool.KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.KEY_JDBC_URL_PARAMS);
             }
 
             m_defaultTablespace = m_configuration.get("db.oracle.defaultTablespace");
             m_indexTablespace = m_configuration.get("db.oracle.indexTablespace");
             m_tempTablespace = m_configuration.get("db.oracle.temporaryTablespace");
 
-            System.out.println("----- Starting tests on database "
-                + m_dbProduct
-                + " ("
-                + m_setupConnection.m_jdbcUrl
-                + ") "
-                + "-----");
+            System.out.println(
+                "----- Starting tests on database "
+                    + m_dbProduct
+                    + " ("
+                    + m_setupConnection.m_jdbcUrl
+                    + ") "
+                    + "-----");
         }
     }
 

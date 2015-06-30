@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,9 +55,9 @@ import org.htmlparser.util.ParserException;
  * Bean to hold the settings needed for the operation of replacing HTML Tags of xmlpage resources in
  * the OpenCms VFS.
  * <p>
- * 
+ *
  * @since 6.1.7
- * 
+ *
  */
 public final class CmsTagReplaceSettings {
 
@@ -97,7 +97,7 @@ public final class CmsTagReplaceSettings {
     /**
      * Bean constructor with cms object for path validation.
      * <p>
-     * 
+     *
      * @param cms used to test the working path for valididty.
      */
     public CmsTagReplaceSettings(CmsObject cms) {
@@ -121,7 +121,7 @@ public final class CmsTagReplaceSettings {
      * Returns the value of the shared {@link #PROPERTY_CONTENTOOLS_TAGREPLACE} to set on resources
      * that have been processed with these settings.
      * <p>
-     * 
+     *
      * @return the value of the shared {@link #PROPERTY_CONTENTOOLS_TAGREPLACE} to set on resources
      *         that have been processed with these settings.
      */
@@ -133,7 +133,7 @@ public final class CmsTagReplaceSettings {
     /**
      * Returns the replacements to perform in form of a comma-separated List of "key=value" tokens.
      * <p>
-     * 
+     *
      * @return the replacements to perform in form of a comma-separated List of "key=value" tokens.
      */
     public SortedMap getReplacements() {
@@ -144,7 +144,7 @@ public final class CmsTagReplaceSettings {
     /**
      * Returns the path under which files will be processed recursively.
      * <p>
-     * 
+     *
      * @return the path under which files will be processed recursively.
      */
     public String getWorkPath() {
@@ -156,11 +156,11 @@ public final class CmsTagReplaceSettings {
      * Sets the value of the shared {@link #PROPERTY_CONTENTOOLS_TAGREPLACE} to set on resources
      * that have been processed with these settings.
      * <p>
-     * 
+     *
      * @param propertyValueTagreplaceID the value of the shared
      *            {@link #PROPERTY_CONTENTOOLS_TAGREPLACE} to set on resources that have been
      *            processed with these settings.
-     * 
+     *
      * @throws CmsIllegalArgumentException if the argument is not valid.
      */
     public void setPropertyValueTagReplaceID(String propertyValueTagreplaceID) throws CmsIllegalArgumentException {
@@ -175,10 +175,10 @@ public final class CmsTagReplaceSettings {
     /**
      * Sets the replacements to perform in form of a comma-separated List of "key=value" tokens.
      * <p>
-     * 
+     *
      * @param replacements the replacements to perform in form of a comma-separated List of
      *            "key=value" tokens.
-     * 
+     *
      * @throws CmsIllegalArgumentException if the argument is not valid.
      */
     public void setReplacements(SortedMap replacements) throws CmsIllegalArgumentException {
@@ -224,9 +224,9 @@ public final class CmsTagReplaceSettings {
     /**
      * Sets the path under which files will be processed recursively.
      * <p>
-     * 
+     *
      * @param workPath the path under which files will be processed recursively.
-     * 
+     *
      * @throws CmsIllegalArgumentException if the argument is not valid.
      */
     public void setWorkPath(String workPath) throws CmsIllegalArgumentException {
@@ -236,9 +236,8 @@ public final class CmsTagReplaceSettings {
         }
         // test if it is a valid path:
         if (!m_cms.existsResource(workPath)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.GUI_ERR_TAGREPLACE_WORKPATH_1,
-                workPath));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.GUI_ERR_TAGREPLACE_WORKPATH_1, workPath));
         }
         m_workPath = workPath;
 
@@ -247,7 +246,7 @@ public final class CmsTagReplaceSettings {
     /**
      * Returns the Set&lt;{@link org.htmlparser.Tag}&gt; to delete from transformed output.
      * <p>
-     * 
+     *
      * @return the Set&lt;{@link org.htmlparser.Tag}&gt; to delete from transformed output.
      */
     protected Set getDeleteTags() {
@@ -259,11 +258,11 @@ public final class CmsTagReplaceSettings {
      * Transforms the given Tag into the one it has to become by changing it's name and/or
      * attributes.
      * <p>
-     * 
+     *
      * @param tag the tag to be transformed.
-     * 
+     *
      * @return true if the given tag was modified, false else.
-     * 
+     *
      */
     protected boolean replace(org.htmlparser.Tag tag) {
 
@@ -295,15 +294,16 @@ public final class CmsTagReplaceSettings {
                     // (for the whitespace!)
                 } else {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_DEBUG_TAGREPLACE_TAG_REMOVE_ATTRIB_2,
-                            attName, tag.getTagName()));
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_DEBUG_TAGREPLACE_TAG_REMOVE_ATTRIB_2,
+                                attName,
+                                tag.getTagName()));
 
                     }
                     itAttribs.remove();
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_DEBUG_TAGREPLACE_TAG_REMOVE_ATTRIB_OK_0));
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_TAGREPLACE_TAG_REMOVE_ATTRIB_OK_0));
                     }
                 }
             }
@@ -315,11 +315,11 @@ public final class CmsTagReplaceSettings {
      * Computes the default property value for resources that have to be marked as "processed by
      * these replacement settings".
      * <p>
-     * 
+     *
      * The default value will be the alphabetically sorted string for replacments or the empty
      * String if the replacements have not been set before.
      * <p>
-     * 
+     *
      * @return the default property value for resources that have to be marked as "processed by
      *         these replacement settings".
      */

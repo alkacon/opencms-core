@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Helper class for displaying errors.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsErrorWidget extends Composite {
@@ -58,7 +58,7 @@ public class CmsErrorWidget extends Composite {
 
     /**
      * Creates the a new error label.<p>
-     * 
+     *
      * @return a label with the appropriate style for  an error label
      */
     private static Label createErrorLabel() {
@@ -71,7 +71,7 @@ public class CmsErrorWidget extends Composite {
 
     /**
      * Returns <code>true</code> if a error message is set.<p>
-     * 
+     *
      * @return <code>true</code> if a error message is set
      */
     public boolean hasError() {
@@ -81,7 +81,7 @@ public class CmsErrorWidget extends Composite {
 
     /**
      * Sets the text for the error message.<p>
-     * 
+     *
      * If the text parameter is null, the error message will be hidden.
      * @param text
      */
@@ -112,7 +112,7 @@ public class CmsErrorWidget extends Composite {
 
     /**
      * Sets the visibility of the error label.<p>
-     * 
+     *
      * @param visible <code>true</code> if the error should be visible
      */
     protected void setErrorVisible(boolean visible) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,8 +42,8 @@ import java.util.Set;
 
 /**
  * Resource wrapper class which is used to prevent resources with a certain name from being created.<p>
- * 
- * This can be used to prevent file browsers accessing the repository from creating thumbnail files. 
+ *
+ * This can be used to prevent file browsers accessing the repository from creating thumbnail files.
  * This class does not distinguish between upper case and lower case letters in file names.
  */
 public class CmsResourceWrapperPreventCreateNameCI extends A_CmsResourceWrapper {
@@ -51,7 +51,7 @@ public class CmsResourceWrapperPreventCreateNameCI extends A_CmsResourceWrapper 
     /** File name separator. */
     public static final String NAME_SEPARATOR = "|";
 
-    /** 
+    /**
      * The set of illegal file names.<p>
      */
     private Set<String> m_disabledNames = new HashSet<String>();
@@ -81,10 +81,9 @@ public class CmsResourceWrapperPreventCreateNameCI extends A_CmsResourceWrapper 
 
         String name = CmsResource.getName(resourcepath);
         if (m_disabledNames.contains(name.toLowerCase())) {
-            throw new CmsSilentWrapperException(new CmsPermissionViolationException(Messages.get().container(
-                Messages.ERR_PERM_DENIED_2,
-                resourcepath,
-                "+c")));
+            throw new CmsSilentWrapperException(
+                new CmsPermissionViolationException(
+                    Messages.get().container(Messages.ERR_PERM_DENIED_2, resourcepath, "+c")));
         } else {
             return null;
         }
@@ -108,10 +107,8 @@ public class CmsResourceWrapperPreventCreateNameCI extends A_CmsResourceWrapper 
         String name = CmsResource.getName(destination);
 
         if (m_disabledNames.contains(name)) {
-            throw new CmsPermissionViolationException(Messages.get().container(
-                Messages.ERR_PERM_DENIED_2,
-                destination,
-                "+c"));
+            throw new CmsPermissionViolationException(
+                Messages.get().container(Messages.ERR_PERM_DENIED_2, destination, "+c"));
         } else {
             return false;
         }

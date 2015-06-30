@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ public class CmsRewriteAliasValidationRequest implements IsSerializable {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param editedRewrites the list of rewrite aliases to validate 
+     *
+     * @param editedRewrites the list of rewrite aliases to validate
      */
     public CmsRewriteAliasValidationRequest(List<CmsRewriteAliasTableRow> editedRewrites) {
 
@@ -59,8 +59,8 @@ public class CmsRewriteAliasValidationRequest implements IsSerializable {
 
     /**
      * Gets the rewrite aliases which should be validated.<p>
-     * 
-     * @return the list of rewrite aliases to validate 
+     *
+     * @return the list of rewrite aliases to validate
      */
     public List<CmsRewriteAliasTableRow> getEditedRewriteAliases() {
 

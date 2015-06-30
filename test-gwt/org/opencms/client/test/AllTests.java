@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,10 +27,10 @@
 
 package org.opencms.client.test;
 
+import com.google.gwt.junit.tools.GWTTestSuite;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import com.google.gwt.junit.tools.GWTTestSuite;
 
 /**
  * Test suite to run all GWT based tests.<p>
@@ -39,7 +39,7 @@ public class AllTests extends GWTTestSuite {
 
     /**
      * Creates the test suite.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {

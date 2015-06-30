@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,8 +39,8 @@ import java.util.Map;
 
 /**
  * Collector for file with broken links.<p>
- * 
- * @since 6.1.0 
+ *
+ * @since 6.1.0
  */
 public class CmsInternalLinkValidationFilesCollector extends A_CmsListResourceCollector {
 
@@ -52,7 +52,7 @@ public class CmsInternalLinkValidationFilesCollector extends A_CmsListResourceCo
 
     /**
      * Constructor, creates a new instance.<p>
-     * 
+     *
      * @param wp the workplace object
      * @param resources the resources with broken links
      */
@@ -75,6 +75,7 @@ public class CmsInternalLinkValidationFilesCollector extends A_CmsListResourceCo
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
+    @Override
     public List getResources(CmsObject cms, Map params) {
 
         return m_resourcesBroken;
@@ -83,6 +84,7 @@ public class CmsInternalLinkValidationFilesCollector extends A_CmsListResourceCo
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
+    @Override
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
         // no-op

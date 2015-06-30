@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,14 +49,14 @@ import org.apache.commons.fileupload.FileItem;
 
 /**
  * The replace resource dialog handles the replacement of a single VFS file.<p>
- * 
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/replace.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsReplace extends CmsDialog {
 
@@ -68,7 +68,7 @@ public class CmsReplace extends CmsDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsReplace(CmsJspActionElement jsp) {
@@ -78,7 +78,7 @@ public class CmsReplace extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -90,7 +90,7 @@ public class CmsReplace extends CmsDialog {
 
     /**
      * Uploads the specified file and replaces the VFS file.<p>
-     * 
+     *
      * @throws JspException if inclusion of error dialog fails
      */
     public void actionReplace() throws JspException {
@@ -114,9 +114,10 @@ public class CmsReplace extends CmsDialog {
                 // check file size
                 if ((maxFileSizeBytes > 0) && (size > maxFileSizeBytes)) {
                     // file size is larger than maximum allowed file size, throw an error
-                    throw new CmsException(Messages.get().container(
-                        Messages.ERR_FILE_SIZE_TOO_LARGE_1,
-                        new Long((maxFileSizeBytes / 1024))));
+                    throw new CmsException(
+                        Messages.get().container(
+                            Messages.ERR_FILE_SIZE_TOO_LARGE_1,
+                            new Long((maxFileSizeBytes / 1024))));
                 }
                 byte[] content = fi.get();
                 fi.delete();
@@ -156,7 +157,7 @@ public class CmsReplace extends CmsDialog {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
-        // check the required permissions to replace the resource       
+        // check the required permissions to replace the resource
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
@@ -164,7 +165,7 @@ public class CmsReplace extends CmsDialog {
 
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_OK.equals(getParamAction())) {
             // ok button pressed, replace file
             setAction(ACTION_OK);
@@ -174,7 +175,7 @@ public class CmsReplace extends CmsDialog {
         } else {
             // first call of dialog
             setAction(ACTION_DEFAULT);
-            // build title for replace resource dialog     
+            // build title for replace resource dialog
             setParamTitle(key(Messages.GUI_REPLACE_FILE_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
     }

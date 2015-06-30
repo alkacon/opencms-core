@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Reads and manages the test.properties file.<p>
- * 
+ *
  * @since 6.0.0
  */
 public final class OpenCmsTestProperties {
@@ -104,25 +104,25 @@ public final class OpenCmsTestProperties {
     }
 
     /**
-     * Returns the absolute path name for the given relative 
-     * path name if it was found by the context Classloader of the 
+     * Returns the absolute path name for the given relative
+     * path name if it was found by the context Classloader of the
      * current Thread.<p>
-     * 
-     * The argument has to denote a resource within the Classloaders 
-     * scope. A <code>{@link java.net.URLClassLoader}</code> implementation for example would 
-     * try to match a given path name to some resource under it's URL 
+     *
+     * The argument has to denote a resource within the Classloaders
+     * scope. A <code>{@link java.net.URLClassLoader}</code> implementation for example would
+     * try to match a given path name to some resource under it's URL
      * entries.<p>
-     * 
-     * As the result is internally obtained as an URL it is reduced to 
-     * a file path by the call to <code>{@link java.net.URL#getFile()}</code>. Therefore 
+     *
+     * As the result is internally obtained as an URL it is reduced to
+     * a file path by the call to <code>{@link java.net.URL#getFile()}</code>. Therefore
      * the returned String will start with a '/' (no problem for java.io).<p>
-     * 
+     *
      * @param fileName the filename to return the path from the Classloader for
-     * 
-     * @return the absolute path name for the given relative 
-     *   path name if it was found by the context Classloader of the 
+     *
+     * @return the absolute path name for the given relative
+     *   path name if it was found by the context Classloader of the
      *   current Thread or an empty String if it was not found
-     * 
+     *
      * @see Thread#getContextClassLoader()
      */
     public static String getResourcePathFromClassloader(String fileName) {
@@ -140,10 +140,11 @@ public final class OpenCmsTestProperties {
             try {
                 URLClassLoader cl = (URLClassLoader)Thread.currentThread().getContextClassLoader();
                 URL[] paths = cl.getURLs();
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_MISSING_CLASSLOADER_RESOURCE_2,
-                    fileName,
-                    Arrays.asList(paths)));
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_MISSING_CLASSLOADER_RESOURCE_2,
+                        fileName,
+                        Arrays.asList(paths)));
             } catch (Throwable t) {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_MISSING_CLASSLOADER_RESOURCE_1, fileName));
             }
@@ -153,7 +154,7 @@ public final class OpenCmsTestProperties {
 
     /**
      * Reads property file test.properties and fills singleton members.<p>
-     * 
+     *
      * @param basePath the path where to find the test.properties file
      */
     public static void initialize(String basePath) {
@@ -269,7 +270,7 @@ public final class OpenCmsTestProperties {
 
     /**
      * Returns the path to the build folder of the test classes.
-     * 
+     *
      * @return the path to the build folder of the test classes
      */
     public String getTestBuildFolder() {

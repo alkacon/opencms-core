@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,8 +49,8 @@ import org.apache.lucene.document.Field;
 
 /**
  * Describes the search field configuration that is used by the gallery index.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsGallerySearchFieldConfiguration extends CmsLuceneFieldConfiguration {
 
@@ -64,14 +64,14 @@ public class CmsGallerySearchFieldConfiguration extends CmsLuceneFieldConfigurat
 
     /**
      * Extends the given document by the configured field mappings.<p>
-     * 
+     *
      * @param document the document to extend
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the document extended by the configured field mappings
      */
     @Override
@@ -85,23 +85,19 @@ public class CmsGallerySearchFieldConfiguration extends CmsLuceneFieldConfigurat
 
         Iterator<CmsSearchField> fieldConfigs = getFields().iterator();
         while (fieldConfigs.hasNext()) {
-            // check all field configurations 
+            // check all field configurations
             CmsSearchField fieldConfig = fieldConfigs.next();
 
             if (CmsSearchField.FIELD_TITLE.equals(fieldConfig.getName())
-                || (CmsResourceTypeXmlContent.isXmlContent(resource) && (CmsSearchField.FIELD_CONTENT.equals(fieldConfig.getName())
-                    || CmsSearchField.FIELD_TITLE_UNSTORED.equals(fieldConfig.getName())
-                    || CmsSearchField.FIELD_SORT_TITLE.equals(fieldConfig.getName())
-                    || CmsSearchField.FIELD_DESCRIPTION.equals(fieldConfig.getName()) || CmsSearchField.FIELD_META.equals(fieldConfig.getName())))) {
+                || (CmsResourceTypeXmlContent.isXmlContent(resource)
+                    && (CmsSearchField.FIELD_CONTENT.equals(fieldConfig.getName())
+                        || CmsSearchField.FIELD_TITLE_UNSTORED.equals(fieldConfig.getName())
+                        || CmsSearchField.FIELD_SORT_TITLE.equals(fieldConfig.getName())
+                        || CmsSearchField.FIELD_DESCRIPTION.equals(fieldConfig.getName())
+                        || CmsSearchField.FIELD_META.equals(fieldConfig.getName())))) {
                 appendMultipleFieldMapping(
-                // XML content and special multiple language mapping field
-                    document,
-                    fieldConfig,
-                    cms,
-                    resource,
-                    extractionResult,
-                    properties,
-                    propertiesSearched);
+                    // XML content and special multiple language mapping field
+                    document, fieldConfig, cms, resource, extractionResult, properties, propertiesSearched);
             } else {
                 // not an XML content or standard field - use standard mappings as configured
                 appendFieldMapping(
@@ -120,15 +116,15 @@ public class CmsGallerySearchFieldConfiguration extends CmsLuceneFieldConfigurat
 
     /**
      * Extends the given document by the gallery index special multiple language filed mappings for the given field.<p>
-     * 
+     *
      * @param document the document to extend
      * @param field the field to create the mappings for
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the document extended by the gallery index special multiple language filed mappings for the given field
      */
     protected I_CmsSearchDocument appendMultipleFieldMapping(

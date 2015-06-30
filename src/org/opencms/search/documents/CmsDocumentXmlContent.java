@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,21 +54,21 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Lucene document factory class to extract index data from an OpenCms VFS resource 
+ * Lucene document factory class to extract index data from an OpenCms VFS resource
  * of type <code>CmsResourceTypeXmlContent</code>.<p>
- * 
- * All XML nodes from the content for all locales will be stored separately in the item map 
- * which you can access using {@link CmsExtractionResult#getContentItems()}. The XML elements will be 
- * accessible using their xpath. The xpath will have the form like for example 
+ *
+ * All XML nodes from the content for all locales will be stored separately in the item map
+ * which you can access using {@link CmsExtractionResult#getContentItems()}. The XML elements will be
+ * accessible using their xpath. The xpath will have the form like for example
  * <code>Text[1]</code> or <code>Nested[1]/Text[1]</code>.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDocumentXmlContent extends A_CmsVfsDocument {
 
     /**
      * Creates a new instance of this lucene document factory.<p>
-     * 
+     *
      * @param name name of the document type
      */
     public CmsDocumentXmlContent(String name) {
@@ -77,7 +77,7 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.search.documents.A_CmsVfsDocument#createDocument(org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.CmsSearchIndex)
      */
     @Override
@@ -93,12 +93,12 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
 
     /**
      * Returns the raw text content of a given VFS resource of type <code>CmsResourceTypeXmlContent</code>.<p>
-     * 
-     * All XML nodes from the content for all locales will be stored separately in the item map 
-     * which you can access using {@link CmsExtractionResult#getContentItems()}. The XML elements will be 
-     * accessible using their xpath. The xpath will have the form like for example 
-     * <code>Text[1]</code> or <code>Nested[1]/Text[1]</code>.<p>  
-     * 
+     *
+     * All XML nodes from the content for all locales will be stored separately in the item map
+     * which you can access using {@link CmsExtractionResult#getContentItems()}. The XML elements will be
+     * accessible using their xpath. The xpath will have the form like for example
+     * <code>Text[1]</code> or <code>Nested[1]/Text[1]</code>.<p>
+     *
      * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
      */
     public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
@@ -147,9 +147,10 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
             for (Iterator<I_CmsResourceType> i = OpenCms.getResourceManager().getResourceTypes().iterator(); i.hasNext();) {
                 I_CmsResourceType resourceType = i.next();
                 if ((resourceType instanceof CmsResourceTypeXmlContent)
-                // either we need a configured schema, or another class name (which must then contain an inline schema)
+                    // either we need a configured schema, or another class name (which must then contain an inline schema)
                     && (((CmsResourceTypeXmlContent)resourceType).getConfiguration().containsKey(
-                        CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA) || !CmsResourceTypeXmlContent.class.equals(resourceType.getClass()))) {
+                        CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA)
+                        || !CmsResourceTypeXmlContent.class.equals(resourceType.getClass()))) {
                     // add the XML content resource type name
                     allTypes.add(resourceType.getTypeName());
                 }

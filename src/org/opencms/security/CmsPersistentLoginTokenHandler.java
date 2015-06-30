@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,17 +41,17 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 
-/** 
+/**
  * Creates and validates persisten login tokens for users.<p>
- * 
- * When a token is created for a user, a special additional info item is stored on the user, such that 
+ *
+ * When a token is created for a user, a special additional info item is stored on the user, such that
  * the token uniquely identifies that info item. The value of the info item is the expiration date of the token.
  * A token is validated by looking up the additional info item for the user and checking whether the token is still valid
  * according to the stored expiration date.<p>
  */
 public class CmsPersistentLoginTokenHandler {
 
-    /** 
+    /**
      * Bean representing the data encoded in a login token (user name and key).<p>
      */
     public static class Token {
@@ -65,10 +65,10 @@ public class CmsPersistentLoginTokenHandler {
         /** The key. */
         private String m_key;
 
-        /** 
+        /**
          * Creates a new token object from the encoded representation.<p>
-         * 
-         * @param token a string containing the token data 
+         *
+         * @param token a string containing the token data
          */
         public Token(String token) {
 
@@ -81,11 +81,11 @@ public class CmsPersistentLoginTokenHandler {
             }
         }
 
-        /** 
+        /**
          * Creates a token object from the given name and key.<p>
-         * 
-         * @param name the name 
-         * @param key the key 
+         *
+         * @param name the name
+         * @param key the key
          */
         public Token(String name, String key) {
 
@@ -96,28 +96,28 @@ public class CmsPersistentLoginTokenHandler {
 
         /**
          * Gets the encoded token string  representation.<p>
-         * 
-         * @return the token string 
+         *
+         * @return the token string
          */
         public String encode() {
 
             return m_name + SEPARATOR + m_key;
         }
 
-        /** 
+        /**
          * Gets the additional info key to use for this token.<p>
-         * 
-         * @return the additional info key 
+         *
+         * @return the additional info key
          */
         public String getAdditionalInfoKey() {
 
             return KEY_PREFIX + m_key;
         }
 
-        /** 
+        /**
          * Gets the key for this token.<p>
-         * 
-         * @return the key 
+         *
+         * @return the key
          */
         public String getKey() {
 
@@ -125,10 +125,10 @@ public class CmsPersistentLoginTokenHandler {
 
         }
 
-        /** 
+        /**
          * Gets the user name for this token.<p>
-         * 
-         * @return the user name 
+         *
+         * @return the user name
          */
         public String getName() {
 
@@ -137,8 +137,8 @@ public class CmsPersistentLoginTokenHandler {
 
         /**
          * Checks if this token is valid.<p>
-         * 
-         * @return true if this token is valid 
+         *
+         * @return true if this token is valid
          */
         public boolean isValid() {
 
@@ -166,13 +166,13 @@ public class CmsPersistentLoginTokenHandler {
      */
     public CmsPersistentLoginTokenHandler() {
 
-        // Default constructor, do nothing 
+        // Default constructor, do nothing
     }
 
-    /** 
+    /**
      * Static method used to give this class access to an admin cms context.<p>
-     * 
-     * @param adminCms the admin cms context to set 
+     *
+     * @param adminCms the admin cms context to set
      */
     public static void setAdminCms(CmsObject adminCms) {
 
@@ -181,13 +181,13 @@ public class CmsPersistentLoginTokenHandler {
         }
     }
 
-    /** 
+    /**
      * Generates a new login token for a given user and registers the token in the user's additional info.<p>
-     * 
-     * @param cms the CMS context for which to create a new token 
+     *
+     * @param cms the CMS context for which to create a new token
      * @return the generated token
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public String createToken(CmsObject cms) throws CmsException {
 
@@ -205,13 +205,13 @@ public class CmsPersistentLoginTokenHandler {
         return token;
     }
 
-    /** 
+    /**
      * Invalidates all tokens for the given user.<p>
-     * 
-     * @param user the user 
-     * @param token the token string 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param user the user
+     * @param token the token string
+     *
+     * @throws CmsException if something goes wrong
      */
     public void invalidateToken(CmsUser user, String token) throws CmsException {
 
@@ -224,13 +224,13 @@ public class CmsPersistentLoginTokenHandler {
         }
     }
 
-    /** 
+    /**
      * Removes  expired tokens from the user's additional infos.<p>
-     * 
+     *
      * This method does not write the user back to the database.
-     * 
-     * @param user the user for which to remove the additional infos 
-     * @param now the current time 
+     *
+     * @param user the user for which to remove the additional infos
+     * @param now the current time
      */
     public void removeExpiredTokens(CmsUser user, long now) {
 
@@ -254,10 +254,10 @@ public class CmsPersistentLoginTokenHandler {
         }
     }
 
-    /** 
+    /**
      * Sets the token lifetime.<p>
-     * 
-     * @param duration the number of milliseconds for which the token should be valid 
+     *
+     * @param duration the number of milliseconds for which the token should be valid
      */
     public void setTokenLifetime(long duration) {
 
@@ -266,12 +266,12 @@ public class CmsPersistentLoginTokenHandler {
 
     /**
      * Validates a token and returns the matching user for which the token is valid.<p>
-     * 
-     * Returns null if no user matching the token is found, or if the token for the user is expired 
-     * 
-     * @param tokenString the token for which to find the matching user 
-     * 
-     * @return the matching user for the token, or null if no matching user was found or the token is expired 
+     *
+     * Returns null if no user matching the token is found, or if the token for the user is expired
+     *
+     * @param tokenString the token for which to find the matching user
+     *
+     * @return the matching user for the token, or null if no matching user was found or the token is expired
      */
     public CmsUser validateToken(String tokenString) {
 

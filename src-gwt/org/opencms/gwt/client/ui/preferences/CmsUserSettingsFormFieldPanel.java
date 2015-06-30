@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -70,14 +70,14 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
     }
 
     /**
-     * Style imported from the ui.xml file. 
+     * Style imported from the ui.xml file.
      */
     interface ExternalStyle extends CssResource {
 
-        /** 
-         * CSS class accessor. 
-         * 
-         * @return the CSS class 
+        /**
+         * CSS class accessor.
+         *
+         * @return the CSS class
          **/
         String titleColumn();
 
@@ -114,8 +114,8 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
     @UiField
     protected CmsPushButton m_passwordButton;
 
-    /** 
-     * The style from the ui.xml  file. (Note: the field needs to 
+    /**
+     * The style from the ui.xml  file. (Note: the field needs to
      */
     @UiField
     protected ExternalStyle style;
@@ -126,7 +126,7 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param userSettings the bean containing the current user settings
      */
     public CmsUserSettingsFormFieldPanel(CmsUserSettingsBean userSettings) {
@@ -194,10 +194,10 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
         return null;
     }
 
-    /** 
+    /**
      * Gets the tab panel.<p>
-     * 
-     * @return the tab panel 
+     *
+     * @return the tab panel
      */
     public CmsTabbedPanel<CmsScrollPanel> getTabPanel() {
 
@@ -237,9 +237,9 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
 
     /**
      * Gets the container in which the field should be placed.<p>
-     * 
-     * @param field the form field 
-     * @return the intended parent widget for the field 
+     *
+     * @param field the form field
+     * @return the intended parent widget for the field
      */
     private Panel getContainerForField(I_CmsFormField field) {
 

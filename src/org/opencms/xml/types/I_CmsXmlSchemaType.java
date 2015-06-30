@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,19 +42,19 @@ import org.dom4j.QName;
  *
  * A XML content definition in OpenCms basically consists of a sequence of
  * nodes in the following format:<p>
- * 
+ *
  * <code>&lt;xsd:element name="title" type="cmsStringType" minOccurs="0" maxOccurs="unbounded" default="Some text" /&gt;</code>.<p>
  *
- * Internally, each configured element in a XML schema is represented by an instance of 
- * this interface. This allows for constructing or changing the XML schema through the 
+ * Internally, each configured element in a XML schema is represented by an instance of
+ * this interface. This allows for constructing or changing the XML schema through the
  * provided API.<p>
- * 
+ *
  * Note that this class only <i>describes the definition</i> of a value in the XML schema.
  * It is not the representation of an actual value from a XML file,
  * for this you need an instance of a {@link org.opencms.xml.types.I_CmsXmlContentValue}.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.xml.types.I_CmsXmlContentValue
  */
 public interface I_CmsXmlSchemaType extends Comparable<I_CmsXmlSchemaType> {
@@ -67,72 +67,72 @@ public interface I_CmsXmlSchemaType extends Comparable<I_CmsXmlSchemaType> {
 
     /**
      * Appends an XML representation of this schema type to the given XML element.<p>
-     * 
+     *
      * This is used to dynamically build a XML schema from an instance of a
      * {@link org.opencms.xml.CmsXmlContentDefinition} class.<p>
-     * 
+     *
      * @param root the element to append the XML to
      */
     void appendXmlSchema(Element root);
 
     /**
      * Creates a XML content value object for this type.<p>
-     * 
+     *
      * @param document the XML content instance this value belongs to
      * @param element the XML element to create the value from
      * @param locale the locale to create the value for
-     * 
+     *
      * @return the created XML content value object
      */
     I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale);
 
     /**
      * Appends an XML for a new, empty node of this schema type to the given root element.<p>
-     * 
+     *
      * This is used to dynamically build a vaild XML content object from an initialized
      * {@link org.opencms.xml.CmsXmlContentDefinition} class.<p>
-     * 
+     *
      * Important: This method can only be used during initialization of a XML content object,
      * not to add values to an already initialized XML content. To add values after initialization,
      * use {@link org.opencms.xml.content.CmsXmlContent#addValue(CmsObject, String, Locale, int)}.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param document the document the XML is generated for
      * @param root the element to append the XML to
      * @param locale the locale to generate the element default content for
-     * 
+     *
      * @return the generated XML element
      */
     Element generateXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale);
 
     /**
      * Returns the maximum occurrences of choice options for this type in the current schema.<p>
-     * 
+     *
      * This will be greater than 0 only if {@link #isChoiceType()} is <code>true</code>.<p>
-     * 
+     *
      * @return the maximum occurrences of choice options for this type in the current schema
      */
     int getChoiceMaxOccurs();
 
     /**
-     * Returns the content definition this schema type belongs to.<p> 
-     * 
+     * Returns the content definition this schema type belongs to.<p>
+     *
      * If the value belongs to a nested content, then the nested content definition is returned.
-     * This means that for documents with nested schemas, the content definition of a  
+     * This means that for documents with nested schemas, the content definition of a
      * value is not necessarily equal to the content definition of the document itself,
      * which can be obtained using {@link I_CmsXmlContentValue#getDocument()}.<p>
-     * 
+     *
      * @return the content definition this schema type belongs to
      */
     CmsXmlContentDefinition getContentDefinition();
 
     /**
      * Returns the default value for a node of this type in the current schema.<p>
-     * 
+     *
      * @param locale the locale to generate the default value for
-     * 
+     *
      * @return the default value for a node of this type in the current schema
-     * 
+     *
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefault(CmsObject, I_CmsXmlContentValue, Locale)
      */
     String getDefault(Locale locale);
@@ -156,16 +156,16 @@ public interface I_CmsXmlSchemaType extends Comparable<I_CmsXmlSchemaType> {
      *
      * The XML element node name can be configured in the schema.
      * For example, the node name could be <code>"Title"</code>,
-     * <code>"Teaser"</code> or <code>"Text"</code>. The XML schema controls 
-     * what node names are allowed.<p> 
+     * <code>"Teaser"</code> or <code>"Text"</code>. The XML schema controls
+     * what node names are allowed.<p>
      *
      * @return the XML node name of this type in the current schema
      */
     String getName();
 
     /**
-     * Returns a String representation of the XML definition for this schema type.<p>  
-     * 
+     * Returns a String representation of the XML definition for this schema type.<p>
+     *
      * @return a String representation of the XML definition for this schema type
      */
     String getSchemaDefinition();
@@ -173,11 +173,11 @@ public interface I_CmsXmlSchemaType extends Comparable<I_CmsXmlSchemaType> {
     /**
      * Returns the schema type name.<p>
      *
-     * By convention, a XML schema type name has the form 
+     * By convention, a XML schema type name has the form
      * <code>"OpenCms + ${name}"</code>. Examples are
      * <code>"OpenCmsString"</code> or <code>"OpenCmsBoolean"</code>.<p>
-     * 
-     * The schema type name is fixed by the implementation.<p> 
+     *
+     * The schema type name is fixed by the implementation.<p>
      *
      * @return the schema type name
      */
@@ -185,20 +185,20 @@ public interface I_CmsXmlSchemaType extends Comparable<I_CmsXmlSchemaType> {
 
     /**
      * Returns <code>true</code> if this type is an option inside of a choice sequence.<p>
-     * 
+     *
      * This method is intended to check if this type is a node inside a choice sequence.
      * In order to check if this type defines a choice sequence, use {@link #isChoiceType()}.<p>
-     * 
+     *
      * @return <code>true</code> if this node defines a choice sequence
      */
     boolean isChoiceOption();
 
     /**
      * Returns <code>true</code> if this type defines a choice sequence.<p>
-     * 
+     *
      * This method is intended to check if this type is a node defining a choice sequence.
      * In order to check if this type is an option inside of a choice sequence, use {@link #isChoiceOption()}.<p>
-     * 
+     *
      * @return <code>true</code> if this node defines a choice sequence
      */
     boolean isChoiceType();
@@ -206,40 +206,40 @@ public interface I_CmsXmlSchemaType extends Comparable<I_CmsXmlSchemaType> {
     /**
      * Returns <code>true</code> if this is a simple type, or <code>false</code>
      * if this type is a nested schema.<p>
-     * 
-     * If a value is a nested schema, it must be an instance of {@link CmsXmlNestedContentDefinition}.<p> 
-     * 
+     *
+     * If a value is a nested schema, it must be an instance of {@link CmsXmlNestedContentDefinition}.<p>
+     *
      * @return true if this is  a simple type, or false if this type is a nested schema
-     * 
+     *
      * @see CmsXmlNestedContentDefinition
      */
     boolean isSimpleType();
 
     /**
      * Creates a new instance of this XML schema type initialized with the given values.<p>
-     * 
+     *
      * @param name the name to use in the xml document
      * @param minOccurs minimum number of occurrences
      * @param maxOccurs maximum number of occurrences
-     * 
+     *
      * @return a new instance of this XML content type initialized with the given values
      */
     I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs);
 
     /**
      * Sets the content definition this schema type belongs to.<p>
-     * 
+     *
      * This is done automatically when the scheme type is added
-     * to a content definition. Usually there is no need to call this 
+     * to a content definition. Usually there is no need to call this
      * method from the application.<p>
-     * 
+     *
      * @param contentDefinition the content definition to set
      */
     void setContentDefinition(CmsXmlContentDefinition contentDefinition);
 
     /**
      * Sets the default value for a node of this type in the current schema.<p>
-     * 
+     *
      * @param defaultValue the default value to set
      */
     void setDefault(String defaultValue);
@@ -247,15 +247,15 @@ public interface I_CmsXmlSchemaType extends Comparable<I_CmsXmlSchemaType> {
     /**
      * Checks if a given value is valid according to the validation rule (regular expression) used for validation
      * of this schema type in the XML schema.<p>
-     * 
+     *
      * To have a more refined validation according to the special requirements of the
      * content type, use custom validation rules in the appinfo which are
      * processed with {@link org.opencms.xml.content.I_CmsXmlContentHandler#resolveValidation(CmsObject, I_CmsXmlContentValue, org.opencms.xml.content.CmsXmlContentErrorHandler)}.<p>
-     * 
+     *
      * @param value the value to validate
-     * 
+     *
      * @return the validation rule (regular expression) used for this schema type in the XML schema
-     * 
+     *
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#resolveValidation(CmsObject, I_CmsXmlContentValue, org.opencms.xml.content.CmsXmlContentErrorHandler)
      */
     boolean validateValue(String value);

@@ -117,7 +117,8 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      */
     public void openDialog(
 
-    final CmsContainerPageElementPanel element, final boolean inline) {
+        final CmsContainerPageElementPanel element,
+        final boolean inline) {
 
         m_handler.disableToolbarButtons();
         m_handler.deactivateCurrentButton();
@@ -321,9 +322,11 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         if (prohibitReturn) {
             History.newItem(EDITOR_FOR_NO_RETURN_HASH_KEY, false);
         } else {
-            History.newItem(EDITOR_HASH_KEY
-                + CmsContainerpageController.getServerId(getCurrentElementId())
-                + (m_dependingElementId != null ? "," + m_dependingElementId + ";" : ";"), false);
+            History.newItem(
+                EDITOR_HASH_KEY
+                    + CmsContainerpageController.getServerId(getCurrentElementId())
+                    + (m_dependingElementId != null ? "," + m_dependingElementId + ";" : ";"),
+                false);
         }
     }
 
@@ -347,9 +350,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             + ":'"
             + element.getId()
             + "', "
-            + (m_handler.m_controller.getData().getDetailId() != null ? (CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID
-                + ":'"
-                + m_handler.m_controller.getData().getDetailId() + "', ") : "")
+            + (m_handler.m_controller.getData().getDetailId() != null
+            ? (CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID + ":'" + m_handler.m_controller.getData().getDetailId() + "', ")
+            : "")
             + CmsCntPageData.JSONKEY_NAME
             + ":'"
             + container.getContainerId()

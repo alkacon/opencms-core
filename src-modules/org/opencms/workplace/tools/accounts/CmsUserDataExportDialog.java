@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog to export user data.<p>
- * 
+ *
  * @since 6.7.1
  */
 public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
@@ -61,7 +61,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUserDataExportDialog(CmsJspActionElement jsp) {
@@ -71,7 +71,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -99,9 +99,9 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -144,17 +144,14 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
         initExportObject();
         setKeyPrefix(KEY_PREFIX);
 
-        addWidget(new CmsWidgetDialogParameter(
-            this,
-            "groups",
-            PAGES[0],
-            new CmsGroupWidget(null, null, getParamOufqn())));
+        addWidget(
+            new CmsWidgetDialogParameter(this, "groups", PAGES[0], new CmsGroupWidget(null, null, getParamOufqn())));
         addWidget(new CmsWidgetDialogParameter(this, "roles", PAGES[0], new CmsSelectWidget(getSelectRoles())));
     }
 
     /**
      * Returns the download path.<p>
-     * 
+     *
      * @return the download path
      */
     protected String getDownloadPath() {

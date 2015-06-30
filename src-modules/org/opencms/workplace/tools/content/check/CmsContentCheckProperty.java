@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,9 +45,9 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 
 /**
- * This implementation of the I_CmsContentCheck interface implements a check for 
+ * This implementation of the I_CmsContentCheck interface implements a check for
  * resource properties.<p>
- * 
+ *
  * The following items can be configured and checked:
  * <ul>
  * <li>Property not set</li>
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * <li>Property value contains a given value (with RegEx)</li>
  * <li>Property value does not contain a given value (with RegEx)</li>
  * </ul>
- * 
+ *
  * @since 6.1.2
  */
 public class CmsContentCheckProperty extends A_CmsContentCheck {
@@ -117,17 +117,19 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     private Locale m_locale;
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.tools.content.check.I_CmsContentCheck#executeContentCheck(org.opencms.file.CmsObject, org.opencms.workplace.tools.content.check.CmsContentCheckResource)
      */
+    @Override
     public CmsContentCheckResource executeContentCheck(CmsObject cms, CmsContentCheckResource testResource)
     throws CmsException {
 
         getConfiguration();
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_DEBUG_PROPERTY_CONFIGURED_ERRORS_2,
-                new Object[] {testResource.getResourceName(), m_configuredErrorChecks}));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_DEBUG_PROPERTY_CONFIGURED_ERRORS_2,
+                    new Object[] {testResource.getResourceName(), m_configuredErrorChecks}));
         }
         // check for errors
         List errors = processProperties(m_configuredErrorChecks, testResource);
@@ -135,10 +137,11 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
             testResource.addErrors(errors);
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_DEBUG_PROPERTY_CONFIGURED_WARNINGS_2,
-                testResource.getResourceName(),
-                m_configuredErrorChecks));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_DEBUG_PROPERTY_CONFIGURED_WARNINGS_2,
+                    testResource.getResourceName(),
+                    m_configuredErrorChecks));
         }
         // check for warnings
         List warnings = processProperties(m_configuredWarningChecks, testResource);
@@ -149,9 +152,10 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.tools.content.check.I_CmsContentCheck#getDialogParameterName()
      */
+    @Override
     public String getDialogParameterName() {
 
         return DIALOG_PARAMETER;
@@ -160,6 +164,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getHelpText()
      */
+    @Override
     public String getHelpText() {
 
         return Messages.get().getBundle().key(Messages.GUI_CHECKCONTENT_CONFIGURATION_PROPERTY_HELP_0);
@@ -168,6 +173,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getIconPath()
      */
+    @Override
     public String getIconPath() {
 
         return ICONPATH;
@@ -176,6 +182,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getLink()
      */
+    @Override
     public String getLink() {
 
         return "/system/workplace/views/admin/admin-editor.jsp?resource=/system/workplace/admin/contenttools/check/plugin/propertycheck/configuration.xml";
@@ -184,6 +191,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.content.check.I_CmsContentCheck#getMessageBundles()
      */
+    @Override
     public List getMessageBundles() {
 
         List messages = new ArrayList();
@@ -194,6 +202,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getName()
      */
+    @Override
     public String getName() {
 
         return NAME;
@@ -202,6 +211,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getPath()
      */
+    @Override
     public String getPath() {
 
         return "/contenttools/checkconfig/checkproperty";
@@ -210,6 +220,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getPosition()
      */
+    @Override
     public float getPosition() {
 
         return 1;
@@ -218,6 +229,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getShortName()
      */
+    @Override
     public String getShortName() {
 
         return NAME;
@@ -226,6 +238,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.content.check.I_CmsContentCheck#init(org.opencms.file.CmsObject)
      */
+    @Override
     public void init(CmsObject cms) {
 
         m_cms = cms;
@@ -234,9 +247,10 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
 
     /**
      * Gets the active flag.<p>
-     * 
+     *
      * @return true if this content check is active, false otherwise.
      */
+    @Override
     public boolean isActive() {
 
         return m_active;
@@ -244,11 +258,12 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
 
     /**
      * Sets the active flag.<p>
-     * 
+     *
      * This method is required to build the widget dialog frontend.
      *
      * @param value true if this content check is set to be active, false otherwise.
      */
+    @Override
     public void setActive(boolean value) {
 
         m_active = value;
@@ -265,15 +280,15 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
             // get the configuration file
             CmsResource res = m_cms.readResource(CONFIGURATION);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_DEBUG_PROPERTY_CONFIG_FILENAME_1,
-                    res.getRootPath()));
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.LOG_DEBUG_PROPERTY_CONFIG_FILENAME_1, res.getRootPath()));
             }
             CmsFile file = m_cms.readFile(res);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_DEBUG_PROPERTY_CONFIG_FILE_1,
-                    new String(file.getContents())));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_PROPERTY_CONFIG_FILE_1,
+                        new String(file.getContents())));
             }
             CmsXmlContent configuration = CmsXmlContentFactory.unmarshal(m_cms, file);
 
@@ -285,7 +300,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
 
     /**
      * Reads the configuration for a given xpath and stored all results in a list.<p>
-     * 
+     *
      * @param configuration the configuration to read from
      * @param xpath the xpath prefix
      * @return list of CmsContentCheckProperetyObject objects
@@ -301,8 +316,9 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
         int size = configuration.getIndexCount(xpath, m_locale);
         for (int i = 1; i <= size; i++) {
             // extract the values from the configuration
-            String propertyname = configuration.getValue(xpath + "[" + i + "]/" + XPATH_PROPERTYNAME, m_locale).getStringValue(
-                m_cms);
+            String propertyname = configuration.getValue(
+                xpath + "[" + i + "]/" + XPATH_PROPERTYNAME,
+                m_locale).getStringValue(m_cms);
             String type = configuration.getValue(xpath + "[" + i + "]/" + XPATH_TYPE, m_locale).getStringValue(m_cms);
             String empty = configuration.getValue(xpath + "[" + i + "]/" + XPATH_EMPTY, m_locale).getStringValue(m_cms);
             String filename = configuration.getValue(xpath + "[" + i + "]/" + XPATH_FILENAME, m_locale).getStringValue(
@@ -345,11 +361,12 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
             }
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_DEBUG_PROPERTY_CONFIG_PROPERTY_3,
-                    new Integer(i),
-                    new Integer(size),
-                    propObject));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_DEBUG_PROPERTY_CONFIG_PROPERTY_3,
+                        new Integer(i),
+                        new Integer(size),
+                        propObject));
             }
 
             checks.add(propObject);
@@ -359,9 +376,9 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
 
     /**
      * Processes a list of CmsContentCheckProperetyObject and runs all available tests on them.<p>
-     * 
+     *
      * All errors or warnings found are collected in a list returned to the calling method.
-     * 
+     *
      * @param properties list of CmsContentCheckProperetyObject to process
      * @param testResource the CmsContentCheckResource to run all tests on
      * @return list of Strings containing either errors or warinings
@@ -371,9 +388,8 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
         List results = new ArrayList();
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_DEBUG_PROPERTY_RESOURCE_1,
-                testResource.getResourceName()));
+            LOG.debug(
+                Messages.get().getBundle().key(Messages.LOG_DEBUG_PROPERTY_RESOURCE_1, testResource.getResourceName()));
         }
 
         //loop through all property tests
@@ -382,15 +398,16 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
                 CmsContentCheckPropertyObject propObject = (CmsContentCheckPropertyObject)properties.get(i);
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DEBUG_PROPERTY_PROPERTY_1,
-                        propObject.toString()));
+                    LOG.debug(
+                        Messages.get().getBundle().key(Messages.LOG_DEBUG_PROPERTY_PROPERTY_1, propObject.toString()));
                 }
 
                 // check if this test must be done for thies kind of resource
                 if ((propObject.getType().equals(CmsContentCheckPropertyObject.TYPE_BOTH))
-                    || ((propObject.getType().equals(CmsContentCheckPropertyObject.TYPE_FILE) && (testResource.getResource().isFile())))
-                    || ((propObject.getType().equals(CmsContentCheckPropertyObject.TYPE_FOLDER) && (testResource.getResource().isFolder())))
+                    || ((propObject.getType().equals(CmsContentCheckPropertyObject.TYPE_FILE)
+                        && (testResource.getResource().isFile())))
+                    || ((propObject.getType().equals(CmsContentCheckPropertyObject.TYPE_FOLDER)
+                        && (testResource.getResource().isFolder())))
 
                 ) {
 
@@ -405,65 +422,74 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
                     }
 
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_DEBUG_PROPERTY_ISEMPTYCHECK_1,
-                            Boolean.valueOf(propObject.isEmpty())));
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_DEBUG_PROPERTY_ISEMPTYCHECK_1,
+                                Boolean.valueOf(propObject.isEmpty())));
                     }
 
                     // test if the property is empty
                     if (propObject.isEmpty() && CmsStringUtil.isEmpty(prop)) {
-                        results.add(Messages.get().getBundle().key(
-                            Messages.ERR_CHECK_NO_PROPERTYNAME_1,
-                            propObject.getPropertyname()));
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().getBundle().key(
+                        results.add(
+                            Messages.get().getBundle().key(
                                 Messages.ERR_CHECK_NO_PROPERTYNAME_1,
                                 propObject.getPropertyname()));
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_CHECK_NO_PROPERTYNAME_1,
+                                    propObject.getPropertyname()));
                         }
                     }
 
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_DEBUG_PROPERTY_ISFILENAME_1,
-                            Boolean.valueOf(propObject.isFilename())));
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_DEBUG_PROPERTY_ISFILENAME_1,
+                                Boolean.valueOf(propObject.isFilename())));
                     }
 
                     // test if the property does not start with the filename
                     if (!CmsStringUtil.isEmpty(prop)) {
                         if (propObject.isFilename()
                             && testResource.getResource().getName().toLowerCase().startsWith(prop.toLowerCase())) {
-                            results.add(Messages.get().getBundle().key(
-                                Messages.ERR_CHECK_CONTAINS_FILENAME_2,
-                                propObject.getPropertyname(),
-                                prop));
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug(Messages.get().getBundle().key(
+                            results.add(
+                                Messages.get().getBundle().key(
                                     Messages.ERR_CHECK_CONTAINS_FILENAME_2,
                                     propObject.getPropertyname(),
                                     prop));
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug(
+                                    Messages.get().getBundle().key(
+                                        Messages.ERR_CHECK_CONTAINS_FILENAME_2,
+                                        propObject.getPropertyname(),
+                                        prop));
                             }
                         }
 
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().getBundle().key(
-                                Messages.LOG_DEBUG_PROPERTY_CHECKLENGTH_2,
-                                new Integer(propObject.getLength()),
-                                new Integer(prop.length())));
+                            LOG.debug(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_DEBUG_PROPERTY_CHECKLENGTH_2,
+                                    new Integer(propObject.getLength()),
+                                    new Integer(prop.length())));
                         }
                         // test if the minmal property length is valid
                         if (propObject.getLength() > -1) {
                             if (prop.length() < propObject.getLength()) {
-                                results.add(Messages.get().getBundle().key(
-                                    Messages.ERR_CHECK_TOO_SHORT_3,
-                                    propObject.getPropertyname(),
-                                    prop,
-                                    new Integer(prop.length())));
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug(Messages.get().getBundle().key(
+                                results.add(
+                                    Messages.get().getBundle().key(
                                         Messages.ERR_CHECK_TOO_SHORT_3,
                                         propObject.getPropertyname(),
                                         prop,
                                         new Integer(prop.length())));
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug(
+                                        Messages.get().getBundle().key(
+                                            Messages.ERR_CHECK_TOO_SHORT_3,
+                                            propObject.getPropertyname(),
+                                            prop,
+                                            new Integer(prop.length())));
                                 }
                             }
                         }
@@ -484,24 +510,27 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
                                 boolean match = Pattern.matches(regex, matchValue);
 
                                 if (LOG.isDebugEnabled()) {
-                                    LOG.debug(Messages.get().getBundle().key(
-                                        Messages.LOG_DEBUG_PROPERTY_MATCHPATTERN_2,
-                                        regex,
-                                        matchValue));
+                                    LOG.debug(
+                                        Messages.get().getBundle().key(
+                                            Messages.LOG_DEBUG_PROPERTY_MATCHPATTERN_2,
+                                            regex,
+                                            matchValue));
                                 }
 
                                 if (matchResult != match) {
-                                    results.add(Messages.get().getBundle().key(
-                                        Messages.ERR_CHECK_MATCH_3,
-                                        propObject.getPropertyname(),
-                                        prop,
-                                        propObject.getValue().get(j)));
-                                    if (LOG.isDebugEnabled()) {
-                                        LOG.debug(Messages.get().getBundle().key(
+                                    results.add(
+                                        Messages.get().getBundle().key(
                                             Messages.ERR_CHECK_MATCH_3,
                                             propObject.getPropertyname(),
                                             prop,
                                             propObject.getValue().get(j)));
+                                    if (LOG.isDebugEnabled()) {
+                                        LOG.debug(
+                                            Messages.get().getBundle().key(
+                                                Messages.ERR_CHECK_MATCH_3,
+                                                propObject.getPropertyname(),
+                                                prop,
+                                                propObject.getValue().get(j)));
                                     }
                                 }
                             }
@@ -510,10 +539,11 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
                 }
 
             } catch (CmsException e) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_ERROR_PROCESSING_PROPERTIES_2,
-                    testResource.getResourceName(),
-                    e));
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_PROCESSING_PROPERTIES_2,
+                        testResource.getResourceName(),
+                        e));
             }
         }
 

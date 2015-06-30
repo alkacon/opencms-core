@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,9 +57,9 @@ import org.apache.commons.logging.Log;
 
 /**
  * Gallery action used to generate the gallery dialog.<p>
- * 
+ *
  * see jsp file <tt>/system/modules/org.opencms.ade.galleries/testVfs.jsp</tt>.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsGalleryActionElement extends CmsGwtActionElement {
@@ -78,18 +78,18 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param context the JSP page context object
-     * @param req the JSP request 
-     * @param res the JSP response 
+     * @param req the JSP request
+     * @param res the JSP response
      */
     public CmsGalleryActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super(context, req, res);
 
         try {
-            m_galleryMode = GalleryMode.valueOf(getRequest().getParameter(
-                I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE).trim());
+            m_galleryMode = GalleryMode.valueOf(
+                getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE).trim());
         } catch (Exception e) {
             m_galleryMode = GalleryMode.view;
         }
@@ -123,9 +123,9 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
     /**
      * Returns the serialized initial data for gallery dialog within the container-page editor.<p>
-     * 
+     *
      * @return the data
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public String exportForContainerpage() throws Exception {
@@ -135,7 +135,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
     /**
      * Exports the gallery messages for widget use.<p>
-     * 
+     *
      * @return the gallery messages
      */
     public String exportWidget() {
@@ -145,7 +145,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
     /**
      * Returns the editor title.<p>
-     * 
+     *
      * @return the editor title
      */
     public String getTitle() {
@@ -155,7 +155,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
     /**
      * Returns if the current gallery mode is the editor mode (used inside a rich text editor).<p>
-     * 
+     *
      * @return <code>true</code> if the gallery was opened from the editor
      */
     public boolean isEditorMode() {
@@ -165,8 +165,8 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
     /**
      * Returns true if the gallery mode is set to 'view'.
-     * 
-     * @return true if the gallery mode is 'view' 
+     *
+     * @return true if the gallery mode is 'view'
      */
     public boolean isViewMode() {
 
@@ -175,7 +175,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
     /**
      * Returns if the current gallery mode is the widget mode (used within xml-content editor etc.).<p>
-     * 
+     *
      * @return <code>true</code> if the gallery was opened as a widget
      */
     public boolean isWidgetMode() {
@@ -185,10 +185,10 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
     /**
      * Uses the request parameters of the current request to create a gallery configuration object.<p>
-     * 
-     * @param galleryMode the gallery mode 
-     * 
-     * @return the gallery configuration 
+     *
+     * @param galleryMode the gallery mode
+     *
+     * @return the gallery configuration
      */
     private CmsGalleryConfiguration createGalleryConfigurationFromRequest(GalleryMode galleryMode) {
 
@@ -237,11 +237,11 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
     /**
      * Returns the serialized initial data for gallery dialog depending on the given mode.<p>
-     * 
+     *
      * @param galleryMode the gallery mode
-     * 
+     *
      * @return the data
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     private String export(GalleryMode galleryMode) throws Exception {
@@ -253,7 +253,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
             search = CmsGalleryService.getSearch(getRequest(), data);
         }
         if ((search != null) && (search.getScope() != null) && (search.getScope() != data.getScope())) {
-            // default selected scope option should be the one for which the search has been actually performed 
+            // default selected scope option should be the one for which the search has been actually performed
             data.setScope(search.getScope());
         } else if ((search != null) && (search.getScope() == null)) {
             data.setScope(OpenCms.getWorkplaceManager().getGalleryDefaultScope());
@@ -265,16 +265,17 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
             CmsGalleryDataBean.DICT_NAME,
             I_CmsGalleryService.class.getMethod("getInitialSettings", CmsGalleryConfiguration.class),
             data));
-        sb.append(exportDictionary(
-            CmsGallerySearchBean.DICT_NAME,
-            I_CmsGalleryService.class.getMethod("getSearch", CmsGalleryDataBean.class),
-            search));
+        sb.append(
+            exportDictionary(
+                CmsGallerySearchBean.DICT_NAME,
+                I_CmsGalleryService.class.getMethod("getSearch", CmsGalleryDataBean.class),
+                search));
         return sb.toString();
     }
 
     /**
      * Returns a javascript tag that contains a variable deceleration that has the close link as value.<p>
-     * 
+     *
      * @return a javascript tag that contains a variable deceleration that has the close link as value
      */
     private String exportCloseLink() {
@@ -289,8 +290,8 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         // var closeLink = '/system/workplace/views/explorer/explorer_files.jsp';
-        sb.append("var ").append(I_CmsGalleryProviderConstants.ATTR_CLOSE_LINK).append(" = \'").append(link(closeLink)).append(
-            "\';");
+        sb.append("var ").append(I_CmsGalleryProviderConstants.ATTR_CLOSE_LINK).append(" = \'").append(
+            link(closeLink)).append("\';");
         wrapScript(sb);
         return sb.toString();
     }

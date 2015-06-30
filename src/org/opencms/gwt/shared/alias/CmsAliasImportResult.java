@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,12 +54,12 @@ public class CmsAliasImportResult implements IsSerializable {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param status the import status 
+     *
+     * @param status the import status
      * @param message the import message
-     * @param aliasPath the alias path 
+     * @param aliasPath the alias path
      * @param targetPath the target path
-     * @param mode the alias mode 
+     * @param mode the alias mode
      */
     public CmsAliasImportResult(
         CmsAliasImportStatus status,
@@ -77,10 +77,10 @@ public class CmsAliasImportResult implements IsSerializable {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param line the line containing the alias data 
-     * @param status the import status 
-     * @param message the import message 
+     *
+     * @param line the line containing the alias data
+     * @param status the import status
+     * @param message the import message
      */
     public CmsAliasImportResult(String line, CmsAliasImportStatus status, String message) {
 
@@ -94,23 +94,23 @@ public class CmsAliasImportResult implements IsSerializable {
      */
     protected CmsAliasImportResult() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
      * Gets the alias path.<p>
-     * 
-     * @return the alias path 
+     *
+     * @return the alias path
      */
     public String getAliasPath() {
 
         return m_aliasPath;
     }
 
-    /** 
+    /**
      * Gets the line containing the alias data.<p>
-     * 
-     * @return the line containing the alias data 
+     *
+     * @return the line containing the alias data
      */
     public String getLine() {
 
@@ -119,8 +119,8 @@ public class CmsAliasImportResult implements IsSerializable {
 
     /**
      * Gets the import message.<p>
-     *  
-     * @return the import message 
+     *
+     * @return the import message
      */
     public String getMessage() {
 
@@ -129,8 +129,8 @@ public class CmsAliasImportResult implements IsSerializable {
 
     /**
      * Gets the alias mode.<p>
-     * 
-     * @return the alias mode 
+     *
+     * @return the alias mode
      */
     public CmsAliasMode getMode() {
 
@@ -139,8 +139,8 @@ public class CmsAliasImportResult implements IsSerializable {
 
     /**
      * Gets the status.<p>
-     * 
-     * @return the status 
+     *
+     * @return the status
      */
     public CmsAliasImportStatus getStatus() {
 
@@ -149,8 +149,8 @@ public class CmsAliasImportResult implements IsSerializable {
 
     /**
      * Gets the alias target path.<p>
-     * 
-     * @return the alias target path 
+     *
+     * @return the alias target path
      */
     public String getTargetPath() {
 
@@ -159,8 +159,8 @@ public class CmsAliasImportResult implements IsSerializable {
 
     /**
      * Sets the line containing the alias data.<p>
-     * 
-     * @param line the line containing the alias data 
+     *
+     * @param line the line containing the alias data
      */
     public void setLine(String line) {
 

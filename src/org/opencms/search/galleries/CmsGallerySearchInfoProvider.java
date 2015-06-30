@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,8 +36,8 @@ import java.util.List;
 
 /**
  * Provides additional information to be stored in the gallery search index.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public final class CmsGallerySearchInfoProvider {
 
@@ -51,13 +51,13 @@ public final class CmsGallerySearchInfoProvider {
 
     /**
      * Provides additional information to be stored in the gallery search index.<p>
-     * 
+     *
      * @param cms the OpenCms context used for building the search index
      * @param res the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the String value extracted form the provided data according to the rules of this mapping type
      */
     public static String getAdditionalInfo(
@@ -72,15 +72,15 @@ public final class CmsGallerySearchInfoProvider {
 
     /**
      * Provides the container types to be stored in the gallery search index.<p>
-     * 
+     *
      * The return value is one string that contains all supported container names separated by a white space.<p>
-     * 
+     *
      * @param cms the OpenCms context used for building the search index
      * @param res the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the String value extracted form the provided data according to the rules of this mapping type
      */
     public static String getContainerTypes(

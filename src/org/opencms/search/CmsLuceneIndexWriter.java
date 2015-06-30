@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import org.apache.lucene.store.Directory;
 
 /**
  * Delegates indexing to a standard Lucene IndexWriter.<p>
- * 
+ *
  * @since 8.0.2
  */
 public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
@@ -57,7 +57,7 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
 
     /**
      * Creates a new index writer based on the provided standard Lucene IndexWriter.<p>
-     * 
+     *
      * @param indexWriter the standard Lucene IndexWriter to use as delegate
      */
     public CmsLuceneIndexWriter(IndexWriter indexWriter) {
@@ -66,12 +66,12 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
     }
 
     /**
-     * Creates a new index writer based on the provided standard Lucene IndexWriter for the 
+     * Creates a new index writer based on the provided standard Lucene IndexWriter for the
      * provided OpenCms search index instance.<p>
-     * 
-     * The OpenCms search instance is currently used only for improved logging of the 
+     *
+     * The OpenCms search instance is currently used only for improved logging of the
      * index operations.<p>
-     * 
+     *
      * @param indexWriter the standard Lucene IndexWriter to use as delegate
      * @param index the OpenCms search index instance this writer to supposed to write to
      */
@@ -80,10 +80,11 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
         m_indexWriter = indexWriter;
         m_index = index;
         if ((m_index != null) && LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_INDEX_WRITER_MSG_CREATE_2,
-                m_index.getName(),
-                m_index.getPath()));
+            LOG.info(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INDEX_WRITER_MSG_CREATE_2,
+                    m_index.getName(),
+                    m_index.getPath()));
         }
     }
 
@@ -96,10 +97,11 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
         Directory dir = m_indexWriter.getDirectory();
         try {
             if ((m_index != null) && LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.LOG_INDEX_WRITER_MSG_CLOSE_2,
-                    m_index.getName(),
-                    m_index.getPath()));
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_INDEX_WRITER_MSG_CLOSE_2,
+                        m_index.getName(),
+                        m_index.getPath()));
             }
             m_indexWriter.close();
         } finally {
@@ -115,10 +117,11 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
     public void commit() throws IOException {
 
         if ((m_index != null) && LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_INDEX_WRITER_MSG_COMMIT_2,
-                m_index.getName(),
-                m_index.getPath()));
+            LOG.info(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INDEX_WRITER_MSG_COMMIT_2,
+                    m_index.getName(),
+                    m_index.getPath()));
         }
         m_indexWriter.commit();
     }
@@ -131,28 +134,30 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
         // search for an exact match on the document root path
         Term term = new Term(CmsSearchField.FIELD_PATH, resource.getRootPath());
         if ((m_index != null) && LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_INDEX_WRITER_MSG_DOC_DELETE_3,
-                resource.getRootPath(),
-                m_index.getName(),
-                m_index.getPath()));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INDEX_WRITER_MSG_DOC_DELETE_3,
+                    resource.getRootPath(),
+                    m_index.getName(),
+                    m_index.getPath()));
         }
         m_indexWriter.deleteDocuments(term);
     }
 
     /**
      * @see org.opencms.search.I_CmsIndexWriter#optimize()
-     * 
-     * As optimize is deprecated with Lucene 3.5, this implementation 
+     *
+     * As optimize is deprecated with Lucene 3.5, this implementation
      * actually calls {@link IndexWriter#forceMerge(int)}.<p>
      */
     public void optimize() throws IOException {
 
         if ((m_index != null) && LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_INDEX_WRITER_MSG_OPTIMIZE_2,
-                m_index.getName(),
-                m_index.getPath()));
+            LOG.info(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INDEX_WRITER_MSG_OPTIMIZE_2,
+                    m_index.getName(),
+                    m_index.getPath()));
         }
         int oldPriority = Thread.currentThread().getPriority();
         // we don't want the priority too low as the process should complete as fast as possible
@@ -168,11 +173,12 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
 
         Term pathTerm = new Term(CmsSearchField.FIELD_PATH, rootPath);
         if ((m_index != null) && LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_INDEX_WRITER_MSG_DOC_UPDATE_3,
-                rootPath,
-                m_index.getName(),
-                m_index.getPath()));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_INDEX_WRITER_MSG_DOC_UPDATE_3,
+                    rootPath,
+                    m_index.getName(),
+                    m_index.getPath()));
         }
         m_indexWriter.updateDocument(pathTerm, (Document)document.getDocument());
     }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,23 +31,23 @@ import org.dom4j.Document;
 
 /**
  * Helper class which represents a single XML update action.<p>
- * 
- * This class was written to avoid writing huge switch-case blocks in the XML configuration 
- * updater classes. Instead, a map from xpaths to instances of subclasses of this class can 
+ *
+ * This class was written to avoid writing huge switch-case blocks in the XML configuration
+ * updater classes. Instead, a map from xpaths to instances of subclasses of this class can
  * be used.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlUpdateAction {
 
     /**
      * @see A_CmsSetupXmlUpdate#executeUpdate(Document, String, boolean)
-     * 
-     * @param doc the document to be updated 
-     * @param xpath the path at which the update should take place 
+     *
+     * @param doc the document to be updated
+     * @param xpath the path at which the update should take place
      * @param  forReal true if the update is for real
-     * 
-     * @return true if the document was updated 
+     *
+     * @return true if the document was updated
      */
     public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
 

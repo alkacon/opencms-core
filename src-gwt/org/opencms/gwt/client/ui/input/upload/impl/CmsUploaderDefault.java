@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,8 +63,8 @@ public class CmsUploaderDefault implements I_CmsUploader {
 
         /**
          * The default constructor.<p>
-         * 
-         * @param dialog the upload dialog instance 
+         *
+         * @param dialog the upload dialog instance
          * @param form the submitted form
          */
         public CmsUploadHandler(I_CmsUploadDialog dialog, FormPanel form) {
@@ -103,7 +103,7 @@ public class CmsUploaderDefault implements I_CmsUploader {
 
     /**
      * Creates a hidden input field with the given name and value and adds it to the form panel.<p>
-     * 
+     *
      * @param form the form panel
      * @param fieldName the field name
      * @param fieldValue the field value
@@ -118,10 +118,10 @@ public class CmsUploaderDefault implements I_CmsUploader {
 
     /**
      * Creates a form to submit the upload files.<p>
-     * 
+     *
      * @param uploadUri the upload URI
      * @param targetFolder the target folder
-     * @param isRootPath if the target folder is given as a root path 
+     * @param isRootPath if the target folder is given as a root path
      * @param filesToUpload the files to upload
      * @param filesToUnzip the files to unzip
      * @return the created form panel

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -71,11 +71,11 @@ public abstract class A_CmsNewModelPageDialog extends CmsPopup {
     /** The OK button. */
     private CmsPushButton m_okButton;
 
-    /** 
+    /**
      * Constructor.<p>
-     * 
-     * @param title the title of the dialog 
-     * @param infoBean the resource info bean to display  
+     *
+     * @param title the title of the dialog
+     * @param infoBean the resource info bean to display
      */
     public A_CmsNewModelPageDialog(String title, CmsListInfoBean infoBean) {
 
@@ -85,8 +85,8 @@ public abstract class A_CmsNewModelPageDialog extends CmsPopup {
 
     /**
      * Initializes the dialog.<p>
-     * 
-     * @param listInfo the resource info to display 
+     *
+     * @param listInfo the resource info to display
      */
     public void initialize(CmsListInfoBean listInfo) {
 
@@ -112,7 +112,7 @@ public abstract class A_CmsNewModelPageDialog extends CmsPopup {
 
         m_descriptionInput = new CmsTextBox();
 
-        this.addDialogClose(null);
+        addDialogClose(null);
         addInputRow(
             org.opencms.ade.sitemap.client.Messages.get().key(
                 org.opencms.ade.sitemap.client.Messages.GUI_MODEL_PAGE_DESCRIPTION_LABEL_0),
@@ -161,7 +161,7 @@ public abstract class A_CmsNewModelPageDialog extends CmsPopup {
 
     /**
      * Enables or disables the OK button.<p>
-     * 
+     *
      * @param enabled <code>true</code> to enable the button
      */
     protected void setOkEnabled(boolean enabled) {
@@ -175,7 +175,7 @@ public abstract class A_CmsNewModelPageDialog extends CmsPopup {
 
     /**
      * Adds a row to the form.<p>
-     * 
+     *
      * @param label the label
      * @param inputWidget the input widget
      */

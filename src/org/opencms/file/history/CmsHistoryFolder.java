@@ -36,7 +36,7 @@ import org.opencms.util.CmsUUID;
 
 /**
  * A historical version of a file in the OpenCms VFS resource history.<p>
- * 
+ *
  * @since 6.9.1
  */
 public class CmsHistoryFolder extends CmsFolder implements I_CmsHistoryResource {
@@ -58,7 +58,7 @@ public class CmsHistoryFolder extends CmsFolder implements I_CmsHistoryResource 
 
     /**
      * Constructor from a history resource.<p>
-     * 
+     *
      * @param resource the base history resource
      */
     public CmsHistoryFolder(I_CmsHistoryResource resource) {
@@ -86,8 +86,8 @@ public class CmsHistoryFolder extends CmsFolder implements I_CmsHistoryResource 
 
     /**
      * Default Constructor.<p>
-     * 
-     * @param publishTag the publish tag of this historical resource    
+     *
+     * @param publishTag the publish tag of this historical resource
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param path the filename of this resouce
@@ -150,7 +150,7 @@ public class CmsHistoryFolder extends CmsFolder implements I_CmsHistoryResource 
 
     /**
      * Returns a clone of this Objects instance.<p>
-     * 
+     *
      * @return a clone of this instance
      */
     @Override
@@ -212,7 +212,7 @@ public class CmsHistoryFolder extends CmsFolder implements I_CmsHistoryResource 
     /**
      * Returns the name of the user that created this resource.<p>
      *
-     * @param cms the current cms context 
+     * @param cms the current cms context
      *
      * @return the name of the user that created this resource
      */
@@ -228,7 +228,7 @@ public class CmsHistoryFolder extends CmsFolder implements I_CmsHistoryResource 
     /**
      * Returns the name of the user that last modified this resource.<p>
      *
-     * @param cms the current cms context 
+     * @param cms the current cms context
      *
      * @return the name of the user that last modified this resource
      */

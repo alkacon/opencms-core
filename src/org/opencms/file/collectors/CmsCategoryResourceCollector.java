@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,14 +54,14 @@ import org.apache.commons.logging.Log;
 
 /**
  * A collector to fetch XML contents in a folder or the current site filtered by one or more given category types.<p>
- * 
+ *
  * The return list will also be filtered by given key value pairs which are given as a collector parameter.<p>
- * 
+ *
  * Usage:
  * <code>
  * &lt;cms:contentload collector=&quot;allKeyValuePairFiltered&quot; param=&quot;resource=[filename]|resourceType=[resource type]|categoryTypes=[category1,category2,...]|subTree=[boolean]|sortBy=[category|date|property:[property_name]]|sortAsc=[boolean]&quot;&gt;
  * </code>
- * 
+ *
  * @since 7.0.0
  */
 public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
@@ -71,7 +71,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
      *
      * In addition to the superclass this implementation accepts parameters that build key value pairs separated by
      * pipes '|', which allows arbitrary order of parameters and free numbers of parameters.<p>
-     * 
+     *
      * Usage:
      * <code>
      * &quot;resource=[filename]|resourceType=[resource type]|categoryTypes=[category1,category2,...]|excludeTimerange=false|subTree=[boolean]|sortBy=[category|date|property:[property_name]]|sortAsc=[boolean]&quot;
@@ -130,7 +130,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
 
         /**
          * Returns the list of requested categories.<p>
-         * 
+         *
          * @return the list of requested categories
          */
         public List<String> getCategoryTypes() {
@@ -161,7 +161,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         /**
          * Returns the sort order. <code>true=asc</code> or <code>false=desc</code>  <p>
          *
-         * @return the sort order. <code>true=asc</code> or <code>false=desc</code> 
+         * @return the sort order. <code>true=asc</code> or <code>false=desc</code>
          */
         public boolean getSortOrder() {
 
@@ -180,7 +180,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
 
         /**
          * Returns <code>true</code> if the sub tree of the given resource will be searched too.<p>
-         * 
+         *
          * @return <code>true</code> if the sub tree of the given resource will be searched too.
          */
         public boolean isSubTree() {
@@ -308,9 +308,8 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                 // "allKeyValuePairFiltered"
                 return null;
             default:
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
-                    collectorName));
+                throw new CmsDataAccessException(
+                    Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
     }
 
@@ -329,9 +328,8 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                 // "allKeyValuePairFiltered"
                 return null;
             default:
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
-                    collectorName));
+                throw new CmsDataAccessException(
+                    Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
     }
 
@@ -361,21 +359,20 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                 // "allKeyValuePairFiltered"
                 return allKeyValuePairFiltered(cms, param, numResults);
             default:
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
-                    collectorName));
+                throw new CmsDataAccessException(
+                    Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
     }
 
     /**
      * Collects all resources for the given categories filtered and sorted by the given collector parameter.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param param value parameter to filter the resources
-     * @param numResults number of results 
-     * 
+     * @param numResults number of results
+     *
      * @return a list of resources filtered and sorted by the given collector parameter
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected List<CmsResource> allKeyValuePairFiltered(CmsObject cms, String param, int numResults)

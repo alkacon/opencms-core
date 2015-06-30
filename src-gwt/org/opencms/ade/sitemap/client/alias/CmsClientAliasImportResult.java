@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,10 +57,10 @@ public class CmsClientAliasImportResult {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param line the CSV line containing the alias 
-     * @param status the import status 
-     * @param message the import message 
+     *
+     * @param line the CSV line containing the alias
+     * @param status the import status
+     * @param message the import message
      */
     public CmsClientAliasImportResult(String line, CmsAliasImportStatus status, String message) {
 
@@ -71,10 +71,10 @@ public class CmsClientAliasImportResult {
 
     /**
      * Parses an alias import result from a JSON object.<p>
-     * 
-     * @param json the JSON object containing the alias import result data 
-     * 
-     * @return the alias import result bean 
+     *
+     * @param json the JSON object containing the alias import result data
+     *
+     * @return the alias import result bean
      */
     public static CmsClientAliasImportResult parse(JSONObject json) {
 
@@ -87,9 +87,9 @@ public class CmsClientAliasImportResult {
 
     /**
      * Extracts alias import results from a JSON array.<p>
-     * 
-     * @param array the JSON array 
-     * 
+     *
+     * @param array the JSON array
+     *
      * @return the alias import results from the array
      */
     public static List<CmsClientAliasImportResult> parseArray(JSONArray array) {
@@ -106,11 +106,11 @@ public class CmsClientAliasImportResult {
 
     /**
      * Helper method to get a string value from a JSON object.<p>
-     * 
-     * @param json the JSON object 
-     * @param key the key whose value should be extracted as a string 
-     * 
-     * @return the string value for the given key 
+     *
+     * @param json the JSON object
+     * @param key the key whose value should be extracted as a string
+     *
+     * @return the string value for the given key
      */
     protected static String getString(JSONObject json, String key) {
 
@@ -124,8 +124,8 @@ public class CmsClientAliasImportResult {
 
     /**
      * Gets the CSV line containing the alias.<p>
-     * 
-     * @return the CSV line 
+     *
+     * @return the CSV line
      */
     public String getLine() {
 
@@ -134,8 +134,8 @@ public class CmsClientAliasImportResult {
 
     /**
      * Gets the import message.<p>
-     * 
-     * @return the import message 
+     *
+     * @return the import message
      */
     public String getMessage() {
 
@@ -144,8 +144,8 @@ public class CmsClientAliasImportResult {
 
     /**
      * Gets the import status.<p>
-     * 
-     * @return the import status 
+     *
+     * @return the import status
      */
     public CmsAliasImportStatus getStatus() {
 

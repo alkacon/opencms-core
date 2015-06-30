@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,11 +38,11 @@ import org.apache.commons.logging.Log;
 
 /**
  * This class is used to build a list ({@link A_CmsListDialog}) in the background
- * and to show the progress of building to the user.<p> 
- * 
+ * and to show the progress of building to the user.<p>
+ *
  * To work correctly the operations while building the list have to update the
  * actual progress.<p>
- * 
+ *
  * @since 7.0.0
  */
 public class CmsProgressThread extends Thread {
@@ -109,7 +109,7 @@ public class CmsProgressThread extends Thread {
     /**
      * Returns the error exception in case there was an error during the execution of
      * this thread, null otherwise.<p>
-     * 
+     *
      * @return the error exception in case there was an error, null otherwise
      */
     public Throwable getError() {
@@ -177,9 +177,9 @@ public class CmsProgressThread extends Thread {
         return m_result;
     }
 
-    /** 
+    /**
      * Returns the time this report has been running.<p>
-     * 
+     *
      * @return the time this report has been running
      */
     public synchronized long getRuntime() {

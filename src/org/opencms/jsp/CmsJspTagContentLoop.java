@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,8 +42,8 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * Used to loop through the element values of an XML content item.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentContainer {
 
@@ -72,7 +72,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
     private Locale m_locale;
 
     /**
-     * Empty constructor, required for JSP tags.<p> 
+     * Empty constructor, required for JSP tags.<p>
      */
     public CmsJspTagContentLoop() {
 
@@ -80,8 +80,8 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
     }
 
     /**
-     * Constructor used when using <code>contentloop</code> from scriptlet code.<p> 
-     * 
+     * Constructor used when using <code>contentloop</code> from scriptlet code.<p>
+     *
      * @param container the parent content container that provides the content element to loop
      * @param element the element to loop in the content
      */
@@ -124,13 +124,15 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
         // get a reference to the parent "content container" class
         Tag ancestor = findAncestorWithClass(this, I_CmsXmlContentContainer.class);
         if (ancestor == null) {
-            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_PARENTLESS_TAG_1, "contentloop");
+            CmsMessageContainer errMsgContainer = Messages.get().container(
+                Messages.ERR_PARENTLESS_TAG_1,
+                "contentloop");
             String msg = Messages.getLocalizedMessage(errMsgContainer, pageContext);
             throw new JspTagException(msg);
         }
         I_CmsXmlContentContainer container = (I_CmsXmlContentContainer)ancestor;
 
-        // initialize the content 
+        // initialize the content
         init(container);
 
         if (hasMoreResources()) {
@@ -168,7 +170,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
 
     /**
      * Returns the name of the content node element to show.<p>
-     * 
+     *
      * @return the name of the content node element to show
      */
     public String getElement() {
@@ -270,7 +272,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
 
     /**
      * Sets the name of the content node element to show.<p>
-     * 
+     *
      * @param element the name of the content node element to show
      */
     public void setElement(String element) {
@@ -280,7 +282,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
 
     /**
      * Initializes this content loop tag.<p>
-     * 
+     *
      * @param container the parent content container that provides the content element to loop
      */
     protected void init(I_CmsXmlContentContainer container) {

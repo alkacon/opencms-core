@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,15 +47,15 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides methods for the touch resource(s) dialog.<p> 
- * 
+ * Provides methods for the touch resource(s) dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/touch.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsTouch extends CmsMultiDialog {
 
@@ -88,7 +88,7 @@ public class CmsTouch extends CmsMultiDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsTouch(CmsJspActionElement jsp) {
@@ -98,7 +98,7 @@ public class CmsTouch extends CmsMultiDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -110,7 +110,7 @@ public class CmsTouch extends CmsMultiDialog {
 
     /**
      * Performs the resource touching, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionTouch() throws JspException {
@@ -119,7 +119,7 @@ public class CmsTouch extends CmsMultiDialog {
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             if (performDialogOperation()) {
-                // if no exception is caused and "true" is returned the touch operation was successful          
+                // if no exception is caused and "true" is returned the touch operation was successful
                 actionCloseDialog();
             } else {
                 // "false" returned, display "please wait" screen
@@ -132,7 +132,7 @@ public class CmsTouch extends CmsMultiDialog {
 
     /**
      * Creates the "rewrite content" checkbox.<p>
-     *  
+     *
      * @return the String with the checkbox input field
      */
     public String buildCheckContent() {
@@ -150,7 +150,7 @@ public class CmsTouch extends CmsMultiDialog {
 
     /**
      * Creates the "recursive" checkbox for touching subresources of folders.<p>
-     *  
+     *
      * @return the String with the checkbox input field or an empty String for folders.
      */
     public String buildCheckRecursive() {
@@ -171,9 +171,9 @@ public class CmsTouch extends CmsMultiDialog {
 
     /**
      * Creates the HTML JavaScript and stylesheet includes required by the calendar for the head of the page.<p>
-     * 
+     *
      * @return the necessary HTML code for the js and stylesheet includes
-     * 
+     *
      * @deprecated use {@link CmsCalendarWidget#calendarIncludes(java.util.Locale)}, this is just here so that old JSP still work
      */
     @Deprecated
@@ -184,7 +184,7 @@ public class CmsTouch extends CmsMultiDialog {
 
     /**
      * Generates the HTML to initialize the JavaScript calendar element on the end of a page.<p>
-     * 
+     *
      * @param inputFieldId the ID of the input field where the date is pasted to
      * @param triggerButtonId the ID of the button which triggers the calendar
      * @param align initial position of the calendar popup element
@@ -194,7 +194,7 @@ public class CmsTouch extends CmsMultiDialog {
      * @param dateStatusFunc name of the function which determines if/how a date should be disabled
      * @param showTime true if the time selector should be shown, otherwise false
      * @return the HTML code to initialize a calendar poup element
-     * 
+     *
      * @deprecated use {@link CmsCalendarWidget#calendarInit(org.opencms.i18n.CmsMessages, String, String, String, boolean, boolean, boolean, String, boolean)}, this is just here so that old JSP still work
      */
     @Deprecated
@@ -222,21 +222,21 @@ public class CmsTouch extends CmsMultiDialog {
 
     /**
      * Returns the current date and time as String formatted in localized pattern.<p>
-     * 
+     *
      * @return the current date and time as String formatted in localized pattern
      */
     public String getCurrentDateTime() {
 
-        // get the current date & time 
+        // get the current date & time
         return CmsCalendarWidget.getCalendarLocalizedTime(getLocale(), getMessages(), System.currentTimeMillis());
     }
 
     /**
-     * Returns the value of the content parameter, 
+     * Returns the value of the content parameter,
      * or null if this parameter was not provided.<p>
-     * 
+     *
      * The content parameter on files decides if also the content is rewritten.<p>
-     * 
+     *
      * @return the value of the content parameter
      */
     public String getParamContent() {
@@ -245,11 +245,11 @@ public class CmsTouch extends CmsMultiDialog {
     }
 
     /**
-     * Returns the value of the new timestamp parameter, 
+     * Returns the value of the new timestamp parameter,
      * or null if this parameter was not provided.<p>
-     * 
+     *
      * The timestamp parameter stores the new timestamp as String.<p>
-     * 
+     *
      * @return the value of the new timestamp parameter
      */
     public String getParamNewtimestamp() {
@@ -258,12 +258,12 @@ public class CmsTouch extends CmsMultiDialog {
     }
 
     /**
-     * Returns the value of the recursive parameter, 
+     * Returns the value of the recursive parameter,
      * or null if this parameter was not provided.<p>
-     * 
+     *
      * The recursive parameter on folders decides if all subresources
      * of the folder should be touched, too.<p>
-     * 
+     *
      * @return the value of the recursive parameter
      */
     public String getParamRecursive() {
@@ -273,7 +273,7 @@ public class CmsTouch extends CmsMultiDialog {
 
     /**
      * Sets the value of the content parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamContent(String value) {
@@ -283,7 +283,7 @@ public class CmsTouch extends CmsMultiDialog {
 
     /**
      * Sets the value of the new timestamp parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamNewtimestamp(String value) {
@@ -293,7 +293,7 @@ public class CmsTouch extends CmsMultiDialog {
 
     /**
      * Sets the value of the recursive parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamRecursive(String value) {
@@ -310,7 +310,7 @@ public class CmsTouch extends CmsMultiDialog {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
-        // check the required permissions to touch the resource       
+        // check the required permissions to touch the resource
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
@@ -319,7 +319,7 @@ public class CmsTouch extends CmsMultiDialog {
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
 
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_TOUCH);
         } else if (DIALOG_WAIT.equals(getParamAction())) {
@@ -337,7 +337,7 @@ public class CmsTouch extends CmsMultiDialog {
 
     /**
      * Performs the resource touching.<p>
-     * 
+     *
      * @return true, if the resource was touched, otherwise false
      * @throws CmsException if touching is not successful
      */
@@ -394,13 +394,13 @@ public class CmsTouch extends CmsMultiDialog {
 
     /**
      * Performs a touch operation for a single resource.<p>
-     * 
+     *
      * @param resourceName the resource name of the resource to touch
      * @param timeStamp the new time stamp
      * @param recursive the flag if the touch operation is recursive
      * @param correctDate the flag if the new time stamp is a correct date
      * @param touchContent if the content has to be rewritten
-     * 
+     *
      * @throws CmsException if touching the resource fails
      */
     protected void touchSingleResource(
@@ -436,9 +436,9 @@ public class CmsTouch extends CmsMultiDialog {
 
     /**
      * Rewrites the content of the given file.<p>
-     * 
+     *
      * @param resource the resource to rewrite the content for
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private void hardTouch(CmsResource resource) throws CmsException {

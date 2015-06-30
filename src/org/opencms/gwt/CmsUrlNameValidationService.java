@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,9 +39,9 @@ import org.opencms.util.CmsUUID;
 import java.util.Map;
 
 /**
- * Validation class which both translates a sitemap URL name and checks whether it already exists in a '|'-separated 
+ * Validation class which both translates a sitemap URL name and checks whether it already exists in a '|'-separated
  * list of URL names which is passed as a configuration parameter.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsUrlNameValidationService implements I_CmsValidationService {
@@ -64,13 +64,14 @@ public class CmsUrlNameValidationService implements I_CmsValidationService {
                 // no problem, it's the same resource
                 return new CmsValidationResult(null, name);
             } else {
-                // it's a different resource, so we fail 
-                return new CmsValidationResult(org.opencms.gwt.Messages.get().getBundle().key(
-                    org.opencms.gwt.Messages.ERR_URL_NAME_ALREADY_EXISTS_1,
-                    name));
+                // it's a different resource, so we fail
+                return new CmsValidationResult(
+                    org.opencms.gwt.Messages.get().getBundle().key(
+                        org.opencms.gwt.Messages.ERR_URL_NAME_ALREADY_EXISTS_1,
+                        name));
             }
         } catch (CmsVfsResourceNotFoundException e) {
-            // ok, the resource was not found 
+            // ok, the resource was not found
             return new CmsValidationResult(null, name);
         } catch (CmsException e) {
             throw new CmsRuntimeException(e.getMessageContainer());

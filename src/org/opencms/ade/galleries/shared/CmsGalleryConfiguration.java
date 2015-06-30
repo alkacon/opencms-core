@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -113,7 +113,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param configuration the initial configuration
      */
     public CmsGalleryConfiguration(I_CmsGalleryConfiguration configuration) {
@@ -259,10 +259,10 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
         return m_tabConfiguration;
     }
 
-    /** 
+    /**
      * Gets the array of tab ids.<p>
-     * 
-     * @return the tab ids 
+     *
+     * @return the tab ids
      */
     public GalleryTabId[] getTabIds() {
 
@@ -338,8 +338,8 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
 
     /**
      * Enables or disables selection of galleries in the gallery tab.<p>
-     * 
-     * @param galleriesSelectable true if the galleries should be made selectable 
+     *
+     * @param galleriesSelectable true if the galleries should be made selectable
      */
     public void setGalleriesSelectable(boolean galleriesSelectable) {
 
@@ -368,8 +368,8 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
 
     /**
      * Sets the prefix for the key used to store the last selected gallery.<p>
-     * 
-     * @param prefix the new prefix 
+     *
+     * @param prefix the new prefix
      */
     public void setGalleryStoragePrefix(String prefix) {
 
@@ -378,7 +378,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
 
     /**
      * Sets the gallery type name.<p>
-     * 
+     *
      * @param galleryTypeName the gallery type name
      */
     public void setGalleryTypeName(String galleryTypeName) {
@@ -448,8 +448,8 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
 
     /**
      * Disables selection of results if the given parameter is 'false'.<p>
-     * 
-     * @param resultsSelectable false if result selection should be disabled 
+     *
+     * @param resultsSelectable false if result selection should be disabled
      */
     public void setResultsSelectable(boolean resultsSelectable) {
 
@@ -479,7 +479,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
 
     /**
      * Sets the start folder.<p>
-     * 
+     *
      * @param startFolder the start folder
      */
     public void setStartFolder(String startFolder) {
@@ -499,8 +499,8 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
 
     /**
      * Sets the tab configuration.<p>
-     * 
-     * @param tabConfig the gallery tab configuration 
+     *
+     * @param tabConfig the gallery tab configuration
      */
     public void setTabConfiguration(CmsGalleryTabConfiguration tabConfig) {
 
@@ -509,7 +509,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
 
     /**
      * Sets the upload folder.<p>
-     * 
+     *
      * @param uploadFolder the upload folder
      */
     public void setUploadFolder(String uploadFolder) {

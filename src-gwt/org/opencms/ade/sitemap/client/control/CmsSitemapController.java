@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -88,7 +88,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Sitemap editor controller.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSitemapController implements I_CmsSitemapController {
@@ -164,13 +164,13 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Helper method for looking up a value in a map which may be null.<p>
-     * 
-     * @param <A> the key type 
-     * @param <B> the value type 
+     *
+     * @param <A> the key type
+     * @param <B> the value type
      * @param map the map (which may be null)
-     * @param key the map key 
-     * 
-     * @return the value of the map at the given key, or null if the map is null 
+     * @param key the map key
+     *
+     * @return the value of the map at the given key, or null if the map is null
      */
     public static <A, B> B safeLookup(Map<A, B> map, A key) {
 
@@ -182,10 +182,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Adds a new change event handler.<p>
-     * 
+     *
      * @param handler the handler to add
-     * 
-     * @return the handler registration 
+     *
+     * @return the handler registration
      */
     public HandlerRegistration addChangeHandler(I_CmsSitemapChangeHandler handler) {
 
@@ -194,8 +194,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Adds a new detail page information bean.<p>
-     * 
-     * @param info the detail page information bean to add 
+     *
+     * @param info the detail page information bean to add
      */
     public void addDetailPageInfo(CmsDetailPageInfo info) {
 
@@ -205,9 +205,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Adds a new load event handler.<p>
-     * 
+     *
      * @param handler the handler to add
-     * 
+     *
      * @return the handler registration
      */
     public HandlerRegistration addLoadHandler(I_CmsSitemapLoadHandler handler) {
@@ -217,8 +217,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Adds a handler for property changes caused by user edits.<p>
-     * 
-     * @param handler a new handler for property updates caused by the user 
+     *
+     * @param handler a new handler for property updates caused by the user
      */
     public void addPropertyUpdateHandler(I_CmsPropertyUpdateHandler handler) {
 
@@ -228,7 +228,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Adds the entry to the navigation.<p>
-     * 
+     *
      * @param entry the entry
      */
     public void addToNavigation(CmsClientSitemapEntry entry) {
@@ -247,8 +247,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Makes the given sitemap entry the default detail page for its detail page type.<p>
-     * 
-     * @param entry an entry representing a detail page 
+     *
+     * @param entry an entry representing a detail page
      */
     public void bump(CmsClientSitemapEntry entry) {
 
@@ -261,10 +261,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Changes the given category.<p>
-     * 
-     * @param id the category id 
-     * @param title the new category title 
-     * @param name the new category name 
+     *
+     * @param id the category id
+     * @param title the new category title
+     * @param name the new category name
      */
     public void changeCategory(final CmsUUID id, final String title, final String name) {
 
@@ -314,13 +314,13 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Registers a new sitemap entry.<p>
-     * 
+     *
      * @param newEntry the new entry
      * @param parentId the parent entry id
      * @param resourceTypeId the resource type id
      * @param copyResourceId the copy resource id
      * @param parameter an additional parameter which may contain more information needed to create the new resource
-     * @param isNewSitemap a flag controlling whether a new sitemap should be created  
+     * @param isNewSitemap a flag controlling whether a new sitemap should be created
      */
     public void create(
         CmsClientSitemapEntry newEntry,
@@ -330,7 +330,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
         String parameter,
         boolean isNewSitemap) {
 
-        assert (getEntry(newEntry.getSitePath()) == null);
+        assert(getEntry(newEntry.getSitePath()) == null);
 
         CmsSitemapChange change = new CmsSitemapChange(null, newEntry.getSitePath(), ChangeType.create);
         change.setDefaultFileId(newEntry.getDefaultFileId());
@@ -365,10 +365,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Creates a new category.<p>
-     * 
-     * @param id the parent category id, or the null uuid for a new top-level category 
-     * @param title the title of the category 
-     * @param name the name of the category 
+     *
+     * @param id the parent category id, or the null uuid for a new top-level category
+     * @param title the title of the category
+     * @param name the name of the category
      */
     public void createCategory(final CmsUUID id, final String title, final String name) {
 
@@ -394,16 +394,16 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Creates a new gallery folder of the given type.<p>
-     * 
+     *
      * @param parentId the parent folder id
      * @param galleryTypeId the folder type id
      * @param title the folder title
      */
     public void createNewGallery(final CmsUUID parentId, final int galleryTypeId, final String title) {
 
-        final String parentFolder = parentId != null ? getEntryById(parentId).getSitePath() : CmsStringUtil.joinPaths(
-            m_data.getRoot().getSitePath(),
-            m_data.getDefaultGalleryFolder());
+        final String parentFolder = parentId != null
+        ? getEntryById(parentId).getSitePath()
+        : CmsStringUtil.joinPaths(m_data.getRoot().getSitePath(), m_data.getDefaultGalleryFolder());
 
         CmsRpcAction<CmsGalleryFolderEntry> action = new CmsRpcAction<CmsGalleryFolderEntry>() {
 
@@ -425,9 +425,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Creates a new model page.<p>
-     * 
-     * @param title the title of the model page 
-     * @param description the description of the model page 
+     *
+     * @param title the title of the model page
+     * @param description the description of the model page
      * @param copyId the structure id of the resource which should be used as a copy model for the new page
      */
     public void createNewModelPage(final String title, final String description, final CmsUUID copyId) {
@@ -473,9 +473,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Creates a sitemap folder.<p>
-     * 
-     * @param newEntry the new entry 
-     * @param parentId the entry parent id 
+     *
+     * @param newEntry the new entry
+     * @param parentId the entry parent id
      * @param sitemapType the resource type for the subsitemap folder
      */
     public void createSitemapSubEntry(final CmsClientSitemapEntry newEntry, CmsUUID parentId, String sitemapType) {
@@ -487,9 +487,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Creates a new sub-entry which is a subsitemap.<p>
-     * 
-     * @param parent the parent entry 
-     * @param sitemapFolderType the sitemap folder type 
+     *
+     * @param parent the parent entry
+     * @param sitemapFolderType the sitemap folder type
      */
     public void createSitemapSubEntry(final CmsClientSitemapEntry parent, final String sitemapFolderType) {
 
@@ -498,7 +498,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
             public void onFailure(Throwable caught) {
 
-                // do nothing 
+                // do nothing
             }
 
             public void onSuccess(CmsClientSitemapEntry result) {
@@ -517,8 +517,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Creates a new sub-entry of an existing sitemap entry.<p>
-     * 
-     * @param parent the entry to which a new sub-entry should be added 
+     *
+     * @param parent the entry to which a new sub-entry should be added
      */
     public void createSubEntry(final CmsClientSitemapEntry parent) {
 
@@ -527,9 +527,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Creates a new sub-entry of an existing sitemap entry.<p>
-     * 
+     *
      * @param parent the entry to which a new sub-entry should be added
-     * @param structureId the structure id of the model page (if null, uses default model page) 
+     * @param structureId the structure id of the model page (if null, uses default model page)
      */
     public void createSubEntry(final CmsClientSitemapEntry parent, final CmsUUID structureId) {
 
@@ -558,7 +558,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Registers a new sitemap entry.<p>
-     * 
+     *
      * @param newEntry the new entry
      * @param parentId the parent entry id
      * @param structureId the structure id of the model page (if null, uses default model page)
@@ -573,7 +573,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Creates a sub-sitemap from the subtree of the current sitemap starting at the given entry.<p>
-     * 
+     *
      * @param entryId the id of the entry
      */
     public void createSubSitemap(final CmsUUID entryId) {
@@ -605,7 +605,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Deletes the given entry and all its descendants.<p>
-     * 
+     *
      * @param sitePath the site path of the entry to delete
      */
     public void delete(String sitePath) {
@@ -633,8 +633,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Deletes a category.<p>
-     * 
-     * @param id the id of the category 
+     *
+     * @param id the id of the category
      */
     public void deleteCategory(final CmsUUID id) {
 
@@ -651,9 +651,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Edits the given sitemap entry.<p>
-     * 
+     *
      * @param entry the sitemap entry to update
-     * @param propertyChanges the property changes 
+     * @param propertyChanges the property changes
      * @param reloadStatus a value indicating which entries need to be reloaded after the change
      */
     public void edit(
@@ -681,12 +681,12 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Edits an entry and changes its URL name.<p>
-     * 
-     * @param entry the entry which is being edited 
-     * @param newUrlName the new URL name of the entry 
-     * @param propertyChanges the property changes  
+     *
+     * @param entry the entry which is being edited
+     * @param newUrlName the new URL name of the entry
+     * @param propertyChanges the property changes
      * @param keepNewStatus <code>true</code> if the entry should keep it's new status
-     * @param reloadStatus a value indicating which entries need to be reloaded after the change   
+     * @param reloadStatus a value indicating which entries need to be reloaded after the change
      */
     public void editAndChangeName(
         final CmsClientSitemapEntry entry,
@@ -720,10 +720,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Ensure the uniqueness of a given URL-name within the children of the given parent site-map entry.<p>
-     * 
+     *
      * @param parent the parent entry
      * @param newName the proposed name
-     * 
+     *
      * @return the unique name
      */
     public String ensureUniqueName(CmsClientSitemapEntry parent, String newName) {
@@ -733,10 +733,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Ensure the uniqueness of a given URL-name within the children of the given parent folder.<p>
-     * 
+     *
      * @param parentFolder the parent folder
      * @param newName the proposed name
-     * 
+     *
      * @return the unique name
      */
     public String ensureUniqueName(final String parentFolder, String newName) {
@@ -770,7 +770,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Applies the given property modification.<p>
-     * 
+     *
      * @param propMod the property modification to apply
      */
     public void executePropertyModification(CmsPropertyModification propMod) {
@@ -787,8 +787,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Gets the category data.<p>
-     * 
-     * @return the category data 
+     *
+     * @return the category data
      */
     public CmsSitemapCategoryData getCategoryData() {
 
@@ -797,11 +797,11 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Retrieves the child entries of the given node from the server.<p>
-     * 
+     *
      * @param entryId the entry id
      * @param setOpen if the entry should be opened
-     * 
-     * @param callback the callback to execute after the children have been loaded 
+     *
+     * @param callback the callback to execute after the children have been loaded
      */
     public void getChildren(
         final CmsUUID entryId,
@@ -814,12 +814,12 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Retrieves the child entries of the given node from the server.<p>
-     * 
+     *
      * @param entryId the entry id
      * @param setOpen if the entry should be opened
      * @param continueIfParentNotLoaded if false, and the entry identified by the id has not been loaded, stop; else store the entry in memory
-     * 
-     * @param callback the callback to execute after the children have been loaded 
+     *
+     * @param callback the callback to execute after the children have been loaded
      */
     public void getChildren(
         final CmsUUID entryId,
@@ -889,10 +889,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Returns the detail page info for a given entry id.<p>
-     * 
-     * @param id a sitemap entry id 
-     * 
-     * @return the detail page info for that id 
+     *
+     * @param id a sitemap entry id
+     *
+     * @return the detail page info for that id
      */
     public CmsDetailPageInfo getDetailPageInfo(CmsUUID id) {
 
@@ -901,8 +901,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Returns the detail page table.<p>
-     * 
-     * @return the detail page table 
+     *
+     * @return the detail page table
      */
     public CmsDetailPageTable getDetailPageTable() {
 
@@ -911,11 +911,11 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Gets the effective value of a property value for a sitemap entry.<p>
-     *  
-     * @param entry the sitemap entry 
-     * @param name the name of the property 
-     * 
-     * @return the effective value 
+     *
+     * @param entry the sitemap entry
+     * @param name the name of the property
+     *
+     * @return the effective value
      */
     public String getEffectiveProperty(CmsClientSitemapEntry entry, String name) {
 
@@ -928,10 +928,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Gets the value of a property which is effective at a given sitemap entry.<p>
-     * 
-     * @param entry the sitemap entry 
-     * @param name the name of the property  
-     * @return the effective property value 
+     *
+     * @param entry the sitemap entry
+     * @param name the name of the property
+     * @return the effective property value
      */
     public CmsClientProperty getEffectivePropertyObject(CmsClientSitemapEntry entry, String name) {
 
@@ -949,10 +949,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Returns all entries with an id from a given list.<p>
-     * 
-     * @param ids a list of sitemap entry ids 
-     * 
-     * @return all entries whose id is contained in the id list 
+     *
+     * @param ids a list of sitemap entry ids
+     *
+     * @return all entries whose id is contained in the id list
      */
     public Map<CmsUUID, CmsClientSitemapEntry> getEntriesById(Collection<CmsUUID> ids) {
 
@@ -976,9 +976,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Returns the tree entry with the given path.<p>
-     * 
+     *
      * @param entryPath the path to look for
-     * 
+     *
      * @return the tree entry with the given path, or <code>null</code> if not found
      */
     public CmsClientSitemapEntry getEntry(String entryPath) {
@@ -988,10 +988,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Finds an entry by id.<p>
-     * 
-     * @param id the id of the entry to find 
-     * 
-     * @return the found entry, or null if the entry wasn't found 
+     *
+     * @param id the id of the entry to find
+     *
+     * @return the found entry, or null if the entry wasn't found
      */
     public CmsClientSitemapEntry getEntryById(CmsUUID id) {
 
@@ -1000,9 +1000,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Returns the gallery type with the given id.<p>
-     * 
+     *
      * @param typeId the type id
-     * 
+     *
      * @return the gallery type
      */
     public CmsGalleryType getGalleryType(Integer typeId) {
@@ -1012,10 +1012,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Gets the value for a property which a sitemap entry would inherit if it didn't have its own properties.<p>
-     * 
-     * @param entry the sitemap entry 
-     * @param name the property name 
-     * @return the inherited property value 
+     *
+     * @param entry the sitemap entry
+     * @param name the property name
+     * @return the inherited property value
      */
     public String getInheritedProperty(CmsClientSitemapEntry entry, String name) {
 
@@ -1028,10 +1028,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Gets the property object which would be inherited by a sitemap entry.<p>
-     * 
-     * @param entry the sitemap entry 
-     * @param name the name of the property 
-     * @return the property object which would be inherited 
+     *
+     * @param entry the sitemap entry
+     * @param name the name of the property
+     * @return the property object which would be inherited
      */
     public CmsClientProperty getInheritedPropertyObject(CmsClientSitemapEntry entry, String name) {
 
@@ -1060,10 +1060,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Returns a list of all descendant sitemap entries of a given path which have already been loaded on the client.<p>
-     * 
-     * @param path the path for which the descendants should be collected 
-     * 
-     * @return the list of descendant sitemap entries 
+     *
+     * @param path the path for which the descendants should be collected
+     *
+     * @return the list of descendant sitemap entries
      */
     public List<CmsClientSitemapEntry> getLoadedDescendants(String path) {
 
@@ -1085,9 +1085,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Returns the no edit reason or <code>null</code> if editing is allowed.<p>
-     * 
+     *
      * @param entry the entry to get the no edit reason for
-     * 
+     *
      * @return the no edit reason
      */
     public String getNoEditReason(CmsClientSitemapEntry entry) {
@@ -1109,10 +1109,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Returns the parent entry of a sitemap entry, or null if it is the root entry.<p>
-     * 
+     *
      * @param entry a sitemap entry
-     *  
-     * @return the parent entry or null 
+     *
+     * @return the parent entry or null
      */
     public CmsClientSitemapEntry getParentEntry(CmsClientSitemapEntry entry) {
 
@@ -1126,10 +1126,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Gets the properties for a given structure id.<p>
-     * 
-     * @param id the structure id of a sitemap entry 
-     * 
-     * @return the properties for that structure id 
+     *
+     * @param id the structure id of a sitemap entry
+     *
+     * @return the properties for that structure id
      */
     public Map<String, CmsClientProperty> getPropertiesForId(CmsUUID id) {
 
@@ -1138,7 +1138,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Returns the sitemap service instance.<p>
-     * 
+     *
      * @return the sitemap service instance
      */
     public I_CmsSitemapServiceAsync getService() {
@@ -1161,11 +1161,11 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Hides the entry within the site navigation.<p>
-     * 
+     *
      * Hidden entries will still be visible in the navigation mode of the sitemap editor.
      * They will also have a NavText and a NavPos. Only when using the NavBuilder get navigation for folder method,
-     * they will not be included.<p> 
-     * 
+     * they will not be included.<p>
+     *
      * @param entryId the entry id
      */
     public void hideInNavigation(CmsUUID entryId) {
@@ -1173,20 +1173,22 @@ public class CmsSitemapController implements I_CmsSitemapController {
         CmsClientSitemapEntry entry = getEntryById(entryId);
         CmsSitemapChange change = getChangeForEdit(
             entry,
-            Collections.singletonList(new CmsPropertyModification(entryId.toString()
-                + "/"
-                + CmsClientProperty.PROPERTY_NAVINFO
-                + "/"
-                + CmsClientProperty.PATH_STRUCTURE_VALUE, CmsClientSitemapEntry.HIDDEN_NAVIGATION_ENTRY)));
+            Collections.singletonList(new CmsPropertyModification(
+                entryId.toString()
+                    + "/"
+                    + CmsClientProperty.PROPERTY_NAVINFO
+                    + "/"
+                    + CmsClientProperty.PATH_STRUCTURE_VALUE,
+                CmsClientSitemapEntry.HIDDEN_NAVIGATION_ENTRY)));
         commitChange(change, null);
     }
 
     /**
      * Checks whether this entry belongs to a detail page.<p>
-     * 
+     *
      * @param entry the entry to check
-     * 
-     * @return true if this entry belongs to a detail page 
+     *
+     * @return true if this entry belongs to a detail page
      */
     public boolean isDetailPage(CmsClientSitemapEntry entry) {
 
@@ -1195,8 +1197,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Returns true if the id is the id of a detail page.<p>
-     * 
-     * @param id the sitemap entry id 
+     *
+     * @param id the sitemap entry id
      * @return true if the id is the id of a detail page entry
      */
     public boolean isDetailPage(CmsUUID id) {
@@ -1216,18 +1218,18 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Checks whether a string is the name of a hidden property.<p>
-     * 
+     *
      * A hidden property is a property which should not appear in the property editor
      * because it requires special treatment.<p>
-     * 
+     *
      * @param propertyName the property name which should be checked
-     * 
+     *
      * @return true if the argument is the name of a hidden property
      */
     public boolean isHiddenProperty(String propertyName) {
 
         if (propertyName.equals("secure") && !m_data.isSecure()) {
-            // "secure" property should not be editable in a site for which no secure server is configured 
+            // "secure" property should not be editable in a site for which no secure server is configured
             return true;
         }
 
@@ -1236,9 +1238,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Checks if the given site path is the sitemap root.<p>
-     * 
+     *
      * @param sitePath the site path to check
-     * 
+     *
      * @return <code>true</code> if the given site path is the sitemap root
      */
     public boolean isRoot(String sitePath) {
@@ -1248,7 +1250,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Ask to save the page before leaving, if necessary.<p>
-     * 
+     *
      * @param target the leaving target
      */
     public void leaveEditor(String target) {
@@ -1258,8 +1260,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Loads and displays the category data.<p>
-     * 
-     * @param openLocalCategories true if the local category tree should be opened 
+     *
+     * @param openLocalCategories true if the local category tree should be opened
      */
     public void loadCategories(final boolean openLocalCategories) {
 
@@ -1338,7 +1340,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Loads all entries on the given path.<p>
-     * 
+     *
      * @param sitePath the site path
      */
     public void loadPath(final String sitePath) {
@@ -1346,11 +1348,11 @@ public class CmsSitemapController implements I_CmsSitemapController {
         loadPath(sitePath, null);
     }
 
-    /** 
+    /**
      * Loads the sitemap entry for the given site path.<p>
-     * 
-     * @param sitePath the site path 
-     * @param callback the callback 
+     *
+     * @param sitePath the site path
+     * @param callback the callback
      */
     public void loadPath(final String sitePath, final AsyncCallback<CmsClientSitemapEntry> callback) {
 
@@ -1359,9 +1361,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Loads all entries on the given path.<p>
-     * 
+     *
      * @param sitePath the site path
-     * @param continueIfNotLoaded parameter passed to getChildren 
+     * @param continueIfNotLoaded parameter passed to getChildren
      * @param callback the callback to execute when done
      */
     public void loadPath(
@@ -1419,8 +1421,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
     * Merges a subsitemap at the given id back into this sitemap.<p>
-    * 
-    * @param entryId the id of the sub sitemap entry 
+    *
+    * @param entryId the id of the sub sitemap entry
     */
     public void mergeSubSitemap(final CmsUUID entryId) {
 
@@ -1453,7 +1455,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Moves the given sitemap entry with all its descendants to the new position.<p>
-     * 
+     *
      * @param entry the sitemap entry to move
      * @param toPath the destination path
      * @param position the new position between its siblings
@@ -1462,7 +1464,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         // check for valid data
         if (!isValidEntryAndPath(entry, toPath)) {
-            // invalid data, do nothing 
+            // invalid data, do nothing
             CmsDebugLog.getInstance().printLine("invalid data, doing nothing");
             return;
         }
@@ -1488,7 +1490,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Opens the site-map specified.<p>
-     * 
+     *
      * @param sitePath the site path to the site-map folder
      */
     public void openSiteMap(String sitePath) {
@@ -1515,10 +1517,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
         recomputeProperties(root);
     }
 
-    /** 
+    /**
      * Refreshes the root entry.<p>
-     * 
-     * @param callback the callback to call after the entry has been refreshed 
+     *
+     * @param callback the callback to call after the entry has been refreshed
      */
     public void refreshRoot(AsyncCallback<Void> callback) {
 
@@ -1555,7 +1557,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Removes the entry with the given site-path from navigation.<p>
-     * 
+     *
      * @param entryId the entry id
      */
     public void removeFromNavigation(CmsUUID entryId) {
@@ -1575,10 +1577,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Removes a model page from the sitemap's configuration.<p>
-     * 
+     *
      * @param id the structure id of the model page
-     *  
-     * @param asyncCallback the callback to call when done  
+     *
+     * @param asyncCallback the callback to call when done
      */
     public void removeModelPage(final CmsUUID id, final AsyncCallback<Void> asyncCallback) {
 
@@ -1628,9 +1630,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Shows a formerly hidden entry in the navigation.<p>
-     * 
+     *
      * @see #hideInNavigation(CmsUUID)
-     * 
+     *
      * @param entryId the entry id
      */
     public void showInNavigation(CmsUUID entryId) {
@@ -1638,17 +1640,20 @@ public class CmsSitemapController implements I_CmsSitemapController {
         CmsClientSitemapEntry entry = getEntryById(entryId);
         CmsSitemapChange change = getChangeForEdit(
             entry,
-            Collections.singletonList(new CmsPropertyModification(entryId.toString()
-                + "/"
-                + CmsClientProperty.PROPERTY_NAVINFO
-                + "/"
-                + CmsClientProperty.PATH_STRUCTURE_VALUE, "")));
+            Collections.singletonList(
+                new CmsPropertyModification(
+                    entryId.toString()
+                        + "/"
+                        + CmsClientProperty.PROPERTY_NAVINFO
+                        + "/"
+                        + CmsClientProperty.PATH_STRUCTURE_VALUE,
+                    "")));
         commitChange(change, null);
     }
 
     /**
      * Undeletes the resource with the given structure id.<p>
-     * 
+     *
      * @param entryId the entry id
      * @param sitePath the site-path
      */
@@ -1663,7 +1668,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Updates the given entry.<p>
-     * 
+     *
      * @param entryId the entry id
       */
     public void updateEntry(CmsUUID entryId) {
@@ -1673,9 +1678,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Updates the given entry.<p>
-     * 
+     *
      * @param entryId the entry id
-     * @param callback the callback to call after the entry has been updated 
+     * @param callback the callback to call after the entry has been updated
       */
     public void updateEntry(CmsUUID entryId, final AsyncCallback<Void> callback) {
 
@@ -1699,7 +1704,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
     * Updates the given entry.<p>
-    * 
+    *
     * @param sitePath the entry sitepath
      */
     public void updateEntry(String sitePath) {
@@ -1712,7 +1717,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Updates the given entry only, not evaluating any child changes.<p>
-     * 
+     *
      * @param entryId the entry id
      */
     public void updateSingleEntry(final CmsUUID entryId) {
@@ -1750,8 +1755,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Fires a sitemap change event.<p>
-     * 
-     * @param change the change event to fire 
+     *
+     * @param change the change event to fire
      */
     protected void applyChange(CmsSitemapChange change) {
 
@@ -1855,9 +1860,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
     * Adds a change to the queue.<p>
-    * 
+    *
     * @param change the change to commit
-    * @param callback the callback to execute after the change has been applied 
+    * @param callback the callback to execute after the change has been applied
     */
     protected void commitChange(final CmsSitemapChange change, final Command callback) {
 
@@ -1896,10 +1901,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Creates a change object for an edit operation.<p>
-     *  
+     *
      * @param entry the edited sitemap entry
-     * @param propertyChanges the list of property changes 
-     *  
+     * @param propertyChanges the list of property changes
+     *
      * @return the change object
      */
     protected CmsSitemapChange getChangeForEdit(
@@ -1923,8 +1928,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Returns the URI of the current sitemap.<p>
-     * 
-     * @return the URI of the current sitemap 
+     *
+     * @return the URI of the current sitemap
      */
     protected String getEntryPoint() {
 
@@ -1933,12 +1938,12 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
-     * Helper method for getting the full path of a sitemap entry whose URL name is being edited.<p> 
-     * 
-     * @param entry the sitemap entry 
-     * @param newUrlName the new url name of the sitemap entry 
-     * 
-     * @return the new full site path of the sitemap entry 
+     * Helper method for getting the full path of a sitemap entry whose URL name is being edited.<p>
+     *
+     * @param entry the sitemap entry
+     * @param newUrlName the new url name of the sitemap entry
+     *
+     * @return the new full site path of the sitemap entry
      */
     protected String getPath(CmsClientSitemapEntry entry, String newUrlName) {
 
@@ -1948,9 +1953,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
         return CmsResource.getParentFolder(entry.getSitePath()) + newUrlName + "/";
     }
 
-    /** 
+    /**
      * Returns the sitemap service instance.<p>
-     * 
+     *
      * @return the sitemap service instance
      */
     protected I_CmsVfsServiceAsync getVfsService() {
@@ -1974,10 +1979,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Creates a new client sitemap entry bean to use for the RPC call which actually creates the entry on the server side.<p>
-     * 
-     * @param parent the parent entry 
-     * 
-     * @return the initialized client sitemap entry 
+     *
+     * @param parent the parent entry
+     *
+     * @return the initialized client sitemap entry
      */
     protected CmsClientSitemapEntry makeNewEntry(final CmsClientSitemapEntry parent) {
 
@@ -2000,8 +2005,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Recomputes the properties for a client sitemap entry.<p>
-     * 
-     * @param entry the entry for whose descendants the properties should be recomputed 
+     *
+     * @param entry the entry for whose descendants the properties should be recomputed
      */
     protected void recomputeProperties(CmsClientSitemapEntry entry) {
 
@@ -2015,7 +2020,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Store the gallery type information.<p>
-     * 
+     *
      * @param galleryTypes the gallery types
      */
     void storeGalleryTypes(Collection<CmsGalleryType> galleryTypes) {
@@ -2028,7 +2033,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Cleans up wrong path references.<p>
-     * 
+     *
      * @param oldSitepath the old sitepath
      * @param newSitepath the new sitepath
      */
@@ -2049,7 +2054,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Returns the properties above the sitemap root.<p>
-     * 
+     *
      * @return the map of properties of the root's parent
      */
     private Map<String, CmsClientProperty> getParentProperties() {
@@ -2059,11 +2064,11 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Checks if the given path and position indicate a changed position for the entry.<p>
-     * 
+     *
      * @param entry the sitemap entry to move
      * @param toPath the destination path
      * @param position the new position between its siblings
-     * 
+     *
      * @return <code>true</code> if this is a position change
      */
     private boolean isChangedPosition(CmsClientSitemapEntry entry, String toPath, int position) {
@@ -2073,10 +2078,10 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Validates the entry and the given path.<p>
-     * 
+     *
      * @param entry the entry
      * @param toPath the path
-     * 
+     *
      * @return <code>true</code> if entry and path are valid
      */
     private boolean isValidEntryAndPath(CmsClientSitemapEntry entry, String toPath) {
@@ -2084,13 +2089,14 @@ public class CmsSitemapController implements I_CmsSitemapController {
         return ((toPath != null)
             && (CmsResource.getParentFolder(toPath) != null)
             && (entry != null)
-            && (getEntry(CmsResource.getParentFolder(toPath)) != null) && (getEntry(entry.getSitePath()) != null));
+            && (getEntry(CmsResource.getParentFolder(toPath)) != null)
+            && (getEntry(entry.getSitePath()) != null));
     }
 
-    /** 
+    /**
      * Loads the new element info.<p>
-     * 
-     * @param callback the callback to call when done 
+     *
+     * @param callback the callback to call when done
      */
     private void loadNewElementInfo(final AsyncCallback<Void> callback) {
 
@@ -2121,7 +2127,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Removes all children of the given entry recursively from the data model.<p>
-     * 
+     *
      * @param entry the entry
      */
     private void removeAllChildren(CmsClientSitemapEntry entry) {
@@ -2141,7 +2147,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Removes the given entry and it's descendants from the modified list.<p>
-     * 
+     *
      * @param entry the entry
      * @param data the clip board data
      */
@@ -2155,7 +2161,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
     /**
      * Removes the given entry from the data model.<p>
-     * 
+     *
      * @param entryId the id of the entry to remove
      * @param parentId the parent entry id
      */

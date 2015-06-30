@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Sitemap entry editor class for the navigation mode.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
@@ -56,8 +56,8 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
     /**
     * Creates a new instance.<p>
     *
-    * @param propertyConfig the property configuration 
-    * @param handler the entry editor handler 
+    * @param propertyConfig the property configuration
+    * @param handler the entry editor handler
     */
     public CmsNavModePropertyEditor(
         Map<String, CmsXmlContentProperty> propertyConfig,
@@ -96,13 +96,13 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Builds a single form field.<p>
-     * 
+     *
 
-     * @param entryId the entry id 
-     * @param defaultFileId the default file id 
-     * @param ownProps the entry's own properties 
-     * @param defaultFileProps the default file properties 
-     * @param propName the property name 
+     * @param entryId the entry id
+     * @param defaultFileId the default file id
+     * @param ownProps the entry's own properties
+     * @param defaultFileProps the default file properties
+     * @param propName the property name
      */
     private void buildSimpleField(
         String entryId,
@@ -129,7 +129,7 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
             pathValue = new CmsPathValue("", targetId + "/" + propName + "/" + CmsClientProperty.PATH_STRUCTURE_VALUE);
         }
         boolean alwaysAllowEmpty = !propName.equals(CmsClientProperty.PROPERTY_NAVTEXT);
-        //CHECK: should we really generally allow empty fields other than NavText to be empty? 
+        //CHECK: should we really generally allow empty fields other than NavText to be empty?
 
         CmsBasicFormField field = CmsBasicFormField.createField(
             propDef,
@@ -168,7 +168,7 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Moves the given property name to the top of the keys if present.<p>
-     * 
+     *
      * @param keys the list of keys
      * @param propertyName the property name to move
      */
@@ -182,10 +182,10 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Helper method which converts an object to a string and returns null if it is null.<p>
-     * 
+     *
      * @param obj the object for which to return the string
-     * 
-     * @return the string representation or null 
+     *
+     * @return the string representation or null
      */
     private String toStringOrNull(Object obj) {
 

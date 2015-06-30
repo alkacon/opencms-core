@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import org.opencms.gwt.client.util.CmsStyleVariable;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-/** 
+/**
  * This class is responsible for managing the visibility of edit points on small elements.<p>
  */
 public class CmsSmallElementsHandler {
@@ -56,9 +56,9 @@ public class CmsSmallElementsHandler {
     /** The style variable for the display mode for small elements. */
     private CmsStyleVariable m_smallElementsStyle;
 
-    /** 
+    /**
      * Creates a new small elements handler.<p>
-     * 
+     *
      * @param service the container page service
      */
     public CmsSmallElementsHandler(I_CmsContainerpageServiceAsync service) {
@@ -69,20 +69,20 @@ public class CmsSmallElementsHandler {
 
     /**
      * Returns the necessary height as a CSS height string in pixels.<p>
-     * 
-     * @return the necessary height as a CSS string 
+     *
+     * @return the necessary height as a CSS string
      */
     public static String getNecessaryHeight() {
 
         return NECESSARY_HEIGHT + "px !important";
     }
 
-    /** 
+    /**
      * Checks if  a given widget counts as 'small'.<p>
-     * 
-     * @param widget the widget to check  
-     * 
-     * @return  true if the widget is small 
+     *
+     * @param widget the widget to check
+     *
+     * @return  true if the widget is small
      */
     public static boolean isSmall(Widget widget) {
 
@@ -94,7 +94,7 @@ public class CmsSmallElementsHandler {
 
     /**
      * Returns true if currently small elements are editable.<p>
-     * 
+     *
      * @return true if small elements are editable
      */
     public boolean areSmallElementsEditable() {
@@ -104,8 +104,8 @@ public class CmsSmallElementsHandler {
 
     /**
      * Returns true if any small elements are present.<p>
-     * 
-     * @return true if any small elements are present 
+     *
+     * @return true if any small elements are present
      */
     public boolean hasSmallElements() {
 
@@ -114,20 +114,21 @@ public class CmsSmallElementsHandler {
 
     /**
      * Prepares a small element.<p>
-     * 
-     * @param widget the small element 
+     *
+     * @param widget the small element
      */
     public void prepareSmallElement(Widget widget) {
 
         m_hasSmallElements = true;
-        widget.addStyleName(org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().smallElement());
+        widget.addStyleName(
+            org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().smallElement());
 
     }
 
-    /** 
+    /**
      * Enables or disables editing for small elements and optionally saves the setting.<p>
-     * 
-     * @param editable if true, enables editing for small elements 
+     *
+     * @param editable if true, enables editing for small elements
      * @param save true if the setting should be saved
      */
     public void setEditSmallElements(final boolean editable, boolean save) {
@@ -160,7 +161,7 @@ public class CmsSmallElementsHandler {
 
     /**
      * Sets the mode for displaying small elements.<p>
-     * 
+     *
      * @param editable if true, small elements will be enlarged and their edit buttons shown; if false, the edit buttons will be hidden
      */
     protected void internalSetEditSmallElements(boolean editable) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,8 +47,8 @@ import java.util.Set;
 
 /**
  * Resource type descriptor for the type "plain".<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsResourceTypePlain extends A_CmsResourceType {
 
@@ -75,7 +75,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
 
     /**
      * Returns the static type id of this (default) resource type.<p>
-     * 
+     *
      * @return the static type id of this (default) resource type
      */
     public static int getStaticTypeId() {
@@ -85,7 +85,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
 
     /**
      * Returns the static type name of this (default) resource type.<p>
-     * 
+     *
      * @return the static type name of this (default) resource type
      */
     public static String getStaticTypeName() {
@@ -123,7 +123,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /**
      * A plain resource might appear as a sub-element in a JSP,
      * therefore it needs cache properties.<p>
-     * 
+     *
      * @see org.opencms.file.types.I_CmsResourceType#getCachePropertyDefault()
      */
     @Override
@@ -171,8 +171,11 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
      * @see org.opencms.file.types.A_CmsResourceType#moveResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.lang.String)
      */
     @Override
-    public void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
-    throws CmsException, CmsIllegalArgumentException {
+    public void moveResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        String destination) throws CmsException, CmsIllegalArgumentException {
 
         Set<String> references = getReferencingStrongLinks(cms, resource);
         super.moveResource(cms, securityManager, resource, destination);
@@ -285,12 +288,12 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
 
     /**
      * Returns a set of root paths of files that are including the given resource using the 'link.strong' macro.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param resource the resource to check
-     * 
+     *
      * @return the set of referencing paths
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected Set<String> getReferencingStrongLinks(CmsObject cms, CmsResource resource) throws CmsException {
@@ -305,7 +308,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
 
     /**
      * Removes the referencing resources from the cache.<p>
-     * 
+     *
      * @param references the references to remove
      */
     protected void removeReferencingFromCache(Set<String> references) {

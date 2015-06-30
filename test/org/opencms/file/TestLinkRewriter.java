@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,9 +46,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import junit.framework.Test;
-
 import org.apache.log4j.spi.LoggingEvent;
+
+import junit.framework.Test;
 
 /**
  * Test class for the CmsLinkRewriter class.<p>
@@ -58,7 +58,7 @@ import org.apache.log4j.spi.LoggingEvent;
  */
 public class TestLinkRewriter extends OpenCmsTestCase {
 
-    /** 
+    /**
      * A log handler which detects whether an error message containing a given string is written to the log.<p>
      */
     public class ExpectErrorLogHandler implements I_CmsLogHandler {
@@ -71,8 +71,8 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param text the text to detect in log messages 
+         *
+         * @param text the text to detect in log messages
          */
         public ExpectErrorLogHandler(String text) {
 
@@ -81,8 +81,8 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
         /**
          * This method will be called when log events are triggered.<p>
-         * 
-         * @param event the log event 
+         *
+         * @param event the log event
          */
         public void handleLogEvent(LoggingEvent event) {
 
@@ -94,8 +94,8 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
         /**
          * Returns true if the text has been detected in log messages.<p>
-         * 
-         * @return true if the text has been detected in log messages 
+         *
+         * @return true if the text has been detected in log messages
          */
         public boolean isTriggered() {
 
@@ -106,7 +106,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Creates a new test suite instance.<p>
-     * 
+     *
      * @param name test case init parameter
      */
     public TestLinkRewriter(String name) {
@@ -117,8 +117,8 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Returns the test suite.<p>
-     * 
-     * @return the test suite 
+     *
+     * @return the test suite
      */
     public static Test suite() {
 
@@ -128,14 +128,14 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Helper method to compare sets by sorting them and converting them to strings first.<p>
-     * 
-     * @param expected the expected value 
-     * @param actual the actual value to check 
+     *
+     * @param expected the expected value
+     * @param actual the actual value to check
      */
     @SuppressWarnings("rawtypes")
     public void assertSetEquals(Set expected, Set actual) {
 
-        // use sorted sets and convert them to strings so the test runner output for failed assertions is easier to read 
+        // use sorted sets and convert them to strings so the test runner output for failed assertions is easier to read
         @SuppressWarnings("unchecked")
         TreeSet expected2 = new TreeSet(expected);
         @SuppressWarnings("unchecked")
@@ -145,10 +145,10 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Converts a path to a canonical form.<p>
-     * 
-     * @param path the path to convert 
-     * 
-     * @return the canonical form of the path 
+     *
+     * @param path the path to convert
+     *
+     * @return the canonical form of the path
      */
     public String canonicalize(String path) {
 
@@ -162,10 +162,10 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Copies the /system/base folder to a given path and adjusts the links for that path.<p>
-     * 
+     *
      * @param target the target path
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void copyAndAdjust(String target) throws CmsException {
 
@@ -177,10 +177,10 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Creates a folder at a given path.<p>
-     * 
+     *
      * @param path the path of the folder
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void createFolder(String path) throws CmsException {
 
@@ -190,10 +190,10 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Helper method for deleting a directory.<p>
-     * 
-     * @param directory the directory to remove 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param directory the directory to remove
+     *
+     * @throws CmsException if something goes wrong
      */
     @Override
     public void delete(String directory) throws CmsException {
@@ -210,9 +210,9 @@ public class TestLinkRewriter extends OpenCmsTestCase {
     /**
      * Gets the set of relation strings which a given folder should have if it had been copied from /system/base
      * and had its links adjusted afterwards.<p>
-     * 
-     * @param root the target folder 
-     * @return the relation strings 
+     *
+     * @param root the target folder
+     * @return the relation strings
      */
     public Set<String> getBaseLinks(String root) {
 
@@ -237,20 +237,21 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Gets a list of relations from resources in one subtree to resources in another.<p>
-     * 
-     * @param firstFolder the root folder of the first subtree 
+     *
+     * @param firstFolder the root folder of the first subtree
      * @param secondFolder the root folder of the second subtree
-     *  
-     * @return the list of relations between the two subtrees 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the list of relations between the two subtrees
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsRelation> getLinksBetween(String firstFolder, String secondFolder) throws CmsException {
 
         CmsObject cms = getCmsObject();
         firstFolder = CmsStringUtil.joinPaths(firstFolder, "/");
         secondFolder = CmsStringUtil.joinPaths(secondFolder, "/");
-        List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.SOURCES.filterPath(firstFolder).filterIncludeChildren());
+        List<CmsRelation> relations = cms.readRelations(
+            CmsRelationFilter.SOURCES.filterPath(firstFolder).filterIncludeChildren());
         List<CmsRelation> result = new ArrayList<CmsRelation>();
         for (CmsRelation relation : relations) {
             if (relation.getTargetPath().startsWith(secondFolder)) {
@@ -262,9 +263,9 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Returns the links for the multibase adjustment test, relocated to a given root path.<p>
-     * 
-     * @param root the new root path 
-     * @return the set of re-rooted links for the multibase test 
+     *
+     * @param root the new root path
+     * @return the set of re-rooted links for the multibase test
      */
     public Set<String> getMultiBaseLinks(String root) {
 
@@ -280,10 +281,10 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Converts a single relation to a string of the form TYPE:SOURCE:TARGET.<p>
-     * 
-     * @param relation the relation 
-     * 
-     * @return the string representing the relation 
+     *
+     * @param relation the relation
+     *
+     * @return the string representing the relation
      */
     public String getRelationCode(CmsRelation relation) {
 
@@ -295,10 +296,10 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Helper method to convert a collection of relations to a set of strings.<p>
-     * 
-     * @param relations the relations 
-     * 
-     * @return a set of strings representing the relations 
+     *
+     * @param relations the relations
+     *
+     * @return a set of strings representing the relations
      */
     public Set<String> getRelationSet(Collection<CmsRelation> relations) {
 
@@ -311,7 +312,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Tests that the link rewriting process can handle missing files in the target folder structure.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testAdjustWithMissingFile() throws Exception {
@@ -340,7 +341,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Tests whether the link rewriting works in the system folder.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testCopy() throws Exception {
@@ -360,7 +361,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Tests whether the link rewriting works in the current site.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testCopyToSite() throws Exception {
@@ -384,7 +385,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Tests whether the encoding is converted correctly when rewriting links.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testEncodingConversion() throws Exception {
@@ -414,7 +415,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Tests that the link rewriting fails if one of two folder arguments is a subfolder of the other.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testFailIfTargetIsSubdirectory() throws Exception {
@@ -435,7 +436,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Tests relation adjustments for multiple source files.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testMultiCopy() throws Exception {
@@ -459,7 +460,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Tests that an error when rewriting a file will not throw an exception, but will be written to the log.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testNotAbort() throws Exception {
@@ -471,7 +472,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
             OpenCmsTestLogAppender.setBreakOnError(false);
             OpenCmsTestLogAppender.setHandler(handler);
 
-            // Setup: Create a XML content that is wrong according to the schema        
+            // Setup: Create a XML content that is wrong according to the schema
             String wrongContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
                 + "\r\n"
                 + "<LinkSequences xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"internal://org/opencms/file/links.xsd\">\r\n"
@@ -513,7 +514,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
     /**
      * Test to verify that the files under /system/base have been created correctly by the test setup (not really necessary,
      * just to make sure that e.g. a faulty manifest.xml is not the cause of other test failures).
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testVerifySetup() throws Exception {
@@ -528,13 +529,13 @@ public class TestLinkRewriter extends OpenCmsTestCase {
 
     /**
      * Gets the string representations of relations between two subtrees.<p>
-     * 
+     *
      * @param source the root of the first subtree
      * @param target the root of the second subtree
-     * 
+     *
      * @return the set of the string representations of the relations
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected Set<String> links(String source, String target) throws CmsException {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,13 +48,13 @@ import java.util.Map;
 
 /**
  * This class updates the project ids from integer values to CmsUUIDs in all existing database tables.<p>
- * 
+ *
  * It creates new UUIDs for each existing project and stores it into a temporary table.<p>
- * 
+ *
  * For each table using a project id a new column for the UUID is added and the according data is transferred.<p>
  * After that the original indexes and the column for the project id index is dropped and the new column with the
  * project uuid becomes the primary key.<p>
- * 
+ *
  * @since 7.0.0
  */
 public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
@@ -111,7 +111,8 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
     protected static final String[] RESOURCE_TABLES = {"CMS_OFFLINE_RESOURCES", "CMS_ONLINE_RESOURCES"};
 
     /** Arraylist for the online and offline resources tables that shall be updated.<p> */
-    protected static final List<String> RESOURCES_TABLES_LIST = Collections.unmodifiableList(Arrays.asList(RESOURCE_TABLES));
+    protected static final List<String> RESOURCES_TABLES_LIST = Collections.unmodifiableList(
+        Arrays.asList(RESOURCE_TABLES));
 
     /** Array of the tables that are to be updated.<p> */
     protected static final String[] TABLES = {
@@ -173,7 +174,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the query properties cannot be read
      */
     public CmsUpdateDBProjectId()
@@ -185,11 +186,11 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /**
      * Adds a new primary key to the given table.<p>
-     * 
+     *
      * @param dbCon the db connection interface
      * @param tablename the table to add the primary key to
      * @param primaryKey the new primary key
-     * 
+     *
      * @throws SQLException if something goes wrong
      */
     protected void addPrimaryKey(CmsSetupDb dbCon, String tablename, String primaryKey) throws SQLException {
@@ -208,11 +209,11 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /**
      * Adds the new column for the uuids to a table.<p>
-     * 
+     *
      * @param dbCon the db connection interface
      * @param tablename the table to add the column to
      * @param column the new colum to add
-     * 
+     *
      * @throws SQLException if something goes wrong
      */
     protected void addUUIDColumnToTable(CmsSetupDb dbCon, String tablename, String column) throws SQLException {
@@ -235,9 +236,9 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /**
      * Check if the column type of the project id is incorrect.<p>
-     * 
+     *
      * @param type the type of the column from the meta data
-     * 
+     *
      * @return true if the type is incorrect
      */
     protected boolean checkColumnTypeProjectId(int type) {
@@ -247,9 +248,9 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /**
      * Creates the CMS_HISTORY_PROJECTS table if it does not exist yet.<p>
-     *  
+     *
      * @param dbCon the db connection interface
-     * 
+     *
      * @throws SQLException if soemthing goes wrong
      */
     protected void createHistProjectsTable(CmsSetupDb dbCon) throws SQLException {
@@ -266,9 +267,9 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /**
      * Creates the temp table for project ids if it does not exist yet.<p>
-     *  
+     *
      * @param dbCon the db connection interface
-     * 
+     *
      * @throws SQLException if soemthing goes wrong
      */
     protected void createTempTable(CmsSetupDb dbCon) throws SQLException {
@@ -284,7 +285,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /**
      * Returns the columns for the primary key of the project resources table.<p>
-     * 
+     *
      * @return the columns for the primary key of the project resources table
      */
     protected String getColumnProjectIdResourcePath() {
@@ -341,7 +342,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
                 }
 
                 /*
-                 * In this phase the primary keys or indexes are dropped and the old columns containing the 
+                 * In this phase the primary keys or indexes are dropped and the old columns containing the
                  * old project ids are dropped. After that the temporary columns are renamed and the new
                  * indexes and primary keys are added.
                  */
@@ -453,13 +454,13 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /**
      * Checks if the given table needs an update of the uuids.<p>
-     * 
+     *
      * @param dbCon the db connection interface
      * @param tablename the table to check
-     * 
+     *
      * @return true if the project ids are not yet updated, false if nothing needs to be done
-     * 
-     * @throws SQLException if something goes wrong 
+     *
+     * @throws SQLException if something goes wrong
      */
     protected boolean needsUpdating(CmsSetupDb dbCon, String tablename) throws SQLException {
 
@@ -498,11 +499,11 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /**
      * Transfers the data from the CMS_BACKUP_PROJECTS to the CMS_HISTORY_PROJECTS table.<p>
-     * 
+     *
      * The datetime type for the column PROJECT_PUBLISHDATE is converted to the new long value.<p>
-     * 
+     *
      * @param dbCon the db connection interface
-     * 
+     *
      * @throws SQLException if something goes wrong
      */
     protected void transferDataToHistoryTable(CmsSetupDb dbCon) throws SQLException {
@@ -547,12 +548,12 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /**
      * Drops the column of the given table.<p>
-     * 
+     *
      * @param dbCon the db connection interface
      * @param tablename the table in which the columns shall be dropped
      * @param column the column to drop
-     * 
-     * @throws SQLException if something goes wrong 
+     *
+     * @throws SQLException if something goes wrong
      */
     private void dropColumn(CmsSetupDb dbCon, String tablename, String column) throws SQLException {
 
@@ -570,14 +571,14 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /**
      * Updates the given table with the new UUID value.<p>
-     * 
+     *
      * @param dbCon the db connection interface
      * @param tablename the table to update
      * @param column the column to update
      * @param newvalue the new value to insert
      * @param oldid the old id to compare the old value to
      * @param tempValue the old value in the temporary table
-     * 
+     *
      * @throws SQLException if something goes wrong
      */
     private void fillUUIDSColumn(
@@ -608,10 +609,10 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
     /**
      * Generates the new UUIDs for the project ids.<p>
      * The new uuids are stored in the temporary table.<p>
-     * 
+     *
      * @param dbCon the db connection interface
-     * 
-     * @throws SQLException if something goes wrong 
+     *
+     * @throws SQLException if something goes wrong
      */
     private void generateUUIDs(CmsSetupDb dbCon) throws SQLException {
 
@@ -654,7 +655,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
                         params.clear();
                     }
 
-                    // If no project id with value 0 was found 
+                    // If no project id with value 0 was found
                     if (!hasNullId) {
                         params.add(new Integer(0));
                         params.add(CmsUUID.getNullUUID().toString());
@@ -673,12 +674,12 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /**
      * Gets the UUIDs from the temporary table TEMP_CMS_UUIDS.<p>
-     *  
+     *
      * @param dbCon the db connection interface
-     * 
+     *
      * @return a map with the old project ids and the new uuids
-     * 
-     * @throws SQLException if something goes wrong 
+     *
+     * @throws SQLException if something goes wrong
      */
     private Map<String, String> getUUIDs(CmsSetupDb dbCon) throws SQLException {
 
@@ -705,12 +706,12 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
     /**
      * Renames the column of the given table the new name.<p>
-     * 
+     *
      * @param dbCon the db connection interface
      * @param tablename the table in which the column shall be renamed
      * @param oldname the old name of the column
      * @param newname the new name of the column
-     * 
+     *
      * @throws SQLException if something goes wrong
      */
     private void renameColumn(CmsSetupDb dbCon, String tablename, String oldname, String newname) throws SQLException {

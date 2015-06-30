@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,8 +38,8 @@ import java.util.TimeZone;
 
 /**
  * Utilities to get and set formated dates in OpenCms.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public final class CmsDateUtil {
 
@@ -63,11 +63,11 @@ public final class CmsDateUtil {
     /**
      * Returns a formated date String from a Date value,
      * the formatting based on the provided options.<p>
-     * 
+     *
      * @param date the Date object to format as String
      * @param format the format to use, see {@link DateFormat} for possible values
      * @param locale the locale to use
-     * @return the formatted date 
+     * @return the formatted date
      */
     public static String getDate(Date date, int format, Locale locale) {
 
@@ -78,11 +78,11 @@ public final class CmsDateUtil {
     /**
      * Returns a formated date and time String from a Date value,
      * the formatting based on the provided options.<p>
-     * 
+     *
      * @param date the Date object to format as String
      * @param format the format to use, see {@link DateFormat} for possible values
      * @param locale the locale to use
-     * @return the formatted date 
+     * @return the formatted date
      */
     public static String getDateTime(Date date, int format, Locale locale) {
 
@@ -97,9 +97,9 @@ public final class CmsDateUtil {
 
     /**
      * Returns the number of days passed since a specific date.<p>
-     * 
+     *
      * @param dateLastModified the date to compute the passed days from
-     *  
+     *
      * @return the number of days passed since a specific date
      */
     public static int getDaysPassedSince(Date dateLastModified) {
@@ -107,18 +107,16 @@ public final class CmsDateUtil {
         GregorianCalendar now = new GregorianCalendar();
         GregorianCalendar lastModified = (GregorianCalendar)now.clone();
         lastModified.setTimeInMillis(dateLastModified.getTime());
-        return now.get(Calendar.DAY_OF_YEAR)
-            - lastModified.get(Calendar.DAY_OF_YEAR)
-            + (now.get(Calendar.YEAR) - lastModified.get(Calendar.YEAR))
-            * 365;
+        return (now.get(Calendar.DAY_OF_YEAR) - lastModified.get(Calendar.DAY_OF_YEAR))
+            + ((now.get(Calendar.YEAR) - lastModified.get(Calendar.YEAR)) * 365);
     }
 
     /**
      * Returns a formated date and time String form a timestamp value based on the
      * HTTP-Header date format.<p>
-     * 
+     *
      * @param time the time value to format as date
-     * @return the formatted date 
+     * @return the formatted date
      */
     public static String getHeaderDate(long time) {
 
@@ -133,9 +131,9 @@ public final class CmsDateUtil {
     /**
      * Returns a formated date and time String form a timestamp value based on the
      * (old) Netscape cookie date format.<p>
-     * 
+     *
      * @param time the time value to format as date
-     * @return the formatted date 
+     * @return the formatted date
      */
     public static String getOldCookieDate(long time) {
 
@@ -149,11 +147,11 @@ public final class CmsDateUtil {
 
     /**
      * Returns the long value of a date created by the given integer values.<p>
-     * 
+     *
      * @param year the integer value of year
      * @param month the integer value of month
      * @param date the integer value of date
-     * 
+     *
      * @return the long value of a date created by the given integer values
      */
     public static long parseDate(int year, int month, int date) {
@@ -164,9 +162,9 @@ public final class CmsDateUtil {
     }
 
     /**
-     * Parses a formated date and time string in HTTP-Header date format and returns the 
+     * Parses a formated date and time string in HTTP-Header date format and returns the
      * time value.<p>
-     *  
+     *
      * @param timestamp the timestamp in HTTP-Header date format
      * @return time value as long
      * @throws ParseException if parsing fails

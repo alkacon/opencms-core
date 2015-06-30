@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,11 +41,11 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
  * Preview dialog controller.<p>
- * 
- * This class handles the communication between preview dialog and the server.  
- * 
+ *
+ * This class handles the communication between preview dialog and the server.
+ *
  * @param <T> the resource info bean type
- * 
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsResourcePreview<T extends CmsResourceInfoBean> implements I_CmsResourcePreview<T> {
@@ -61,7 +61,7 @@ public abstract class A_CmsResourcePreview<T extends CmsResourceInfoBean> implem
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param galleryDialog the gallery dialog instance
      */
     protected A_CmsResourcePreview(CmsGalleryDialog galleryDialog) {
@@ -71,7 +71,7 @@ public abstract class A_CmsResourcePreview<T extends CmsResourceInfoBean> implem
 
     /**
      * Returns the preview service.<p>
-     * 
+     *
      * @return the preview service
      */
     protected static I_CmsPreviewServiceAsync getService() {
@@ -195,7 +195,7 @@ public abstract class A_CmsResourcePreview<T extends CmsResourceInfoBean> implem
 
     /**
      * Calls the preview handler to display the given data.<p>
-     * 
+     *
      * @param resourceInfo the resource info data
      */
     public void showData(T resourceInfo) {

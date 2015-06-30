@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,7 +65,7 @@ public class OpenCmsSpellcheckHandler extends HttpServlet implements I_CmsReques
 
     /**
      * Returns the path to the spell check handler.<p>
-     * 
+     *
      * @return the path to the spell check handler
      */
     public static String getSpellcheckHandlerPath() {
@@ -75,7 +75,7 @@ public class OpenCmsSpellcheckHandler extends HttpServlet implements I_CmsReques
 
     /**
      * Checks if the spell check request handler is configured.<p>
-     * 
+     *
      * @return <code>true</code> if the spell check request handler is configured
      */
     public static boolean isSpellcheckingEnabled() {
@@ -111,11 +111,11 @@ public class OpenCmsSpellcheckHandler extends HttpServlet implements I_CmsReques
 
     /**
      * Returns the CMS object.<p>
-     * 
+     *
      * @param req the request
-     * 
+     *
      * @return the CMS object
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected CmsObject getCmsObject(HttpServletRequest req) throws CmsException {
@@ -136,10 +136,10 @@ public class OpenCmsSpellcheckHandler extends HttpServlet implements I_CmsReques
 
     /**
      * Returns the base URI.<p>
-     * 
+     *
      * @param req the servlet request
      * @param cms the CmsObject
-     * 
+     *
      * @return the base URI
      */
     private String getBaseUri(HttpServletRequest req, CmsObject cms) {

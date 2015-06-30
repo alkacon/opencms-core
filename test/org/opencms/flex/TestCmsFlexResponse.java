@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,20 +46,20 @@ import javax.servlet.http.HttpServletResponse;
 import junit.extensions.TestSetup;
 import junit.framework.TestSuite;
 
-/** 
- * Unit tests for the {@link CmsFlexResponse}.<p> 
- * 
+/**
+ * Unit tests for the {@link CmsFlexResponse}.<p>
+ *
  * This test suite performs way more set-up than is required for the amount of testing that is done.
  * However, there is probably value in demonstrating how to set up a test case to access flex cache resources
  * so that more robust unit tests can be developed here.<p>
- * 
+ *
  * @since 6.0.1
  */
 public class TestCmsFlexResponse extends OpenCmsTestCase {
 
     /**
      * An InvocationHandler which simply records the arguments for each method that was called.<p>
-     * 
+     *
      * If a 'stub' object was passed in the contructor, and the stub object has a method of the
      * same signature as the one that is being called, that method will be invoked.<p>
      */
@@ -81,7 +81,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
 
         /**
          * Construtor with a 'stub' Object.<p>
-         * 
+         *
          * @param stub the stub Object to use
          */
         public RecordingMock(Object stub) {
@@ -89,11 +89,11 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
             m_stub = stub;
         }
 
-        /** 
+        /**
          * Returns a list of all recorded calls to the given method.<p>
-         * 
+         *
          * @param method the method to get the recorded calls for
-         * 
+         *
          * @return a list of all recorded calls to the given method
          */
         public List getCalls(Method method) {
@@ -108,13 +108,13 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
 
         /**
          * Notice that the given method has been invoked.<p>
-         * 
+         *
          * Two actions are taken:
          * <ol>
          * <li>The invocation is recorded in <code>{@link #getCalls getCalls(method)}</code>.</li>
          * <li>If {@link #m_stub} is not null, the requested method is invoked on it</li>
          * </ol>
-         * 
+         *
          * @see java.lang.reflect.InvocationHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])
          */
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -152,7 +152,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
         }
     }
 
-    /** 
+    /**
      * A partial implementation of {@link HttpServletRequest} which allows for the setting and getting of request attributes.<p>
      */
     public static class RequestStub {
@@ -162,7 +162,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
 
         /**
          * Returns the named attribute value.<p>
-         * 
+         *
          * @param name the name of the attribute to return
          * @return the value of the attribute
          */
@@ -173,7 +173,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
 
         /**
          * Removes the named attribute.<p>
-         * 
+         *
          * @param name the name of the attribute to remove
          */
         public void removeAttribute(String name) {
@@ -183,7 +183,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
 
         /**
          * Sets the named attribute to the given value.<p>
-         * 
+         *
          * @param name the name of the attribute to set
          * @param value the value to set
          */
@@ -213,7 +213,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsFlexResponse(String arg0) {
@@ -234,7 +234,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static TestSetup suite() {
@@ -264,11 +264,11 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
         return wrapper;
     }
 
-    /** 
+    /**
      * Convenience method to create a mock {@link HttpServletRequest} backed by the given invocation handler.<p>
-     * 
+     *
      * @param recorder the mock recorder
-     *  
+     *
      * @return the new created request
      */
     private static HttpServletRequest createMockRequest(RecordingMock recorder) {
@@ -276,11 +276,11 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
         return (HttpServletRequest)createProxy(HttpServletRequest.class, recorder);
     }
 
-    /** 
+    /**
      * Convenience method to create a mock {@link HttpServletResponse} backed by the given invocation handler.<p>
-     * 
+     *
      * @param recorder the mock recorder
-     *  
+     *
      * @return the new created response
      */
     private static HttpServletResponse createMockResponse(RecordingMock recorder) {
@@ -299,7 +299,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
     /**
      * Test semantics for Content-Type header on
      * {@link CmsFlexResponse#setContentType(String)} and {@link CmsFlexResponse#setHeader(String, String)}.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testContentTypeRules() throws Exception {
@@ -349,9 +349,9 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
     /**
      * Initializes a flex cache controller and mock servlet request and response objects to be
      * used by this unit tests.<p>
-     * 
+     *
      * @throws Exception if the setup fails
-     * 
+     *
      * @see junit.framework.TestCase#setUp()
      */
     @Override

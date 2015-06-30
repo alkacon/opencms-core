@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,9 +40,9 @@ import java.util.Map;
 
 /**
  * Stores the information about the current users OpenCms context,
- * for example the requested URI, the current project, the selected site and more.<p>  
- * 
- * @since 6.0.0 
+ * for example the requested URI, the current project, the selected site and more.<p>
+ *
+ * @since 6.0.0
  */
 public final class CmsRequestContext {
 
@@ -105,13 +105,13 @@ public final class CmsRequestContext {
 
     /**
      * Constructs a new request context.<p>
-     * 
+     *
      * @param user the current user
      * @param project the current project
      * @param requestedUri the requested OpenCms VFS URI
      * @param siteRoot the users current site root
      * @param isSecureRequest true if this is a secure request
-     * @param locale the users current locale 
+     * @param locale the users current locale
      * @param encoding the encoding to use for this request
      * @param remoteAddr the remote IP address of the user
      * @param requestTime the time of the request (used for resource publication / expiration date)
@@ -150,14 +150,14 @@ public final class CmsRequestContext {
 
     /**
      * Returns the adjusted site root for a resource using the provided site root as a base.<p>
-     * 
+     *
      * Usually, this would be the site root for the current site.
      * However, if a resource from the <code>/system/</code> folder is requested,
      * this will be the empty String.<p>
-     * 
+     *
      * @param siteRoot the site root of the current site
      * @param resourcename the resource name to get the adjusted site root for
-     * 
+     *
      * @return the adjusted site root for the resource
      */
     public static String getAdjustedSiteRoot(String siteRoot, String resourcename) {
@@ -173,7 +173,7 @@ public final class CmsRequestContext {
     /**
      * Adds the current site root of this context to the given resource name,
      * and also translates the resource name with the configured the directory translator.<p>
-     * 
+     *
      * @param resourcename the resource name
      * @return the translated resource name including site root
      * @see #addSiteRoot(String, String)
@@ -187,7 +187,7 @@ public final class CmsRequestContext {
      * Adds the given site root of this context to the given resource name,
      * taking into account special folders like "/system" where no site root must be added,
      * and also translates the resource name with the configured the directory translator.<p>
-     * 
+     *
      * @param siteRoot the site root to add
      * @param resourcename the resource name
      * @return the translated resource name including site root
@@ -213,7 +213,7 @@ public final class CmsRequestContext {
      * Returns the current project of the current user.
      *
      * @return the current project of the current user
-     * 
+     *
      * @deprecated use {@link #getCurrentProject()} instead
      */
     @Deprecated
@@ -226,7 +226,7 @@ public final class CmsRequestContext {
      * Returns the current user object.<p>
      *
      * @return the current user object
-     * 
+     *
      * @deprecated use {@link #getCurrentUser()} instead
      */
     @Deprecated
@@ -237,7 +237,7 @@ public final class CmsRequestContext {
 
     /**
      * Returns the adjusted site root for a resoure this context current site root.<p>
-     * 
+     *
      * @param resourcename the resource name to get the adjusted site root for
      * @return the adjusted site root for the resoure
      * @see #getAdjustedSiteRoot(String, String)
@@ -249,7 +249,7 @@ public final class CmsRequestContext {
 
     /**
      * Gets the value of an attribute from the OpenCms request context attribute list.<p>
-     * 
+     *
      * @param attributeName the attribute name
      * @return Object the attribute value, or <code>null</code> if the attribute was not found
      */
@@ -283,8 +283,8 @@ public final class CmsRequestContext {
 
     /**
      * Gets the detail content structure id (or null if no detail content has been loaded).<p>
-     * 
-     * @return the detail content id 
+     *
+     * @return the detail content id
      */
     public CmsUUID getDetailContentId() {
 
@@ -296,8 +296,8 @@ public final class CmsRequestContext {
 
     /**
      * Gets the detail content resource (or null if no detail content has been loaded).<p>
-     * 
-     * @return the detail content resource 
+     *
+     * @return the detail content resource
      */
     public CmsResource getDetailResource() {
 
@@ -306,10 +306,10 @@ public final class CmsRequestContext {
 
     /**
      * Returns the directory name translator this context was initialized with.<p>
-     * 
-     * The directory translator is used to translate old VFS path information 
+     *
+     * The directory translator is used to translate old VFS path information
      * to a new location. Example: <code>/bodys/index.html --> /system/bodies/</code>.<p>
-     * 
+     *
      * @return the directory name translator this context was initialized with
      */
     public CmsResourceTranslator getDirectoryTranslator() {
@@ -319,7 +319,7 @@ public final class CmsRequestContext {
 
     /**
      * Returns the current content encoding to be used in HTTP response.<p>
-     * 
+     *
      * @return the encoding
      */
     public String getEncoding() {
@@ -329,10 +329,10 @@ public final class CmsRequestContext {
 
     /**
      * Returns the file name translator this context was initialized with.<p>
-     * 
-     * The file name translator is used to translate filenames from uploaded files  
+     *
+     * The file name translator is used to translate filenames from uploaded files
      * to valid OpenCms filenames. Example: <code>W&uuml;ste W&ouml;rter.doc --> Wueste_Woerter.doc</code>.<p>
-     * 
+     *
      * @return the file name translator this context was initialized with
      */
     public CmsResourceTranslator getFileTranslator() {
@@ -352,13 +352,13 @@ public final class CmsRequestContext {
 
     /**
      * Returns the locale used by this request context.<p>
-     * 
+     *
      * In normal operation, the request context locale is initialized using
-     * {@link org.opencms.i18n.I_CmsLocaleHandler#getI18nInfo(javax.servlet.http.HttpServletRequest, CmsUser, CmsProject, String)} 
+     * {@link org.opencms.i18n.I_CmsLocaleHandler#getI18nInfo(javax.servlet.http.HttpServletRequest, CmsUser, CmsProject, String)}
      * depending on the requested resource URI.<p>
-     * 
+     *
      * @return the locale used by this request context
-     * 
+     *
      * @see org.opencms.i18n.I_CmsLocaleHandler#getI18nInfo(javax.servlet.http.HttpServletRequest, CmsUser, CmsProject, String)
      * @see org.opencms.i18n.CmsLocaleManager#getDefaultLocale(CmsObject, String)
      */
@@ -369,7 +369,7 @@ public final class CmsRequestContext {
 
     /**
      * Returns the fully qualified name of the organizational unit.<p>
-     * 
+     *
      * @return the fully qualified name of the organizational unit
      */
     public String getOuFqn() {
@@ -379,7 +379,7 @@ public final class CmsRequestContext {
 
     /**
      * Returns the remote ip address.<p>
-     * 
+     *
      * @return the remote ip address as string
      */
     public String getRemoteAddress() {
@@ -389,7 +389,7 @@ public final class CmsRequestContext {
 
     /**
      * Returns the current request time.<p>
-     * 
+     *
      * @return the current request time
      */
     public long getRequestTime() {
@@ -399,9 +399,9 @@ public final class CmsRequestContext {
 
     /**
      * Returns this request contexts uri extended with the current site root path.<p>
-     * 
+     *
      * @return this request contexts uri extended with the current site root path
-     * 
+     *
      * @see #getUri()
      * @see #addSiteRoot(String)
      */
@@ -411,20 +411,20 @@ public final class CmsRequestContext {
     }
 
     /**
-     * Adjusts the absolute resource root path for the current site.<p> 
-     * 
+     * Adjusts the absolute resource root path for the current site.<p>
+     *
      * The full root path of a resource is always available using
-     * <code>{@link CmsResource#getRootPath()}</code>. From this name this method cuts 
-     * of the current site root using 
+     * <code>{@link CmsResource#getRootPath()}</code>. From this name this method cuts
+     * of the current site root using
      * <code>{@link CmsRequestContext#removeSiteRoot(String)}</code>.<p>
-     * 
+     *
      * If the resource root path does not start with the current site root,
      * it is left untouched.<p>
-     * 
+     *
      * @param resource the resource to get the adjusted site root path for
-     * 
+     *
      * @return the absolute resource path adjusted for the current site
-     * 
+     *
      * @see #removeSiteRoot(String)
      * @see CmsResource#getRootPath()
      * @see CmsObject#getSitePath(CmsResource)
@@ -436,7 +436,7 @@ public final class CmsRequestContext {
 
     /**
      * Returns the current root directory in the virtual file system.<p>
-     * 
+     *
      * @return the current root directory in the virtual file system
      */
     public String getSiteRoot() {
@@ -456,8 +456,8 @@ public final class CmsRequestContext {
 
     /**
      * Returns true if this is a secure request.<p>
-     * 
-     * @return true if this is secure 
+     *
+     * @return true if this is secure
      */
     public boolean isSecureRequest() {
 
@@ -466,8 +466,8 @@ public final class CmsRequestContext {
 
     /**
      * Check if this request context will update the session.<p>
-     * 
-     * This is used mainly for CmsReports that continue to use the 
+     *
+     * This is used mainly for CmsReports that continue to use the
      * users context, even after the http request is already finished.<p>
      *
      * @return true if this request context will update the session, false otherwise
@@ -479,9 +479,9 @@ public final class CmsRequestContext {
 
     /**
      * Removes an attribute from the request context.<p>
-     * 
+     *
      * @param key the name of the attribute to remove
-     * 
+     *
      * @return the removed attribute, or <code>null</code> if no attribute was set with this name
      */
     public Object removeAttribute(String key) {
@@ -494,15 +494,15 @@ public final class CmsRequestContext {
 
     /**
      * Removes the current site root prefix from the absolute path in the resource name,
-     * that is adjusts the resource name for the current site root.<p> 
-     * 
+     * that is adjusts the resource name for the current site root.<p>
+     *
      * If the resource name does not start with the current site root,
      * it is left untouched.<p>
-     * 
+     *
      * @param resourcename the resource name
-     * 
+     *
      * @return the resource name adjusted for the current site root
-     * 
+     *
      * @see #getSitePath(CmsResource)
      */
     public String removeSiteRoot(String resourcename) {
@@ -522,7 +522,7 @@ public final class CmsRequestContext {
 
     /**
      * Sets an attribute in the request context.<p>
-     * 
+     *
      * @param key the attribute name
      * @param value the attribute value
      */
@@ -539,7 +539,7 @@ public final class CmsRequestContext {
      * Sets the current project for the user.<p>
      *
      * @param project the project to be set as current project
-     * 
+     *
      * @return the CmsProject instance
      */
     public CmsProject setCurrentProject(CmsProject project) {
@@ -552,8 +552,8 @@ public final class CmsRequestContext {
 
     /**
      * Sets the detail content resource.<p>
-     * 
-     * @param detailResource the detail content resource 
+     *
+     * @param detailResource the detail content resource
      */
     public void setDetailResource(CmsResource detailResource) {
 
@@ -562,7 +562,7 @@ public final class CmsRequestContext {
 
     /**
      * Sets the current content encoding to be used in HTTP response.<p>
-     * 
+     *
      * @param encoding the encoding
      */
     public void setEncoding(String encoding) {
@@ -572,9 +572,9 @@ public final class CmsRequestContext {
 
     /**
      * Sets the locale used by this request context.<p>
-     * 
+     *
      * @param locale the locale to set
-     * 
+     *
      * @see #getLocale() for more information about how the locale is set in normal operation
      */
     public void setLocale(Locale locale) {
@@ -584,7 +584,7 @@ public final class CmsRequestContext {
 
     /**
      * Sets the organizational unit fully qualified name.<p>
-     * 
+     *
      * @param ouFqn the organizational unit fully qualified name
      */
     public void setOuFqn(String ouFqn) {
@@ -595,10 +595,8 @@ public final class CmsRequestContext {
                 || (ouFqn.startsWith(CmsOrganizationalUnit.SEPARATOR) && ouFqn.substring(1).startsWith(userOu))) {
                 m_ouFqn = ouFqn;
             } else {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_BAD_ORGUNIT_2,
-                    ouFqn,
-                    userOu));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(Messages.ERR_BAD_ORGUNIT_2, ouFqn, userOu));
             }
         } else {
             m_ouFqn = userOu;
@@ -608,7 +606,7 @@ public final class CmsRequestContext {
 
     /**
      * Sets the current request time.<p>
-     * 
+     *
      * @param time the request time
      */
     public void setRequestTime(long time) {
@@ -616,10 +614,10 @@ public final class CmsRequestContext {
         m_requestTime = time;
     }
 
-    /** 
+    /**
      * Sets the 'secure request' status.<p>
-     * 
-     * @param secureRequest the new value 
+     *
+     * @param secureRequest the new value
      */
     public void setSecureRequest(boolean secureRequest) {
 
@@ -628,7 +626,7 @@ public final class CmsRequestContext {
 
     /**
      * Sets the current root directory in the virtual file system.<p>
-     * 
+     *
      * @param root the name of the new root directory
      */
     public void setSiteRoot(String root) {
@@ -653,11 +651,11 @@ public final class CmsRequestContext {
 
     /**
      * Set the requested resource OpenCms VFS URI, that is the value returned by {@link #getUri()}.<p>
-     * 
+     *
      * Use this with caution! Many things (caches etc.) depend on this value.
-     * If you change this value, better make sure that you change it only temporarily 
+     * If you change this value, better make sure that you change it only temporarily
      * and reset it in a <code>try { // do something // } finally { // reset URI // }</code> statement.<p>
-     * 
+     *
      * @param value the value to set the Uri to, must be a complete OpenCms path name like /system/workplace/style.css
      */
     public void setUri(String value) {
@@ -667,7 +665,7 @@ public final class CmsRequestContext {
 
     /**
      * Switches the user in the context, required after a login.<p>
-     * 
+     *
      * @param user the new user to use
      * @param project the new users current project
      * @param ouFqn the organizational unit

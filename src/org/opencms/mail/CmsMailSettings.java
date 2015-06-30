@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,8 +37,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Contains the settings for the OpenCms mail service.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsMailSettings {
 
@@ -61,7 +61,7 @@ public class CmsMailSettings {
     private int m_orderDefault;
 
     /**
-     * Empty constructor, required for configuration.<p> 
+     * Empty constructor, required for configuration.<p>
      */
     public CmsMailSettings() {
 
@@ -74,11 +74,11 @@ public class CmsMailSettings {
 
     /**
      * Adds a new mail host to the internal list of mail hosts with default port 25.<p>
-     * 
+     *
      * @param hostname the name of the mail host
      * @param order the order in which the host is tried
      * @param protocol the protocol to use (default "smtp")
-     * @param username the user name to use for authentication 
+     * @param username the user name to use for authentication
      * @param password the password to use for authentication
      */
     public void addMailHost(String hostname, String order, String protocol, String username, String password) {
@@ -88,12 +88,12 @@ public class CmsMailSettings {
 
     /**
        * Adds a new mail host to the internal list of mail hosts.<p>
-       * 
+       *
        * @param hostname the name of the mail host
        * @param port the port of the mail host
        * @param order the order in which the host is tried
        * @param protocol the protocol to use (default "smtp")
-       * @param username the user name to use for authentication 
+       * @param username the user name to use for authentication
        * @param password the password to use for authentication
        */
     public void addMailHost(
@@ -118,7 +118,7 @@ public class CmsMailSettings {
                 m_orderDefault = theOrder.intValue();
             }
         } catch (Throwable t) {
-            // valueOf: use jdk int cache if possible and not new operator: 
+            // valueOf: use jdk int cache if possible and not new operator:
             theOrder = Integer.valueOf(m_orderDefault);
         }
         CmsMailHost host = new CmsMailHost(hostname, thePort, theOrder, protocol, username, password);
@@ -131,7 +131,7 @@ public class CmsMailSettings {
 
     /**
      * Returns the default mail host.<p>
-     * 
+     *
      * @return the default mail host
      */
     public CmsMailHost getDefaultMailHost() {
@@ -141,7 +141,7 @@ public class CmsMailSettings {
 
     /**
      * Returns the mail from default sender.<p>
-     * 
+     *
      * @return the mail from default sender
      */
     public String getMailFromDefault() {
@@ -151,7 +151,7 @@ public class CmsMailSettings {
 
     /**
      * Returns an unmodifiable sorted list of all configured mail hosts.<p>
-     *  
+     *
      * @return an unmodifiable sorted list of all configured mail hosts
      */
     public List<CmsMailHost> getMailHosts() {
@@ -161,7 +161,7 @@ public class CmsMailSettings {
 
     /**
      * Sets the mail from default sender.<p>
-     * 
+     *
      * @param sender the mail from default sender to set
      */
     public void setMailFromDefault(String sender) {

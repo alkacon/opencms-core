@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
 
-    /** 
+    /**
      * Bean containing the title and name of a category.<p>
      */
     public static class CmsCategoryTitleAndName {
@@ -63,9 +63,9 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
 
         /**
          * Creates a new instance.<p>
-         *  
-         * @param title the title of the category 
-         * @param name the name of the category 
+         *
+         * @param title the title of the category
+         * @param name the name of the category
          */
         public CmsCategoryTitleAndName(String title, String name) {
 
@@ -75,8 +75,8 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
 
         /**
          * Gets the name of the category.<p>
-         * 
-         * @return the category name 
+         *
+         * @return the category name
          */
         public String getName() {
 
@@ -85,8 +85,8 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
 
         /**
          * Gets the title of the category.<p>
-         * 
-         * @return the category title 
+         *
+         * @return the category title
          */
         public String getTitle() {
 
@@ -96,8 +96,8 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsCreateCategoryMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -108,9 +108,9 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Asks the user for a new category's name and title.<p>
-     * 
-     * @param parentId the parent category  
-     * @param callback the callback to call with the user-supplied information 
+     *
+     * @param parentId the parent category
+     * @param callback the callback to call with the user-supplied information
      */
     public static void askForNewCategoryInfo(CmsUUID parentId, final AsyncCallback<CmsCategoryTitleAndName> callback) {
 
@@ -150,15 +150,16 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Creates a property configuration for a simple named string field.<p>
-     * 
-     * @param name the name of the field 
-     * @param niceName the display name of the field 
-     * 
+     *
+     * @param name the name of the field
+     * @param niceName the display name of the field
+     *
      * @return the property configuration
      */
     public static CmsXmlContentProperty createBasicStringProperty(String name, String niceName) {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(name, //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            name, //name
             "string", // type
             "string", // widget
             "", // widgetconfig

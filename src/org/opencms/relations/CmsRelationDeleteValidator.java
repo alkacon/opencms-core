@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Util class to find broken links in a bundle of resources to be deleted.<p>
- * 
+ *
  * @since 6.5.3
  */
 public class CmsRelationDeleteValidator {
@@ -65,7 +65,7 @@ public class CmsRelationDeleteValidator {
 
     /**
      * Creates a new helper object.<p>
-     * 
+     *
      * @param cms the cms object
      * @param resourceNames a list of resource names to be deleted
      * @param includeSiblings if the siblings should also be deleted
@@ -77,10 +77,10 @@ public class CmsRelationDeleteValidator {
     }
 
     /**
-     * Returns the information bean for the given entry.<p> 
-     * 
+     * Returns the information bean for the given entry.<p>
+     *
      * @param resourceName the entry name
-     * 
+     *
      * @return the information bean for the given entry
      */
     public CmsRelationValidatorInfoEntry getInfoEntry(String resourceName) {
@@ -119,7 +119,7 @@ public class CmsRelationDeleteValidator {
 
     /**
      * If no relation would be broken deleting the given resources.<p>
-     * 
+     *
      * @return <code>true</code> if no relation would be broken deleting the given resources
      */
     public boolean isEmpty() {
@@ -129,7 +129,7 @@ public class CmsRelationDeleteValidator {
 
     /**
      * @see java.util.Map#keySet()
-     * 
+     *
      * @return the broken relations key set
      */
     public Set<String> keySet() {
@@ -139,7 +139,7 @@ public class CmsRelationDeleteValidator {
 
     /**
      * @see java.util.Map#values()
-     * 
+     *
      * @return the broken relations value set
      */
     public Collection<List<CmsRelation>> values() {
@@ -149,19 +149,19 @@ public class CmsRelationDeleteValidator {
 
     /**
      * Returns a map of where each entry has as key a name of a resource to be deleted,
-     * and value a list of relations that would be broken.<p> 
-     * 
+     * and value a list of relations that would be broken.<p>
+     *
      * The keys for non-siblings have following format:
      * <code>file root path</code>.<p>
-     *  
+     *
      * The keys for siblings have following format:
      * <code>original file root path + PREFIX_SIBLING + sibling root path</code>.<p>
-     * 
+     *
      * The values are {@link CmsRelation} objects.<p>
-     * 
+     *
      * @param resourceNames a list of resource names to be deleted
      * @param includeSiblings if the siblings should also be deleted
-     * 
+     *
      * @return a map of broken relations
      */
     private Map<String, List<CmsRelation>> getBrokenRelations(List<String> resourceNames, boolean includeSiblings) {
@@ -232,7 +232,9 @@ public class CmsRelationDeleteValidator {
                 CmsResource resource = itResources.next();
                 String resourceName = resource.getRootPath();
                 try {
-                    Iterator<CmsRelation> it = m_cms.getRelationsForResource(resource, CmsRelationFilter.SOURCES).iterator();
+                    Iterator<CmsRelation> it = m_cms.getRelationsForResource(
+                        resource,
+                        CmsRelationFilter.SOURCES).iterator();
                     while (it.hasNext()) {
                         CmsRelation relation = it.next();
                         String relationName = relation.getSourcePath();

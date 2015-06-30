@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,8 +48,8 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Implementation of the administration view leftside's menu.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsAdminMenu extends CmsToolDialog {
 
@@ -63,7 +63,7 @@ public class CmsAdminMenu extends CmsToolDialog {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param jsp the jsp context
      */
     public CmsAdminMenu(CmsJspActionElement jsp) {
@@ -79,9 +79,9 @@ public class CmsAdminMenu extends CmsToolDialog {
 
     /**
      * Adds a group.<p>
-     * 
+     *
      * @param group the group
-     * 
+     *
      * @see CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addGroup(CmsAdminMenuGroup group) {
@@ -91,10 +91,10 @@ public class CmsAdminMenu extends CmsToolDialog {
 
     /**
      * Adds a menu item at the given position.<p>
-     * 
+     *
      * @param group the group
      * @param position the position
-     * 
+     *
      * @see CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addGroup(CmsAdminMenuGroup group, float position) {
@@ -104,9 +104,9 @@ public class CmsAdminMenu extends CmsToolDialog {
 
     /**
      * Adds a new item to the specified menu.<p>
-     * 
+     *
      * If the menu does not exist, it will be created.<p>
-     * 
+     *
      * @param groupName the name of the group
      * @param name the name of the item
      * @param icon the icon to display
@@ -115,7 +115,7 @@ public class CmsAdminMenu extends CmsToolDialog {
      * @param enabled if enabled or not
      * @param position the relative position to install the item
      * @param target the target frame to open the link into
-     * 
+     *
      * @return the new item
      */
     public CmsAdminMenuItem addItem(
@@ -144,9 +144,9 @@ public class CmsAdminMenu extends CmsToolDialog {
     /**
      * Returns all initialized parameters of the current request
      * that are not in the given exclusion list as hidden field tags that can be inserted in a form.<p>
-     * 
-     * @param excludes the parameters to exclude 
-     * 
+     *
+     * @param excludes the parameters to exclude
+     *
      * @return all initialized parameters of the current request
      */
     public String allRequestParamsAsUrl(Collection<String> excludes) {
@@ -178,11 +178,11 @@ public class CmsAdminMenu extends CmsToolDialog {
 
     /**
      * Returns the requested group.<p>
-     * 
+     *
      * @param name the name of the group
-     * 
+     *
      * @return the group
-     * 
+     *
      * @see CmsIdentifiableObjectContainer#getObject(String)
      */
     public CmsAdminMenuGroup getGroup(String name) {
@@ -192,7 +192,7 @@ public class CmsAdminMenu extends CmsToolDialog {
 
     /**
      * Returns the admin manager.<p>
-     * 
+     *
      * @return the admin manager
      */
     @Override
@@ -203,9 +203,9 @@ public class CmsAdminMenu extends CmsToolDialog {
 
     /**
      * Generates the necesary html code for the groups.<p>
-     * 
+     *
      * @param wp the page for which the code is generated
-     * 
+     *
      * @return html code
      */
     public String groupHtml(CmsWorkplace wp) {
@@ -228,8 +228,9 @@ public class CmsAdminMenu extends CmsToolDialog {
         m_groupContainer.clear();
 
         // creates the context help menu
-        CmsAdminMenuGroup helpMenu = new CmsAdminMenuGroup("help", Messages.get().getBundle(getLocale()).key(
-            Messages.GUI_ADMIN_MENU_HELP_GROUP_0));
+        CmsAdminMenuGroup helpMenu = new CmsAdminMenuGroup(
+            "help",
+            Messages.get().getBundle(getLocale()).key(Messages.GUI_ADMIN_MENU_HELP_GROUP_0));
         helpMenu.addMenuItem(new CmsAdminContextHelpMenuItem());
         addGroup(helpMenu);
 

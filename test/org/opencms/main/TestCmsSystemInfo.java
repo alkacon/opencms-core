@@ -156,8 +156,8 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         assertEquals(path + " does not exist.", true, file.exists());
         assertEquals(true, file.isDirectory());
 
-        path = sysinfo.getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.FOLDER_CONFIG_DEFAULT
-            + CmsSearchConfiguration.DEFAULT_XML_FILE_NAME);
+        path = sysinfo.getAbsoluteRfsPathRelativeToWebInf(
+            CmsSystemInfo.FOLDER_CONFIG_DEFAULT + CmsSearchConfiguration.DEFAULT_XML_FILE_NAME);
         assertNotNull(path);
         path = path.trim();
         assertEquals(true, path.length() != 0);
@@ -194,12 +194,14 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         // make sure to bump this up with every major version number, or else the test would fail ;)
         String expectedVersion = "9.5";
 
-        assertTrue("OpenCms Version number not set correctly, expected prefix ["
-            + expectedVersion
-            + "] but was ["
-            + version.substring(0, expectedVersion.length())
-            + "]"
-            + version.substring(expectedVersion.length()), version.startsWith(expectedVersion));
+        assertTrue(
+            "OpenCms Version number not set correctly, expected prefix ["
+                + expectedVersion
+                + "] but was ["
+                + version.substring(0, expectedVersion.length())
+                + "]"
+                + version.substring(expectedVersion.length()),
+            version.startsWith(expectedVersion));
 
         String versionId = OpenCms.getSystemInfo().getVersionId();
 
@@ -254,9 +256,10 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
                 "We always assume the build system name starts with 'Jenkins'",
                 info.get("build.system").getValue().startsWith("Jenkins"));
         } else {
-            fail("No valid version information for test cases found, version id is '"
-                + OpenCms.getSystemInfo().getVersionId()
-                + "'\n\nThis indicates manual unexpected changes in 'src/org/opencms/main/version.properties'");
+            fail(
+                "No valid version information for test cases found, version id is '"
+                    + OpenCms.getSystemInfo().getVersionId()
+                    + "'\n\nThis indicates manual unexpected changes in 'src/org/opencms/main/version.properties'");
         }
     }
 

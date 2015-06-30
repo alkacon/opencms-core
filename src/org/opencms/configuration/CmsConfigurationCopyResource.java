@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,10 +34,10 @@ import org.opencms.util.CmsMacroResolver;
 
 /**
  * Describes a resource to copy during the creation of a new resource.<p>
- * 
+ *
  * Usually used in folder types to copy some default resources to the folder,
  * but also usable for file resources.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsConfigurationCopyResource {
@@ -68,10 +68,10 @@ public class CmsConfigurationCopyResource {
 
     /**
      * Creates a new copy resource info container.<p>
-     * 
+     *
      * If target is <code>null</code>, the macro {@link A_CmsResourceType#MACRO_RESOURCE_FOLDER_PATH} is used as default.
      * If type is <code>null</code>, the copy type {@link CmsResource#COPY_AS_NEW} is used as default.<p>
-     * 
+     *
      * @param source the source resource
      * @param target the target resource (may contain macros)
      * @param type the type of the copy, for example "as new", "as sibling" etc
@@ -101,7 +101,7 @@ public class CmsConfigurationCopyResource {
 
     /**
      * Returns the source resource.<p>
-     * 
+     *
      * @return the source resource
      */
     public String getSource() {
@@ -111,7 +111,7 @@ public class CmsConfigurationCopyResource {
 
     /**
      * Returns the target resource (may contain macros).<p>
-     * 
+     *
      * @return the target resource (may contain macros)
      */
     public String getTarget() {
@@ -121,11 +121,11 @@ public class CmsConfigurationCopyResource {
 
     /**
      * Returns the type of the copy, for example "as new", "as sibling" etc.<p>
-     * 
-     * Possible types are {@link org.opencms.file.CmsResource#COPY_AS_NEW}, 
+     *
+     * Possible types are {@link org.opencms.file.CmsResource#COPY_AS_NEW},
      * {@link org.opencms.file.CmsResource#COPY_AS_SIBLING} and
      * {@link org.opencms.file.CmsResource#COPY_PRESERVE_SIBLING}.<p>
-     * 
+     *
      * @return the type of the copy, for example "as new", "as sibling" etc
      */
     public CmsResourceCopyMode getType() {
@@ -135,9 +135,9 @@ public class CmsConfigurationCopyResource {
 
     /**
      * Returns the copy type as String.<p>
-     * 
+     *
      * @see #getType()
-     * 
+     *
      * @return the copy type as String
      */
     public String getTypeString() {

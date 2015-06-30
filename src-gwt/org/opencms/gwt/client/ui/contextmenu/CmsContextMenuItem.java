@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,12 +37,12 @@ import com.google.gwt.user.client.ui.HTML;
 /**
  * An entry in a {@link org.opencms.gwt.client.ui.contextmenu.CmsContextMenu}. Menu items can either fire a
  * {@link com.google.gwt.user.client.Command} when they are clicked, or open a cascading sub-menu.<p>
- * 
+ *
  * This implementation of the abstract context menu item provides a possible image in front of the text
  * and a arrow for a sub menu entry.<p>
- * 
+ *
  * Furthermore constructs the HTML for such a menu entry.<p>
- * 
+ *
  * @since version 8.0.0
  */
 public final class CmsContextMenuItem extends A_CmsContextMenuItem {
@@ -55,7 +55,7 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
 
     /**
      * Constructs a context menu item.<p>
-     * 
+     *
      * @param entry the information for this item
      */
     public CmsContextMenuItem(I_CmsContextMenuEntry entry) {
@@ -67,7 +67,7 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
         // get the HTML for the menu item
         m_panel = new HTML(getMenuItemHtml(m_entry.hasSubMenu()));
 
-        // initialize the widget with the panel and set the style name for the menu item       
+        // initialize the widget with the panel and set the style name for the menu item
         initWidget(m_panel);
         setStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsMenuItem());
 
@@ -92,15 +92,15 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
             m_entry.execute();
         }
         // hide menu *after* executing the action, because hiding the menu may trigger mouseover events of the elements lying under it,
-        // and executing the action first gives it the opportunity to add a 'blocking notification' to prevent this 
+        // and executing the action first gives it the opportunity to add a 'blocking notification' to prevent this
         getParentMenu().hideAll();
     }
 
     /**
      * Generates the HTML for a menu item.<p>
-     * 
+     *
      * @param hasSubMenu signals if this menu has a sub menu
-     * 
+     *
      * @return the HTML for the menu item
      */
     protected String getMenuItemHtml(boolean hasSubMenu) {
@@ -109,9 +109,10 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
         if (hasSubMenu) {
             // if this menu item has a sub menu show the arrow-icon behind the text of the icon
             html.append("<div class=\"");
-            html.append(I_CmsLayoutBundle.INSTANCE.contextmenuCss().arrow()
-                + " "
-                + I_CmsImageBundle.INSTANCE.style().triangleRight());
+            html.append(
+                I_CmsLayoutBundle.INSTANCE.contextmenuCss().arrow()
+                    + " "
+                    + I_CmsImageBundle.INSTANCE.style().triangleRight());
             html.append("\"></div>");
         }
         String iconClass = m_entry.getIconClass();
@@ -120,7 +121,8 @@ public final class CmsContextMenuItem extends A_CmsContextMenuItem {
         }
         String iconHtml = "<div class='" + iconClass + "'></div>";
 
-        html.append("<div class='" + I_CmsLayoutBundle.INSTANCE.contextmenuCss().iconBox() + "'>" + iconHtml + "</div>");
+        html.append(
+            "<div class='" + I_CmsLayoutBundle.INSTANCE.contextmenuCss().iconBox() + "'>" + iconHtml + "</div>");
         // add the text to the item
         html.append("<div class=\"");
         html.append(I_CmsLayoutBundle.INSTANCE.contextmenuCss().label());

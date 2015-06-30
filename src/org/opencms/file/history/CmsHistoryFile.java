@@ -37,7 +37,7 @@ import org.opencms.util.CmsUUID;
 
 /**
  * A historical version of a file in the OpenCms VFS resource history.<p>
- * 
+ *
  * @since 6.9.1
  */
 public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource {
@@ -59,7 +59,7 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource {
 
     /**
      * Creates a dummy historical file from the given resource.<p>
-     * 
+     *
      * @param resource the resource to wrap
      */
     public CmsHistoryFile(CmsResource resource) {
@@ -71,7 +71,7 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource {
 
     /**
      * Constructor from a history resource.<p>
-     * 
+     *
      * @param resource the base history resource
      */
     public CmsHistoryFile(I_CmsHistoryResource resource) {
@@ -102,8 +102,8 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource {
 
     /**
      * Default Constructor.<p>
-     * 
-     * @param publishTag the publish tag of this historical resource    
+     *
+     * @param publishTag the publish tag of this historical resource
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param path the filename of this resouce
@@ -118,7 +118,7 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource {
      * @param dateReleased the release date of this resource
      * @param dateExpired the expiration date of this resource
      * @param size the size of the file content of this resource
-     * @param dateContent the date of the last modification of the content of this resource 
+     * @param dateContent the date of the last modification of the content of this resource
      * @param version the version number of this resource
      * @param parentId structure id of the parent of this historical resource
      * @param content the content of this version
@@ -176,7 +176,7 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource {
 
     /**
      * Returns a clone of this Objects instance.<p>
-     * 
+     *
      * @return a clone of this instance
      */
     @Override
@@ -225,7 +225,7 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource {
     /**
      * Returns the name of the user that created this resource.<p>
      *
-     * @param cms the current cms context 
+     * @param cms the current cms context
      *
      * @return the name of the user that created this resource
      */
@@ -241,7 +241,7 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource {
     /**
      * Returns the name of the user that last modified this resource.<p>
      *
-     * @param cms the current cms context 
+     * @param cms the current cms context
      *
      * @return the name of the user that last modified this resource
      */

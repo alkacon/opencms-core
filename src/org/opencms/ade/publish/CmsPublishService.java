@@ -228,7 +228,8 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                             foundProject = true;
                             if (project.isWorkflowProject()) {
                                 canOverrideWorkflow = false;
-                                workflowId = OpenCms.getWorkflowManager().getWorkflowForWorkflowProject(selectedProject);
+                                workflowId = OpenCms.getWorkflowManager().getWorkflowForWorkflowProject(
+                                    selectedProject);
                             }
                             break;
                         }
@@ -262,10 +263,12 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             }
 
             options.setParameters(params);
-            result = new CmsPublishData(options, projects, getResourceGroups(
-                workflows.get(workflowId),
+            result = new CmsPublishData(
                 options,
-                canOverrideWorkflow), workflows, workflowId);
+                projects,
+                getResourceGroups(workflows.get(workflowId), options, canOverrideWorkflow),
+                workflows,
+                workflowId);
             result.setCloseLink(closeLink);
             result.setShowConfirmation(confirm);
         } catch (Throwable e) {
@@ -277,8 +280,10 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
     /**
      * @see org.opencms.ade.publish.shared.rpc.I_CmsPublishService#getResourceGroups(org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions, boolean)
      */
-    public CmsPublishGroupList getResourceGroups(CmsWorkflow workflow, CmsPublishOptions options, boolean projectChanged)
-    throws CmsRpcException {
+    public CmsPublishGroupList getResourceGroups(
+        CmsWorkflow workflow,
+        CmsPublishOptions options,
+        boolean projectChanged) throws CmsRpcException {
 
         List<CmsPublishGroup> results = null;
         CmsObject cms = getCmsObject();
@@ -302,10 +307,11 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                 // too many resources, send a publish list token to the client which can be used later to restore the resource list
                 CmsPublishListToken token = workflowManager.getPublishListToken(cms, workflow, options);
                 CmsPublishGroupList result = new CmsPublishGroupList(token);
-                result.setTooManyResourcesMessage(Messages.get().getBundle(locale).key(
-                    Messages.GUI_TOO_MANY_RESOURCES_2,
-                    "" + resources.size(),
-                    "" + OpenCms.getWorkflowManager().getResourceLimit()));
+                result.setTooManyResourcesMessage(
+                    Messages.get().getBundle(locale).key(
+                        Messages.GUI_TOO_MANY_RESOURCES_2,
+                        "" + resources.size(),
+                        "" + OpenCms.getWorkflowManager().getResourceLimit()));
                 return result;
             }
             I_CmsVirtualProject virtualProject = workflowManager.getRealOrVirtualProject(options.getProjectId());
@@ -425,8 +431,8 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
      * @param includeRelated flag to control whether related resources should be included
      * @param includeSiblings flag to control whether siblings should be included
      * @param keepOriginalUnchangedResources flag which determines whether unchanged resources in the original resource list should be kept or removed
-     * @param relProvider the provider for additional related resources 
-     * 
+     * @param relProvider the provider for additional related resources
+     *
      * @return the resources together with their related resources
      */
     private ResourceMap getResourcesAndRelated(

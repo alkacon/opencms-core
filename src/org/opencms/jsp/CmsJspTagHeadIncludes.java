@@ -499,11 +499,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                     }
                 }
             } catch (CmsException e) {
-                LOG.error(
-                    Messages.get().getBundle().key(
-                        Messages.ERR_READING_REQUIRED_RESOURCE_1,
-                        standardContext.getDetailContentId()),
-                    e);
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.ERR_READING_REQUIRED_RESOURCE_1,
+                    standardContext.getDetailContentId()), e);
             }
         }
         for (String jsUri : jsIncludes) {
@@ -543,7 +541,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         Set<String> headincludes,
         Map<String, String> inline) {
 
-        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, cms.getRequestContext().getRootUri());
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            cms,
+            cms.getRequestContext().getRootUri());
         if ((containerPage != null) && (containerPage.getElements() != null)) {
             Map<CmsUUID, I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
                 standardContext.getIsOnlineProject()).getFormatters();
@@ -560,7 +560,8 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                     try {
                         element.initResource(cms);
                         if (!standardContext.getIsOnlineProject()
-                            || element.getResource().isReleasedAndNotExpired(cms.getRequestContext().getRequestTime())) {
+                            || element.getResource().isReleasedAndNotExpired(
+                                cms.getRequestContext().getRequestTime())) {
                             if (element.isGroupContainer(cms) || element.isInheritedContainer(cms)) {
                                 List<CmsContainerElementBean> subElements;
                                 if (element.isGroupContainer(cms)) {
@@ -592,10 +593,8 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                                             }
                                         } else {
 
-                                            headincludes.addAll(getSchemaHeadIncludes(
-                                                cms,
-                                                subElement.getResource(),
-                                                includeType));
+                                            headincludes.addAll(
+                                                getSchemaHeadIncludes(cms, subElement.getResource(), includeType));
                                         }
                                     }
                                 }

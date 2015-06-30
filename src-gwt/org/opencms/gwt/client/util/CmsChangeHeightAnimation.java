@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import com.google.gwt.user.client.Command;
 
 /**
  * Changes the elements height until the target height is reached.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsChangeHeightAnimation extends A_CmsAnimation {
@@ -53,9 +53,9 @@ public class CmsChangeHeightAnimation extends A_CmsAnimation {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param element the element to animate
-     * @param targetHeight the height when the animation should stop 
+     * @param targetHeight the height when the animation should stop
      * @param callback the callback executed after the animation is completed
      */
     public CmsChangeHeightAnimation(Element element, int targetHeight, Command callback) {
@@ -71,12 +71,12 @@ public class CmsChangeHeightAnimation extends A_CmsAnimation {
 
     /**
      * Slides the given element into view executing the callback afterwards.<p>
-     * 
+     *
      * @param element the element to slide in
      * @param targetHeight the height when the animation should stop
      * @param callback the callback executed after the animation is completed
      * @param duration the animation duration
-     * 
+     *
      * @return the running animation object
      */
     public static CmsChangeHeightAnimation change(Element element, int targetHeight, Command callback, int duration) {
@@ -104,6 +104,6 @@ public class CmsChangeHeightAnimation extends A_CmsAnimation {
     @Override
     protected void onUpdate(double progress) {
 
-        m_elementStyle.setHeight(m_heightDiff * progress * progress + m_height, Unit.PX);
+        m_elementStyle.setHeight((m_heightDiff * progress * progress) + m_height, Unit.PX);
     }
 }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,8 +45,8 @@ import javax.imageio.ImageWriter;
 
 /**
  * Tests the image processing capabilities.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsSetupTestSimapi implements I_CmsSetupTest {
 
@@ -109,8 +109,9 @@ public class CmsSetupTestSimapi implements I_CmsSetupTest {
             if (ex != null) {
                 testResult.setResult(RESULT_FAILED);
                 testResult.setHelp(ex.toString());
-                testResult.setInfo("<p><code>-Djava.awt.headless=true</code> JVM parameter or X-Server may be missing.<br>"
-                    + "<b>You can continue the setup, but image processing will be disabled.</b></p>");
+                testResult.setInfo(
+                    "<p><code>-Djava.awt.headless=true</code> JVM parameter or X-Server may be missing.<br>"
+                        + "<b>You can continue the setup, but image processing will be disabled.</b></p>");
             } else {
                 testResult.setResult(RESULT_WARNING);
                 testResult.setHelp("Image processing works but result does not exactly match.");
@@ -120,7 +121,8 @@ public class CmsSetupTestSimapi implements I_CmsSetupTest {
                 info.append("<tr><th>Expected</th><th>Result</th></tr>");
                 info.append("<tr><td align='center' width='50%'><img src='resources/test2.png'></td>");
                 info.append("<td align='center' width='50%'><img src='resources/test3.png'></td></table>");
-                info.append("<p><b>You can continue the setup, but image processing may not always work as expected.</b></p>");
+                info.append(
+                    "<p><b>You can continue the setup, but image processing may not always work as expected.</b></p>");
                 testResult.setInfo(info.toString());
             }
         }

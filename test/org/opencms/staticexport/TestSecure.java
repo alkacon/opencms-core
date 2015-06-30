@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
 
 /**
  * Tests for the XML page that require a running OpenCms system.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestSecure extends OpenCmsTestCase {
@@ -59,7 +59,7 @@ public class TestSecure extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestSecure(String arg0) {
@@ -69,7 +69,7 @@ public class TestSecure extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -105,8 +105,8 @@ public class TestSecure extends OpenCmsTestCase {
 
     /**
      * Test if links in XML-pages are converted to html-links with correct server prefixes.<p>
-     * 
-     * make a link from one site to another site, and check, if the correct prefixes are set 
+     *
+     * make a link from one site to another site, and check, if the correct prefixes are set
      * @throws Exception in case something goes wrong
      */
     public void testLinkInXmlPage() throws Exception {
@@ -131,12 +131,12 @@ public class TestSecure extends OpenCmsTestCase {
 
     /**
      * Test if links to secure pages are secure.<p>
-     * 
+     *
      * Description of the issue:
      * links from secure pages to insecure pages must have a normal server prefix.<p>
      * links from normal pages to secure pages must have a secure server prefix.<p>
      * links from secure pages to secure pages have no server prefix.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testSecureLinkProcessing() throws Exception {
@@ -156,7 +156,7 @@ public class TestSecure extends OpenCmsTestCase {
         assertHasNoPrefix(linkManager.substituteLink(cms, "/folder1/image1.gif"));
         requestContext.setUri("/folder1/page4.html");
 
-        // link from secure to normal document need to have normal server prefix        
+        // link from secure to normal document need to have normal server prefix
         assertHasNormalPrefix(linkManager.substituteLink(cms, "/folder1/page3.html"));
 
         // image links need to be relative
@@ -170,7 +170,7 @@ public class TestSecure extends OpenCmsTestCase {
 
     /**
      * Test if the site configuration succeeded.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testSecureServerConfig() throws Exception {
@@ -188,8 +188,8 @@ public class TestSecure extends OpenCmsTestCase {
 
     /**
      * Test if links in XML-pages are converted to html-links with correct server prefixes.<p>
-     * 
-     * make a link from one site to another site, and check, if the correct prefixes are set 
+     *
+     * make a link from one site to another site, and check, if the correct prefixes are set
      * @throws Exception in case something goes wrong
      */
     public void testSetupSecondSite() throws Exception {
@@ -212,7 +212,7 @@ public class TestSecure extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(onlineProject);
         cms.getRequestContext().setSiteRoot("/sites/testsite/");
 
-        // read the page        
+        // read the page
         CmsFile file = cms.readFile("page1.html");
         CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
 
@@ -229,7 +229,7 @@ public class TestSecure extends OpenCmsTestCase {
 
     /**
      * Checks that the link begins with a slash.<p>
-     * 
+     *
      * @param link the link to test
      */
     private void assertHasNoPrefix(String link) {
@@ -239,7 +239,7 @@ public class TestSecure extends OpenCmsTestCase {
 
     /**
      * Checks that the link uses a non secure protocoll.<p>
-     * 
+     *
      * @param link the link to check
      */
     private void assertHasNormalPrefix(String link) {
@@ -249,7 +249,7 @@ public class TestSecure extends OpenCmsTestCase {
 
     /**
      * Checks that the link uses a secure protocoll.<p>
-     * 
+     *
      * @param link the link to check
      */
     private void assertHasSecurePrefix(String link) {

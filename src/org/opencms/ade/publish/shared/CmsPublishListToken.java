@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A bean which can be used to reconstruct a publish list.<p>
- * 
+ *
  * This is used instead of sending the whole resource list to the client when it becomes too big.<p>
  */
 public class CmsPublishListToken implements IsSerializable {
@@ -44,9 +44,9 @@ public class CmsPublishListToken implements IsSerializable {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param workflow the selected workflow 
-     * @param options the publish options 
+     *
+     * @param workflow the selected workflow
+     * @param options the publish options
      */
     public CmsPublishListToken(CmsWorkflow workflow, CmsPublishOptions options) {
 
@@ -59,13 +59,13 @@ public class CmsPublishListToken implements IsSerializable {
      */
     protected CmsPublishListToken() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
      * Gets the publish options.<p>
-     * 
-     * @return the publish options 
+     *
+     * @return the publish options
      */
     public CmsPublishOptions getOptions() {
 
@@ -74,7 +74,7 @@ public class CmsPublishListToken implements IsSerializable {
 
     /**
      * Gets the selected workflow.<p>
-     * 
+     *
      * @return the selected workflow
      */
     public CmsWorkflow getWorkflow() {

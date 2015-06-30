@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,12 +41,12 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides access to the localized messages for several resource bundles simultaneously.<p>
- * 
+ *
  * Messages are cached for faster lookup. If a localized key is contained in more then one resource bundle,
- * it will be used only from the resource bundle where it was first found in. The resource bundle order is undefined. It is therefore 
+ * it will be used only from the resource bundle where it was first found in. The resource bundle order is undefined. It is therefore
  * recommended to ensure the uniqueness of all module keys by placing a special prefix in front of all keys of a resource bundle.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsMultiMessages extends CmsMessages {
 
@@ -67,7 +67,7 @@ public class CmsMultiMessages extends CmsMessages {
 
     /**
      * Constructor for creating a new messages object initialized with the given locale.<p>
-     * 
+     *
      * @param locale the locale to use for localization of the messages
      */
     public CmsMultiMessages(Locale locale) {
@@ -76,7 +76,7 @@ public class CmsMultiMessages extends CmsMessages {
         // set the bundle name and the locale
         setBundleName(CmsMultiMessages.MULTI_BUNDLE_NAME);
         setLocale(locale);
-        // generate array for the messages        
+        // generate array for the messages
         m_messages = new ArrayList<CmsMessages>();
         // use "old" Hashtable since it is the most efficient synchronized HashMap implementation
         m_messageCache = new Hashtable<String, String>();
@@ -84,9 +84,9 @@ public class CmsMultiMessages extends CmsMessages {
 
     /**
      * Adds a bundle instance to this multi message bundle.<p>
-     * 
+     *
      * The added bundle will be localized with the locale of this multi message bundle.<p>
-     * 
+     *
      * @param bundle the bundle instance to add
      */
     public void addBundle(I_CmsMessageBundle bundle) {
@@ -96,14 +96,14 @@ public class CmsMultiMessages extends CmsMessages {
     }
 
     /**
-     * Adds a messages instance to this multi message bundle.<p> 
-     * 
+     * Adds a messages instance to this multi message bundle.<p>
+     *
      * The messages instance should have been initialized with the same locale as this multi bundle,
-     * if not, the locale of the messages instance is automatically replaced. However, this will not work 
+     * if not, the locale of the messages instance is automatically replaced. However, this will not work
      * if the added messages instance is in face also of type <code>{@link CmsMultiMessages}</code>.<p>
-     * 
+     *
      * @param messages the messages instance to add
-     * 
+     *
      * @throws CmsIllegalArgumentException if the locale of the given <code>{@link CmsMultiMessages}</code> does not match the locale of this multi messages
      */
     public void addMessages(CmsMessages messages) throws CmsIllegalArgumentException {
@@ -133,8 +133,8 @@ public class CmsMultiMessages extends CmsMessages {
     }
 
     /**
-     * Adds a list a messages instances to this multi message bundle.<p> 
-     * 
+     * Adds a list a messages instances to this multi message bundle.<p>
+     *
      * @param messages the messages instance to add
      */
     public void addMessages(List<CmsMessages> messages) {
@@ -151,7 +151,7 @@ public class CmsMultiMessages extends CmsMessages {
 
     /**
      * Returns the list of all individual message objects in this multi message instance.<p>
-     * 
+     *
      * @return the list of all individual message objects in this multi message instance
      */
     public List<CmsMessages> getMessages() {
@@ -194,10 +194,10 @@ public class CmsMultiMessages extends CmsMessages {
     /**
      * Returns the localized resource string for a given message key,
      * checking the workplace default resources and all module bundles.<p>
-     * 
+     *
      * If the key was not found, <code>null</code> is returned.<p>
-     * 
-     * @param keyName the key for the desired string 
+     *
+     * @param keyName the key for the desired string
      * @return the resource string for the given key or null if not found
      */
     private String resolveKey(String keyName) {
@@ -208,7 +208,7 @@ public class CmsMultiMessages extends CmsMessages {
 
         String result = m_messageCache.get(keyName);
         if (result == NULL_STRING) {
-            // key was already checked and not found   
+            // key was already checked and not found
             return null;
         }
         boolean noCache = false;
@@ -250,7 +250,7 @@ public class CmsMultiMessages extends CmsMessages {
                 m_messageCache.put(keyName, result);
             }
         }
-        // return the result        
+        // return the result
         return result;
     }
 }

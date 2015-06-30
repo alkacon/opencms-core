@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import javax.persistence.Table;
 
 /**
  * This data access object represents a access control entry inside the table "cms_online_accesscontrol".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -67,7 +67,7 @@ public class CmsDAOOnlineAccessControl implements I_CmsDAOAccessControl {
 
             /**
              * The constructor for this tokenizer.<p>
-             * 
+             *
              * @param str the String to tokenize.<p>
              */
             public Tokenizer(String str) {
@@ -77,7 +77,7 @@ public class CmsDAOOnlineAccessControl implements I_CmsDAOAccessControl {
 
             /**
              * Returns the next token.<p>
-             * 
+             *
              * @return the next token
              */
             public String nextToken() {
@@ -111,7 +111,7 @@ public class CmsDAOOnlineAccessControl implements I_CmsDAOAccessControl {
 
         /**
          * A public constructor to generate a primary key from a given String.<p>
-         * 
+         *
          * @param str the String to generate the id from
          */
         public CmsDAOOnlineAccessControlPK(String str) {
@@ -142,8 +142,10 @@ public class CmsDAOOnlineAccessControl implements I_CmsDAOAccessControl {
             }
 
             CmsDAOOnlineAccessControlPK other = (CmsDAOOnlineAccessControlPK)obj;
-            return (((m_principalId == null) && (other.m_principalId == null)) || ((m_principalId != null) && m_principalId.equals(other.m_principalId)))
-                && (((m_resourceId == null) && (other.m_resourceId == null)) || ((m_resourceId != null) && m_resourceId.equals(other.m_resourceId)));
+            return (((m_principalId == null) && (other.m_principalId == null))
+                || ((m_principalId != null) && m_principalId.equals(other.m_principalId)))
+                && (((m_resourceId == null) && (other.m_resourceId == null))
+                    || ((m_resourceId != null) && m_resourceId.equals(other.m_resourceId)));
         }
 
         /**
@@ -173,8 +175,8 @@ public class CmsDAOOnlineAccessControl implements I_CmsDAOAccessControl {
         public int hashCode() {
 
             int rs = 17;
-            rs = rs * 37 + ((m_principalId == null) ? 0 : m_principalId.hashCode());
-            rs = rs * 37 + ((m_resourceId == null) ? 0 : m_resourceId.hashCode());
+            rs = (rs * 37) + ((m_principalId == null) ? 0 : m_principalId.hashCode());
+            rs = (rs * 37) + ((m_resourceId == null) ? 0 : m_resourceId.hashCode());
             return rs;
         }
 
@@ -209,7 +211,7 @@ public class CmsDAOOnlineAccessControl implements I_CmsDAOAccessControl {
 
         /**
          * Parses the publish tag from and the resource id from a given String.<p>
-         *  
+         *
          * @param str the String to parse
          */
         private void fromString(String str) {
@@ -265,7 +267,7 @@ public class CmsDAOOnlineAccessControl implements I_CmsDAOAccessControl {
 
     /**
      * A public constructor for generating a new contents object with an unique id.<p>
-     * 
+     *
      * @param principalId the principal id
      * @param resourceId the resource id
      */

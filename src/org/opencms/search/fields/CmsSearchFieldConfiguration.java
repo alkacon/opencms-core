@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,7 +54,7 @@ import java.util.Map;
 
 /**
  * Abstract implementation for OpenCms search field configurations.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldConfiguration>, I_CmsSearchFieldAppdender {
@@ -98,10 +98,10 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Returns the locale extended name for the given lookup String.<p>
-     * 
+     *
      * @param lookup the lookup String
      * @param locale the locale
-     * 
+     *
      * @return the locale extended name for the given lookup String
      */
     public static final String getLocaleExtendedName(String lookup, Locale locale) {
@@ -114,10 +114,10 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Returns the locale extended name for the given lookup String.<p>
-     * 
+     *
      * @param lookup the lookup String
      * @param locale the locale
-     * 
+     *
      * @return the locale extended name for the given lookup String
      */
     public static final String getLocaleExtendedName(String lookup, String locale) {
@@ -131,9 +131,9 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Creates a space separated list of all parent folders of the given root path.<p>
-     * 
+     *
      * @param rootPath the root path to get the parent folder list for
-     * 
+     *
      * @return a space separated list of all parent folders of the given root path
      */
     public static String getParentFolderTokens(String rootPath) {
@@ -165,7 +165,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Adds a field to this search field configuration.<p>
-     * 
+     *
      * @param field the field to add
      */
     public void addField(CmsSearchField field) {
@@ -177,7 +177,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Adds fields.<p>
-     * 
+     *
      * @param fields the fields to add
      */
     public void addFields(Collection<CmsSearchField> fields) {
@@ -191,7 +191,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Appends the specific search fields to the document.<p>
-     * 
+     *
      * @see org.opencms.search.fields.I_CmsSearchFieldAppdender#appendFields(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
      */
     public I_CmsSearchDocument appendFields(
@@ -215,21 +215,21 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Creates the Lucene Document with this field configuration for the provided VFS resource, search index and content.<p>
-     * 
-     * This triggers the indexing process for the given VFS resource according to the configuration 
+     *
+     * This triggers the indexing process for the given VFS resource according to the configuration
      * of the provided index.<p>
-     * 
+     *
      * The provided index resource contains the basic contents to index.
-     * The provided search index contains the configuration what to index, such as the locale and 
+     * The provided search index contains the configuration what to index, such as the locale and
      * possible special field mappings.<p>
-     * 
+     *
      * @param cms the OpenCms user context used to access the OpenCms VFS
      * @param resource the resource to create the Lucene document from
      * @param index the search index to create the Document for
      * @param extraction the plain text content extracted from the document
-     * 
+     *
      * @return the Search Document for the given VFS resource and the given search index
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public I_CmsSearchDocument createDocument(
@@ -277,7 +277,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Returns the description of this field configuration.<p>
-     * 
+     *
      * @return the description of this field configuration
      */
     public String getDescription() {
@@ -287,9 +287,9 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Returns the configured {@link CmsSearchField} instance with the given name.<p>
-     * 
+     *
      * @param name the search field name to look up
-     * 
+     *
      * @return the configured {@link CmsSearchField} instance with the given name
      */
     public CmsSearchField getField(String name) {
@@ -306,7 +306,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Returns the list of configured field names (Strings).<p>
-     * 
+     *
      * @return the list of configured field names (Strings)
      */
     public List<String> getFieldNames() {
@@ -324,7 +324,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Returns the list of configured {@link CmsSearchField} instances.<p>
-     * 
+     *
      * @return the list of configured {@link CmsSearchField} instances
      */
     public List<CmsSearchField> getFields() {
@@ -371,7 +371,7 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Sets the description of this field configuration.<p>
-     * 
+     *
      * @param description the description to set
      */
     public void setDescription(String description) {
@@ -401,16 +401,16 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Extends the given document by resource category information based on properties.<p>
-     * 
+     *
      * @param document the document to extend
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the document extended by resource category information
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected I_CmsSearchDocument appendCategories(
@@ -429,14 +429,14 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Extends the given document by a field that contains the extracted content blob.<p>
-     * 
+     *
      * @param document the document to extend
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the document extended by a field that contains the extracted content blob
      */
     protected I_CmsSearchDocument appendContentBlob(
@@ -459,14 +459,14 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Extends the given document by fields for date of creation, content and last modification.<p>
-     * 
+     *
      * @param document the document to extend
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the document extended by fields for date of creation, content and last modification
      */
     protected I_CmsSearchDocument appendDates(
@@ -486,15 +486,15 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Extends the given document by the mappings for the given field.<p>
-     * 
+     *
      * @param document the document to extend
      * @param field the field to create the mappings for
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the document extended by the mappings for the given field
      */
     protected I_CmsSearchDocument appendFieldMapping(
@@ -525,14 +525,14 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Extends the given document by the configured field mappings.<p>
-     * 
+     *
      * @param document the document to extend
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the document extended by the configured field mappings
      */
     protected I_CmsSearchDocument appendFieldMappings(
@@ -559,14 +559,14 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Extends the given document by the "size" field.<p>
-     * 
+     *
      * @param document the document to extend
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the document extended by the resource locales
      */
     protected I_CmsSearchDocument appendFileSize(
@@ -584,14 +584,14 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Extends the given document by the "res_locales" field.<p>
-     * 
+     *
      * @param document the document to extend
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource that is indexed
      * @param extraction the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the document extended by the resource locales
      */
     protected I_CmsSearchDocument appendLocales(
@@ -607,14 +607,14 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Extends the given document by fields for VFS path lookup.<p>
-     * 
+     *
      * @param document the document to extend
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the document extended by fields for VFS path lookup
      */
     protected I_CmsSearchDocument appendPath(
@@ -634,14 +634,14 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Appends all direct properties, that are not empty or white space only to the document.<p>
-     *  
+     *
      * @param document the document to extend
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource that is indexed
      * @param extraction the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the document extended by resource category information
      */
     protected I_CmsSearchDocument appendProperties(
@@ -657,16 +657,16 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Extends the given document by a field that contains the resource type name.<p>
-     * 
+     *
      * @param document the document to extend
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the document extended by a field that contains the resource type name
-     * 
+     *
      * @throws CmsLoaderException in case of errors identifying the resource type name
      */
     protected I_CmsSearchDocument appendType(
@@ -696,14 +696,14 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
 
     /**
      * Extends the given document with a boost factor.<p>
-     * 
+     *
      * @param document the document to extend
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the document extended by a boost factor
      */
     protected I_CmsSearchDocument setBoost(

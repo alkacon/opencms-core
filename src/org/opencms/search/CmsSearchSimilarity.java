@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,18 +33,18 @@ import org.apache.lucene.index.FieldInvertState;
 import org.apache.lucene.search.similarities.DefaultSimilarity;
 
 /**
- * Reduces the importance of the <code>{@link #lengthNorm(FieldInvertState)}</code> factor 
- * for the <code>{@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT}</code> field, while 
+ * Reduces the importance of the <code>{@link #lengthNorm(FieldInvertState)}</code> factor
+ * for the <code>{@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT}</code> field, while
  * keeping the Lucene default for all other fields.<p>
- * 
- * This implementation was added since apparently the default length norm is heavily biased 
- * for small documents. In the default, even if a term is found in 2 documents the same number of 
- * times, the smaller document (containing less terms) will have a score easily 3x as high as 
+ *
+ * This implementation was added since apparently the default length norm is heavily biased
+ * for small documents. In the default, even if a term is found in 2 documents the same number of
+ * times, the smaller document (containing less terms) will have a score easily 3x as high as
  * the longer document. Using this implementation the importance of the term number is reduced.<p>
- * 
+ *
  * Inspired by Chuck Williams WikipediaSimilarity.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSearchSimilarity extends DefaultSimilarity {
 
@@ -60,10 +60,10 @@ public class CmsSearchSimilarity extends DefaultSimilarity {
     }
 
     /**
-     * Special implementation for "compute norm" to reduce the significance of this factor 
-     * for the <code>{@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT}</code> field, while 
+     * Special implementation for "compute norm" to reduce the significance of this factor
+     * for the <code>{@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT}</code> field, while
      * keeping the Lucene default for all other fields.<p>
-     * 
+     *
      */
     @Override
     public float lengthNorm(FieldInvertState state) {

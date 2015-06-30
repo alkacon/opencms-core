@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Uploads and stores a favicon.<p>
- * 
+ *
  * @since 9.0.0
  */
 public class CmsSiteFaviconDialog extends A_CmsImportFromHttp {
@@ -74,7 +74,7 @@ public class CmsSiteFaviconDialog extends A_CmsImportFromHttp {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSiteFaviconDialog(CmsJspActionElement jsp) {
@@ -84,7 +84,7 @@ public class CmsSiteFaviconDialog extends A_CmsImportFromHttp {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -111,9 +111,8 @@ public class CmsSiteFaviconDialog extends A_CmsImportFromHttp {
             copyFileToServer(OpenCms.getSystemInfo().getPackagesRfsPath());
             if ((getParamImportfile() == null) || !getParamImportfile().equals(ICON_NAME)) {
                 // file null or name not valid
-                throw new CmsException(Messages.get().container(
-                    Messages.ERR_INVALID_FAVICON_FILE_1,
-                    getParamImportfile()));
+                throw new CmsException(
+                    Messages.get().container(Messages.ERR_INVALID_FAVICON_FILE_1, getParamImportfile()));
             }
 
             // get the uploaded file content

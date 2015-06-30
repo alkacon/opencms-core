@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,10 +46,10 @@ public class CmsConfirmRemoveDialog extends CmsPopup {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param elementInfo the data for the resource info box 
-     * @param deleteCheckbox true if the checkbox for deleting the resource should be displayed 
-     * @param removeCallback the callback which should be called when the user has confirmed or cancelled the element removal 
+     *
+     * @param elementInfo the data for the resource info box
+     * @param deleteCheckbox true if the checkbox for deleting the resource should be displayed
+     * @param removeCallback the callback which should be called when the user has confirmed or cancelled the element removal
      */
     public CmsConfirmRemoveDialog(
         CmsListInfoBean elementInfo,

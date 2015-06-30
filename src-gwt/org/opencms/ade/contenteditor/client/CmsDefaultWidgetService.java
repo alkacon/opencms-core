@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,13 +29,13 @@ package org.opencms.ade.contenteditor.client;
 
 import org.opencms.acacia.client.CmsWidgetService;
 import org.opencms.acacia.client.widgets.CmsFileWidget;
+import org.opencms.acacia.client.widgets.CmsFormWidgetWrapper;
 import org.opencms.acacia.client.widgets.CmsGalleryWidget;
 import org.opencms.acacia.client.widgets.CmsImageGalleryWidget;
 import org.opencms.acacia.client.widgets.CmsTextareaWidget;
 import org.opencms.acacia.client.widgets.CmsTextboxWidget;
-import org.opencms.acacia.client.widgets.CmsFormWidgetWrapper;
-import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 import org.opencms.acacia.client.widgets.CmsTinyMCEWidget;
+import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Collection;
@@ -140,9 +140,9 @@ public class CmsDefaultWidgetService extends CmsWidgetService {
 
     /**
      * Returns if the given path should be skipped for locale synchronization.<p>
-     * 
+     *
      * @param valuePath the value path
-     * 
+     *
      * @return <code>true</code> if the given path should be skipped for locale synchronization
      */
     private boolean isSkipValue(String valuePath) {

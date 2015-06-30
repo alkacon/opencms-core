@@ -17,13 +17,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import java.util.Map;
 
 /**
  * A bean representing a single configuration entry for the inherited container configuration.<p>
- * 
+ *
  */
 public class CmsContainerConfiguration {
 
@@ -86,10 +86,10 @@ public class CmsContainerConfiguration {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param ordering the new ordering list 
-     * @param visibility the visibility map 
-     * @param newElements the new elements 
+     *
+     * @param ordering the new ordering list
+     * @param visibility the visibility map
+     * @param newElements the new elements
      */
     public CmsContainerConfiguration(
         List<String> ordering,
@@ -103,8 +103,8 @@ public class CmsContainerConfiguration {
 
     /**
      * Generates an empty configuration object.<p>
-     * 
-     * @return an empty configuration object 
+     *
+     * @return an empty configuration object
      */
     public static CmsContainerConfiguration emptyConfiguration() {
 
@@ -116,7 +116,7 @@ public class CmsContainerConfiguration {
 
     /**
      * Gets the map of new elements.<p>
-     * 
+     *
      * @return the map of new elements
      */
     public Map<String, CmsContainerElementBean> getNewElements() {
@@ -126,8 +126,8 @@ public class CmsContainerConfiguration {
 
     /**
      * Gets the new elements in the order in which they appear in the 'ordering' list.<p>
-     * 
-     * @return an ordered map containing the new elements in the correct order 
+     *
+     * @return an ordered map containing the new elements in the correct order
      */
     public LinkedHashMap<String, CmsContainerElementBean> getNewElementsInOrder() {
 
@@ -146,8 +146,8 @@ public class CmsContainerConfiguration {
 
     /**
      * Gets the ordering list.<p>
-     * 
-     * @return the ordering list 
+     *
+     * @return the ordering list
      */
     public List<String> getOrdering() {
 
@@ -156,8 +156,8 @@ public class CmsContainerConfiguration {
 
     /**
      * Gets the path from which this configuration was read.<p>
-     * 
-     * @return the path from which this configuration was read 
+     *
+     * @return the path from which this configuration was read
      */
     public String getPath() {
 
@@ -166,7 +166,7 @@ public class CmsContainerConfiguration {
 
     /**
      * Gets the visibility map for this configuration.<p>
-     * 
+     *
      * @return the visibility map
      */
     public Map<String, Boolean> getVisibility() {
@@ -176,8 +176,8 @@ public class CmsContainerConfiguration {
 
     /**
      * Sets the path for this configuration.<p>
-     * 
-     * @param path the new path value 
+     *
+     * @param path the new path value
      */
     public void setPath(String path) {
 

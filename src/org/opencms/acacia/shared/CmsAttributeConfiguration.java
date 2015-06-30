@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,7 +60,7 @@ public class CmsAttributeConfiguration implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param label the attribute label
      * @param help the attribute help information
      * @param widgetName the widget name
@@ -110,7 +110,7 @@ public class CmsAttributeConfiguration implements IsSerializable {
 
     /**
      * Returns the widget display type.<p>
-     * 
+     *
      * @return the widget display type
      */
     public String getDisplayType() {
@@ -180,7 +180,7 @@ public class CmsAttributeConfiguration implements IsSerializable {
 
     /**
      * Returns if the attribute should be synchronized across all locales.<p>
-     * 
+     *
      * @return <code>true</code> if the attribute should be synchronized across all locales
      */
     public boolean isLocaleSynchronized() {
@@ -190,7 +190,7 @@ public class CmsAttributeConfiguration implements IsSerializable {
 
     /**
      * Returns if the given attribute should be visible in the editor.<p>
-     * 
+     *
      * @return <code>true</code> if the given attribute should be visible in the editor
      */
     public boolean isVisible() {
@@ -200,7 +200,7 @@ public class CmsAttributeConfiguration implements IsSerializable {
 
     /**
      * Sets the widget display type.<p>
-     * 
+     *
      * @param displayType the widget display type
      */
     public void setDisplayType(String displayType) {

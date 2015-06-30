@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,14 +52,14 @@ import org.apache.commons.logging.Log;
 
 /**
  * The base class to build a dialog capable of multiple file operations.<p>
- * 
- * Extend this class for workplace dialogs that can perform operations on more than one 
+ *
+ * Extend this class for workplace dialogs that can perform operations on more than one
  * VFS resource like copy, move, touch etc.<p>
- * 
+ *
  * Provides methods to determine if a multi-resource operation has to be done and helper methods,
  * e.g. to get the list of resources to work with.<p>
- * 
- * @since 6.2.0 
+ *
+ * @since 6.2.0
  */
 public abstract class CmsMultiDialog extends CmsDialog {
 
@@ -83,7 +83,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsMultiDialog(CmsJspActionElement jsp) {
@@ -94,7 +94,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -106,10 +106,10 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /**
      * Adds an exception thrown during a multi resource operation to the multi exception.<p>
-     * 
+     *
      * After iterating the dialog resources, use {@link #checkMultiOperationException(I_CmsMessageBundle, String)} to
      * display the multi exception depending on collected exceptions.<p>
-     * 
+     *
      * @param exc the exception that was thrown
      */
     public void addMultiOperationException(CmsException exc) {
@@ -119,7 +119,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /**
      * Builds the HTML for the resource list that is affected by the multi operation.<p>
-     * 
+     *
      * @return the HTML for the resource list that is affected by the multi operation
      */
     public String buildResourceList() {
@@ -147,7 +147,8 @@ public abstract class CmsMultiDialog extends CmsDialog {
             String title = null;
             try {
                 // get the title property value
-                title = getCms().readPropertyObject(resName, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(null);
+                title = getCms().readPropertyObject(resName, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
+                    null);
             } catch (CmsException e) {
                 // ignore this exception, title not found
             }
@@ -177,7 +178,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
             return super.buildLockHeaderBox();
         }
         StringBuffer html = new StringBuffer(1024);
-        // include multi resource list  
+        // include multi resource list
         html.append(dialogBlockStart(key(org.opencms.workplace.commons.Messages.GUI_MULTI_RESOURCELIST_TITLE_0)));
         html.append(buildResourceList());
         html.append(dialogBlockEnd());
@@ -186,7 +187,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /**
      * Checks if an exception occurred during a multi resource operation, and throws a new exception if necessary.<p>
-     * 
+     *
      * @param messages the message bundle to use for the exception message generation
      * @param key the key for the exception to throw with one parameter
      * @throws CmsException the exception that is thrown when the multi operation was not successful
@@ -194,19 +195,17 @@ public abstract class CmsMultiDialog extends CmsDialog {
     public void checkMultiOperationException(I_CmsMessageBundle messages, String key) throws CmsException {
 
         if (m_multiOperationException.hasExceptions()) {
-            m_multiOperationException.setMessage(new CmsMessageContainer(
-                messages,
-                key,
-                new Object[] {m_multiOperationException}));
+            m_multiOperationException.setMessage(
+                new CmsMessageContainer(messages, key, new Object[] {m_multiOperationException}));
             throw m_multiOperationException;
         }
     }
 
     /**
      * Returns the value of the resource list parameter, or null if the parameter is not provided.<p>
-     * 
+     *
      * This parameter selects the resources to perform operations on.<p>
-     *  
+     *
      * @return the value of the resource list parameter or null, if the parameter is not provided
      */
     public String getParamResourcelist() {
@@ -220,10 +219,10 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /**
      * Returns the resources that are defined for the dialog operation.<p>
-     * 
-     * For single resource operations, the list contains one item: the resource name found 
+     *
+     * For single resource operations, the list contains one item: the resource name found
      * in the request parameter value of the "resource" parameter.<p>
-     * 
+     *
      * @return the resources that are defined for the dialog operation
      */
     public List<String> getResourceList() {
@@ -244,12 +243,12 @@ public abstract class CmsMultiDialog extends CmsDialog {
     }
 
     /**
-     * Returns the value of the resourcelist parameter in form of a String separated 
-     * with {@link #DELIMITER_RESOURCES}, or the value of the  resource parameter if the 
+     * Returns the value of the resourcelist parameter in form of a String separated
+     * with {@link #DELIMITER_RESOURCES}, or the value of the  resource parameter if the
      * first parameter is not provided (no multiple choice has been done.<p>
-     * 
+     *
      * This may be used for jsps as value for the parameter for resources {@link #PARAM_RESOURCELIST}.<p>
-     *  
+     *
      * @return the value of the resourcelist parameter or null, if the parameter is not provided
      */
     public String getResourceListAsParam() {
@@ -263,7 +262,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /**
      * Returns true if the dialog operation has to be performed on multiple resources.<p>
-     * 
+     *
      * @return true if the dialog operation has to be performed on multiple resources, otherwise false
      */
     public boolean isMultiOperation() {
@@ -273,7 +272,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /**
      * Sets the title of the dialog depending on the operation type, multiple or single operation.<p>
-     * 
+     *
      * @param singleKey the key for the single operation
      * @param multiKey the key for the multiple operation
      */
@@ -295,7 +294,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /**
      * Sets the value of the resourcelist parameter.<p>
-     * 
+     *
      * @param paramResourcelist the value of the resourcelist parameter
      */
     public void setParamResourcelist(String paramResourcelist) {
@@ -316,11 +315,11 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /**
      * Checks if the permissions of the current user on the single resource to use in the dialog are sufficient.<p>
-     * 
+     *
      * For a multi resource operation, this returns always true, checks only for single resource operations.<p>
-     * 
+     *
      * @see CmsDialog#checkResourcePermissions(CmsPermissionSet, boolean)
-     * 
+     *
      * @param required the required permissions for the dialog
      * @param neededForFolder if true, the permissions are required for the parent folder of the resource (e.g. for editors)
      * @return true if the permissions are sufficient, otherwise false
@@ -339,7 +338,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /**
      * Checks if the resource operation is an operation on at least one folder.<p>
-     * 
+     *
      * @return true if the operation an operation on at least one folder, otherwise false
      */
     protected boolean isOperationOnFolder() {
@@ -365,9 +364,9 @@ public abstract class CmsMultiDialog extends CmsDialog {
 
     /**
      * Performs the dialog operation for the selected resources.<p>
-     * 
+     *
      * @return true, if the operation was successful, otherwise false
-     * 
+     *
      * @throws CmsException if operation was not successful
      */
     protected abstract boolean performDialogOperation() throws CmsException;

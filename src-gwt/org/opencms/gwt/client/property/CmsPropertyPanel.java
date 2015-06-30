@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A tabbed form field container widget.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPropertyPanel extends A_CmsFormFieldPanel {
@@ -125,8 +125,8 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param showShared true if the "shared" tab should be shown 
+     *
+     * @param showShared true if the "shared" tab should be shown
      * @param info the bean to use for displaying the info item
      */
     public CmsPropertyPanel(boolean showShared, CmsListInfoBean info) {
@@ -135,7 +135,8 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         m_simpleTabWrapper.add(liWidget);
         m_simpleTabWrapper.add(m_simpleTab);
         m_simpleTab.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        m_simpleTab.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.propertiesCss().vfsModeSimplePropertiesBox());
+        m_simpleTab.addStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.propertiesCss().vfsModeSimplePropertiesBox());
         m_simpleTab.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
         m_sharedTabWrapper.add(createListItemWidget(info));
         m_sharedTabWrapper.add(m_sharedTab);
@@ -176,8 +177,8 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
     /**
      * Adds the {@link BeforeSelectionHandler} for the tab panel.<p>
-     *  
-     * @param handler the pre-selection handler 
+     *
+     * @param handler the pre-selection handler
      */
     public void addBeforeSelectionHandler(BeforeSelectionHandler<Integer> handler) {
 
@@ -186,8 +187,8 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
     /**
      * Clears the tab with the given id.<p>
-     *  
-     * @param tabId the id of the tab to clear 
+     *
+     * @param tabId the id of the tab to clear
      */
     public void clearTab(String tabId) {
 
@@ -205,7 +206,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
     /**
      * Renders a extended tab.<p>
-     * 
+     *
      * @param fields the fields to add
      * @param tab the tab
      */
@@ -319,10 +320,10 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
     /**
      * Creates a list item widget from a list info bean.<p>
-     * 
-     * @param info the list info bean 
-     * 
-     * @return the list item widget 
+     *
+     * @param info the list info bean
+     *
+     * @return the list item widget
      */
     protected CmsListItemWidget createListItemWidget(CmsListInfoBean info) {
 
@@ -333,7 +334,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
     /**
      * Returns the tabbed panel.<p>
-     * 
+     *
      * @return the tabbed panel
      */
     protected CmsTabbedPanel<CmsScrollPanel> getTabPanel() {
@@ -343,10 +344,10 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
     /**
      * Partitions a collection of fields by group.<p>
-     * 
-     * @param fields the collection of fields  
-     * 
-     * @return a multimap from groups to form fields 
+     *
+     * @param fields the collection of fields
+     *
+     * @return a multimap from groups to form fields
      */
     private Multimap<String, I_CmsFormField> getFieldsByGroup(Collection<I_CmsFormField> fields) {
 
@@ -360,10 +361,10 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
     /**
      * Returns true if the field should be displayed at the top of both the "individual" and "shared" tabs.<p>
-     * 
+     *
      * @param field the field to test
-     * 
-     * @return true if the field should be displayed at the top 
+     *
+     * @return true if the field should be displayed at the top
      */
     private boolean isTop(I_CmsFormField field) {
 
@@ -373,10 +374,10 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
     /**
      * Preprocesses the fields to find out which fields need to displayed at the top/bottom later.<p>
-     * 
-     * @param fields the fields 
-     * 
-     * @return the set of property names of the preprocessed fields 
+     *
+     * @param fields the fields
+     *
+     * @return the set of property names of the preprocessed fields
      */
     private Set<String> preprocessFields(Collection<I_CmsFormField> fields) {
 
@@ -393,7 +394,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
     /**
      * Renders the simple tab.<p>
-     * 
+     *
      * @param fields the fields to render
      */
     private void renderSimpleTab(Collection<I_CmsFormField> fields) {

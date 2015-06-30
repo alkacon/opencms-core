@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,14 +43,14 @@ import org.apache.commons.logging.Log;
 /**
  * This resource handler checks if a resource has to be marked as visited by the current user.
  * It checks the value of the <code>usertracking.mark</code> property.<p>
- * 
+ *
  * Possible values are:
  * <ul>
  * <li><code>online</code>: The resource is marked only in the online project
  * <li><code>true</code>: The resource is marked in all projects
  * <li><code>false</code>: The resource is not marked at all
  * </ul>
- * 
+ *
  * @since 8.0
  */
 public class CmsUserTrackingResourceHandler implements I_CmsResourceInit {
@@ -69,7 +69,11 @@ public class CmsUserTrackingResourceHandler implements I_CmsResourceInit {
     /**
      * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res) {
+    public CmsResource initResource(
+        CmsResource resource,
+        CmsObject cms,
+        HttpServletRequest req,
+        HttpServletResponse res) {
 
         if ((resource != null) && resource.isFile()) {
             // only do something if the resource was found and is a file (that can be marked)
@@ -81,7 +85,8 @@ public class CmsUserTrackingResourceHandler implements I_CmsResourceInit {
                 // ignore, resource will not be marked at all
             }
             if (Boolean.valueOf(mark).booleanValue()
-                || (VALUE_ONLINE.equalsIgnoreCase(mark) && cms.getRequestContext().getCurrentProject().isOnlineProject())) {
+                || (VALUE_ONLINE.equalsIgnoreCase(mark)
+                    && cms.getRequestContext().getCurrentProject().isOnlineProject())) {
                 // mark the resource as visited by the current user
                 try {
                     OpenCms.getSubscriptionManager().markResourceAsVisitedBy(

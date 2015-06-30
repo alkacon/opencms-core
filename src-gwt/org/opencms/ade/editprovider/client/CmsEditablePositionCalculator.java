@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,9 +37,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is used to calculate positions for a set of direct edit buttons so that 
+ * This class is used to calculate positions for a set of direct edit buttons so that
  * they don't overlap.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsEditablePositionCalculator {
@@ -80,8 +80,8 @@ public class CmsEditablePositionCalculator {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param positions the map of original positions by element id (will not be altered)  
+     *
+     * @param positions the map of original positions by element id (will not be altered)
      */
     public CmsEditablePositionCalculator(Map<String, CmsPositionBean> positions) {
 
@@ -95,8 +95,8 @@ public class CmsEditablePositionCalculator {
     /**
      * Calculates non-overlapping positions for the button bars and returns them in a map with
      * the element ids as keys.<p>
-     * 
-     * @return the map of non-overlapping positions 
+     *
+     * @return the map of non-overlapping positions
      */
     public Map<String, CmsPositionBean> calculatePositions() {
 
@@ -110,13 +110,13 @@ public class CmsEditablePositionCalculator {
 
     /**
      * Checks whether a collision occurs and handle it if necessary.<p>
-     * 
-     * @return true if a collision occured 
+     *
+     * @return true if a collision occured
      */
     protected boolean checkCollision() {
 
         // sort the positions by their left x coordinate, so we can easily exclude
-        // pairs of positions which don't overlap horizontally  
+        // pairs of positions which don't overlap horizontally
         sortByLeft();
         int i;
         for (i = 0; i < m_positions.size(); i++) {
@@ -133,9 +133,9 @@ public class CmsEditablePositionCalculator {
 
     /**
      * Handles a collision by moving the lower position down.<p>
-     * 
-     * @param p1 the first position 
-     * @param p2 the second position 
+     *
+     * @param p1 the first position
+     * @param p2 the second position
      */
     protected void handleCollision(CmsPositionBean p1, CmsPositionBean p2) {
 
@@ -148,13 +148,13 @@ public class CmsEditablePositionCalculator {
 
     /**
      * Checks for intersection of two one-dimensional intervals.<p>
-     * 
-     * @param a1 the left edge of the first interval 
-     * @param a2 the right edge of the first interval 
-     * @param b1 the left edge of the second interval 
-     * @param b2 the right edge of the second interval 
-     * 
-     * @return true if the intervals intersect 
+     *
+     * @param a1 the left edge of the first interval
+     * @param a2 the right edge of the first interval
+     * @param b1 the left edge of the second interval
+     * @param b2 the right edge of the second interval
+     *
+     * @return true if the intervals intersect
      */
     protected boolean intersectIntervals(int a1, int a2, int b1, int b2) {
 
@@ -163,31 +163,31 @@ public class CmsEditablePositionCalculator {
 
     /**
      * Checks whether two positions intersect horizontally.<p>
-     * 
-     * @param p1 the first position 
+     *
+     * @param p1 the first position
      * @param p2 the second position
-     *  
-     * @return true if the positions intersect horizontally 
+     *
+     * @return true if the positions intersect horizontally
      */
     protected boolean intersectsHorizontally(CmsPositionBean p1, CmsPositionBean p2) {
 
         return intersectIntervals(p1.getLeft(), p1.getLeft() + WIDTH, p2.getLeft(), p2.getLeft() + WIDTH);
     }
 
-    /** 
+    /**
      * Checks whether two positions intersect vertically.<p>
-     * 
+     *
      * @param p1 the first position
      * @param p2 the second position
-     *  
-     * @return if the positions intersect vertically 
+     *
+     * @return if the positions intersect vertically
      */
     protected boolean intersectsVertically(CmsPositionBean p1, CmsPositionBean p2) {
 
         return intersectIntervals(p1.getTop(), p1.getTop() + HEIGHT, p2.getTop(), p2.getTop() + HEIGHT);
     }
 
-    /** 
+    /**
      * Sorts the internal list of positions by their left edge.<p>
      */
     protected void sortByLeft() {

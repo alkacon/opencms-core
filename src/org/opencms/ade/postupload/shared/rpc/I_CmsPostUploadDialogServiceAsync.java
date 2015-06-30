@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,17 +40,17 @@ public interface I_CmsPostUploadDialogServiceAsync {
 
     /**
      * Loads the dialog bean info for the given resource.<p>
-     * 
+     *
      * @param uuid the structure id of the resource to load
-     * @param useConfiguration true if the property configurations should be used 
+     * @param useConfiguration true if the property configurations should be used
      * @param asyncCallback the asynchronous callback for the result
      */
     void load(CmsUUID uuid, boolean useConfiguration, AsyncCallback<CmsPostUploadDialogPanelBean> asyncCallback);
 
     /**
      * Generates dialog data for prefetching in the host page.<p>
-     * 
-     * @param asyncCallback the asynchronous callback for the result 
+     *
+     * @param asyncCallback the asynchronous callback for the result
      */
     void prefetch(AsyncCallback<CmsPostUploadDialogBean> asyncCallback);
 

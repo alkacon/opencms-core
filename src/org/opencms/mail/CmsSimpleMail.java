@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,10 +41,10 @@ import org.apache.commons.mail.SimpleEmail;
 /**
  * This class is used to send simple text internet email messages without
  * attachments.<p>
- * 
+ *
  * It uses the Apache Commons Email API and extends the provided classes to
  * conveniently generate emails using the OpenCms configuration.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsSimpleMail extends SimpleEmail {
@@ -54,10 +54,10 @@ public class CmsSimpleMail extends SimpleEmail {
 
     /**
      * Default constructor of a CmsSimpleMail.<p>
-     * 
+     *
      * The mail host name and the mail from address are set to the OpenCms
      * default values of the configuration.<p>
-     * 
+     *
      */
     public CmsSimpleMail() {
 
@@ -66,7 +66,7 @@ public class CmsSimpleMail extends SimpleEmail {
         // set the host to the default mail host
         CmsMailHost host = OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost();
         setHostName(host.getHostname());
-        this.setSmtpPort(host.getPort());
+        setSmtpPort(host.getPort());
 
         // check if username and password are provided
         String userName = host.getUsername();
@@ -83,9 +83,9 @@ public class CmsSimpleMail extends SimpleEmail {
         }
     }
 
-  /**
+    /**
      * Overrides to add a better message for authentication exception.<p>
-     * 
+     *
      * @see org.apache.commons.mail.Email#send()
      */
     @Override
@@ -101,16 +101,17 @@ public class CmsSimpleMail extends SimpleEmail {
                 CmsMailHost host = OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost();
                 // wrong user credentials in opencms-system.xml: mail api does not provide a message for authentication exception
 
-                CmsRuntimeException rte = new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_SEND_EMAIL_AUTHENTICATE_2,
-                    host.getUsername(),
-                    host.getHostname()));
+                CmsRuntimeException rte = new CmsRuntimeException(
+                    Messages.get().container(
+                        Messages.ERR_SEND_EMAIL_AUTHENTICATE_2,
+                        host.getUsername(),
+                        host.getHostname()));
                 rte.initCause(e);
                 throw rte;
 
             } else {
-                CmsRuntimeException rte = new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_SEND_EMAIL_CONFIG_0));
+                CmsRuntimeException rte = new CmsRuntimeException(
+                    Messages.get().container(Messages.ERR_SEND_EMAIL_CONFIG_0));
                 rte.initCause(e);
                 throw rte;
             }

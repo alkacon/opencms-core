@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,8 +63,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Main module management view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsModulesList extends A_CmsListDialog {
 
@@ -130,7 +130,7 @@ public class CmsModulesList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsModulesList(CmsJspActionElement jsp) {
@@ -146,7 +146,7 @@ public class CmsModulesList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -159,6 +159,7 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws IOException, ServletException {
 
         if (getParamListAction().equals(LIST_MACTION_DELETE)) {
@@ -185,27 +186,28 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         String module = getSelectedItem().getId();
         Map params = new HashMap();
         params.put(PARAM_MODULE, module);
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
-            // forward to the edit module screen  
+            // forward to the edit module screen
             params.put(PARAM_ACTION, DIALOG_INITIAL);
             getToolManager().jspForwardTool(this, "/modules/edit/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_OVERVIEW)) {
             // edit a module from the list
-            // go to the module overview screen                  
+            // go to the module overview screen
             params.put(PARAM_ACTION, DIALOG_INITIAL);
             getToolManager().jspForwardTool(this, "/modules/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_DELETE)) {
-            // forward to the delete module screen   
+            // forward to the delete module screen
             params.put(PARAM_ACTION, DIALOG_INITIAL);
             params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardPage(this, PATH_REPORTS + "delete.jsp", params);
         } else if (getParamListAction().equals(LIST_ACTION_EXPORT)) {
-            // forward to the delete module screen   
+            // forward to the delete module screen
             params.put(PARAM_ACTION, DIALOG_INITIAL);
             params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardPage(this, "/system/workplace/admin/modules/reports/export.jsp", params);
@@ -216,6 +218,7 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -296,6 +299,7 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List ret = new ArrayList();
@@ -312,7 +316,7 @@ public class CmsModulesList extends A_CmsListDialog {
             item.set(LIST_COLUMN_NICENAME, module.getNiceName());
             //version
             item.set(LIST_COLUMN_VERSION, module.getVersion());
-            //group           
+            //group
             item.set(LIST_COLUMN_GROUP, module.getGroup());
             ret.add(item);
         }
@@ -322,6 +326,7 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -333,6 +338,7 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         //add column for edit action
@@ -427,22 +433,23 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // create list item detail
         CmsListItemDetails modulesAuthorInfoDetails = new CmsListItemDetails(LIST_DETAIL_AUTHORINFO);
         modulesAuthorInfoDetails.setAtColumn(LIST_COLUMN_NAME);
         modulesAuthorInfoDetails.setVisible(false);
-        modulesAuthorInfoDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_MODULES_LABEL_AUTHOR_0)));
-        modulesAuthorInfoDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_MODULES_DETAIL_SHOW_AUTHORINFO_NAME_0));
-        modulesAuthorInfoDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_MODULES_DETAIL_SHOW_AUTHORINFO_HELP_0));
-        modulesAuthorInfoDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_MODULES_DETAIL_HIDE_AUTHORINFO_NAME_0));
-        modulesAuthorInfoDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_MODULES_DETAIL_HIDE_AUTHORINFO_HELP_0));
+        modulesAuthorInfoDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_MODULES_LABEL_AUTHOR_0)));
+        modulesAuthorInfoDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_MODULES_DETAIL_SHOW_AUTHORINFO_NAME_0));
+        modulesAuthorInfoDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_MODULES_DETAIL_SHOW_AUTHORINFO_HELP_0));
+        modulesAuthorInfoDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_MODULES_DETAIL_HIDE_AUTHORINFO_NAME_0));
+        modulesAuthorInfoDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_MODULES_DETAIL_HIDE_AUTHORINFO_HELP_0));
 
         // add author info item detail to meta data
         metadata.addItemDetails(modulesAuthorInfoDetails);
@@ -451,14 +458,14 @@ public class CmsModulesList extends A_CmsListDialog {
         CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_DETAIL_RESOURCES);
         resourcesDetails.setAtColumn(LIST_COLUMN_NAME);
         resourcesDetails.setVisible(false);
-        resourcesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_MODULES_LABEL_RESOURCES_0)));
+        resourcesDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_MODULES_LABEL_RESOURCES_0)));
         resourcesDetails.setShowActionName(Messages.get().container(Messages.GUI_MODULES_DETAIL_SHOW_RESOURCES_NAME_0));
-        resourcesDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_MODULES_DETAIL_SHOW_RESOURCES_HELP_0));
+        resourcesDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_MODULES_DETAIL_SHOW_RESOURCES_HELP_0));
         resourcesDetails.setHideActionName(Messages.get().container(Messages.GUI_MODULES_DETAIL_HIDE_RESOURCES_NAME_0));
-        resourcesDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_MODULES_DETAIL_HIDE_RESOURCES_HELP_0));
+        resourcesDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_MODULES_DETAIL_HIDE_RESOURCES_HELP_0));
 
         // add resources info item detail to meta data
         metadata.addItemDetails(resourcesDetails);
@@ -467,16 +474,16 @@ public class CmsModulesList extends A_CmsListDialog {
         CmsListItemDetails dependenciesDetails = new CmsListItemDetails(LIST_DETAIL_DEPENDENCIES);
         dependenciesDetails.setAtColumn(LIST_COLUMN_NAME);
         dependenciesDetails.setVisible(false);
-        dependenciesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_MODULES_LABEL_DEPENDENCIES_0)));
-        dependenciesDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_MODULES_DETAIL_SHOW_DEPENDENCIES_NAME_0));
-        dependenciesDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_MODULES_DETAIL_SHOW_DEPENDENCIES_HELP_0));
-        dependenciesDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_MODULES_DETAIL_HIDE_DEPENDENCIES_NAME_0));
-        dependenciesDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_MODULES_DETAIL_HIDE_DEPENDENCIES_HELP_0));
+        dependenciesDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_MODULES_LABEL_DEPENDENCIES_0)));
+        dependenciesDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_MODULES_DETAIL_SHOW_DEPENDENCIES_NAME_0));
+        dependenciesDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_MODULES_DETAIL_SHOW_DEPENDENCIES_HELP_0));
+        dependenciesDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_MODULES_DETAIL_HIDE_DEPENDENCIES_NAME_0));
+        dependenciesDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_MODULES_DETAIL_HIDE_DEPENDENCIES_HELP_0));
 
         // add dependencies item detail to meta data
         metadata.addItemDetails(dependenciesDetails);
@@ -485,12 +492,14 @@ public class CmsModulesList extends A_CmsListDialog {
         CmsListItemDetails restypesDetails = new CmsListItemDetails(LIST_DETAIL_RESTYPES);
         restypesDetails.setAtColumn(LIST_COLUMN_NAME);
         restypesDetails.setVisible(false);
-        restypesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_MODULES_LABEL_RESTYPES_0)));
+        restypesDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_MODULES_LABEL_RESTYPES_0)));
         restypesDetails.setShowActionName(Messages.get().container(Messages.GUI_MODULES_DETAIL_SHOW_RESTYPES_NAME_0));
-        restypesDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_MODULES_DETAIL_SHOW_RESTYPES_HELP_0));
+        restypesDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_MODULES_DETAIL_SHOW_RESTYPES_HELP_0));
         restypesDetails.setHideActionName(Messages.get().container(Messages.GUI_MODULES_DETAIL_HIDE_RESTYPES_NAME_0));
-        restypesDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_MODULES_DETAIL_HIDE_RESTYPES_HELP_0));
+        restypesDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_MODULES_DETAIL_HIDE_RESTYPES_HELP_0));
 
         // add restypes item detail to meta data
         metadata.addItemDetails(restypesDetails);
@@ -505,6 +514,7 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the delete module multi action

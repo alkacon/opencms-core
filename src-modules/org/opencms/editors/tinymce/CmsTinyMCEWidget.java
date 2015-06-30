@@ -56,7 +56,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
 
     /**
      * Creates a new TinyMCE widget with the given configuration.<p>
-     * 
+     *
      * @param configuration the configuration to use
      */
     public CmsTinyMCEWidget(CmsHtmlWidgetOption configuration) {
@@ -66,7 +66,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
 
     /**
      * Creates a new TinyMCE widget with the given configuration.<p>
-     * 
+     *
      * @param configuration the configuration to use
      */
     public CmsTinyMCEWidget(String configuration) {
@@ -84,9 +84,11 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         // general TinyMCE JS
         result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "editors/tinymce/jscripts/tinymce/tinymce.min.js"));
         result.append("\n");
-        result.append(getJSIncludeFile(OpenCms.getLinkManager().substituteLinkForRootPath(
-            cms,
-            "/system/workplace/editors/tinymce/opencms_plugin.js")));
+        result.append(
+            getJSIncludeFile(
+                OpenCms.getLinkManager().substituteLinkForRootPath(
+                    cms,
+                    "/system/workplace/editors/tinymce/opencms_plugin.js")));
         result.append("\n");
         // special TinyMCE widget functions
         result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/tinymce.js"));
@@ -146,10 +148,10 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
 
     /**
      * Returns the string representation of the tinyMCE options object.<p>
-     * 
+     *
      * @param cms the OpenCms context
      * @param param the widget parameter
-     * 
+     *
      * @return the string representation of the tinyMCE options object
      */
     private String getTinyMceConfiguration(CmsObject cms, I_CmsWidgetParameter param) {
@@ -244,9 +246,9 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
 
     /**
      * Builds the toolbar rows.<p>
-     * 
+     *
      * @return the toolbar button rows configuration
-     * 
+     *
      * @throws JSONException if something goes wrong manipulating the JSON object
      */
     private JSONObject getToolbarJson() throws JSONException {

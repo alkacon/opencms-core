@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,9 +44,9 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides the specific constants, members and helper methods to generate the content of the table gallery dialog 
+ * Provides the specific constants, members and helper methods to generate the content of the table gallery dialog
  * used in the XML content editors, WYSIWYG editors and context menu.<p>
- * 
+ *
  * @since 7.5.0
  */
 public class CmsAjaxTableGallery extends A_CmsAjaxGallery {
@@ -73,7 +73,7 @@ public class CmsAjaxTableGallery extends A_CmsAjaxGallery {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsAjaxTableGallery(CmsJspActionElement jsp) {
@@ -84,7 +84,7 @@ public class CmsAjaxTableGallery extends A_CmsAjaxGallery {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -102,7 +102,8 @@ public class CmsAjaxTableGallery extends A_CmsAjaxGallery {
 
         int plainId;
         try {
-            plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+            plainId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypePlain.getStaticTypeName()).getTypeId();
         } catch (CmsLoaderException e) {
             // this should really never happen
             plainId = CmsResourceTypePlain.getStaticTypeId();
@@ -117,14 +118,14 @@ public class CmsAjaxTableGallery extends A_CmsAjaxGallery {
     public int getGalleryTypeId() {
 
         try {
-            this.m_galleryTypeId = OpenCms.getResourceManager().getResourceType(GALLERYTYPE_NAME).getTypeId();
+            m_galleryTypeId = OpenCms.getResourceManager().getResourceType(GALLERYTYPE_NAME).getTypeId();
         } catch (CmsLoaderException e) {
             // resource type not found, log error
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-        return this.m_galleryTypeId;
+        return m_galleryTypeId;
     }
 
     /**
@@ -138,11 +139,11 @@ public class CmsAjaxTableGallery extends A_CmsAjaxGallery {
 
     /**
      * Fills the JSON object with the specific information used for file resource type of the table gallery.<p>
-     * 
+     *
      * <ul>
      * <li><code>htmltable</code>: the content of the given resource. (html table)</li>
      * </ul>
-     * 
+     *
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath)
      *
      */

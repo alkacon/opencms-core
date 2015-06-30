@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -80,11 +80,11 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
 
     /**
      * Creates a widget option corresponding to a formatter bean for an external formatter.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param formatter the formatter bean 
-     * 
-     * @return the select option which was created 
+     *
+     * @param cms the current CMS context
+     * @param formatter the formatter bean
+     *
+     * @return the select option which was created
      */
     public static CmsSelectWidgetOption getWidgetOptionForFormatter(CmsObject cms, I_CmsFormatterBean formatter) {
 
@@ -101,11 +101,11 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
 
     /**
      * Creates a widget option for a resource type.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param typeName the type for which we want a widget option
-     *  
-     * @return the created widget option 
+     *
+     * @return the created widget option
      */
     public static CmsSelectWidgetOption getWidgetOptionForType(CmsObject cms, String typeName) {
 
@@ -125,12 +125,12 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
 
     /**
      * Gets a message string.<p>
-     * 
-     * @param cms the CMS context 
-     * @param message the message key  
-     * @param args the message arguments 
-     * 
-     * @return the message string 
+     *
+     * @param cms the CMS context
+     * @param message the message key
+     * @param args the message arguments
+     *
+     * @return the message string
      */
     static String getMessage(CmsObject cms, String message, Object... args) {
 
@@ -138,33 +138,33 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
         return Messages.get().getBundle(locale).key(message, args);
     }
 
-    /** 
+    /**
      * Gets the options corresponding to external (non-schema) formatters.<p>
-     * 
-     * @param cms the CMS context 
-     * @param config the ADE configuration 
-     * 
-     * @return the select widget options for the external formatters 
+     *
+     * @param cms the CMS context
+     * @param config the ADE configuration
+     *
+     * @return the select widget options for the external formatters
      */
     protected abstract List<CmsSelectWidgetOption> getFormatterOptions(CmsObject cms, CmsADEConfigData config);
 
-    /** 
+    /**
      * Gets the values which have already been selected in the edited resource on the VFS.<p>
-     * 
-     * @param reader a sitemap configuration reader 
+     *
+     * @param reader a sitemap configuration reader
      * @param content the unmarshalled content
-     * 
-     * @return the set of values which have already been selected 
+     *
+     * @return the set of values which have already been selected
      */
     protected abstract Set<String> getSelectedInFile(CmsConfigurationReader reader, CmsXmlContent content);
 
     /**
      * Gets the options corresponding to the schemas which define formatters.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param config the ADE configuration
-     *  
-     * @return the select widget options for the content types with formatters in the schema 
+     *
+     * @return the select widget options for the content types with formatters in the schema
      */
     protected abstract List<CmsSelectWidgetOption> getTypeOptions(CmsObject cms, CmsADEConfigData config);
 
@@ -223,7 +223,7 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
             }
             return options;
         } catch (CmsException e) {
-            // should never happen 
+            // should never happen
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }

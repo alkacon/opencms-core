@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,15 +37,15 @@ import com.google.gwt.user.client.Command;
 
 /**
  * Sitemap context menu show lock report entry.<p>
- * 
+ *
  * @since 8.0.1
  */
 public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsLockReportMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -83,13 +83,14 @@ public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Checks if the menu entry should be visible.<p>
-     *  
-     * @return true if the menu entry should be visible 
+     *
+     * @return true if the menu entry should be visible
      */
     protected boolean checkVisible() {
 
         return !CmsSitemapView.getInstance().isModelPageMode()
-            && (!CmsSitemapView.getInstance().isGalleryMode() || getHoverbar().getController().getData().isGalleryManager());
+            && (!CmsSitemapView.getInstance().isGalleryMode()
+                || getHoverbar().getController().getData().isGalleryManager());
     }
 
 }

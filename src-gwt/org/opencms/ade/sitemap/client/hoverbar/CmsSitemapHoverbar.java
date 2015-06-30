@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Sitemap tree item hover-bar.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsSitemapHoverbar extends FlowPanel {
@@ -80,12 +80,12 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the controller
      * @param entryId sitemap entry id
      * @param moveable <code>true</code> if in galleries view
-     * @param contextmenu flag to control whether the context menu should be shown 
-     * @param contextMenuProvider provides items for the context menu 
+     * @param contextmenu flag to control whether the context menu should be shown
+     * @param contextMenuProvider provides items for the context menu
      */
     private CmsSitemapHoverbar(
         CmsSitemapController controller,
@@ -115,11 +115,11 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Constructor to be used for gallery tree items.<p>
-     * 
+     *
      * @param controller the controller
      * @param entryId sitemap entry id
      * @param sitePath the entry site path
-     * @param contextmenu flag to control whether the context menu should be shown 
+     * @param contextmenu flag to control whether the context menu should be shown
      */
     private CmsSitemapHoverbar(CmsSitemapController controller, CmsUUID entryId, String sitePath, boolean contextmenu) {
 
@@ -129,7 +129,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the controller
      * @param buttons the buttons to add to the hover bar
      */
@@ -146,8 +146,8 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Installs a hover bar for the given item widget.<p>
-     * 
-     * @param controller the controller 
+     *
+     * @param controller the controller
      * @param treeItem the item to hover
      * @param entryId the entry id
      */
@@ -159,14 +159,14 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Installs a hover bar for the given item widget.<p>
-     * 
-     * @param controller the controller 
+     *
+     * @param controller the controller
      * @param treeItem the item to hover
      * @param entryId the entry id
-     * @param movable true if the item should be movable 
-     * @param contextmenu true if the item should have a context menu 
-     * @param menuItemProvider provides items for the context menu 
-     * 
+     * @param movable true if the item should be movable
+     * @param contextmenu true if the item should have a context menu
+     * @param menuItemProvider provides items for the context menu
+     *
      * @return the installed hover bar
      */
     public static CmsSitemapHoverbar installOn(
@@ -189,11 +189,11 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Installs a hover bar for the given item widget.<p>
-     * 
-     * @param controller the controller 
+     *
+     * @param controller the controller
      * @param treeItem the item to hover
      * @param entryId the entry id
-     * @param menuItemProvider the context menu item provider 
+     * @param menuItemProvider the context menu item provider
      */
     public static void installOn(
         CmsSitemapController controller,
@@ -207,12 +207,12 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Installs a hover bar for the given item widget.<p>
-     * 
-     * @param controller the controller 
+     *
+     * @param controller the controller
      * @param treeItem the item to hover
      * @param entryId the entry id
      * @param sitePath the entry site path
-     * @param contextmenu flag to control whether the context menu should be shown 
+     * @param contextmenu flag to control whether the context menu should be shown
      */
     public static void installOn(
         CmsSitemapController controller,
@@ -227,12 +227,12 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Installs a hover bar for the given item widget.<p>
-     * 
-     * @param controller the controller 
+     *
+     * @param controller the controller
      * @param treeItem the item to hover
      * @param buttons the buttons
-     * 
-     * @return the hover bar instance 
+     *
+     * @return the hover bar instance
      */
     public static CmsSitemapHoverbar installOn(
         CmsSitemapController controller,
@@ -246,7 +246,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Installs the given hover bar.<p>
-     * 
+     *
      * @param hoverbar the hover bar
      * @param widget the list item widget
      */
@@ -288,9 +288,9 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Adds a new detach event handler.<p>
-     * 
+     *
      * @param handler the handler to add
-     * 
+     *
      * @return the handler registration
      */
     public HandlerRegistration addHideHandler(I_CmsHoverbarHideHandler handler) {
@@ -300,9 +300,9 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Adds a new attach event handler.<p>
-     * 
+     *
      * @param handler the handler to add
-     * 
+     *
      * @return the handler registration
      */
     public HandlerRegistration addShowHandler(I_CmsHoverbarShowHandler handler) {
@@ -322,7 +322,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Returns the sitemap entry.<p>
-     * 
+     *
      * @return the sitemap entry
      */
     public CmsClientSitemapEntry getEntry() {
@@ -332,8 +332,8 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Gets the entry id.<p>
-     * 
-     * @return the entry id 
+     *
+     * @return the entry id
      */
     public CmsUUID getId() {
 
@@ -355,7 +355,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Returns if the bar is hovered.<p>
-     * 
+     *
      * @return <code>true</code> if hovered
      */
     public boolean isHovered() {
@@ -363,7 +363,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
         return m_hovered;
     }
 
-    /** 
+    /**
      * Makes the hoverbar permanently visible.<p>
      */
     public void setAlwaysVisible() {
@@ -374,7 +374,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Sets the buttons of the hoverbar enabled.<p>
-     * 
+     *
      * @param enable if <code>true</code> the buttons will be enabled
      * @param disableMessage message for disabling buttons
      */
@@ -401,7 +401,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Locks the hoverbar visibility.<p>
-     * 
+     *
      * @param locked <code>true</code> to lock the hoverbar visibility
      */
     public void setLocked(boolean locked) {
@@ -411,7 +411,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Returns if the hoverbar visibility is locked.<p>
-     * 
+     *
      * @return <code>true</code> if the hoverbar visibility is locked
      */
     protected boolean isLocked() {
@@ -421,7 +421,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Loads the sitemap entry.<p>
-     * 
+     *
      * @param callback executed when the entry is loaded
      */
     protected void loadEntry(AsyncCallback<CmsClientSitemapEntry> callback) {
@@ -436,7 +436,7 @@ public final class CmsSitemapHoverbar extends FlowPanel {
 
     /**
      * Sets the hovered state.<p>
-     * 
+     *
      * @param hovered <code>true</code> if hovered
      */
     protected void setHovered(boolean hovered) {

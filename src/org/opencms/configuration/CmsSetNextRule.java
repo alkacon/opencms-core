@@ -19,23 +19,23 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
- * 
- * This file is based upon: 
+ *
+ *
+ * This file is based upon:
  * org.apache.commons.digester.CallMethodRule.
  *
  * Copyright 2001-2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,26 +57,26 @@ import org.apache.commons.logging.Log;
 import org.xml.sax.Attributes;
 
 /**
- * Rule implementation that invokes a method on the (top-1) (parent) object, 
+ * Rule implementation that invokes a method on the (top-1) (parent) object,
  * passing as implicit first argument of type <code>{@link org.opencms.file.CmsObject}</code>
  * and as a further argument the top stack instance. <p>
- * 
- * If no subsequent <code>CallParamRule</code> are matched for <code>CmsObject</code> 
- * which is the case in the OpenCms usage the first argument <code>CmsObject</code> 
+ *
+ * If no subsequent <code>CallParamRule</code> are matched for <code>CmsObject</code>
+ * which is the case in the OpenCms usage the first argument <code>CmsObject</code>
  * will be null at method invocation time. <p>
 
  * This is an alternative for <code>{@link org.apache.commons.digester.SetNextRule}</code>
- * if a parent to child-property configuration has been done but the setter for that 
- * property requires additional arguments that are only available at real runtime 
+ * if a parent to child-property configuration has been done but the setter for that
+ * property requires additional arguments that are only available at real runtime
  * of the application.<p>
- * 
- * The top stack element (child) that has to be set is matched against the constructor 
- * given <code>{@link java.lang.Class}[]</code>: It is used as argument on the position 
+ *
+ * The top stack element (child) that has to be set is matched against the constructor
+ * given <code>{@link java.lang.Class}[]</code>: It is used as argument on the position
  * where the <code>Class[]</code> has an instance of the same type as it's own <code>Class</code>.<p>
- * 
+ *
  * @see org.apache.commons.digester.CallMethodRule
  * @see org.apache.commons.digester.SetNextRule
- * 
+ *
  * @since 6.0.0
  */
 
@@ -111,7 +111,7 @@ public class CmsSetNextRule extends Rule {
      */
     protected boolean m_useExactMatch;
 
-    /** 
+    /**
      * location of the target object for the call, relative to the
      * top of the digester object stack. The default value of zero
      * means the target object is the one on top of the stack.
@@ -120,16 +120,16 @@ public class CmsSetNextRule extends Rule {
 
     /**
      * Construct a "call method" rule with the specified method name.<p>
-     * 
-     * 
+     *
+     *
      * The 1<sup>st</sup> argument of the method will be of type <code>{@link CmsObject}</code>.
-     * It's value will remain null (except subsequent 
-     * <code>{@link org.apache.commons.digester.CallParamRule}</code> would put a value 
-     * which currently is impossible at initialization time within OpenCms).<p> 
-     * 
-     * The 2<sup>nd</sup> argument will be the top-stack element at digestion time. 
+     * It's value will remain null (except subsequent
+     * <code>{@link org.apache.commons.digester.CallParamRule}</code> would put a value
+     * which currently is impossible at initialization time within OpenCms).<p>
+     *
+     * The 2<sup>nd</sup> argument will be the top-stack element at digestion time.
      * That instance has to be of the same type as the <code>clazz</code> argument to succeed.<p>
-     *  
+     *
      *
      * @param methodName Method name of the parent method to call
      * @param clazz The class of the top-stack element (child) that will be present at digestion-time
@@ -140,23 +140,23 @@ public class CmsSetNextRule extends Rule {
     }
 
     /**
-     * Construct a "call method" rule with the specified method name 
+     * Construct a "call method" rule with the specified method name
      * and additional parameters.<p>
-     * 
-     * 
+     *
+     *
      * The 1<sup>st</sup> argument of the method will be of type <code>{@link CmsObject}</code>.
-     * It's value will remain null (except subsequent 
-     * <code>{@link org.apache.commons.digester.CallParamRule}</code> would put a value 
-     * which currently is impossible at initialization time within OpenCms).<p> 
-     * 
-     * The further arguments will be filled by the subsequent <code>{@link org.apache.commons.digester.CallParamRule}</code>  
-     * matches. If the first <code>Class</code> in the given array matches the top stack element 
-     * (child) that value will be used. If at digestion time no parameters are found for the given 
+     * It's value will remain null (except subsequent
+     * <code>{@link org.apache.commons.digester.CallParamRule}</code> would put a value
+     * which currently is impossible at initialization time within OpenCms).<p>
+     *
+     * The further arguments will be filled by the subsequent <code>{@link org.apache.commons.digester.CallParamRule}</code>
+     * matches. If the first <code>Class</code> in the given array matches the top stack element
+     * (child) that value will be used. If at digestion time no parameters are found for the given
      * types their values for invocation of the method remain null.<p>
-     *  
+     *
      *
      * @param methodName Method name of the parent method to call
-     * @param clazzes an array with all parameter types for the method to invoke at digestion time 
+     * @param clazzes an array with all parameter types for the method to invoke at digestion time
      */
     public CmsSetNextRule(String methodName, Class<?>[] clazzes) {
 
@@ -171,8 +171,8 @@ public class CmsSetNextRule extends Rule {
     /**
      * Process the start of this element.
      *
-     * @param attributes The attribute list for this element 
-     * @param namespace  the namespace URI of the matching element, or an empty string if the parser is not namespace 
+     * @param attributes The attribute list for this element
+     * @param namespace  the namespace URI of the matching element, or an empty string if the parser is not namespace
      *        aware or the element has no namespace
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @throws Exception if something goes wrong
@@ -197,10 +197,10 @@ public class CmsSetNextRule extends Rule {
      * Process the body text of this element.<p>
      *
      * @param bodyText The body text of this element
-     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace 
+     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
      *                  aware or the element has no namespace
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
-     * @throws Exception if something goes wrong 
+     * @throws Exception if something goes wrong
      */
     @Override
     public void body(String namespace, String name, String bodyText) throws Exception {
@@ -212,8 +212,8 @@ public class CmsSetNextRule extends Rule {
 
     /**
      * Process the end of this element.<p>
-     * 
-     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace 
+     *
+     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
      *                  aware or the element has no namespace
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @throws Exception if something goes wrong
@@ -276,17 +276,17 @@ public class CmsSetNextRule extends Rule {
 
         // Construct the parameter values array we will need
         // We only do the conversion if the param value is a String and
-        // the specified paramType is not String. 
+        // the specified paramType is not String.
         Object[] paramValues = new Object[m_paramTypes.length];
 
         Class<?> propertyClass = child.getClass();
         for (int i = 0; i < m_paramTypes.length; i++) {
             if (m_paramTypes[i] == propertyClass) {
-                // implant the original child to set if Class matches: 
+                // implant the original child to set if Class matches:
                 paramValues[i] = child;
             } else if ((parameters[i] == null)
                 || ((parameters[i] instanceof String) && !String.class.isAssignableFrom(m_paramTypes[i]))) {
-                // convert nulls and convert stringy parameters 
+                // convert nulls and convert stringy parameters
                 // for non-stringy param types
                 if (parameters[i] == null) {
                     paramValues[i] = null;
@@ -356,8 +356,8 @@ public class CmsSetNextRule extends Rule {
 
     /**
      * Clean up after parsing is complete.<p>
-     * 
-     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace 
+     *
+     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
      *                  aware or the element has no namespace
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @throws Exception if something goes wrong
@@ -373,7 +373,7 @@ public class CmsSetNextRule extends Rule {
     /**
      * Returns true if <code>MethodUtils.invokeExactMethod</code>
      * shall be used for the reflection.<p>
-     * 
+     *
      * @return true if <code>MethodUtils.invokeExactMethod</code>
      *                 shall be used for the reflection.
      */
@@ -384,11 +384,11 @@ public class CmsSetNextRule extends Rule {
 
     /**
      * Set the associated digester.<p>
-     * 
+     *
      * The digester gets assigned to use the OpenCms conform logging
-     * 
+     *
      * If needed, this class loads the parameter classes from their names.<p>
-     * 
+     *
      * @param aDigester the associated digester to set
      */
     @Override
@@ -402,7 +402,7 @@ public class CmsSetNextRule extends Rule {
     /**
      * Set the value to use for <code>MethodUtils.invokeExactMethod</code>
      * to use.<p>
-     * 
+     *
      * @param useExactMatch the value to use for <code>MethodUtils.invokeExactMethod</code>
      *                      to use
      */
@@ -413,7 +413,7 @@ public class CmsSetNextRule extends Rule {
 
     /**
      * Returns a printable version of this Rule.<p>
-     * 
+     *
      * @return a printable version of this Rule
      */
     @Override
@@ -440,7 +440,7 @@ public class CmsSetNextRule extends Rule {
     }
 
     /**
-     * Subclasses may override this method to perform additional processing of the 
+     * Subclasses may override this method to perform additional processing of the
      * invoked method's result.<p>
      *
      * @param result the Object returned by the method invoked, possibly null

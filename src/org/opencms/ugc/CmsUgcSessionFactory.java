@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,7 +65,7 @@ public class CmsUgcSessionFactory {
 
     /**
      * Returns the factory instance.<p>
-     * 
+     *
      * @return the factory instance
      */
     public static synchronized CmsUgcSessionFactory getInstance() {
@@ -78,13 +78,13 @@ public class CmsUgcSessionFactory {
 
     /**
      * Creates a new editing session.<p>
-     * 
+     *
      * @param cms the cms context
      * @param request the request
      * @param config the configuration
-     * 
+     *
      * @return the form session
-     * 
+     *
      * @throws CmsUgcException if creating the session fails
      */
     public CmsUgcSession createSession(CmsObject cms, HttpServletRequest request, CmsUgcConfiguration config)
@@ -98,13 +98,13 @@ public class CmsUgcSessionFactory {
 
     /**
      * Creates a new editing session.<p>
-     * 
+     *
      * @param cms the cms context
      * @param request the request
      * @param sitePath the configuration site path
-     * 
+     *
      * @return the form session
-     * 
+     *
      * @throws CmsUgcException if creating the session fails
      */
     public CmsUgcSession createSession(CmsObject cms, HttpServletRequest request, String sitePath)
@@ -124,14 +124,14 @@ public class CmsUgcSessionFactory {
 
     /**
      * Creates a new session for a given file.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param request the current request 
-     * @param configPath the path of the form configuration 
+     *
+     * @param cms the CMS context to use
+     * @param request the current request
+     * @param configPath the path of the form configuration
      * @param fileName the file name (*not* path) of the XML content for which the session should be initialized
-     *   
-     * @return the newly created session 
-     * @throws CmsUgcException if something goes wrong 
+     *
+     * @return the newly created session
+     * @throws CmsUgcException if something goes wrong
      */
     public CmsUgcSession createSessionForFile(
         CmsObject cms,
@@ -149,10 +149,10 @@ public class CmsUgcSessionFactory {
 
     /**
      * Returns the session, if already initialized.<p>
-     * 
+     *
      * @param request the request
-     * @param sessionId the form session id 
-     * 
+     * @param sessionId the form session id
+     *
      * @return the session
      */
     public CmsUgcSession getSession(HttpServletRequest request, CmsUUID sessionId) {
@@ -162,13 +162,13 @@ public class CmsUgcSessionFactory {
 
     /**
      * Creates a new editing session.<p>
-     * 
+     *
      * @param cms the cms context
      * @param config the configuration
-     * 
+     *
      * @return the form session
-     * 
-     * @throws CmsUgcException if the session creation fails 
+     *
+     * @throws CmsUgcException if the session creation fails
      */
     private CmsUgcSession createSession(CmsObject cms, CmsUgcConfiguration config) throws CmsUgcException {
 
@@ -188,9 +188,9 @@ public class CmsUgcSessionFactory {
 
     /**
      * Returns the session queue.<p>
-     * 
+     *
      * @param config the form configuration
-     * 
+     *
      * @return the queue
      */
     private CmsUgcSessionQueue getQueue(CmsUgcConfiguration config) {

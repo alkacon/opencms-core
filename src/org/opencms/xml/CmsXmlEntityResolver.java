@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,10 +58,10 @@ import org.xml.sax.InputSource;
 
 /**
  * Resolves XML entities (e.g. external DTDs) in the OpenCms VFS.<p>
- * 
+ *
  * Also provides a cache for XML content schema definitions.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener {
 
@@ -76,11 +76,13 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
     /**
      * A list of string pairs used to translate legacy system ids to a new form. The first component of each pair
-     * is the prefix which should be replaced by the second component of that pair. 
+     * is the prefix which should be replaced by the second component of that pair.
      */
     private static final String[][] LEGACY_TRANSLATIONS = {
         {"opencms://system/modules/org.opencms.ade.config/schemas/", "internal://org/opencms/xml/adeconfig/"},
-        {"opencms://system/modules/org.opencms.ade.containerpage/schemas/", "internal://org/opencms/xml/containerpage/"},
+        {
+            "opencms://system/modules/org.opencms.ade.containerpage/schemas/",
+            "internal://org/opencms/xml/containerpage/"},
         {"opencms://system/modules/org.opencms.ade.sitemap/schemas/", "internal://org/opencms/xml/adeconfig/sitemap/"}};
 
     /** The log object for this class. */
@@ -112,11 +114,11 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
     /**
      * Creates a new XML entity resolver based on the provided CmsObject.<p>
-     * 
-     * If the provided CmsObject is null, then the OpenCms VFS is not 
-     * searched for XML entities, however the internal cache and 
-     * other OpenCms internal entities not in the VFS are still resolved.<p> 
-     * 
+     *
+     * If the provided CmsObject is null, then the OpenCms VFS is not
+     * searched for XML entities, however the internal cache and
+     * other OpenCms internal entities not in the VFS are still resolved.<p>
+     *
      * @param cms the cms context to use for resolving XML files from the OpenCms VFS
      */
     public CmsXmlEntityResolver(CmsObject cms) {
@@ -127,9 +129,9 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
     /**
      * Adds a system ID URL to to internal permanent cache.<p>
-     * 
+     *
      * This cache will NOT be cleared automatically.<p>
-     * 
+     *
      * @param systemId the system ID to add
      * @param content the content of the system id
      */
@@ -141,12 +143,12 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
     /**
      * Checks if a given system ID URL is in the internal permanent cache.<p>
-     * 
+     *
      * This check is required to see if a XML content is based on a file that actually exists in the OpenCms VFS,
      * or if the schema has been just cached without a VFS file.<p>
-     * 
+     *
      * @param systemId the system id ID check
-     * 
+     *
      * @return <code>true</code> if the system ID is in the internal permanent cache, <code>false</code> otherwise
      */
     public static boolean isCachedSystemId(String systemId) {
@@ -159,8 +161,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
     /**
      * Checks whether the given schema id is an internal schema id or is translated to an internal schema id.<p>
-     * @param schema the schema id 
-     * @return true if the given schema id is an internal schema id or translated to an internal schema id  
+     * @param schema the schema id
+     * @return true if the given schema id is an internal schema id or translated to an internal schema id
      */
     public static boolean isInternalId(String schema) {
 
@@ -173,10 +175,10 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
     /**
      * Initialize the OpenCms XML entity resolver.<p>
-     * 
+     *
      * @param adminCms an initialized OpenCms user context with "Administrator" role permissions
      * @param typeSchemaBytes the base widget type XML schema definitions
-     * 
+     *
      * @see CmsXmlContentTypeManager#initialize(CmsObject)
      */
     protected static void initialize(CmsObject adminCms, byte[] typeSchemaBytes) {
@@ -185,12 +187,14 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(adminCms);
 
         // register this object as event listener
-        OpenCms.addCmsEventListener(resolver, new int[] {
-            I_CmsEventListener.EVENT_CLEAR_CACHES,
-            I_CmsEventListener.EVENT_PUBLISH_PROJECT,
-            I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCE_MOVED,
-            I_CmsEventListener.EVENT_RESOURCE_DELETED});
+        OpenCms.addCmsEventListener(
+            resolver,
+            new int[] {
+                I_CmsEventListener.EVENT_CLEAR_CACHES,
+                I_CmsEventListener.EVENT_PUBLISH_PROJECT,
+                I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
+                I_CmsEventListener.EVENT_RESOURCE_MOVED,
+                I_CmsEventListener.EVENT_RESOURCE_DELETED});
 
         // cache the base widget type XML schema definitions
         cacheSystemId(CmsXmlContentDefinition.XSD_INCLUDE_OPENCMS, typeSchemaBytes);
@@ -208,13 +212,14 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             Map<String, byte[]> cachePermanent = new HashMap<String, byte[]>(32);
             m_cachePermanent = Collections.synchronizedMap(cachePermanent);
 
-            Map<String, CmsXmlContentDefinition> cacheContentDefinitions = CmsCollectionsGenericWrapper.createLRUMap(CONTENT_DEFINITION_CACHE_SIZE);
+            Map<String, CmsXmlContentDefinition> cacheContentDefinitions = CmsCollectionsGenericWrapper.createLRUMap(
+                CONTENT_DEFINITION_CACHE_SIZE);
             m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
         }
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             if ((OpenCms.getMemoryMonitor() != null)
                 && !OpenCms.getMemoryMonitor().isMonitoring(CmsXmlEntityResolver.class.getName() + ".cacheTemporary")) {
-                // reinitialize the caches after the memory monitor is set up                
+                // reinitialize the caches after the memory monitor is set up
                 Map<String, byte[]> cacheTemporary = CmsCollectionsGenericWrapper.createLRUMap(128);
                 cacheTemporary.putAll(m_cacheTemporary);
                 m_cacheTemporary = Collections.synchronizedMap(cacheTemporary);
@@ -231,7 +236,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                     CmsXmlEntityResolver.class.getName() + ".cachePermanent",
                     cachePermanent);
 
-                Map<String, CmsXmlContentDefinition> cacheContentDefinitions = CmsCollectionsGenericWrapper.createLRUMap(CONTENT_DEFINITION_CACHE_SIZE);
+                Map<String, CmsXmlContentDefinition> cacheContentDefinitions = CmsCollectionsGenericWrapper.createLRUMap(
+                    CONTENT_DEFINITION_CACHE_SIZE);
                 cacheContentDefinitions.putAll(m_cacheContentDefinitions);
                 m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
                 // map must be of type "LRUMap" so that memory monitor can access all information
@@ -244,9 +250,9 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
     /**
      * Translates a legacy system id to a new form.<p>
-     * 
-     * @param systemId the original system id 
-     * @return the new system id 
+     *
+     * @param systemId the original system id
+     * @return the new system id
      */
     private static String translateLegacySystemId(String systemId) {
 
@@ -267,7 +273,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     /**
      * Caches an XML content definition based on the given system id and the online / offline status
      * of this entity resolver instance.<p>
-     * 
+     *
      * @param systemId the system id to use as cache key
      * @param contentDefinition the content definition to cache
      */
@@ -299,7 +305,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 }
                 break;
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                // flush cache   
+                // flush cache
                 m_cacheTemporary.clear();
                 m_cacheContentDefinitions.clear();
                 if (LOG.isDebugEnabled()) {
@@ -317,8 +323,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 break;
             case I_CmsEventListener.EVENT_RESOURCE_DELETED:
             case I_CmsEventListener.EVENT_RESOURCE_MOVED:
-                List<CmsResource> resources = CmsCollectionsGenericWrapper.list(event.getData().get(
-                    I_CmsEventListener.KEY_RESOURCES));
+                List<CmsResource> resources = CmsCollectionsGenericWrapper.list(
+                    event.getData().get(I_CmsEventListener.KEY_RESOURCES));
                 for (int i = 0; i < resources.size(); i++) {
                     resource = resources.get(i);
                     uncacheSystemId(resource.getRootPath());
@@ -330,10 +336,10 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     }
 
     /**
-     * Looks up the given XML content definition system id in the internal content definition cache.<p> 
-     * 
+     * Looks up the given XML content definition system id in the internal content definition cache.<p>
+     *
      * @param systemId the system id of the XML content definition to look up
-     * 
+     *
      * @return the XML content definition found, or null if no definition is cached for the given system id
      */
     public CmsXmlContentDefinition getCachedContentDefinition(String systemId) {
@@ -368,7 +374,9 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 m_cachePermanent.put(systemId, content);
                 return createInputSource(content, systemId);
             } catch (Throwable t) {
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_XMLPAGE_XSD_NOT_FOUND_1, XMLPAGE_XSD_LOCATION), t);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.LOG_XMLPAGE_XSD_NOT_FOUND_1, XMLPAGE_XSD_LOCATION),
+                    t);
             }
 
         } else if (systemId.equals(XMLPAGE_OLD_DTD_SYSTEM_ID_1) || systemId.endsWith(XMLPAGE_OLD_DTD_SYSTEM_ID_2)) {
@@ -448,9 +456,9 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
     /**
      * Removes a cached entry for a system id (filename) from the internal offline temporary and content definition caches.<p>
-     * 
+     *
      * The online resources cached for the online project are only flushed when a project is published.<p>
-     * 
+     *
      * @param systemId the system id (filename) to remove from the cache
      */
     public void uncacheSystemId(String systemId) {
@@ -459,31 +467,31 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         o = m_cacheTemporary.remove(getCacheKey(systemId, false));
         if (null != o) {
             // if an object was removed from the temporary cache, all XML content definitions must be cleared
-            // because this may be a nested subschema 
+            // because this may be a nested subschema
             m_cacheContentDefinitions.clear();
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_ERR_UNCACHED_SYS_ID_1,
-                    getCacheKey(systemId, false)));
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.LOG_ERR_UNCACHED_SYS_ID_1, getCacheKey(systemId, false)));
             }
         } else {
             // check if a cached content definition has to be removed based on the system id
             o = m_cacheContentDefinitions.remove(getCacheKey(systemId, false));
             if ((null != o) && LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_ERR_UNCACHED_CONTENT_DEF_1,
-                    getCacheKey(systemId, false)));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_ERR_UNCACHED_CONTENT_DEF_1,
+                        getCacheKey(systemId, false)));
             }
         }
     }
 
-    /** 
+    /**
      * Creates an input source for the given byte data and system id.<p>
-     * 
-     * @param data the data which the input source should return 
-     * @param systemId the system id for the input source 
-     * 
-     * @return the input source 
+     *
+     * @param data the data which the input source should return
+     * @param systemId the system id for the input source
+     *
+     * @return the input source
      */
     InputSource createInputSource(byte[] data, String systemId) {
 
@@ -493,12 +501,12 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     }
 
     /**
-     * Returns a cache key for the given system id (filename) based on the status 
+     * Returns a cache key for the given system id (filename) based on the status
      * of the given project flag.<p>
-     * 
+     *
      * @param systemId the system id (filename) to get the cache key for
      * @param online indicates if this key is generated for the online project
-     * 
+     *
      * @return the cache key for the system id
      */
     private String getCacheKey(String systemId, boolean online) {
@@ -510,11 +518,11 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     }
 
     /**
-     * Returns a cache key for the given system id (filename) based on the status 
+     * Returns a cache key for the given system id (filename) based on the status
      * of the internal CmsObject.<p>
-     * 
+     *
      * @param systemId the system id (filename) to get the cache key for
-     * 
+     *
      * @return the cache key for the system id
      */
     private String getCacheKeyForCurrentProject(String systemId) {
@@ -532,9 +540,9 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
     /**
      * Proves if there is at least one xsd or dtd file in the list of resources to publish.<p>
-     * 
+     *
      * @param publishHistoryId the publish history id
-     * 
+     *
      * @return true, if there is at least one xsd or dtd file in the list of resources to publish, otherwise false
      */
     private boolean isSchemaDefinitionInPublishList(CmsUUID publishHistoryId) {

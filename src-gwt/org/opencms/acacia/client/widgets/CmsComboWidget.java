@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Composite;
 
 /**
  * A combo box widget.<p>
- * 
+ *
  * Regarding widget configuration, see <code>{@link org.opencms.acacia.client.widgets.CmsSelectConfigurationParser}</code>.<p>
  */
 public class CmsComboWidget extends Composite implements I_CmsEditWidget {
@@ -61,7 +61,7 @@ public class CmsComboWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
-     * 
+     *
      * @param config The configuration string given from OpenCms XSD.
      */
     public CmsComboWidget(String config) {
@@ -118,7 +118,7 @@ public class CmsComboWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Represents a value change event.<p>
-     * 
+     *
      */
     public void fireChangeEvent() {
 
@@ -208,7 +208,7 @@ public class CmsComboWidget extends Composite implements I_CmsEditWidget {
     }
 
     /**
-     *  Helper function to handle the popup of the combobox. <p> 
+     *  Helper function to handle the popup of the combobox. <p>
      */
     protected void onkeyupevent() {
 
@@ -228,7 +228,7 @@ public class CmsComboWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Helper function for parsing the configuration of the combo-box.<p>
-     * 
+     *
      * @param config the configuration string.
      * */
     private void parseConfiguration(String config) {
@@ -242,7 +242,7 @@ public class CmsComboWidget extends Composite implements I_CmsEditWidget {
         m_comboBox.setItems(parser.getOptions());
         //if one entrance is declared for default.
         if (parser.getDefaultValue() != null) {
-            //set the declared value selected. 
+            //set the declared value selected.
             m_comboBox.selectValue(parser.getDefaultValue());
         }
         fireChangeEvent();

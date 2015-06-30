@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,14 +39,14 @@ import java.util.Map;
 
 /**
  * Does a full static export of all system resources in the current site.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsStaticExportThread extends A_CmsReportThread {
 
     /**
      * Creates a static export Thread.<p>
-     * 
+     *
      * @param cms the current cms context
      */
     public CmsStaticExportThread(CmsObject cms) {
@@ -58,6 +58,7 @@ public class CmsStaticExportThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -66,6 +67,7 @@ public class CmsStaticExportThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         getReport().println(

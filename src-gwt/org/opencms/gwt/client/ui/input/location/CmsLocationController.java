@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -93,14 +93,15 @@ public class CmsLocationController {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param picker the picker widget
      * @param configuration the widget configuration
      */
     public CmsLocationController(CmsLocationPicker picker, String configuration) {
 
         m_picker = picker;
-        m_editValue = CmsLocationValue.parse("{\"address\": \"London\", \"lat\": 51.5001524, \"lng\": -0.1262362, \"height\": 300, \"width\": 400, \"mode\": \"\", \"type\":\"roadmap\", \"zoom\": 8}");
+        m_editValue = CmsLocationValue.parse(
+            "{\"address\": \"London\", \"lat\": 51.5001524, \"lng\": -0.1262362, \"height\": 300, \"width\": 400, \"mode\": \"\", \"type\":\"roadmap\", \"zoom\": 8}");
         m_currentValue = m_editValue.cloneValue();
         parseConfig(configuration);
     }
@@ -119,7 +120,7 @@ public class CmsLocationController {
 
     /**
      * Returns the available map modes.<p>
-     * 
+     *
      * @return the available map modes
      */
     private static Map<String, String> getModeItems() {
@@ -132,7 +133,7 @@ public class CmsLocationController {
 
     /**
      * Returns the available map types.<p>
-     * 
+     *
      * @return the available map types
      */
     private static Map<String, String> getTypeItems() {
@@ -147,7 +148,7 @@ public class CmsLocationController {
 
     /**
      * Returns the available zoom levels.<p>
-     * 
+     *
      * @return the available zoom levels
      */
     private static Map<String, String> getZoomItems() {
@@ -162,7 +163,7 @@ public class CmsLocationController {
 
     /**
      * Returns if the google maps API is already loaded to the window context.<p>
-     * 
+     *
      * @return <code>true</code>  if the google maps API is already loaded to the window context
      */
     private static native boolean isApiLoaded()/*-{
@@ -187,7 +188,7 @@ public class CmsLocationController {
 
     /**
      * Adds a callback to be executed once the API is ready. Will be executed right away if the API is already loaded.<p>
-     *  
+     *
      * @param callback the callback
      */
     private static void onApiReady(Command callback) {
@@ -205,7 +206,7 @@ public class CmsLocationController {
 
     /**
      * Returns the current location value.<p>
-     * 
+     *
      * @return the location value
      */
     public CmsLocationValue getLocationValue() {
@@ -215,7 +216,7 @@ public class CmsLocationController {
 
     /**
      * Returns the JSON string representation of the current value.<p>
-     * 
+     *
      * @return the JSON string representation
      */
     public String getStringValue() {
@@ -224,7 +225,7 @@ public class CmsLocationController {
     }
 
     /** Sets the location value as string.
-     *  
+     *
      * @param value the string representation of the location value (JSON)
      **/
     public void setStringValue(String value) {
@@ -249,7 +250,7 @@ public class CmsLocationController {
 
     /**
      * Return a maps API position object according the the current location value.<p>
-     * 
+     *
      * @return the position object
      */
     protected native JavaScriptObject getCurrentPosition()/*-{
@@ -260,7 +261,7 @@ public class CmsLocationController {
 
     /**
      * Called on address value change.<p>
-     * 
+     *
      * @param address the new address
      */
     protected native void onAddressChange(String address) /*-{
@@ -287,7 +288,7 @@ public class CmsLocationController {
 
     /**
      * Called on address suggestion selection.<p>
-     * 
+     *
      * @param suggestion the selected suggestion
      */
     protected void onAddressChange(SuggestOracle.Suggestion suggestion) {
@@ -309,7 +310,7 @@ public class CmsLocationController {
 
     /**
      * Called on height value change.<p>
-     * 
+     *
      * @param height the height
      */
     protected void onHeightChange(String height) {
@@ -319,7 +320,7 @@ public class CmsLocationController {
 
     /**
      * Called on latitude value change.<p>
-     * 
+     *
      * @param latitude the latitude
      */
     protected void onLatitudeChange(String latitude) {
@@ -331,7 +332,7 @@ public class CmsLocationController {
 
     /**
      * Called on longitude value change.<p>
-     * 
+     *
      * @param longitude the longitude
      */
     protected void onLongitudeChange(String longitude) {
@@ -343,7 +344,7 @@ public class CmsLocationController {
 
     /**
      * Called on mode value change.<p>
-     * 
+     *
      * @param mode the mode
      */
     protected void onModeChange(String mode) {
@@ -373,7 +374,7 @@ public class CmsLocationController {
 
     /**
      * Called on map type change.<p>
-     * 
+     *
      * @param type the map type
      */
     protected native void onTypeChange(String type)/*-{
@@ -384,7 +385,7 @@ public class CmsLocationController {
 
     /**
      * Called on width value change.<p>
-     * 
+     *
      * @param width the width
      */
     protected void onWidthChange(String width) {
@@ -394,7 +395,7 @@ public class CmsLocationController {
 
     /**
      * Called on zoom value change.<p>
-     * 
+     *
      * @param zoom the zoom
      */
     protected native void onZoomChange(String zoom) /*-{
@@ -411,7 +412,7 @@ public class CmsLocationController {
 
     /**
      * Fires the value change event for the location picker.<p>
-     * 
+     *
      * @param force <code>true</code> to always fire the event
      */
     void fireChangeEventOnPicker(boolean force) {
@@ -544,9 +545,9 @@ public class CmsLocationController {
                 infos.put(Messages.get().key(Messages.GUI_LOCATION_LONGITUDE_0), m_editValue.getLongitudeString());
             }
             if (hasSize()) {
-                infos.put(Messages.get().key(Messages.GUI_LOCATION_SIZE_0), m_editValue.getWidth()
-                    + " x "
-                    + m_editValue.getHeight());
+                infos.put(
+                    Messages.get().key(Messages.GUI_LOCATION_SIZE_0),
+                    m_editValue.getWidth() + " x " + m_editValue.getHeight());
             }
             if (hasType()) {
                 infos.put(Messages.get().key(Messages.GUI_LOCATION_TYPE_0), m_editValue.getType());
@@ -612,8 +613,8 @@ public class CmsLocationController {
 
     /**
      * Returns the value display string.<p>
-     * 
-     * @return the value 
+     *
+     * @return the value
      */
     private String getDisplayString() {
 
@@ -626,7 +627,7 @@ public class CmsLocationController {
 
     /**
      * Evaluates if the address field is configured.<p>
-     * 
+     *
      * @return <code>true</code> if the address field is configured
      */
     private native boolean hasAddress()/*-{
@@ -636,7 +637,7 @@ public class CmsLocationController {
 
     /**
      * Evaluates if the lat. lng. fields are configured.<p>
-     * 
+     *
      * @return <code>true</code> if the lat. lng. fields are configured
      */
     private native boolean hasLatLng()/*-{
@@ -646,7 +647,7 @@ public class CmsLocationController {
 
     /**
      * Evaluates if the map field is configured.<p>
-     * 
+     *
      * @return <code>true</code> if the map field is configured
      */
     private native boolean hasMap()/*-{
@@ -656,7 +657,7 @@ public class CmsLocationController {
 
     /**
      * Evaluates if the mode field is configured.<p>
-     * 
+     *
      * @return <code>true</code> if the mode field is configured
      */
     private native boolean hasMode()/*-{
@@ -666,7 +667,7 @@ public class CmsLocationController {
 
     /**
      * Evaluates if the size fields are configured.<p>
-     * 
+     *
      * @return <code>true</code> if the size fields are configured
      */
     private native boolean hasSize()/*-{
@@ -676,7 +677,7 @@ public class CmsLocationController {
 
     /**
      * Evaluates if the type field is configured.<p>
-     * 
+     *
      * @return <code>true</code> if the type field is configured
      */
     private native boolean hasType()/*-{
@@ -686,7 +687,7 @@ public class CmsLocationController {
 
     /**
      * Evaluates if the zoom field is configured.<p>
-     * 
+     *
      * @return <code>true</code> if the zoom field is configured
      */
     private native boolean hasZoom()/*-{
@@ -714,7 +715,7 @@ public class CmsLocationController {
 
     /**
      * Parses the configuration string.<p>
-     * 
+     *
      * @param configuration the configuration
      */
     private native void parseConfig(String configuration)/*-{
@@ -738,7 +739,7 @@ public class CmsLocationController {
 
     /**
      * Sets the position values and updates the map view.<p>
-     * 
+     *
      * @param latitude the latitude
      * @param longitude the longitude
      * @param updateMap <code>true</code> to update the map

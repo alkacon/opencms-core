@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,23 +43,23 @@ public interface I_CmsEntityRenderer {
 
     /**
      * Returns a copy of this renderer which has been configured with the given configuration string.<p>
-     * 
-     * @param configuration the configuration string 
-     * 
-     * @return the configured copy of the renderer 
+     *
+     * @param configuration the configuration string
+     *
+     * @return the configured copy of the renderer
      */
     I_CmsEntityRenderer configure(String configuration);
 
     /**
      * Gets the name of the renderer (should be unique for each renderer class).<p>
-     * 
-     * @return the renderer name 
+     *
+     * @return the renderer name
      */
     String getName();
 
     /**
      * Renders a single attribute value. Used for inline editing to show a fragment of the form.<p>
-     * 
+     *
      * @param parentEntity the parent entity
      * @param attributeHandler the attribute handler
      * @param attributeIndex the value index
@@ -73,14 +73,14 @@ public interface I_CmsEntityRenderer {
 
     /**
      * Renders the given entity into a form with tabs.<p>
-     * 
+     *
      * @param entity the entity to render
      * @param tabInfos the tab infos
      * @param context the context widget panel
      * @param parentHandler the parent attribute handler
      * @param attributeIndex the attribute index
-     * 
-     * @return the tabbed panel 
+     *
+     * @return the tabbed panel
      */
     CmsTabbedPanel<FlowPanel> renderForm(
         CmsEntity entity,
@@ -91,7 +91,7 @@ public interface I_CmsEntityRenderer {
 
     /**
      * Renders the given entity into a form.<p>
-     * 
+     *
      * @param entity the entity to render
      * @param context the context widget panel
      * @param parentHandler the parent attribute handler
@@ -101,7 +101,7 @@ public interface I_CmsEntityRenderer {
 
     /**
      * Injects editing widgets into the given DOM context to enable editing of the given entity.<p>
-     * 
+     *
      * @param entity the entity to render
      * @param formParent formParent the form parent widget
      * @param updateHandler handles updates on the HTML required  due to entity data changes
@@ -117,8 +117,8 @@ public interface I_CmsEntityRenderer {
 
     /**
      * Injects editing widgets into the given DOM context to enable editing of the given entity attribute.<p>
-     * 
-     * @param parentEntity the parent entity 
+     *
+     * @param parentEntity the parent entity
      * @param attributeName the attribute name
      * @param formParent the form parent widget
      * @param updateHandler handles updates on the HTML required  due to entity data changes

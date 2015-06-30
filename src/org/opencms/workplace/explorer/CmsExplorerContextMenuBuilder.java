@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,8 +53,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Context menu builder class.<p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
 
@@ -69,7 +69,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsExplorerContextMenuBuilder(CmsJspActionElement jsp) {
@@ -79,7 +79,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -91,7 +91,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
 
     /**
      * Generates the context menu for the given resources.<p>
-     * 
+     *
      * @return html code
      */
     public String contextMenu() {
@@ -103,9 +103,9 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
         CmsResourceUtil[] resUtil = new CmsResourceUtil[resourceList.size()];
         for (int i = 0; i < resourceList.size(); i++) {
             try {
-                resUtil[i] = new CmsResourceUtil(getCms(), getCms().readResource(
-                    resourceList.get(i),
-                    CmsResourceFilter.ALL));
+                resUtil[i] = new CmsResourceUtil(
+                    getCms(),
+                    getCms().readResource(resourceList.get(i), CmsResourceFilter.ALL));
             } catch (CmsException e) {
                 // fatal error
                 return "";
@@ -206,7 +206,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
 
     /**
      * Returns the HTML for the list of given context menu entry items.<p>
-     * 
+     *
      * @param contextMenuEntries the context menu entry items to loop
      * @param parent the parent context menu entry item or null if none is defined
      * @param menu the Buffer to add the HTML to
@@ -287,7 +287,8 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         menu.append(HTML_SEPARATOR);
                         insertSeparator = false;
                     }
-                    menu.append("\n<li><a class=\"x\" href=\"javascript:var ocm=1;\" onmouseover=\"window.status='';top.oSubC('");
+                    menu.append(
+                        "\n<li><a class=\"x\" href=\"javascript:var ocm=1;\" onmouseover=\"window.status='';top.oSubC('");
                     menu.append(item.getKey().hashCode());
                     menu.append("'");
                     if (CmsStringUtil.isNotEmpty(parentIds)) {
@@ -468,7 +469,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
 
     /**
      * Collects the matching rules of all sub items of a parent context menu entry.<p>
-     * 
+     *
      * @param item the context menu item to check the sub items for
      * @param itemRules the collected rules for the sub items
      * @param resourceUtil the resources to be checked against the rules

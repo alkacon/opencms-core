@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,8 +56,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Provides methods for the merge pages dialog.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsMergePages extends CmsReport {
 
@@ -120,7 +120,7 @@ public class CmsMergePages extends CmsReport {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsMergePages(CmsJspActionElement jsp) {
@@ -135,7 +135,7 @@ public class CmsMergePages extends CmsReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param cms the current CmsObject
      * @param context the JSP page context
      * @param req the JSP request
@@ -149,7 +149,7 @@ public class CmsMergePages extends CmsReport {
 
     /**
      * Merges the specified resources.<p>
-     * 
+     *
      * @param report the cms report
      */
     public void actionMerge(I_CmsReport report) {
@@ -172,7 +172,7 @@ public class CmsMergePages extends CmsReport {
 
     /**
      * Performs the move report, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionReport() throws JspException {
@@ -202,6 +202,7 @@ public class CmsMergePages extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#getCms()
      */
+    @Override
     public CmsObject getCms() {
 
         if (m_cms == null) {
@@ -314,14 +315,15 @@ public class CmsMergePages extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
+        // set the action for the JSP switch
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_CONFIRMED);
         } else if (DIALOG_OK.equals(getParamAction())) {
@@ -336,21 +338,21 @@ public class CmsMergePages extends CmsReport {
             setAction(ACTION_REPORT_END);
         } else {
             setAction(ACTION_DEFAULT);
-            // add the title for the dialog 
+            // add the title for the dialog
             setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_TITLE_MERGEPAGES_0));
         }
     }
 
     /**
      * Analyses a page in the source morge folder and tests if a resouce with the same name exists in the target merge folder.<p>
-     * 
+     *
      * The method then calcualtes a action for further processing of this page, possible values are:
      * <ul>
      * <li>C_FOLDER1_EXCLUSIVE: exclusivly found in folder 1</li>
      * <li>C_FOLDER2_EXCLUSIVE: exclusivly found in folder 2</li>
      * <li>C_FOLDERS_SIBLING: found in both folders as siblings of each other </li>
      * <li>C_FOLDERS_EQUALNAMES: found in both folders as individual resources</li>
-     * <li>C_FOLDERS_DIFFERENTTYPES: found in both folders as different types</li>    
+     * <li>C_FOLDERS_DIFFERENTTYPES: found in both folders as different types</li>
      * </ul>
      * @param res the resource to test
      * @param sourceMergeFolder the path to the source merge folder
@@ -408,7 +410,7 @@ public class CmsMergePages extends CmsReport {
 
     /**
      * Collect all pages in a folders and sort them depending on the required action to do.<p>
-     * 
+     *
      * @param sourceMergeFolder the source merge folder to collect all pages from
      * @param targetMergefolder the target merge folder to compare to
      * @param currentFolder integer value (1 or 2) showing if the source folder is folder 1 or folder 2
@@ -418,7 +420,8 @@ public class CmsMergePages extends CmsReport {
     throws CmsException {
 
         //get the list of all resources in the source merge folder
-        int xmlPageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
+        int xmlPageId = OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
         CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(xmlPageId);
         List folderResources = m_cms.readResources(sourceMergeFolder, filter, true);
         Iterator i = folderResources.iterator();
@@ -453,28 +456,24 @@ public class CmsMergePages extends CmsReport {
                     m_report.println(Messages.get().container(Messages.RPT_FOLDER2_EXCLUSIVE_0), I_CmsReport.FORMAT_OK);
                     break;
                 case FOLDERS_SIBLING:
-                    if (!m_foldersSibling.contains(getResourceNameInOtherFolder(
-                        resName,
-                        sourceMergeFolder,
-                        targetMergefolder))) {
+                    if (!m_foldersSibling.contains(
+                        getResourceNameInOtherFolder(resName, sourceMergeFolder, targetMergefolder))) {
                         m_foldersSibling.add(resName);
                     }
                     m_report.println(Messages.get().container(Messages.RPT_FOLDERS_SIBLING_0), I_CmsReport.FORMAT_OK);
                     break;
                 case FOLDERS_EQUALNAMES:
-                    if (!m_foldersEqualnames.contains(getResourceNameInOtherFolder(
-                        resName,
-                        sourceMergeFolder,
-                        targetMergefolder))) {
+                    if (!m_foldersEqualnames.contains(
+                        getResourceNameInOtherFolder(resName, sourceMergeFolder, targetMergefolder))) {
                         m_foldersEqualnames.add(resName);
                     }
-                    m_report.println(Messages.get().container(Messages.RPT_FOLDERS_EQUALNAMES_0), I_CmsReport.FORMAT_OK);
+                    m_report.println(
+                        Messages.get().container(Messages.RPT_FOLDERS_EQUALNAMES_0),
+                        I_CmsReport.FORMAT_OK);
                     break;
                 case FOLDERS_DIFFERENTTYPES:
-                    if (!m_foldersDifferenttypes.contains(getResourceNameInOtherFolder(
-                        resName,
-                        sourceMergeFolder,
-                        targetMergefolder))) {
+                    if (!m_foldersDifferenttypes.contains(
+                        getResourceNameInOtherFolder(resName, sourceMergeFolder, targetMergefolder))) {
                         m_foldersDifferenttypes.add(resName);
                     }
                     m_report.println(
@@ -487,13 +486,15 @@ public class CmsMergePages extends CmsReport {
             res = null;
         }
         folderResources = null;
-        m_report.println(Messages.get().container(Messages.RPT_SCAN_PAGES_IN_FOLDER_END_0), I_CmsReport.FORMAT_HEADLINE);
+        m_report.println(
+            Messages.get().container(Messages.RPT_SCAN_PAGES_IN_FOLDER_END_0),
+            I_CmsReport.FORMAT_HEADLINE);
 
     }
 
     /**
      * Collect all pages in the folders to merge and sort them depending on the required action to do.<p>
-     * 
+     *
      * The method will create several lists. Each list contains the resource names of pages
      * and will be used in further steps of the merging process.
      * <ul>
@@ -503,7 +504,7 @@ public class CmsMergePages extends CmsReport {
      * <li>List m_foldersEqualnames: contains all pages which can be found in both folders and are no siblings of each other</li>
      * <li>List m_foldersDifferenttypes: contains all pages which can be found in both folders but are of different types</li>
      * </ul>
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private void collectResources() throws CmsException {
@@ -541,7 +542,7 @@ public class CmsMergePages extends CmsReport {
 
     /**
      * Gets the name of a resource in the other merge folder.<p>
-     * 
+     *
      * @param resName the complete path of a resource
      * @param sourceMergeFolder the path to the source merge folder
      * @param targetMergefolder the path to the target merge folder
@@ -572,9 +573,10 @@ public class CmsMergePages extends CmsReport {
 
             // lock the source and the target folder
             m_report.print(Messages.get().container(Messages.RPT_LOCK_FOLDER_0), I_CmsReport.FORMAT_NOTE);
-            m_report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                getParamFolder1()));
+            m_report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    getParamFolder1()));
             m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             m_cms.lockResource(getParamFolder1());
             m_report.println(
@@ -582,9 +584,10 @@ public class CmsMergePages extends CmsReport {
                 I_CmsReport.FORMAT_OK);
 
             m_report.print(Messages.get().container(Messages.RPT_LOCK_FOLDER_0), I_CmsReport.FORMAT_NOTE);
-            m_report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                getParamFolder2()));
+            m_report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    getParamFolder2()));
             m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             m_cms.lockResource(getParamFolder2());
             m_report.println(
@@ -601,23 +604,24 @@ public class CmsMergePages extends CmsReport {
                         resFolder1Name,
                         getParamFolder1(),
                         getParamFolder2());
+                    m_report.print(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(count++),
+                        String.valueOf(size)), I_CmsReport.FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_PROCESS_0), I_CmsReport.FORMAT_NOTE);
                     m_report.print(
                         org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_SUCCESSION_2,
-                            String.valueOf(count++),
-                            String.valueOf(size)),
-                        I_CmsReport.FORMAT_NOTE);
-                    m_report.print(Messages.get().container(Messages.RPT_PROCESS_0), I_CmsReport.FORMAT_NOTE);
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        resFolder1Name));
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            resFolder1Name));
                     m_report.print(Messages.get().container(Messages.RPT_DOUBLE_ARROW_0), I_CmsReport.FORMAT_NOTE);
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        resFolder2Name));
-                    m_report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                    m_report.print(
+                        org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            resFolder2Name));
+                    m_report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
-                    // get the content of the resource in folder1  
+                    // get the content of the resource in folder1
                     String locale = m_cms.readPropertyObject(resFolder1Name, "locale", true).getValue(defaultLocale);
                     m_report.print(
                         Messages.get().container(Messages.RPT_READ_CONTENT_2, resFolder1Name, locale),
@@ -662,7 +666,7 @@ public class CmsMergePages extends CmsReport {
                             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                             I_CmsReport.FORMAT_OK);
                     }
-                    // the resource in folder 1 now has all text elements in both locales, so update it in the vfs  
+                    // the resource in folder 1 now has all text elements in both locales, so update it in the vfs
 
                     m_report.print(
                         Messages.get().container(Messages.RPT_WRITE_CONTENT_1, resFolder1Name),
@@ -691,7 +695,7 @@ public class CmsMergePages extends CmsReport {
                         org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                         I_CmsReport.FORMAT_OK);
 
-                    // copy a sibling of the resource from folder 1 to folder 2 
+                    // copy a sibling of the resource from folder 1 to folder 2
                     m_report.print(
                         Messages.get().container(Messages.RPT_COPY_2, resFolder1Name, resFolder2Name),
                         I_CmsReport.FORMAT_NOTE);
@@ -740,7 +744,7 @@ public class CmsMergePages extends CmsReport {
 
     /**
      * Creates a report list of all resources in one of the collected lists.<p>
-     * 
+     *
      * @param collected the list to create the output from
      * @param doReport flag to enable detailed report
      */

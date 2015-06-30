@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,15 +43,15 @@ import java.util.Map;
 
 /**
  * Comparator for sorting resource objects based on dates.<p>
- * 
+ *
  * The comparator can be configured to use any date based on resource attributes or properties.
  * The user must in the constructor {@link #CmsDateResourceComparator(CmsObject, List, boolean)}
- * provide a list of one or more <b>date identifiers</b> that should be checked, in the order they 
+ * provide a list of one or more <b>date identifiers</b> that should be checked, in the order they
  * should be checked. This list of dates identifiers must be Strings which tell the comparator which dates to use.
  * The first valid date identifier that is found for a resource is used as date for
  * comparing this resource to other resources.<p>
- *  
- * The following date identifiers can be used 
+ *
+ * The following date identifiers can be used
  * to access the corresponding value of a {@link CmsResource}:<ul>
  * <li><code>"dateCreated"</code>, which means {@link CmsResource#getDateCreated()}.
  * <li><code>"dateLastModified"</code>, which means {@link CmsResource#getDateLastModified()}.
@@ -59,15 +59,15 @@ import java.util.Map;
  * <li><code>"dateReleased"</code>, which means {@link CmsResource#getDateReleased()}.
  * <li><code>"dateExpired"</code>, which means {@link CmsResource#getDateExpired()}.
  * <li>Anything else will be treated as property name, so it will be attempted to read a property
- * with that name from the resource, and convert that value to a long. Should this fail 
+ * with that name from the resource, and convert that value to a long. Should this fail
  * for any reason, the next entry from the list of dates will be processed.<p>
  * <li>If no match is found at all, {@link CmsResource#getDateCreated()} is used as default.
  * </ul>
- * 
+ *
  * Serves as {@link java.util.Comparator} for resources and as comparator key for the resource
  * at the same time. Uses lazy initializing of comparator keys for a resource.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDateResourceComparator implements Comparator<CmsResource> {
 
@@ -99,7 +99,7 @@ public class CmsDateResourceComparator implements Comparator<CmsResource> {
 
     /**
      * Creates a new instance of this comparator key.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param dateIdentifiers the names of the dates to check
      * @param asc if true, the date sort order is ascending, otherwise descending
@@ -125,14 +125,14 @@ public class CmsDateResourceComparator implements Comparator<CmsResource> {
 
     /**
      * Calculates the date to use for comparison of this resource based on the given date identifiers.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param resource the resource to create the key for
      * @param dateIdentifiers the date identifiers to use for selecting the date
      * @param defaultValue the default value to use in case no value can be calculated
-     * 
+     *
      * @return the calculated date
-     * 
+     *
      * @see CmsDateResourceComparator for a description about how the date identifieres are used
      */
     public static long calculateDate(
@@ -151,7 +151,7 @@ public class CmsDateResourceComparator implements Comparator<CmsResource> {
                 case 0: // "dateCreated"
                     result = resource.getDateCreated();
                     break;
-                case 1: // "dateLastModified" 
+                case 1: // "dateLastModified"
                     result = resource.getDateLastModified();
                     break;
                 case 2: // "dateContent"
@@ -177,7 +177,7 @@ public class CmsDateResourceComparator implements Comparator<CmsResource> {
                 default:
                     // of this is not an attribute, assume this is a property
                     if (properties == null) {
-                        // we may not have to read the properties since the user may only use attributes, 
+                        // we may not have to read the properties since the user may only use attributes,
                         // so use lazy initializing here
                         try {
                             properties = cms.readPropertyObjects(resource, false);
@@ -210,11 +210,11 @@ public class CmsDateResourceComparator implements Comparator<CmsResource> {
 
     /**
      * Creates a new instance of this comparator key.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param resource the resource to create the key for
      * @param dateIdentifiers the date identifiers to use for selecting the date
-     * 
+     *
      * @return a new instance of this comparator key
      */
     private static CmsDateResourceComparator create(CmsObject cms, CmsResource resource, List<String> dateIdentifiers) {
@@ -270,7 +270,7 @@ public class CmsDateResourceComparator implements Comparator<CmsResource> {
 
     /**
      * Returns the date of this resource comparator key.<p>
-     * 
+     *
      * @return the date of this resource comparator key
      */
     public long getDate() {

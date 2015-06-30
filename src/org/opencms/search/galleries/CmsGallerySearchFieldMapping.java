@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,8 +42,8 @@ import java.util.Locale;
 
 /**
  * Special search field mapping class for the gallery search.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsGallerySearchFieldMapping extends CmsSearchFieldMapping {
 
@@ -87,7 +87,7 @@ public class CmsGallerySearchFieldMapping extends CmsSearchFieldMapping {
 
     /**
      * Public constructor for a new search field mapping.<p>
-     * 
+     *
      * @param type the type to use, see {@link #setType(CmsSearchFieldMappingType)}
      * @param param the mapping parameter, see {@link #setParam(String)}
      */
@@ -97,14 +97,14 @@ public class CmsGallerySearchFieldMapping extends CmsSearchFieldMapping {
     }
 
     /**
-     * Returns the String value extracted form the provided data according to the rules of this mapping type.<p> 
-     * 
+     * Returns the String value extracted form the provided data according to the rules of this mapping type.<p>
+     *
      * @param cms the OpenCms context used for building the search index
      * @param res the resource that is indexed
      * @param extractionResult the plain text extraction result from the resource
      * @param properties the list of all properties directly attached to the resource (not searched)
-     * @param propertiesSearched the list of all searched properties of the resource  
-     * 
+     * @param propertiesSearched the list of all searched properties of the resource
+     *
      * @return the String value extracted form the provided data according to the rules of this mapping type
      */
     @Override

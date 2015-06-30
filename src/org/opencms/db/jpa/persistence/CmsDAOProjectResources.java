@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import javax.persistence.Table;
 
 /**
  * This data access object represents a project resource entry inside the table "cms_projectresources".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -66,7 +66,7 @@ public class CmsDAOProjectResources {
 
             /**
              * The constructor for this tokenizer.<p>
-             * 
+             *
              * @param str the String to tokenize.<p>
              */
             public Tokenizer(String str) {
@@ -76,7 +76,7 @@ public class CmsDAOProjectResources {
 
             /**
              * Returns the next token.<p>
-             * 
+             *
              * @return the next token
              */
             public String nextToken() {
@@ -110,7 +110,7 @@ public class CmsDAOProjectResources {
 
         /**
          * A public constructor to generate a primary key from a given String.<p>
-         * 
+         *
          * @param str the String to generate the id from
          */
         public CmsDAOProjectResourcesPK(String str) {
@@ -141,8 +141,10 @@ public class CmsDAOProjectResources {
             }
 
             CmsDAOProjectResourcesPK other = (CmsDAOProjectResourcesPK)obj;
-            return (((m_projectId == null) && (other.m_projectId == null)) || ((m_projectId != null) && m_projectId.equals(other.m_projectId)))
-                && (((m_resourcePath == null) && (other.m_resourcePath == null)) || ((m_resourcePath != null) && m_resourcePath.equals(other.m_resourcePath)));
+            return (((m_projectId == null) && (other.m_projectId == null))
+                || ((m_projectId != null) && m_projectId.equals(other.m_projectId)))
+                && (((m_resourcePath == null) && (other.m_resourcePath == null))
+                    || ((m_resourcePath != null) && m_resourcePath.equals(other.m_resourcePath)));
         }
 
         /**
@@ -172,8 +174,8 @@ public class CmsDAOProjectResources {
         public int hashCode() {
 
             int rs = 17;
-            rs = rs * 37 + ((m_projectId == null) ? 0 : m_projectId.hashCode());
-            rs = rs * 37 + ((m_resourcePath == null) ? 0 : m_resourcePath.hashCode());
+            rs = (rs * 37) + ((m_projectId == null) ? 0 : m_projectId.hashCode());
+            rs = (rs * 37) + ((m_resourcePath == null) ? 0 : m_resourcePath.hashCode());
             return rs;
         }
 
@@ -208,7 +210,7 @@ public class CmsDAOProjectResources {
 
         /**
          * Parses the publish tag from and the resource id from a given String.<p>
-         *  
+         *
          * @param str the String to parse
          */
         private void fromString(String str) {
@@ -249,7 +251,7 @@ public class CmsDAOProjectResources {
 
     /**
      * A public constructor for generating a new project resource object with an unique id.<p>
-     * 
+     *
      * @param projectId the project id
      * @param resourcePath the resource path
      */

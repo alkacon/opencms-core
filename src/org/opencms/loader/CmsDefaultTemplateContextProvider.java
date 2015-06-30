@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,9 +55,9 @@ import org.apache.commons.logging.Log;
 
 /**
  * Example implementation of a template context provider for deciding between a desktop template and a mobile template.<p>
- * 
- * The template JSP paths are read from a VFS file "/system/shared/templatecontexts.json" 
- * 
+ *
+ * The template JSP paths are read from a VFS file "/system/shared/templatecontexts.json"
+ *
  */
 public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextProvider {
 
@@ -106,8 +106,8 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
 
     /**
      * Returns the absolute VFS path where the configuration property file is stored.<p>
-     * 
-     * 
+     *
+     *
      * @return the absolute VFS path where the configuration property file is stored
      */
     public String getConfigurationPropertyPath() {
@@ -189,8 +189,8 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
 
     /**
      * Gets the context map, either from a cache or from the VFS if it'S not already cached.<p>
-     * 
-     * @return the context map 
+     *
+     * @return the context map
      */
     @SuppressWarnings("unchecked")
     private Map<String, CmsTemplateContext> getContextMap() {
@@ -213,9 +213,9 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
 
     /**
      * Loads the context map from the VFS.<p>
-     * 
-     * @return the context map  
-     * @throws Exception if something goes wrong  
+     *
+     * @return the context map
+     * @throws Exception if something goes wrong
      */
     private Map<String, CmsTemplateContext> initMap() throws Exception {
 

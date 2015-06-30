@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,9 +39,9 @@ import com.google.gwt.user.client.ui.PushButton;
 
 /**
  * Push button class.<p>
- * 
+ *
  * Uses CSS classes cmsState and dependent from 'button.css', make sure it is injected.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPushButton extends PushButton implements HasHorizontalAlignment {
@@ -89,7 +89,7 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
     /**
      * The constructor. Setting the button icon.<p>
-     * 
+     *
      * @param imageClass the class for the image
      */
     public CmsPushButton(String imageClass) {
@@ -100,7 +100,7 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
     /**
      * The constructor. Setting different icons for the up and down face of the button.<p>
-     * 
+     *
      * @param imageClass the class for the up face image
      * @param downImageClass the class for the down face image
      */
@@ -122,7 +122,7 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
     /**
      * Disables the button and changes the button title attribute to the disabled reason.<p>
-     *   
+     *
      * @param disabledReason the disabled reason
      */
     public void disable(String disabledReason) {
@@ -154,7 +154,7 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
     /**
      * This is the alignment of the text in reference to the image, possible values are left or right.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#getHorizontalAlignment()
      */
     public HorizontalAlignmentConstant getHorizontalAlignment() {
@@ -252,7 +252,7 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
     /**
      * Sets the button style.<p>
-     * 
+     *
      * @param style the style to set
      * @param color the color to set
      */
@@ -289,7 +289,7 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
     /**
      * Sets the down face text and image.<p>
-     * 
+     *
      * @param text the down face text to set, set to <code>null</code> to not show any
      * @param imageClass the down face image class to use, set to <code>null</code> to not show any
      */
@@ -311,7 +311,7 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
     /**
      * This is the alignment of the text in reference to the image, possible values are left or right.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
      */
     public void setHorizontalAlignment(HorizontalAlignmentConstant align) {
@@ -373,7 +373,7 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
     /**
      * Sets the up face text and image.<p>
-     * 
+     *
      * @param text the up face text to set, set to <code>null</code> to not show any
      * @param imageClass the up face image class to use, set to <code>null</code> to not show any
      */
@@ -403,10 +403,10 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
     /**
      * Convenience method to assemble the HTML to use for a button face.<p>
-     * 
+     *
      * @param text text the up face text to set, set to <code>null</code> to not show any
      * @param imageClass the up face image class to use, set to <code>null</code> to not show any
-     * 
+     *
      * @return the HTML
      */
     protected String getFaceHtml(String text, String imageClass) {

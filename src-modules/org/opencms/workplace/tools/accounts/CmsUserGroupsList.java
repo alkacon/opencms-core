@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,8 +51,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * User groups view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsUserGroupsList extends A_CmsUserGroupsList {
 
@@ -73,7 +73,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUserGroupsList(CmsJspActionElement jsp) {
@@ -83,7 +83,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -95,7 +95,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      */
@@ -107,6 +107,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_REMOVE)) {
@@ -141,6 +142,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         if (m_removeActionIds.contains(getParamListAction())) {
@@ -160,6 +162,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#getGroups(boolean)
      */
+    @Override
     protected List getGroups(boolean withOtherOus) throws CmsException {
 
         return getCms().getGroupsOfUser(getParamUsername(), false, withOtherOus);
@@ -168,6 +171,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#setDefaultAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setDefaultAction(CmsListColumnDefinition nameCol) {
 
         // add default remove action for direct groups
@@ -179,8 +183,8 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
         // add default remove action for indirect groups
         CmsGroupRemoveAction indirRemoveAction = new CmsGroupRemoveAction(LIST_DEFACTION_REMOVE + "i", false);
         indirRemoveAction.setName(Messages.get().container(Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_NAME_0));
-        indirRemoveAction.setHelpText(Messages.get().container(
-            Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_HELP_0));
+        indirRemoveAction.setHelpText(
+            Messages.get().container(Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_HELP_0));
         indirRemoveAction.setEnabled(false);
         nameCol.addDefaultAction(indirRemoveAction);
 
@@ -192,6 +196,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#setIconAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setIconAction(CmsListColumnDefinition iconCol) {
 
         // adds a direct group icon
@@ -216,14 +221,15 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add remove multi action
         CmsListMultiAction removeMultiAction = new CmsListMultiAction(LIST_MACTION_REMOVE);
         removeMultiAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_REMOVE_NAME_0));
         removeMultiAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_REMOVE_HELP_0));
-        removeMultiAction.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_GROUPS_LIST_MACTION_REMOVE_CONF_0));
+        removeMultiAction.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_REMOVE_CONF_0));
         removeMultiAction.setIconPath(ICON_MULTI_MINUS);
         metadata.addMultiAction(removeMultiAction);
     }
@@ -231,6 +237,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#setStateActionCol(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setStateActionCol(CmsListMetadata metadata) {
 
         // create column for state change
@@ -251,7 +258,8 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
         // add remove action for indirect groups
         CmsGroupRemoveAction indirStateAction = new CmsGroupRemoveAction(LIST_ACTION_REMOVE + "i", false);
         indirStateAction.setName(Messages.get().container(Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_NAME_0));
-        indirStateAction.setHelpText(Messages.get().container(Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_HELP_0));
+        indirStateAction.setHelpText(
+            Messages.get().container(Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_HELP_0));
         indirStateAction.setIconPath(A_CmsListDialog.ICON_DISABLED);
         indirStateAction.setEnabled(false);
         stateCol.addDirectAction(indirStateAction);

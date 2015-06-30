@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ public class TestMsWordExtraction extends OpenCmsTestCase {
      */
     public void testWordExtractionOLE2() throws Exception {
 
-        // open an input stream for the test file        
+        // open an input stream for the test file
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.doc");
 
         // extract the content
@@ -92,7 +92,7 @@ public class TestMsWordExtraction extends OpenCmsTestCase {
      */
     public void testWordExtractionOOXML() throws Exception {
 
-        // open an input stream for the test file        
+        // open an input stream for the test file
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.docx");
 
         // extract the content
@@ -129,7 +129,7 @@ public class TestMsWordExtraction extends OpenCmsTestCase {
         assertEquals("M. Manager", items.get(I_CmsExtractionResult.ITEM_MANAGER));
         assertEquals("Category", items.get(I_CmsExtractionResult.ITEM_CATEGORY));
 
-        // either I am doing something wrong or Tika 0.9 does not support the "company" and "comment" meta information        
+        // either I am doing something wrong or Tika 0.9 does not support the "company" and "comment" meta information
         // assertEquals("Alkacon Software", items.get(I_CmsExtractionResult.ITEM_COMPANY));
         // assertEquals("This is the comment", items.get(I_CmsExtractionResult.ITEM_COMMENTS));
 

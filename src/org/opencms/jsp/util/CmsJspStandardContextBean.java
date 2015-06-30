@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -78,9 +78,9 @@ import org.apache.commons.logging.Log;
 /**
  * Allows convenient access to the most important OpenCms functions on a JSP page,
  * indented to be used from a JSP with the JSTL or EL.<p>
- * 
- * This bean is available by default in the context of an OpenCms managed JSP.<p> 
- * 
+ *
+ * This bean is available by default in the context of an OpenCms managed JSP.<p>
+ *
  * @since 8.0
  */
 public final class CmsJspStandardContextBean {
@@ -95,7 +95,7 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param element the element to wrap
          */
         protected CmsContainerElementWrapper(CmsContainerElementBean element) {
@@ -178,7 +178,7 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Returns the parent element if present.<p>
-         * 
+         *
          * @return the parent element or <code>null</code> if not available
          */
         public CmsContainerElementWrapper getParent() {
@@ -198,7 +198,7 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Returns a lazy initialized setting map.<p>
-         * 
+         *
          * @return the settings
          */
         public Map<String, ElementSettingWrapper> getSetting() {
@@ -361,7 +361,7 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Provides a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * Provides a lazy initialized Map that provides the detail page link as a value when given the name of a
      * (named) dynamic function or resource type as a key.<p>
      */
     public class CmsDetailLookupTransformer implements Transformer {
@@ -371,9 +371,9 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Constructor with a prefix.<p>
-         * 
+         *
          * The prefix is used to distinguish between type detail pages and function detail pages.<p>
-         * 
+         *
          * @param prefix the prefix to use
          */
         public CmsDetailLookupTransformer(String prefix) {
@@ -420,7 +420,7 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param value the wrapped value
          * @param exists flag indicating the setting has been configured
          */
@@ -432,7 +432,7 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Returns if the setting has been configured.<p>
-         * 
+         *
          * @return <code>true</code> if the setting has been configured
          */
         @Override
@@ -443,7 +443,7 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Returns if the setting value is null or empty.<p>
-         * 
+         *
          * @return <code>true</code> if the setting value is null or empty
          */
         @Override
@@ -454,7 +454,7 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Returns if the setting value is null or white space only.<p>
-         * 
+         *
          * @return <code>true</code> if the setting value is null or white space only
          */
         @Override
@@ -474,7 +474,7 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Returns the value.<p>
-         * 
+         *
          * @return the value
          */
         public String getValue() {
@@ -484,7 +484,7 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Returns the string value.<p>
-         * 
+         *
          * @return the string value
          */
         @Override
@@ -507,7 +507,7 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param element the element
          */
         SettingsTransformer(CmsContainerElementBean element) {
@@ -522,9 +522,11 @@ public final class CmsJspStandardContextBean {
         @Override
         public Object transform(Object arg0) {
 
-            return new ElementSettingWrapper(m_transformElement.getSettings().get(arg0), m_formatter != null
-            ? m_formatter.getSettings().get(arg0) != null
-            : m_transformElement.getSettings().get(arg0) != null);
+            return new ElementSettingWrapper(
+                m_transformElement.getSettings().get(arg0),
+                m_formatter != null
+                ? m_formatter.getSettings().get(arg0) != null
+                : m_transformElement.getSettings().get(arg0) != null);
         }
     }
 
@@ -547,9 +549,9 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param name the template name 
-         * @param resource the template resource 
+         *
+         * @param name the template name
+         * @param resource the template resource
          */
         public TemplateBean(String name, CmsResource resource) {
 
@@ -559,9 +561,9 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Creates a new instance with an URI instead of a resoure.<p>
-         * 
-         * @param name the template name 
-         * @param uri the template uri 
+         *
+         * @param name the template name
+         * @param uri the template uri
          */
         public TemplateBean(String name, String uri) {
 
@@ -571,8 +573,8 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Gets the template name.<p>
-         * 
-         * @return the template name 
+         *
+         * @return the template name
          */
         public String getName() {
 
@@ -581,8 +583,8 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Gets the template resource.<p>
-         * 
-         * @return the template resource 
+         *
+         * @return the template resource
          */
         public CmsResource getResource() {
 
@@ -591,7 +593,7 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Gets the template uri.<p>
-         * 
+         *
          * @return the template URI.
          */
         public String getUri() {
@@ -605,8 +607,8 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Returns true if the template context was manually selected.<p>
-         * 
-         * @return true if the template context was manually selected 
+         *
+         * @return true if the template context was manually selected
          */
         public boolean isForced() {
 
@@ -615,8 +617,8 @@ public final class CmsJspStandardContextBean {
 
         /**
          * Sets the 'forced' flag to a new value.<p>
-         * 
-         * @param forced the new value 
+         *
+         * @param forced the new value
          */
         public void setForced(boolean forced) {
 
@@ -686,7 +688,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Creates a new standard JSP context bean.
-     * 
+     *
      * @param req the current servlet request
      */
     private CmsJspStandardContextBean(ServletRequest req) {
@@ -701,9 +703,8 @@ public final class CmsJspStandardContextBean {
         }
         if (cms == null) {
             // cms object unavailable - this request was not initialized properly
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_MISSING_CMS_CONTROLLER_1,
-                CmsJspBean.class.getName()));
+            throw new CmsRuntimeException(
+                Messages.get().container(Messages.ERR_MISSING_CMS_CONTROLLER_1, CmsJspBean.class.getName()));
         }
         updateCmsObject(cms);
 
@@ -712,12 +713,12 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Creates a new instance of the standard JSP context bean.<p>
-     * 
-     * To prevent multiple creations of the bean during a request, the OpenCms request context 
+     *
+     * To prevent multiple creations of the bean during a request, the OpenCms request context
      * attributes are used to cache the created VFS access utility bean.<p>
-     * 
+     *
      * @param req the current servlet request
-     * 
+     *
      * @return a new instance of the standard JSP context bean
      */
     public static CmsJspStandardContextBean getInstance(ServletRequest req) {
@@ -735,7 +736,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns a copy of this JSP context bean.<p>
-     * 
+     *
      * @return a copy of this JSP context bean
      */
     public CmsJspStandardContextBean createCopy() {
@@ -752,7 +753,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns a caching hash specific to the element, it's properties and the current container width.<p>
-     * 
+     *
      * @return the caching hash
      */
     public String elementCachingHash() {
@@ -771,7 +772,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns the container the currently rendered element is part of.<p>
-     * 
+     *
      * @return the currently the currently rendered element is part of
      */
     public CmsContainerBean getContainer() {
@@ -781,7 +782,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns the current detail content, or <code>null</code> if no detail content is requested.<p>
-     * 
+     *
      * @return the current detail content, or <code>null</code> if no detail content is requested.<p>
      */
     public CmsResource getDetailContent() {
@@ -791,7 +792,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns the structure id of the current detail content, or <code>null</code> if no detail content is requested.<p>
-     * 
+     *
      * @return the structure id of the current detail content, or <code>null</code> if no detail content is requested.<p>
      */
     public CmsUUID getDetailContentId() {
@@ -801,7 +802,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns the detail content site path, or <code>null</code> if not available.<p>
-     * 
+     *
      * @return the detail content site path
      */
     public String getDetailContentSitePath() {
@@ -821,9 +822,9 @@ public final class CmsJspStandardContextBean {
         return m_detailOnlyPage;
     }
 
-    /**    
+    /**
      * Returns the currently rendered element.<p>
-     * 
+     *
      * @return the currently rendered element
      */
     public CmsContainerElementWrapper getElement() {
@@ -832,11 +833,11 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Alternative method name for getReloadMarker(). 
-     * 
+     * Alternative method name for getReloadMarker().
+     *
      * @see org.opencms.jsp.util.CmsJspStandardContextBean#getReloadMarker()
-     * 
-     * @return the reload marker 
+     *
+     * @return the reload marker
      */
     public String getEnableReload() {
 
@@ -845,9 +846,9 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns a lazy initialized Map which allows access to the dynamic function beans using the JSP EL.<p>
-     * 
+     *
      * When given a key, the returned map will look up the corresponding dynamic function bean in the module configuration.<p>
-     * 
+     *
      * @return a lazy initialized Map which allows access to the dynamic function beans using the JSP EL
      */
     public Map<String, CmsDynamicFunctionBeanWrapper> getFunction() {
@@ -879,11 +880,11 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Deprecated method to access function detail pages using the EL.<p>
-     * 
-     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     *
+     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a
      * (named) dynamic function as a key
-     * 
-     * @deprecated use {@link #getFunctionDetailPage()} instead 
+     *
+     * @deprecated use {@link #getFunctionDetailPage()} instead
      */
     @Deprecated
     public Map<String, String> getFunctionDetail() {
@@ -892,25 +893,25 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * Returns a lazy initialized Map that provides the detail page link as a value when given the name of a
      * (named) dynamic function as a key.<p>
-     * 
+     *
      * The provided Map key is assumed to be a String that represents a named dynamic function.<p>
-     * 
+     *
      * Usage example on a JSP with the JSTL:<pre>
      * &lt;a href=${cms.functionDetailPage['search']} /&gt
      * </pre>
-     *  
-     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     *
+     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a
      * (named) dynamic function as a key
-     * 
+     *
      * @see #getTypeDetailPage()
      */
     public Map<String, String> getFunctionDetailPage() {
 
         if (m_functionDetailPage == null) {
-            m_functionDetailPage = CmsCollectionsGenericWrapper.createLazyMap(new CmsDetailLookupTransformer(
-                CmsDetailPageInfo.FUNCTION_PREFIX));
+            m_functionDetailPage = CmsCollectionsGenericWrapper.createLazyMap(
+                new CmsDetailLookupTransformer(CmsDetailPageInfo.FUNCTION_PREFIX));
         }
         return m_functionDetailPage;
     }
@@ -918,8 +919,8 @@ public final class CmsJspStandardContextBean {
     /**
      * Returns a lazy map which creates a wrapper object for a dynamic function format when given an XML content
      * as a key.<p>
-     * 
-     * @return a lazy map for accessing function formats for a content 
+     *
+     * @return a lazy map for accessing function formats for a content
      */
     public Map<CmsJspContentAccessBean, CmsDynamicFunctionFormatWrapper> getFunctionFormatFromContent() {
 
@@ -942,7 +943,7 @@ public final class CmsJspStandardContextBean {
                 try {
                     widthNum = Integer.parseInt(width);
                 } catch (NumberFormatException e) {
-                    // NOOP 
+                    // NOOP
                 }
                 CmsDynamicFunctionBean.Format format = functionBean.getFormatForContainer(m_cms, type, widthNum);
                 CmsDynamicFunctionFormatWrapper wrapper = new CmsDynamicFunctionFormatWrapper(m_cms, format);
@@ -953,9 +954,9 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Checks if the current request should be direct edit enabled. 
+     * Checks if the current request should be direct edit enabled.
      * Online-, history-requests, previews and temporary files will not be editable.<p>
-     * 
+     *
      * @return <code>true</code> if the current request should be direct edit enabled
      */
     public boolean getIsEditMode() {
@@ -965,7 +966,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns if the current project is the online project.<p>
-     * 
+     *
      * @return <code>true</code> if the current project is the online project
      */
     public boolean getIsOnlineProject() {
@@ -975,7 +976,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns the current locale.<p>
-     * 
+     *
      * @return the current locale
      */
     public Locale getLocale() {
@@ -985,7 +986,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns the currently displayed container page.<p>
-     * 
+     *
      * @return the currently displayed container page
      */
     public CmsContainerPageBean getPage() {
@@ -995,8 +996,8 @@ public final class CmsJspStandardContextBean {
 
     /**
      * JSP EL accessor method for retrieving the preview formatters.<p>
-     * 
-     * @return a lazy map for accessing preview formatters 
+     *
+     * @return a lazy map for accessing preview formatters
      */
     public Map<String, String> getPreviewFormatter() {
 
@@ -1021,7 +1022,8 @@ public final class CmsJspStandardContextBean {
                     CmsUUID structureId = previewFormatter.getJspStructureId();
                     m_cms.readResource(structureId);
                     CmsResource formatterResource = m_cms.readResource(structureId);
-                    String formatterSitePath = m_cms.getRequestContext().removeSiteRoot(formatterResource.getRootPath());
+                    String formatterSitePath = m_cms.getRequestContext().removeSiteRoot(
+                        formatterResource.getRootPath());
                     return formatterSitePath;
                 } catch (CmsException e) {
                     LOG.warn(e.getLocalizedMessage(), e);
@@ -1035,13 +1037,13 @@ public final class CmsJspStandardContextBean {
     /**
      * Returns a HTML comment string that will cause the container page editor to reload the page if the element or its settings
      * were edited.<p>
-     * 
-     * @return the reload marker 
+     *
+     * @return the reload marker
      */
     public String getReloadMarker() {
 
         if (m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-            return ""; // reload marker is not needed in Online mode 
+            return ""; // reload marker is not needed in Online mode
         } else {
             return CmsGwtConstants.FORMATTER_RELOAD_MARKER;
         }
@@ -1049,7 +1051,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns the request context.<p>
-     * 
+     *
      * @return the request context
      */
     public CmsRequestContext getRequestContext() {
@@ -1059,7 +1061,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns the subsite path for the currently requested URI.<p>
-     * 
+     *
      * @return the subsite path
      */
     public String getSubSitePath() {
@@ -1070,7 +1072,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns the system information.<p>
-     * 
+     *
      * @return the system information
      */
     public CmsSystemInfo getSystemInfo() {
@@ -1080,8 +1082,8 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Gets a bean containing information about the current template.<p>
-     * 
-     * @return the template information bean 
+     *
+     * @return the template information bean
      */
     public TemplateBean getTemplate() {
 
@@ -1095,9 +1097,9 @@ public final class CmsJspStandardContextBean {
     /**
      * Returns the title of a page delivered from OpenCms, usually used for the <code>&lt;title&gt;</code> tag of
      * a HTML page.<p>
-     * 
+     *
      * If no title information has been found, the empty String "" is returned.<p>
-     * 
+     *
      * @return the title of the current page
      */
     public String getTitle() {
@@ -1135,18 +1137,18 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     * Returns a lazy initialized Map that provides the detail page link as a value when given the name of a
      * resource type as a key.<p>
-     * 
+     *
      * The provided Map key is assumed to be the name of a resource type that has a detail page configured.<p>
-     * 
+     *
      * Usage example on a JSP with the JSTL:<pre>
      * &lt;a href=${cms.typeDetailPage['bs-blog']} /&gt
      * </pre>
-     *  
-     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a 
+     *
+     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a
      * resource type as a key
-     * 
+     *
      * @see #getFunctionDetailPage()
      */
     public Map<String, String> getTypeDetailPage() {
@@ -1159,7 +1161,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns an initialized VFS access bean.<p>
-     * 
+     *
      * @return an initialized VFS access bean
      */
     public CmsJspVfsAccessBean getVfs() {
@@ -1173,7 +1175,7 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns the workplace locale from the current user's settings.<p>
-     * 
+     *
      * @return returns the workplace locale from the current user's settings
      */
     public Locale getWorkplaceLocale() {
@@ -1183,13 +1185,16 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns <code>true</code in case a detail page is available for the current element.<p>
-     * 
+     *
      * @return <code>true</code in case a detail page is available for the current element
      */
     public boolean isDetailPageAvailable() {
 
         boolean result = false;
-        if ((m_cms != null) && (m_element != null) && !m_element.isInMemoryOnly() && (m_element.getResource() != null)) {
+        if ((m_cms != null)
+            && (m_element != null)
+            && !m_element.isInMemoryOnly()
+            && (m_element.getResource() != null)) {
             try {
                 String detailPage = OpenCms.getADEManager().getDetailPageFinder().getDetailPage(
                     m_cms,
@@ -1205,9 +1210,9 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns <code>true</code> if this is a request to a detail resource, <code>false</code> otherwise.<p>
-     * 
+     *
      * Same as to check if {@link #getDetailContent()} is <code>null</code>.<p>
-     * 
+     *
      * @return <code>true</code> if this is a request to a detail resource, <code>false</code> otherwise
      */
     public boolean isDetailRequest() {
@@ -1277,9 +1282,9 @@ public final class CmsJspStandardContextBean {
         clearPageData();
     }
 
-    /** 
+    /**
      * Updates the internally stored OpenCms user context.<p>
-     * 
+     *
      * @param cms the new OpenCms user context
      */
     public void updateCmsObject(CmsObject cms) {
@@ -1294,8 +1299,8 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Updates the standard context bean from the request.<p>
-     * 
-     * @param cmsFlexRequest the request from which to update the data 
+     *
+     * @param cmsFlexRequest the request from which to update the data
      */
     public void updateRequestData(CmsFlexRequest cmsFlexRequest) {
 
@@ -1307,9 +1312,9 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns the formatter configuration to the given element.<p>
-     * 
+     *
      * @param element the element
-     * 
+     *
      * @return the formatter configuration
      */
     protected I_CmsFormatterBean getElementFormatter(CmsContainerElementBean element) {
@@ -1354,9 +1359,9 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Returns the parent element if available.<p>
-     * 
+     *
      * @param element the element
-     * 
+     *
      * @return the parent element or null
      */
     protected CmsContainerElementBean getParentElement(CmsContainerElementBean element) {
@@ -1374,11 +1379,11 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Reads a dynamic function bean, given its name in the module configuration.<p>
-     * 
-     * @param configuredName the name of the dynamic function in the module configuration  
-     * @return the dynamic function bean for the dynamic function configured under that name 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param configuredName the name of the dynamic function in the module configuration
+     * @return the dynamic function bean for the dynamic function configured under that name
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsDynamicFunctionBean readDynamicFunctionBean(String configuredName) throws CmsException {
 
@@ -1406,9 +1411,9 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Convenience method for getting a request attribute without an explicit cast.<p>
-     * 
-     * @param name the attribute name 
-     * @return the request attribute 
+     *
+     * @param name the attribute name
+     * @return the request attribute
      */
     @SuppressWarnings("unchecked")
     private <A> A getRequestAttribute(String name) {

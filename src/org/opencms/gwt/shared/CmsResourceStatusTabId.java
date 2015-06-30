@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,10 +32,8 @@ package org.opencms.gwt.shared;
  */
 public enum CmsResourceStatusTabId {
     /** Tab for relations from a resource. */
-    tabRelationsFrom,
-    /** Tab for relations to a resource. */
-    tabRelationsTo,
-    /** Tab for resource status information.*/
+    tabRelationsFrom, /** Tab for relations to a resource. */
+    tabRelationsTo, /** Tab for resource status information.*/
     tabStatus;
 
 }

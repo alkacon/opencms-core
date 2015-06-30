@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ public abstract class A_CmsEditWidget extends FocusWidget implements I_CmsEditWi
 
     /**
      * Constructor wrapping a specific DOM element.<p>
-     * 
+     *
      * @param element the element to wrap
      */
     protected A_CmsEditWidget(Element element) {
@@ -83,8 +83,8 @@ public abstract class A_CmsEditWidget extends FocusWidget implements I_CmsEditWi
 
     /**
      * Fires the value change event, if the value has changed.<p>
-     * 
-     * @param force <code>true</code> to force firing the event, not regarding an actually changed value 
+     *
+     * @param force <code>true</code> to force firing the event, not regarding an actually changed value
      */
     protected void fireValueChange(boolean force) {
 

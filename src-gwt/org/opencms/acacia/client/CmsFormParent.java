@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ public class CmsFormParent extends ComplexPanel implements I_CmsInlineFormParent
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param rootPanel the root panel to wrap
      */
     public CmsFormParent(RootPanel rootPanel) {
@@ -105,7 +105,7 @@ public class CmsFormParent extends ComplexPanel implements I_CmsInlineFormParent
     /**
      * Provides subclasses access to the topmost widget that defines this
      * panel.
-     * 
+     *
      * @return the widget
      */
     protected Widget getWidget() {
@@ -117,7 +117,7 @@ public class CmsFormParent extends ComplexPanel implements I_CmsInlineFormParent
      * Sets the widget to be wrapped by the composite. The wrapped widget must be
      * set before calling any {@link Widget} methods on this object, or adding it
      * to a panel. This method may only be called once for a given composite.
-     * 
+     *
      * @param widget the widget to be wrapped
      */
     protected void initWidget(Widget widget) {

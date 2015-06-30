@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,8 +38,8 @@ import java.io.PrintStream;
 
 /**
  * Used for the workplace setup in the OpenCms setup wizard.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsUpdateDBThread extends Thread {
 
@@ -58,9 +58,9 @@ public class CmsUpdateDBThread extends Thread {
     /** Saves the System.out stream so it can be restored. */
     private PrintStream m_tempOut;
 
-    /** 
+    /**
      * Constructor.<p>
-     * 
+     *
      * @param updateBean the initialized update bean
      */
     public CmsUpdateDBThread(CmsUpdateBean updateBean) {
@@ -71,15 +71,14 @@ public class CmsUpdateDBThread extends Thread {
         m_updateBean = updateBean;
         // init stream and logging thread
         m_pipedOut = new PipedOutputStream();
-        m_loggingThread = new CmsSetupLoggingThread(m_pipedOut, m_updateBean.getWebAppRfsPath()
-            + CmsSystemInfo.FOLDER_WEBINF
-            + CmsLog.FOLDER_LOGS
-            + "db-update.log");
+        m_loggingThread = new CmsSetupLoggingThread(
+            m_pipedOut,
+            m_updateBean.getWebAppRfsPath() + CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "db-update.log");
     }
 
     /**
      * Returns the logging thread.<p>
-     * 
+     *
      * @return the logging thread
      */
     public CmsSetupLoggingThread getLoggingThread() {
@@ -87,10 +86,10 @@ public class CmsUpdateDBThread extends Thread {
         return m_loggingThread;
     }
 
-    /** 
+    /**
      * Returns the status of the logging thread.<p>
-     * 
-     * @return the status of the logging thread 
+     *
+     * @return the status of the logging thread
      */
     public boolean isFinished() {
 
@@ -98,7 +97,7 @@ public class CmsUpdateDBThread extends Thread {
     }
 
     /**
-     * Kills this Thread as well as the included logging Thread.<p> 
+     * Kills this Thread as well as the included logging Thread.<p>
      */
     public void kill() {
 
@@ -114,15 +113,15 @@ public class CmsUpdateDBThread extends Thread {
     @Override
     public void run() {
 
-        // save the original out and err stream 
+        // save the original out and err stream
         m_tempOut = System.out;
         m_tempErr = System.err;
         try {
-            // redirect the streams 
+            // redirect the streams
             System.setOut(new PrintStream(m_pipedOut));
             System.setErr(new PrintStream(m_pipedOut));
 
-            // start the logging thread 
+            // start the logging thread
             m_loggingThread.start();
 
             System.out.println("Starting DB Update... ");

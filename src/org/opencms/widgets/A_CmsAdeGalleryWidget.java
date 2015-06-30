@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,8 +52,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Base class for all ADE gallery widget implementations.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
@@ -76,7 +76,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
 
     /**
      * Creates a new gallery widget with the given configuration.<p>
-     * 
+     *
      * @param configuration the configuration to use
      */
     protected A_CmsAdeGalleryWidget(String configuration) {
@@ -128,7 +128,8 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
         }
         StringBuffer result = new StringBuffer(512);
         result.append("<td class=\"xmlTd\">");
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\"><tr><td class=\"xmlTd\">");
+        result.append(
+            "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\"><tr><td class=\"xmlTd\">");
         result.append("<input class=\"xmlInput textInput");
         if (param.hasError()) {
             result.append(" xmlInputError");
@@ -144,9 +145,15 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
         result.append(id);
         result.append("');\"></td>");
         result.append(widgetDialog.dialogHorizontalSpacer(10));
-        result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-        result.append(widgetDialog.button(getOpenGalleryCall(cms, widgetDialog, param, idHash), null, getGalleryName()
-            + "gallery", Messages.getButtonName(getGalleryName()), widgetDialog.getButtonStyle()));
+        result.append(
+            "<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+        result.append(
+            widgetDialog.button(
+                getOpenGalleryCall(cms, widgetDialog, param, idHash),
+                null,
+                getGalleryName() + "gallery",
+                Messages.getButtonName(getGalleryName()),
+                widgetDialog.getButtonStyle()));
         // create preview button
         String previewClass = "hide";
         if (CmsStringUtil.isNotEmpty(value) && value.startsWith("/")) {
@@ -159,12 +166,13 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
         result.append(id);
         result.append("\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-        result.append(widgetDialog.button(
-            getOpenPreviewCall(widgetDialog, param.getId()),
-            null,
-            "preview.png",
-            Messages.GUI_BUTTON_PREVIEW_0,
-            widgetDialog.getButtonStyle()));
+        result.append(
+            widgetDialog.button(
+                getOpenPreviewCall(widgetDialog, param.getId()),
+                null,
+                "preview.png",
+                Messages.GUI_BUTTON_PREVIEW_0,
+                widgetDialog.getButtonStyle()));
 
         result.append("</tr></table>");
 
@@ -197,7 +205,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
 
     /**
      * Returns the lower case name of the gallery, for example <code>"html"</code>.<p>
-     * 
+     *
      * @return the lower case name of the gallery
      */
     public abstract String getGalleryName();
@@ -246,15 +254,15 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
     /**
      * Returns additional widget information encapsulated in a JSON object.<p>
      * May be <code>null</code>.<p>
-     * 
+     *
      * @param cms an initialized instance of a CmsObject
      * @param resource the edited resource
      * @param messages the dialog messages
      * @param param the widget parameter to generate the widget for
-     * 
+     *
      * @return additional widget information
-     * 
-     * @throws JSONException if something goes wrong generating the JSON object 
+     *
+     * @throws JSONException if something goes wrong generating the JSON object
      */
     protected abstract JSONObject getAdditionalGalleryInfo(
         CmsObject cms,
@@ -264,13 +272,13 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
 
     /**
      * Returns the required gallery open parameters.
-     * 
+     *
      * @param cms an initialized instance of a CmsObject
      * @param messages the dialog messages
      * @param param the widget parameter to generate the widget for
      * @param resource the resource being edited
      * @param hashId the field id hash
-     * 
+     *
      * @return the gallery open parameters
      */
     protected Map<String, String> getGalleryOpenParams(
@@ -309,10 +317,10 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
         return result;
     }
 
-    /** 
+    /**
      * Gets the prefix for the key used to store the last selected gallery.<p>
-     * 
-     * @return the key prefix 
+     *
+     * @return the key prefix
      */
     protected String getGalleryStoragePrefix() {
 
@@ -321,20 +329,20 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
 
     /**
      * Returns the resource type names available within this gallery widget.<p>
-     * 
+     *
      * @return the resource type names
      */
     protected abstract String getGalleryTypes();
 
     /**
      * Returns the gallery widget configuration as a JSON object.<p>
-     * 
+     *
      * @param cms the cms context
      * @param schemaType the schema type
      * @param messages the messages
      * @param resource the edited resource
      * @param contentLocale the content locale
-     * 
+     *
      * @return  the gallery widget configuration
      */
     protected JSONObject getJSONConfig(
@@ -368,12 +376,12 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
 
     /**
      * Returns the javascript call to open the gallery widget dialog.<p>
-     * 
+     *
      * @param cms an initialized instance of a CmsObject
      * @param widgetDialog the dialog where the widget is used on
      * @param param the widget parameter to generate the widget for
      * @param hashId the field id hash
-     * 
+     *
      * @return the javascript call to open the gallery widget dialog
      */
     protected String getOpenGalleryCall(
@@ -415,10 +423,10 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
 
     /**
      * Returns the javascript call to open the preview dialog.<p>
-     * 
+     *
      * @param widgetDialog the dialog where the widget is used on
      * @param id the field id
-     * 
+     *
      * @return the javascript call to open the preview dialog
      */
     protected String getOpenPreviewCall(I_CmsWidgetDialog widgetDialog, String id) {
@@ -433,11 +441,11 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
 
     /**
      * Returns the widget configuration.<p>
-     *  
+     *
      * @param cms an initialized instance of a CmsObject
      * @param messages the dialog where the widget is used on
      * @param param the widget parameter to generate the widget for
-     * 
+     *
      * @return the widget configuration
      */
     protected CmsGalleryWidgetConfiguration getWidgetConfiguration(

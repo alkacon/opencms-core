@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -79,13 +79,13 @@ public class CmsResourceComparison {
     }
 
     /**
-     * Helper method that collects all meta attributes of the two file versions and 
+     * Helper method that collects all meta attributes of the two file versions and
      * finds out, which of the attributes were added, removed, modified or remain unchanged.<p>
-     * 
+     *
      * @param cms the CmsObject to use
      * @param resource1 the first resource to read the properties from
      * @param resource2 the second resource to read the properties from
-     * 
+     *
      * @return a list of the compared attributes
      */
     public static List<CmsAttributeComparison> compareAttributes(
@@ -94,10 +94,11 @@ public class CmsResourceComparison {
         CmsResource resource2) {
 
         List<CmsAttributeComparison> comparedAttributes = new ArrayList<CmsAttributeComparison>();
-        comparedAttributes.add(new CmsAttributeComparison(
-            Messages.GUI_HISTORY_COLS_SIZE_0,
-            String.valueOf(resource1.getLength()),
-            String.valueOf(resource2.getLength())));
+        comparedAttributes.add(
+            new CmsAttributeComparison(
+                Messages.GUI_HISTORY_COLS_SIZE_0,
+                String.valueOf(resource1.getLength()),
+                String.valueOf(resource2.getLength())));
         String release1;
         if (CmsResource.DATE_RELEASED_DEFAULT == resource1.getDateReleased()) {
             release1 = "-";
@@ -136,10 +137,11 @@ public class CmsResourceComparison {
                 cms.getRequestContext().getLocale());
         }
         comparedAttributes.add(new CmsAttributeComparison(Messages.GUI_LABEL_DATE_EXPIRED_0, expire1, expire2));
-        comparedAttributes.add(new CmsAttributeComparison(
-            Messages.GUI_PERMISSION_INTERNAL_0,
-            String.valueOf(resource1.isInternal()),
-            String.valueOf(resource2.isInternal())));
+        comparedAttributes.add(
+            new CmsAttributeComparison(
+                Messages.GUI_PERMISSION_INTERNAL_0,
+                String.valueOf(resource1.isInternal()),
+                String.valueOf(resource2.isInternal())));
         String dateLastModified1 = CmsDateUtil.getDateTime(
             new Date(resource1.getDateLastModified()),
             DateFormat.SHORT,
@@ -148,10 +150,8 @@ public class CmsResourceComparison {
             new Date(resource2.getDateLastModified()),
             DateFormat.SHORT,
             cms.getRequestContext().getLocale());
-        comparedAttributes.add(new CmsAttributeComparison(
-            Messages.GUI_LABEL_DATE_LAST_MODIFIED_0,
-            dateLastModified1,
-            dateLastModified2));
+        comparedAttributes.add(
+            new CmsAttributeComparison(Messages.GUI_LABEL_DATE_LAST_MODIFIED_0, dateLastModified1, dateLastModified2));
         try {
             String type1 = OpenCms.getResourceManager().getResourceType(resource1.getTypeId()).getTypeName();
             String type2 = OpenCms.getResourceManager().getResourceType(resource2.getTypeId()).getTypeName();
@@ -167,27 +167,30 @@ public class CmsResourceComparison {
             new Date(resource2.getDateCreated()),
             DateFormat.SHORT,
             cms.getRequestContext().getLocale());
-        comparedAttributes.add(new CmsAttributeComparison(
-            Messages.GUI_HISTORY_COLS_DATE_PUBLISHED_0,
-            dateCreated1,
-            dateCreated2));
+        comparedAttributes.add(
+            new CmsAttributeComparison(Messages.GUI_HISTORY_COLS_DATE_PUBLISHED_0, dateCreated1, dateCreated2));
         try {
             String userLastModified1 = resource1.getUserLastModified().toString();
             try {
-                userLastModified1 = CmsPrincipal.readPrincipalIncludingHistory(cms, resource1.getUserLastModified()).getName();
+                userLastModified1 = CmsPrincipal.readPrincipalIncludingHistory(
+                    cms,
+                    resource1.getUserLastModified()).getName();
             } catch (CmsDbEntryNotFoundException e) {
                 // ignore
             }
             String userLastModified2 = resource2.getUserLastModified().toString();
             try {
-                userLastModified2 = CmsPrincipal.readPrincipalIncludingHistory(cms, resource2.getUserLastModified()).getName();
+                userLastModified2 = CmsPrincipal.readPrincipalIncludingHistory(
+                    cms,
+                    resource2.getUserLastModified()).getName();
             } catch (CmsDbEntryNotFoundException e) {
                 // ignore
             }
-            comparedAttributes.add(new CmsAttributeComparison(
-                Messages.GUI_LABEL_USER_LAST_MODIFIED_0,
-                userLastModified1,
-                userLastModified2));
+            comparedAttributes.add(
+                new CmsAttributeComparison(
+                    Messages.GUI_LABEL_USER_LAST_MODIFIED_0,
+                    userLastModified1,
+                    userLastModified2));
         } catch (CmsException e) {
             LOG.error(e.getMessage(), e);
         }
@@ -199,15 +202,15 @@ public class CmsResourceComparison {
 
     /**
      * Helper method that finds out, which of the properties were added, removed, modified or remain unchanged.<p>
-     * 
+     *
      * @param cms the CmsObject to use
      * @param resource1 the first resource to read the properties from
      * @param version1 the version of the first resource
      * @param resource2 the second resource to read the properties from
      * @param version2 the version of the second resource
-     * 
+     *
      * @return a list of the compared attributes
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public static List<CmsAttributeComparison> compareProperties(
@@ -262,20 +265,14 @@ public class CmsResourceComparison {
         Iterator<CmsProperty> i = addedProperties.iterator();
         while (i.hasNext()) {
             prop = i.next();
-            comparedProperties.add(new CmsAttributeComparison(
-                prop.getName(),
-                "",
-                prop.getValue(),
-                CmsResourceComparison.TYPE_ADDED));
+            comparedProperties.add(
+                new CmsAttributeComparison(prop.getName(), "", prop.getValue(), CmsResourceComparison.TYPE_ADDED));
         }
         i = removedProperties.iterator();
         while (i.hasNext()) {
             prop = i.next();
-            comparedProperties.add(new CmsAttributeComparison(
-                prop.getName(),
-                prop.getValue(),
-                "",
-                CmsResourceComparison.TYPE_REMOVED));
+            comparedProperties.add(
+                new CmsAttributeComparison(prop.getName(), prop.getValue(), "", CmsResourceComparison.TYPE_REMOVED));
         }
         i = retainedProperties.iterator();
         while (i.hasNext()) {
@@ -283,17 +280,11 @@ public class CmsResourceComparison {
             String value1 = properties1.get(properties1.indexOf(prop)).getValue();
             String value2 = properties2.get(properties2.indexOf(prop)).getValue();
             if (value1.equals(value2)) {
-                comparedProperties.add(new CmsAttributeComparison(
-                    prop.getName(),
-                    value1,
-                    value2,
-                    CmsResourceComparison.TYPE_UNCHANGED));
+                comparedProperties.add(
+                    new CmsAttributeComparison(prop.getName(), value1, value2, CmsResourceComparison.TYPE_UNCHANGED));
             } else {
-                comparedProperties.add(new CmsAttributeComparison(
-                    prop.getName(),
-                    value1,
-                    value2,
-                    CmsResourceComparison.TYPE_CHANGED));
+                comparedProperties.add(
+                    new CmsAttributeComparison(prop.getName(), value1, value2, CmsResourceComparison.TYPE_CHANGED));
             }
         }
         return comparedProperties;

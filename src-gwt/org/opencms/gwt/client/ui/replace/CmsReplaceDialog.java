@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -131,7 +131,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param handler the dialog handler
      */
     public CmsReplaceDialog(CmsReplaceHandler handler) {
@@ -154,8 +154,8 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
             }
         });
 
-        CmsPushButton cancelButton = createButton(org.opencms.gwt.client.Messages.get().key(
-            org.opencms.gwt.client.Messages.GUI_CANCEL_0));
+        CmsPushButton cancelButton = createButton(
+            org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_CANCEL_0));
         cancelButton.addClickHandler(new ClickHandler() {
 
             /**
@@ -182,8 +182,8 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Returns the action which should be executed when the upload dialog is finished.<p>
-     * 
-     * @return an action to run when the upload dialog is finished 
+     *
+     * @return an action to run when the upload dialog is finished
      */
     public Runnable getFinishAction() {
 
@@ -204,7 +204,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Parses the upload response of the server and decides what to do.<p>
-     * 
+     *
      * @param results a JSON Object
      */
     public void parseResponse(String results) {
@@ -216,7 +216,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
             JSONObject jsonObject = JSONParser.parseStrict(results).isObject();
             boolean success = jsonObject.get(I_CmsUploadConstants.KEY_SUCCESS).isBoolean().booleanValue();
             // If the upload is done so fast that we did not receive any progress information, then
-            // the content length is unknown. For that reason take the request size to show how 
+            // the content length is unknown. For that reason take the request size to show how
             // much bytes were uploaded.
             double size = jsonObject.get(I_CmsUploadConstants.KEY_REQUEST_SIZE).isNumber().doubleValue();
             long requestSize = new Double(size).longValue();
@@ -237,8 +237,8 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Sets an action that should be executed if the upload dialog is finished.<p>
-     * 
-     * @param action the action to execute when finished 
+     *
+     * @param action the action to execute when finished
      */
     public void setFinishAction(Runnable action) {
 
@@ -247,7 +247,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Shows the error report.<p>
-     * 
+     *
      * @param message the message to show
      * @param stacktrace the stacktrace to show
      */
@@ -312,9 +312,9 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Returns the resource type name for a given filename.<p>
-     * 
+     *
      * @param file the file info
-     * 
+     *
      * @return the resource type name
      */
     protected String getResourceType(CmsFileInfo file) {
@@ -324,7 +324,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Returns the upload service instance.<p>
-     * 
+     *
      * @return the upload service instance
      */
     protected I_CmsUploadServiceAsync getUploadService() {
@@ -339,7 +339,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Returns the upload JSP uri.<p>
-     * 
+     *
      * @return the upload JSP uri
      */
     protected String getUploadUri() {
@@ -349,7 +349,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Initializes the dialog content with the replace information.<p>
-     * 
+     *
      * @param replaceInfo the replace information
      */
     protected void initContent(CmsReplaceInfo replaceInfo) {
@@ -368,7 +368,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Initializes the dialog content.<p>
-     * 
+     *
      * @param structureId the structure id of the file to replace
      */
     protected void initContent(final CmsUUID structureId) {
@@ -394,7 +394,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Sets the file input.<p>
-     * 
+     *
      * @param fileInput the file input
      */
     protected void setFileInput(CmsFileInput fileInput) {
@@ -453,7 +453,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Updates the progress bar.<p>
-     * 
+     *
      * @param info the progress info
      */
     protected void updateProgressBar(CmsUploadProgessInfo info) {
@@ -504,7 +504,8 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
             if (!m_replaceInfo.getSitepath().endsWith(file.getFileSuffix())) {
                 Image warningImage = new Image(I_CmsImageBundle.INSTANCE.warningSmallImage());
                 warningImage.setTitle(Messages.get().key(Messages.GUI_REPLACE_WRONG_FILE_EXTENSION_0));
-                warningImage.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+                warningImage.addStyleName(
+                    org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
                 m_fileWidget.addButton(warningImage);
             }
         }
@@ -531,9 +532,9 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Creates a dialog text button.<p>
-     * 
+     *
      * @param buttonText the button text
-     * 
+     *
      * @return the button
      */
     private CmsPushButton createButton(String buttonText) {
@@ -577,9 +578,9 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Creates the widget to display the selected file information.<p>
-     * 
+     *
      * @param file the file info
-     * 
+     *
      * @return the widget
      */
     private CmsListItemWidget createFileWidget(CmsFileInfo file) {
@@ -631,9 +632,9 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
     /**
      * Starts the loading animation.<p>
-     * 
+     *
      * Used while client is loading files from hard disk into memory.<p>
-     * 
+     *
      * @param msg the message that should be displayed below the loading animation (can also be HTML as String)
      * @param delayMillis the delay to start the animation with
      */

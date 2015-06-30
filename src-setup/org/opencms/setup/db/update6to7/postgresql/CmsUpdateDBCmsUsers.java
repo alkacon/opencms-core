@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,7 +48,7 @@ import java.util.Map;
 
 /**
  * PostgreSQL implementation of the generic update class for the Users.<p>
- * 
+ *
  * @since 7.0.2
  */
 public class CmsUpdateDBCmsUsers extends org.opencms.setup.db.update6to7.CmsUpdateDBCmsUsers {
@@ -85,7 +85,7 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.db.update6to7.CmsUpda
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the sql queries properties file could not be read
      */
     public CmsUpdateDBCmsUsers()
@@ -113,7 +113,7 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.db.update6to7.CmsUpda
             e.printStackTrace();
         }
         try {
-            // Check if the CMS_USERDATA table exists            
+            // Check if the CMS_USERDATA table exists
             if (!checkUserDataTable(dbCon)) {
                 createUserDataTable(dbCon); // Could throw Exception during table creation
 
@@ -205,9 +205,9 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.db.update6to7.CmsUpda
 
     /**
      * Writes one set of additional user info (key and its value) to the CMS_USERDATA table.<p>
-     * 
+     *
      * @param dbCon the db connection interface
-     * @param id the user id 
+     * @param id the user id
      * @param key the data key
      * @param value the data value
      */

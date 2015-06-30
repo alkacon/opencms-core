@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -216,9 +216,9 @@ public class CmsConfigurationReader {
     /** The resource type configuration objects. */
     private List<CmsResourceTypeConfig> m_resourceTypeConfigs = new ArrayList<CmsResourceTypeConfig>();
 
-    /** 
+    /**
      * Creates a new configuration reader.<p>
-     * 
+     *
      * @param cms the CMS context which should be used to read the configuration data.<p>
      */
     public CmsConfigurationReader(CmsObject cms) {
@@ -228,11 +228,11 @@ public class CmsConfigurationReader {
 
     /**
      * Gets the string value of an XML content location.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param location an XML content location 
-     * 
-     * @return the string value of that XML content location 
+     *
+     * @param cms the CMS context to use
+     * @param location an XML content location
+     *
+     * @return the string value of that XML content location
      */
     public static String getString(CmsObject cms, I_CmsXmlContentValueLocation location) {
 
@@ -244,11 +244,11 @@ public class CmsConfigurationReader {
 
     /**
      * Helper method to parse a property.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param field the location of the parent value 
-     * 
-     * @return the parsed property configuration 
+     *
+     * @param cms the CMS context to use
+     * @param field the location of the parent value
+     *
+     * @return the parsed property configuration
      */
     public static CmsPropertyConfig parseProperty(CmsObject cms, I_CmsXmlContentLocation field) {
 
@@ -272,7 +272,7 @@ public class CmsConfigurationReader {
         try {
             order = Integer.parseInt(orderStr);
         } catch (NumberFormatException e) {
-            // noop 
+            // noop
         }
 
         CmsXmlContentProperty prop = new CmsXmlContentProperty(
@@ -295,8 +295,8 @@ public class CmsConfigurationReader {
 
     /**
      * Returns the list of function references.<p>
-     * 
-     * @return the list of function references 
+     *
+     * @return the list of function references
      */
     public List<CmsFunctionReference> getFunctionReferences() {
 
@@ -313,11 +313,11 @@ public class CmsConfigurationReader {
         return m_modelPageConfigs;
     }
 
-    /** 
+    /**
      * Parses the formatters to add.<p>
-     * 
-     * @param node the parent node 
-     * @return the set of keys of the formatters to add 
+     *
+     * @param node the parent node
+     * @return the set of keys of the formatters to add
      */
     public Set<String> parseAddFormatters(I_CmsXmlContentLocation node) {
 
@@ -330,12 +330,12 @@ public class CmsConfigurationReader {
 
     /**
      * Parses a configuration XML content and creates a configuration object from it.<p>
-     * 
-     * @param basePath the base path 
+     *
+     * @param basePath the base path
      * @param content the XML content
-     *  
-     * @return the created configuration object with the data from the XML content 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the created configuration object with the data from the XML content
+     * @throws CmsException if something goes wrong
      */
     public CmsADEConfigDataInternal parseConfiguration(String basePath, CmsXmlContent content) throws CmsException {
 
@@ -386,8 +386,8 @@ public class CmsConfigurationReader {
         boolean createContentsLocally = getBoolean(root, N_CREATE_CONTENTS_LOCALLY);
         boolean preferDetailPagesForLocalContents = getBoolean(root, N_PREFER_DETAIL_PAGES_FOR_LOCAL_CONTENTS);
 
-        boolean isModuleConfig = OpenCms.getResourceManager().getResourceType(content.getFile().getTypeId()).getTypeName().equals(
-            CmsADEManager.MODULE_CONFIG_TYPE);
+        boolean isModuleConfig = OpenCms.getResourceManager().getResourceType(
+            content.getFile().getTypeId()).getTypeName().equals(CmsADEManager.MODULE_CONFIG_TYPE);
         CmsADEConfigDataInternal result = new CmsADEConfigDataInternal(
             content.getFile(),
             isModuleConfig,
@@ -408,12 +408,12 @@ public class CmsConfigurationReader {
 
     /**
      * Parses a folder which may either be given as a path or as a folder name.<p>
-     * 
-     * @param basePath the  base path for the configuration 
-     * @param location the XML content node from which to parse the folder 
-     * @return the folder bean 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param basePath the  base path for the configuration
+     * @param location the XML content node from which to parse the folder
+     * @return the folder bean
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsFolderOrName parseFolderOrName(String basePath, I_CmsXmlContentLocation location) throws CmsException {
 
@@ -424,9 +424,9 @@ public class CmsConfigurationReader {
         I_CmsXmlContentValueLocation pathLoc = location.getSubValue(N_PATH);
         if (nameLoc != null) {
             String name = nameLoc.asString(m_cms);
-            return new CmsFolderOrName(basePath == null ? null : CmsStringUtil.joinPaths(
-                basePath,
-                CmsADEManager.CONTENT_FOLDER_NAME), name);
+            return new CmsFolderOrName(
+                basePath == null ? null : CmsStringUtil.joinPaths(basePath, CmsADEManager.CONTENT_FOLDER_NAME),
+                name);
         } else if (pathLoc != null) {
             String path = pathLoc.asString(m_cms);
             CmsResource folder = m_cms.readResource(path);
@@ -438,11 +438,11 @@ public class CmsConfigurationReader {
 
     /**
      * Parses a formatter bean.<p>
-     * 
-     * @param typeName the type name for which the formatter is being parsed 
-     * @param node the node from which to parse the formatter data 
-     * 
-     * @return the formatter bean from the XML 
+     *
+     * @param typeName the type name for which the formatter is being parsed
+     * @param node the node from which to parse the formatter data
+     *
+     * @return the formatter bean from the XML
      */
     public CmsFormatterBean parseFormatter(String typeName, I_CmsXmlContentLocation node) {
 
@@ -454,17 +454,23 @@ public class CmsConfigurationReader {
         preview = (previewLoc != null) && Boolean.parseBoolean(previewLoc.asString(m_cms));
         String jsp = m_cms.getRequestContext().addSiteRoot(getString(node.getSubValue(N_JSP)));
         boolean searchContent = true;
-        CmsFormatterBean formatterBean = new CmsFormatterBean(type, jsp, minWidth, maxWidth, "" + preview, ""
-            + searchContent, null);
+        CmsFormatterBean formatterBean = new CmsFormatterBean(
+            type,
+            jsp,
+            minWidth,
+            maxWidth,
+            "" + preview,
+            "" + searchContent,
+            null);
         return formatterBean;
 
     }
 
-    /** 
+    /**
      * Parses model page data from the XML content.<p>
-     * 
-     * @param node the XML content node 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param node the XML content node
+     * @throws CmsException if something goes wrong
      */
     public void parseModelPage(I_CmsXmlContentLocation node) throws CmsException {
 
@@ -478,16 +484,17 @@ public class CmsConfigurationReader {
 
     }
 
-    /** 
+    /**
      * Parses the set of formatters to remove.<p>
-     * 
-     * @param node the parent node 
-     * @return the set of formatters to remove 
+     *
+     * @param node the parent node
+     * @return the set of formatters to remove
      */
     public Set<String> parseRemoveFormatters(I_CmsXmlContentLocation node) {
 
         Set<String> removeFormatters = new HashSet<String>();
-        for (I_CmsXmlContentValueLocation removeLoc : node.getSubValues(N_REMOVE_FORMATTERS + "/" + N_REMOVE_FORMATTER)) {
+        for (I_CmsXmlContentValueLocation removeLoc : node.getSubValues(
+            N_REMOVE_FORMATTERS + "/" + N_REMOVE_FORMATTER)) {
             removeFormatters.add(removeLoc.asString(m_cms).trim());
         }
         return removeFormatters;
@@ -495,10 +502,10 @@ public class CmsConfigurationReader {
 
     /**
      * Parses a resource type configuration element from the XML content.<p>
-     * 
-     * @param basePath the base path of the configuration 
-     * @param node the XML configuration node 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param basePath the base path of the configuration
+     * @param node the XML configuration node
+     * @throws CmsException if something goes wrong
      */
     public void parseResourceTypeConfig(String basePath, I_CmsXmlContentLocation node) throws CmsException {
 
@@ -566,13 +573,13 @@ public class CmsConfigurationReader {
         m_resourceTypeConfigs.add(typeConfig);
     }
 
-    /** 
+    /**
      * Parses the sitemap configuration given the configuration file and base path.<p>
-     * 
-     * @param basePath the base path 
-     * @param configRes the configuration file resource 
-     * @return the parsed configuration data 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param basePath the base path
+     * @param configRes the configuration file resource
+     * @return the parsed configuration data
+     * @throws CmsException if something goes wrong
      */
     public CmsADEConfigDataInternal parseSitemapConfiguration(String basePath, CmsResource configRes)
     throws CmsException {
@@ -585,7 +592,7 @@ public class CmsConfigurationReader {
 
     /**
      * Reads the configurations of all modules and combines them into a single configuration object.<p>
-     * 
+     *
      * @return the combined configuration object
      */
     public List<CmsADEConfigDataInternal> readModuleConfigurations() {
@@ -601,7 +608,7 @@ public class CmsConfigurationReader {
                 CmsADEConfigDataInternal config = parseSitemapConfiguration(null, configFile);
                 configurations.add(config);
             } catch (CmsVfsResourceNotFoundException e) {
-                // ignore 
+                // ignore
             } catch (CmsException e) {
                 // errors while parsing configuration
                 LOG.error(e.getLocalizedMessage(), e);
@@ -619,11 +626,11 @@ public class CmsConfigurationReader {
 
     /**
      * Helper method to read a boolean value from the XML.<p>
-     * 
+     *
      * If the element is not found in the XML, false is returned.<p>
-     * 
-     * @param parent the parent node 
-     * @param name the name of the XML content value 
+     *
+     * @param parent the parent node
+     * @param name the name of the XML content value
      * @return the boolean value
      */
     protected boolean getBoolean(I_CmsXmlContentLocation parent, String name) {
@@ -638,10 +645,10 @@ public class CmsConfigurationReader {
 
     /**
      * Gets the string value of an XML content location.<p>
-     * 
-     * @param location an XML content location 
-     * 
-     * @return the string value of that XML content location 
+     *
+     * @param location an XML content location
+     *
+     * @return the string value of that XML content location
      */
     protected String getString(I_CmsXmlContentValueLocation location) {
 
@@ -650,10 +657,10 @@ public class CmsConfigurationReader {
 
     /**
      * Parses the detail pages from an XML content node.<p>
-     * 
-     * @param node the XML content node 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param node the XML content node
+     *
+     * @throws CmsException if something goes wrong
      */
     protected void parseDetailPage(I_CmsXmlContentLocation node) throws CmsException {
 
@@ -678,9 +685,9 @@ public class CmsConfigurationReader {
 
     /**
      * Parses the formatter change set.<p>
-     * 
-     * @param node the parent node 
-     * @return the formatter change set 
+     *
+     * @param node the parent node
+     * @return the formatter change set
      */
     protected CmsFormatterChangeSet parseFormatterChangeSet(I_CmsXmlContentLocation node) {
 
@@ -692,8 +699,8 @@ public class CmsConfigurationReader {
 
     /**
      * Parses a function reference node.<p>
-     * 
-     * @param node the function reference node 
+     *
+     * @param node the function reference node
      */
     protected void parseFunctionReference(I_CmsXmlContentLocation node) {
 
@@ -715,8 +722,8 @@ public class CmsConfigurationReader {
 
     /**
      * Parses a single field definition from a content value.<p>
-     * 
-     * @param field the content value to parse the field from 
+     *
+     * @param field the content value to parse the field from
      */
     private void parseProperty(I_CmsXmlContentLocation field) {
 

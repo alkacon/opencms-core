@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,8 +44,8 @@ import java.util.List;
 
 /**
  * List for org unit resources.<p>
- * 
- * @since 6.5.4 
+ *
+ * @since 6.5.4
  */
 public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
 
@@ -60,7 +60,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsShowOrgUnitResourceList(CmsJspActionElement jsp) {
@@ -117,7 +117,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
 
     /**
      * Sets the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @param ouFqn the organizational unit fqn parameter value
      */
     public void setParamOufqn(String ouFqn) {

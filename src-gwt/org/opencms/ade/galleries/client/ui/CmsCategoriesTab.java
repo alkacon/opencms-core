@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,14 +55,14 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Provides the widget for the categories tab.<p>
- * 
+ *
  * It displays the available categories in the given sort order.
- * 
+ *
  * @since 8.0.
  */
 public class CmsCategoriesTab extends A_CmsListTab {
 
-    /** 
+    /**
      * Handles the change of the item selection.<p>
      */
     private class SelectionHandler extends A_SelectionHandler {
@@ -72,7 +72,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param categoryPath as id for the selected category
          * @param checkBox the reference to the checkbox
          */
@@ -111,8 +111,8 @@ public class CmsCategoriesTab extends A_CmsListTab {
 
     /**
      * Constructor.<p>
-     * 
-     * @param tabHandler the tab handler 
+     *
+     * @param tabHandler the tab handler
      */
     public CmsCategoriesTab(CmsCategoriesTabHandler tabHandler) {
 
@@ -124,8 +124,8 @@ public class CmsCategoriesTab extends A_CmsListTab {
 
     /**
      * Fill the content of the categories tab panel.<p>
-     * 
-     * @param categoryRoot the category tree root entry 
+     *
+     * @param categoryRoot the category tree root entry
      */
     public void fillContent(List<CmsCategoryTreeEntry> categoryRoot) {
 
@@ -147,8 +147,9 @@ public class CmsCategoriesTab extends A_CmsListTab {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                 title = categoryItem.getPath();
             }
-            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
-                Messages.GUI_PARAMS_LABEL_CATEGORIES_0), this);
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                Messages.get().key(Messages.GUI_PARAMS_LABEL_CATEGORIES_0),
+                this);
             panel.setContent(title, categoryPath);
             result.add(panel);
         }
@@ -190,7 +191,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
 
     /**
      * Deselect the categories  in the category list.<p>
-     * 
+     *
      * @param categories the categories to deselect
      */
     public void uncheckCategories(List<String> categories) {
@@ -203,7 +204,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
 
     /**
      * Updates the content of the categories list.<p>
-     * 
+     *
      * @param categoriesBeans the updates list of categories tree item beans
      * @param selectedCategories the categories to select in the list by update
      */
@@ -234,7 +235,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
                 checkBox.addClickHandler(selectionHandler);
                 dataValue.addClickHandler(selectionHandler);
                 dataValue.setUnselectable();
-                // set the category list item and add to list 
+                // set the category list item and add to list
                 CmsTreeItem listItem = new CmsTreeItem(false, checkBox, dataValue);
                 listItem.setSmallView(true);
                 listItem.setId(categoryBean.getPath());
@@ -247,7 +248,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
 
     /**
      * Updates the content of th categories tree.<p>
-     * 
+     *
      * @param treeEntries the root category entry
      * @param selectedCategories the categories to select after update
      */
@@ -261,7 +262,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
         if ((treeEntries != null) && !treeEntries.isEmpty()) {
             // add the first level and children
             for (CmsCategoryTreeEntry category : treeEntries) {
-                // set the category tree item and add to list 
+                // set the category tree item and add to list
                 CmsTreeItem treeItem = buildTreeItem(category, selectedCategories);
                 treeItem.setTree((CmsTree<CmsTreeItem>)m_scrollList);
                 addChildren(treeItem, category.getChildren(), selectedCategories);
@@ -325,8 +326,8 @@ public class CmsCategoriesTab extends A_CmsListTab {
 
     /**
      * Adds children item to the category tree and select the categories.<p>
-     * 
-     * @param parent the parent item 
+     *
+     * @param parent the parent item
      * @param children the list of children
      * @param selectedCategories the list of categories to select
      */
@@ -348,10 +349,10 @@ public class CmsCategoriesTab extends A_CmsListTab {
 
     /**
      * Builds a tree item for the given category.<p>
-     * 
+     *
      * @param category the category
      * @param selectedCategories the selected categories
-     * 
+     *
      * @return the tree item widget
      */
     private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
@@ -377,7 +378,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
         dataValue.addClickHandler(selectionHandler);
         dataValue.addButton(createSelectButton(selectionHandler));
         dataValue.setUnselectable();
-        // set the category tree item and add to list 
+        // set the category tree item and add to list
         CmsTreeItem treeItem = new CmsTreeItem(true, checkBox, dataValue);
         treeItem.setSmallView(true);
         treeItem.setId(category.getPath());
@@ -386,7 +387,7 @@ public class CmsCategoriesTab extends A_CmsListTab {
 
     /**
      * Goes up the tree and opens the parents of the item.<p>
-     * 
+     *
      * @param item the child item to start from
      */
     private void openParents(CmsTreeItem item) {

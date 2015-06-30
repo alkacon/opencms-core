@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,8 +38,8 @@ import org.dom4j.Element;
 
 /**
  * A nested content XML definition that is included by another XML content definition.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue {
 
@@ -47,8 +47,8 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue {
     private CmsXmlContentDefinition m_nestedContentDefinition;
 
     /**
-     * Creates a new XML content value for the nested content definition.<p> 
-     * 
+     * Creates a new XML content value for the nested content definition.<p>
+     *
      * @param document the XML content instance this value belongs to
      * @param contentDefinition the nested XML content definition
      * @param element the XML element that contains this value
@@ -68,7 +68,7 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue {
 
     /**
      * Creates a new nested content definition.<p>
-     * 
+     *
      * @param contentDefinition the content definition to nest
      * @param name the name of the XML node containing the value according to the XML schema
      * @param minOccurs minimum number of occurrences of this type according to the XML schema
@@ -100,7 +100,7 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue {
 
         // create the XML base node for the nested content definition
         Element element = root.addElement(getName());
-        // create a default XML element for the nested content definition        
+        // create a default XML element for the nested content definition
         element = m_nestedContentDefinition.createDefaultXml(cms, document, element, locale);
         // return the generated element
         return element;
@@ -151,7 +151,7 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue {
 
     /**
      * Returns <code>false</code>, since nested content definitions are never simple.<p>
-     *  
+     *
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#isSimpleType()
      */
     @Override

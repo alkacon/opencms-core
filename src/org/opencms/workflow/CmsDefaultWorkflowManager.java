@@ -146,7 +146,10 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
     /**
      * @see org.opencms.workflow.I_CmsWorkflowManager#createFormatter(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
      */
-    public I_CmsPublishResourceFormatter createFormatter(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options) {
+    public I_CmsPublishResourceFormatter createFormatter(
+        CmsObject cms,
+        CmsWorkflow workflow,
+        CmsPublishOptions options) {
 
         CmsDefaultPublishResourceFormatter formatter = new CmsDefaultPublishResourceFormatter(cms);
         return formatter;
@@ -162,7 +165,11 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
             // Don't need to get the resource list for canceling
             return new CmsWorkflowResponse(true, action.getAction(), null, null, null);
         }
-        List<CmsResource> resources = getWorkflowResources(cms, token.getWorkflow(), token.getOptions(), false).getWorkflowResources();
+        List<CmsResource> resources = getWorkflowResources(
+            cms,
+            token.getWorkflow(),
+            token.getOptions(),
+            false).getWorkflowResources();
         return executeAction(cms, action, token.getOptions(), resources);
     }
 
@@ -414,7 +421,8 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
                 @Override
                 public void run() {
 
-                    LOG.info("Checking broken relations is taking too long, using a different thread for checking and publishing now.");
+                    LOG.info(
+                        "Checking broken relations is taking too long, using a different thread for checking and publishing now.");
                     try {
                         // Make sure the computation is finished by calling get() without a timeout parameter
                         // We don't need the actual result of the get(), though; we just get the set of resource paths from the validator object
@@ -425,8 +433,9 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
                             CmsResource currentRes = resIter.next();
                             if (publish.getRelationValidator().keySet().contains(currentRes.getRootPath())) {
                                 resIter.remove();
-                                LOG.info("Excluding resource from publish list because relations would be broken: "
-                                    + currentRes.getRootPath());
+                                LOG.info(
+                                    "Excluding resource from publish list because relations would be broken: "
+                                        + currentRes.getRootPath());
                             }
                         }
                         publish.publishResources(resourcesToPublish);

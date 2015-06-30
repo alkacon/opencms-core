@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * List tree item implementation.<p>
- * 
+ *
  * Implemented as:
  * <pre>
  * &lt;li class='listTreeItem listTreeItem*state*'>
@@ -63,9 +63,9 @@ import com.google.gwt.user.client.ui.Widget;
  *   &lt;/ul>
  * &lt;/li>
  * </pre>
- * 
+ *
  * Where state can be <code>opened</code>, <code>closed</code> or <code>leaf</code>.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsTreeItem extends CmsListItem {
@@ -105,10 +105,10 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Creates a new list tree item containing a main widget and a check box.<p>
-     * 
+     *
      * @param showOpeners if true, show open/close icons
-     * @param checkbox the check box 
-     * @param mainWidget the main widget 
+     * @param checkbox the check box
+     * @param mainWidget the main widget
      */
     public CmsTreeItem(boolean showOpeners, CmsCheckBox checkbox, Widget mainWidget) {
 
@@ -123,9 +123,9 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Creates a new list tree item containing a main widget.<p>
-     * 
-     * @param showOpeners if true, show open/close icons 
-     * @param mainWidget the main widget 
+     *
+     * @param showOpeners if true, show open/close icons
+     * @param mainWidget the main widget
      */
     public CmsTreeItem(boolean showOpeners, Widget mainWidget) {
 
@@ -139,8 +139,8 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Creates a new tree item with a 24px wide icon.<p>
-     *  
-     * @param showOpeners if <code>true</code>, show open/close icons 
+     *
+     * @param showOpeners if <code>true</code>, show open/close icons
      * @param mainWidget the main widget
      * @param icon the icon style name
      */
@@ -157,10 +157,10 @@ public class CmsTreeItem extends CmsListItem {
         }
     }
 
-    /** 
+    /**
      * Default constructor.<p>
-     * 
-     * @param showOpeners if true, the opener icons should be shown 
+     *
+     * @param showOpeners if true, the opener icons should be shown
      */
     protected CmsTreeItem(boolean showOpeners) {
 
@@ -179,11 +179,11 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Returns the last opened item of a tree fragment.<p>
-     * 
+     *
      * @param item the tree item
      * @param stopLevel the level to stop at, set -1 to go to the very last opened item
      * @param requiresDropEnabled <code>true</code> if it is required the returned element to be drop enabled
-     * 
+     *
      * @return the last visible item of a tree fragment
      */
     protected static CmsTreeItem getLastOpenedItem(CmsTreeItem item, int stopLevel, boolean requiresDropEnabled) {
@@ -222,9 +222,9 @@ public class CmsTreeItem extends CmsListItem {
     /**
      * Method determining the path level by counting the number of '/'.<p>
      * Example: '/xxx/xxx/' has a path-level of 2.<p>
-     * 
+     *
      * @param path the path to test
-     * 
+     *
      * @return the path level
      */
     protected static native int getPathLevel(String path)/*-{
@@ -233,7 +233,7 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Unsupported operation.<p>
-     * 
+     *
      * @see org.opencms.gwt.client.ui.CmsListItem#add(com.google.gwt.user.client.ui.Widget)
      */
     @Override
@@ -244,9 +244,9 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Adds a child list item.<p>
-     * 
+     *
      * @param item the child to add
-     * 
+     *
      * @see org.opencms.gwt.client.ui.CmsList#addItem(org.opencms.gwt.client.ui.I_CmsListItem)
      */
     public void addChild(CmsTreeItem item) {
@@ -265,7 +265,7 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Removes all children.<p>
-     * 
+     *
      * @see org.opencms.gwt.client.ui.CmsList#clearList()
      */
     public void clearChildren() {
@@ -296,11 +296,11 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Returns the child tree item at the given position.<p>
-     * 
+     *
      * @param index the position
-     * 
+     *
      * @return the tree item
-     * 
+     *
      * @see org.opencms.gwt.client.ui.CmsList#getItem(int)
      */
     public CmsTreeItem getChild(int index) {
@@ -310,11 +310,11 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Returns the tree item with the given id.<p>
-     * 
+     *
      * @param itemId the id of the item to retrieve
-     * 
+     *
      * @return the tree item
-     * 
+     *
      * @see org.opencms.gwt.client.ui.CmsList#getItem(String)
      */
     public CmsTreeItem getChild(String itemId) {
@@ -325,9 +325,9 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Helper method which gets the number of children.<p>
-     * 
+     *
      * @return the number of children
-     * 
+     *
      * @see org.opencms.gwt.client.ui.CmsList#getWidgetCount()
      */
     public int getChildCount() {
@@ -337,7 +337,7 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Returns the children of this list item.<p>
-     * 
+     *
      * @return the children list
      */
     public CmsList<? extends I_CmsListItem> getChildren() {
@@ -361,9 +361,9 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Returns the given item position.<p>
-     * 
+     *
      * @param item the item to get the position for
-     * 
+     *
      * @return the item position
      */
     public int getItemPosition(CmsTreeItem item) {
@@ -392,7 +392,7 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Returns the path of IDs for the this item.<p>
-     * 
+     *
      * @return a path of IDs separated by slash
      */
     public String getPath() {
@@ -406,7 +406,7 @@ public class CmsTreeItem extends CmsListItem {
         String result = path.toString();
         if (result.startsWith("//")) {
             // This happens if the root item has an empty id.
-            // In that case, we cut off the first slash. 
+            // In that case, we cut off the first slash.
             result = result.substring(1);
         }
         return result;
@@ -414,7 +414,7 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Gets the tree to which this tree item belongs, or null if it does not belong to a tree.<p>
-     * 
+     *
      * @return a tree or <code>null</code>
      */
     public CmsTree<CmsTreeItem> getTree() {
@@ -422,7 +422,7 @@ public class CmsTreeItem extends CmsListItem {
         return m_tree;
     }
 
-    /** 
+    /**
      * Hides the open/close icons for this tree item and its descendants.<p>
      */
     public void hideOpeners() {
@@ -432,10 +432,10 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Inserts the given item at the given position.<p>
-     * 
+     *
      * @param item the item to insert
      * @param position the position
-     * 
+     *
      * @see org.opencms.gwt.client.ui.CmsList#insertItem(org.opencms.gwt.client.ui.I_CmsListItem, int)
      */
     public void insertChild(CmsTreeItem item, int position) {
@@ -486,11 +486,11 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Removes an item from the list.<p>
-     * 
+     *
      * @param item the item to remove
-     * 
-     * @return the removed item 
-     * 
+     *
+     * @return the removed item
+     *
      * @see org.opencms.gwt.client.ui.CmsList#removeItem(org.opencms.gwt.client.ui.I_CmsListItem)
      */
     public CmsTreeItem removeChild(final CmsTreeItem item) {
@@ -531,11 +531,11 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Removes the item identified by the given index from the list.<p>
-     * 
+     *
      * @param index the index of the item to remove
-     * 
-     * @return the removed item 
-     * 
+     *
+     * @return the removed item
+     *
      * @see org.opencms.gwt.client.ui.CmsList#remove(int)
      */
     public CmsTreeItem removeChild(int index) {
@@ -545,11 +545,11 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Removes an item from the list.<p>
-     * 
+     *
      * @param itemId the id of the item to remove
-     * 
+     *
      * @return the removed item
-     * 
+     *
      * @see org.opencms.gwt.client.ui.CmsList#removeItem(String)
      */
     public CmsTreeItem removeChild(String itemId) {
@@ -566,13 +566,13 @@ public class CmsTreeItem extends CmsListItem {
     }
 
     /**
-     * Positions the drag and drop placeholder as a sibling or descendant of this element.<p> 
-     * 
+     * Positions the drag and drop placeholder as a sibling or descendant of this element.<p>
+     *
      * @param x the cursor client x position
      * @param y the cursor client y position
      * @param placeholder the placeholder
      * @param orientation the drag and drop orientation
-     * 
+     *
      * @return the placeholder index
      */
     public int repositionPlaceholder(int x, int y, Element placeholder, Orientation orientation) {
@@ -582,7 +582,7 @@ public class CmsTreeItem extends CmsListItem {
             draggable = getTree().getDnDHandler().getDraggable();
         }
         Element itemElement = getListItemWidget().getElement();
-        // check if the mouse pointer is within the height of the element 
+        // check if the mouse pointer is within the height of the element
         int top = CmsDomUtil.getRelativeY(y, itemElement);
         int height = itemElement.getOffsetHeight();
         int index;
@@ -626,8 +626,10 @@ public class CmsTreeItem extends CmsListItem {
                 CmsTreeItem previousSibling = parentItem.getChild(index - 1);
                 if (previousSibling.isOpen()) {
                     // insert as last into the last opened of the siblings tree fragment
-                    return CmsTreeItem.getLastOpenedItem(previousSibling, originalPathLevel, true).insertPlaceholderAsLastChild(
-                        placeholder);
+                    return CmsTreeItem.getLastOpenedItem(
+                        previousSibling,
+                        originalPathLevel,
+                        true).insertPlaceholderAsLastChild(placeholder);
                 }
             }
             // insert place holder at the parent before the current item
@@ -678,7 +680,7 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Sets the tree item style to leaf, hiding the list opener.<p>
-     * 
+     *
      * @param isLeaf <code>true</code> to set to leaf style
      */
     public void setLeafStyle(boolean isLeaf) {
@@ -692,7 +694,7 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Opens or closes this tree item (i.e. shows or hides its descendants).<p>
-     * 
+     *
      * @param open if <code>true</code>, open the tree item, else close it
      */
     public void setOpen(boolean open) {
@@ -702,9 +704,9 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Opens or closes this tree item (i.e. shows or hides its descendants).<p>
-     * 
+     *
      * @param open if <code>true</code>, open the tree item, else close it
-     * @param fireEvents true if the open/close events should be fired 
+     * @param fireEvents true if the open/close events should be fired
      */
     public void setOpen(boolean open, boolean fireEvents) {
 
@@ -728,9 +730,9 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Sets the tree to which this tree item belongs.<p>
-     * 
+     *
      * This is automatically called when this tree item or one of its ancestors is inserted into a tree.<p>
-     * 
+     *
      * @param tree the tree into which the item has been inserted
      */
     public void setTree(CmsTree<CmsTreeItem> tree) {
@@ -751,10 +753,10 @@ public class CmsTreeItem extends CmsListItem {
         removeStyleName(CSS.listTreeItemNoOpeners());
     }
 
-    /** 
+    /**
      * Visits all nested tree items with the given visitor function.<p>
-     * 
-     * @param visitor the visitor 
+     *
+     * @param visitor the visitor
      */
     public void visit(Function<CmsTreeItem, Boolean> visitor) {
 
@@ -766,7 +768,7 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Adopts the given item.<p>
-     * 
+     *
      * @param item the item to adopt
      */
     protected void adopt(final CmsTreeItem item) {
@@ -794,7 +796,7 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Creates the button for opening/closing this item.<p>
-     * 
+     *
      * @return a button
      */
     protected CmsToggleButton createOpener() {
@@ -820,8 +822,8 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Executes the open call.<p>
-     * 
-     * @param fireEvents if true, open/close events will be fired 
+     *
+     * @param fireEvents if true, open/close events will be fired
      */
     protected void executeOpen(boolean fireEvents) {
 
@@ -852,8 +854,8 @@ public class CmsTreeItem extends CmsListItem {
         }
     }
 
-    /** 
-     * Fires the open event on the tree.<p> 
+    /**
+     * Fires the open event on the tree.<p>
      */
     protected void fireOpen() {
 
@@ -864,8 +866,8 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * The '-' image.<p>
-     * 
-     * @return the minus image 
+     *
+     * @return the minus image
      */
     protected Image getMinusImage() {
 
@@ -874,8 +876,8 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * The '+' image.<p>
-     * 
-     * @return the plus image 
+     *
+     * @return the plus image
      */
     protected Image getPlusImage() {
 
@@ -885,9 +887,9 @@ public class CmsTreeItem extends CmsListItem {
     /**
      * Inserts the placeholder element as last child of the children list.
      * Setting it's path as the current placeholder path and returning the new index.<p>
-     * 
+     *
      * @param placeholder the placeholder element
-     * 
+     *
      * @return the new index
      */
     protected int insertPlaceholderAsLastChild(Element placeholder) {
@@ -898,7 +900,7 @@ public class CmsTreeItem extends CmsListItem {
     }
 
     /**
-     * Helper method which is called when the list of children changes.<p> 
+     * Helper method which is called when the list of children changes.<p>
      */
     protected void onChangeChildren() {
 
@@ -907,11 +909,11 @@ public class CmsTreeItem extends CmsListItem {
 
     /**
      * Determines if the draggable should be inserted into the previous siblings children list.<p>
-     * 
-     * @param originalPathLevel the original path level 
+     *
+     * @param originalPathLevel the original path level
      * @param parent the parent item
      * @param index the current index
-     * 
+     *
      * @return <code>true</code> if the item should be inserted into the previous siblings children list
      */
     private boolean shouldInsertIntoSiblingList(int originalPathLevel, CmsTreeItem parent, int index) {

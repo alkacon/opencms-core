@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,16 +42,11 @@ public interface I_CmsButton {
     public enum ButtonColor {
 
         /** Button color. */
-        BLACK(I_CmsLayoutBundle.INSTANCE.buttonCss().black()),
-        /** Button color. */
-        BLUE(I_CmsLayoutBundle.INSTANCE.buttonCss().blue()),
-        /** Button color. */
-        GRAY(I_CmsLayoutBundle.INSTANCE.buttonCss().gray()),
-        /** Button color. */
-        GREEN(I_CmsLayoutBundle.INSTANCE.buttonCss().green()),
-        /** Button color. */
-        RED(I_CmsLayoutBundle.INSTANCE.buttonCss().red()),
-        /** Button color. */
+        BLACK(I_CmsLayoutBundle.INSTANCE.buttonCss().black()), /** Button color. */
+        BLUE(I_CmsLayoutBundle.INSTANCE.buttonCss().blue()), /** Button color. */
+        GRAY(I_CmsLayoutBundle.INSTANCE.buttonCss().gray()), /** Button color. */
+        GREEN(I_CmsLayoutBundle.INSTANCE.buttonCss().green()), /** Button color. */
+        RED(I_CmsLayoutBundle.INSTANCE.buttonCss().red()), /** Button color. */
         YELLOW(I_CmsLayoutBundle.INSTANCE.buttonCss().yellow());
 
         /** The list of additional style class names for this button style. */
@@ -59,7 +54,7 @@ public interface I_CmsButton {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param className the additional classes
          */
         private ButtonColor(String className) {
@@ -164,7 +159,7 @@ public interface I_CmsButton {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param iconClass the icon class name
          * @param title the title
          */
@@ -176,7 +171,7 @@ public interface I_CmsButton {
 
         /**
          * Returns the CSS class name.<p>
-         * 
+         *
          * @return the CSS class name
          */
         public String getIconClass() {
@@ -186,7 +181,7 @@ public interface I_CmsButton {
 
         /**
          * Returns the title.<p>
-         * 
+         *
          * @return the title
          */
         public String getTitle() {
@@ -219,7 +214,7 @@ public interface I_CmsButton {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param additionalClasses the additional classes
          */
         private ButtonStyle(String... additionalClasses) {
@@ -239,7 +234,7 @@ public interface I_CmsButton {
 
         /**
          * Returns the classes stored in the array as space separated list.<p>
-         * 
+         *
          * @return the classes stored in the array as space separated list
          */
         public String getCssClassName() {
@@ -269,7 +264,7 @@ public interface I_CmsButton {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param cssClassName the CSS class name
          */
         Size(String cssClassName) {
@@ -279,7 +274,7 @@ public interface I_CmsButton {
 
         /**
          * Returns the CSS class name of this style.<p>
-         * 
+         *
          * @return the CSS class name
          */
         public String getCssClassName() {

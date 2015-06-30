@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -77,8 +77,8 @@ import org.apache.lucene.search.TopDocs;
 
 /**
  * Implements the search within a the gallery index.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsGallerySearchIndex extends CmsSearchIndex {
 
@@ -108,10 +108,10 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /**
      * Default constructor only intended to be used by the XML configuration. <p>
-     * 
-     * It is recommended to use the constructor <code>{@link #CmsGallerySearchIndex(String)}</code> 
+     *
+     * It is recommended to use the constructor <code>{@link #CmsGallerySearchIndex(String)}</code>
      * as it enforces the mandatory name argument. <p>
-     * 
+     *
      */
     public CmsGallerySearchIndex() {
 
@@ -121,11 +121,11 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /**
      * Creates a new gallery search index with the given name.<p>
-     * 
-     * @param name the system-wide unique name for the search index 
-     * 
-     * @throws CmsIllegalArgumentException if the given name is null, empty or already taken by another search index 
-     * 
+     *
+     * @param name the system-wide unique name for the search index
+     *
+     * @throws CmsIllegalArgumentException if the given name is null, empty or already taken by another search index
+     *
      */
     public CmsGallerySearchIndex(String name)
     throws CmsIllegalArgumentException {
@@ -137,11 +137,11 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /**
      * Computes the search root folders for the given search parameters based on the search scope.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param params the current search parameters 
-     * 
-     * @return the search root folders based on the search scope 
+     *
+     * @param cms the current CMS context
+     * @param params the current search parameters
+     *
+     * @return the search root folders based on the search scope
      */
     public List<String> computeScopeFolders(CmsObject cms, CmsGallerySearchParameters params) {
 
@@ -153,9 +153,10 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             if (subsite != null) {
                 subsite = cms.getRequestContext().removeSiteRoot(subsite);
             } else if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_GALLERIES_COULD_NOT_EVALUATE_SUBSITE_1,
-                    params.getReferencePath()));
+                LOG.warn(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_GALLERIES_COULD_NOT_EVALUATE_SUBSITE_1,
+                        params.getReferencePath()));
             }
         } else if (LOG.isWarnEnabled()) {
             LOG.warn(Messages.get().getBundle().key(Messages.LOG_GALLERIES_NO_REFERENCE_PATH_PROVIDED_0));
@@ -169,11 +170,11 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /**
      * Returns the Lucene document with the given structure id from the index.<p>
-     * 
-     * @param structureId the structure id of the document to retrieve  
-     * 
+     *
+     * @param structureId the structure id of the document to retrieve
+     *
      * @return the Lucene document with the given root path from the index
-     * 
+     *
      * @deprecated Use {@link #getDocument(String, String)} instead and provide {@link CmsGallerySearchFieldMapping#FIELD_RESOURCE_STRUCTURE_ID} as field to search in
      */
     @Deprecated
@@ -203,11 +204,11 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /**
      * Returns the language locale for the given resource in this index.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param resource the resource to check
      * @param availableLocales a list of locales supported by the resource
-     * 
+     *
      * @return the language locale for the given resource in this index
      */
     @Override
@@ -228,12 +229,12 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /**
      * Gets the search roots to use for the given site/subsite parameters.<p>
-     *  
+     *
      * @param scope the search scope
-     * @param siteParam the current site 
+     * @param siteParam the current site
      * @param subSiteParam the current subsite
-     *  
-     * @return the list of search roots for that option 
+     *
+     * @return the list of search roots for that option
      */
     public List<String> getSearchRootsForScope(CmsGallerySearchScope scope, String siteParam, String subSiteParam) {
 
@@ -263,12 +264,12 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /**
      * Performs a search on the gallery index.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param params the parameters to use for the search
-     * 
+     *
      * @return the List of results found
-     * 
+     *
      * @throws CmsSearchException if something goes wrong
      */
     public synchronized CmsGallerySearchResultList searchGallery(CmsObject cms, CmsGallerySearchParameters params)
@@ -286,7 +287,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             // make sure to keep the request time when evaluating resource expiration
             searchCms.getRequestContext().setRequestTime(cms.getRequestContext().getRequestTime());
 
-            // change the project     
+            // change the project
             searchCms.getRequestContext().setCurrentProject(searchCms.readProject(getProject()));
 
             // several search options are searched using filters
@@ -302,7 +303,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             }
 
             if (!folders.isEmpty()) {
-                // appendPathFilter has some annoying default behavior for empty folder lists which conflicts with 
+                // appendPathFilter has some annoying default behavior for empty folder lists which conflicts with
                 // the scope filter logic below
                 filter = appendPathFilter(searchCms, filter, folders);
             }
@@ -327,7 +328,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
                     // build a filter with two cases joined by OR:
                     // CASE 1: document is a dynamic function => use search roots together with /system/modules
-                    // CASE 2: document is not a dynamic  function => use search roots as-is 
+                    // CASE 2: document is not a dynamic  function => use search roots as-is
 
                     BooleanFilter scopeFilter = filterOr(
                         filterAnd(functionTypeFilter, createPathFilter(searchRootsForFunctions)),
@@ -341,7 +342,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
             // append locale filter
             filter = appendLocaleFilter(searchCms, filter, params.getLocale());
-            // append date last modified filter            
+            // append date last modified filter
             filter = appendDateLastModifiedFilter(
                 filter,
                 params.getDateLastModifiedRange().getStartTime(),
@@ -354,9 +355,9 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             // append ignore search exclude filter
             filter = appendIgnoreSearchExclude(filter, params.isIgnoreSearchExclude());
 
-            // the search query to use, will be constructed in the next lines 
+            // the search query to use, will be constructed in the next lines
             Query query = null;
-            // store separate fields query for excerpt highlighting  
+            // store separate fields query for excerpt highlighting
             Query fieldsQuery = null;
 
             // get an index searcher that is certainly up to date
@@ -371,7 +372,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                 // extend the field names with the locale information
                 List<String> fields = params.getFields();
                 fields = getLocaleExtendedFields(params.getFields(), locale);
-                // add one sub-query for each of the selected fields, e.g. "content", "title" etc.                
+                // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
                 for (String field : fields) {
                     QueryParser p = new QueryParser(CmsSearchIndex.LUCENE_VERSION, field, getAnalyzer());
                     booleanFieldsQuery.add(p.parse(params.getSearchWords()), BooleanClause.Occur.SHOULD);
@@ -384,11 +385,11 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
             query = fieldsQuery;
 
             if (query == null) {
-                // if no text query is set, then we match all documents 
+                // if no text query is set, then we match all documents
                 query = new MatchAllDocsQuery();
             }
 
-            // perform the search operation          
+            // perform the search operation
             hits = searcher.search(query, filter, getMaxHits(), params.getSort(), true, true);
 
             if (hits != null) {
@@ -444,7 +445,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
                             visibleHitCount--;
                         }
                     } catch (Exception e) {
-                        // should not happen, but if it does we want to go on with the next result nevertheless                        
+                        // should not happen, but if it does we want to go on with the next result nevertheless
                         if (LOG.isWarnEnabled()) {
                             LOG.warn(Messages.get().getBundle().key(Messages.LOG_RESULT_ITERATION_FAILED_0), e);
                         }
@@ -468,24 +469,25 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /**
      * Appends a container type filter to the given filter clause that matches all given container types.<p>
-     * 
+     *
      * In case the provided List is null or empty, the original filter is left unchanged.<p>
-     * 
-     * The original filter parameter is extended and also provided as return value.<p> 
-     * 
+     *
+     * The original filter parameter is extended and also provided as return value.<p>
+     *
      * @param cms the current OpenCms search context
      * @param filter the filter to extend
      * @param containers the containers that will compose the filter
-     * 
+     *
      * @return the extended filter clause
      */
     protected BooleanFilter appendContainerTypeFilter(CmsObject cms, BooleanFilter filter, List<String> containers) {
 
         if ((containers != null) && (containers.size() > 0)) {
             // add query categories (if required)
-            filter.add(new FilterClause(getMultiTermQueryFilter(
-                CmsGallerySearchFieldMapping.FIELD_CONTAINER_TYPES,
-                containers), BooleanClause.Occur.MUST));
+            filter.add(
+                new FilterClause(
+                    getMultiTermQueryFilter(CmsGallerySearchFieldMapping.FIELD_CONTAINER_TYPES, containers),
+                    BooleanClause.Occur.MUST));
         }
 
         return filter;
@@ -493,42 +495,44 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /**
      * Appends the ignore search exclude property filter.<p>
-     * 
+     *
      * @param filter the filter to extend
      * @param ignoreSearchExclude <code>true</code> if the search exclude property should be ignored
-     * 
+     *
      * @return the extended filter clause
      */
     protected BooleanFilter appendIgnoreSearchExclude(BooleanFilter filter, boolean ignoreSearchExclude) {
 
         if (!ignoreSearchExclude) {
-            filter.add(new FilterClause(getMultiTermQueryFilter(
-                CmsSearchField.FIELD_SEARCH_EXCLUDE,
-                EXCLUDE_PROPERTY_VALUES), BooleanClause.Occur.MUST_NOT));
+            filter.add(
+                new FilterClause(
+                    getMultiTermQueryFilter(CmsSearchField.FIELD_SEARCH_EXCLUDE, EXCLUDE_PROPERTY_VALUES),
+                    BooleanClause.Occur.MUST_NOT));
         }
         return filter;
     }
 
     /**
      * Appends the locale filter to the given filter clause that matches the given locale.<p>
-     * 
+     *
      * In case the provided List is null or empty, the original filter is left unchanged.<p>
-     * 
-     * The original filter parameter is extended and also provided as return value.<p> 
-     * 
+     *
+     * The original filter parameter is extended and also provided as return value.<p>
+     *
      * @param cms the current OpenCms search context
      * @param filter the filter to extend
      * @param locale the locale that will compose the filter
-     * 
+     *
      * @return the extended filter clause
      */
     protected BooleanFilter appendLocaleFilter(CmsObject cms, BooleanFilter filter, String locale) {
 
         if (locale != null) {
             // add query categories (if required)
-            filter.add(new FilterClause(
-                getTermQueryFilter(CmsSearchField.FIELD_RESOURCE_LOCALES, locale),
-                BooleanClause.Occur.MUST));
+            filter.add(
+                new FilterClause(
+                    getTermQueryFilter(CmsSearchField.FIELD_RESOURCE_LOCALES, locale),
+                    BooleanClause.Occur.MUST));
         }
 
         return filter;
@@ -536,15 +540,15 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /**
      * Appends the a VFS path filter to the given filter clause that matches all given root paths.<p>
-     * 
+     *
      * In case the provided List is null or empty, the current request context site root is appended.<p>
-     * 
-     * The original filter parameter is extended and also provided as return value.<p> 
-     * 
+     *
+     * The original filter parameter is extended and also provided as return value.<p>
+     *
      * @param cms the current OpenCms search context
      * @param filter the filter to extend
      * @param roots the VFS root paths that will compose the filter
-     * 
+     *
      * @return the extended filter clause
      */
     @Override
@@ -573,10 +577,10 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /**
      * Creates a search filter for the given search root paths.<p>
-     * 
+     *
      * @param roots the search root paths
-     *  
-     * @return the filter which filters for the given search roots 
+     *
+     * @return the filter which filters for the given search roots
      */
     protected TermsFilter createPathFilter(Collection<String> roots) {
 
@@ -589,11 +593,11 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
     }
 
     /**
-     * Checks if the provided resource should be excluded from this search index.<p> 
+     * Checks if the provided resource should be excluded from this search index.<p>
      *
      * @param cms the OpenCms context used for building the search index
      * @param resource the resource to index
-     * 
+     *
      * @return true if the resource should be excluded, false if it should be included in this index
      */
     @Override
@@ -608,10 +612,10 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /**
      * Returns a list of locale extended field names.<p>
-     * 
+     *
      * @param fields the field name to extend
      * @param locale the locale to extend the field names with
-     * 
+     *
      * @return a list of locale extended field names
      */
     protected List<String> getLocaleExtendedFields(List<String> fields, Locale locale) {
@@ -633,7 +637,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
     /**
      * We are overriding getResource since the default implementation uses the path to read the resource,
      * which doesn't work for resources in a different site.<p>
-     * 
+     *
      * @see org.opencms.search.CmsSearchIndex#getResource(org.opencms.file.CmsObject, org.opencms.search.I_CmsSearchDocument)
      */
     @Override
@@ -641,7 +645,7 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
         String fieldStructureId = doc.getFieldValueAsString(CmsGallerySearchFieldMapping.FIELD_RESOURCE_STRUCTURE_ID);
         CmsUUID structureId = new CmsUUID(fieldStructureId);
-        // check if the resource exits in the VFS, 
+        // check if the resource exits in the VFS,
         // this will implicitly check read permission and if the resource was deleted
         //String contextPath = cms.getRequestContext().removeSiteRoot(doc.getPath());
 
@@ -652,18 +656,18 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
         try {
             return cms.readResource(structureId, filter);
         } catch (CmsException e) {
-            // Do nothing 
+            // Do nothing
         }
         return null;
     }
 
     /**
      * Creates a filter which represents the "AND" operation on two other filters.<p>
-     * 
-     * @param f1 the first filter 
-     * @param f2 the second filter 
-     * 
-     * @return the "AND" operation on the two filters 
+     *
+     * @param f1 the first filter
+     * @param f2 the second filter
+     *
+     * @return the "AND" operation on the two filters
      */
     private BooleanFilter filterAnd(Filter f1, Filter f2) {
 
@@ -675,10 +679,10 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
 
     /**
      * Creates a boolean filter for the negation of another filter.<p>
-     * 
+     *
      * @param f1 the filter to negate
-     *  
-     * @return the negated filter 
+     *
+     * @return the negated filter
      */
     private BooleanFilter filterNot(Filter f1) {
 
@@ -687,13 +691,13 @@ public class CmsGallerySearchIndex extends CmsSearchIndex {
         return filter;
     }
 
-    /** 
+    /**
      * Creates a boolean filter for the "OR" operation on two other filters.<p>
-     * 
-     * @param f1 the first filter 
+     *
+     * @param f1 the first filter
      * @param f2 the second filter
-     *  
-     * @return the composite filter 
+     *
+     * @return the composite filter
      */
     private BooleanFilter filterOr(Filter f1, Filter f2) {
 

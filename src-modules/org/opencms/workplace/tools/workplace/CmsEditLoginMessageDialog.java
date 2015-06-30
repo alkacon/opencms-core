@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,8 +47,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog to edit the login message of the OpenCms Workplace.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
 
@@ -63,7 +63,7 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsEditLoginMessageDialog(CmsJspActionElement jsp) {
@@ -73,7 +73,7 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -108,9 +108,9 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -160,22 +160,24 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(m_loginMessage, "enabled", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_loginMessage, "message", PAGES[0], new CmsTextareaWidget()));
         addWidget(new CmsWidgetDialogParameter(m_loginMessage, "loginForbidden", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(
-            m_loginMessage,
-            "timeStart",
-            String.valueOf(def.getTimeStart()),
-            PAGES[0],
-            new CmsCalendarWidget(),
-            0,
-            1));
-        addWidget(new CmsWidgetDialogParameter(
-            m_loginMessage,
-            "timeEnd",
-            String.valueOf(def.getTimeEnd()),
-            PAGES[0],
-            new CmsCalendarWidget(),
-            0,
-            1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_loginMessage,
+                "timeStart",
+                String.valueOf(def.getTimeStart()),
+                PAGES[0],
+                new CmsCalendarWidget(),
+                0,
+                1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_loginMessage,
+                "timeEnd",
+                String.valueOf(def.getTimeEnd()),
+                PAGES[0],
+                new CmsCalendarWidget(),
+                0,
+                1));
     }
 
     /**

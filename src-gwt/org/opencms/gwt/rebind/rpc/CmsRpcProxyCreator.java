@@ -1,12 +1,12 @@
 /*
  * Copyright 2008 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -27,14 +27,14 @@ import com.google.gwt.user.rebind.rpc.ProxyCreator;
 import com.google.gwt.user.rebind.rpc.SerializableTypeOracle;
 
 /**
- * Creates proxies supporting optionally synchronized RPC methods 
+ * Creates proxies supporting optionally synchronized RPC methods
  * using the {@link SynchronizedRpcRequest} annotation.<p>
  */
 public class CmsRpcProxyCreator extends ProxyCreator {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param serviceIntf the service interface
      */
     public CmsRpcProxyCreator(@SuppressWarnings("hiding") JClassType serviceIntf) {
@@ -57,8 +57,8 @@ public class CmsRpcProxyCreator extends ProxyCreator {
     }
 
     /**
-     * Generates a method to check if a given RPC method has to be synchronized.<p> 
-     * 
+     * Generates a method to check if a given RPC method has to be synchronized.<p>
+     *
      * @param srcWriter the source write to generate the code with
      * @param syncMethToAsyncMethMap the method map
      */
@@ -73,11 +73,8 @@ public class CmsRpcProxyCreator extends ProxyCreator {
             if (!asyncMethod.isAnnotationPresent(SynchronizedRpcRequest.class)) {
                 continue;
             }
-            srcWriter.indentln("if (methodName.equals(\""
-                + getProxySimpleName()
-                + "."
-                + syncMethod.getName()
-                + "\")) {");
+            srcWriter.indentln(
+                "if (methodName.equals(\"" + getProxySimpleName() + "." + syncMethod.getName() + "\")) {");
             srcWriter.indentln("return true;");
             srcWriter.indentln("}");
         }

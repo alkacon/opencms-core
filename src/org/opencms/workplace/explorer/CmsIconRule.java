@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,10 +29,10 @@ package org.opencms.workplace.explorer;
 
 /**
  * An icon configuration rule for an explorer type.<p>
- * 
- * Each rule consists of a file name extension and (at most) two icon file names for icons which 
+ *
+ * Each rule consists of a file name extension and (at most) two icon file names for icons which
  * should be used for resources with that extension.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsIconRule {
@@ -48,10 +48,10 @@ public class CmsIconRule {
 
     /**
      * Creates a new icon rule.<p>
-     * 
-     * @param extension the file name extension 
-     * @param icon the small icon's file name 
-     * @param bigIcon the big icon's file name 
+     *
+     * @param extension the file name extension
+     * @param icon the small icon's file name
+     * @param bigIcon the big icon's file name
      */
     public CmsIconRule(String extension, String icon, String bigIcon) {
 
@@ -71,8 +71,8 @@ public class CmsIconRule {
 
     /**
      * Returns the big icon's file name.<p>
-     * 
-     * @return the big icon's file name 
+     *
+     * @return the big icon's file name
      */
     public String getBigIcon() {
 
@@ -81,7 +81,7 @@ public class CmsIconRule {
 
     /**
      * Returns the biggest icon available.<p>
-     * 
+     *
      * @return the biggest icon available
      */
     public String getBigIconIfAvailable() {
@@ -91,8 +91,8 @@ public class CmsIconRule {
 
     /**
      * Returns the file name extension for this rule.<p>
-     * 
-     * @return the file name extension for this rule 
+     *
+     * @return the file name extension for this rule
      */
     public String getExtension() {
 
@@ -102,7 +102,7 @@ public class CmsIconRule {
 
     /**
      * Returns the small icon's file name.<p>
-     * 
+     *
      * @return the small icon's file name
      */
     public String getIcon() {

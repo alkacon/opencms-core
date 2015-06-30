@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,11 +36,11 @@ import java.util.Locale;
 
 /**
  * Stream report where the output is streamed to the given print stream instance.<p>
- * 
- * Keep in mind that you are resposible for closing the stream calling the {@link #close()} 
+ *
+ * Keep in mind that you are resposible for closing the stream calling the {@link #close()}
  * method when the report is no longer used.<p>
- * 
- * @since 6.5.5 
+ *
+ * @since 6.5.5
  */
 public class CmsPrintStreamReport extends CmsHtmlReport {
 
@@ -52,7 +52,7 @@ public class CmsPrintStreamReport extends CmsHtmlReport {
 
     /**
      * Constructs a new report using the provided locale for the output language.<p>
-     *  
+     *
      * @param printStream the print stream to write the output to
      * @param locale the locale to use for the output language
      * @param writeHtml decides if the report should write clear text or html code
@@ -66,7 +66,7 @@ public class CmsPrintStreamReport extends CmsHtmlReport {
 
     /**
      * Closes the print stream.<p>
-     * 
+     *
      * Has to be called after the report has finished.<p>
      */
     public void close() {
@@ -182,9 +182,10 @@ public class CmsPrintStreamReport extends CmsHtmlReport {
 
         if (m_writeHtml) {
             try {
-                m_printStream.println(CmsReport.generatePageStartExtended(
-                    OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest()),
-                    OpenCms.getSystemInfo().getDefaultEncoding()));
+                m_printStream.println(
+                    CmsReport.generatePageStartExtended(
+                        OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest()),
+                        OpenCms.getSystemInfo().getDefaultEncoding()));
             } catch (CmsException e) {
                 // ignore
             }

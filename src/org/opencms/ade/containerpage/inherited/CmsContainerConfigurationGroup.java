@@ -16,14 +16,14 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details. 
+ * Lesser General Public License for more details.
  *
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,7 +39,7 @@ import java.util.Map;
 /**
  * A class which represents all the configuration entries which have been read from an inherited container
  * configuration file.<p>
- * 
+ *
  */
 public class CmsContainerConfigurationGroup {
 
@@ -48,7 +48,7 @@ public class CmsContainerConfigurationGroup {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param configurations the data contained by this configuration group
      */
     public CmsContainerConfigurationGroup(Map<Locale, Map<String, CmsContainerConfiguration>> configurations) {
@@ -58,10 +58,10 @@ public class CmsContainerConfigurationGroup {
 
     /**
      * Gets the configuration for a given name and locale.<p>
-     * 
-     * @param name the configuration name 
-     * 
-     * @return the configuration for the name and locale 
+     *
+     * @param name the configuration name
+     *
+     * @return the configuration for the name and locale
      */
     public CmsContainerConfiguration getConfiguration(String name) {
 

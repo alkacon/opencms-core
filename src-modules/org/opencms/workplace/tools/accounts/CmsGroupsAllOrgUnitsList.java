@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,8 +56,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Group account view over all manageable organizational units.<p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
 
@@ -75,7 +75,7 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsGroupsAllOrgUnitsList(CmsJspActionElement jsp) {
@@ -85,7 +85,7 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -143,8 +143,9 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
             try {
                 if (detailId.equals(LIST_DETAIL_ORGUNIT_DESC)) {
                     CmsGroup group = getCms().readGroup(groupName);
-                    html.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), group.getOuFqn()).getDescription(
-                        getLocale()));
+                    html.append(
+                        OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), group.getOuFqn()).getDescription(
+                            getLocale()));
                 } else {
                     continue;
                 }
@@ -240,17 +241,17 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
         CmsListItemDetails orgUnitDescDetails = new CmsListItemDetails(LIST_DETAIL_ORGUNIT_DESC);
         orgUnitDescDetails.setAtColumn(LIST_COLUMN_DISPLAY);
         orgUnitDescDetails.setVisible(false);
-        orgUnitDescDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_SHOW_ORGUNIT_DESC_NAME_0));
-        orgUnitDescDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_SHOW_ORGUNIT_DESC_HELP_0));
-        orgUnitDescDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_HIDE_ORGUNIT_DESC_NAME_0));
-        orgUnitDescDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_HIDE_ORGUNIT_DESC_HELP_0));
+        orgUnitDescDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ORGUNIT_DESC_NAME_0));
+        orgUnitDescDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ORGUNIT_DESC_HELP_0));
+        orgUnitDescDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ORGUNIT_DESC_NAME_0));
+        orgUnitDescDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ORGUNIT_DESC_HELP_0));
         orgUnitDescDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_ORGUNIT_DESC_NAME_0));
-        orgUnitDescDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_ORGUNIT_DESC_NAME_0)));
+        orgUnitDescDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_USERS_DETAIL_ORGUNIT_DESC_NAME_0)));
         metadata.addItemDetails(orgUnitDescDetails);
 
         metadata.getSearchAction().addColumn(metadata.getColumnDefinition(LIST_COLUMN_DESCRIPTION));

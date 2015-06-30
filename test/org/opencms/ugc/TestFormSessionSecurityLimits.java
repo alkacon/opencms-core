@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,9 +40,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import junit.framework.Test;
-
 import com.google.common.base.Optional;
+
+import junit.framework.Test;
 
 /**
  * Test cases for the org.opencms.editors.usergenerated package.
@@ -51,8 +51,8 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
 
     /**
      * Creates a new test instance.<p<
-     * 
-     * @param name the test name 
+     *
+     * @param name the test name
      */
     public TestFormSessionSecurityLimits(String name) {
 
@@ -61,8 +61,8 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
 
     /**
      * Returns the test suite.<p>
-     * 
-     * @return the test suite 
+     *
+     * @return the test suite
      */
     public static Test suite() {
 
@@ -72,8 +72,8 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
 
     /**
      * Tests that an error occurs when trying to upload without a configured upload folder.<p>
-     * 
-     * @throws Exception - 
+     *
+     * @throws Exception -
      */
     public void testErrorNoUploadsAllowed() throws Exception {
 
@@ -108,8 +108,8 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
 
     /**
      * Tests that errors are thrown when the configured upload / content limits in the configuration are violated.<p>
-     *  
-     * @throws Exception - 
+     *
+     * @throws Exception -
      */
     public void testLimits() throws Exception {
 
@@ -195,8 +195,8 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
 
     /**
      * Tests that errors are not thrown if no limits are configured in the form configuration.<p>
-     * 
-     * @throws Exception - 
+     *
+     * @throws Exception -
      */
     public void testNoLimits() throws Exception {
 

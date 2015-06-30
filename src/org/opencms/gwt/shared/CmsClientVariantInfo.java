@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ public class CmsClientVariantInfo implements IsSerializable {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param name
      * @param niceName
      * @param screenWidth
@@ -79,23 +79,23 @@ public class CmsClientVariantInfo implements IsSerializable {
      */
     protected CmsClientVariantInfo() {
 
-        // for serialization 
+        // for serialization
     }
 
     /**
      * Gets the internal name.<p>
-     * 
-     * @return the internal name 
+     *
+     * @return the internal name
      */
     public String getName() {
 
         return m_name;
     }
 
-    /** 
+    /**
      * Gets the nice name.<p>
-     * 
-     * @return the nice name 
+     *
+     * @return the nice name
      */
     public String getNiceName() {
 
@@ -104,8 +104,8 @@ public class CmsClientVariantInfo implements IsSerializable {
 
     /**
      * Gets the parameters.<p>
-     * 
-     * @return the parameters 
+     *
+     * @return the parameters
      */
     public Map<String, String> getParameters() {
 
@@ -114,8 +114,8 @@ public class CmsClientVariantInfo implements IsSerializable {
 
     /**
      * Gets the screen height.<p>
-     * 
-     * @return the screen height 
+     *
+     * @return the screen height
      */
     public int getScreenHeight() {
 
@@ -124,8 +124,8 @@ public class CmsClientVariantInfo implements IsSerializable {
 
     /**
      * Gets the screen width.<p>
-     * 
-     * @return the screen width 
+     *
+     * @return the screen width
      */
     public int getScreenWidth() {
 

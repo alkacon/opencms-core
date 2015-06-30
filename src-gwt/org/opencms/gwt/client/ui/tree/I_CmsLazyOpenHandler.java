@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,11 +32,11 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 
 /**
  * Lazy tree open handler interface.<p>
- * 
- * @param <I> the specific lazy tree item implementation 
- * 
+ *
+ * @param <I> the specific lazy tree item implementation
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.gwt.client.ui.tree.CmsLazyTreeItem
  */
 public interface I_CmsLazyOpenHandler<I extends CmsLazyTreeItem> extends OpenHandler<I> {
@@ -48,7 +48,7 @@ public interface I_CmsLazyOpenHandler<I extends CmsLazyTreeItem> extends OpenHan
 
     /**
      * Load the children of the given tree item.<p>
-     * 
+     *
      * @param target the tree item to be loaded
      */
     void load(I target);

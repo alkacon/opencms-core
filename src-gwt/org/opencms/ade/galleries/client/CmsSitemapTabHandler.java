@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ import java.util.Set;
 
 /**
  * Handler class for the sitemap tree tab.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSitemapTabHandler extends A_CmsTabHandler {
@@ -53,7 +53,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
 
     /**
      * Creates a new sitemap tab handler.<p>
-     * 
+     *
      * @param controller the gallery controller
      */
     public CmsSitemapTabHandler(CmsGalleryController controller) {
@@ -70,10 +70,10 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
         // nothing to do, no parameters from this tab
     }
 
-    /** 
+    /**
      * Gets the selected site root.<p>
-     * 
-     * @return the selected site root 
+     *
+     * @return the selected site root
      */
     public String getDefaultSelectedSiteRoot() {
 
@@ -82,10 +82,10 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
 
     /**
      * Gets the path which is used when the sitemap entry is selected.<p>
-     * 
+     *
      * @param sitemapEntry the sitemap entry
-     * 
-     * @return the path to use when the entry is selected 
+     *
+     * @return the path to use when the entry is selected
      */
     public String getSelectPath(CmsSitemapEntryBean sitemapEntry) {
 
@@ -99,8 +99,8 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
 
     /**
      * Gets the select options for the sort list.<p>
-     * 
-     * @return the select options for the sort list 
+     *
+     * @return the select options for the sort list
      */
     public LinkedHashMap<String, String> getSortList() {
 
@@ -116,19 +116,22 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
 
     /**
      * Loads the sub entries for the given path.<p>
-     * 
-     * @param rootPath the root path 
+     *
+     * @param rootPath the root path
      * @param isRoot <code>true</code> if the requested entry is the root entry
      * @param callback the callback to execute with the result
      */
-    public void getSubEntries(String rootPath, boolean isRoot, I_CmsSimpleCallback<List<CmsSitemapEntryBean>> callback) {
+    public void getSubEntries(
+        String rootPath,
+        boolean isRoot,
+        I_CmsSimpleCallback<List<CmsSitemapEntryBean>> callback) {
 
         m_controller.getSubEntries(rootPath, isRoot, callback);
     }
 
     /**
      * Returns if this tab should offer select resource buttons.<p>
-     * 
+     *
      * @return <code>true</code> if this tab should offer select resource buttons
      */
     public boolean hasSelectResource() {
@@ -163,8 +166,8 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
 
     /**
      * This method is called when the tree open state changes.<p>
-     * 
-     * @param openItemIds the structure ids of open entries 
+     *
+     * @param openItemIds the structure ids of open entries
      */
     public void onChangeTreeState(Set<CmsUUID> openItemIds) {
 
@@ -213,7 +216,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
 
     /**
      * Returns the sitemap tab.<p>
-     * 
+     *
      * @return the sitemap tab
      */
     protected CmsSitemapTab getTab() {
@@ -223,7 +226,7 @@ public class CmsSitemapTabHandler extends A_CmsTabHandler {
 
     /**
      * Setter for the site root attribute.<p>
-     * 
+     *
      * @param siteRoot the new value for the site root attribute
      */
     protected void setSiteRoot(String siteRoot) {

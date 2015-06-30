@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * A tool-tip handler. Allowing to show any HTML as a tool-tip on mouse over.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, MouseOutHandler {
@@ -92,7 +92,7 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
 
     /**
      * Constructor. Adds the tool-tip handler to the target.<p>
-     * 
+     *
      * @param target the target to show the tool-tip on
      * @param toolTipHtml the tool-tip content
      */
@@ -257,9 +257,9 @@ public class CmsToolTipHandler implements MouseOverHandler, MouseMoveHandler, Mo
         };
     }
 
-    /** 
+    /**
      * Sets the tool-tip position.<p>
-     * 
+     *
      * @param clientLeft the mouse pointer left position relative to the client window
      * @param clientTop the mouse pointer top  position relative to the client window
      */

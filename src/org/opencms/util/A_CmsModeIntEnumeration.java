@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,8 +38,8 @@ import java.io.Serializable;
  *   <li>{@link org.opencms.file.CmsResource.CmsResourceDeleteMode}
  *   <li>{@link org.opencms.file.CmsResource.CmsResourceUndoMode}
  * </ul>
- * 
- * @since 6.5.3 
+ *
+ * @since 6.5.3
  */
 public abstract class A_CmsModeIntEnumeration implements Serializable {
 
@@ -51,7 +51,7 @@ public abstract class A_CmsModeIntEnumeration implements Serializable {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param mode the internal mode descriptor
      */
     protected A_CmsModeIntEnumeration(int mode) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ public abstract class A_CmsClipboardTab extends Composite {
 
     /**
      * Adds an item to the list.<p>
-     * 
+     *
      * @param item the item to add
      */
     public void addListItem(CmsListItem item) {
@@ -58,14 +58,14 @@ public abstract class A_CmsClipboardTab extends Composite {
 
     /**
      * Returns the item list.<p>
-     * 
+     *
      * @return the item list
      */
     public abstract CmsList<CmsListItem> getList();
 
     /**
      * Returns the height required by the tab content.<p>
-     * 
+     *
      * @return the tab content height
      */
     public int getRequiredHeight() {
@@ -75,14 +75,14 @@ public abstract class A_CmsClipboardTab extends Composite {
 
     /**
      * Returns the scroll panel.<p>
-     * 
+     *
      * @return the scroll panel
      */
     public abstract CmsScrollPanel getScrollPanel();
 
     /**
      * Replaces the item with the same id if present.<p>
-     * 
+     *
      * @param item the new item
      */
     public void replaceItem(CmsListItem item) {

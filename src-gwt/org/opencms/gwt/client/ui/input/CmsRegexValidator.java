@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import org.opencms.util.CmsStringUtil;
 
 /**
  * Basic regular expression validator for widgets of field type string.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsRegexValidator implements I_CmsValidator {
@@ -50,15 +50,15 @@ public class CmsRegexValidator implements I_CmsValidator {
 
     /**
      * Creates a new regex-based validator.
-     * 
+     *
      * The regular expression passed as a parameter is used to match complete strings, not parts of strings.
      * For example, a regex of "AAA" will only match the string "AAA", and not "BAAA".
      * If the regex starts with an exclamation mark ("!"), the match will be inverted, i.e. only strings that don't
      * match the rest of the regular expression will be interpreted as valid.
      *
-     * @param regex a regular expression 
+     * @param regex a regular expression
      * @param message an error message
-     * @param alwaysAllowEmpty if true, the validation will always allow the empty string 
+     * @param alwaysAllowEmpty if true, the validation will always allow the empty string
      */
     public CmsRegexValidator(String regex, String message, boolean alwaysAllowEmpty) {
 
@@ -70,11 +70,11 @@ public class CmsRegexValidator implements I_CmsValidator {
 
     /**
      * Matches a string against a regex, and inverts the match if the regex starts with a '!'.<p>
-     * 
+     *
      * @param regex the regular expression
      * @param value the string to be matched
-     * 
-     * @return true if the validation succeeded 
+     *
+     * @return true if the validation succeeded
      */
     private static boolean matchRuleRegex(String regex, String value) {
 

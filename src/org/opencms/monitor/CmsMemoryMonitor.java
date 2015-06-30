@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -90,64 +90,40 @@ import org.apache.commons.logging.Log;
 
 /**
  * Monitors OpenCms memory consumption.<p>
- * 
+ *
  * The memory monitor also provides all kind of caches used in the OpenCms core.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** Cache types. */
     public enum CacheType {
         /** Access Control Lists cache. */
-        ACL,
-        /** Content Definition cache. */
-        CONTENT_DEFINITION,
-        /** Group cache. */
-        GROUP,
-        /** Has Role cache. */
-        HAS_ROLE,
-        /** Locale cache. */
-        LOCALE,
-        /** Lock cache. */
-        LOCK,
-        /** Memory Object cache. */
-        MEMORY_OBJECT,
-        /** Organizational Unit cache. */
-        ORG_UNIT,
-        /** Permission cache. */
-        PERMISSION,
-        /** Offline Project cache. */
-        PROJECT,
-        /** Project resources cache. */
-        PROJECT_RESOURCES,
-        /** Property cache. */
-        PROPERTY,
-        /** Property List cache. */
-        PROPERTY_LIST,
-        /** Publish history cache. */
-        PUBLISH_HISTORY,
-        /** Publish queue cache. */
-        PUBLISH_QUEUE,
-        /** Published resources cache. */
-        PUBLISHED_RESOURCES,
-        /** Resource cache. */
-        RESOURCE,
-        /** Resource List cache. */
-        RESOURCE_LIST,
-        /** Role List cache. */
-        ROLE_LIST,
-        /** User cache. */
-        USER,
-        /** User list cache. */
-        USER_LIST,
-        /** User Groups cache. */
-        USERGROUPS,
-        /** VFS Object cache. */
-        VFS_OBJECT,
-        /** XML Entity Permanent cache. */
-        XML_ENTITY_PERM,
-        /** XML Entity Temporary cache. */
+        ACL, /** Content Definition cache. */
+        CONTENT_DEFINITION, /** Group cache. */
+        GROUP, /** Has Role cache. */
+        HAS_ROLE, /** Locale cache. */
+        LOCALE, /** Lock cache. */
+        LOCK, /** Memory Object cache. */
+        MEMORY_OBJECT, /** Organizational Unit cache. */
+        ORG_UNIT, /** Permission cache. */
+        PERMISSION, /** Offline Project cache. */
+        PROJECT, /** Project resources cache. */
+        PROJECT_RESOURCES, /** Property cache. */
+        PROPERTY, /** Property List cache. */
+        PROPERTY_LIST, /** Publish history cache. */
+        PUBLISH_HISTORY, /** Publish queue cache. */
+        PUBLISH_QUEUE, /** Published resources cache. */
+        PUBLISHED_RESOURCES, /** Resource cache. */
+        RESOURCE, /** Resource List cache. */
+        RESOURCE_LIST, /** Role List cache. */
+        ROLE_LIST, /** User cache. */
+        USER, /** User list cache. */
+        USER_LIST, /** User Groups cache. */
+        USERGROUPS, /** VFS Object cache. */
+        VFS_OBJECT, /** XML Entity Permanent cache. */
+        XML_ENTITY_PERM, /** XML Entity Temporary cache. */
         XML_ENTITY_TEMP;
     }
 
@@ -301,9 +277,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * Returns the size of objects that are instances of
      * <code>byte[]</code>, <code>String</code>, <code>CmsFile</code>,<code>I_CmsLruCacheObject</code>.<p>
      * For other objects, a size of 0 is returned.
-     * 
+     *
      * @param obj the object
-     * @return the size of the object 
+     * @return the size of the object
      */
     public static int getMemorySize(Object obj) {
 
@@ -398,10 +374,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the total value size of a list object.<p>
-     * 
+     *
      * @param listValue the list object
      * @param depth the max recursion depth for calculation the size
-     * 
+     *
      * @return the size of the list object
      */
     public static long getValueSize(List<?> listValue, int depth) {
@@ -447,10 +423,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the total value size of a map object.<p>
-     * 
+     *
      * @param mapValue the map object
      * @param depth the max recursion depth for calculation the size
-     * 
+     *
      * @return the size of the map object
      */
     public static long getValueSize(Map<?, ?> mapValue, int depth) {
@@ -496,9 +472,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the value sizes of value objects within the monitored object.<p>
-     * 
-     * @param obj the object 
-     * 
+     *
+     * @param obj the object
+     *
      * @return the value sizes of value objects or "-"-fields
      */
     public static long getValueSize(Object obj) {
@@ -524,7 +500,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given acl under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param acl the acl to cache
      */
@@ -538,7 +514,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given content definition under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param contentDefinition the content definition to cache
      */
@@ -552,7 +528,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given group under its id AND fully qualified name.<p>
-     * 
+     *
      * @param group the group to cache
      */
     public void cacheGroup(CmsGroup group) {
@@ -566,7 +542,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given locale under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param locale the locale to cache
      */
@@ -585,7 +561,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * Caches the given lock.<p>
      *
      * The lock is cached by it resource's root path.<p>
-     * 
+     *
      * @param lock the lock to cache
      */
     public void cacheLock(CmsLock lock) {
@@ -598,7 +574,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given object under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param obj the object to cache
      */
@@ -612,7 +588,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given organizational under its id AND the fully qualified name.<p>
-     * 
+     *
      * @param orgUnit the organizational unit to cache
      */
     public void cacheOrgUnit(CmsOrganizationalUnit orgUnit) {
@@ -626,7 +602,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given permission check result under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param permission the permission check result to cache
      */
@@ -640,7 +616,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given project under its id AND the fully qualified name.<p>
-     * 
+     *
      * @param project the project to cache
      */
     public void cacheProject(CmsProject project) {
@@ -654,7 +630,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given project resource list under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param projectResources the project resources to cache
      */
@@ -668,7 +644,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given property under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param property the property to cache
      */
@@ -682,7 +658,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given property list under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param propertyList the property list to cache
      */
@@ -696,7 +672,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given published resources list under the given cache key.<p>
-     * 
+     *
      * @param cacheKey the cache key
      * @param publishedResources the published resources list to cache
      */
@@ -710,7 +686,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given publish job.<p>
-     * 
+     *
      * @param publishJob the publish job
      */
     @SuppressWarnings("unchecked")
@@ -724,7 +700,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given publish job in the publish job history.<p>
-     * 
+     *
      * @param publishJob the publish job
      */
     @SuppressWarnings("unchecked")
@@ -738,7 +714,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given resource under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param resource the resource to cache
      */
@@ -752,7 +728,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given resource list under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param resourceList the resource list to cache
      */
@@ -766,7 +742,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given value under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param hasRole if the user has the given role
      */
@@ -780,7 +756,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given value under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param roles the roles of the user
      */
@@ -794,7 +770,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given user under its id AND the fully qualified name.<p>
-     * 
+     *
      * @param user the user to cache
      */
     public void cacheUser(CmsUser user) {
@@ -808,7 +784,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given list of user groups under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param userGroups the list of user groups to cache
      */
@@ -822,7 +798,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given list of users under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param userList the list of users to cache
      */
@@ -836,7 +812,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given vfs object under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param obj the vfs object to cache
      */
@@ -850,7 +826,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given xml entity under the given system id.<p>
-     * 
+     *
      * @param systemId the cache key
      * @param content the content to cache
      */
@@ -864,7 +840,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given xml entity under the given cache key.<p>
-     * 
+     *
      * @param key the cache key
      * @param content the content to cache
      */
@@ -931,7 +907,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Clears the user cache for the given user.<p>
-     * 
+     *
      * @param user the user
      */
     public void clearUserCache(CmsUser user) {
@@ -942,7 +918,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Disables the given cache.<p>
-     * 
+     *
      * @param types the cache type to disable
      */
     public void disableCache(CacheType... types) {
@@ -955,7 +931,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Enables the given cache.<p>
-     * 
+     *
      * @param types the cache type to disable
      */
     public void enableCache(CacheType... types) {
@@ -967,7 +943,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns if monitoring is enabled.<p>
-     * 
+     *
      * @return true if monitoring is enabled
      */
     public boolean enabled() {
@@ -977,7 +953,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the ACL cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -988,7 +964,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the given cache.<p>
-     * 
+     *
      * @param types the cache types to flush
      */
     public void flushCache(CacheType... types) {
@@ -1078,7 +1054,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the xml content definitions cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1089,7 +1065,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the group cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1100,7 +1076,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the locale cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1111,8 +1087,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the locks cache.<p>
-     * 
-     * @param newLocks if not <code>null</code> the lock cache is replaced by the given map 
+     *
+     * @param newLocks if not <code>null</code> the lock cache is replaced by the given map
      */
     public void flushLocks(Map<String, CmsLock> newLocks) {
 
@@ -1134,7 +1110,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the memory object cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1145,7 +1121,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the organizational unit cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1156,7 +1132,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the permission check result cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1167,7 +1143,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the project resources cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1178,7 +1154,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the project cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1189,7 +1165,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the property cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1200,7 +1176,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the property list cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1211,7 +1187,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the published resources cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1222,7 +1198,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the publish history.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1233,7 +1209,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the publish queue.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1244,7 +1220,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the resource list cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1255,7 +1231,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the resource cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1266,7 +1242,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the role lists cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1277,7 +1253,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the roles cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1288,7 +1264,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the user groups cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1300,7 +1276,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the users cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1311,7 +1287,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the vfs object cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1322,7 +1298,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the xml permanent entities cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1333,7 +1309,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes the xml temporary entities cache.<p>
-     * 
+     *
      * @deprecated use {@link #flushCache(CacheType[])} instead
      */
     @Deprecated
@@ -1344,7 +1320,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns all cached lock root paths.<p>
-     * 
+     *
      * @return a list of {@link String} objects
      */
     public List<String> getAllCachedLockPaths() {
@@ -1354,7 +1330,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns all cached locks.<p>
-     * 
+     *
      * @return a list of {@link CmsLock} objects
      */
     public List<CmsLock> getAllCachedLocks() {
@@ -1364,7 +1340,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns all cached publish jobs in the queue as ordered list.<p>
-     * 
+     *
      * @return all cached publish jobs
      */
     @SuppressWarnings("unchecked")
@@ -1375,7 +1351,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns all cached publish jobs in the history as ordered list.<p>
-     * 
+     *
      * @return all cached publish jobs
      */
     @SuppressWarnings("unchecked")
@@ -1386,9 +1362,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the ACL cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return the ACL cached with the given cache key
      */
     public CmsAccessControlList getCachedACL(String key) {
@@ -1398,9 +1374,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the xml content definition cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return the xml content definition cached with the given cache key
      */
     public CmsXmlContentDefinition getCachedContentDefinition(String key) {
@@ -1410,9 +1386,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the group cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for, this may be the group's uuid or the fqn
-     * 
+     *
      * @return the group cached with the given cache key
      */
     public CmsGroup getCachedGroup(String key) {
@@ -1422,9 +1398,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the locale cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return the locale cached with the given cache key
      */
     public Locale getCachedLocale(String key) {
@@ -1438,9 +1414,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the lock cached with the given root path or <code>null</code> if not found.<p>
-     * 
+     *
      * @param rootPath the root path to look for
-     * 
+     *
      * @return the lock cached with the given root path
      */
     public CmsLock getCachedLock(String rootPath) {
@@ -1450,9 +1426,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the memory object cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return the memory object cached with the given cache key
      */
     public Object getCachedMemObject(String key) {
@@ -1462,9 +1438,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the organizational unit cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for, this may be the organizational unit's uuid or the fqn
-     * 
+     *
      * @return the organizational unit cached with the given cache key
      */
     public CmsOrganizationalUnit getCachedOrgUnit(String key) {
@@ -1474,9 +1450,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the permission check result cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return the permission check result cached with the given cache key
      */
     public I_CmsPermissionHandler.CmsPermissionCheckResult getCachedPermission(String key) {
@@ -1486,9 +1462,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the project cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for, this may be the project's uuid or the fqn
-     * 
+     *
      * @return the project cached with the given cache key
      */
     public CmsProject getCachedProject(String key) {
@@ -1498,9 +1474,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the project resources list cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return the project resources list cached with the given cache key
      */
     public List<CmsResource> getCachedProjectResources(String key) {
@@ -1510,9 +1486,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the property cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return the property cached with the given cache key
      */
     public CmsProperty getCachedProperty(String key) {
@@ -1522,9 +1498,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the property list cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return the property list cached with the given cache key
      */
     public List<CmsProperty> getCachedPropertyList(String key) {
@@ -1534,9 +1510,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the published resources list cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param cacheKey the cache key to look for
-     * 
+     *
      * @return the published resources list cached with the given cache key
      */
     public List<CmsPublishedResource> getCachedPublishedResources(String cacheKey) {
@@ -1546,9 +1522,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the publish job with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key  the cache key to look for
-     * 
+     *
      * @return the publish job with the given cache key
      */
     public CmsPublishJobInfoBean getCachedPublishJob(String key) {
@@ -1567,9 +1543,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the publish job from the history with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key  the cache key to look for
-     * 
+     *
      * @return the publish job with the given cache key
      */
     public CmsPublishJobInfoBean getCachedPublishJobInHistory(String key) {
@@ -1587,9 +1563,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the resource cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return the resource cached with the given cache key
      */
     public CmsResource getCachedResource(String key) {
@@ -1599,9 +1575,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the resource list cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return the resource list cached with the given cache key
      */
     public List<CmsResource> getCachedResourceList(String key) {
@@ -1611,9 +1587,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the value cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return if the user has the given role
      */
     public Boolean getCachedRole(String key) {
@@ -1623,9 +1599,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the value cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return list of roles
      */
     public List<CmsRole> getCachedRoleList(String key) {
@@ -1635,9 +1611,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the user cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for, this may be the user's uuid or the fqn
-     * 
+     *
      * @return the user cached with the given cache key
      */
     public CmsUser getCachedUser(String key) {
@@ -1647,9 +1623,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the user groups list cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return the user groups list cached with the given cache key
      */
     public List<CmsGroup> getCachedUserGroups(String key) {
@@ -1659,9 +1635,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the user list cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return the user groups list cached with the given cache key
      */
     public List<CmsUser> getCachedUserList(String key) {
@@ -1671,9 +1647,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the vfs object cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return the vfs object cached with the given cache key
      */
     public Object getCachedVfsObject(String key) {
@@ -1683,9 +1659,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the xml permanent entity content cached with the given systemId or <code>null</code> if not found.<p>
-     * 
+     *
      * @param systemId the cache key to look for
-     * 
+     *
      * @return the xml permanent entity content cached with the given cache key
      */
     public byte[] getCachedXmlPermanentEntity(String systemId) {
@@ -1695,9 +1671,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the xml temporary entity content cached with the given cache key or <code>null</code> if not found.<p>
-     * 
+     *
      * @param key the cache key to look for
-     * 
+     *
      * @return the xml temporary entity content cached with the given cache key
      */
     public byte[] getCachedXmlTemporaryEntity(String key) {
@@ -1717,7 +1693,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the next publish job from the publish job queue.<p>
-     * 
+     *
      * @return the next publish job
      */
     public CmsPublishJobInfoBean getFirstCachedPublishJob() {
@@ -1743,7 +1719,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the current memory status.<p>
-     * 
+     *
      * @return the memory status
      */
     public CmsMemoryStatus getMemoryStatus() {
@@ -1754,7 +1730,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Initializes the monitor with the provided configuration.<p>
-     * 
+     *
      * @param configuration the configuration to use
      */
     public void initialize(CmsSystemConfiguration configuration) {
@@ -1789,32 +1765,27 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.LOG_MM_INTERVAL_LOG_1,
-                new Integer(m_intervalLog / 1000)));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.LOG_MM_INTERVAL_EMAIL_1,
-                new Integer(m_intervalEmail / 1000)));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.LOG_MM_INTERVAL_WARNING_1,
-                new Integer(m_intervalWarning / 1000)));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.LOG_MM_INTERVAL_MAX_USAGE_1,
-                new Integer(m_maxUsagePercent)));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.LOG_MM_INTERVAL_LOG_1, new Integer(m_intervalLog / 1000)));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.LOG_MM_INTERVAL_EMAIL_1, new Integer(m_intervalEmail / 1000)));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.LOG_MM_INTERVAL_WARNING_1,
+                    new Integer(m_intervalWarning / 1000)));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.LOG_MM_INTERVAL_MAX_USAGE_1, new Integer(m_maxUsagePercent)));
 
             if ((m_configuration.getEmailReceiver() == null) || (m_configuration.getEmailSender() == null)) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.LOG_MM_EMAIL_DISABLED_0));
             } else {
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.LOG_MM_EMAIL_SENDER_1,
-                    m_configuration.getEmailSender()));
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(Messages.LOG_MM_EMAIL_SENDER_1, m_configuration.getEmailSender()));
                 Iterator<String> i = m_configuration.getEmailReceiver().iterator();
                 int n = 0;
                 while (i.hasNext()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.LOG_MM_EMAIL_RECEIVER_2,
-                        new Integer(n + 1),
-                        i.next()));
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(Messages.LOG_MM_EMAIL_RECEIVER_2, new Integer(n + 1), i.next()));
                     n++;
                 }
             }
@@ -1848,7 +1819,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsLocaleManager.class.getName(), map);
 
         // permissions cache
-        Map<String, I_CmsPermissionHandler.CmsPermissionCheckResult> lruPermissions = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getPermissionCacheSize());
+        Map<String, I_CmsPermissionHandler.CmsPermissionCheckResult> lruPermissions = CmsCollectionsGenericWrapper.createLRUMap(
+            cacheSettings.getPermissionCacheSize());
         m_cachePermission = Collections.synchronizedMap(lruPermissions);
         register(CmsSecurityManager.class.getName(), lruPermissions);
 
@@ -1858,7 +1830,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsDriverManager.class.getName() + ".userCache", lruUsers);
 
         // user list cache
-        Map<String, List<CmsUser>> lruUserList = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getUserCacheSize());
+        Map<String, List<CmsUser>> lruUserList = CmsCollectionsGenericWrapper.createLRUMap(
+            cacheSettings.getUserCacheSize());
         m_cacheUserList = Collections.synchronizedMap(lruUserList);
         register(CmsDriverManager.class.getName() + ".userListCache", lruUserList);
 
@@ -1868,22 +1841,26 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsDriverManager.class.getName() + ".groupCache", lruGroup);
 
         // organizational unit cache
-        Map<String, CmsOrganizationalUnit> lruOrgUnit = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getOrgUnitCacheSize());
+        Map<String, CmsOrganizationalUnit> lruOrgUnit = CmsCollectionsGenericWrapper.createLRUMap(
+            cacheSettings.getOrgUnitCacheSize());
         m_cacheOrgUnit = Collections.synchronizedMap(lruOrgUnit);
         register(CmsDriverManager.class.getName() + ".orgUnitCache", lruOrgUnit);
 
         // user groups list cache
-        Map<String, List<CmsGroup>> lruUserGroups = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getUserGroupsCacheSize());
+        Map<String, List<CmsGroup>> lruUserGroups = CmsCollectionsGenericWrapper.createLRUMap(
+            cacheSettings.getUserGroupsCacheSize());
         m_cacheUserGroups = Collections.synchronizedMap(lruUserGroups);
         register(CmsDriverManager.class.getName() + ".userGroupsCache", lruUserGroups);
 
         // project cache
-        Map<String, CmsProject> lruProjects = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getProjectCacheSize());
+        Map<String, CmsProject> lruProjects = CmsCollectionsGenericWrapper.createLRUMap(
+            cacheSettings.getProjectCacheSize());
         m_cacheProject = Collections.synchronizedMap(lruProjects);
         register(CmsDriverManager.class.getName() + ".projectCache", lruProjects);
 
         // project resources cache cache
-        Map<String, List<CmsResource>> lruProjectResources = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getProjectResourcesCacheSize());
+        Map<String, List<CmsResource>> lruProjectResources = CmsCollectionsGenericWrapper.createLRUMap(
+            cacheSettings.getProjectResourcesCacheSize());
         m_cacheProjectResources = Collections.synchronizedMap(lruProjectResources);
         register(CmsDriverManager.class.getName() + ".projectResourcesCache", lruProjectResources);
 
@@ -1899,7 +1876,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsPublishQueue.class.getName() + ".publishQueue", buffer);
 
         // resource cache
-        Map<String, CmsResource> lruResources = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getResourceCacheSize());
+        Map<String, CmsResource> lruResources = CmsCollectionsGenericWrapper.createLRUMap(
+            cacheSettings.getResourceCacheSize());
         m_cacheResource = Collections.synchronizedMap(lruResources);
         register(CmsDriverManager.class.getName() + ".resourceCache", lruResources);
 
@@ -1909,22 +1887,26 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsDriverManager.class.getName() + ".rolesCache", lruHasRoles);
 
         // role lists cache
-        Map<String, List<CmsRole>> lruRoleLists = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getRolesCacheSize());
+        Map<String, List<CmsRole>> lruRoleLists = CmsCollectionsGenericWrapper.createLRUMap(
+            cacheSettings.getRolesCacheSize());
         m_cacheRoleLists = Collections.synchronizedMap(lruRoleLists);
         register(CmsDriverManager.class.getName() + ".roleListsCache", lruRoleLists);
 
         // resource list cache
-        Map<String, List<CmsResource>> lruResourceList = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getResourcelistCacheSize());
+        Map<String, List<CmsResource>> lruResourceList = CmsCollectionsGenericWrapper.createLRUMap(
+            cacheSettings.getResourcelistCacheSize());
         m_cacheResourceList = Collections.synchronizedMap(lruResourceList);
         register(CmsDriverManager.class.getName() + ".resourceListCache", lruResourceList);
 
         // property cache
-        Map<String, CmsProperty> lruProperty = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getPropertyCacheSize());
+        Map<String, CmsProperty> lruProperty = CmsCollectionsGenericWrapper.createLRUMap(
+            cacheSettings.getPropertyCacheSize());
         m_cacheProperty = Collections.synchronizedMap(lruProperty);
         register(CmsDriverManager.class.getName() + ".propertyCache", lruProperty);
 
         // property list cache
-        Map<String, List<CmsProperty>> lruPropertyList = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getPropertyListsCacheSize());
+        Map<String, List<CmsProperty>> lruPropertyList = CmsCollectionsGenericWrapper.createLRUMap(
+            cacheSettings.getPropertyListsCacheSize());
         m_cachePropertyList = Collections.synchronizedMap(lruPropertyList);
         register(CmsDriverManager.class.getName() + ".propertyListCache", lruPropertyList);
 
@@ -1934,7 +1916,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsDriverManager.class.getName() + ".publishedResourcesCache", lruPublishedResources);
 
         // acl cache
-        Map<String, CmsAccessControlList> lruAcl = CmsCollectionsGenericWrapper.createLRUMap(cacheSettings.getAclCacheSize());
+        Map<String, CmsAccessControlList> lruAcl = CmsCollectionsGenericWrapper.createLRUMap(
+            cacheSettings.getAclCacheSize());
         m_cacheAccessControlList = Collections.synchronizedMap(lruAcl);
         register(CmsDriverManager.class.getName() + ".accessControlListCache", lruAcl);
 
@@ -1956,9 +1939,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Checks if the property cache is enabled.<p>
-     * 
+     *
      * @return <code>true</code> if the property cache is enabled
-     * 
+     *
      * @deprecated use {@link #isEnabled(CacheType)} instead
      */
     @Deprecated
@@ -1969,9 +1952,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Checks if the property list cache is enabled.<p>
-     * 
+     *
      * @return <code>true</code> if the property list cache is enabled
-     * 
+     *
      * @deprecated use {@link #isEnabled(CacheType)} instead
      */
     @Deprecated
@@ -1982,9 +1965,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Checks if the resource cache is enabled.<p>
-     * 
+     *
      * @return <code>true</code> if the resource cache is enabled
-     * 
+     *
      * @deprecated use {@link #isEnabled(CacheType)} instead
      */
     @Deprecated
@@ -1995,9 +1978,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Checks if the resource list cache is enabled.<p>
-     * 
+     *
      * @return <code>true</code> if the resource list cache is enabled
-     * 
+     *
      * @deprecated use {@link #isEnabled(CacheType)} instead
      */
     @Deprecated
@@ -2008,9 +1991,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Checks if the given cache is enabled.<p>
-     * 
-     * @param type the cache type to check 
-     * 
+     *
+     * @param type the cache type to check
+     *
      * @return <code>true</code> if the given cache is enabled
      */
     public boolean isEnabled(CacheType type) {
@@ -2020,9 +2003,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Checks if there is a registered monitored object with the given key.<p>
-     * 
+     *
      * @param key the key to look for
-     * 
+     *
      * @return <code>true</code> if there is a registered monitored object with the given key
      */
     public boolean isMonitoring(String key) {
@@ -2054,7 +2037,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 monitor.monitorWriteLog(true);
                 // send warning email
                 monitor.monitorSendEmail(true);
-                // clean up caches     
+                // clean up caches
                 monitor.clearCaches();
             }
 
@@ -2068,7 +2051,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 monitor.monitorSendEmail(false);
             }
         } finally {
-            // make sure state is reset even if an error occurs, 
+            // make sure state is reset even if an error occurs,
             // otherwise MM will not be executed after an error
             m_currentlyRunning = false;
         }
@@ -2078,7 +2061,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns true if the system runs low on memory.<p>
-     * 
+     *
      * @return true if the system runs low on memory
      */
     public boolean lowMemory() {
@@ -2088,7 +2071,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Adds a new object to the monitor.<p>
-     * 
+     *
      * @param objectName name of the object
      * @param object the object for monitoring
      */
@@ -2101,9 +2084,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Checks if some kind of persistence is required.<p>
-     * 
+     *
      * This could be overwritten in a distributed environment.<p>
-     * 
+     *
      * @return <code>true</code> if some kind of persistence is required
      */
     public boolean requiresPersistency() {
@@ -2115,7 +2098,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * Sets if the property cache is enabled.<p>
      *
      * @param cacheProperty if the property cache is enabled
-     * 
+     *
      * @deprecated use {@link #enableCache(CacheType[])} or {@link #disableCache(CacheType[])} instead
      */
     @Deprecated
@@ -2132,7 +2115,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * Sets if the property list cache is enabled.<p>
      *
      * @param cachePropertyList if the property list cache is enabled
-     * 
+     *
      * @deprecated use {@link #enableCache(CacheType[])} or {@link #disableCache(CacheType[])} instead
      */
     @Deprecated
@@ -2149,7 +2132,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * Sets if the resource cache is enabled.<p>
      *
      * @param cacheResource if the resource cache is enabled
-     * 
+     *
      * @deprecated use {@link #enableCache(CacheType[])} or {@link #disableCache(CacheType[])} instead
      */
     @Deprecated
@@ -2166,7 +2149,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * Sets if the resource list cache is enabled.<p>
      *
      * @param cacheResourceList if the resource list cache is enabled
-     * 
+     *
      * @deprecated use {@link #enableCache(CacheType[])} or {@link #disableCache(CacheType[])} instead
      */
     @Deprecated
@@ -2181,8 +2164,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Flushes all cached objects.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void shutdown() throws Exception {
 
@@ -2193,7 +2176,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Removes the given xml content definition from the cache.<p>
-     * 
+     *
      * @param key the cache key to remove from cache
      */
     public void uncacheContentDefinition(String key) {
@@ -2203,9 +2186,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Removes the given group from the cache.<p>
-     * 
+     *
      * The group is removed by name AND also by uuid.<p>
-     * 
+     *
      * @param group the group to remove from cache
      */
     public void uncacheGroup(CmsGroup group) {
@@ -2216,7 +2199,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Removes the cached lock for the given root path from the cache.<p>
-     * 
+     *
      * @param rootPath the root path of the lock to remove from cache
      */
     public void uncacheLock(String rootPath) {
@@ -2226,9 +2209,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Removes the given organizational unit from the cache.<p>
-     * 
+     *
      * The organizational unit is removed by name AND also by uuid.<p>
-     * 
+     *
      * @param orgUnit the organizational unit to remove from cache
      */
     public void uncacheOrgUnit(CmsOrganizationalUnit orgUnit) {
@@ -2239,9 +2222,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Removes the given project from the cache.<p>
-     * 
+     *
      * The project is removed by name AND also by uuid.<p>
-     * 
+     *
      * @param project the project to remove from cache
      */
     public void uncacheProject(CmsProject project) {
@@ -2252,7 +2235,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Removes the given publish job from the cache.<p>
-     * 
+     *
      * @param publishJob the publish job to remove
      */
     public void uncachePublishJob(CmsPublishJobInfoBean publishJob) {
@@ -2262,7 +2245,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Removes the given publish job from the history.<p>
-     * 
+     *
      * @param publishJob the publish job to remove
      */
     public void uncachePublishJobInHistory(CmsPublishJobInfoBean publishJob) {
@@ -2272,9 +2255,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Removes the given user from the cache.<p>
-     * 
+     *
      * The user is removed by name AND also by uuid.<p>
-     * 
+     *
      * @param user the user to remove from cache
      */
     public void uncacheUser(CmsUser user) {
@@ -2285,7 +2268,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Removes the given vfs object from the cache.<p>
-     * 
+     *
      * @param key the cache key to remove from cache
      */
     public void uncacheVfsObject(String key) {
@@ -2295,7 +2278,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Removes the given xml temporary entity from the cache.<p>
-     * 
+     *
      * @param key the cache key to remove from cache
      */
     public void uncacheXmlTemporaryEntity(String key) {
@@ -2304,13 +2287,13 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
-     * Clears the OpenCms caches.<p> 
+     * Clears the OpenCms caches.<p>
      */
     protected void clearCaches() {
 
         if ((m_lastClearCache + INTERVAL_CLEAR) > System.currentTimeMillis()) {
-            // if the cache has already been cleared less then 15 minutes ago we skip this because 
-            // clearing the caches to often will hurt system performance and the 
+            // if the cache has already been cleared less then 15 minutes ago we skip this because
+            // clearing the caches to often will hurt system performance and the
             // setup seems to be in trouble anyway
             return;
         }
@@ -2318,19 +2301,18 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (LOG.isWarnEnabled()) {
             LOG.warn(Messages.get().getBundle().key(Messages.LOG_CLEAR_CACHE_MEM_CONS_0));
         }
-        OpenCms.fireCmsEvent(new CmsEvent(
-            I_CmsEventListener.EVENT_CLEAR_CACHES,
-            Collections.<String, Object> emptyMap()));
+        OpenCms.fireCmsEvent(
+            new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.<String, Object> emptyMap()));
         System.gc();
     }
 
     /**
      * Returns the cache costs of a monitored object.<p>
-     * 
+     *
      * <code>obj</code> must be of type {@link CmsLruCache}.<p>
-     * 
+     *
      * @param obj the object
-     * 
+     *
      * @return the cache costs or "-"
      */
     protected long getCosts(Object obj) {
@@ -2348,11 +2330,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the number of items within a monitored object.<p>
-     * 
+     *
      * <code>obj</code> must be of type {@link CmsLruCache} or {@link Map}.<p>
-     * 
+     *
      * @param obj the object
-     * 
+     *
      * @return the number of items or "-"
      */
     protected String getItems(Object obj) {
@@ -2368,12 +2350,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the total size of key strings within a monitored map.<p>
-     * 
+     *
      * The keys must be of type {@link String}.<p>
-     * 
+     *
      * @param map the map
      * @param depth the max recursion depth for calculation the size
-     * 
+     *
      * @return total size of key strings
      */
     protected long getKeySize(Map<?, ?> map, int depth) {
@@ -2416,11 +2398,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the total size of key strings within a monitored object.<p>
-     * 
+     *
      * <code>obj</code> must be of type {@link Map}, the keys must be of type {@link String}.<p>
-     * 
+     *
      * @param obj the object
-     * 
+     *
      * @return the total size of key strings
      */
     protected long getKeySize(Object obj) {
@@ -2434,11 +2416,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the max costs for all items within a monitored object.<p>
-     * 
+     *
      * <code>obj</code> must be of type {@link CmsLruCache} or {@link LRUMap}.<p>
-     * 
+     *
      * @param obj the object
-     * 
+     *
      * @return max cost limit or "-"
      */
     protected String getLimit(Object obj) {
@@ -2455,8 +2437,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Sends a warning or status email with OpenCms Memory information.<p>
-     * 
-     * @param warning if true, send a memory warning email 
+     *
+     * @param warning if true, send a memory warning email
      */
     protected void monitorSendEmail(boolean warning) {
 
@@ -2464,7 +2446,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             // send no mails if not fully configured
             return;
         } else if (warning
-            && (m_warningSendSinceLastStatus && !((m_intervalEmail <= 0) && (System.currentTimeMillis() < (m_lastEmailWarning + m_intervalWarning))))) {
+            && (m_warningSendSinceLastStatus
+                && !((m_intervalEmail <= 0)
+                    && (System.currentTimeMillis() < (m_lastEmailWarning + m_intervalWarning))))) {
             // send no warning email if no status email has been send since the last warning
             // if status is disabled, send no warn email if warn interval has not passed
             return;
@@ -2592,8 +2576,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Write a warning or status log entry with OpenCms Memory information.<p>
-     * 
-     * @param warning if true, write a memory warning log entry 
+     *
+     * @param warning if true, write a memory warning log entry
      */
     protected void monitorWriteLog(boolean warning) {
 
@@ -2604,7 +2588,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             // if not warning we need info level
             return;
         } else if (warning
-            && (m_warningLoggedSinceLastStatus && !(((m_intervalLog <= 0) && (System.currentTimeMillis() < (m_lastLogWarning + m_intervalWarning)))))) {
+            && (m_warningLoggedSinceLastStatus
+                && !(((m_intervalLog <= 0)
+                    && (System.currentTimeMillis() < (m_lastLogWarning + m_intervalWarning)))))) {
             // write no warning log if no status log has been written since the last warning
             // if status is disabled, log no warn entry if warn interval has not passed
             return;
@@ -2616,31 +2602,34 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (warning) {
             m_lastLogWarning = System.currentTimeMillis();
             m_warningLoggedSinceLastStatus = true;
-            LOG.warn(Messages.get().getBundle().key(
-                Messages.LOG_MM_WARNING_MEM_CONSUME_2,
-                new Long(m_memoryCurrent.getUsage()),
-                new Integer(m_maxUsagePercent)));
+            LOG.warn(
+                Messages.get().getBundle().key(
+                    Messages.LOG_MM_WARNING_MEM_CONSUME_2,
+                    new Long(m_memoryCurrent.getUsage()),
+                    new Integer(m_maxUsagePercent)));
         } else {
             m_warningLoggedSinceLastStatus = false;
             m_lastLogStatus = System.currentTimeMillis();
         }
 
         if (warning) {
-            LOG.warn(Messages.get().getBundle().key(
-                Messages.LOG_MM_WARNING_MEM_STATUS_6,
-                new Object[] {
-                    new Long(m_memoryCurrent.getMaxMemory()),
-                    new Long(m_memoryCurrent.getTotalMemory()),
-                    new Long(m_memoryCurrent.getFreeMemory()),
-                    new Long(m_memoryCurrent.getUsedMemory()),
-                    new Long(m_memoryCurrent.getUsage()),
-                    new Integer(m_maxUsagePercent)}));
+            LOG.warn(
+                Messages.get().getBundle().key(
+                    Messages.LOG_MM_WARNING_MEM_STATUS_6,
+                    new Object[] {
+                        new Long(m_memoryCurrent.getMaxMemory()),
+                        new Long(m_memoryCurrent.getTotalMemory()),
+                        new Long(m_memoryCurrent.getFreeMemory()),
+                        new Long(m_memoryCurrent.getUsedMemory()),
+                        new Long(m_memoryCurrent.getUsage()),
+                        new Integer(m_maxUsagePercent)}));
         } else {
             m_logCount++;
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_MM_LOG_INFO_2,
-                OpenCms.getSystemInfo().getServerName().toUpperCase(),
-                String.valueOf(m_logCount)));
+            LOG.info(
+                Messages.get().getBundle().key(
+                    Messages.LOG_MM_LOG_INFO_2,
+                    OpenCms.getSystemInfo().getServerName().toUpperCase(),
+                    String.valueOf(m_logCount)));
 
             List<String> keyList = new ArrayList<String>(m_monitoredObjects.keySet());
             Collections.sort(keyList);
@@ -2655,76 +2644,83 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 PrintfFormat name1 = new PrintfFormat("%-80s");
                 PrintfFormat name2 = new PrintfFormat("%-50s");
                 PrintfFormat form = new PrintfFormat("%9s");
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.LOG_MM_NOWARN_STATUS_5,
-                    new Object[] {
-                        name1.sprintf(key),
-                        name2.sprintf(obj.getClass().getName()),
-                        form.sprintf(getItems(obj)),
-                        form.sprintf(getLimit(obj)),
-                        form.sprintf(Long.toString(size))}));
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_MM_NOWARN_STATUS_5,
+                        new Object[] {
+                            name1.sprintf(key),
+                            name2.sprintf(obj.getClass().getName()),
+                            form.sprintf(getItems(obj)),
+                            form.sprintf(getLimit(obj)),
+                            form.sprintf(Long.toString(size))}));
             }
 
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_MM_WARNING_MEM_STATUS_6,
-                new Object[] {
-                    new Long(m_memoryCurrent.getMaxMemory()),
-                    new Long(m_memoryCurrent.getTotalMemory()),
-                    new Long(m_memoryCurrent.getFreeMemory()),
-                    new Long(m_memoryCurrent.getUsedMemory()),
-                    new Long(m_memoryCurrent.getUsage()),
-                    new Integer(m_maxUsagePercent),
-                    new Long(totalSize),
-                    new Long(totalSize / 1048576)})
+            LOG.info(
+                Messages.get().getBundle().key(
+                    Messages.LOG_MM_WARNING_MEM_STATUS_6,
+                    new Object[] {
+                        new Long(m_memoryCurrent.getMaxMemory()),
+                        new Long(m_memoryCurrent.getTotalMemory()),
+                        new Long(m_memoryCurrent.getFreeMemory()),
+                        new Long(m_memoryCurrent.getUsedMemory()),
+                        new Long(m_memoryCurrent.getUsage()),
+                        new Integer(m_maxUsagePercent),
+                        new Long(totalSize),
+                        new Long(totalSize / 1048576)})
 
             );
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_MM_WARNING_MEM_STATUS_AVG_6,
-                new Object[] {
-                    new Long(m_memoryAverage.getMaxMemory()),
-                    new Long(m_memoryAverage.getTotalMemory()),
-                    new Long(m_memoryAverage.getFreeMemory()),
-                    new Long(m_memoryAverage.getUsedMemory()),
-                    new Long(m_memoryAverage.getUsage()),
-                    new Integer(m_memoryAverage.getCount())}));
+            LOG.info(
+                Messages.get().getBundle().key(
+                    Messages.LOG_MM_WARNING_MEM_STATUS_AVG_6,
+                    new Object[] {
+                        new Long(m_memoryAverage.getMaxMemory()),
+                        new Long(m_memoryAverage.getTotalMemory()),
+                        new Long(m_memoryAverage.getFreeMemory()),
+                        new Long(m_memoryAverage.getUsedMemory()),
+                        new Long(m_memoryAverage.getUsage()),
+                        new Integer(m_memoryAverage.getCount())}));
 
             CmsSessionManager sm = OpenCms.getSessionManager();
 
             if (sm != null) {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.LOG_MM_SESSION_STAT_3,
-                    String.valueOf(sm.getSessionCountAuthenticated()),
-                    String.valueOf(sm.getSessionCountCurrent()),
-                    String.valueOf(sm.getSessionCountTotal())));
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_MM_SESSION_STAT_3,
+                        String.valueOf(sm.getSessionCountAuthenticated()),
+                        String.valueOf(sm.getSessionCountCurrent()),
+                        String.valueOf(sm.getSessionCountTotal())));
             }
             sm = null;
 
             for (Iterator<String> i = OpenCms.getSqlManager().getDbPoolUrls().iterator(); i.hasNext();) {
                 String poolname = i.next();
                 try {
-                    LOG.info(Messages.get().getBundle().key(
-                        Messages.LOG_MM_CONNECTIONS_3,
-                        poolname,
-                        Integer.toString(OpenCms.getSqlManager().getActiveConnections(poolname)),
-                        Integer.toString(OpenCms.getSqlManager().getIdleConnections(poolname))));
+                    LOG.info(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_MM_CONNECTIONS_3,
+                            poolname,
+                            Integer.toString(OpenCms.getSqlManager().getActiveConnections(poolname)),
+                            Integer.toString(OpenCms.getSqlManager().getIdleConnections(poolname))));
                 } catch (Exception exc) {
-                    LOG.info(Messages.get().getBundle().key(
-                        Messages.LOG_MM_CONNECTIONS_3,
-                        poolname,
-                        Integer.toString(-1),
-                        Integer.toString(-1)));
+                    LOG.info(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_MM_CONNECTIONS_3,
+                            poolname,
+                            Integer.toString(-1),
+                            Integer.toString(-1)));
                 }
             }
 
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_MM_STARTUP_TIME_2,
-                CmsDateUtil.getDateTimeShort(OpenCms.getSystemInfo().getStartupTime()),
-                CmsStringUtil.formatRuntime(OpenCms.getSystemInfo().getRuntime())));
+            LOG.info(
+                Messages.get().getBundle().key(
+                    Messages.LOG_MM_STARTUP_TIME_2,
+                    CmsDateUtil.getDateTimeShort(OpenCms.getSystemInfo().getStartupTime()),
+                    CmsStringUtil.formatRuntime(OpenCms.getSystemInfo().getRuntime())));
         }
     }
 
     /**
-     * Updates the memory information of the memory monitor.<p> 
+     * Updates the memory information of the memory monitor.<p>
      */
     protected void updateStatus() {
 

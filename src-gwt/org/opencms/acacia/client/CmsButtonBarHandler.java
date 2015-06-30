@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -171,8 +171,8 @@ public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHand
 
     /**
      * Adds a new submenu.<p>
-     * 
-     * @param entryWidget the entry widget whose children should be added to the submenu 
+     *
+     * @param entryWidget the entry widget whose children should be added to the submenu
      */
     protected void addSubmenu(CmsChoiceMenuEntryWidget entryWidget) {
 
@@ -184,29 +184,30 @@ public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHand
         choiceWidget.getSubmenuPanel().add(submenu);
         m_submenus.add(submenu);
         for (CmsChoiceMenuEntryBean subEntry : menuEntry.getChildren()) {
-            submenu.addChoice(new CmsChoiceMenuEntryWidget(
-                m_widgetService.getAttributeLabel(subEntry.getPathComponent()),
-                m_widgetService.getAttributeHelp(subEntry.getPathComponent()),
-                subEntry,
-                selectHandler,
-                choiceWidget,
-                submenu));
+            submenu.addChoice(
+                new CmsChoiceMenuEntryWidget(
+                    m_widgetService.getAttributeLabel(subEntry.getPathComponent()),
+                    m_widgetService.getAttributeHelp(subEntry.getPathComponent()),
+                    subEntry,
+                    selectHandler,
+                    choiceWidget,
+                    submenu));
         }
     }
 
     /**
      * Removes unnecessary submenus when the user hovers over a given menu entry.<p>
-     * 
-     * @param entryWidget the menu entry over which the user is hovering 
+     *
+     * @param entryWidget the menu entry over which the user is hovering
      */
     protected void cleanUpSubmenus(CmsChoiceMenuEntryWidget entryWidget) {
 
         CmsChoiceSubmenu submenu = entryWidget.getSubmenu();
-        // First remove all submenus which are deeper than the submenu in which the current entry is located  
+        // First remove all submenus which are deeper than the submenu in which the current entry is located
         while (!m_submenus.isEmpty() && (getLastSubmenu() != submenu)) {
             removeSubmenu(getLastSubmenu());
         }
-        // if it is a root entry, switch the attribute choice widget 
+        // if it is a root entry, switch the attribute choice widget
         if (submenu == null) {
             CmsAttributeChoiceWidget choiceWidget = entryWidget.getAttributeChoiceWidget();
             if (choiceWidget != m_choice) {
@@ -218,8 +219,8 @@ public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHand
 
     /**
      * Gets the last entry in the current list of active submenus.<p>
-     * 
-     * @return the last submenu 
+     *
+     * @return the last submenu
      */
     protected CmsChoiceSubmenu getLastSubmenu() {
 
@@ -228,8 +229,8 @@ public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHand
 
     /**
      * Removes a submenu and hides it.<p>
-     * 
-     * @param submenu the submenu to remove 
+     *
+     * @param submenu the submenu to remove
      */
     protected void removeSubmenu(CmsChoiceSubmenu submenu) {
 
@@ -239,7 +240,7 @@ public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHand
 
     /**
      * Sets the widget service.<p>
-     * 
+     *
      * @param widgetService the widget service
      */
     protected void setWidgetService(I_CmsWidgetService widgetService) {
@@ -279,7 +280,7 @@ public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHand
 
     /**
      * Handles the mouse over event for a choice widget.<p>
-     * 
+     *
      * @param choice the event source
      */
     private void overAttributeChoice(CmsAttributeChoiceWidget choice) {
@@ -299,7 +300,7 @@ public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHand
 
     /**
      * Handles the mouse over event for a button bar.<p>
-     * 
+     *
      * @param buttonBar the event source
      */
     private void overButtonBar(Widget buttonBar) {
@@ -313,7 +314,7 @@ public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHand
 
     /**
      * Handles the mouse over event for a choice menu entry.<p>
-     * 
+     *
      * @param entryWidget the event source
      */
     private void overChoiceEntry(CmsChoiceMenuEntryWidget entryWidget) {
@@ -346,7 +347,7 @@ public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHand
 
     /**
      * Sets the button bar visibility.<p>
-     * 
+     *
      * @param buttonBar the button bar
      * @param visible <code>true</code> to show the button bar
      */

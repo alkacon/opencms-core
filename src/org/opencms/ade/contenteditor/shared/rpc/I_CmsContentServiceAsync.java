@@ -45,7 +45,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
 
     /**
      * Calls the editor change handlers.<p>
-     * 
+     *
      * @param entityId the edited entity id
      * @param editedLocaleEntity the edited entity
      * @param skipPaths the locale synchronization value paths to skip
@@ -62,7 +62,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
     /**
      * Cancels the editing session.<p>
      * Will unlock the resource and delete it if required.<p>
-     * 
+     *
      * @param structureId the resource structure id
      * @param delete <code>true</code> to delete the edited resource
      * @param callback the asynchronous callback
@@ -72,7 +72,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
 
     /**
      * Copies the given source locale to the target locales.<p>
-     * 
+     *
      * @param locales the target locales
      * @param sourceLocale the source locale
      * @param callback the asynchronous callback
@@ -81,7 +81,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
 
     /**
      * Loads the content definition for a given type.<p>
-     * 
+     *
      * @param entityId the entity id/URI
      * @param editedLocaleEntity the edited locale entity
      * @param skipPaths the paths to skip during locale synchronization
@@ -95,7 +95,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
 
     /**
      * Loads the content definition for a given type creating a new resource according to the new link and model file parameter.<p>
-     * 
+     *
      * @param entityId the entity id/URI
      * @param newLink the new link
      * @param modelFileId  the optional model file id
@@ -116,7 +116,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
     /**
      * Loads new entity definition.<p>
      * This will load the entity representation of a new locale node.<p>
-     * 
+     *
      * @param entityId the entity id/URI
      * @param editedLocaleEntity the edited locale entity
      * @param skipPaths the paths to skip during locale synchronization

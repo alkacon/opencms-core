@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,25 +30,25 @@ package org.opencms.workplace.editors.directedit;
 import org.opencms.util.CmsStringUtil;
 
 /**
- * Constants to indicate which mode to use for placement of the HTML that generates 
+ * Constants to indicate which mode to use for placement of the HTML that generates
  * the direct edit buttons.<p>
- * 
+ *
  * There are 3 basic options for the direct edit mode:
  * <ul>
  * <li>{@link #FALSE}: Direct edit is disabled.
  * <li>{@link #AUTO}: Direct edit button HTML is inserted automatically.
  * <li>{@link #MANUAL}: Direct edit button HTML is inserted manually by using &ltcms: editable mode="manual" /&gt tags.
  * </ul>
- * 
- * There is one global option set for the page / template. 
+ *
+ * There is one global option set for the page / template.
  * The default is {@link #AUTO}.<p>
- * 
- * There is an additional constant {@link #TRUE} that means "use the default mode of the page / template".<p> 
- * 
+ *
+ * There is an additional constant {@link #TRUE} that means "use the default mode of the page / template".<p>
+ *
  * It is possible to switch modes for an individual content loop.
- * This is intended to use with XmlContents that require special placement of the direct edit HTML 
+ * This is intended to use with XmlContents that require special placement of the direct edit HTML
  * because the default placement does not give good results.<p>
- * 
+ *
  * @since 6.2.3
  */
 public final class CmsDirectEditMode {
@@ -85,7 +85,7 @@ public final class CmsDirectEditMode {
 
     /**
      * Hides the public constructor.<p>
-     * 
+     *
      * @param mode the mode to initialize
      */
     private CmsDirectEditMode(int mode) {
@@ -95,9 +95,9 @@ public final class CmsDirectEditMode {
 
     /**
      * Returns {@link #TRUE} in case the given value is <code>true</code>, {@link #FALSE} otherwise.<p>
-     * 
+     *
      * @param value the direct edit mode to get the constant for
-     * 
+     *
      * @return {@link #TRUE} in case the given value is <code>true</code>, {@link #FALSE} otherwise
      */
     public static CmsDirectEditMode valueOf(boolean value) {
@@ -107,7 +107,7 @@ public final class CmsDirectEditMode {
 
     /**
      * Returns the mode constant for the selected direct edit int mode.<p>
-     * 
+     *
      * The possible value are:
      * <ul>
      * <li>0: Mode is {@link #FALSE}.
@@ -115,9 +115,9 @@ public final class CmsDirectEditMode {
      * <li>2: Mode is {@link #AUTO}.
      * <li>3: Mode is {@link #MANUAL}.
      * </ul>
-     * 
+     *
      * @param mode the direct edit int mode to get the constant for
-     * 
+     *
      * @return the mode constant for the selected direct edit int mode
      */
     public static CmsDirectEditMode valueOf(int mode) {
@@ -130,11 +130,11 @@ public final class CmsDirectEditMode {
 
     /**
      * Returns the mode constant for the selected direct edit String mode description.<p>
-     * 
+     *
      * For a mode instance <code>A</code>, {@link #toString()} returns the String mode description.<p>
-     * 
+     *
      * @param value the direct edit String mode description to get the constant for
-     * 
+     *
      * @return the mode constant for the selected direct edit String mode description
      */
     public static CmsDirectEditMode valueOf(String value) {
@@ -155,9 +155,9 @@ public final class CmsDirectEditMode {
 
     /**
      * Returns this modes int value.<p>
-     * 
+     *
      * @return this modes int value
-     * 
+     *
      * @see #valueOf(int)
      */
     public int getMode() {
@@ -167,10 +167,10 @@ public final class CmsDirectEditMode {
 
     /**
      * Returns <code>true</code> in case this mode indicates direct edit is enabled.<p>
-     * 
-     * Direct edit is enabled if this mode is not {@link #FALSE}, which is 
-     * identical to <code>{@link #getMode()} > 0</code>. 
-     * 
+     *
+     * Direct edit is enabled if this mode is not {@link #FALSE}, which is
+     * identical to <code>{@link #getMode()} > 0</code>.
+     *
      * @return <code>true</code> in case this mode indicates direct edit is enabled
      */
     public boolean isEnabled() {

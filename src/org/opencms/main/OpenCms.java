@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -71,34 +71,34 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 
 /**
- * The OpenCms "operating system" that provides 
- * public static methods which can be used by other classes to access 
+ * The OpenCms "operating system" that provides
+ * public static methods which can be used by other classes to access
  * basic system features of OpenCms like logging etc.<p>
- * 
+ *
  * This Object provides singleton access to the initialized OpenCms runtime system.
- * Some methods are for internal or advanced use only, but others are of also of interest 
+ * Some methods are for internal or advanced use only, but others are of also of interest
  * for general OpenCms development.<p>
- * 
- * For example, to generate a new instance of <code>{@link org.opencms.file.CmsObject}</code> class in your application, 
- * use <code>{@link org.opencms.main.OpenCms#initCmsObject(String)}</code>. The argument String should be 
+ *
+ * For example, to generate a new instance of <code>{@link org.opencms.file.CmsObject}</code> class in your application,
+ * use <code>{@link org.opencms.main.OpenCms#initCmsObject(String)}</code>. The argument String should be
  * the name of the guest user, usually "Guest" and more formally obtained by <code>{@link org.opencms.db.CmsDefaultUsers#getUserGuest()}</code>.
  * This will give you an initialized context with guest user permissions.
  * Then use <code>{@link CmsObject#loginUser(String, String)}</code> to log in the user you want.
  * Obviously you need the password for the new user.<p>
- * 
+ *
  * Using <code>{@link #getSiteManager()}</code> you can obtain the initialized <code>{@link org.opencms.site.CmsSiteManagerImpl}</code>
  * which provides information about the sites configured in the running OpenCms instance.<p>
- * 
+ *
  * The <code>{@link org.opencms.db.CmsDefaultUsers}</code> instance returned by <code>{@link #getDefaultUsers()}</code>
  * provides information about the names of the OpenCms default users.<p>
- * 
+ *
  * Other objects of note that can be obtained by this class include the <code>{@link org.opencms.module.CmsModuleManager}</code>
  * or the <code>{@link org.opencms.scheduler.CmsScheduleManager}</code>.<p>
- * 
- * When using the instances returned by this object, keep in mind that applying changes to these may alter the basic OpenCms 
+ *
+ * When using the instances returned by this object, keep in mind that applying changes to these may alter the basic OpenCms
  * system configuration, which in turn may affect the systems performance or stability.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public final class OpenCms {
 
@@ -118,7 +118,7 @@ public final class OpenCms {
     public static final int RUNLEVEL_4_SERVLET_ACCESS = 4;
 
     /**
-     * The public contructor is hidden to prevent generation of instances of this class.<p> 
+     * The public contructor is hidden to prevent generation of instances of this class.<p>
      */
     private OpenCms() {
 
@@ -158,9 +158,9 @@ public final class OpenCms {
 
     /**
      * Notify all event listeners that a particular event has occurred.<p>
-     * 
+     *
      * The event will be given to all registered <code>{@link I_CmsEventListener}</code> objects.<p>
-     * 
+     *
      * @param type event type
      * @param data event data
      */
@@ -171,7 +171,7 @@ public final class OpenCms {
 
     /**
      * Gets the initialized ADE manager.<p>
-     * 
+     *
      * @return the initialized ADE manager
      */
     public static CmsADEManager getADEManager() {
@@ -181,8 +181,8 @@ public final class OpenCms {
 
     /**
      * Gets the alias manager.<p>
-     * 
-     * @return the alias manager 
+     *
+     * @return the alias manager
      */
     public static CmsAliasManager getAliasManager() {
 
@@ -201,8 +201,8 @@ public final class OpenCms {
 
     /**
      * Gets the credentials resolver instance.<p>
-     * 
-     * @return the credentials resolver 
+     *
+     * @return the credentials resolver
      */
     public static I_CmsCredentialsResolver getCredentialsResolver() {
 
@@ -211,9 +211,9 @@ public final class OpenCms {
 
     /**
      * Returns the configured list of default directory file names (instances of <code>{@link String}</code>).<p>
-     *  
+     *
      * Caution: This list can not be modified.<p>
-     * 
+     *
      * @return the configured list of default directory file names
      */
     public static List<String> getDefaultFiles() {
@@ -223,7 +223,7 @@ public final class OpenCms {
 
     /**
      * Returns the default user and group name configuration.<p>
-     * 
+     *
      * @return the default user and group name configuration
      */
     public static CmsDefaultUsers getDefaultUsers() {
@@ -233,7 +233,7 @@ public final class OpenCms {
 
     /**
      * Returns the event manger that handles all OpenCms events.<p>
-     * 
+     *
      * @return the event manger that handles all OpenCms events
      */
     public static CmsEventManager getEventManager() {
@@ -243,8 +243,8 @@ public final class OpenCms {
 
     /**
      * Gets the thread pool executor.<p>
-     * 
-     * @return the thread pool executor 
+     *
+     * @return the thread pool executor
      */
     public static ScheduledThreadPoolExecutor getExecutor() {
 
@@ -254,7 +254,7 @@ public final class OpenCms {
     /**
      * Returns the configured export points,
      * the returned set being an unmodifiable set.<p>
-     * 
+     *
      * @return an unmodifiable set of the configured export points
      */
     public static Set<CmsExportPoint> getExportPoints() {
@@ -263,9 +263,9 @@ public final class OpenCms {
     }
 
     /**
-     * Returns the initialized import/export manager, 
-     * which contains information about how to handle imported resources.<p> 
-     * 
+     * Returns the initialized import/export manager,
+     * which contains information about how to handle imported resources.<p>
+     *
      * @return the initialized import/export manager
      */
     public static CmsImportExportManager getImportExportManager() {
@@ -275,7 +275,7 @@ public final class OpenCms {
 
     /**
      * Returns the link manager to resolve links in &lt;link&gt; tags.<p>
-     * 
+     *
      * @return  the link manager to resolve links in &lt;link&gt; tags
      */
     public static CmsLinkManager getLinkManager() {
@@ -285,7 +285,7 @@ public final class OpenCms {
 
     /**
      * Returns the locale manager used for obtaining the current locale.<p>
-     * 
+     *
      * @return the locale manager
      */
     public static CmsLocaleManager getLocaleManager() {
@@ -295,11 +295,11 @@ public final class OpenCms {
 
     /**
      * Returns the log for the selected object.<p>
-     * 
+     *
      * If the provided object is a String, this String will
-     * be used as channel name. Otherwise the objects 
+     * be used as channel name. Otherwise the objects
      * class name will be used as channel name.<p>
-     *  
+     *
      * @param obj the object channel to use
      * @return the log for the selected object channel
      */
@@ -310,7 +310,7 @@ public final class OpenCms {
 
     /**
      * Returns the login manager used to check if a login is possible.<p>
-     * 
+     *
      * @return the login manager
      */
     public static CmsLoginManager getLoginManager() {
@@ -320,7 +320,7 @@ public final class OpenCms {
 
     /**
      * Returns the memory monitor.<p>
-     * 
+     *
      * @return the memory monitor
      */
     public static CmsMemoryMonitor getMemoryMonitor() {
@@ -330,7 +330,7 @@ public final class OpenCms {
 
     /**
      * Returns the module manager.<p>
-     * 
+     *
      * @return the module manager
      */
     public static CmsModuleManager getModuleManager() {
@@ -340,7 +340,7 @@ public final class OpenCms {
 
     /**
      * Returns the organizational unit manager.<p>
-     * 
+     *
      * @return the organizational unit manager
      */
     public static CmsOrgUnitManager getOrgUnitManager() {
@@ -350,7 +350,7 @@ public final class OpenCms {
 
     /**
      * Returns the password handler.<p>
-     * 
+     *
      * @return the password handler
      */
     public static I_CmsPasswordHandler getPasswordHandler() {
@@ -360,7 +360,7 @@ public final class OpenCms {
 
     /**
      * Returns the core publish manager class.<p>
-     * 
+     *
      * @return the publish manager instance
      */
     public static CmsPublishManager getPublishManager() {
@@ -370,7 +370,7 @@ public final class OpenCms {
 
     /**
      * Returns the repository manager.<p>
-     * 
+     *
      * @return the repository manager
      */
     public static CmsRepositoryManager getRepositoryManager() {
@@ -380,7 +380,7 @@ public final class OpenCms {
 
     /**
      * Returns the resource manager.<p>
-     * 
+     *
      * @return the resource manager
      */
     public static CmsResourceManager getResourceManager() {
@@ -390,7 +390,7 @@ public final class OpenCms {
 
     /**
      * Returns the role manager.<p>
-     * 
+     *
      * @return the role manager
      */
     public static CmsRoleManager getRoleManager() {
@@ -400,29 +400,29 @@ public final class OpenCms {
 
     /**
      * Returns the current OpenCms run level.<p>
-     * 
+     *
      * The following runlevels are defined:
      * <dl>
      * <dt>Runlevel {@link OpenCms#RUNLEVEL_0_OFFLINE}:</dt><dd>
      * OpenCms is in the process of being shut down, the system is offline.</dd>
-     * 
+     *
      * <dt>Runlevel {@link OpenCms#RUNLEVEL_1_CORE_OBJECT}:</dt><dd>
-     * OpenCms instance available, but configuration has not been processed. 
+     * OpenCms instance available, but configuration has not been processed.
      * No database or VFS available.</dd>
-     * 
+     *
      * <dt>Runlevel {@link OpenCms#RUNLEVEL_2_INITIALIZING}:</dt><dd>
      * OpenCms is initializing, but the process is not finished.
      * The database with the VFS is currently being connected but can't be accessed.</dd>
-     * 
+     *
      * <dt>Runlevel {@link OpenCms#RUNLEVEL_3_SHELL_ACCESS}:</dt><dd>
      * OpenCms database and VFS available, but http processing (i.e. servlet) not initialized.
      * This is the runlevel the OpenCms shell operates in.</dd>
-     * 
+     *
      * <dt>Runlevel {@link OpenCms#RUNLEVEL_4_SERVLET_ACCESS}:</dt><dd>
      * OpenCms fully initialized, servlet and database available.
      * This is the "default" when OpenCms is in normal operation.</dd>
      * </dl>
-     * 
+     *
      * @return the OpenCms run level
      */
     public static int getRunLevel() {
@@ -430,7 +430,7 @@ public final class OpenCms {
         return OpenCmsCore.getInstance().getRunLevel();
     }
 
-    /** 
+    /**
      * Looks up a value in the runtime property Map.<p>
      *
      * @param key the key to look up in the runtime properties
@@ -454,7 +454,7 @@ public final class OpenCms {
     /**
      * Returns the initialized search manager,
      * which provides indexing and searching operations.<p>
-     * 
+     *
      * @return the initialized search manager
      */
     public static CmsSearchManager getSearchManager() {
@@ -464,7 +464,7 @@ public final class OpenCms {
 
     /**
      * Returns the session manager that keeps track of the active users.<p>
-     * 
+     *
      * @return the session manager that keeps track of the active users
      */
     public static CmsSessionManager getSessionManager() {
@@ -473,9 +473,9 @@ public final class OpenCms {
     }
 
     /**
-     * Returns the initialized site manager, 
-     * which contains information about all configured sites.<p> 
-     * 
+     * Returns the initialized site manager,
+     * which contains information about all configured sites.<p>
+     *
      * @return the initialized site manager
      */
     public static CmsSiteManagerImpl getSiteManager() {
@@ -485,7 +485,7 @@ public final class OpenCms {
 
     /**
      * Returns an instance of the common sql manager.<p>
-     * 
+     *
      * @return an instance of the common sql manager
      */
     public static CmsSqlManager getSqlManager() {
@@ -495,7 +495,7 @@ public final class OpenCms {
 
     /**
      * Returns the properties for the static export.<p>
-     * 
+     *
      * @return the properties for the static export
      */
     public static CmsStaticExportManager getStaticExportManager() {
@@ -505,7 +505,7 @@ public final class OpenCms {
 
     /**
      * Returns the subscription manager.<p>
-     * 
+     *
      * @return the subscription manager
      */
     public static CmsSubscriptionManager getSubscriptionManager() {
@@ -514,8 +514,8 @@ public final class OpenCms {
     }
 
     /**
-     * Returns the system information storage.<p> 
-     * 
+     * Returns the system information storage.<p>
+     *
      * @return the system information storage
      */
     public static CmsSystemInfo getSystemInfo() {
@@ -524,10 +524,10 @@ public final class OpenCms {
     }
 
     /**
-     * Returns the list of system defined roles (instances of <code>{@link CmsRole}</code>).<p> 
-     * 
+     * Returns the list of system defined roles (instances of <code>{@link CmsRole}</code>).<p>
+     *
      * Caution: This list can not be modified.<p>
-     * 
+     *
      * @return the list of system defined roles
      */
     public static List<CmsRole> getSystemRoles() {
@@ -537,8 +537,8 @@ public final class OpenCms {
 
     /**
      * Gets the template context manager.<p>
-     * 
-     * @return the template context manager instance 
+     *
+     * @return the template context manager instance
      */
     public static CmsTemplateContextManager getTemplateContextManager() {
 
@@ -547,7 +547,7 @@ public final class OpenCms {
 
     /**
      * Returns the OpenCms Thread store.<p>
-     * 
+     *
      * @return the OpenCms Thread store
      */
     public static CmsThreadStore getThreadStore() {
@@ -557,7 +557,7 @@ public final class OpenCms {
 
     /**
      * Returns the runtime validation handler.<p>
-     * 
+     *
      * @return the validation handler
      */
     public static I_CmsValidationHandler getValidationHandler() {
@@ -567,8 +567,8 @@ public final class OpenCms {
 
     /**
      * Gets the initialized workflow manager.<p>
-     *  
-     * @return the initialized workflow manager 
+     *
+     * @return the initialized workflow manager
      */
     public static I_CmsWorkflowManager getWorkflowManager() {
 
@@ -576,9 +576,9 @@ public final class OpenCms {
     }
 
     /**
-     * Returns the initialized workplace manager, 
-     * which contains information about the global workplace settings.<p> 
-     * 
+     * Returns the initialized workplace manager,
+     * which contains information about the global workplace settings.<p>
+     *
      * @return the initialized workplace manager
      */
     public static CmsWorkplaceManager getWorkplaceManager() {
@@ -588,7 +588,7 @@ public final class OpenCms {
 
     /**
      * Returns the XML content type manager.<p>
-     * 
+     *
      * @return the XML content type manager
      */
     public static CmsXmlContentTypeManager getXmlContentTypeManager() {
@@ -598,17 +598,17 @@ public final class OpenCms {
 
     /**
      * Returns an independent copy of the provided CmsObject.<p>
-     * 
+     *
      * This can be useful in case a permanent reference to a CmsObject is stored.
-     * Changing the request context values (for example project, siteroot) in the new CmsObject 
-     * will have no side effects to the CmsObject it was copied form.<p>  
-     * 
+     * Changing the request context values (for example project, siteroot) in the new CmsObject
+     * will have no side effects to the CmsObject it was copied form.<p>
+     *
      * @param cms the CmsObject to create a copy of
-     * 
+     *
      * @return an independent copy of the provided CmsObject
-     * 
+     *
      * @throws CmsException in case the initialization failed
-     * 
+     *
      * @see OpenCms#initCmsObject(CmsObject)
      * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)
      * @see OpenCms#initCmsObject(String)
@@ -620,19 +620,19 @@ public final class OpenCms {
 
     /**
      * Returns an initialized CmsObject with the user and context initialized as provided.<p>
-     * 
-     * Note: Only if the provided <code>adminCms</code> CmsObject has admin permissions, 
+     *
+     * Note: Only if the provided <code>adminCms</code> CmsObject has admin permissions,
      * this method allows the creation a CmsObject for any existing user. Otherwise
-     * only the default users 'Guest' and 'Export' can initialized with 
+     * only the default users 'Guest' and 'Export' can initialized with
      * this method, all other user names will throw an Exception.<p>
-     * 
+     *
      * @param adminCms must either be initialized with "Admin" permissions, or null
      * @param contextInfo the context info to create a CmsObject for
-     * 
+     *
      * @return an initialized CmsObject with the given users permissions
-     * 
+     *
      * @throws CmsException if an invalid user name was provided, or if something else goes wrong
-     * 
+     *
      * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
      * @see org.opencms.db.CmsDefaultUsers#getUserExport()
      * @see OpenCms#initCmsObject(CmsObject)
@@ -647,24 +647,24 @@ public final class OpenCms {
     /**
      * Returns an initialized CmsObject (OpenCms user context) with the user initialized as provided,
      * with the "Online" project selected and "/" set as the current site root.<p>
-     * 
-     * Note: Only the default users 'Guest' and 'Export' can initialized with 
+     *
+     * Note: Only the default users 'Guest' and 'Export' can initialized with
      * this method, all other user names will throw an Exception.<p>
-     * 
+     *
      * In order to initialize another user (for example, the {@link CmsDefaultUsers#getUserAdmin()}),
-     * you need to get the 'Guest' user context first, then login the target user with 
+     * you need to get the 'Guest' user context first, then login the target user with
      * his user name and password, using {@link CmsObject#loginUser(String, String)}.
      * There is no way to obtain a user context other then the 'Guest' or 'Export' user
-     * without the users password. This is a security feature.<p> 
-     * 
-     * @param user the user name to initialize, can only be 
+     * without the users password. This is a security feature.<p>
+     *
+     * @param user the user name to initialize, can only be
      *        {@link org.opencms.db.CmsDefaultUsers#getUserGuest()} or
      *        {@link org.opencms.db.CmsDefaultUsers#getUserExport()}
-     * 
+     *
      * @return an initialized CmsObject with the given users permissions
-     * 
+     *
      * @throws CmsException if an invalid user name was provided, or if something else goes wrong
-     * 
+     *
      * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
      * @see org.opencms.db.CmsDefaultUsers#getUserExport()
      * @see OpenCms#initCmsObject(CmsObject)
@@ -678,17 +678,17 @@ public final class OpenCms {
 
     /**
      * Reads the requested resource from the OpenCms VFS,
-     * and in case a directory name is requested, the default files of the 
+     * and in case a directory name is requested, the default files of the
      * directory will be looked up and the first match is returned.<p>
      *
      * The resource that is returned is always a <code>{@link org.opencms.file.CmsFile}</code>,
      * even though the content will usually not be loaded in the result. Folders are never returned since
      * the point of this method is really to load the default file if just a folder name is requested.<p>
      *
-     * The URI stored in the given OpenCms user context will be changed to the URI of the resource 
+     * The URI stored in the given OpenCms user context will be changed to the URI of the resource
      * that was found and returned.<p>
-     * 
-     * Implementing and configuring an <code>{@link I_CmsResourceInit}</code> handler 
+     *
+     * Implementing and configuring an <code>{@link I_CmsResourceInit}</code> handler
      * allows to customize the process of default resource selection.<p>
      *
      * @param cms the current users OpenCms context
@@ -696,8 +696,8 @@ public final class OpenCms {
      * @param req the current http request
      * @param res the current http response
      * @return the requested resource read from the VFS
-     * 
-     * @throws CmsException in case the requested file does not exist or the user has insufficient access permissions 
+     *
+     * @throws CmsException in case the requested file does not exist or the user has insufficient access permissions
      */
     public static CmsResource initResource(
         CmsObject cms,
@@ -718,7 +718,7 @@ public final class OpenCms {
         OpenCmsCore.getInstance().getEventManager().removeCmsEventListener(listener);
     }
 
-    /**       
+    /**
      * This method adds an Object to the OpenCms runtime properties.
      * The runtime properties can be used to store Objects that are shared
      * in the whole system.<p>
@@ -733,7 +733,7 @@ public final class OpenCms {
 
     /**
      * Writes the XML configuration for the provided configuration class.<p>
-     * 
+     *
      * @param clazz the configuration class to write the XML for
      */
     public static void writeConfiguration(Class<?> clazz) {

@@ -18,8 +18,8 @@
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
- * project website: http://www.opencms.org 
- * 
+ * project website: http://www.opencms.org
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,16 +55,16 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Wrapper class for @see com.google.user.client.ui.TabLayoutPanel.<p>
- * 
+ *
  * Layout class for a panel with several tabs. The tabbed panel should be set inside a widget with given width and height.
  * For table based layouts the height of the parent cell should be set explicitly.
- * 
+ *
  * As layout options two height for the tabbar are provided: 32px("standard") and 25px("small").
- * 
+ *
  * @param <E> the tab widget type
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsTabbedPanel<E extends Widget> extends Composite implements I_DescendantResizeHandler, Iterable<E> {
 
@@ -90,9 +90,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
         /** The tab color style name. */
         private String m_tabColorClass;
 
-        /** 
+        /**
          * Constructor.<p>
-         * 
+         *
          * @param barHeight the height of the bar
          * @param styleClass the tab style class
          * @param tabColorClass the tab color
@@ -146,9 +146,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
         /** The tab bar. */
         private FlowPanel m_tabBar;
 
-        /** 
+        /**
          * Constructor.<p>
-         * 
+         *
          * @param barHeight the tab bar height
          * @param barUnit the height unit
          */
@@ -212,8 +212,8 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * The constructor for an empty tabbed panel. <p>
-     * 
-     * @param tabbedPanelStyle the pre-defined height of the tabbar, can be "small" or "standard"      
+     *
+     * @param tabbedPanelStyle the pre-defined height of the tabbar, can be "small" or "standard"
      */
     public CmsTabbedPanel(CmsTabbedPanelStyle tabbedPanelStyle) {
 
@@ -241,9 +241,10 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
         m_tabPanel.setStyleName(m_panelStyle.getStyleClass());
         m_tabPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanel());
-        m_tabPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
-            + " "
-            + I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
+        m_tabPanel.addStyleName(
+            I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
+                + " "
+                + I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());
 
         m_tabPanel.addAttachHandler(new AttachEvent.Handler() {
 
@@ -266,10 +267,10 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Add a new tab with the provided name and content.<p>
-     * 
+     *
      * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#add(Widget, String)}
-     * 
-     * @param tabContent the widget to add as a tab 
+     *
+     * @param tabContent the widget to add as a tab
      * @param tabName the name of the tab to display in the tabbar
      */
     public void add(E tabContent, String tabName) {
@@ -304,9 +305,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Add the before selection handler to the tabbed panel.<p>
-     * 
+     *
      * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#addBeforeSelectionHandler(BeforeSelectionHandler)}
-     * 
+     *
      * @param handler the before selection handler
      * @return the registration for the event
      */
@@ -317,7 +318,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Adds a tab with a user-defined id.<p>
-     * 
+     *
      * @param tabContent the tab content
      * @param tabName the tab name
      * @param tabId the tab id
@@ -330,9 +331,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Adds a SelectionEvent handler to the tabbed panel.<p>
-     * 
+     *
      * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#addSelectionHandler(SelectionHandler)}
-     * 
+     *
      * @param handler the selection handler
      * @return the registration for the event
      */
@@ -343,8 +344,8 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Add a new tab with the provided name and content and additional left margin.<p>
-     * 
-     * @param tabContent the widget to add as a tab 
+     *
+     * @param tabContent the widget to add as a tab
      * @param tabName the name of the tab to display in the tabbar
      */
     public void addWithLeftMargin(E tabContent, String tabName) {
@@ -366,7 +367,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Disables the tab with the given index.<p>
-     * 
+     *
      * @param tabContent the content of the tab that should be disabled
      * @param reason the reason why the tab is disabled
      */
@@ -387,7 +388,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Enables the tab with the given index.<p>
-     * 
+     *
      * @param tabContent the content of the tab that should be enabled
      */
     public void enableTab(E tabContent) {
@@ -403,9 +404,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Gets the index of the currently-selected tab.<p>
-     * 
+     *
      * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#getSelectedIndex()}
-     * 
+     *
      * @return the selected index, or -1 if none is selected.
      */
     public int getSelectedIndex() {
@@ -416,10 +417,10 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Finds a tab with a given id.<p>
-     * 
+     *
      * @param tabId a tab id
-     *  
-     * @return the tab with the given id 
+     *
+     * @return the tab with the given id
      */
     public E getTabById(String tabId) {
 
@@ -428,9 +429,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Gets the number of child widgets in this panel.<p>
-     * 
+     *
      * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#getWidgetCount()}
-     * 
+     *
      * @return the number of children
      */
     public int getTabCount() {
@@ -440,9 +441,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Returns the index of the tab to the given child element.<p>
-     * 
+     *
      * @param child the tab child
-     * 
+     *
      * @return the tab index
      */
     public int getTabIndex(Element child) {
@@ -459,10 +460,10 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Returns the tab text for a given tab.<p>
-     * 
-     * @param pos the index of the tab 
-     * 
-     * @return the text of the tab 
+     *
+     * @param pos the index of the tab
+     *
+     * @return the text of the tab
      */
     public String getTabText(int pos) {
 
@@ -472,9 +473,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
     /**
      * Returns the tab widget.<p>
      * This will not be the tab content but the tab itself.<p>
-     * 
+     *
      * @param index the tab index
-     * 
+     *
      * @return the tab widget
      */
     public Widget getTabWidget(int index) {
@@ -484,9 +485,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Gets the child widget at the specified index.<p>
-     * 
+     *
      * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#getWidget(int)}
-     * 
+     *
      * @param tabIndex the child widget's index
      * @return the child widget
      */
@@ -497,9 +498,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Inserts a widget into the panel. If the Widget is already attached, it will be moved to the requested index.<p>
-     * 
+     *
      * Wrapper function for {@link com.google.gwt.user.client.ui.TabLayoutPanel#insert(Widget, String, int)}
-     * 
+     *
      * @param tabContent the widget to be added
      * @param tabName the text to be shown on its tab
      * @param beforeIndex  the index before which it will be inserted
@@ -512,9 +513,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Returns <code>true</code> if the tab with the given index is disabled, <code>false</code> otherwise.<p>
-     * 
+     *
      * @param tabIndex the tab index
-     * 
+     *
      * @return <code>true</code> if the tab with the given index is disabled, <code>false</code> otherwise
      */
     public boolean isDisabledTab(int tabIndex) {
@@ -524,7 +525,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Returns an iterator over all tabs.<p>
-     * 
+     *
      * @return the iterator
      */
     public Iterator<E> iterator() {
@@ -549,8 +550,8 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Removes the tab with the given index.<p>
-     * 
-     * @param tabIndex the index of the tab which should be removed 
+     *
+     * @param tabIndex the index of the tab which should be removed
      */
     public void removeTab(int tabIndex) {
 
@@ -560,9 +561,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Delegate method.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.TabLayoutPanel#selectTab(Widget index)
-     * 
+     *
      * @param tabWidget the tab widget to select
      */
     public void selectTab(E tabWidget) {
@@ -572,9 +573,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Delegate method.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.TabLayoutPanel#selectTab(Widget index)
-     * 
+     *
      * @param tabWidget the tab widget to select
      * @param fireEvent <code>true</code> to fire the tab event
      */
@@ -585,9 +586,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Delegate method.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.TabLayoutPanel#selectTab(int index)
-     * 
+     *
      * @param tabIndex the index of the tab to be selected
      */
     public void selectTab(int tabIndex) {
@@ -597,9 +598,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Delegate method.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.TabLayoutPanel#selectTab(int index)
-     * 
+     *
      * @param tabIndex the index of the tab to be selected
      * @param fireEvent <code>true</code> to fire the tab event
      */
@@ -610,8 +611,8 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Enables or disables auto-resizing.<p>
-     * 
-     * @param autoResize the auto resize flag value 
+     *
+     * @param autoResize the auto resize flag value
      */
     public void setAutoResize(boolean autoResize) {
 
@@ -620,8 +621,8 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Sets a value which is added to the height of a tab content to change the tabbed panel height.<p>
-     * 
-     * @param heightDelta the height difference 
+     *
+     * @param heightDelta the height difference
      */
     public void setAutoResizeHeightDelta(int heightDelta) {
 
@@ -630,9 +631,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Sets the text of a given tab.<p>
-     * 
-     * @param pos the index of the tab 
-     * @param text the new text for the tab 
+     *
+     * @param pos the index of the tab
+     * @param text the new text for the tab
      */
     public void setTabText(int pos, String text) {
 
@@ -642,7 +643,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Returns the tab layout panel.<p>
-     * 
+     *
      * @return the tab layout panel
      */
     protected TabLayoutPanel getTabPanel() {
@@ -670,7 +671,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
     }
 
     /**
-     * Sets the overflow of the tab layout content's parent to visible.<p>  
+     * Sets the overflow of the tab layout content's parent to visible.<p>
      */
     protected void setOverflowVisibleToContent() {
 
@@ -680,10 +681,8 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
             I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().cmsTabLayoutPanelContent(),
             CmsDomUtil.Tag.div,
             tabRoot);
-        tabContentDivs.addAll(CmsDomUtil.getElementsByClass(
-            "gwt-TabLayoutPanelContentContainer",
-            CmsDomUtil.Tag.div,
-            tabRoot));
+        tabContentDivs.addAll(
+            CmsDomUtil.getElementsByClass("gwt-TabLayoutPanelContentContainer", CmsDomUtil.Tag.div, tabRoot));
         for (Element e : tabContentDivs) {
             e.getParentElement().getStyle().setOverflow(Overflow.VISIBLE);
         }
@@ -692,9 +691,9 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
 
     /**
      * Returns the tab element for the given index.<p>
-     * 
+     *
      * @param tabIndex the tab index to get the tab element for
-     * 
+     *
      * @return the tab element for the given index
      */
     private Element getTabElement(int tabIndex) {

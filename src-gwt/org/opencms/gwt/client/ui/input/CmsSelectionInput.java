@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -73,7 +73,7 @@ public class CmsSelectionInput extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param openerIcon the image icon class
      */
     public CmsSelectionInput(String openerIcon) {
@@ -85,7 +85,7 @@ public class CmsSelectionInput extends Composite {
 
     /**
      * Returns the input box.<p>
-     * 
+     *
      * @return the input box
      */
     public CmsSimpleTextBox getTextBox() {
@@ -103,7 +103,7 @@ public class CmsSelectionInput extends Composite {
 
     /**
      * Sets the value select dialog open command.<p>
-     * 
+     *
      * @param openCommand the command
      */
     public void setOpenCommand(Command openCommand) {
@@ -121,7 +121,7 @@ public class CmsSelectionInput extends Composite {
 
     /**
      * Handles the opener clicks.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_fader")
@@ -132,7 +132,7 @@ public class CmsSelectionInput extends Composite {
 
     /**
      * Handles the opener clicks.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_opener")

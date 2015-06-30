@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,11 +33,11 @@ import org.opencms.main.CmsException;
 import java.util.List;
 
 /**
- * This interface defines an OpenCms content check. A content check will  
- * test the content of the properties of all resources inside of OpenCms if they 
- * follow the rules which are defined inside the test implementing this interface.<p> 
- * 
- * @since 6.1.2 
+ * This interface defines an OpenCms content check. A content check will
+ * test the content of the properties of all resources inside of OpenCms if they
+ * follow the rules which are defined inside the test implementing this interface.<p>
+ *
+ * @since 6.1.2
  */
 public interface I_CmsContentCheck {
 
@@ -46,11 +46,11 @@ public interface I_CmsContentCheck {
 
     /**
      * Main method of the content check. It holds the implementation of the content check.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param testResource a CmsContentTestResource containing the results of previous tests
      * @return the updated testResouce containing the results of the content check
-     * @throws CmsException if an error occurs 
+     * @throws CmsException if an error occurs
      */
     CmsContentCheckResource executeContentCheck(CmsObject cms, CmsContentCheckResource testResource)
     throws CmsException;
@@ -58,44 +58,44 @@ public interface I_CmsContentCheck {
     /**
      * Defines the name of the parameter which is used by the CmsContentCheckDialog to enable
      * or disable the content check.<p>
-     * 
+     *
      * @return the name of the dialog parameter.
      */
     String getDialogParameterName();
 
     /**
      * Gets a list of all required message bundles by this content check.<p>
-     * 
+     *
      * @return list of message bundle names
      */
     List getMessageBundles();
 
     /**
      * Gets the name of this content check.<p>
-     * 
+     *
      * @return name of the content check
      */
     String getName();
 
     /**
      * Initializer for the content check.<p>
-     * 
+     *
      * @param cms the current CmsObject
-     * @throws CmsException if an error occurs 
+     * @throws CmsException if an error occurs
      */
     void init(CmsObject cms) throws CmsException;
 
     /**
-     * Signals if this content check is active or not.<p> 
-     * 
-     * 
+     * Signals if this content check is active or not.<p>
+     *
+     *
      * @return true if this content check is active, false otherwise.
      */
     boolean isActive();
 
     /**
      * Sets the active flag for the content check.<p>
-     * 
+     *
      * @param value the value for the active flag
      */
     void setActive(boolean value);

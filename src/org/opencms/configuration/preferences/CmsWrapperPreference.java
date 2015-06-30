@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,10 +46,10 @@ public class CmsWrapperPreference implements I_CmsPreference {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param prefData the configured preference data 
-     *  
-     * @param wrappedPref the preference being wrapped 
+     *
+     * @param prefData the configured preference data
+     *
+     * @param wrappedPref the preference being wrapped
      */
     public CmsWrapperPreference(CmsPreferenceData prefData, I_CmsPreference wrappedPref) {
 
@@ -92,7 +92,8 @@ public class CmsWrapperPreference implements I_CmsPreference {
         CmsXmlContentProperty configProp = m_prefData.getPropertyDefinition();
         CmsXmlContentProperty wrappedProp = m_wrappedPreference.getPropertyDefinition(cms);
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
             "string", //type
             firstNotNull(configProp.getWidget(), wrappedProp.getWidget()), //widget
             firstNotNull(configProp.getWidgetConfiguration(), wrappedProp.getWidgetConfiguration()), //widgetconfig
@@ -134,11 +135,11 @@ public class CmsWrapperPreference implements I_CmsPreference {
 
     /**
      * Returns the first non-null value.<p>
-     * 
-     * @param a a value 
-     * @param b another value 
-     * 
-     * @return the first non-null value 
+     *
+     * @param a a value
+     * @param b another value
+     *
+     * @return the first non-null value
      */
     String firstNotNull(String a, String b) {
 

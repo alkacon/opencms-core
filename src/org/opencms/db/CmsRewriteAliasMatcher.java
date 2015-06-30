@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ import org.apache.commons.logging.Log;
  */
 public class CmsRewriteAliasMatcher {
 
-    /** 
+    /**
      * The result of a match operation.<p>
      */
     public static class RewriteResult {
@@ -56,9 +56,9 @@ public class CmsRewriteAliasMatcher {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param newPath the path resulting from the rewrite 
-         * @param alias the alias that matched the path  
+         *
+         * @param newPath the path resulting from the rewrite
+         * @param alias the alias that matched the path
          */
         public RewriteResult(String newPath, CmsRewriteAlias alias) {
 
@@ -69,8 +69,8 @@ public class CmsRewriteAliasMatcher {
 
         /**
          * Gets the alias which matched the given path.<p>
-         * 
-         * @return the matching alias 
+         *
+         * @return the matching alias
          */
         public CmsRewriteAlias getAlias() {
 
@@ -79,8 +79,8 @@ public class CmsRewriteAliasMatcher {
 
         /**
          * Gets the path resulting from the rewrite.<p>
-         * 
-         * @return the new path 
+         *
+         * @return the new path
          */
         public String getNewPath() {
 
@@ -97,8 +97,8 @@ public class CmsRewriteAliasMatcher {
 
     /**
      * Creates a new matcher instance for the given list of rewrite aliases.<p>
-     * 
-     * @param aliases the list of rewrite aliases to be used for matching 
+     *
+     * @param aliases the list of rewrite aliases to be used for matching
      */
     public CmsRewriteAliasMatcher(Collection<CmsRewriteAlias> aliases) {
 
@@ -106,10 +106,10 @@ public class CmsRewriteAliasMatcher {
     }
 
     /**
-     * Tries to rewrite a given path, and either returns the rewrite result or null if no 
+     * Tries to rewrite a given path, and either returns the rewrite result or null if no
      * rewrite alias matched the path.<p>
-     * 
-     * @param path the path to match 
+     *
+     * @param path the path to match
      * @return the rewrite result or null if no rewrite alias matched
      */
     public RewriteResult match(String path) {

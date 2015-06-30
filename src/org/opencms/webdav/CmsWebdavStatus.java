@@ -19,15 +19,15 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * This file is based on:
  * - org.apache.catalina.servlets.WebdavServlet/WebdavStatus
  * from the Apache Tomcat project.
- * 
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Contains all possible return values for the WebDAV/HTTP protocol.<p>
- * 
+ *
  * @since 6.5.6
  */
 public final class CmsWebdavStatus {

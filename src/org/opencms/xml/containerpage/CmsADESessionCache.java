@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * ADE's session cache.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsADESessionCache {
@@ -71,7 +71,7 @@ public final class CmsADESessionCache {
 
     /**
      * Initializes the session cache.<p>
-     * 
+     *
      * @param cms the cms context
      * @param request the current request
      */
@@ -85,7 +85,7 @@ public final class CmsADESessionCache {
         m_xmlContents = Collections.synchronizedMap(new HashMap<CmsUUID, CmsXmlContent>());
 
         String elementView = null;
-        // within the test cases the request will be null 
+        // within the test cases the request will be null
         if (request != null) {
             elementView = CmsWorkplace.getWorkplaceSettings(cms, request).getUserSettings().getAdditionalPreference(
                 CmsElementViewPreference.PREFERENCE_NAME,
@@ -106,11 +106,11 @@ public final class CmsADESessionCache {
 
     /**
      * Gets the session cache for the current session.<p>
-     * 
+     *
      * @param request the current request
      * @param cms the current CMS context
-     *  
-     * @return the ADE session cache for the current session 
+     *
+     * @return the ADE session cache for the current session
      */
     public static CmsADESessionCache getCache(HttpServletRequest request, CmsObject cms) {
 
@@ -125,9 +125,9 @@ public final class CmsADESessionCache {
 
     /**
      * Returns the cached container element under the given key.<p>
-     * 
+     *
      * @param key the cache key
-     * 
+     *
      * @return  the cached container element or <code>null</code> if not found
      */
     public CmsContainerElementBean getCacheContainerElement(String key) {
@@ -137,9 +137,9 @@ public final class CmsADESessionCache {
 
     /**
      * Returns the cached XML content document.<p>
-     * 
+     *
      * @param structureId the structure id
-     * 
+     *
      * @return the XML document
      */
     public CmsXmlContent getCacheXmlContent(CmsUUID structureId) {
@@ -149,7 +149,7 @@ public final class CmsADESessionCache {
 
     /**
      * Returns the current element view id.<p>
-     * 
+     *
      * @return the current element view id
      */
     public CmsUUID getElementView() {
@@ -159,11 +159,11 @@ public final class CmsADESessionCache {
 
     /**
      * Gets the cached template bean for a given container page uri.<p>
-     * 
-     * @param uri the container page uri 
-     * @param safe if true, return a valid template bean even if it hasn't been cached before 
-     * 
-     * @return the template bean 
+     *
+     * @param uri the container page uri
+     * @param safe if true, return a valid template bean even if it hasn't been cached before
+     *
+     * @return the template bean
      */
     public TemplateBean getTemplateBean(String uri, boolean safe) {
 
@@ -174,11 +174,11 @@ public final class CmsADESessionCache {
         return new TemplateBean("", "");
     }
 
-    /** 
-     * Returns true if, in this session, a newly opened container page editor window should display edit points for 
+    /**
+     * Returns true if, in this session, a newly opened container page editor window should display edit points for
      * small elements initially.<p>
-     * 
-     * @return true if small elements should be editable initially 
+     *
+     * @return true if small elements should be editable initially
      */
     public boolean isEditSmallElements() {
 
@@ -197,7 +197,7 @@ public final class CmsADESessionCache {
 
     /**
      * Caches the given container element under the given key.<p>
-     * 
+     *
      * @param key the cache key
      * @param containerElement the object to cache
      */
@@ -208,7 +208,7 @@ public final class CmsADESessionCache {
 
     /**
      * Caches the given XML content document.<p>
-     * 
+     *
      * @param structureId the structure id
      * @param xmlContent the XML document
      */
@@ -217,10 +217,10 @@ public final class CmsADESessionCache {
         m_xmlContents.put(structureId, xmlContent);
     }
 
-    /** 
+    /**
      * Sets the default initial setting for small element editability in this session.<p>
-     * 
-     * @param editSmallElements true if small elements should be initially editable 
+     *
+     * @param editSmallElements true if small elements should be initially editable
      */
     public void setEditSmallElements(boolean editSmallElements) {
 
@@ -229,7 +229,7 @@ public final class CmsADESessionCache {
 
     /**
      * Sets the current element view id.<p>
-     * 
+     *
      * @param elementView the current element view id
      */
     public void setElementView(CmsUUID elementView) {
@@ -239,9 +239,9 @@ public final class CmsADESessionCache {
 
     /**
      * Caches a template bean for a given container page URI.<p>
-     * 
-     * @param uri the container page uri 
-     * @param templateBean the template bean to cache 
+     *
+     * @param uri the container page uri
+     * @param templateBean the template bean to cache
      */
     public void setTemplateBean(String uri, TemplateBean templateBean) {
 
@@ -260,7 +260,7 @@ public final class CmsADESessionCache {
 
     /**
      * Purges the XML content document by the given id from the cache.<p>
-     * 
+     *
      * @param structureId the structure id
      */
     public void uncacheXmlContent(CmsUUID structureId) {

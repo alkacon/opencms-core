@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -64,8 +64,8 @@ public class CmsBrokenLinkRenderer {
 
     /**
      * Creates a new broken link renderer instance.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      */
     public CmsBrokenLinkRenderer(CmsObject cms) {
 
@@ -74,12 +74,12 @@ public class CmsBrokenLinkRenderer {
 
     /**
      * Renders the source of a broken link as a list of CmsBrokenLinkBean instances.<p>
-     * 
-     * @param target the broken link target 
-     * @param source the broken link source 
-     * @return the list of broken link beans to display to the user 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param target the broken link target
+     * @param source the broken link source
+     * @return the list of broken link beans to display to the user
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsBrokenLinkBean> renderBrokenLink(CmsResource target, CmsResource source) throws CmsException {
 
@@ -96,11 +96,11 @@ public class CmsBrokenLinkRenderer {
 
     /**
      * The default method for rendering broken link sources.<p>
-     * 
+     *
      * @param target the link target
      * @param source the link source
-     * @return the list of broken link beans to display to the user 
-     * 
+     * @return the list of broken link beans to display to the user
+     *
      * @throws CmsException if something goes wrong
      */
     public List<CmsBrokenLinkBean> renderBrokenLinkDefault(CmsResource target, CmsResource source) throws CmsException {
@@ -112,13 +112,13 @@ public class CmsBrokenLinkRenderer {
 
     /**
      * Renders the broken links for a group container.<p>
-     * 
-     * @param target the broken link target 
-     * @param source the broken link source 
-     * 
-     * @return the list of broken link beans to display to the user 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param target the broken link target
+     * @param source the broken link source
+     *
+     * @return the list of broken link beans to display to the user
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsBrokenLinkBean> renderBrokenLinkGroupContainer(CmsResource target, CmsResource source)
     throws CmsException {
@@ -148,13 +148,13 @@ public class CmsBrokenLinkRenderer {
 
     /**
      * Renders broken links from an inheritance group.<p>
-     * 
+     *
      * @param target the link target
      * @param source the link source
-     *  
-     * @return the list of broken link beans to display to the user 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the list of broken link beans to display to the user
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsBrokenLinkBean> renderBrokenLinkInheritanceGroup(CmsResource target, CmsResource source)
     throws CmsException {
@@ -171,13 +171,17 @@ public class CmsBrokenLinkRenderer {
 
                     CmsResource group = CmsInheritanceGroupUtils.getInheritanceGroupContentByName(m_cms, name);
                     String groupParent = CmsResource.getParentFolder(source.getRootPath());
-                    CmsProperty titleProp = m_cms.readPropertyObject(group, CmsPropertyDefinition.PROPERTY_TITLE, false);
+                    CmsProperty titleProp = m_cms.readPropertyObject(
+                        group,
+                        CmsPropertyDefinition.PROPERTY_TITLE,
+                        false);
                     title = CmsResource.getName(group.getRootPath());
                     if (!titleProp.isNullProperty()) {
                         title = titleProp.getValue();
                     }
                     path = m_cms.getRequestContext().removeSiteRoot(source.getRootPath());
-                    List<CmsRelation> relations = m_cms.readRelations(CmsRelationFilter.relationsToStructureId(group.getStructureId()));
+                    List<CmsRelation> relations = m_cms.readRelations(
+                        CmsRelationFilter.relationsToStructureId(group.getStructureId()));
                     List<CmsResource> referencingPages = new ArrayList<CmsResource>();
                     for (CmsRelation relation : relations) {
                         CmsResource relSource = relation.getSource(m_cms, CmsResourceFilter.ALL);
@@ -190,15 +194,19 @@ public class CmsBrokenLinkRenderer {
                     if (!referencingPages.isEmpty()) {
                         CmsResource firstPage = referencingPages.get(0);
                         extraPath = m_cms.getRequestContext().removeSiteRoot(firstPage.getRootPath());
-                        extraTitle = m_cms.readPropertyObject(firstPage, CmsPropertyDefinition.PROPERTY_TITLE, true).getValue();
+                        extraTitle = m_cms.readPropertyObject(
+                            firstPage,
+                            CmsPropertyDefinition.PROPERTY_TITLE,
+                            true).getValue();
                     }
-                    result.add(createBrokenLinkBean(
-                        group.getStructureId(),
-                        CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME,
-                        title,
-                        path,
-                        extraTitle,
-                        extraPath));
+                    result.add(
+                        createBrokenLinkBean(
+                            group.getStructureId(),
+                            CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME,
+                            title,
+                            path,
+                            extraTitle,
+                            extraPath));
                 }
             } else {
                 result.add(createSitemapBrokenLinkBean(source));
@@ -211,10 +219,10 @@ public class CmsBrokenLinkRenderer {
 
     /**
      * Adds optional page information to the broken link bean.<p>
-     * 
-     * @param bean the broken link bean 
-     * @param extraTitle the optional page title 
-     * @param extraPath the optional page path 
+     *
+     * @param bean the broken link bean
+     * @param extraTitle the optional page title
+     * @param extraPath the optional page path
      */
     protected void addPageInfo(CmsBrokenLinkBean bean, String extraTitle, String extraPath) {
 
@@ -228,15 +236,15 @@ public class CmsBrokenLinkRenderer {
 
     /**
      * Creates a broken link bean from the necessary values.<p>
-     * 
-     * @param structureId the structure id of the resource 
-     * @param type the resource type 
-     * @param title the title 
-     * @param path the path 
-     * @param extraTitle an optional additional page title 
-     * @param extraPath an optional additional page path 
-     * 
-     * @return the created broken link bean 
+     *
+     * @param structureId the structure id of the resource
+     * @param type the resource type
+     * @param title the title
+     * @param path the path
+     * @param extraTitle an optional additional page title
+     * @param extraPath an optional additional page path
+     *
+     * @return the created broken link bean
      */
     protected CmsBrokenLinkBean createBrokenLinkBean(
         CmsUUID structureId,
@@ -253,11 +261,11 @@ public class CmsBrokenLinkRenderer {
 
     /**
      * Creates a "broken link" bean based on a resource.<p>
-     * 
-     * @param resource the resource       
-     * @return the "broken link" bean with the data from the resource 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param resource the resource
+     * @return the "broken link" bean with the data from the resource
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsBrokenLinkBean createSitemapBrokenLinkBean(CmsResource resource) throws CmsException {
 
@@ -272,15 +280,16 @@ public class CmsBrokenLinkRenderer {
 
     /**
      * Finds a page which references another resource.<p>
-     * 
+     *
      * @param source a resource
      * @return a page which references the resource, or null if no such page was found.
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private CmsResource findReferencingPage(CmsResource source) throws CmsException {
 
-        List<CmsRelation> relationsToFile = m_cms.readRelations(CmsRelationFilter.relationsToStructureId(source.getStructureId()));
+        List<CmsRelation> relationsToFile = m_cms.readRelations(
+            CmsRelationFilter.relationsToStructureId(source.getStructureId()));
         for (CmsRelation relation : relationsToFile) {
             try {
                 CmsResource referencingPage = relation.getSource(m_cms, CmsResourceFilter.DEFAULT);
@@ -296,8 +305,8 @@ public class CmsBrokenLinkRenderer {
 
     /**
      * Gets the workplace locale.<p>
-     * 
-     * @return the workplace locale 
+     *
+     * @return the workplace locale
      */
     private Locale getLocale() {
 
@@ -306,7 +315,7 @@ public class CmsBrokenLinkRenderer {
 
     /**
      * Message accessor.<p>
-     *  
+     *
      * @return the message
      */
     private String messagePagePath() {
@@ -317,7 +326,7 @@ public class CmsBrokenLinkRenderer {
 
     /**
      * Message accessor.<p>
-     * 
+     *
      * @return the message
      */
     private String messagePageTitle() {

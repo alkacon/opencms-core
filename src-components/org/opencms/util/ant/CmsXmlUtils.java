@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,13 +43,13 @@ import org.xml.sax.InputSource;
 
 /**
  * Provides some basic XML handling utilities.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public final class CmsXmlUtils {
 
     /**
-     * Prevents instances of this class from being generated.<p> 
+     * Prevents instances of this class from being generated.<p>
      */
     private CmsXmlUtils() {
 
@@ -57,21 +57,21 @@ public final class CmsXmlUtils {
     }
 
     /**
-     * Translates a simple lookup path to the simplified Xpath format used for 
+     * Translates a simple lookup path to the simplified Xpath format used for
      * the internal bookmarks.<p>
-     * 
-     * Examples:<br> 
+     *
+     * Examples:<br>
      * <code>title</code> becomes <code>title[1]</code><br>
      * <code>title[1]</code> is left untouched<br>
      * <code>title/subtitle</code> becomes <code>title[1]/subtitle[1]</code><br>
      * <code>title/subtitle[1]</code> becomes <code>title[1]/subtitle[1]</code><p>
-     * 
-     * Note: If the name already has the format <code>title[1]</code> then provided index parameter 
-     * is ignored.<p> 
-     * 
+     *
+     * Note: If the name already has the format <code>title[1]</code> then provided index parameter
+     * is ignored.<p>
+     *
      * @param path the path to get the simplified Xpath for
      * @param index the index to append (if required)
-     * 
+     *
      * @return the simplified Xpath for the given name
      */
     public static String createXpath(String path, int index) {
@@ -84,7 +84,7 @@ public final class CmsXmlUtils {
             List<String> elements = CmsStringUtil.splitAsList(path, '/');
             int end = elements.size() - 1;
             for (int i = 0; i <= end; i++) {
-                // append [i] to path element if required 
+                // append [i] to path element if required
                 result.append(createXpathElementCheck(elements.get(i), (i == end) ? index : 1));
                 if (i < end) {
                     // append path delimiter if not final path element
@@ -101,13 +101,13 @@ public final class CmsXmlUtils {
     /**
      * Appends the provided index parameter in square brackets to the given name,
      * like <code>path[index]</code>.<p>
-     * 
-     * This method is used if it's clear that some path does not have 
+     *
+     * This method is used if it's clear that some path does not have
      * a square bracket already appended.<p>
-     * 
+     *
      * @param path the path append the index to
      * @param index the index to append
-     * 
+     *
      * @return the simplified Xpath for the given name
      */
     public static String createXpathElement(String path, int index) {
@@ -122,16 +122,16 @@ public final class CmsXmlUtils {
 
     /**
      * Ensures that a provided simplified Xpath has the format <code>title[1]</code>.<p>
-     * 
-     * This method is used if it's uncertain if some path does have 
+     *
+     * This method is used if it's uncertain if some path does have
      * a square bracket already appended or not.<p>
-     * 
-     * Note: If the name already has the format <code>title[1]</code>, then provided index parameter 
-     * is ignored.<p> 
-     * 
+     *
+     * Note: If the name already has the format <code>title[1]</code>, then provided index parameter
+     * is ignored.<p>
+     *
      * @param path the path to get the simplified Xpath for
      * @param index the index to append (if required)
-     * 
+     *
      * @return the simplified Xpath for the given name
      */
     public static String createXpathElementCheck(String path, int index) {
@@ -147,17 +147,17 @@ public final class CmsXmlUtils {
     }
 
     /**
-     * Returns the first Xpath element from the provided path, 
+     * Returns the first Xpath element from the provided path,
      * without the index value.<p>
-     * 
-     * Examples:<br> 
+     *
+     * Examples:<br>
      * <code>title</code> is left untouched<br>
      * <code>title[1]</code> becomes <code>title</code><br>
      * <code>title/subtitle</code> becomes <code>title</code><br>
      * <code>title[1]/subtitle[1]</code> becomes <code>title</code><p>
-     * 
+     *
      * @param path the path to get the first Xpath element from
-     * 
+     *
      * @return the first Xpath element from the provided path
      */
     public static String getFirstXpathElement(String path) {
@@ -171,17 +171,17 @@ public final class CmsXmlUtils {
     }
 
     /**
-     * Returns the last Xpath element from the provided path, 
+     * Returns the last Xpath element from the provided path,
      * without the index value.<p>
-     * 
-     * Examples:<br> 
+     *
+     * Examples:<br>
      * <code>title</code> is left untouched<br>
      * <code>title[1]</code> becomes <code>title</code><br>
      * <code>title/subtitle</code> becomes <code>subtitle</code><br>
      * <code>title[1]/subtitle[1]</code> becomes <code>subtitle</code><p>
-     * 
+     *
      * @param path the path to get the last Xpath element from
-     * 
+     *
      * @return the last Xpath element from the provided path
      */
     public static String getLastXpathElement(String path) {
@@ -196,15 +196,15 @@ public final class CmsXmlUtils {
 
     /**
      * Returns the last Xpath index from the given path.<p>
-     * 
-     * Examples:<br> 
+     *
+     * Examples:<br>
      * <code>title</code> returns the empty String<p>
      * <code>title[1]</code> returns <code>[1]</code><p>
      * <code>title/subtitle</code> returns them empty String<p>
      * <code>title[1]/subtitle[1]</code> returns <code>[1]</code><p>
-     * 
+     *
      * @param path the path to extract the Xpath index from
-     * 
+     *
      * @return  the last Xpath index from the given path
      */
     public static String getXpathIndex(String path) {
@@ -220,15 +220,15 @@ public final class CmsXmlUtils {
 
     /**
      * Returns the last Xpath index from the given path as integer.<p>
-     * 
-     * Examples:<br> 
+     *
+     * Examples:<br>
      * <code>title</code> returns 1<p>
      * <code>title[1]</code> returns 1<p>
      * <code>title/subtitle</code> returns 1<p>
      * <code>title[1]/subtitle[2]</code> returns 2<p>
-     * 
+     *
      * @param path the path to extract the Xpath index from
-     * 
+     *
      * @return the last Xpath index from the given path as integer
      */
     public static int getXpathIndexInt(String path) {
@@ -249,15 +249,15 @@ public final class CmsXmlUtils {
     }
 
     /**
-     * Returns <code>true</code> if the given path is a Xpath with 
+     * Returns <code>true</code> if the given path is a Xpath with
      * at last 2 elements.<p>
-     * 
-     * Examples:<br> 
+     *
+     * Examples:<br>
      * <code>title</code> returns <code>false</code><br>
      * <code>title[1]</code> returns <code>false</code><br>
      * <code>title/subtitle</code> returns <code>true</code><br>
      * <code>title[1]/subtitle[1]</code> returns <code>true</code><p>
-     * 
+     *
      * @param path the path to check
      * @return true if the given path is a Xpath with at last 2 elements
      */
@@ -268,7 +268,7 @@ public final class CmsXmlUtils {
 
     /**
      * Marshals (writes) an XML document into an output stream using XML pretty-print formatting.<p>
-     * 
+     *
      * @param document the XML document to marshal
      * @param out the output stream to write to
      * @param encoding the encoding to use
@@ -291,7 +291,7 @@ public final class CmsXmlUtils {
 
     /**
      * Marshals (writes) an XML document to a String using XML pretty-print formatting.<p>
-     * 
+     *
      * @param document the XML document to marshal
      * @param encoding the encoding to use
      * @return the marshalled XML document
@@ -306,12 +306,12 @@ public final class CmsXmlUtils {
 
     /**
      * Marshals (writes) an XML node into an output stream using XML pretty-print formatting.<p>
-     * 
+     *
      * @param node the XML node to marshal
      * @param encoding the encoding to use
-     * 
+     *
      * @return the string with the xml content
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public static String marshal(Node node, String encoding) throws Exception {
@@ -331,18 +331,18 @@ public final class CmsXmlUtils {
 
     /**
      * Removes the first Xpath element from the path.<p>
-     * 
-     * If the provided path does not contain a "/" character, 
+     *
+     * If the provided path does not contain a "/" character,
      * it is returned unchanged.<p>
-     * 
-     * <p>Examples:<br> 
+     *
+     * <p>Examples:<br>
      * <code>title</code> is left untouched<br>
      * <code>title[1]</code> is left untouched<br>
      * <code>title/subtitle</code> becomes <code>subtitle</code><br>
      * <code>title[1]/subtitle[1]</code> becomes <code>subtitle[1]</code><p>
-     * 
+     *
      * @param path the Xpath to remove the first element from
-     * 
+     *
      * @return the path with the first element removed
      */
     public static String removeFirstXpathElement(String path) {
@@ -357,14 +357,14 @@ public final class CmsXmlUtils {
 
     /**
      * Removes the last complex Xpath element from the path.<p>
-     * 
+     *
      * The same as {@link #removeLastXpathElement(String)} both it works with more complex xpaths.
-     * 
-     * <p>Example:<br> 
+     *
+     * <p>Example:<br>
      * <code>system/backup[@date='23/10/2003']/resource[path='/a/b/c']</code> becomes <code>system/backup[@date='23/10/2003']</code><p>
-     * 
+     *
      * @param path the Xpath to remove the last element from
-     * 
+     *
      * @return the path with the last element removed
      */
     public static String removeLastComplexXpathElement(String path) {
@@ -381,8 +381,8 @@ public final class CmsXmlUtils {
             p = path.indexOf("\'", p + 1);
         }
         String parentPath = path.substring(0, pos);
-        if (count % 2 == 0) {
-            // if substring is complete 
+        if ((count % 2) == 0) {
+            // if substring is complete
             return parentPath;
         }
         // if not complete
@@ -396,18 +396,18 @@ public final class CmsXmlUtils {
 
     /**
      * Removes the last Xpath element from the path.<p>
-     * 
-     * If the provided path does not contain a "/" character, 
+     *
+     * If the provided path does not contain a "/" character,
      * it is returned unchanged.<p>
-     * 
-     * <p>Examples:<br> 
+     *
+     * <p>Examples:<br>
      * <code>title</code> is left untouched<br>
      * <code>title[1]</code> is left untouched<br>
      * <code>title/subtitle</code> becomes <code>title</code><br>
      * <code>title[1]/subtitle[1]</code> becomes <code>title[1]</code><p>
-     * 
+     *
      * @param path the Xpath to remove the last element from
-     * 
+     *
      * @return the path with the last element removed
      */
     public static String removeLastXpathElement(String path) {
@@ -422,15 +422,15 @@ public final class CmsXmlUtils {
 
     /**
      * Removes all Xpath index information from the given input path.<p>
-     * 
-     * Examples:<br> 
+     *
+     * Examples:<br>
      * <code>title</code> is left untouched<br>
      * <code>title[1]</code> becomes <code>title</code><br>
      * <code>title/subtitle</code> is left untouched<br>
      * <code>title[1]/subtitle[1]</code> becomes <code>title/subtitle</code><p>
-     * 
+     *
      * @param path the path to remove the Xpath index information from
-     * 
+     *
      * @return the simplified Xpath for the given name
      */
     public static String removeXpath(String path) {
@@ -443,7 +443,7 @@ public final class CmsXmlUtils {
             List<String> elements = CmsStringUtil.splitAsList(path, '/');
             int end = elements.size() - 1;
             for (int i = 0; i <= end; i++) {
-                // remove [i] from path element if required 
+                // remove [i] from path element if required
                 result.append(removeXpathIndex(elements.get(i)));
                 if (i < end) {
                     // append path delimiter if not final path element
@@ -459,15 +459,15 @@ public final class CmsXmlUtils {
 
     /**
      * Removes the last Xpath index from the given path.<p>
-     * 
-     * Examples:<br> 
+     *
+     * Examples:<br>
      * <code>title</code> is left untouched<br>
      * <code>title[1]</code> becomes <code>title</code><br>
      * <code>title/subtitle</code> is left untouched<br>
      * <code>title[1]/subtitle[1]</code> becomes <code>title[1]/subtitle</code><p>
-     * 
+     *
      * @param path the path to remove the Xpath index from
-     * 
+     *
      * @return the path with the last Xpath index removed
      */
     public static String removeXpathIndex(String path) {
@@ -482,14 +482,14 @@ public final class CmsXmlUtils {
     }
 
     /**
-     * Simplifies an Xpath by removing a leading and a trailing slash from the given path.<p> 
-     * 
-     * Examples:<br> 
+     * Simplifies an Xpath by removing a leading and a trailing slash from the given path.<p>
+     *
+     * Examples:<br>
      * <code>title/</code> becomes <code>title</code><br>
      * <code>/title[1]/</code> becomes <code>title[1]</code><br>
      * <code>/title/subtitle/</code> becomes <code>title/subtitle</code><br>
      * <code>/title/subtitle[1]/</code> becomes <code>title/subtitle[1]</code><p>
-     * 
+     *
      * @param path the path to process
      * @return the input with a leading and a trailing slash removed
      */
@@ -508,16 +508,16 @@ public final class CmsXmlUtils {
 
     /**
      * Helper to unmarshal (read) xml contents from a byte array into a document.<p>
-     * 
+     *
      * Using this method ensures that the OpenCms XML entity resolver is used.<p>
-     * 
+     *
      * @param xmlData the XML data in a byte array
      * @param resolver the XML entity resolver to use
-     * 
+     *
      * @return the base object initialized with the unmarshalled XML document
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see CmsXmlUtils#unmarshalHelper(InputSource, EntityResolver)
      */
     public static Document unmarshalHelper(byte[] xmlData, EntityResolver resolver) throws Exception {
@@ -527,17 +527,17 @@ public final class CmsXmlUtils {
 
     /**
      * Helper to unmarshal (read) xml contents from a byte array into a document.<p>
-     * 
+     *
      * Using this method ensures that the OpenCms XML entity resolver is used.<p>
-     * 
+     *
      * @param xmlData the XML data in a byte array
      * @param resolver the XML entity resolver to use
      * @param validate if the reader should try to validate the xml code
-     * 
+     *
      * @return the base object initialized with the unmarshalled XML document
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see CmsXmlUtils#unmarshalHelper(InputSource, EntityResolver)
      */
     public static Document unmarshalHelper(byte[] xmlData, EntityResolver resolver, boolean validate) throws Exception {
@@ -547,19 +547,19 @@ public final class CmsXmlUtils {
 
     /**
      * Helper to unmarshal (read) xml contents from an input source into a document.<p>
-     * 
+     *
      * Using this method ensures that the OpenCms XML entity resolver is used.<p>
-     * 
+     *
      * Important: The encoding provided will NOT be used during unmarshalling,
      * the XML parser will do this on the base of the information in the source String.
      * The encoding is used for initializing the created instance of the document,
      * which means it will be used when marshalling the document again later.<p>
-     *  
+     *
      * @param source the XML input source to use
      * @param resolver the XML entity resolver to use
-     * 
+     *
      * @return the unmarshalled XML document
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public static Document unmarshalHelper(InputSource source, EntityResolver resolver) throws Exception {
@@ -569,20 +569,20 @@ public final class CmsXmlUtils {
 
     /**
      * Helper to unmarshal (read) xml contents from an input source into a document.<p>
-     * 
+     *
      * Using this method ensures that the OpenCms XML entity resolver is used.<p>
-     * 
+     *
      * Important: The encoding provided will NOT be used during unmarshalling,
      * the XML parser will do this on the base of the information in the source String.
      * The encoding is used for initializing the created instance of the document,
      * which means it will be used when marshalling the document again later.<p>
-     *  
+     *
      * @param source the XML input source to use
      * @param resolver the XML entity resolver to use
      * @param validate if the reader should try to validate the xml code
-     * 
+     *
      * @return the unmarshalled XML document
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public static Document unmarshalHelper(InputSource source, EntityResolver resolver, boolean validate)
@@ -603,10 +603,10 @@ public final class CmsXmlUtils {
 
     /**
      * Helper to unmarshal (read) xml contents from a String into a document.<p>
-     * 
+     *
      * Using this method ensures that the OpenCms XML entitiy resolver is used.<p>
-     * 
-     * @param xmlData the xml data in a String 
+     *
+     * @param xmlData the xml data in a String
      * @param resolver the XML entity resolver to use
      * @return the base object initialized with the unmarshalled XML document
      * @throws Exception if something goes wrong

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * A bean containing formatter configuration data as strings.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsFormatterBean implements I_CmsFormatterBean {
@@ -131,12 +131,12 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>
-     * 
-     * @param containerTypes the formatter container types 
+     *
+     * @param containerTypes the formatter container types
      * @param jspRootPath the formatter JSP VFS root path
      * @param jspStructureId the structure id of the formatter JSP
      * @param minWidth the formatter min width
-     * @param maxWidth the formatter max width 
+     * @param maxWidth the formatter max width
      * @param preview indicates if this formatter is to be used for the preview in the ADE gallery GUI
      * @param searchContent indicates if the content should be searchable in the online index when this formatter is used
      * @param location the location where this formatter was defined, should be an OpenCms VFS resource path
@@ -205,12 +205,12 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>
-     * 
-     * @param containerType the formatter container types 
+     *
+     * @param containerType the formatter container types
      * @param rootPath the formatter JSP VFS root path
      * @param structureId the structure id of the formatter JSP
      * @param minWidth the formatter min width
-     * @param maxWidth the formatter max width 
+     * @param maxWidth the formatter max width
      * @param preview indicates if this formatter is to be used for the preview in the ADE gallery GUI
      * @param searchContent indicates if the content should be searchable in the online index when this formatter is used
      * @param location the location where this formatter was defined, should be an OpenCms VFS resource path
@@ -252,11 +252,11 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
     /**
      * Constructor for creating a new formatter configuration without resource structure id.<p>
-     * 
-     * @param containerType the formatter container type 
+     *
+     * @param containerType the formatter container type
      * @param jspRootPath the formatter JSP VFS root path
      * @param minWidthStr the formatter min width
-     * @param maxWidthStr the formatter max width 
+     * @param maxWidthStr the formatter max width
      * @param preview indicates if this formatter is to be used for the preview in the ADE gallery GUI
      * @param searchContent indicates if the content should be searchable in the online index when this formatter is used
      * @param location the location where this formatter was defined, should be an OpenCms VFS resource path
@@ -285,12 +285,12 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             try {
                 m_minWidth = Integer.parseInt(minWidthStr);
             } catch (NumberFormatException e) {
-                //ignore; width will be -1 
+                //ignore; width will be -1
             }
             try {
                 m_maxWidth = Integer.parseInt(maxWidthStr);
             } catch (NumberFormatException e) {
-                //ignore; maxWidth will be max. integer 
+                //ignore; maxWidth will be max. integer
             }
         }
 
@@ -306,11 +306,11 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
     /**
      * Constructor for creating a formatter bean which matches all container/width combinations.<p>
-     * 
-     * @param jspRootPath the jsp root path 
-     * @param jspStructureId the jsp structure id 
+     *
+     * @param jspRootPath the jsp root path
+     * @param jspStructureId the jsp structure id
      * @param location the formatter location
-     * @param preview the preview formatter flag  
+     * @param preview the preview formatter flag
      */
     CmsFormatterBean(String jspRootPath, CmsUUID jspStructureId, String location, boolean preview) {
 
@@ -341,9 +341,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
     /**
      * Checks if the given container type matches the ADE gallery preview type.<p>
-     * 
+     *
      * @param containerType the container type to check
-     * 
+     *
      * @return <code>true</code> if the given container type matches the ADE gallery preview type
      */
     public static boolean isPreviewType(String containerType) {
@@ -353,10 +353,10 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
     /**
      * Checks whether the container type is a wildcard.<p>
-     * 
-     * @param containerType the container type 
-     * 
-     * @return true if the container type is a wildcard 
+     *
+     * @param containerType the container type
+     *
+     * @return true if the container type is a wildcard
      */
     private static boolean isWildcardType(String containerType) {
 
@@ -583,7 +583,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * Sets the structure id of the JSP for this formatter.<p>
      *
      * This is "package visible" as it should be only called from {@link CmsFormatterConfiguration#initialize(org.opencms.file.CmsObject)}.<p>
-     * 
+     *
      * @param jspStructureId the structure id of the JSP for this formatter
      */
     public void setJspStructureId(CmsUUID jspStructureId) {

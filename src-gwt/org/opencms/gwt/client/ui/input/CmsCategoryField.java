@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,9 +58,9 @@ import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Basic category widget for forms.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_CmsHasInit {
 
@@ -75,7 +75,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param checkBox the item check box
          */
         protected A_SelectionHandler(CmsCheckBox checkBox) {
@@ -109,7 +109,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
 
         /**
          * Sets the select button, can be used instead of a double click to select and search.<p>
-         * 
+         *
          * @param button the select button
          */
         public void setSelectButton(CmsPushButton button) {
@@ -119,7 +119,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
 
         /**
          * Returns the check box.<p>
-         * 
+         *
          * @return the check box
          */
         protected CmsCheckBox getCheckBox() {
@@ -198,7 +198,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Builds and shows the category tree.<p>
-     * 
+     *
      * @param treeEntries List of category entries
      * @param selectedCategories a list of all selected categories
      */
@@ -212,7 +212,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         if ((treeEntries != null) && !treeEntries.isEmpty()) {
             // add the first level and children
             for (CmsCategoryTreeEntry category : treeEntries) {
-                // set the category tree item and add to list 
+                // set the category tree item and add to list
                 CmsTreeItem treeItem;
                 if (m_selectParent || !hasSelectedChildren(category.getChildren(), selectedCategories)) {
                     treeItem = buildTreeItem(category, selectedCategories, false);
@@ -238,7 +238,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Returns the site path of all shown categories.<p>
-     * 
+     *
      * @return the site path of all shown categories
      */
     public List<String> getAllSitePath() {
@@ -283,7 +283,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Returns the scroll panel of this widget.<p>
-     * 
+     *
      * @return the scroll panel
      */
     public CmsScrollPanel getScrollPanel() {
@@ -293,7 +293,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Returns the site path of the last category.<p>
-     * 
+     *
      * @return the site path of the last category
      */
     public String getSingelSitePath() {
@@ -361,7 +361,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Sets the height of this category field.<p>
-     * 
+     *
      * @param height the height of this category field
      */
     public void setHeight(int height) {
@@ -374,7 +374,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Sets if the parent category should be selected with the child or not.
-     * 
+     *
      * @param value if the parent categories should be selected or not
      * */
     public void setParentSelection(boolean value) {
@@ -384,8 +384,8 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Sets the value of the widget.<p>
-     * 
-     * @param value the new value 
+     *
+     * @param value the new value
      */
     public void setSelected(Object value) {
 
@@ -394,7 +394,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Set the selected categories.<p>
-     * 
+     *
      * @param newValue String of selected categories separated by '|'
      */
     public void setSelectedAsString(String newValue) {
@@ -413,8 +413,8 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Adds children item to the category tree and select the categories.<p>
-     * 
-     * @param parent the parent item 
+     *
+     * @param parent the parent item
      * @param children the list of children
      * @param selectedCategories the list of categories to select
      */
@@ -451,20 +451,24 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Builds a tree item for the given category.<p>
-     * 
+     *
      * @param category the category
      * @param selectedCategories the selected categories
      * @param inactive true if the value should be displayed inactive
-     * 
+     *
      * @return the tree item widget
      */
-    private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories, boolean inactive) {
+    private CmsTreeItem buildTreeItem(
+        CmsCategoryTreeEntry category,
+        List<String> selectedCategories,
+        boolean inactive) {
 
         CmsListInfoBean categoryBean = new CmsListInfoBean(
             category.getTitle(),
             CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())
             ? category.getDescription()
-            : category.getPath(), null);
+            : category.getPath(),
+            null);
         // set the list item widget
 
         CmsDataValue categoryTreeItem = new CmsDataValue(
@@ -496,10 +500,10 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Checks if it has selected children.<p>
-     * 
+     *
      * @param children the children to check
      * @param selectedCategories list of all selected categories
-     *  
+     *
      * @return true if it has selected children
      * */
     private boolean hasSelectedChildren(List<CmsCategoryTreeEntry> children, List<String> selectedCategories) {

@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -68,8 +68,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.Test;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -78,10 +76,12 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
+import junit.framework.Test;
+
 /**
  * Test case for inherited containers.
  * <p>
- * 
+ *
  */
 public class TestInheritedContainer extends OpenCmsTestCase {
 
@@ -103,7 +103,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         /** The number of online readResource calls. */
         private int m_onlineReadResource;
 
-        /** 
+        /**
          * Resets the offline/online load counters to 0.<p>
          */
         public void clear() {
@@ -116,8 +116,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
         /**
          * Gets the number of offline loads since the last call to clear().<p>
-         * 
-         * @return the number of offline loads 
+         *
+         * @return the number of offline loads
          */
         public int getOfflineLoads() {
 
@@ -126,7 +126,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
         /**
          * Gets the number of single readResource calls for offline mode.<p>
-         * 
+         *
          * @return the number of readResource calls
          */
         public int getOfflineReadResource() {
@@ -136,8 +136,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
         /**
          * Gets the number of online loads since the last call to clear().<p>
-         * 
-         * @return the number of online loads 
+         *
+         * @return the number of online loads
          */
         public int getOnlineLoads() {
 
@@ -146,8 +146,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
         /**
          * Gets the number of online readResource calls.<p>
-         * 
-         * @return the number of online readResource calls 
+         *
+         * @return the number of online readResource calls
          */
         public int getOnlineReadResource() {
 
@@ -185,8 +185,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * The test case constructor.<p>
-     * 
-     * @param name the name of the test case 
+     *
+     * @param name the name of the test case
      */
     public TestInheritedContainer(String name) {
 
@@ -196,7 +196,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     /**
      * Returns the test suite.
      * <p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -208,7 +208,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     /**
      * Tests that new elements in parent configurations which are not explicitly referenced by
      * a child configuration's ordering are inserted at the end of the element list.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testAppendNew() throws Exception {
@@ -258,7 +258,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Tests the correctness of the offline cache results.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testCacheCorrectnessOffline() throws Exception {
@@ -295,7 +295,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Tests the correctness of the online cache results.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testCacheCorrectnessOnline() throws Exception {
@@ -308,7 +308,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             publish();
             String level3 = "/system/level1/level2/level3";
 
-            // OFFLINE: a, b, c       ONLINE: a, b, c 
+            // OFFLINE: a, b, c       ONLINE: a, b, c
             checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
             checkConfigurationForPath(level3, "alpha", ONLINE, "key=c", "key=a", "key=b");
 
@@ -356,7 +356,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Tests whether the cache only loads configuration files when necessary.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testCacheLoadCounts() throws Exception {
@@ -370,7 +370,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             writeConfiguration(3, "c");
             publish();
             String level3 = "/system/level1/level2/level3";
-            // OFFLINE: a, b, c       ONLINE: a, b, c 
+            // OFFLINE: a, b, c       ONLINE: a, b, c
             checkConfigurationForPath(level3, "alpha", OFFLINE, "key=c", "key=a", "key=b");
             assertEquals(3, logHandler.getOfflineLoads());
             assertEquals(0, logHandler.getOnlineLoads());
@@ -419,7 +419,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
             checkConfigurationForPath(level3, "alpha", ONLINE, "key=d", "key=b");
             assertEquals(0, logHandler.getOfflineLoads());
             checkConfigurationForPath(level3, "alpha", OFFLINE, "key=d", "key=b");
-            // publishing throws a resource_and_properties_modified event for some reason, so this still loads the resource offline  
+            // publishing throws a resource_and_properties_modified event for some reason, so this still loads the resource offline
             assertEquals(1, logHandler.getOfflineLoads());
             assertEquals(1, logHandler.getOnlineLoads());
         } finally {
@@ -431,7 +431,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     /**
      * Tests rearrangement of inherited elements.
      * <p>
-     * 
+     *
      * @throws Exception
      */
     public void testChangeOrder() throws Exception {
@@ -449,8 +449,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Tests whether the inherited container cache is cleared correctly.<p>
-     * 
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     public void testClearCaches() throws Exception {
 
@@ -481,7 +481,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     /**
      * Test for hiding of inherited elements.
      * <p>
-     * 
+     *
      * @throws Exception
      */
     public void testHideElements() throws Exception {
@@ -503,7 +503,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Tests that the 'new' states of inherited container elements are correct.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testNewElements() throws Exception {
@@ -523,7 +523,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     /**
      * Tests that the configuration cache works if there are no configuration files, or there are configuration files which don't
      * contain a configuration for a given name.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testNoConfigurations() throws Exception {
@@ -547,7 +547,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Tests that only correctly named inherited container configuration files are evaluated.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testOnlyReadProperlyNamedFiles() throws Exception {
@@ -579,7 +579,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Tests parsing of container configuration files.
-     * 
+     *
      * @throws Exception
      */
     public void testParseContainerConfiguration() throws Exception {
@@ -665,7 +665,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Test case for saving the configuration.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testReadAndSaveBack() throws Exception {
@@ -688,7 +688,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Tests looking up inheritance groups by element resource.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testReverseLookup() throws Exception {
@@ -703,7 +703,10 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         expected.add("alpha");
         CmsResource inheritanceConfig = cms.readResource("/system/level1/level2/.inherited");
         CmsResource target = cms.readResource("/system/content/b.txt");
-        Set<String> result = CmsInheritanceGroupUtils.getNamesOfGroupsContainingResource(cms, inheritanceConfig, target);
+        Set<String> result = CmsInheritanceGroupUtils.getNamesOfGroupsContainingResource(
+            cms,
+            inheritanceConfig,
+            target);
         assertEquals(expected, result);
 
         target = cms.readResource("/system/content/");
@@ -822,13 +825,13 @@ public class TestInheritedContainer extends OpenCmsTestCase {
                 "key=b new=false visible=true",
                 "key=a new=false visible=true");
 
-            CmsResource configResource = cms.readResource("/system/x1/x2/"
-                + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
+            CmsResource configResource = cms.readResource(
+                "/system/x1/x2/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
             CmsFile file = cms.readFile(configResource);
             String content = new String(file.getContents());
             assertTrue(content.contains("<![CDATA[a]]>"));
 
-            // should have been removed when saving 
+            // should have been removed when saving
             assertFalse(content.contains("<![CDATA[c]]>"));
         } finally {
             deleteConfiguration("/system/x1/x2/" + CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
@@ -839,7 +842,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Tests saving a reordered list of inherited container elements.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testSaveReorder() throws Exception {
@@ -878,7 +881,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Tests serialization of a single configuration node.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testSerialization1() throws Exception {
@@ -949,13 +952,14 @@ public class TestInheritedContainer extends OpenCmsTestCase {
         assertEquals(3, element.selectNodes("NewElement").size());
         assertEquals(
             "value_a",
-            getNestedText((Element)element.selectSingleNode("NewElement[Key='a']/Element/Properties[Name='setting_a']/Value/String")));
+            getNestedText((Element)element.selectSingleNode(
+                "NewElement[Key='a']/Element/Properties[Name='setting_a']/Value/String")));
 
     }
 
     /**
      * Tests whether a configuration file which has been first updated and then deleted is removed correctly from the cache.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testUpdateAndRemove() throws Exception {
@@ -987,15 +991,15 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Helper method to create a dummy configuration from a specification string.<p>
-     * 
-     * The specification string consists of 4 fields separated by the pipe symbol, which correspond to different 
+     *
+     * The specification string consists of 4 fields separated by the pipe symbol, which correspond to different
      * parts of the configuration bean. The first field describes the ordering keys of the container configuration;
      * the second field describes the keys which have been made visible by the configuration; the third field describes
-     * which keys have been hidden by the configuration, and the last field describes which new elements are contained in 
+     * which keys have been hidden by the configuration, and the last field describes which new elements are contained in
      * the configuration.<p>
-     * 
+     *
      * @param spec
-     * @return the test configuration 
+     * @return the test configuration
      */
     protected CmsContainerConfiguration buildConfiguration(String spec) {
 
@@ -1037,9 +1041,9 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Checks whether a given element contains a nested CDATA node with a given text.<p>
-     * 
-     * @param element the parent element 
-     * @param expectedValue the text which should be contained in the CDATA node 
+     *
+     * @param element the parent element
+     * @param expectedValue the text which should be contained in the CDATA node
      */
     protected void checkCDATA(Element element, String expectedValue) {
 
@@ -1050,13 +1054,13 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Checks whether a container element bean with inheritance information fulfills a given specification string.<p>
-     * 
+     *
      * The string has the form 'key1=value1 key2=value2....'.<p>
-     * 
-     * Each key-value pair corresponds to a check to perform on the given container element bean: 
+     *
+     * Each key-value pair corresponds to a check to perform on the given container element bean:
      * The key 'key' performs a test whether the key of the inheritance info has a given value.<p>
      * The key 'new' performs a test whether the element bean was inherited from a parent configuration or is new.<p>
-     * The key 'visible' performs a test whether the element bean is marked as visible 
+     * The key 'visible' performs a test whether the element bean is marked as visible
      * @param element
      * @param spec
      */
@@ -1083,10 +1087,10 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Checks whether the container element beans contained in a list satisfy a list of constraints.<p>
-     * 
-     * @param elements the elements for which the checks should be performed  
-     * 
-     * @param specs the constraints for the element beans, in the same order as the container element beans 
+     *
+     * @param elements the elements for which the checks should be performed
+     *
+     * @param specs the constraints for the element beans, in the same order as the container element beans
      */
     protected void checkConfiguration(List<CmsContainerElementBean> elements, String... specs) {
 
@@ -1103,13 +1107,13 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     /**
      * Checks whether the inherited container configuration given by the ADE manager for a specific
      * root path satisfies a list of constraints.<p>
-     * 
+     *
      * @param rootPath the root path for which the inherited container configuration should be tested
-     * @param name the name of the configuration to test 
-     * @param online if true, checks in the online project, else in the offline project 
+     * @param name the name of the configuration to test
+     * @param online if true, checks in the online project, else in the offline project
      * @param specs the list of constraints
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected void checkConfigurationForPath(String rootPath, String name, boolean online, String... specs)
     throws CmsException {
@@ -1126,10 +1130,10 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Creates a document given a root element as a string.<p>
-     * 
-     * @param rootElement the root element string 
-     * @return the created document 
-     * 
+     *
+     * @param rootElement the root element string
+     * @return the created document
+     *
      * @throws Exception
      */
     protected Document createDocument(String rootElement) throws Exception {
@@ -1141,10 +1145,10 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Deletes a configuration at the given level of the /level1/level2/level3 tree branch.<p>
-     * 
+     *
      * @param level the level id (1-3)
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected void deleteConfiguration(int level) throws CmsException {
 
@@ -1157,9 +1161,9 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Deletes the configuration for a given path.<p>
-     * 
-     * @param path the path of the configuration 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param path the path of the configuration
+     * @throws CmsException if something goes wrong
      */
     protected void deleteConfiguration(String path) throws CmsException {
 
@@ -1173,7 +1177,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     /**
      * Helper method for generating a dummy container element.
      * <p>
-     * 
+     *
      * @param key
      *            the key to use
      * @return the dummy container element
@@ -1198,11 +1202,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Helper method for generating a test configuration which contains a single configured container elements.<p>
-     *  
-     * @param newName the key of the container element which should be put in the container element 
+     *
+     * @param newName the key of the container element which should be put in the container element
      * @return the contents of the generated container element
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      * @throws UnsupportedEncodingException
      */
     protected byte[] generateTestConfig(String newName) throws CmsException, UnsupportedEncodingException {
@@ -1247,10 +1251,10 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Helper method for getting a path for the given level in the level1/level2/level3 tree branch.<p>
-     * 
+     *
      * @param level the level index (1-3)
-     * 
-     * @return the level path 
+     *
+     * @return the level path
      */
     protected String getLevelPath(int level) {
 
@@ -1268,10 +1272,10 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Gets the nested text of an element.<p>
-     * 
+     *
      * @param element the element from which the text should be extracted
-     *  
-     * @return the text nested inside the element 
+     *
+     * @return the text nested inside the element
      */
     protected String getNestedText(Element element) {
 
@@ -1280,23 +1284,23 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Helper method to lock a resource.<p>
-     * 
-     * @param path the resource path 
+     *
+     * @param path the resource path
      */
     protected void lock(String path) {
 
         try {
             getCmsObject().lockResource(path);
         } catch (CmsException e) {
-            // no other users, this means we already have the lock 
+            // no other users, this means we already have the lock
         }
     }
 
     /**
      * Helper method to create dummy structure ids from a name.<p>
-     * 
-     * @param name the name 
-     * @return the dummy structure id 
+     *
+     * @param name the name
+     * @return the dummy structure id
      */
     protected CmsUUID makeStructureId(String name) {
 
@@ -1315,7 +1319,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Helper method which publishes the offline project.<p>
-     * 
+     *
      * @throws Exception
      */
     protected void publish() throws Exception {
@@ -1328,11 +1332,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Helper method for reading the contents of the path into a file.<p>
-     * 
-     * @param path the path of the resource which should be read 
+     *
+     * @param path the path of the resource which should be read
      * @return the content of the resource
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     protected String read(String path) throws Exception {
 
@@ -1344,12 +1348,12 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Saves a configuration object to a file.<p>
-     * 
-     * @param path the path of the configuration file  
+     *
+     * @param path the path of the configuration file
      * @param config the container configuration
      * @param name the name under which the configuration object should be saved
-     *  
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     protected void saveConfiguration(String path, CmsContainerConfiguration config, String name) throws Exception {
 
@@ -1361,11 +1365,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Writes a dummy configuration file at a given level in the level1/level2/level3 tree branch.<p>
-     * 
-     * @param level the level at which to write the configuration file 
+     *
+     * @param level the level at which to write the configuration file
      * @param name the name for the element defined in the configuration file
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      * @throws UnsupportedEncodingException
      */
     protected void writeConfiguration(int level, String name) throws CmsException, UnsupportedEncodingException {
@@ -1379,11 +1383,11 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Writes a dummy configuration file to a given path.<p>
-     * 
+     *
      * @param path the path where the configuration file should be written
-     * @param data the configuration data to write  
-     * 
-     * @throws CmsException if something goes wrong 
+     * @param data the configuration data to write
+     *
+     * @throws CmsException if something goes wrong
      */
     protected void writeConfiguration(String path, byte[] data) throws CmsException {
 
@@ -1407,12 +1411,12 @@ public class TestInheritedContainer extends OpenCmsTestCase {
 
     /**
      * Writes a dummy configuration file to a given path.<p>
-     * 
+     *
      * @param path the path where the configuration file should be written
-     * @param name the name contained in the configuration file 
-     * 
-     * @throws CmsException if something goes wrong 
-     * @throws UnsupportedEncodingException 
+     * @param name the name contained in the configuration file
+     *
+     * @throws CmsException if something goes wrong
+     * @throws UnsupportedEncodingException
      */
     protected void writeConfiguration(String path, String name) throws CmsException, UnsupportedEncodingException {
 

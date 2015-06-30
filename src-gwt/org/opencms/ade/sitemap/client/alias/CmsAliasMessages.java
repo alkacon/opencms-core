@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,31 +40,34 @@ public final class CmsAliasMessages {
      */
     private CmsAliasMessages() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
      * Message accessor.<p>
-     * 
-     * @param result an alias import result 
-     * 
-     * @return the message text 
+     *
+     * @param result an alias import result
+     *
+     * @return the message text
      */
     public static String messageAliasImportLine(CmsAliasImportResult result) {
 
         if ((result.getAliasPath() == null) || (result.getTargetPath() == null)) {
             return result.getLine();
         } else {
-            return Messages.get().key(Messages.GUI_ALIASES_IMPORT_LINE_2, result.getAliasPath(), result.getTargetPath());
+            return Messages.get().key(
+                Messages.GUI_ALIASES_IMPORT_LINE_2,
+                result.getAliasPath(),
+                result.getTargetPath());
         }
     }
 
     /**
      * Message accessor.<p>
-     * 
+     *
      * @param lockOwner the lock owner
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageAliasTableLocked(String lockOwner) {
 
@@ -73,8 +76,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageAliasTableLockedTitle() {
 
@@ -83,8 +86,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageButtonCancel() {
 
@@ -93,8 +96,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageButtonDelete() {
 
@@ -103,8 +106,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageButtonDownload() {
 
@@ -113,8 +116,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageButtonSave() {
 
@@ -123,8 +126,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageButtonSelectFile() {
 
@@ -133,8 +136,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageButtonSubmit() {
 
@@ -143,8 +146,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageButtonUpload() {
 
@@ -153,8 +156,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageColumnAlias() {
 
@@ -163,8 +166,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageColumnError() {
 
@@ -173,8 +176,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageColumnMode() {
 
@@ -183,8 +186,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageColumnPath() {
 
@@ -193,8 +196,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageColumnPattern() {
 
@@ -203,8 +206,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageColumnReplacement() {
 
@@ -213,8 +216,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageColumnSelect() {
 
@@ -223,8 +226,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageContextMenuEditAliases() {
 
@@ -235,8 +238,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageEditAliasesNotPermitted() {
 
@@ -246,8 +249,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageImportSeparator() {
 
@@ -256,8 +259,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageLabelRegex() {
 
@@ -266,8 +269,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageLabelReplacement() {
 
@@ -276,8 +279,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageLegendNewRewrite() {
 
@@ -286,8 +289,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageLegendRewriteTable() {
 
@@ -296,8 +299,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageNewAliasActionLabel() {
 
@@ -306,8 +309,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageNewAliasLabel() {
 
@@ -316,8 +319,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageNewAliasTargetLabel() {
 
@@ -326,8 +329,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageNewFieldsetLegend() {
 
@@ -336,8 +339,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     *  
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messagePage() {
 
@@ -346,8 +349,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messagePassthrough() {
 
@@ -356,8 +359,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messagePermanentRedirect() {
 
@@ -366,8 +369,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageRedirect() {
 
@@ -376,10 +379,10 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @param newRowCount the alias row count 
-     * 
-     * @return the message text 
+     *
+     * @param newRowCount the alias row count
+     *
+     * @return the message text
      */
     public static String messageRowCount(int newRowCount) {
 
@@ -388,8 +391,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messagesEmptyImportResult() {
 
@@ -398,8 +401,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageStatusError() {
 
@@ -408,8 +411,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageStatusOk() {
 
@@ -418,8 +421,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageTableFieldsetLegend() {
 
@@ -428,8 +431,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageTitleAliasEditor() {
 
@@ -438,8 +441,8 @@ public final class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageTitleImport() {
 

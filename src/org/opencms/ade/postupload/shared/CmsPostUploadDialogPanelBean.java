@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,9 +62,9 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param structureId the structure id of the resource 
-     * @param infoBean the list info bean 
+     *
+     * @param structureId the structure id of the resource
+     * @param infoBean the list info bean
      */
     public CmsPostUploadDialogPanelBean(CmsUUID structureId, CmsListInfoBean infoBean) {
 
@@ -75,8 +75,8 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /**
      * Gets the info bean for the resource.<p>
-     * 
-     * @return the info bean for the resource 
+     *
+     * @return the info bean for the resource
      */
     public CmsListInfoBean getInfoBean() {
 
@@ -85,8 +85,8 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /**
      * Gets the properties for the resource.<p>
-     * 
-     * @return the map of properties by property name 
+     *
+     * @return the map of properties by property name
      */
     public Map<String, CmsClientProperty> getProperties() {
 
@@ -95,8 +95,8 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /**
      * Gets the property definitions for the type of the resource.<p>
-     * 
-     * @return the map of property definitions by property names  
+     *
+     * @return the map of property definitions by property names
      */
     public Map<String, CmsXmlContentProperty> getPropertyDefinitions() {
 
@@ -105,8 +105,8 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /**
      * Gets the structure id of the resource.<p>
-     * 
-     * @return the user id 
+     *
+     * @return the user id
      */
     public CmsUUID getStructureId() {
 
@@ -115,8 +115,8 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /**
      * Sets the list info bean for the resource.<p>
-     * 
-     * @param info the list info bean for the resource 
+     *
+     * @param info the list info bean for the resource
      */
     public void setInfoBean(CmsListInfoBean info) {
 
@@ -125,8 +125,8 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /**
      * Sets the properties for the resource.<p>
-     * 
-     * @param properties the properties for the resource 
+     *
+     * @param properties the properties for the resource
      */
     public void setProperties(Map<String, CmsClientProperty> properties) {
 
@@ -136,8 +136,8 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /**
      * Sets the property definitions for the type of the resource.<p>
-     * 
-     * @param propertyDefinitions the map of property definitions 
+     *
+     * @param propertyDefinitions the map of property definitions
      */
     public void setPropertyDefinitions(Map<String, CmsXmlContentProperty> propertyDefinitions) {
 
@@ -146,8 +146,8 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /**
      * Sets the structure id of the resource.<p>
-     * 
-     * @param structureId the structure id of the resource 
+     *
+     * @param structureId the structure id of the resource
      */
     public void setStructureId(CmsUUID structureId) {
 

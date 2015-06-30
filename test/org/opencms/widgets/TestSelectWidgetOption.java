@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,15 +32,15 @@ import org.opencms.test.OpenCmsTestCase;
 import java.util.Collections;
 import java.util.List;
 
-/** 
+/**
  * Test cases for the parsing of select widget options.<p>
- * 
+ *
  */
 public class TestSelectWidgetOption extends OpenCmsTestCase {
 
     /**
      * Tests parsing of select widget options.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testOptionParser() throws Exception {
@@ -73,7 +73,7 @@ public class TestSelectWidgetOption extends OpenCmsTestCase {
             Collections.EMPTY_LIST,
             CmsSelectWidgetOption.parseOptions("help='many' option='some' default='true'"));
 
-        // check the examples frm the JavaDoc to make sure they really work as advertised 
+        // check the examples frm the JavaDoc to make sure they really work as advertised
         assertEquals(
             CmsSelectWidgetOption.parseOptions("value='some value' default='true'"),
             CmsSelectWidgetOption.parseOptions("some value default='true'"));
@@ -92,10 +92,12 @@ public class TestSelectWidgetOption extends OpenCmsTestCase {
             CmsSelectWidgetOption.parseOptions(CmsSelectWidgetOption.createConfigurationString(null)));
         assertEquals(
             CmsSelectWidgetOption.parseOptions(null),
-            CmsSelectWidgetOption.parseOptions(CmsSelectWidgetOption.createConfigurationString(Collections.EMPTY_LIST)));
+            CmsSelectWidgetOption.parseOptions(
+                CmsSelectWidgetOption.createConfigurationString(Collections.EMPTY_LIST)));
 
         // check a first list with "full" syntax
-        List result1 = CmsSelectWidgetOption.parseOptions("value='1' default='true'|value='2'|value='3'|value='4'|value='5'|value='6'|value='7'|value='8'|value='9'|value='10'");
+        List result1 = CmsSelectWidgetOption.parseOptions(
+            "value='1' default='true'|value='2'|value='3'|value='4'|value='5'|value='6'|value='7'|value='8'|value='9'|value='10'");
         assertNotNull(result1);
         assertEquals(10, result1.size());
 
@@ -141,7 +143,8 @@ public class TestSelectWidgetOption extends OpenCmsTestCase {
         }
 
         // now a different input list
-        result1 = CmsSelectWidgetOption.parseOptions("value='accessible' default='true' option='${key.layout.version.accessible}'|value='common' option='${key.layout.version.classic}'");
+        result1 = CmsSelectWidgetOption.parseOptions(
+            "value='accessible' default='true' option='${key.layout.version.accessible}'|value='common' option='${key.layout.version.classic}'");
         assertNotNull(result1);
         assertEquals(2, result1.size());
 
@@ -163,7 +166,8 @@ public class TestSelectWidgetOption extends OpenCmsTestCase {
             CmsSelectWidgetOption.parseOptions(CmsSelectWidgetOption.createConfigurationString(result1)));
 
         // variation of the element order
-        result2 = CmsSelectWidgetOption.parseOptions("default='true' value='accessible' option='${key.layout.version.accessible}'|option='${key.layout.version.classic}' value='common'");
+        result2 = CmsSelectWidgetOption.parseOptions(
+            "default='true' value='accessible' option='${key.layout.version.accessible}'|option='${key.layout.version.classic}' value='common'");
         assertNotNull(result2);
         assertEquals(result1.size(), result2.size());
 
@@ -172,7 +176,8 @@ public class TestSelectWidgetOption extends OpenCmsTestCase {
         }
 
         // shortcut syntax
-        result2 = CmsSelectWidgetOption.parseOptions("accessible default='true' option='${key.layout.version.accessible}'|common option='${key.layout.version.classic}'");
+        result2 = CmsSelectWidgetOption.parseOptions(
+            "accessible default='true' option='${key.layout.version.accessible}'|common option='${key.layout.version.classic}'");
         assertNotNull(result2);
         assertEquals(result1.size(), result2.size());
 
@@ -181,7 +186,8 @@ public class TestSelectWidgetOption extends OpenCmsTestCase {
         }
 
         // shortcut syntax 2
-        result2 = CmsSelectWidgetOption.parseOptions("accessible* option='${key.layout.version.accessible}'|common option='${key.layout.version.classic}'");
+        result2 = CmsSelectWidgetOption.parseOptions(
+            "accessible* option='${key.layout.version.accessible}'|common option='${key.layout.version.classic}'");
         assertNotNull(result2);
         assertEquals(result1.size(), result2.size());
 
@@ -190,7 +196,8 @@ public class TestSelectWidgetOption extends OpenCmsTestCase {
         }
 
         // legacy syntax
-        result2 = CmsSelectWidgetOption.parseOptions("accessible*:${key.layout.version.accessible}|common:${key.layout.version.classic}");
+        result2 = CmsSelectWidgetOption.parseOptions(
+            "accessible*:${key.layout.version.accessible}|common:${key.layout.version.classic}");
         assertNotNull(result2);
         assertEquals(result1.size(), result2.size());
 

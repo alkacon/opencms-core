@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,14 +42,14 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Workplace class for /system/workplace/views/admin/admin-editor.jsp .<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsAdminEditorWrapper extends CmsDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsAdminEditorWrapper(CmsJspActionElement jsp) {
@@ -59,7 +59,7 @@ public class CmsAdminEditorWrapper extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -70,9 +70,9 @@ public class CmsAdminEditorWrapper extends CmsDialog {
     }
 
     /**
-     * Returns all parameters of the current workplace class 
+     * Returns all parameters of the current workplace class
      * as hidden field tags that can be inserted in a form.<p>
-     * 
+     *
      * @return all parameters of the current workplace class
      * as hidden field tags that can be inserted in a html form
      */
@@ -96,7 +96,7 @@ public class CmsAdminEditorWrapper extends CmsDialog {
 
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
-     * 
+     *
      * @throws Exception if writing to the JSP out fails
      */
     public void displayDialog() throws Exception {

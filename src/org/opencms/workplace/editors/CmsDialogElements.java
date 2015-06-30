@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,15 +56,15 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the editor elements dialog.<p> 
- * 
+ * Provides methods for the editor elements dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/jsp/editors/dialogs/elements.html
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDialogElements extends CmsDialog {
 
@@ -104,7 +104,7 @@ public class CmsDialogElements extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDialogElements(CmsJspActionElement jsp) {
@@ -115,7 +115,7 @@ public class CmsDialogElements extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -129,7 +129,7 @@ public class CmsDialogElements extends CmsDialog {
     /**
      * Creates a list of possible elements of a template from the template property "template-elements"
      * and the elements available in the provided xmlPage.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param xmlPage the resource to read the elements from
      * @param xmlPageUri the URI of the resource to read the template property from
@@ -157,7 +157,10 @@ public class CmsDialogElements extends CmsDialog {
 
         String currentTemplate = null;
         try {
-            currentTemplate = cms.readPropertyObject(xmlPageUri, CmsPropertyDefinition.PROPERTY_TEMPLATE, true).getValue();
+            currentTemplate = cms.readPropertyObject(
+                xmlPageUri,
+                CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                true).getValue();
         } catch (CmsException e) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(e.getLocalizedMessage(), e);
@@ -214,7 +217,7 @@ public class CmsDialogElements extends CmsDialog {
     /**
      * Creates a list of possible elements of a template from the template property "template-elements"
      * and the elements available in the provided resource file.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param xmlPageUri the resource to read the elements from
      * @param locale the current element locale
@@ -236,7 +239,7 @@ public class CmsDialogElements extends CmsDialog {
 
     /**
      * Updates the enabled/diabled status of all elements of the current page.<p>
-     * 
+     *
      * @throws JspException if there is an error including the error page
      */
     public void actionUpdateElements() throws JspException {
@@ -253,9 +256,10 @@ public class CmsDialogElements extends CmsDialog {
                 CmsDialogElement element = i.next();
                 if (element.isMandantory()
                     || element.getName().equals(getParamElementname())
-                    || Boolean.valueOf(getJsp().getRequest().getParameter(PREFIX_PARAM_BODY + element.getName())).booleanValue()) {
+                    || Boolean.valueOf(
+                        getJsp().getRequest().getParameter(PREFIX_PARAM_BODY + element.getName())).booleanValue()) {
                     if (!element.isExisting()) {
-                        // create element in order to enable it properly 
+                        // create element in order to enable it properly
                         page.addValue(element.getName(), getElementLocale());
                     }
                     page.setEnabled(element.getName(), getElementLocale(), true);
@@ -290,7 +294,7 @@ public class CmsDialogElements extends CmsDialog {
 
     /**
      * Builds the html String for a form list of all possible page elements.<p>
-     * 
+     *
      * @return the html String for a form list
      */
     public String buildElementList() {
@@ -298,9 +302,10 @@ public class CmsDialogElements extends CmsDialog {
         StringBuffer retValue = new StringBuffer(512);
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
-        retValue.append("\t<td class=\"textbold\" unselectable=\"on\">"
-            + key(Messages.GUI_EDITOR_DIALOG_ELEMENTS_PAGEELEMENT_0)
-            + "</td>\n");
+        retValue.append(
+            "\t<td class=\"textbold\" unselectable=\"on\">"
+                + key(Messages.GUI_EDITOR_DIALOG_ELEMENTS_PAGEELEMENT_0)
+                + "</td>\n");
         retValue.append("\t<td class=\"textbold\" unselectable=\"on\">&nbsp;&nbsp;"
             + key(Messages.GUI_EDITOR_DIALOG_ELEMENTS_ENABLED_0)
             + "&nbsp;&nbsp;</td>\n");
@@ -313,7 +318,7 @@ public class CmsDialogElements extends CmsDialog {
             List<CmsDialogElement> elementList = computeElements();
 
             // get all present bodies from the temporary file
-            CmsFile file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsFile file = getCms().readFile(getParamTempfile(), CmsResourceFilter.IGNORE_EXPIRATION);
             CmsXmlPage page = CmsXmlPageFactory.unmarshal(getCms(), file);
 
             // show all possible elements
@@ -362,7 +367,7 @@ public class CmsDialogElements extends CmsDialog {
 
     /**
      * Creates a list of possible elements of a template from the template property "template-elements".<p>
-     * 
+     *
      * @return the list of elements in a String array with element name, nice name (if present) and mandatory flag
      */
     public List<CmsDialogElement> computeElements() {
@@ -375,7 +380,7 @@ public class CmsDialogElements extends CmsDialog {
 
     /**
      * Returns the element name that has to be changed.<p>
-     * 
+     *
      * @return the element name that has to be changed
      */
     public String getChangeElement() {
@@ -385,7 +390,7 @@ public class CmsDialogElements extends CmsDialog {
 
     /**
      * Returns the current element locale.<p>
-     * 
+     *
      * @return the current element locale
      */
     public Locale getElementLocale() {
@@ -398,7 +403,7 @@ public class CmsDialogElements extends CmsDialog {
 
     /**
      * Returns the current element language.<p>
-     * 
+     *
      * @return the current element language
      */
     public String getParamElementlanguage() {
@@ -408,7 +413,7 @@ public class CmsDialogElements extends CmsDialog {
 
     /**
      * Returns the current element name.<p>
-     * 
+     *
      * @return the current element name
      */
     public String getParamElementname() {
@@ -418,7 +423,7 @@ public class CmsDialogElements extends CmsDialog {
 
     /**
      * Returns the name of the temporary file.<p>
-     * 
+     *
      * @return the name of the temporary file
      */
     public String getParamTempfile() {
@@ -428,7 +433,7 @@ public class CmsDialogElements extends CmsDialog {
 
     /**
      * Sets the current element language.<p>
-     * 
+     *
      * @param elementLanguage the current element language
      */
     public void setParamElementlanguage(String elementLanguage) {
@@ -438,7 +443,7 @@ public class CmsDialogElements extends CmsDialog {
 
     /**
      * Sets the current element name.<p>
-     * 
+     *
      * @param elementName the current element name
      */
     public void setParamElementname(String elementName) {
@@ -448,7 +453,7 @@ public class CmsDialogElements extends CmsDialog {
 
     /**
      * Sets the name of the temporary file.<p>
-     * 
+     *
      * @param fileName the name of the temporary file
      */
     public void setParamTempfile(String fileName) {
@@ -466,12 +471,12 @@ public class CmsDialogElements extends CmsDialog {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_UPDATE_ELEMENTS.equals(getParamAction())) {
             setAction(ACTION_UPDATE_ELEMENTS);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for delete dialog     
+            // build title for delete dialog
             setParamTitle(key(
                 Messages.GUI_EDITOR_DIALOG_ELEMENTS_TITLE_1,
                 new Object[] {CmsResource.getName(getParamResource())}));

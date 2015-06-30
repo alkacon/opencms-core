@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,8 +52,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * User roles overview view.<p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public class CmsShowUserRolesList extends A_CmsRolesList {
 
@@ -68,7 +68,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsShowUserRolesList(CmsJspActionElement jsp) {
@@ -78,7 +78,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      */
@@ -89,7 +89,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -101,7 +101,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the name of the list
@@ -174,7 +174,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
 
     /**
      * Sets the User id parameter value.<p>
-     * 
+     *
      * @param userid the userid to set
      */
     public void setParamUserid(String userid) {
@@ -240,7 +240,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
 
     /**
      * Returns true if the list of users has users of other organizational units.<p>
-     * 
+     *
      * @return <code>true</code> if the list of users has users of other organizational units
      */
     protected boolean hasRolesInOtherOus() {
@@ -329,8 +329,8 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
         pathDetails.setHideActionName(Messages.get().container(Messages.GUI_ROLES_DETAIL_HIDE_PATH_NAME_0));
         pathDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_ROLES_DETAIL_HIDE_PATH_HELP_0));
         pathDetails.setName(Messages.get().container(Messages.GUI_ROLES_DETAIL_PATH_NAME_0));
-        pathDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_ROLES_DETAIL_PATH_NAME_0)));
+        pathDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_ROLES_DETAIL_PATH_NAME_0)));
         metadata.addItemDetails(pathDetails);
     }
 

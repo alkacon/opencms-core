@@ -19,29 +19,29 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * This file is based on:
  * org.json.XML
  * from the JSON in Java implementation.
- * 
+ *
  * Copyright (c) 2002 JSON.org
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * The Software shall be used for Good, not Evil.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -58,7 +58,7 @@ import java.util.Iterator;
 /**
  * This provides static methods to convert an XML text into a JSONObject,
  * and to covert a JSONObject into an XML text.<p>
- * 
+ *
  */
 public final class XML {
 
@@ -105,7 +105,7 @@ public final class XML {
      * &gt; <small>(greater than)</small> is replaced by &amp;gt;
      * &quot; <small>(double quote)</small> is replaced by &amp;quot;
      * </pre>.<p>
-     * 
+     *
      * @param string the string to be escaped
      * @return the escaped string
      */
@@ -137,17 +137,17 @@ public final class XML {
     /**
      * Convert a well-formed (but not necessarily valid) XML string into a
      * JSONObject.<p>
-     * 
+     *
      * Some information may be lost in this transformation
      * because JSON is a data format and XML is a document format. XML uses
      * elements, attributes, and content text, while JSON uses unordered
      * collections of name/value pairs and arrays of values. JSON does not
      * does not like to distinguish between elements and attributes.<p>
-     * 
+     *
      * Sequences of similar elements are represented as JSONArrays. Content
      * text may be placed in a "content" member. Comments, prologs, DTDs, and
      * <code>&lt;[ [ ]]></code> are ignored.<p>
-     * 
+     *
      * @param string the source string
      * @return a JSONObject containing the structured data from the XML string
      * @throws JSONException if something goes wrong
@@ -164,7 +164,7 @@ public final class XML {
 
     /**
      * Convert a JSONObject into a well-formed, element-normal XML string.<p>
-     * 
+     *
      * @param o a JSONObject
      * @return  a string
      * @throws  JSONException if something goes wrong
@@ -176,7 +176,7 @@ public final class XML {
 
     /**
      * Convert a JSONObject into a well-formed, element-normal XML string.<p>
-     * 
+     *
      * @param o a JSONObject
      * @param tagName the optional name of the enclosing tag
      * @return a string
@@ -273,19 +273,15 @@ public final class XML {
             return b.toString();
         } else {
             s = (o == null) ? "null" : escape(o.toString());
-            return (tagName == null) ? "\"" + s + "\"" : (s.length() == 0) ? "<" + tagName + "/>" : "<"
-                + tagName
-                + ">"
-                + s
-                + "</"
-                + tagName
-                + ">";
+            return (tagName == null)
+            ? "\"" + s + "\""
+            : (s.length() == 0) ? "<" + tagName + "/>" : "<" + tagName + ">" + s + "</" + tagName + ">";
         }
     }
 
     /**
      * Scan the content following the named tag, attaching it to the context.<p>
-     * 
+     *
      * @param x       the XMLTokener containing the source string
      * @param context the JSONObject that will include the new material
      * @param name    the tag name

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
 /**
  * Converting xml contents according to new schema.
  * <p>
- * 
+ *
  * @since 7.0.5
  */
 public class CmsConvertXmlThread extends A_CmsReportThread {
@@ -85,9 +85,9 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
 
     /**
      * Creates a replace html tag Thread.<p>
-     * 
+     *
      * @param cms the current cms context.
-     * 
+     *
      * @param settings the settings needed to perform the operation.
      */
     public CmsConvertXmlThread(CmsObject cms, CmsConvertXmlSettings settings) {
@@ -141,17 +141,19 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
             org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_STAT_DURATION_1,
                 getReport().formatRuntime()));
-        getReport().println(Messages.get().container(Messages.RPT_CONVERTXML_THREAD_END_0), I_CmsReport.FORMAT_HEADLINE);
+        getReport().println(
+            Messages.get().container(Messages.RPT_CONVERTXML_THREAD_END_0),
+            I_CmsReport.FORMAT_HEADLINE);
     }
 
     /**
      * Locks the current resource.<p>
-     * 
+     *
      * @param cms the current CmsObject
      * @param cmsProject the current project
      * @param cmsResource the resourcfe to lock
      * @param report the report
-     * 
+     *
      * @throws CmsException if some goes wrong
      */
     private boolean lockResource(CmsObject cms, CmsProject cmsProject, CmsResource cmsResource, I_CmsReport report)
@@ -177,7 +179,7 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
             && !lock.isOwnedInProjectBy(getCms().getRequestContext().getCurrentUser(), cmsProject)) {
             // prove is current lock from current user but not in current project
             // file is locked by current user but not in current project
-            // change the lock 
+            // change the lock
             cms.changeLock(getCms().getSitePath(cmsResource));
         } else if ((lock != null) && lock.isUnlocked()) {
             // lock resource from current user in current project
@@ -207,7 +209,7 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
      * @param xsltFile XLST file which includes logic for transforming
      * @param cmsObject Current CmsObject
      * @param countFilesToTransformOnly Only count files to transform
-     * 
+     *
      * @return True if transformation of all xml contents was successful
      */
     @SuppressWarnings("unchecked")
@@ -228,15 +230,19 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
         report.println(
             Messages.get().container(Messages.RPT_CONVERTXML_PARAMETERS_RESOURCE_PATH_1, resourcePath),
             I_CmsReport.FORMAT_NOTE);
-        report.println(Messages.get().container(
-            Messages.RPT_CONVERTXML_PARAMETERS_INC_SUBFOLDERS_1,
-            new Boolean(inclSubFolder).toString()), I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(
+                Messages.RPT_CONVERTXML_PARAMETERS_INC_SUBFOLDERS_1,
+                new Boolean(inclSubFolder).toString()),
+            I_CmsReport.FORMAT_NOTE);
         report.println(
             Messages.get().container(Messages.RPT_CONVERTXML_PARAMETERS_XSLT_FILE_1, xsltFile),
             I_CmsReport.FORMAT_NOTE);
-        report.println(Messages.get().container(
-            Messages.RPT_CONVERTXML_PARAMETERS_ONLY_COUNT_1,
-            new Boolean(countFilesToTransformOnly).toString()), I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(
+                Messages.RPT_CONVERTXML_PARAMETERS_ONLY_COUNT_1,
+                new Boolean(countFilesToTransformOnly).toString()),
+            I_CmsReport.FORMAT_NOTE);
         // check if xslt file is available
         if (CmsStringUtil.isEmpty(xsltFile)) {
             report.println(Messages.get().container(Messages.RPT_CONVERTXML_NO_XSLT_FILE_0), I_CmsReport.FORMAT_ERROR);
@@ -252,7 +258,7 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
                 LOG.error(e.getMessageContainer(), e);
             }
         }
-        // get main xsd file string in xml content in format: xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/article.xsd"                                                          
+        // get main xsd file string in xml content in format: xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/article.xsd"
         int posMainFileBegin = xsltString.indexOf("xsi:noNamespaceSchemaLocation=\"");
         if (posMainFileBegin > 0) {
             String fileName = xsltString.substring(posMainFileBegin + "xsi:noNamespaceSchemaLocation=\"".length());
@@ -270,9 +276,9 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
             report.println(Messages.get().container(Messages.RPT_CONVERTXML_NO_XSD_FILE_0), I_CmsReport.FORMAT_ERROR);
             transformConditions = false;
         } else {
-            report.println(Messages.get().container(
-                Messages.RPT_CONVERTXML_PARAMETERS_NEW_XSD_MAINFILE_1,
-                newXsdMainFile), I_CmsReport.FORMAT_NOTE);
+            report.println(
+                Messages.get().container(Messages.RPT_CONVERTXML_PARAMETERS_NEW_XSD_MAINFILE_1, newXsdMainFile),
+                I_CmsReport.FORMAT_NOTE);
         }
         // check if vfs folder is set
         if (CmsStringUtil.isEmpty(resourcePath)) {
@@ -303,9 +309,9 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
         int file2Transform = 0;
         if (files2Transform != null) {
             file2Transform = files2Transform.size();
-            report.println(Messages.get().container(
-                Messages.RPT_CONVERTXML_FOUND_FILES_1,
-                new Integer(file2Transform).toString()), I_CmsReport.FORMAT_OK);
+            report.println(
+                Messages.get().container(Messages.RPT_CONVERTXML_FOUND_FILES_1, new Integer(file2Transform).toString()),
+                I_CmsReport.FORMAT_OK);
         } else {
             report.println(Messages.get().container(Messages.RPT_CONVERTXML_NO_FILES_FOUND_0), I_CmsReport.FORMAT_OK);
             return false;
@@ -337,18 +343,22 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
         }
         // output from the results
         report.println(Messages.get().container(Messages.RPT_CONVERTXML_RESULT_0), I_CmsReport.FORMAT_NOTE);
-        report.println(Messages.get().container(
-            Messages.RPT_CONVERTXML_FOUND_FILES_1,
-            new Integer(file2Transform).toString()), I_CmsReport.FORMAT_NOTE);
-        report.println(Messages.get().container(
-            Messages.RPT_CONVERTXML_FILES_ALREADY_TRANSFORMED_1,
-            new Integer(m_alreadyTransformed).toString()), I_CmsReport.FORMAT_NOTE);
-        report.println(Messages.get().container(
-            Messages.RPT_CONVERTXML_TRANSFORM_NUMBER_ERRORS_1,
-            new Integer(m_errorTransform).toString()), I_CmsReport.FORMAT_NOTE);
-        report.println(Messages.get().container(
-            Messages.RPT_CONVERTXML_LOCKED_FILES_1,
-            new Integer(m_lockedFiles).toString()), I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(Messages.RPT_CONVERTXML_FOUND_FILES_1, new Integer(file2Transform).toString()),
+            I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(
+                Messages.RPT_CONVERTXML_FILES_ALREADY_TRANSFORMED_1,
+                new Integer(m_alreadyTransformed).toString()),
+            I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(
+                Messages.RPT_CONVERTXML_TRANSFORM_NUMBER_ERRORS_1,
+                new Integer(m_errorTransform).toString()),
+            I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(Messages.RPT_CONVERTXML_LOCKED_FILES_1, new Integer(m_lockedFiles).toString()),
+            I_CmsReport.FORMAT_NOTE);
         if ((m_lockedFiles > 0) || (m_errorTransform > 0)) {
             report.println(
                 Messages.get().container(Messages.RPT_CONVERTXML_TRANSFORMING_FAILED_0),
@@ -365,11 +375,11 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
 
     /**
      * Gets file xml content.<p>
-     * 
+     *
      * @param cmsResource current resource CmsResource
-     * @param cmsFile current CmsFile 
+     * @param cmsFile current CmsFile
      * @param cmsObject current CmsObject
-     * @param xmlContent xml content to write 
+     * @param xmlContent xml content to write
      * @param encodingType encoding type
      * @param report I_CmsReport
      */
@@ -391,9 +401,9 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
                 cmsObject.unlockResource(cmsObject.getSitePath(cmsResource));
             } catch (CmsException e) {
                 m_errorTransform += 1;
-                report.println(Messages.get().container(
-                    Messages.RPT_CONVERTXML_UNLOCK_FILE_1,
-                    cmsObject.getSitePath(cmsResource)), I_CmsReport.FORMAT_ERROR);
+                report.println(
+                    Messages.get().container(Messages.RPT_CONVERTXML_UNLOCK_FILE_1, cmsObject.getSitePath(cmsResource)),
+                    I_CmsReport.FORMAT_ERROR);
                 if (LOG.isErrorEnabled()) {
                     LOG.error(e.getMessageContainer(), e);
                 }
@@ -414,15 +424,15 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
 
     /**
      * Transforms and write files.<p>
-     * 
+     *
      * @param files2Transform Files to transform
      * @param xsltFile XLST file which includes logic for transforming
      * @param cmsObject Current CmsObject
      * @param newXsdMainFile New xsd main file
      * @param report I_CmsReport
-     * 
+     *
      * @return Project with files to publish
-     * 
+     *
      * @throws CmsException Can become thrown while creating temporary OpenCms Projects
      */
     private CmsObject transformAndWriteFiles(
@@ -462,7 +472,8 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
             boolean resource2Publish = false;
             // get info if resource shall become published
             CmsResourceState cmsResourceState = cmsResource.getState();
-            if (!(cmsResourceState.equals(CmsResourceState.STATE_CHANGED) || cmsResourceState.equals(CmsResourceState.STATE_NEW))) {
+            if (!(cmsResourceState.equals(CmsResourceState.STATE_CHANGED)
+                || cmsResourceState.equals(CmsResourceState.STATE_NEW))) {
                 // resource is not touched or is not new
                 resource2Publish = true;
             }
@@ -473,15 +484,19 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
                 try {
                     // try to lock the resource
                     if (!lockResource(cms1, project2Publish, cmsResource, report)) {
-                        report.println(Messages.get().container(
-                            Messages.RPT_CONVERTXML_LOCKED_FILE_1,
-                            cmsObject.getSitePath(cmsResource)), I_CmsReport.FORMAT_ERROR);
+                        report.println(
+                            Messages.get().container(
+                                Messages.RPT_CONVERTXML_LOCKED_FILE_1,
+                                cmsObject.getSitePath(cmsResource)),
+                            I_CmsReport.FORMAT_ERROR);
                         continue;
                     }
                 } catch (CmsException e) {
-                    report.println(Messages.get().container(
-                        Messages.RPT_CONVERTXML_LOCKED_FILE_1,
-                        cmsObject.getSitePath(cmsResource)), I_CmsReport.FORMAT_ERROR);
+                    report.println(
+                        Messages.get().container(
+                            Messages.RPT_CONVERTXML_LOCKED_FILE_1,
+                            cmsObject.getSitePath(cmsResource)),
+                        I_CmsReport.FORMAT_ERROR);
                     if (LOG.isErrorEnabled()) {
                         LOG.error(e.getMessageContainer(), e);
                     }
@@ -496,15 +511,19 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
                     cms2.getRequestContext().setCurrentProject(fileProject);
                     // try to lock the resource
                     if (!lockResource(cms2, fileProject, cmsResource, report)) {
-                        report.println(Messages.get().container(
-                            Messages.RPT_CONVERTXML_LOCKED_FILE_1,
-                            cmsObject.getSitePath(cmsResource)), I_CmsReport.FORMAT_ERROR);
+                        report.println(
+                            Messages.get().container(
+                                Messages.RPT_CONVERTXML_LOCKED_FILE_1,
+                                cmsObject.getSitePath(cmsResource)),
+                            I_CmsReport.FORMAT_ERROR);
                         continue;
                     }
                 } catch (CmsException e) {
-                    report.println(Messages.get().container(
-                        Messages.RPT_CONVERTXML_LOCKED_FILE_1,
-                        cmsObject.getSitePath(cmsResource)), I_CmsReport.FORMAT_ERROR);
+                    report.println(
+                        Messages.get().container(
+                            Messages.RPT_CONVERTXML_LOCKED_FILE_1,
+                            cmsObject.getSitePath(cmsResource)),
+                        I_CmsReport.FORMAT_ERROR);
                     if (LOG.isErrorEnabled()) {
                         LOG.error(e.getMessageContainer(), e);
                     }
@@ -545,17 +564,21 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
             // encoding type given?
             if (CmsStringUtil.isEmpty(encodingType)) {
                 m_missingEncodingType += 1;
-                report.println(Messages.get().container(
-                    Messages.RPT_CONVERTXML_MISSION_ENCODING_TYPE_1,
-                    cmsResource.getRootPath()), I_CmsReport.FORMAT_ERROR);
+                report.println(
+                    Messages.get().container(
+                        Messages.RPT_CONVERTXML_MISSION_ENCODING_TYPE_1,
+                        cmsResource.getRootPath()),
+                    I_CmsReport.FORMAT_ERROR);
                 continue;
             }
             // already transformed?
             if (fileXmlContent.toUpperCase().contains(newXsdMainFile.toUpperCase())) {
                 m_alreadyTransformed += 1;
-                report.println(Messages.get().container(
-                    Messages.RPT_CONVERTXML_FILE_ALREADY_TRANSFORMED_1,
-                    cmsResource.getRootPath()), I_CmsReport.FORMAT_OK);
+                report.println(
+                    Messages.get().container(
+                        Messages.RPT_CONVERTXML_FILE_ALREADY_TRANSFORMED_1,
+                        cmsResource.getRootPath()),
+                    I_CmsReport.FORMAT_OK);
                 continue;
             }
 
@@ -566,10 +589,12 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
                     transformedXmlContent);
                 // write file xml content
                 if (resource2Publish) {
-                    report.println(Messages.get().container(
-                        Messages.RPT_CONVERTXML_TRANSFORM_CURRENT_FILE_NAME2_2,
-                        cmsResource.getRootPath(),
-                        encodingType), I_CmsReport.FORMAT_OK);
+                    report.println(
+                        Messages.get().container(
+                            Messages.RPT_CONVERTXML_TRANSFORM_CURRENT_FILE_NAME2_2,
+                            cmsResource.getRootPath(),
+                            encodingType),
+                        I_CmsReport.FORMAT_OK);
                     cms1.getRequestContext().setCurrentProject(project2Publish);
                     setXmlContentFromFile(cmsResource, cmsFile, cms1, transformedXmlContent, encodingType, report);
                 } else {

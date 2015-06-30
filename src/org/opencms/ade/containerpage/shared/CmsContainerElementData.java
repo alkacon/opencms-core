@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import java.util.Set;
 
 /**
  * Bean holding all element information including it's formatted contents.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainerElementData extends CmsContainerElement {
@@ -97,8 +97,8 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /**
      * Returns the required css resources.<p>
-     * 
-     * @param containerName the current container name 
+     *
+     * @param containerName the current container name
      *
      * @return the required css resources
      */
@@ -118,10 +118,10 @@ public class CmsContainerElementData extends CmsContainerElement {
         return m_description;
     }
 
-    /** 
+    /**
      * Dragging an element may require changing its settings, but this changes the id since it is computed from the settings. In the DND case this method returns the client id of the element with the changed settings.<p>
-     *  
-     * @return the drag and drop element id, or null if it isn't available or needed 
+     *
+     * @return the drag and drop element id, or null if it isn't available or needed
      */
     public String getDndId() {
 
@@ -130,9 +130,9 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /**
      * Returns the individual element settings formated with nice-names to be used as additional-info.<p>
-     * 
-     * @param containerId the container id 
-     * 
+     *
+     * @param containerId the container id
+     *
      * @return the settings list
      */
     public List<CmsAdditionalInfoBean> getFormatedIndividualSettings(String containerId) {
@@ -144,7 +144,8 @@ public class CmsContainerElementData extends CmsContainerElement {
                 String settingKey = settingEntry.getKey();
                 if (config.getSettingConfig().containsKey(settingEntry.getKey())) {
                     String niceName = config.getSettingConfig().get(settingEntry.getKey()).getNiceName();
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(config.getSettingConfig().get(settingEntry.getKey()).getNiceName())) {
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
+                        config.getSettingConfig().get(settingEntry.getKey()).getNiceName())) {
                         settingKey = niceName;
                     }
                 }
@@ -156,7 +157,7 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /**
      * Returns the current formatter configuration.<p>
-     * 
+     *
      * @param containerName the current container name
      *
      * @return the current formatter configuration
@@ -190,7 +191,7 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /**
      * Returns the inheritance infos off all sub-items.<p>
-     * 
+     *
      * @return the inheritance infos off all sub-items.
      */
     public List<CmsInheritanceInfo> getInheritanceInfos() {
@@ -244,10 +245,10 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /**
      * Gets the setting configuration for this container element.<p>
-     * 
+     *
      * @param containerName the current container name
-     * 
-     * @return the setting configuration map 
+     *
+     * @return the setting configuration map
      */
     public Map<String, CmsXmlContentProperty> getSettingConfig(String containerName) {
 
@@ -259,7 +260,7 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /**
      * Returns the settings for this container element.<p>
-     * 
+     *
      * @return a map of settings
      */
     public Map<String, String> getSettings() {
@@ -300,9 +301,9 @@ public class CmsContainerElementData extends CmsContainerElement {
         return m_title;
     }
 
-    /** 
+    /**
      * If this element represents an element group, this method will return the supported container type.<p>
-     * 
+     *
      * @return the supported container types
      */
     public Set<String> getTypes() {
@@ -312,9 +313,9 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /**
      * Returns if there are alternative formatters available for the given container.<p>
-     * 
+     *
      * @param containerName the container name
-     * 
+     *
      * @return <code>true</code> if there are alternative formatters available for the given container
      */
     public boolean hasAlternativeFormatters(String containerName) {
@@ -334,10 +335,10 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /**
      * Returns true if the element should be shown in the current template context.<p>
-     * 
+     *
      * @param currentContext the current template context
-     *  
-     * @return true if the element should be shown 
+     *
+     * @return true if the element should be shown
      */
     public boolean isShowInContext(String currentContext) {
 
@@ -371,8 +372,8 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /**
      * During dragging and dropping in the container page editor, it may be required to substitute a different element for the element being dragged. This sets the id of the element to substitute.<p>
-     *   
-     * @param dndId the drag and drop replacement element's client id 
+     *
+     * @param dndId the drag and drop replacement element's client id
      */
     public void setDndId(String dndId) {
 
@@ -441,7 +442,7 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /**
      * Sets the settings for this container element.<p>
-     * 
+     *
      * @param settings the new settings
      */
     public void setSettings(Map<String, String> settings) {
@@ -487,8 +488,8 @@ public class CmsContainerElementData extends CmsContainerElement {
     public String toString() {
 
         StringBuffer result = new StringBuffer();
-        result.append("Title: ").append(getTitle()).append("  File: ").append(getSitePath()).append("  ClientId: ").append(
-            getClientId());
+        result.append("Title: ").append(getTitle()).append("  File: ").append(getSitePath()).append(
+            "  ClientId: ").append(getClientId());
         return result.toString();
     }
 

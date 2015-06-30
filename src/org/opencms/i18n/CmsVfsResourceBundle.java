@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,13 +59,13 @@ public class CmsVfsResourceBundle extends ResourceBundle implements I_CmsResourc
 
         /**
          * Loads the data from the VFS.<p>
-         * 
-         * @param cms the CMS context to use 
-         * @param params the VFS bundle parameters 
-         * 
-         * @return the message bundle data 
-         * 
-         * @throws Exception if something goes wrong 
+         *
+         * @param cms the CMS context to use
+         * @param params the VFS bundle parameters
+         *
+         * @return the message bundle data
+         *
+         * @throws Exception if something goes wrong
          */
         Map<Locale, Map<String, String>> loadData(CmsObject cms, CmsVfsBundleParameters params) throws Exception;
     }
@@ -93,7 +93,7 @@ public class CmsVfsResourceBundle extends ResourceBundle implements I_CmsResourc
 
     /**
      * Creates a new VFS bundle instance.<p>
-     * 
+     *
      * @param params the VFS bundle parameters
      */
     public CmsVfsResourceBundle(CmsVfsBundleParameters params) {
@@ -104,22 +104,22 @@ public class CmsVfsResourceBundle extends ResourceBundle implements I_CmsResourc
 
     /**
      * Sets the CMS context used by this class.<p>
-     * 
+     *
      * This can be never called more than once, and is usually called on startup.<p>
-     * 
-     * @param cms the CMS context to set 
+     *
+     * @param cms the CMS context to set
      */
     public static void setCmsObject(CmsObject cms) {
 
         m_cms = cms;
     }
 
-    /** 
+    /**
      * Initializes the type given the string value of the type.<p>
-     * 
-     * @param type a string representation of the type 
-     * 
-     * @return the actual type object 
+     *
+     * @param type a string representation of the type
+     *
+     * @return the actual type object
      */
     private static I_Loader initLoader(String type) {
 
@@ -169,7 +169,7 @@ public class CmsVfsResourceBundle extends ResourceBundle implements I_CmsResourc
      */
     public void setLocale(Locale locale) {
 
-        // ignore 
+        // ignore
     }
 
     /**
@@ -183,8 +183,8 @@ public class CmsVfsResourceBundle extends ResourceBundle implements I_CmsResourc
 
     /**
      * Returns the path of the file to read the message data from.<p>
-     * 
-     * @return the root path of the file containing the message data 
+     *
+     * @return the root path of the file containing the message data
      */
     protected String getFilePath() {
 
@@ -213,16 +213,16 @@ public class CmsVfsResourceBundle extends ResourceBundle implements I_CmsResourc
 
     /**
      * Actually loads the message data from the VFS.<p>
-     * 
-     * @return a map from locales to message maps 
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @return a map from locales to message maps
+     *
+     * @throws Exception if something goes wrong
      */
 
-    /** 
+    /**
      * Gets the (possibly already cached) message data.<p>
-     * 
-     * @return the message data 
+     *
+     * @return the message data
      */
     private Map<Locale, Map<String, String>> getData() {
 
@@ -243,8 +243,8 @@ public class CmsVfsResourceBundle extends ResourceBundle implements I_CmsResourc
 
     /**
      * Returns the message data for this bundle's locale.<p>
-     * 
-     * @return the message data for this bundle's locale 
+     *
+     * @return the message data for this bundle's locale
      */
     private Map<String, String> getMessagesForLocale() {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ import org.htmlparser.util.ParserException;
 
 /**
  * Extracts plain text from HTML.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public final class CmsHtmlExtractor {
 
@@ -98,8 +98,8 @@ public final class CmsHtmlExtractor {
             return content;
         }
 
-        // we must make sure that the content passed to the parser always is 
-        // a "valid" HTML page, i.e. is surrounded by <html><body>...</body></html> 
+        // we must make sure that the content passed to the parser always is
+        // a "valid" HTML page, i.e. is surrounded by <html><body>...</body></html>
         // otherwise you will get strange results for some specific HTML constructs
         StringBuffer newContent = new StringBuffer(content.length() + 32);
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,9 +32,9 @@ import org.opencms.main.CmsException;
 import org.opencms.search.CmsIndexException;
 
 /**
- * Signals an error during content extraction of an empty document.<p> 
- * 
- * @since 8.0.0 
+ * Signals an error during content extraction of an empty document.<p>
+ *
+ * @since 8.0.0
  */
 public class CmsIndexNoContentException extends CmsIndexException {
 
@@ -43,7 +43,7 @@ public class CmsIndexNoContentException extends CmsIndexException {
 
     /**
      * Creates a new localized Exception.<p>
-     * 
+     *
      * @param container the localized message container to use
      */
     public CmsIndexNoContentException(CmsMessageContainer container) {
@@ -54,7 +54,7 @@ public class CmsIndexNoContentException extends CmsIndexException {
 
     /**
      * Creates a new localized Exception that also contains a root cause.<p>
-     * 
+     *
      * @param container the localized message container to use
      * @param cause the Exception root cause
      */

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,10 +46,10 @@ import com.google.gwt.user.client.ui.Panel;
 
 /**
  * CmsRenderer which delegates the rendering of an entity to native Javascript.
- * 
+ *
  * This renderer will interpret its configuration string as a JSON object (which we will call 'config').
  * To render an entity, it will take the name of a function from config.render and then call the function
- * with the entity to render, the parent element, a VIE wrapper, and the configuration object as parameters. 
+ * with the entity to render, the parent element, a VIE wrapper, and the configuration object as parameters.
  */
 public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
 
@@ -71,7 +71,7 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
     /** The native renderer instance. */
     private JavaScriptObject m_nativeInstance;
 
-    /** 
+    /**
      * Default constructor.<p>
      */
     public CmsNativeComplexWidgetRenderer() {
@@ -80,8 +80,8 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
 
     /**
      * Creates a new configured instance.<p>
-     * 
-     * @param configuration the configuration string 
+     *
+     * @param configuration the configuration string
      */
     public CmsNativeComplexWidgetRenderer(String configuration) {
 
@@ -196,12 +196,12 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
         }
     }
 
-    /** 
+    /**
      * Creates the native renderer instance.<p>
-     * 
-     * @param initCall the name of the native function which creates the native renderer instance  
-     * 
-     * @return the native renderer instance 
+     *
+     * @param initCall the name of the native function which creates the native renderer instance
+     *
+     * @return the native renderer instance
      */
     protected native JavaScriptObject createNativeInstance(String initCall) /*-{
                                                                             if ($wnd[initCall]) {
@@ -211,27 +211,28 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
                                                                             }
                                                                             }-*/;
 
-    /** 
+    /**
      * Gets the native renderer instance.<p>
-     * 
-     * @return the native renderer instance 
+     *
+     * @return the native renderer instance
      */
     protected JavaScriptObject getNativeInstance() {
 
         if (m_nativeInstance == null) {
-            m_nativeInstance = createNativeInstance(m_jsonConfig.get(CmsContentDefinition.PARAM_INIT_CALL).isString().stringValue());
+            m_nativeInstance = createNativeInstance(
+                m_jsonConfig.get(CmsContentDefinition.PARAM_INIT_CALL).isString().stringValue());
         }
         return m_nativeInstance;
     }
 
     /**
      * Calls the native render function.<p>
-     * 
-     * @param nativeRenderer the native renderer instance 
-     * @param renderFunction the name of the render function 
-     * @param element the element in which to render the entity 
-     * @param entity the entity to render 
-     * @param config the configuration 
+     *
+     * @param nativeRenderer the native renderer instance
+     * @param renderFunction the name of the render function
+     * @param element the element in which to render the entity
+     * @param entity the entity to render
+     * @param config the configuration
      */
     protected native void renderNative(
         JavaScriptObject nativeRenderer,
@@ -250,7 +251,7 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
                                  }
                                  }-*/;
 
-    /** 
+    /**
      * Throws an error indicating that a method is not supported.<p>
      */
     private void notSupported() {

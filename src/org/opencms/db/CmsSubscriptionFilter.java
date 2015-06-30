@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import java.util.List;
 
 /**
  * Provides filters for getting resources subscribed by a user or group in a specified time range.<p>
- * 
+ *
  * @since 8.0
  */
 public class CmsSubscriptionFilter extends CmsVisitedByFilter {
@@ -50,7 +50,7 @@ public class CmsSubscriptionFilter extends CmsVisitedByFilter {
 
     /**
      * Constructor, without parameters.<p>
-     * 
+     *
      * It is required to set the user or group manually if using this constructor.<p>
      */
     public CmsSubscriptionFilter() {
@@ -62,7 +62,7 @@ public class CmsSubscriptionFilter extends CmsVisitedByFilter {
 
     /**
      * Constructor, setting the user to the current user from the context.<p>
-     * 
+     *
      * @param cms the current users context
      */
     public CmsSubscriptionFilter(CmsObject cms) {
@@ -72,7 +72,7 @@ public class CmsSubscriptionFilter extends CmsVisitedByFilter {
 
     /**
      * Constructor, setting the user to the current user from the context.<p>
-     * 
+     *
      * @param cms the current users context
      * @param addUserGroups determines if the groups of the current user should be added to the list of groups of the filter
      */
@@ -92,7 +92,7 @@ public class CmsSubscriptionFilter extends CmsVisitedByFilter {
 
     /**
      * Adds a group to the list of groups to check subscribed resources for.<p>
-     * 
+     *
      * @param group the group to add
      */
     public void addGroup(CmsGroup group) {
@@ -120,7 +120,7 @@ public class CmsSubscriptionFilter extends CmsVisitedByFilter {
 
     /**
      * Returns the groups to check subscribed resources for.<p>
-     * 
+     *
      * @return the groups to check subscribed resources for
      */
     public List<CmsGroup> getGroups() {
@@ -130,7 +130,7 @@ public class CmsSubscriptionFilter extends CmsVisitedByFilter {
 
     /**
      * Returns the mode to read subscribed resources.<p>
-     * 
+     *
      * @return the mode to read subscribed resources
      */
     public CmsSubscriptionReadMode getMode() {
@@ -140,7 +140,7 @@ public class CmsSubscriptionFilter extends CmsVisitedByFilter {
 
     /**
      * Sets the groups to check subscribed resources for.<p>
-     * 
+     *
      * @param groups the groups to check subscribed resources for
      */
     public void setGroups(List<CmsGroup> groups) {
@@ -150,7 +150,7 @@ public class CmsSubscriptionFilter extends CmsVisitedByFilter {
 
     /**
      * Sets the mode to read subscribed resources.<p>
-     * 
+     *
      * @param mode the mode to read subscribed resources
      */
     public void setMode(CmsSubscriptionReadMode mode) {
@@ -160,7 +160,7 @@ public class CmsSubscriptionFilter extends CmsVisitedByFilter {
 
     /**
      * Sets the groups of the user currently set in this filter as the list of groups to check subscribed resources for.<p>
-     * 
+     *
      * @param cms the current users context
      */
     public void setUserGroups(CmsObject cms) {
@@ -176,7 +176,7 @@ public class CmsSubscriptionFilter extends CmsVisitedByFilter {
 
     /**
      * Returns a user readable representation of the filter.<p>
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override

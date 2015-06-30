@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,19 +56,19 @@ import org.dom4j.io.SAXReader;
 
 /**
  * Provides information about how to handle imported resources.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see OpenCms#getImportExportManager()
  */
 public class CmsImportExportManager {
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo/entry@name" attribute, contains the additional user info entry name. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo/entry@name" attribute, contains the additional user info entry name.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String A_NAME = A_CmsImport.A_NAME;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo/entry@type" attribute, contains the additional user info entry data type name. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo/entry@type" attribute, contains the additional user info entry data type name.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String A_TYPE = A_CmsImport.A_TYPE;
@@ -79,45 +79,45 @@ public class CmsImportExportManager {
     /** The current version of the OpenCms export (appears in the {@link #EXPORT_MANIFEST} header). */
     public static final String EXPORT_VERSION = "" + CmsImportVersion7.IMPORT_VERSION7;
 
-    /** 
+    /**
      * The name of the XML manifest file used for the description of exported OpenCms VFS properties and attributes.<p>
-     * 
+     *
      * @deprecated use {@link #EXPORT_MANIFEST} instead
      */
     @Deprecated
     public static final String EXPORT_XMLFILENAME = EXPORT_MANIFEST;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "access" node. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "access" node.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_ACCESS = A_CmsImport.N_ACCESS;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "allowed" node, to identify allowed user permissions. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "allowed" node, to identify allowed user permissions.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_ACCESSCONTROL_ALLOWEDPERMISSIONS = A_CmsImport.N_ACCESSCONTROL_ALLOWEDPERMISSIONS;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "denied" node, to identify denied user permissions. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "denied" node, to identify denied user permissions.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_ACCESSCONTROL_DENIEDPERMISSIONS = A_CmsImport.N_ACCESSCONTROL_DENIEDPERMISSIONS;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "accesscontrol" node, to identify access control entries. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "accesscontrol" node, to identify access control entries.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_ACCESSCONTROL_ENTRIES = A_CmsImport.N_ACCESSCONTROL_ENTRIES;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "accessentry" node, to identify a single access control entry. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "accessentry" node, to identify a single access control entry.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_ACCESSCONTROL_ENTRY = A_CmsImport.N_ACCESSCONTROL_ENTRY;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "permissionset" node, to identify a permission set. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "permissionset" node, to identify a permission set.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_ACCESSCONTROL_PERMISSIONSET = A_CmsImport.N_ACCESSCONTROL_PERMISSIONSET;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "uuidprincipal" node, to identify a principal UUID. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "uuidprincipal" node, to identify a principal UUID.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_ACCESSCONTROL_PRINCIPAL = A_CmsImport.N_ACCESSCONTROL_PRINCIPAL;
@@ -128,42 +128,42 @@ public class CmsImportExportManager {
     /** Tag for the "createdate" node (appears in the {@link #EXPORT_MANIFEST} header). */
     public static final String N_DATE = "createdate";
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "datecreated" node, contains the date created VFS file attribute. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "datecreated" node, contains the date created VFS file attribute.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_DATECREATED = A_CmsImport.N_DATECREATED;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "dateexpired" node, contains the expiration date VFS file attribute. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "dateexpired" node, contains the expiration date VFS file attribute.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_DATEEXPIRED = A_CmsImport.N_DATEEXPIRED;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "datelastmodified" node, contains the date last modified VFS file attribute. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "datelastmodified" node, contains the date last modified VFS file attribute.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_DATELASTMODIFIED = A_CmsImport.N_DATELASTMODIFIED;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "datereleased" node, contains the release date VFS file attribute. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "datereleased" node, contains the release date VFS file attribute.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_DATERELEASED = A_CmsImport.N_DATERELEASED;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "defaultgroup" node, for backward compatibility with OpenCms 5.x. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "defaultgroup" node, for backward compatibility with OpenCms 5.x.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_DEFAULTGROUP = A_CmsImport.N_DEFAULTGROUP;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "description" node, contains a users description test. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "description" node, contains a users description test.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_DESCRIPTION = A_CmsImport.N_DESCRIPTION;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "destination" node, contains target VFS file name. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "destination" node, contains target VFS file name.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_DESTINATION = A_CmsImport.N_DESTINATION;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "email" node, contains a users email. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "email" node, contains a users email.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_EMAIL = A_CmsImport.N_EMAIL;
@@ -171,32 +171,32 @@ public class CmsImportExportManager {
     /** Tag in the {@link #EXPORT_MANIFEST} for the "export" node. */
     public static final String N_EXPORT = "export";
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "file" node, container node for all VFS resources. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "file" node, container node for all VFS resources.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_FILE = A_CmsImport.N_FILE;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "firstname" node, contains a users first name. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "firstname" node, contains a users first name.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_FIRSTNAME = A_CmsImport.N_FIRSTNAME;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "flags" node, contains the flags of a VFS resource. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "flags" node, contains the flags of a VFS resource.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_FLAGS = A_CmsImport.N_FLAGS;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "groupdata" node, contains a users group data. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "groupdata" node, contains a users group data.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_GROUPDATA = A_CmsImport.N_GROUPDATA;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "groupname" node, contains a groups name. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "groupname" node, contains a groups name.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_GROUPNAME = A_CmsImport.N_GROUPNAME;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "id" node, only required for backward compatibility with import version 2. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "id" node, only required for backward compatibility with import version 2.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_ID = A_CmsImport.N_ID;
@@ -204,17 +204,17 @@ public class CmsImportExportManager {
     /** Tag in the {@link #EXPORT_MANIFEST}, starts the manifest info header. */
     public static final String N_INFO = "info";
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "lastmodified" node, only required for backward compatibility with import version 2. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "lastmodified" node, only required for backward compatibility with import version 2.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_LASTMODIFIED = A_CmsImport.N_LASTMODIFIED;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "lastname" node, contains a users last name. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "lastname" node, contains a users last name.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_LASTNAME = A_CmsImport.N_LASTNAME;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "name" node, contains a users login name. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "name" node, contains a users login name.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_NAME = A_CmsImport.N_NAME;
@@ -222,12 +222,12 @@ public class CmsImportExportManager {
     /** Tag in the {@link #EXPORT_MANIFEST} for the "opencms_version" node, appears in the manifest info header. */
     public static final String N_OC_VERSION = "opencms_version";
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "parentgroup" node, contains a groups parent group name. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "parentgroup" node, contains a groups parent group name.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_PARENTGROUP = A_CmsImport.N_PARENTGROUP;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "password" node, contains a users encrypted password. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "password" node, contains a users encrypted password.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_PASSWORD = A_CmsImport.N_PASSWORD;
@@ -235,122 +235,122 @@ public class CmsImportExportManager {
     /** Tag in the {@link #EXPORT_MANIFEST} for the "infoproject" node, appears in the manifest info header. */
     public static final String N_INFO_PROJECT = "infoproject";
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "properties" node, starts the list of properties of a VFS resource. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "properties" node, starts the list of properties of a VFS resource.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_PROPERTIES = A_CmsImport.N_PROPERTIES;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "property" node, starts a property for a VFS resource. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "property" node, starts a property for a VFS resource.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_PROPERTY = A_CmsImport.N_PROPERTY;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "type" property attribute, contains a property type. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "type" property attribute, contains a property type.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_PROPERTY_ATTRIB_TYPE = A_CmsImport.N_PROPERTY_ATTRIB_TYPE;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "shared" property type attribute value. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "shared" property type attribute value.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_PROPERTY_ATTRIB_TYPE_SHARED = A_CmsImport.N_PROPERTY_ATTRIB_TYPE_SHARED;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "relation" node, starts a relation for a VFS resource. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "relation" node, starts a relation for a VFS resource.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_RELATION = A_CmsImport.N_RELATION;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "id" relation attribute, contains the structure id of the target resource of the relation. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "id" relation attribute, contains the structure id of the target resource of the relation.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_RELATION_ATTRIBUTE_ID = A_CmsImport.N_RELATION_ATTRIBUTE_ID;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "path" relation attribute, contains the path to the target resource of the relation. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "path" relation attribute, contains the path to the target resource of the relation.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_RELATION_ATTRIBUTE_PATH = A_CmsImport.N_RELATION_ATTRIBUTE_PATH;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "type" relation attribute, contains the type of relation. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "type" relation attribute, contains the type of relation.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_RELATION_ATTRIBUTE_TYPE = A_CmsImport.N_RELATION_ATTRIBUTE_TYPE;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "relations" node, starts the list of relations of a VFS resources. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "relations" node, starts the list of relations of a VFS resources.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_RELATIONS = A_CmsImport.N_RELATIONS;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "source" node, contains the source path of a VFS resource in the import zip (or folder). 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "source" node, contains the source path of a VFS resource in the import zip (or folder).
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_SOURCE = A_CmsImport.N_SOURCE;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "address" node, contains a users address. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "address" node, contains a users address.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_TAG_ADDRESS = A_CmsImport.N_TAG_ADDRESS;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "type" node, the resource type name of a VFS resource. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "type" node, the resource type name of a VFS resource.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_TYPE = A_CmsImport.N_TYPE;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "user" node, starts the user data. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "user" node, starts the user data.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_USER = A_CmsImport.N_USER;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "usercreated" node, contains the name of the user who created the VFS resource. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "usercreated" node, contains the name of the user who created the VFS resource.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_USERCREATED = A_CmsImport.N_USERCREATED;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "userdata" node, starts the list of users. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "userdata" node, starts the list of users.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_USERDATA = A_CmsImport.N_USERDATA;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "usergroupdatas" node, starts the users group data. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "usergroupdatas" node, starts the users group data.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_USERGROUPDATA = A_CmsImport.N_USERGROUPDATA;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "orgunitdatas" node, starts the organizational unit data. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "orgunitdatas" node, starts the organizational unit data.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_ORGUNITDATA = A_CmsImport.N_ORGUNITDATA;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "usergroups" node, starts the users group data. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "usergroups" node, starts the users group data.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_USERGROUPS = A_CmsImport.N_USERGROUPS;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo" node, contains the additional user info. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo" node, contains the additional user info.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_USERINFO = A_CmsImport.N_USERINFO;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo/entry" node, contains the additional user info entry value. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo/entry" node, contains the additional user info entry value.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_USERINFO_ENTRY = A_CmsImport.N_USERINFO_ENTRY;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "userlastmodified" node, contains the name of the user who last modified the VFS resource. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "userlastmodified" node, contains the name of the user who last modified the VFS resource.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_USERLASTMODIFIED = A_CmsImport.N_USERLASTMODIFIED;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "uuidresource" node, contains a the resource UUID of a VFS resource. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "uuidresource" node, contains a the resource UUID of a VFS resource.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_UUIDRESOURCE = A_CmsImport.N_UUIDRESOURCE;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "uuidstructure" node, only required for backward compatibility with import version 2. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "uuidstructure" node, only required for backward compatibility with import version 2.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_UUIDSTRUCTURE = A_CmsImport.N_UUIDSTRUCTURE;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "value" node, contains the value of a property. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "value" node, contains the value of a property.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
     public static final String N_VALUE = A_CmsImport.N_VALUE;
@@ -415,7 +415,7 @@ public class CmsImportExportManager {
 
     /**
      * Adds a property name to the list of properties that should be removed from imported resources.<p>
-     * 
+     *
      * @param propertyName a property name
      */
     public void addIgnoredProperty(String propertyName) {
@@ -427,24 +427,25 @@ public class CmsImportExportManager {
     }
 
     /**
-     * Adds a resource to the list of immutable resources that should remain 
+     * Adds a resource to the list of immutable resources that should remain
      * unchanged when resources are imported.<p>
-     * 
+     *
      * @param immutableResource a resources uri in the OpenCms VFS
      */
     public void addImmutableResource(String immutableResource) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_IMPORTEXPORT_ADDED_IMMUTABLE_RESOURCE_1,
-                immutableResource));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_IMPORTEXPORT_ADDED_IMMUTABLE_RESOURCE_1,
+                    immutableResource));
         }
         m_immutableResources.add(immutableResource);
     }
 
     /**
      * Adds an import/export handler to the list of configured handlers.<p>
-     * 
+     *
      * @param handler the import/export handler to add
      */
     public void addImportExportHandler(I_CmsImportExportHandler handler) {
@@ -457,7 +458,7 @@ public class CmsImportExportManager {
 
     /**
      * Adds an import princial translation to the configuration.<p>
-     * 
+     *
      * @param type the princial type ("USER" or "GROUP")
      * @param from the "from" translation source
      * @param to the "to" translation target
@@ -465,16 +466,18 @@ public class CmsImportExportManager {
     public void addImportPrincipalTranslation(String type, String from, String to) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_IMPORTEXPORT_ADDED_PRINCIPAL_TRANSLATION_3,
-                type,
-                from,
-                to));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_IMPORTEXPORT_ADDED_PRINCIPAL_TRANSLATION_3,
+                    type,
+                    from,
+                    to));
         }
         if (I_CmsPrincipal.PRINCIPAL_GROUP.equalsIgnoreCase(type)) {
             m_importGroupTranslations.put(from, to);
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().getBundle().key(Messages.INIT_IMPORTEXPORT_ADDED_GROUP_TRANSLATION_2, from, to));
+                LOG.info(
+                    Messages.get().getBundle().key(Messages.INIT_IMPORTEXPORT_ADDED_GROUP_TRANSLATION_2, from, to));
             }
         } else if (I_CmsPrincipal.PRINCIPAL_USER.equalsIgnoreCase(type)) {
             m_importUserTranslations.put(from, to);
@@ -486,22 +489,21 @@ public class CmsImportExportManager {
 
     /**
      * Adds a import version class name to the configuration.<p>
-     * 
+     *
      * @param importVersionClass the import version class name to add
      */
     public void addImportVersionClass(I_CmsImport importVersionClass) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_IMPORTEXPORT_ADDED_IMPORT_VERSION_1,
-                importVersionClass));
+            LOG.debug(
+                Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_ADDED_IMPORT_VERSION_1, importVersionClass));
         }
         m_importVersionClasses.add(importVersionClass);
     }
 
     /**
      * Checks if imported pages should be converted into XML pages.<p>
-     * 
+     *
      * @return true, if imported pages should be converted into XML pages
      */
     public boolean convertToXmlPage() {
@@ -512,15 +514,15 @@ public class CmsImportExportManager {
     /**
      * Checks if the current user has permissions to export Cms data of a specified export handler,
      * and if so, triggers the handler to write the export.<p>
-     * 
+     *
      * @param cms the cms context
      * @param handler handler containing the export data
      * @param report the output report
-     * 
+     *
      * @throws CmsRoleViolationException if the current user is not a allowed to export the OpenCms database
      * @throws CmsImportExportException if operation was not successful
      * @throws CmsConfigurationException if something goes wrong
-     * 
+     *
      * @see I_CmsImportExportHandler
      */
     public void exportData(CmsObject cms, I_CmsImportExportHandler handler, I_CmsReport report)
@@ -543,7 +545,7 @@ public class CmsImportExportManager {
     /**
      * Returns the extendedHtmlImportDefault.<p>
      *
-     *@param withNull returns the extendenHtmlImport as null if its null, 
+     *@param withNull returns the extendenHtmlImport as null if its null,
      *                otherwise a new CmsExtendedHtmlImportDefault Object is generated
      *
      * @return the extendedHtmlImportDefault
@@ -557,7 +559,7 @@ public class CmsImportExportManager {
 
     /**
      * Returns the list of property keys that should be removed from imported resources.<p>
-     * 
+     *
      * @return the list of property keys that should be removed from imported resources, or Collections.EMPTY_LIST
      */
     public List<String> getIgnoredProperties() {
@@ -566,13 +568,13 @@ public class CmsImportExportManager {
     }
 
     /**
-     * Returns the list of immutable resources that should remain unchanged when resources are 
+     * Returns the list of immutable resources that should remain unchanged when resources are
      * imported.<p>
-     * 
-     * Certain system resources should not be changed during import. This is the case for the main 
-     * folders in the /system/ folder. Changes to these folders usually should not be imported to 
+     *
+     * Certain system resources should not be changed during import. This is the case for the main
+     * folders in the /system/ folder. Changes to these folders usually should not be imported to
      * another system.<p>
-     * 
+     *
      * @return the list of immutable resources, or {@link Collections#EMPTY_LIST}
      */
     public List<String> getImmutableResources() {
@@ -583,11 +585,11 @@ public class CmsImportExportManager {
     /**
      * Returns an instance of an import/export handler implementation that is able to import
      * a specified resource.<p>
-     * 
+     *
      * @param parameters the import parameters
-     * 
+     *
      * @return an instance of an import/export handler implementation
-     * 
+     *
      * @throws CmsImportExportException if something goes wrong
      */
     public I_CmsImportExportHandler getImportExportHandler(CmsImportParameters parameters)
@@ -604,9 +606,9 @@ public class CmsImportExportManager {
             reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             manifest = reader.read(stream);
         } catch (Throwable e) {
-            throw new CmsImportExportException(Messages.get().container(
-                Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1,
-                EXPORT_MANIFEST), e);
+            throw new CmsImportExportException(
+                Messages.get().container(Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1, EXPORT_MANIFEST),
+                e);
         } finally {
             try {
                 if (stream != null) {
@@ -636,7 +638,7 @@ public class CmsImportExportManager {
 
     /**
      * Returns the list of configured import/export handlers.<p>
-     * 
+     *
      * @return the list of configured import/export handlers
      */
     public List<I_CmsImportExportHandler> getImportExportHandlers() {
@@ -646,7 +648,7 @@ public class CmsImportExportManager {
 
     /**
      * Returns the configured principal group translations.<p>
-     * 
+     *
      * @return the configured principal group translations
      */
     public Map<String, String> getImportGroupTranslations() {
@@ -656,7 +658,7 @@ public class CmsImportExportManager {
 
     /**
      * Returns the configured principal user translations.<p>
-     * 
+     *
      * @return the configured principal user translations
      */
     public Map<String, String> getImportUserTranslations() {
@@ -666,7 +668,7 @@ public class CmsImportExportManager {
 
     /**
      * Returns the configured import version class names.<p>
-     * 
+     *
      * @return the configured import version class names
      */
     public List<I_CmsImport> getImportVersionClasses() {
@@ -677,9 +679,9 @@ public class CmsImportExportManager {
     /**
      * Returns the URL of a 4.x OpenCms app. (e.g. http://localhost:8080/opencms/opencms/)
      * from which content was exported.<p>
-     * 
+     *
      * This setting is required to import content of 4.x OpenCms apps. correct into 5.x OpenCms apps.<p>
-     * 
+     *
      * @return the webAppUrl.
      */
     public String getOldWebAppUrl() {
@@ -689,7 +691,7 @@ public class CmsImportExportManager {
 
     /**
      * Returns the user settings for export.<p>
-     * 
+     *
      * @return the user settings for export
      */
     public CmsUserExportSettings getUserExportSettings() {
@@ -700,16 +702,16 @@ public class CmsImportExportManager {
     /**
      * Checks if the current user has permissions to import data into the Cms,
      * and if so, creates a new import handler instance that imports the data.<p>
-     * 
+     *
      * @param cms the current OpenCms context object
      * @param report a Cms report to print log messages
      * @param parameters the import parameters
-     * 
+     *
      * @throws CmsRoleViolationException if the current user is not allowed to import the OpenCms database
      * @throws CmsImportExportException if operation was not successful
      * @throws CmsXmlException if the manifest of the import could not be unmarshalled
      * @throws CmsException in case of errors accessing the VFS
-     * 
+     *
      * @see I_CmsImportExportHandler
      * @see #importData(CmsObject, String, String, I_CmsReport)
      */
@@ -720,38 +722,36 @@ public class CmsImportExportManager {
         OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
 
         try {
-            OpenCms.fireCmsEvent(new CmsEvent(
-                I_CmsEventListener.EVENT_CLEAR_CACHES,
-                Collections.<String, Object> emptyMap()));
+            OpenCms.fireCmsEvent(
+                new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.<String, Object> emptyMap()));
             I_CmsImportExportHandler handler = getImportExportHandler(parameters);
             synchronized (handler) {
                 handler.setImportParameters(parameters);
                 handler.importData(cms, report);
             }
         } finally {
-            OpenCms.fireCmsEvent(new CmsEvent(
-                I_CmsEventListener.EVENT_CLEAR_CACHES,
-                Collections.<String, Object> emptyMap()));
+            OpenCms.fireCmsEvent(
+                new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.<String, Object> emptyMap()));
         }
     }
 
     /**
      * Checks if the current user has permissions to import data into the Cms,
      * and if so, creates a new import handler instance that imports the data.<p>
-     * 
+     *
      * @param cms the current OpenCms context object
      * @param importFile the name (absolute path) of the resource (zipfile or folder) to be imported
      * @param importPath the name (absolute path) of the destination folder in the Cms if required, or null
      * @param report a Cms report to print log messages
-     * 
+     *
      * @throws CmsRoleViolationException if the current user is not allowed to import the OpenCms database
      * @throws CmsImportExportException if operation was not successful
      * @throws CmsXmlException if the manifest of the import could not be unmarshalled
      * @throws CmsException in case of errors accessing the VFS
-     * 
+     *
      * @see I_CmsImportExportHandler
      * @see #importData(CmsObject, I_CmsReport, CmsImportParameters)
-     * 
+     *
      * @deprecated use {@link #importData(CmsObject, I_CmsReport, CmsImportParameters)} instead
      */
     @Deprecated
@@ -764,7 +764,7 @@ public class CmsImportExportManager {
 
     /**
      * Checks if colliding resources should be overwritten during the import.<p>
-     * 
+     *
      * @return true, if colliding resources should be overwritten during the import
      * @see #setOverwriteCollidingResources(boolean)
      */
@@ -775,22 +775,23 @@ public class CmsImportExportManager {
 
     /**
      * Sets if imported pages should be converted into XML pages.<p>
-     * 
+     *
      * @param convertToXmlPage true, if imported pages should be converted into XML pages.
      */
     public void setConvertToXmlPage(boolean convertToXmlPage) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_IMPORTEXPORT_SET_CONVERT_PARAMETER_1,
-                Boolean.toString(convertToXmlPage)));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_IMPORTEXPORT_SET_CONVERT_PARAMETER_1,
+                    Boolean.toString(convertToXmlPage)));
         }
         m_convertToXmlPage = convertToXmlPage;
     }
 
     /**
      * Sets if imported pages should be converted into XML pages.<p>
-     * 
+     *
      * @param convertToXmlPage <code>"true"</code>, if imported pages should be converted into XML pages.
      */
     public void setConvertToXmlPage(String convertToXmlPage) {
@@ -811,9 +812,9 @@ public class CmsImportExportManager {
     /**
      * Sets the URL of a 4.x OpenCms app. (e.g. http://localhost:8080/opencms/opencms/)
      * from which content was exported.<p>
-     * 
+     *
      * This setting is required to import content of 4.x OpenCms apps. correct into 5.x OpenCms apps.<p>
-     * 
+     *
      * @param webAppUrl a URL of the a OpenCms app. (e.g. http://localhost:8080/opencms/opencms/)
      */
     public void setOldWebAppUrl(String webAppUrl) {
@@ -827,31 +828,32 @@ public class CmsImportExportManager {
     /**
      * Sets whether colliding resources should be overwritten during the import for a
      * specified import implementation.<p>
-     * 
-     * v1 and v2 imports (without resource UUIDs in the manifest) *MUST* overwrite colliding 
+     *
+     * v1 and v2 imports (without resource UUIDs in the manifest) *MUST* overwrite colliding
      * resources. Don't forget to set this flag back to it's original value in v1 and v2
      * import implementations!<p>
-     * 
-     * This flag must be set to false to force imports > v2 to move colliding resources to 
+     *
+     * This flag must be set to false to force imports > v2 to move colliding resources to
      * /system/lost-found/.<p>
-     * 
+     *
      * The import implementation has to take care to set this flag correct!<p>
-     * 
+     *
      * @param overwriteCollidingResources true if colliding resources should be overwritten during the import
      */
     public void setOverwriteCollidingResources(boolean overwriteCollidingResources) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_IMPORTEXPORT_SET_OVERWRITE_PARAMETER_1,
-                Boolean.toString(overwriteCollidingResources)));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_IMPORTEXPORT_SET_OVERWRITE_PARAMETER_1,
+                    Boolean.toString(overwriteCollidingResources)));
         }
         m_overwriteCollidingResources = overwriteCollidingResources;
     }
 
     /**
      * @see CmsImportExportManager#setOverwriteCollidingResources(boolean)
-     * 
+     *
      * @param overwriteCollidingResources <code>"true"</code> if colliding resources should be overwritten during the import
      */
     public void setOverwriteCollidingResources(String overwriteCollidingResources) {
@@ -871,9 +873,9 @@ public class CmsImportExportManager {
 
     /**
      * Returns the translated name for the given group name.<p>
-     * 
+     *
      * If no matching name is found, the given group name is returned.<p>
-     * 
+     *
      * @param name the group name to translate
      * @return the translated name for the given group name
      */
@@ -892,9 +894,9 @@ public class CmsImportExportManager {
 
     /**
      * Returns the translated name for the given user name.<p>
-     * 
+     *
      * If no matching name is found, the given user name is returned.<p>
-     * 
+     *
      * @param name the user name to translate
      * @return the translated name for the given user name
      */

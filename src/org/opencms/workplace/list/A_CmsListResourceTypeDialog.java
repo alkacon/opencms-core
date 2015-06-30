@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Super class for all dialogs needed to display a list of resource types.<p>
- * 
+ *
  * @since 6.7.2
  */
 public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
@@ -128,7 +128,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public A_CmsListResourceTypeDialog(CmsJspActionElement jsp) {
@@ -144,7 +144,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -180,7 +180,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -211,10 +211,10 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
 
     /**
      * Builds a default button row with a continue and cancel button.<p>
-     * 
+     *
      * Override this to have special buttons for your dialog.<p>
-     * 
-     * @return the button row 
+     *
+     * @return the button row
      */
     public String dialogButtons() {
 
@@ -290,7 +290,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
 
     /**
      * Returns the html code to add directly before the list inside the form element.<p>
-     * 
+     *
      * @return the html code to add directly before the list inside the form element
      */
     protected String customHtmlBeforeList() {
@@ -508,14 +508,14 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
         CmsListItemDetails resourceTypeDescription = new CmsListItemDetails(LIST_DETAIL_DESCRIPTION);
         resourceTypeDescription.setAtColumn(LIST_COLUMN_NAME);
         resourceTypeDescription.setVisible(false);
-        resourceTypeDescription.setShowActionName(Messages.get().container(
-            Messages.GUI_NEWRESOURCE_DETAIL_SHOW_DESCRIPTION_NAME_0));
-        resourceTypeDescription.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_NEWRESOURCE_DETAIL_SHOW_DESCRIPTION_HELP_0));
-        resourceTypeDescription.setHideActionName(Messages.get().container(
-            Messages.GUI_NEWRESOURCE_DETAIL_HIDE_DESCRIPTION_NAME_0));
-        resourceTypeDescription.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_NEWRESOURCE_DETAIL_HIDE_DESCRIPTION_HELP_0));
+        resourceTypeDescription.setShowActionName(
+            Messages.get().container(Messages.GUI_NEWRESOURCE_DETAIL_SHOW_DESCRIPTION_NAME_0));
+        resourceTypeDescription.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_NEWRESOURCE_DETAIL_SHOW_DESCRIPTION_HELP_0));
+        resourceTypeDescription.setHideActionName(
+            Messages.get().container(Messages.GUI_NEWRESOURCE_DETAIL_HIDE_DESCRIPTION_NAME_0));
+        resourceTypeDescription.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_NEWRESOURCE_DETAIL_HIDE_DESCRIPTION_HELP_0));
 
         metadata.addItemDetails(resourceTypeDescription);
     }

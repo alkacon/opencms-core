@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,8 +36,8 @@ import java.util.Map;
 
 /**
  * Maintains a table of links for an element of a CmsXmlPage.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsLinkTable {
 
@@ -57,7 +57,7 @@ public class CmsLinkTable {
 
     /**
      * Adds a new link with a given internal name and internal flag to the link table.<p>
-     * 
+     *
      * @param link the <code>CmsLink</code> to add
      * @return the new link entry
      */
@@ -69,11 +69,11 @@ public class CmsLinkTable {
 
     /**
      * Adds a new link to the link table.<p>
-     * 
+     *
      * @param type type of the link
      * @param targetUri link destination
      * @param internal flag to indicate if the link is a local link
-     * 
+     *
      * @return the new link entry
      */
     public CmsLink addLink(CmsRelationType type, String targetUri, boolean internal) {
@@ -85,7 +85,7 @@ public class CmsLinkTable {
 
     /**
      * Returns the CmsLink Entry for a given name.<p>
-     * 
+     *
      * @param name the internal name of the link
      * @return the CmsLink entry
      */
@@ -96,7 +96,7 @@ public class CmsLinkTable {
 
     /**
      * Returns if the link table is empty.<p>
-     * 
+     *
      * @return true if the link table is empty, false otherwise
      */
     public boolean isEmpty() {
@@ -106,9 +106,9 @@ public class CmsLinkTable {
 
     /**
      * Returns an iterator over the links in the table.<p>
-     * 
+     *
      * The objects iterated are of type <code>{@link CmsLink}</code>.
-     * 
+     *
      * @return a string iterator for internal link names
      */
     public Iterator<CmsLink> iterator() {
@@ -118,7 +118,7 @@ public class CmsLinkTable {
 
     /**
      * Returns the size of this link table.<p>
-     * 
+     *
      * @return the size of this link table
      */
     public int size() {

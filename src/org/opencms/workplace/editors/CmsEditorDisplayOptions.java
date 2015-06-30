@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,30 +47,30 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods to determine the display options of a workplace editor for the current user.<p> 
- * 
+ * Provides methods to determine the display options of a workplace editor for the current user.<p>
+ *
  * On the editor JSP, do the following:
  * <ul>
  * <li>get the object instance with <code>OpenCms.getWorkplaceManager().getEditorDisplayOptions()</code>.</li>
  * <li>get the Properties for the current user with <code>getDisplayOptions(CmsJspActionElement)</code>.</li>
  * <li>use <code>showElement(key, Properties)</code> to determine if an element is shown.</li>
  * </ul>
- * 
- * Define your editor display options in property files located in the VFS folder 
+ *
+ * Define your editor display options in property files located in the VFS folder
  * <code>/system/workplace/editors/configuration/</code>.<p>
- *  
+ *
  * Set navigation position property values on the configuration files
  * and use the permission system to determine which groups and users
  * should use which configuration file.<p>
- * 
- * The configuration with the most enabled options should be the first in navigation, 
- * followed by configurations with less enabled options, because 
+ *
+ * The configuration with the most enabled options should be the first in navigation,
+ * followed by configurations with less enabled options, because
  * the first file readable for the current user will be used for configuration.<p>
- * 
- * If no configuration file can be found for the current user, 
+ *
+ * If no configuration file can be found for the current user,
  * all display options will be disabled by default.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsEditorDisplayOptions {
 
@@ -106,7 +106,7 @@ public class CmsEditorDisplayOptions {
     }
 
     /**
-     * Clears the cached user configuration data, casing a reload off all configurations.<p> 
+     * Clears the cached user configuration data, casing a reload off all configurations.<p>
      */
     public synchronized void clearCache() {
 
@@ -116,13 +116,13 @@ public class CmsEditorDisplayOptions {
 
     /**
      * Reads the editor configuration file valid for the current user and caches the result in a Map.<p>
-     * 
+     *
      * The configuration settings of the found file are stored in a Map holding the loaded configuration
      * with the configuration file name as key.<p>
-     * 
+     *
      * The configuration file name to use for the current user is stored in another Map with the user name
      * as key.<p>
-     * 
+     *
      * @param jsp the JSP action element to access the VFS and current user information
      * @return the display options to use for the current user or null if no display options were found
      */
@@ -133,13 +133,13 @@ public class CmsEditorDisplayOptions {
 
     /**
      * Reads the editor configuration file valid for the current user and caches the result in a Map.<p>
-     * 
+     *
      * The configuration settings of the found file are stored in a Map holding the loaded configuration
      * with the configuration file name as key.<p>
-     * 
+     *
      * The configuration file name to use for the current user is stored in another Map with the user name
      * as key.<p>
-     * 
+     *
      * @param cms the CmsObject to access the VFS and current user information
      * @return the display options to use for the current user or null if no display options were found
      */
@@ -193,10 +193,11 @@ public class CmsEditorDisplayOptions {
             }
             if (LOG.isDebugEnabled()) {
                 // check which mapping has been stored
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_MAP_CONFIG_FILE_TO_USER_2,
-                    mappedConfigFile,
-                    cms.getRequestContext().getCurrentUser().getName()));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_MAP_CONFIG_FILE_TO_USER_2,
+                        mappedConfigFile,
+                        cms.getRequestContext().getCurrentUser().getName()));
             }
             // store the file name of the configuration file for the current user
             m_userMappings.put(cms.getRequestContext().getCurrentUser().getName(), mappedConfigFile);
@@ -210,11 +211,11 @@ public class CmsEditorDisplayOptions {
 
     /**
      * Returns the value for the given key from the display options.<p>
-     * 
+     *
      * @param key he element key name which should be read
      * @param defaultValue the default value to use in case the property is not found
      * @param displayOptions the display options for the current user
-     * 
+     *
      * @return the value for the given key from the display options
      */
     public String getOptionValue(String key, String defaultValue, Properties displayOptions) {
@@ -227,10 +228,10 @@ public class CmsEditorDisplayOptions {
 
     /**
      * Determines if the given element should be shown in the editor.<p>
-     * 
+     *
      * @param key the element key name which should be displayed
      * @param displayOptions the display options for the current user
-     * 
+     *
      * @return true if the element should be shown, otherwise false
      */
     public boolean showElement(String key, Properties displayOptions) {
@@ -240,11 +241,11 @@ public class CmsEditorDisplayOptions {
 
     /**
      * Determines if the given element should be shown in the editor.<p>
-     * 
+     *
      * @param key the element key name which should be displayed
      * @param defaultValue the default value to use in case the property is not found, should be a boolean value as String
      * @param displayOptions the display options for the current user
-     * 
+     *
      * @return true if the element should be shown, otherwise false
      */
     public boolean showElement(String key, String defaultValue, Properties displayOptions) {

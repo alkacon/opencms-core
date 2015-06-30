@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,8 +36,8 @@ import javax.activation.DataSource;
 
 /**
  * A DataSource backed by a byte array. The byte array may be passed in directly, or may be initialized from an InputStream or a String.
- * 
- * @since 6.3.0 
+ *
+ * @since 6.3.0
  */
 public class CmsByteArrayDataSource implements DataSource {
 
@@ -52,20 +52,20 @@ public class CmsByteArrayDataSource implements DataSource {
 
     /**
      * Creates a ByteArrayDataSource with data from the specified byte array and with the specified MIME type.
-     * 
+     *
      * @param name the name of the data
      * @param data the data
      * @param contentType the MIME content type of the data
      */
     public CmsByteArrayDataSource(String name, byte[] data, String contentType) {
 
-        this.m_name = name;
-        this.m_data = data;
-        this.m_contentType = contentType;
+        m_name = name;
+        m_data = data;
+        m_contentType = contentType;
     }
 
     /**
-     * 
+     *
      * @see javax.activation.DataSource#getContentType()
      */
     public String getContentType() {
@@ -74,7 +74,7 @@ public class CmsByteArrayDataSource implements DataSource {
     }
 
     /**
-     * 
+     *
      * @see javax.activation.DataSource#getInputStream()
      */
     public InputStream getInputStream() {
@@ -83,7 +83,7 @@ public class CmsByteArrayDataSource implements DataSource {
     }
 
     /**
-     * 
+     *
      * @see javax.activation.DataSource#getName()
      */
     public String getName() {
@@ -92,7 +92,7 @@ public class CmsByteArrayDataSource implements DataSource {
     }
 
     /**
-     * 
+     *
      * @see javax.activation.DataSource#getOutputStream()
      */
     public OutputStream getOutputStream() throws IOException {

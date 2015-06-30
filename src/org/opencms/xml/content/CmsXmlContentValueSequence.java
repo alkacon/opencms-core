@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,8 +37,8 @@ import java.util.Locale;
 
 /**
  * Describes the sequence of XML content values of a specific type in an XML content instance.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsXmlContentValueSequence {
 
@@ -65,7 +65,7 @@ public class CmsXmlContentValueSequence {
 
     /**
      * Generates a new content sequence element from the given type, content and content definition.<p>
-     * 
+     *
      * @param path the path in the document to generate the value sequence for
      * @param locale the locale to get the content values from
      * @param content the XML content to generate the sequence element out of
@@ -96,14 +96,14 @@ public class CmsXmlContentValueSequence {
 
     /**
      * Adds a value element of the given type
-     * at the selected index to the XML content document.<p> 
-     * 
+     * at the selected index to the XML content document.<p>
+     *
      * @param cms the current users OpenCms context
      * @param type the type to add
      * @param index the index where to add the new value element
-     * 
+     *
      * @return the added XML content value element
-     * 
+     *
      * @see CmsXmlContent#addValue(CmsObject, String, Locale, int)
      * @see #addValue(CmsObject, String, int)
      * @see #addValue(CmsObject, int)
@@ -115,17 +115,17 @@ public class CmsXmlContentValueSequence {
     }
 
     /**
-     * Adds a value element of the type the original xpath indicates 
-     * at the selected index to the XML content document.<p> 
-     * 
-     * The "original xpath" is the path used in the constructor when creating 
+     * Adds a value element of the type the original xpath indicates
+     * at the selected index to the XML content document.<p>
+     *
+     * The "original xpath" is the path used in the constructor when creating
      * this value sequence.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param index the index where to add the new value element
-     * 
+     *
      * @return the added XML content value element
-     * 
+     *
      * @see CmsXmlContent#addValue(CmsObject, String, Locale, int)
      * @see #addValue(CmsObject, String, int)
      * @see #addValue(CmsObject, I_CmsXmlSchemaType, int)
@@ -137,14 +137,14 @@ public class CmsXmlContentValueSequence {
 
     /**
      * Adds a value element of the type indicated by the given xpath
-     * at the selected index to the XML content document.<p> 
-     * 
+     * at the selected index to the XML content document.<p>
+     *
      * @param cms the current users OpenCms context
      * @param xpath the path that indicates the element type in the content definition
      * @param index the index where to add the new value element
-     * 
+     *
      * @return the added XML content value element
-     * 
+     *
      * @see CmsXmlContent#addValue(CmsObject, String, Locale, int)
      * @see #addValue(CmsObject, I_CmsXmlSchemaType, int)
      * @see #addValue(CmsObject, int)
@@ -161,7 +161,7 @@ public class CmsXmlContentValueSequence {
 
     /**
      * Returns the count of XML content values for the selected schema type and locale in the XML content.<p>
-     * 
+     *
      * @return the count of XML content values for the selected schema type and locale in the XML content
      */
     public int getElementCount() {
@@ -183,7 +183,7 @@ public class CmsXmlContentValueSequence {
      * Returns the maximum occurrences of this type in the XML content schema.<p>
      *
      * @return the maximum occurrences of this type in the XML content schema
-     * 
+     *
      * @see I_CmsXmlSchemaType#getMaxOccurs()
      */
     public int getMaxOccurs() {
@@ -195,7 +195,7 @@ public class CmsXmlContentValueSequence {
      * Returns the minimum occurrences of this type in the XML content schema.<p>
      *
      * @return the minimum occurrences of this type in the XML content schema
-     * 
+     *
      * @see I_CmsXmlSchemaType#getMinOccurs()
      */
     public int getMinOccurs() {
@@ -204,10 +204,10 @@ public class CmsXmlContentValueSequence {
     }
 
     /**
-     * Returns the (simplified) Xpath expression that identifies the root node 
-     * of this content value sequence.<p> 
-     * 
-     * @return the (simplified) Xpath expression that identifies the root node 
+     * Returns the (simplified) Xpath expression that identifies the root node
+     * of this content value sequence.<p>
+     *
+     * @return the (simplified) Xpath expression that identifies the root node
      *      of this content value sequence
      */
     public String getPath() {
@@ -217,9 +217,9 @@ public class CmsXmlContentValueSequence {
 
     /**
      * Returns the XML content values from the index position of this sequence.<p>
-     * 
+     *
      * @param index the index position to get the value from
-     * 
+     *
      * @return the XML content values from the index position of this sequence
      */
     public I_CmsXmlContentValue getValue(int index) {
@@ -229,9 +229,9 @@ public class CmsXmlContentValueSequence {
 
     /**
      * Returns the list of XML content values for the selected schema type and locale in the XML content.<p>
-     * 
+     *
      * @return the list of XML content values for the selected schema type and locale in the XML content
-     * 
+     *
      * @see #getValue(int)
      */
     public List<I_CmsXmlContentValue> getValues() {
@@ -241,7 +241,7 @@ public class CmsXmlContentValueSequence {
 
     /**
      * Returns <code>true</code> if this sequence represents a choice sequence.<p>
-     * 
+     *
      * @return <code>true</code> if this sequence represents a choice sequence
      */
     public boolean isChoiceSequence() {
@@ -250,10 +250,10 @@ public class CmsXmlContentValueSequence {
     }
 
     /**
-     * Removes the value element of the sequence type at the selected index from XML content document.<p> 
-     * 
+     * Removes the value element of the sequence type at the selected index from XML content document.<p>
+     *
      * @param index the index where to remove the value element
-     * 
+     *
      * @see CmsXmlContent#removeValue(String, Locale, int)
      */
     public void removeValue(int index) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,32 +33,32 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 /**
  * Interface representing an XML content location which corresponds to an actual content value.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsXmlContentValueLocation extends I_CmsXmlContentLocation {
 
     /**
      * Returns the structure id of the content value (only valid for VfsFile values!).<p>
-     * 
-     * @param cms the CMS context 
-     * @return the structure id of the content value 
+     *
+     * @param cms the CMS context
+     * @return the structure id of the content value
      */
     CmsUUID asId(CmsObject cms);
 
     /**
      * Returns the string value of the content value.<p>
-     * 
+     *
      * @param cms the CMS context
-     * 
-     * @return the string value of the content value 
+     *
+     * @return the string value of the content value
      */
     String asString(CmsObject cms);
 
     /**
      * Returns the content value at the given location.<p>
-     * 
-     * @return the content value at the given location 
+     *
+     * @return the content value at the given location
      */
     I_CmsXmlContentValue getValue();
 

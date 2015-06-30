@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,7 +54,7 @@ import org.apache.chemistry.opencmis.commons.spi.Holder;
 
 /**
  * Abstract repository superclass.<p>
- * 
+ *
  * This class was introduced to separate the CMIS methods which are not supported from those which are,
  * so only unsupported operations and utility should go into this class.<p>
  */
@@ -149,7 +149,10 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
     /**
      * @see org.opencms.cmis.I_CmsCmisRepository#checkOut(org.opencms.cmis.CmsCmisCallContext, org.apache.chemistry.opencmis.commons.spi.Holder, org.apache.chemistry.opencmis.commons.spi.Holder)
      */
-    public synchronized void checkOut(CmsCmisCallContext context, Holder<String> objectId, Holder<Boolean> contentCopied) {
+    public synchronized void checkOut(
+        CmsCmisCallContext context,
+        Holder<String> objectId,
+        Holder<Boolean> contentCopied) {
 
         throw notSupported();
 
@@ -185,7 +188,10 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
     /**
      * @see org.opencms.cmis.I_CmsCmisRepository#getAppliedPolicies(org.opencms.cmis.CmsCmisCallContext, java.lang.String, java.lang.String)
      */
-    public synchronized List<ObjectData> getAppliedPolicies(CmsCmisCallContext context, String objectId, String filter) {
+    public synchronized List<ObjectData> getAppliedPolicies(
+        CmsCmisCallContext context,
+        String objectId,
+        String filter) {
 
         throw notSupported();
     }
@@ -272,12 +278,12 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
 
     /**
      * Copies a range of bytes from an array into a new array.<p>
-     * 
-     * @param content the content array 
-     * @param offset the start offset in the array 
-     * @param length the length of the range 
-     *  
-     * @return the bytes from the given range of the content 
+     *
+     * @param content the content array
+     * @param offset the start offset in the array
+     * @param length the length of the range
+     *
+     * @return the bytes from the given range of the content
      */
     protected byte[] extractRange(byte[] content, BigInteger offset, BigInteger length) {
 
@@ -297,10 +303,10 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
 
     /**
      * Gets a user-readable name for a principal id read from an ACE.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param principalId the principal id from the ACE  
-     * @return the name of the principle 
+     *
+     * @param cms the current CMS context
+     * @param principalId the principal id from the ACE
+     * @return the name of the principle
      */
     protected String getAcePrincipalName(CmsObject cms, CmsUUID principalId) {
 
@@ -323,10 +329,10 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
 
     /**
      * Helper method to create OpenCms property objects from a map of CMIS properties.<p>
-     * 
-     * @param properties the CMIS properties 
-     * 
-     * @return the OpenCms properties 
+     *
+     * @param properties the CMIS properties
+     *
+     * @return the OpenCms properties
      */
     protected List<CmsProperty> getOpenCmsProperties(Map<String, PropertyData<?>> properties) {
 
@@ -347,8 +353,8 @@ public abstract class A_CmsCmisRepository implements I_CmsCmisRepository {
 
     /**
      * Helper method to create exceptions for unsupported features.<p>
-     * 
-     * @return the created exception 
+     *
+     * @return the created exception
      */
     protected RuntimeException notSupported() {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,10 +45,10 @@ import org.springframework.extensions.config.ConfigElement;
 
 /**
  * This class is used for authenticating OpenCms users to JLAN.<p>
- * 
+ *
  * Since JLAN requires MD4 password hashes for authentication, which are not by default stored in the database,
- * users who want to use the JLAN functionality should log in at least once into OpenCms normally so that the MD4 
- * hash of their password can be computed and stored.<p> 
+ * users who want to use the JLAN functionality should log in at least once into OpenCms normally so that the MD4
+ * hash of their password can be computed and stored.<p>
  *
  */
 public class CmsJlanUsers implements UsersInterface {
@@ -62,14 +62,14 @@ public class CmsJlanUsers implements UsersInterface {
     /** The CMS context. */
     private static CmsObject m_adminCms;
 
-    /** 
-     * Computes an MD4 hash for the password. 
-     * 
-     * @param password the password for which to compute the hash 
-     * @throws NoSuchAlgorithmException 
-     * @throws InvalidKeyException 
-     * 
-     * @return the password hash 
+    /**
+     * Computes an MD4 hash for the password.
+     *
+     * @param password the password for which to compute the hash
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     *
+     * @return the password hash
      **/
     public static byte[] hashPassword(String password) throws InvalidKeyException, NoSuchAlgorithmException {
 
@@ -79,8 +79,8 @@ public class CmsJlanUsers implements UsersInterface {
 
     /**
      * Sets the CMS context.<p>
-     * 
-     * @param cms the context to set 
+     *
+     * @param cms the context to set
      */
     public static void setAdminCms(CmsObject cms) {
 

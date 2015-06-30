@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -70,8 +70,8 @@ import com.google.common.collect.Sets;
 /**
  * Special document text extraction factory for the gallery index that creates multiple fields for the content
  * in all the languages available in an XML content.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
 
@@ -83,7 +83,7 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
 
     /**
      * Creates a new instance of this Lucene document factory.<p>
-     * 
+     *
      * @param name name of the document type
      */
     public CmsGalleryDocumentXmlContent(String name) {
@@ -93,11 +93,11 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
 
     /**
      * Collects a list of all possible XPaths for a content definition.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param def the content definition 
-     * @param path the path of the given content definition 
-     * @param result the set used to collect the XPaths  
+     *
+     * @param cms the CMS context to use
+     * @param def the content definition
+     * @param path the path of the given content definition
+     * @param result the set used to collect the XPaths
      */
     public static void collectSchemaXpathsForSimpleValues(
         CmsObject cms,
@@ -119,10 +119,10 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
 
     /**
      * Generates a new lucene document instance from contents of the given resource for the provided index.<p>
-     * 
+     *
      * For gallery document generators, we never check for {@link org.opencms.search.CmsSearchIndex#isExtractingContent()} since
      * all these classes are assumed to be written with optimizations special to gallery search indexing anyway.<p>
-     * 
+     *
      * @see org.opencms.search.fields.CmsLuceneFieldConfiguration#createDocument(CmsObject, CmsResource, CmsSearchIndex, I_CmsExtractionResult)
      * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, CmsSearchIndex)
      */
@@ -146,12 +146,12 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
 
     /**
      * Returns the raw text content of a given VFS resource of type <code>CmsResourceTypeXmlContent</code>.<p>
-     * 
-     * All XML nodes from the content for all locales will be stored separately in the item map 
-     * which you can access using {@link CmsExtractionResult#getContentItems()}. The XML elements will be 
-     * accessible using their xpath. The xpath will start with the locale and have the form like for example 
-     * <code>de/Text[1]</code> or <code>en/Nested[1]/Text[1]</code>.<p>  
-     * 
+     *
+     * All XML nodes from the content for all locales will be stored separately in the item map
+     * which you can access using {@link CmsExtractionResult#getContentItems()}. The XML elements will be
+     * accessible using their xpath. The xpath will start with the locale and have the form like for example
+     * <code>de/Text[1]</code> or <code>en/Nested[1]/Text[1]</code>.<p>
+     *
      * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
      */
     @Override
@@ -209,10 +209,11 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                                 }
                             } else if (mapping.equals(MAPPING_GALLERY_NAME)) {
                                 galleryNameTemplate = value.getPlainText(cms);
-                                LOG.info("Found gallery name template for "
-                                    + resource.getRootPath()
-                                    + ":"
-                                    + galleryNameTemplate);
+                                LOG.info(
+                                    "Found gallery name template for "
+                                        + resource.getRootPath()
+                                        + ":"
+                                        + galleryNameTemplate);
 
                             }
                         }
@@ -220,14 +221,14 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                 }
                 if (galleryNameTemplate == null) {
                     // In the loop above, we only looked at mappings for values which are actually there.
-                    // But the galleryName mapping should use the configured default value if the value is not 
+                    // But the galleryName mapping should use the configured default value if the value is not
                     // present in the content. So we need to find the xpath for which the galleryName mapping is defined,
                     // if any.
 
                     Set<String> xpaths = Sets.newHashSet();
                     collectSchemaXpathsForSimpleValues(cms, xmlContent.getContentDefinition(), "", xpaths);
                     for (String xpath : xpaths) {
-                        // mappings always are stored with indexes, so we add them to the xpath 
+                        // mappings always are stored with indexes, so we add them to the xpath
                         List<String> mappings = xmlContent.getHandler().getMappings(CmsXmlUtils.createXpath(xpath, 1));
                         for (String mapping : mappings) {
                             if (mapping.equals(MAPPING_GALLERY_NAME)) {
@@ -237,10 +238,11 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
                                     null,
                                     xpath,
                                     locale);
-                                LOG.info("Using default value for gallery name template in "
-                                    + resource.getRootPath()
-                                    + ": "
-                                    + galleryNameTemplate);
+                                LOG.info(
+                                    "Using default value for gallery name template in "
+                                        + resource.getRootPath()
+                                        + ": "
+                                        + galleryNameTemplate);
                                 break;
                             }
                         }
@@ -249,22 +251,29 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
 
                 if (!hasTitleMapping) {
                     // in case no title mapping present, use the title property for all locales
-                    String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                    String title = cms.readPropertyObject(
+                        resource,
+                        CmsPropertyDefinition.PROPERTY_TITLE,
+                        false).getValue();
                     putMappingValue(xmlContent, CmsSearchField.FIELD_TITLE_UNSTORED, locale, items, title);
                 }
 
                 if (galleryNameTemplate != null) {
-                    CmsGalleryNameMacroResolver macroResolver = new CmsGalleryNameMacroResolver(cms, xmlContent, locale);
+                    CmsGalleryNameMacroResolver macroResolver = new CmsGalleryNameMacroResolver(
+                        cms,
+                        xmlContent,
+                        locale);
                     String galleryName = macroResolver.resolveMacros(galleryNameTemplate);
-                    LOG.info("Using gallery name mapping '"
-                        + galleryNameTemplate
-                        + "' for '"
-                        + resource.getRootPath()
-                        + "' in locale "
-                        + locale
-                        + ", resulting in gallery name '"
-                        + galleryName
-                        + "'");
+                    LOG.info(
+                        "Using gallery name mapping '"
+                            + galleryNameTemplate
+                            + "' for '"
+                            + resource.getRootPath()
+                            + "' in locale "
+                            + locale
+                            + ", resulting in gallery name '"
+                            + galleryName
+                            + "'");
                     putMappingValue(xmlContent, CmsSearchField.FIELD_TITLE_UNSTORED, locale, items, galleryName);
                 }
 
@@ -291,7 +300,7 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
 
     /**
      * Gallery index content is stored in multiple languages, so the result is NOT locale dependent.<p>
-     * 
+     *
      * @see org.opencms.search.documents.CmsDocumentXmlContent#isLocaleDependend()
      */
     @Override
@@ -302,10 +311,10 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
 
     /**
      * Gets the locales which should be stored in the locale field of the document for the given content.<p>
-     * 
-     * @param content the XML content 
-     * 
-     * @return the list of locales for the locale field 
+     *
+     * @param content the XML content
+     *
+     * @return the list of locales for the locale field
      */
     protected List<Locale> getLocalesToStore(A_CmsXmlDocument content) {
 
@@ -318,14 +327,17 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
 
     /**
      * Returns the locales which the given field should be written to in the document.
-     * 
-     * @param xmlContent the XML content 
-     * @param fieldName the field name 
+     *
+     * @param xmlContent the XML content
+     * @param fieldName the field name
      * @param sourceLocale the source locale
-     * 
-     * @return the list of locales to which the field should be written 
+     *
+     * @return the list of locales to which the field should be written
      */
-    protected List<Locale> getTargetLocalesForField(A_CmsXmlDocument xmlContent, String fieldName, Locale sourceLocale) {
+    protected List<Locale> getTargetLocalesForField(
+        A_CmsXmlDocument xmlContent,
+        String fieldName,
+        Locale sourceLocale) {
 
         if (isGroup(xmlContent) && sourceLocale.equals(Locale.ENGLISH)) {
             return OpenCms.getLocaleManager().getAvailableLocales();
@@ -336,10 +348,10 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
 
     /**
      * Helper method to check whether the content is an element group.<p>
-     * 
-     * @param content the content to check 
-     * 
-     * @return true if the content is an element group 
+     *
+     * @param content the content to check
+     *
+     * @return true if the content is an element group
      */
     protected boolean isGroup(A_CmsXmlDocument content) {
 
@@ -357,9 +369,9 @@ public class CmsGalleryDocumentXmlContent extends CmsDocumentXmlContent {
 
     /**
      * Adds the given value to the document items for all target locales.<p>
-     * 
-     * @param xmlContent the XML content 
-     * @param fieldName the field name 
+     *
+     * @param xmlContent the XML content
+     * @param fieldName the field name
      * @param sourceLocale the source locale
      * @param items the document items
      * @param value the value to put

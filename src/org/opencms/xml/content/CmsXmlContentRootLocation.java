@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import java.util.Locale;
 
 /**
  * Represents the root of an XML content for a given locale.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlContentRootLocation implements I_CmsXmlContentLocation {
@@ -49,9 +49,9 @@ public class CmsXmlContentRootLocation implements I_CmsXmlContentLocation {
 
     /**
      * Creates a new root location for a given locale.<p>
-     * 
-     * @param doc the XML document 
-     * @param locale the locale 
+     *
+     * @param doc the XML document
+     * @param locale the locale
      */
     public CmsXmlContentRootLocation(I_CmsXmlDocument doc, Locale locale) {
 

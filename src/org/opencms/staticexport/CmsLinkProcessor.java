@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,8 +54,8 @@ import org.htmlparser.util.SimpleNodeIterator;
 /**
  * Implements the HTML parser node visitor pattern to
  * exchange all links on the page.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsLinkProcessor extends CmsHtmlParser {
 
@@ -115,7 +115,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Creates a new link processor.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param linkTable the link table to use
      * @param encoding the encoding to use for parsing the HTML content
@@ -143,7 +143,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Escapes all <code>&</code>, e.g. replaces them with a <code>&amp;</code>.<p>
-     * 
+     *
      * @param source the String to escape
      * @return the escaped String
      */
@@ -180,7 +180,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Unescapes all <code>&amp;amp;</code>, that is replaces them with a <code>&</code>.<p>
-     * 
+     *
      * @param source the String to unescape
      * @return the unescaped String
      */
@@ -195,7 +195,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Returns the link table this link processor was initialized with.<p>
-     * 
+     *
      * @return the link table this link processor was initialized with
      */
     public CmsLinkTable getLinkTable() {
@@ -205,12 +205,12 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Starts link processing for the given content in processing mode.<p>
-     * 
+     *
      * Macros are replaced by links.<p>
-     * 
+     *
      * @param content the content to process
      * @return the processed content with replaced macros
-     * 
+     *
      * @throws ParserException if something goes wrong
      */
     public String processLinks(String content) throws ParserException {
@@ -221,12 +221,12 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Starts link processing for the given content in replacement mode.<p>
-     * 
+     *
      * Links are replaced by macros.<p>
-     * 
+     *
      * @param content the content to process
      * @return the processed content with replaced links
-     * 
+     *
      * @throws ParserException if something goes wrong
      */
     public String replaceLinks(String content) throws ParserException {
@@ -237,7 +237,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Visitor method to process a tag (start).<p>
-     * 
+     *
      * @param tag the tag to process
      */
     @Override
@@ -263,7 +263,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Process an area tag.<p>
-     * 
+     *
      * @param tag the tag to process
      */
     protected void processAreaTag(Tag tag) {
@@ -273,7 +273,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Process an embed tag.<p>
-     * 
+     *
      * @param tag the tag to process
      */
     protected void processEmbedTag(Tag tag) {
@@ -286,7 +286,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Process an image tag.<p>
-     * 
+     *
      * @param tag the tag to process
      */
     protected void processImageTag(ImageTag tag) {
@@ -296,7 +296,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Process a tag having a link in the given attribute, considering the link as the given type.<p>
-     * 
+     *
      * @param tag the tag to process
      * @param attr the attribute
      * @param type the link type
@@ -373,7 +373,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Process a link tag.<p>
-     * 
+     *
      * @param tag the tag to process
      */
     protected void processLinkTag(LinkTag tag) {
@@ -383,7 +383,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Process an object tag.<p>
-     * 
+     *
      * @param tag the tag to process
      */
     protected void processObjectTag(ObjectTag tag) {
@@ -411,9 +411,9 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Ensures that the given tag has the "alt" attribute set.<p>
-     * 
+     *
      * if not set, it will be set from the title of the given resource.<p>
-     * 
+     *
      * @param tag the tag to set the alt attribute for
      * @param internalUri the internal URI to get the title from
      */
@@ -425,7 +425,10 @@ public class CmsLinkProcessor extends CmsHtmlParser {
             if ((internalUri != null) && (m_rootCms != null)) {
                 // internal image: try to read the "alt" text from the "Title" property
                 try {
-                    value = m_rootCms.readPropertyObject(internalUri, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                    value = m_rootCms.readPropertyObject(
+                        internalUri,
+                        CmsPropertyDefinition.PROPERTY_TITLE,
+                        false).getValue();
                 } catch (CmsException e) {
                     // property can't be read, ignore
                 }
@@ -441,9 +444,9 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /**
      * Use the {@link org.opencms.file.wrapper.CmsObjectWrapper} to restore the link in the VFS.<p>
-     * 
+     *
      * @param internalUri the internal URI to restore
-     * 
+     *
      * @return the restored URI
      */
     private String rewriteUri(String internalUri) {

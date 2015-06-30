@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,8 +60,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for building the main frame sets of the OpenCms Workplace.<p> 
- * 
+ * Provides methods for building the main frame sets of the OpenCms Workplace.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/views/explorer/explorer_fs.jsp
@@ -69,8 +69,8 @@ import org.apache.commons.logging.Log;
  * <li>/views/explorer/explorer_body_fs.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsExplorer extends CmsWorkplace {
 
@@ -109,7 +109,7 @@ public class CmsExplorer extends CmsWorkplace {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsExplorer(CmsJspActionElement jsp) {
@@ -121,13 +121,13 @@ public class CmsExplorer extends CmsWorkplace {
      * Creates a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
      * site of the given explorerRootPath and show the folder given in the explorerRootPath.
      * <p>
-     * 
+     *
      * @param jsp
      *            needed for link functionality.
-     * 
+     *
      * @param explorerRootPath
      *            a root relative folder link (has to end with '/').
-     * 
+     *
      * @return a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
      *         site of the given explorerRootPath and show the folder given in the explorerRootPath.
      */
@@ -141,19 +141,19 @@ public class CmsExplorer extends CmsWorkplace {
      * Creates a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
      * site of the given explorerRootPath and show the folder given in the explorerRootPath.
      * <p>
-     * 
+     *
      * @param cms
      *            the cms object
-     * 
+     *
      * @param explorerRootPath
      *            a root relative folder link (has to end with '/').
-     * 
+     *
      * @return a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
      *         site of the given explorerRootPath and show the folder given in the explorerRootPath.
      */
     public static String getWorkplaceExplorerLink(final CmsObject cms, final String explorerRootPath) {
 
-        // split the root site: 
+        // split the root site:
         StringBuffer siteRoot = new StringBuffer();
         StringBuffer path = new StringBuffer('/');
         Scanner scanner = new Scanner(explorerRootPath);
@@ -182,9 +182,10 @@ public class CmsExplorer extends CmsWorkplace {
         link2Source.append("&");
         link2Source.append(CmsFrameset.PARAM_WP_VIEW);
         link2Source.append("=");
-        link2Source.append(OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-            cms,
-            "/system/workplace/views/explorer/explorer_fs.jsp"));
+        link2Source.append(
+            OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                cms,
+                "/system/workplace/views/explorer/explorer_fs.jsp"));
         link2Source.append("&");
         link2Source.append(CmsWorkplace.PARAM_WP_SITE);
         link2Source.append("=");
@@ -197,9 +198,9 @@ public class CmsExplorer extends CmsWorkplace {
 
     /**
      * Returns the explorer body frame content uri.<p>
-     * 
+     *
      * Used by the explorer_fs.jsp.<p>
-     * 
+     *
      * @return the explorer body frame content uri
      */
     public String getExplorerBodyUri() {
@@ -213,9 +214,9 @@ public class CmsExplorer extends CmsWorkplace {
 
     /**
      * Returns the explorer files frame content uri.<p>
-     * 
+     *
      * Used by the explorer_body_fs.jsp.<p>
-     * 
+     *
      * @return the explorer files frame content uri
      */
     public String getExplorerFilesUri() {
@@ -309,18 +310,19 @@ public class CmsExplorer extends CmsWorkplace {
         for (int i = startat; i < stopat; i++) {
             CmsResource res = resources.get(i);
             resUtil.setResource(res);
-            content.append(getInitializationEntry(
-                resUtil,
-                fullPath,
-                showTitle,
-                showNavText,
-                showPermissions,
-                showDateLastModified,
-                showUserWhoLastModified,
-                showDateCreated,
-                showUserWhoCreated,
-                showDateReleased,
-                showDateExpired));
+            content.append(
+                getInitializationEntry(
+                    resUtil,
+                    fullPath,
+                    showTitle,
+                    showNavText,
+                    showPermissions,
+                    showDateLastModified,
+                    showUserWhoLastModified,
+                    showDateCreated,
+                    showUserWhoCreated,
+                    showDateReleased,
+                    showDateExpired));
         }
 
         content.append(getInitializationFooter(numberOfPages, selectedPage));
@@ -329,7 +331,7 @@ public class CmsExplorer extends CmsWorkplace {
 
     /**
      * Generates a resource entry for the explorer initialization code.<p>
-     * 
+     *
      * @param resUtil the resource util object to generate the entry for
      * @param showPath if the path should be given or taken from <code>top.setDirectory</code>
      * @param showTitle if the title should be shown
@@ -339,11 +341,11 @@ public class CmsExplorer extends CmsWorkplace {
      * @param showUserWhoLastModified if the user who last modified the resource should be shown
      * @param showDateCreated if the date of creation should be shown
      * @param showUserWhoCreated if the user who created the resource should be shown
-     * @param showDateReleased if the date of release should be shown 
+     * @param showDateReleased if the date of release should be shown
      * @param showDateExpired if the date of expiration should be shown
-     * 
+     *
      * @return js code for initializing the explorer view
-     * 
+     *
      * @see #getInitializationHeader()
      * @see #getInitializationFooter(int, int)
      */
@@ -449,7 +451,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 13: user who created the resource 
+        // position 13: user who created the resource
         if (showUserWhoCreated) {
             content.append("\"");
             content.append(resUtil.getUserCreated());
@@ -500,7 +502,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append(lockState);
         content.append(",\"");
 
-        // position 20: project state, I=resource is inside current project, O=resource is outside current project        
+        // position 20: project state, I=resource is inside current project, O=resource is outside current project
         if (resUtil.isInsideProject()) {
             content.append("I");
         } else {
@@ -522,12 +524,12 @@ public class CmsExplorer extends CmsWorkplace {
 
     /**
      * Generates the footer of the explorer initialization code.<p>
-     * 
+     *
      * @param numberOfPages the number of pages
      * @param selectedPage the selected page to display
-     * 
+     *
      * @return js code for initializing the explorer view
-     * 
+     *
      * @see #getInitializationHeader()
      * @see #getInitializationEntry(CmsResourceUtil, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean)
      */
@@ -566,9 +568,9 @@ public class CmsExplorer extends CmsWorkplace {
 
     /**
      * Generates the header of the initialization code.<p>
-     * 
+     *
      * @return js code for initializing the explorer view
-     * 
+     *
      * @see #getInitializationFooter(int, int)
      * @see #getInitializationEntry(CmsResourceUtil, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean)
      */
@@ -610,15 +612,17 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("\";\n");
         String additionalParams = getJsp().getRequest().getParameter(CmsExplorer.PARAMETER_CONTEXTMENUPARAMS);
         if (additionalParams != null) {
-            content.append("document.additionalContextMenuParams = \""
-                + CmsStringUtil.escapeJavaScript(additionalParams)
-                + "\";\n");
+            content.append(
+                "document.additionalContextMenuParams = \""
+                    + CmsStringUtil.escapeJavaScript(additionalParams)
+                    + "\";\n");
         }
         // the resource id of plain resources
         content.append("top.plainresid=");
         int plainId;
         try {
-            plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+            plainId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypePlain.getStaticTypeName()).getTypeId();
         } catch (CmsLoaderException e) {
             // this should really never happen
             plainId = CmsResourceTypePlain.getStaticTypeId();
@@ -650,7 +654,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.setOnlineProject('");
         content.append(CmsProject.ONLINE_PROJECT_ID);
         content.append("');\n");
-        // set the writeAccess for the current Folder       
+        // set the writeAccess for the current Folder
         boolean writeAccess = VIEW_EXPLORER.equals(getSettings().getExplorerMode());
         if (writeAccess) {
             writeAccess = getCms().isInsideCurrentProject(currentResourceName);
@@ -660,8 +664,8 @@ public class CmsExplorer extends CmsWorkplace {
         content.append(");\n");
 
         // the folder
-        String siteFolderPath = CmsResource.getFolderPath(getCms().getRequestContext().removeSiteRoot(
-            currentResource.getRootPath()));
+        String siteFolderPath = CmsResource.getFolderPath(
+            getCms().getRequestContext().removeSiteRoot(currentResource.getRootPath()));
         if (OpenCms.getSiteManager().startsWithShared(siteFolderPath)
             && OpenCms.getSiteManager().startsWithShared(getCms().getRequestContext().getSiteRoot())) {
             siteFolderPath = siteFolderPath.substring(OpenCms.getSiteManager().getSharedFolder().length() - 1);
@@ -700,7 +704,7 @@ public class CmsExplorer extends CmsWorkplace {
 
     /**
      * Determines the root folder of the current tree dependent on users setting of explorer view restriction.<p>
-     * 
+     *
      * @return the root folder resource name to display
      */
     public String getRootFolder() {
@@ -787,13 +791,13 @@ public class CmsExplorer extends CmsWorkplace {
             }
         }
 
-        // the flat url 
+        // the flat url
         settings.setExplorerFlaturl(request.getParameter(PARAMETER_FLATURL));
     }
 
     /**
      * Checks if a folder with a given name exits in the VFS.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param folder the folder to check for
      * @return true if the folder exists in the VFS
@@ -812,10 +816,10 @@ public class CmsExplorer extends CmsWorkplace {
     }
 
     /**
-     * Returns a list resources that should be displayed in the 
+     * Returns a list resources that should be displayed in the
      * OpenCms Explorer.<p>
-     * 
-     * How the list is build depends on the current Workplace settings 
+     *
+     * How the list is build depends on the current Workplace settings
      * of the user.
      *
      * @param resource the resource to read the files from (usually a folder)
@@ -860,7 +864,7 @@ public class CmsExplorer extends CmsWorkplace {
 
     /**
      * Sets the default preferences for the current user if those values are not available.<p>
-     * 
+     *
      * @return the integer value of the default preferences
      */
     private int getUserPreferences() {
@@ -871,10 +875,10 @@ public class CmsExplorer extends CmsWorkplace {
 
     /**
      * Checks if a resource with a given name exits in the VFS.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param resource the resource to check for
-     * 
+     *
      * @return true if the resource exists in the VFS
      */
     private boolean resourceExists(CmsObject cms, String resource) {

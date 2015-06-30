@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,20 +36,20 @@ import java.util.Map;
 
 /**
  * Default implementation of a named object container. <p>
- * 
- * It can handle relative or absolute orderings and unique names.<p> 
- * 
- * @param <T> the type of objects 
- * 
- * @since 6.0.0 
+ *
+ * It can handle relative or absolute orderings and unique names.<p>
+ *
+ * @param <T> the type of objects
+ *
+ * @since 6.0.0
  */
 public class CmsIdentifiableObjectContainer<T> {
 
     /**
      * Internal class just for taking care of the positions in the container.<p>
-     * 
+     *
      * @param <T> the object type
-     * 
+     *
      * @since 6.0.0
      */
     private static class CmsIdObjectElement<T> {
@@ -62,10 +62,10 @@ public class CmsIdentifiableObjectContainer<T> {
 
         /**
          * Default Constructor.<p>
-         * 
+         *
          * @param object the object
          * @param position the relative position
-         * 
+         *
          */
         public CmsIdObjectElement(T object, float position) {
 
@@ -118,7 +118,7 @@ public class CmsIdentifiableObjectContainer<T> {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param uniqueIds if the list show check for unique ids
      * @param relativeOrdered if the list show use relative ordering, instead of absolute ordering
      */
@@ -130,10 +130,10 @@ public class CmsIdentifiableObjectContainer<T> {
 
     /**
      * Appends the specified object to the end of this container. <p>
-     * 
+     *
      * @param id the object identifier
      * @param idObject the object add to the container
-     * 
+     *
      * @see java.util.List#add(Object)
      */
     public void addIdentifiableObject(String id, T idObject) {
@@ -168,14 +168,14 @@ public class CmsIdentifiableObjectContainer<T> {
 
     /**
      * Inserts the specified object at the specified position in this container.<p>
-     * 
-     * Shifts the object currently at that position (if any) and any subsequent 
+     *
+     * Shifts the object currently at that position (if any) and any subsequent
      * objects to the right (adds one to their indices).<p>
-     * 
+     *
      * @param id the object identifier
      * @param idObject the object add to the container
      * @param position the insertion point
-     * 
+     *
      * @see java.util.List#add(int, Object)
      */
     public void addIdentifiableObject(String id, T idObject, float position) {
@@ -251,16 +251,16 @@ public class CmsIdentifiableObjectContainer<T> {
 
     /**
      * Returns the object with the given id.<p>
-     * 
-     * If <code>uniqueIds</code> is set to <code>false</code> an <code>{@link Object}</code> 
+     *
+     * If <code>uniqueIds</code> is set to <code>false</code> an <code>{@link Object}</code>
      * containing a <code>{@link List}</code> with all the objects with the given id is returned.<p>
-     * 
+     *
      * If the container no contains any object with the given id, <code>null</code> is returned.<p>
-     * 
+     *
      * @param id the id of the object
-     * 
+     *
      * @return the object if found, or <code>null</code>
-     * 
+     *
      * @see java.util.Map#get(Object)
      */
     public T getObject(String id) {
@@ -274,9 +274,9 @@ public class CmsIdentifiableObjectContainer<T> {
 
     /**
      * Returns the list of objects with the given id.<p>
-     * 
+     *
      * @param id the object id
-     * 
+     *
      * @return the list of objects if found, or <code>null</code>
      */
     public List<T> getObjectList(String id) {
@@ -289,10 +289,10 @@ public class CmsIdentifiableObjectContainer<T> {
 
     /**
      * Removes an object with the given id.<p>
-     * 
+     *
      * if <code>m_uniqueIds</code> is set, it will remove at most one object.
      * otherwise it will remove all elements with the given id.<p>
-     * 
+     *
      * @param id the id of the object to remove
      */
     public synchronized void removeObject(String id) {

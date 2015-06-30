@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,8 +46,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides a dialog to view a publish report selected out of the personal publish list.<p> 
- * 
+ * Provides a dialog to view a publish report selected out of the personal publish list.<p>
+ *
  * @since 6.5.5
  */
 public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
@@ -62,8 +62,8 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
     protected String m_jobId;
 
     /**
-     * Public constructor with JSP action element.<p> 
-     * 
+     * Public constructor with JSP action element.<p>
+     *
      * @param jsp the CmsJspActionElement
      */
     public CmsPublishQueueHistoricalReportDialog(CmsJspActionElement jsp) {
@@ -73,7 +73,7 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -87,6 +87,7 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         // noop
@@ -94,7 +95,7 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
 
     /**
      * Returns the file path.<p>
-     *  
+     *
      * @return the file path
      */
     public String getParamFilename() {
@@ -106,7 +107,7 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
      * Return the file content from the underlying file or an empty String.<p>
      *
      * @return file content from the underlying file or an empty String
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public String readFileContent() throws CmsException {
@@ -144,8 +145,8 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Set the job id value.<p> 
-     * 
+     * Set the job id value.<p>
+     *
      * @param value the job id value
      */
     public void setParamId(String value) {
@@ -155,12 +156,13 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
 
     /**
      * Returns the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -191,11 +193,12 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
         result.append(createWidgetBlockStart(fileContentHeader));
         try {
             result.append("<iframe style=\"overflow: auto;\" src=\"");
-            result.append(getJsp().link(
-                "/system/workplace/admin/publishqueue/publishreportshow.jsp?"
-                    + CmsEncoder.encodeParameter(PARAM_ID)
-                    + "="
-                    + CmsEncoder.encodeParameter(m_jobId)));
+            result.append(
+                getJsp().link(
+                    "/system/workplace/admin/publishqueue/publishreportshow.jsp?"
+                        + CmsEncoder.encodeParameter(PARAM_ID)
+                        + "="
+                        + CmsEncoder.encodeParameter(m_jobId)));
             result.append("\" width=\"100%\" height=\"500\" border=\"0\" frameborder=\"0\"></iframe>");
         } catch (Exception e) {
             //noop
@@ -210,6 +213,7 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         //noop
@@ -218,6 +222,7 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -226,6 +231,7 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_jobId)) {

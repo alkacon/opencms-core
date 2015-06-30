@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,8 +40,8 @@ import java.util.Map;
 
 /**
  * This is the XML content handler class for the "dynamic functionality" resource type.<p>
- * 
- * This resource type needs special handling of formatters and element settings: They are 
+ *
+ * This resource type needs special handling of formatters and element settings: They are
  * read from each content of this type rather than from the XSD.<p>
  */
 public class CmsXmlDynamicFunctionHandler extends CmsDefaultXmlContentHandler {

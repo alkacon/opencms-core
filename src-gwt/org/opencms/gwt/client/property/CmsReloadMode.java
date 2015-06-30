@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,14 +29,12 @@ package org.opencms.gwt.client.property;
 
 /**
  * An enum specifying whose values specify whether an entry or its parent need to be reloaded.<p>
- * 
+ *
  * @since 8.0.0
  */
 public enum CmsReloadMode {
     /** This value means that neither the entry nor its parent should be reloaded. */
-    none,
-    /** This value means the entry should be reloaded. */
-    reloadEntry,
-    /** This value means the entry's parent should be reloaded. */
+    none, /** This value means the entry should be reloaded. */
+    reloadEntry, /** This value means the entry's parent should be reloaded. */
     reloadParent;
 }

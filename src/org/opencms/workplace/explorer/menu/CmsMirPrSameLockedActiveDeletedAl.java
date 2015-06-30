@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 /**
  * Defines a menu item rule that sets the visibility to active if the current resource is deleted
  * and locked by the current user or the autolock feature is enabled.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsMirPrSameLockedActiveDeletedAl extends A_CmsMenuItemRule {
@@ -49,7 +49,8 @@ public class CmsMirPrSameLockedActiveDeletedAl extends A_CmsMenuItemRule {
         if (resourceUtil[0].getResource().getState().isDeleted()) {
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
-        return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NOTDELETED_0);
+        return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE.addMessageKey(
+            Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NOTDELETED_0);
     }
 
     /**
@@ -60,9 +61,11 @@ public class CmsMirPrSameLockedActiveDeletedAl extends A_CmsMenuItemRule {
         if (resourceUtil[0].isInsideProject()) {
             CmsLock lock = resourceUtil[0].getLock();
             boolean lockedForPublish = resourceUtil[0].getProjectState().isLockedForPublishing();
-            return (!lockedForPublish && !lock.isShared() && lock.isOwnedInProjectBy(
-                cms.getRequestContext().getCurrentUser(),
-                cms.getRequestContext().getCurrentProject()))
+            return (!lockedForPublish
+                && !lock.isShared()
+                && lock.isOwnedInProjectBy(
+                    cms.getRequestContext().getCurrentUser(),
+                    cms.getRequestContext().getCurrentProject()))
                 || (!lockedForPublish && lock.isNullLock() && OpenCms.getWorkplaceManager().autoLockResources());
         }
         // resource is not locked by the user in current project or not locked with enabled autolock, rule does not match

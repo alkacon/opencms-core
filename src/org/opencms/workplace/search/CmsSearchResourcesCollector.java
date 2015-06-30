@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,8 +53,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Collector for receiving CmsResources from a search result set.<p>
- * 
- * @since 6.1.0 
+ *
+ * @since 6.1.0
  */
 public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
@@ -99,9 +99,9 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
     /**
      * Constructor, creates a new instance.<p>
-     * 
+     *
      * @param wp the workplace object
-     * @param query the search query 
+     * @param query the search query
      * @param sort the sort by parameter
      * @param fields the comma separated list of fields to search
      * @param searchRoots a list of search roots
@@ -209,9 +209,9 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
     /**
      * Returns the search result object for the given structure id.<p>
-     * 
+     *
      * @param structureId the structure id
-     * 
+     *
      * @return the resource
      */
     public CmsSearchResult getSearchResult(String structureId) {
@@ -257,9 +257,9 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
     /**
      * Returns the search bean object.<p>
-     * 
+     *
      * @param params the parameter map
-     * 
+     *
      * @return the used search bean
      */
     private CmsSearch getSearchBean(Map<String, String> params) {
@@ -295,9 +295,9 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
     /**
      * Returns a new search parameters object from the request parameters.<p>
-     * 
+     *
      * @param params the parameter map
-     * 
+     *
      * @return a search parameters object
      */
     private CmsSearchParameters getSearchParameters(Map<String, String> params) {
@@ -331,9 +331,9 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
     /**
      * Returns the search result list.<p>
-     * 
+     *
      * @param params the parameter map
-     * 
+     *
      * @return a list of {@link org.opencms.search.CmsSearchResult} objects
      */
     private List<CmsSearchResult> getSearchResults(Map<String, String> params) {

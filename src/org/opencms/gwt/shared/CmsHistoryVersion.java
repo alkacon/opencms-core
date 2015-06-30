@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,20 +31,19 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Bean representing a file version for the history dialog.<p>
- * 
+ *
  * Since the history dialog can also display offline resources, or resources read from the Online project without a historical version id,
  * this class is needed rather than a single integer to represent a version.<p>
- * 
+ *
  */
 public class CmsHistoryVersion implements IsSerializable {
 
-    /** 
+    /**
      * Enum for distinguishing between offline and online project.<p>
      */
     public enum OfflineOnline {
         /** Offline project. */
-        offline,
-        /** Online project. */
+        offline, /** Online project. */
         online;
     }
 
@@ -56,9 +55,9 @@ public class CmsHistoryVersion implements IsSerializable {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param versionNumber the version number 
-     * @param offlineOnline the offline/online state 
+     *
+     * @param versionNumber the version number
+     * @param offlineOnline the offline/online state
      */
     public CmsHistoryVersion(Integer versionNumber, OfflineOnline offlineOnline) {
 
@@ -66,18 +65,18 @@ public class CmsHistoryVersion implements IsSerializable {
         m_versionNumber = versionNumber;
     }
 
-    /** 
+    /**
      * Default constructor for serialization.<p>
      */
     protected CmsHistoryVersion() {
 
-        // Do nothing 
+        // Do nothing
 
     }
 
-    /** 
-     * Gets the version number, or null if no version number was set 
-     * 
+    /**
+     * Gets the version number, or null if no version number was set
+     *
      * @return the version number
      */
     public Integer getVersionNumber() {
@@ -87,8 +86,8 @@ public class CmsHistoryVersion implements IsSerializable {
 
     /**
      * Returns true if this is the offline version.<p>
-     * 
-     * @return true if this is the offline version 
+     *
+     * @return true if this is the offline version
      */
     public boolean isOffline() {
 
@@ -97,8 +96,8 @@ public class CmsHistoryVersion implements IsSerializable {
 
     /**
      * Returns true if this is the online version.<p>
-     * 
-     * @return true if this is the online version 
+     *
+     * @return true if this is the online version
      */
     public boolean isOnline() {
 

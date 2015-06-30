@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,14 +57,14 @@ import org.apache.commons.logging.Log;
 
 /**
  * The new resource page dialog handles the creation of an xml page.<p>
- * 
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/newresource_xmlpage.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsNewResourceXmlPage extends CmsNewResource {
 
@@ -91,7 +91,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsNewResourceXmlPage(CmsJspActionElement jsp) {
@@ -101,7 +101,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -113,12 +113,12 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Returns a sorted Map of all available body files of the OpenCms modules.<p>
-     * 
+     *
      * @param cms the current cms object
      * @param currWpPath the current path in the OpenCms workplace
-     * 
+     *
      * @return a sorted map with the body file title as key and absolute path to the body file as value
-     * 
+     *
      * @throws CmsException if reading a folder or file fails
      */
     public static TreeMap<String, String> getBodies(CmsObject cms, String currWpPath) throws CmsException {
@@ -128,13 +128,13 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Returns a sorted Map of all available body files of the OpenCms modules.<p>
-     * 
+     *
      * @param cms the current cms object
      * @param currWpPath the current path in the OpenCms workplace
      * @param emptyMap flag indicating if it is OK to return a filtered empty Map
-     * 
+     *
      * @return a sorted map with the body file title as key and absolute path to the body file as value
-     * 
+     *
      * @throws CmsException if reading a folder or file fails
      */
     public static TreeMap<String, String> getBodies(CmsObject cms, String currWpPath, boolean emptyMap)
@@ -145,12 +145,12 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Returns a sorted Map of all available templates of the OpenCms modules.<p>
-     * 
+     *
      * @param cms the current cms object
      * @param currWpPath the current path in the OpenCms workplace
-     * 
+     *
      * @return a sorted map with the template title as key and absolute path to the template as value
-     * 
+     *
      * @throws CmsException if reading a folder or file fails
      */
     public static TreeMap<String, String> getTemplates(CmsObject cms, String currWpPath) throws CmsException {
@@ -160,13 +160,13 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Returns a sorted Map of all available templates of the OpenCms modules.<p>
-     * 
+     *
      * @param cms the current cms object
      * @param currWpPath the current path in the OpenCms workplace
      * @param emptyMap flag indicating if it is OK to return a filtered empty Map
-     * 
+     *
      * @return a sorted map with the template title as key and absolute path to the template as value
-     * 
+     *
      * @throws CmsException if reading a folder or file fails
      */
     public static TreeMap<String, String> getTemplates(CmsObject cms, String currWpPath, boolean emptyMap)
@@ -177,14 +177,14 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Returns a sorted Map of all available elements in the specified subfolder of the OpenCms modules.<p>
-     * 
+     *
      * @param cms the current cms object
      * @param elementFolder the module subfolder to search for elements
      * @param currWpPath the current path in the OpenCms workplace
      * @param emptyMap flag indicating if it is OK to return a filtered empty Map
-     * 
+     *
      * @return a sorted map with the element title as key and absolute path to the element as value
-     * 
+     *
      * @throws CmsException if reading a folder or file fails
      */
     protected static TreeMap<String, String> getElements(
@@ -278,7 +278,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Creates the xml page using the specified resource name.<p>
-     * 
+     *
      * @throws JspException if inclusion of error dialog fails
      */
     @Override
@@ -305,21 +305,22 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
                 bodyFileBytes = ("").getBytes();
             } else {
                 // get the specified body file
-                bodyFileBytes = getCms().readFile(getParamBodyFile(), CmsResourceFilter.IGNORE_EXPIRATION).getContents();
+                bodyFileBytes = getCms().readFile(
+                    getParamBodyFile(),
+                    CmsResourceFilter.IGNORE_EXPIRATION).getContents();
             }
 
-            // create the xml page   
+            // create the xml page
             List<CmsProperty> properties = new ArrayList<CmsProperty>(4);
             // add the template property to the new file
             properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE, getParamTemplate(), null));
-            properties.addAll(createResourceProperties(
-                fullResourceName,
-                CmsResourceTypeXmlPage.getStaticTypeName(),
-                title));
-            int xmlPageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
+            properties.addAll(
+                createResourceProperties(fullResourceName, CmsResourceTypeXmlPage.getStaticTypeName(), title));
+            int xmlPageId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
             getCms().createResource(fullResourceName, xmlPageId, bodyFileBytes, properties);
 
-            // set the resource parameter to full path for property dialog 
+            // set the resource parameter to full path for property dialog
             setParamResource(fullResourceName);
             setResourceCreated(true);
         } catch (Throwable e) {
@@ -330,9 +331,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Builds the html for the page body file select box.<p>
-     * 
+     *
      * @param attributes optional attributes for the &lt;select&gt; tag
-     * 
+     *
      * @return the html for the page body file select box
      */
     public String buildSelectBodyFile(String attributes) {
@@ -369,9 +370,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Builds the html for the page template select box.<p>
-     * 
+     *
      * @param attributes optional attributes for the &lt;select&gt; tag
-     * 
+     *
      * @return the html for the page template select box
      */
     public String buildSelectTemplates(String attributes) {
@@ -407,7 +408,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Returns the body file parameter value.<p>
-     * 
+     *
      * @return the body file parameter value
      */
     public String getParamBodyFile() {
@@ -417,7 +418,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Returns the request parameter flag indicating if the suffix field is present or not.<p>
-     * 
+     *
      * @return the request parameter flag indicating if the suffix field is present or not
      */
     public String getParamSuffixCheck() {
@@ -427,7 +428,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Returns the template parameter value.<p>
-     * 
+     *
      * @return the template parameter value
      */
     public String getParamTemplate() {
@@ -437,7 +438,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Sets the body file parameter value.<p>
-     * 
+     *
      * @param bodyFile the body file parameter value
      */
     public void setParamBodyFile(String bodyFile) {
@@ -447,7 +448,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Sets the request parameter flag indicating if the suffix field is present or not.<p>
-     * 
+     *
      * @param paramSuffixCheck he request parameter flag indicating if the suffix field is present or not
      */
     public void setParamSuffixCheck(String paramSuffixCheck) {
@@ -457,7 +458,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
 
     /**
      * Sets the template parameter value.<p>
-     * 
+     *
      * @param template the template parameter value
      */
     public void setParamTemplate(String template) {
@@ -475,7 +476,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_OK.equals(getParamAction())) {
             setAction(ACTION_OK);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
@@ -485,7 +486,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             setInitialResourceName();
             setAction(ACTION_DEFAULT);
 
-            // build title for new resource dialog  
+            // build title for new resource dialog
             String title = null;
             CmsExplorerTypeSettings set = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                 CmsResourceTypeXmlPage.getStaticTypeName());

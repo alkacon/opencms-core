@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,9 +44,9 @@ import com.google.gwt.event.shared.UmbrellaException;
 
 /**
  * Handles exception handling and more for entry points.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.gwt.CmsLogService
  * @see org.opencms.gwt.shared.rpc.I_CmsLogService
  * @see org.opencms.gwt.shared.rpc.I_CmsLogServiceAsync
@@ -57,7 +57,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
     private static boolean initializedClasses;
 
     /**
-     * Default constructor.<p> 
+     * Default constructor.<p>
      */
     protected A_CmsEntryPoint() {
 
@@ -117,7 +117,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
     protected void enableRemoteExceptionHandler() {
 
         if (!GWT.isScript()) {
-            // In hosted mode, uncaught exceptions are easier to debug 
+            // In hosted mode, uncaught exceptions are easier to debug
             return;
         }
 
@@ -140,7 +140,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
 
     /**
      * Helper method for initializing the classes implementing {@link I_CmsHasInit}.<p>
-     * 
+     *
      * Calling this method more than once will have no effect.<p>
      */
     private void initClasses() {

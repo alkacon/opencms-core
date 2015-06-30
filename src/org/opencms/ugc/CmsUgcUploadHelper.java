@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,12 +56,12 @@ public class CmsUgcUploadHelper {
 
     /**
      * Passes the form data with the given ID to the handler object, then removes it and deletes its stored data.<p>
-     * 
+     *
      * The form data is removed even if an exception is thrown while calling the form data handler.
-     * 
+     *
      * @param formDataId the id of the form data to process
      * @param handler the handler to which the form data should be passed
-     * @throws Exception if something goes wrong 
+     * @throws Exception if something goes wrong
      */
     public void consumeFormData(String formDataId, I_CmsFormDataHandler handler) throws Exception {
 
@@ -94,10 +94,10 @@ public class CmsUgcUploadHelper {
         }
     }
 
-    /** 
+    /**
      * Processes a request caused by a form submit.<p>
-     * 
-     * @param request the request to process 
+     *
+     * @param request the request to process
      */
     void processFormSubmitRequest(HttpServletRequest request) {
 
@@ -106,12 +106,12 @@ public class CmsUgcUploadHelper {
         m_storedFormData.put(formDataId, items);
     }
 
-    /** 
+    /**
      * Gets the id to be used for storing form data from the request.<p>
-     * 
-     * @param request the request containing the form data 
-     * 
-     * @return the id to use for storing the form data 
+     *
+     * @param request the request containing the form data
+     *
+     * @return the id to use for storing the form data
      */
     private String getFormDataId(HttpServletRequest request) {
 

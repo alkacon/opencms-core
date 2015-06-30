@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,12 +34,12 @@ import org.opencms.util.CmsUUID;
 
 /**
  * Represents the lock state of a VFS resource.<p>
- * 
+ *
  * The lock state is combination of how, by whom and in which project
  * a resource is currently locked.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.file.CmsObject#getLock(org.opencms.file.CmsResource)
  * @see org.opencms.lock.CmsLockManager
  */
@@ -69,7 +69,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Constructor for a new Cms lock.<p>
-     * 
+     *
      * @param resourceName the full resource name including the site root
      * @param userId the ID of the user who locked the resource
      * @param project the project where the resource is locked
@@ -85,7 +85,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns the shared Null CmsLock.<p>
-     * 
+     *
      * @return the shared Null CmsLock
      */
     public static CmsLock getNullLock() {
@@ -103,9 +103,9 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Compares this lock to the specified object.<p>
-     * 
+     *
      * @param obj the object to compare to
-     * @return true if and only if member values of this CmsLock are the same with the compared CmsLock 
+     * @return true if and only if member values of this CmsLock are the same with the compared CmsLock
      */
     @Override
     public boolean equals(Object obj) {
@@ -125,7 +125,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns the edition lock.<p>
-     * 
+     *
      * @return the edition lock
      */
     public CmsLock getEditionLock() {
@@ -138,7 +138,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns the project where the resource is currently locked.<p>
-     * 
+     *
      * @return the project where the resource is currently locked
      */
     public CmsProject getProject() {
@@ -148,7 +148,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns the ID of the project where the resource is currently locked.<p>
-     * 
+     *
      * @return the ID of the project
      */
     public CmsUUID getProjectId() {
@@ -158,7 +158,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns the name of the locked resource.<p>
-     * 
+     *
      * @return the name of the locked resource
      */
     public String getResourceName() {
@@ -168,7 +168,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns the system lock.<p>
-     * 
+     *
      * @return the system lock
      */
     public CmsLock getSystemLock() {
@@ -181,7 +181,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns the type about how the resource is locked.<p>
-     * 
+     *
      * @return the type of the lock
      */
     public CmsLockType getType() {
@@ -191,7 +191,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns the ID of the user who currently locked the resource.<p>
-     * 
+     *
      * @return the ID of the user
      */
     public CmsUUID getUserId() {
@@ -210,7 +210,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns <code>true</code> if this is an directly inherited lock.<p>
-     * 
+     *
      * @return <code>true</code> if this is an directly inherited lock
      */
     public boolean isDirectlyInherited() {
@@ -219,12 +219,12 @@ public class CmsLock implements Comparable<CmsLock> {
     }
 
     /**
-     * Returns <code>true</code> if this is an exclusive, temporary exclusive, or 
+     * Returns <code>true</code> if this is an exclusive, temporary exclusive, or
      * directly inherited lock, and the given user is the owner of this lock.<p>
-     * 
+     *
      * @param user the user to compare to the owner of this lock
-     * 
-     * @return <code>true</code> if this is an exclusive, temporary exclusive, or 
+     *
+     * @return <code>true</code> if this is an exclusive, temporary exclusive, or
      *      directly inherited lock, and the given user is the owner of this lock
      */
     public boolean isDirectlyOwnedBy(CmsUser user) {
@@ -233,30 +233,32 @@ public class CmsLock implements Comparable<CmsLock> {
     }
 
     /**
-     * Returns <code>true</code> if this is an exclusive, temporary exclusive, or 
+     * Returns <code>true</code> if this is an exclusive, temporary exclusive, or
      * directly inherited lock, and the current user is the owner of this lock,
      * checking also the project of the lock.<p>
-     * 
+     *
      * @param cms the CMS context to check
-     * 
-     * @return <code>true</code> if this is an exclusive, temporary exclusive, or 
+     *
+     * @return <code>true</code> if this is an exclusive, temporary exclusive, or
      *      directly inherited lock, and the current user is the owner of this lock
      */
     public boolean isDirectlyOwnedInProjectBy(CmsObject cms) {
 
         return (isExclusive() || isDirectlyInherited())
-            && isOwnedInProjectBy(cms.getRequestContext().getCurrentUser(), cms.getRequestContext().getCurrentProject());
+            && isOwnedInProjectBy(
+                cms.getRequestContext().getCurrentUser(),
+                cms.getRequestContext().getCurrentProject());
     }
 
     /**
-     * Returns <code>true</code> if this is an exclusive, temporary exclusive, or 
+     * Returns <code>true</code> if this is an exclusive, temporary exclusive, or
      * directly inherited lock, and the given user is the owner of this lock,
      * checking also the project of the lock.<p>
-     * 
+     *
      * @param user the user to compare to the owner of this lock
      * @param project the project to compare to the project of this lock
-     * 
-     * @return <code>true</code> if this is an exclusive, temporary exclusive, or 
+     *
+     * @return <code>true</code> if this is an exclusive, temporary exclusive, or
      *      directly inherited lock, and the given user is the owner of this lock
      */
     public boolean isDirectlyOwnedInProjectBy(CmsUser user, CmsProject project) {
@@ -266,7 +268,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns <code>true</code> if this is an exclusive (or temporary exclusive) lock.<p>
-     * 
+     *
      * @return <code>true</code> if this is an exclusive (or temporary exclusive) lock
      */
     public boolean isExclusive() {
@@ -277,10 +279,10 @@ public class CmsLock implements Comparable<CmsLock> {
     /**
      * Returns <code>true</code> if this is an exclusive (or temporary exclusive) lock,
      * and the given user is the owner of this lock.<p>
-     * 
+     *
      * @param user the user to compare to the owner of this lock
-     * 
-     * @return <code>true</code> if this is an exclusive (or temporary exclusive) lock, 
+     *
+     * @return <code>true</code> if this is an exclusive (or temporary exclusive) lock,
      *      and the given user is the owner of this lock
      */
     public boolean isExclusiveOwnedBy(CmsUser user) {
@@ -291,11 +293,11 @@ public class CmsLock implements Comparable<CmsLock> {
     /**
      * Returns <code>true</code> if this is an exclusive (or temporary exclusive) lock,
      * and the given user is the owner and the given project is the project of this lock.<p>
-     * 
+     *
      * @param user the user to compare to the owner of this lock
      * @param project the project to compare to the project of this lock
-     * 
-     * @return <code>true</code> if this is an exclusive (or temporary exclusive) lock, 
+     *
+     * @return <code>true</code> if this is an exclusive (or temporary exclusive) lock,
      *      and the given user is the owner and the given project is the project of this lock
      */
     public boolean isExclusiveOwnedInProjectBy(CmsUser user, CmsProject project) {
@@ -305,7 +307,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns <code>true</code> if this is an inherited lock, which may either be directly or shared inherited.<p>
-     * 
+     *
      * @return <code>true</code> if this is an inherited lock, which may either be directly or shared inherited
      */
     public boolean isInherited() {
@@ -315,9 +317,9 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns <code>true</code> if the given project is the project of this lock.<p>
-     * 
+     *
      * @param project the project to compare to the project of this lock
-     * 
+     *
      * @return <code>true</code> if the given project is the project of this lock
      */
     public boolean isInProject(CmsProject project) {
@@ -327,15 +329,15 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Checks if a resource can be locked by a user.<p>
-     * 
+     *
      * The resource is not lockable if it already has a lock of type {@link CmsLockType#PUBLISH}.<p>
-     * 
+     *
      * The resource is lockable either
      * - if it is currently unlocked
      * - if it has a lock of another type set and the user is the lock owner
-     * 
+     *
      * @param user the user to test lockeability for
-     * 
+     *
      * @return <code>true</code> if this lock blocks any operation on the locked resource until it is unlocked
      */
     public boolean isLockableBy(CmsUser user) {
@@ -350,11 +352,11 @@ public class CmsLock implements Comparable<CmsLock> {
     }
 
     /**
-     * Returns <code>true</code> if this lock is the <code>NULL</code> lock which can 
+     * Returns <code>true</code> if this lock is the <code>NULL</code> lock which can
      * be obtained by {@link #getNullLock()}.<p>
-     * 
+     *
      * Only for the <code>NULL</code> lock, {@link #isUnlocked()} is <code>true</code>.<p>
-     * 
+     *
      * @return <code>true</code> if this lock is the <code>NULL</code> lock
      */
     public boolean isNullLock() {
@@ -364,9 +366,9 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns <code>true</code> if the given user is the owner of this lock.<p>
-     * 
+     *
      * @param user the user to compare to the owner of this lock
-     * 
+     *
      * @return <code>true</code> if the given user is the owner of this lock
      */
     public boolean isOwnedBy(CmsUser user) {
@@ -377,10 +379,10 @@ public class CmsLock implements Comparable<CmsLock> {
     /**
      * Returns <code>true</code> if the given user is the owner of this lock,
      * and this lock belongs to the given project.<p>
-     * 
+     *
      * @param user the user to compare to the owner of this lock
      * @param project the project to compare to the project of this lock
-     * 
+     *
      * @return <code>true</code> if the given user is the owner of this lock,
      *      and this lock belongs to the given project
      */
@@ -391,7 +393,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns <code>true</code> if this is a persistent lock that should be saved when the systems shuts down.<p>
-     * 
+     *
      * @return <code>true</code> if this is a persistent lock that should be saved when the systems shuts down
      */
     public boolean isPersistent() {
@@ -401,7 +403,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns <code>true</code> if this is a publish lock.<p>
-     * 
+     *
      * @return <code>true</code> if this is a publish lock
      */
     public boolean isPublish() {
@@ -411,7 +413,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns <code>true</code> if this is a shared lock.<p>
-     * 
+     *
      * @return <code>true</code> if this is a shared lock
      */
     public boolean isShared() {
@@ -421,7 +423,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns <code>true</code> if this is a system (2nd level) lock.<p>
-     * 
+     *
      * @return <code>true</code> if this is a system (2nd level) lock
      */
     public boolean isSystemLock() {
@@ -431,7 +433,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns <code>true</code> if this is a temporary lock.<p>
-     * 
+     *
      * @return <code>true</code> if this is a temporary lock
      */
     public boolean isTemporary() {
@@ -441,10 +443,10 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Returns <code>true</code> if this lock is in fact unlocked.<p>
-     * 
+     *
      * Only if this is <code>true</code>, the result lock is equal to the <code>NULL</code> lock,
      * which can be obtained by {@link #getNullLock()}.<p>
-     * 
+     *
      * @return <code>true</code> if this lock is in fact unlocked
      */
     public boolean isUnlocked() {
@@ -454,7 +456,7 @@ public class CmsLock implements Comparable<CmsLock> {
 
     /**
      * Builds a string representation of the current state.<p>
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -487,11 +489,12 @@ public class CmsLock implements Comparable<CmsLock> {
 
         CmsLock lock = new CmsLock(m_resourceName, m_userId, m_project, m_type);
         if ((m_relatedLock != null) && !m_relatedLock.isNullLock()) {
-            lock.setRelatedLock(new CmsLock(
-                m_relatedLock.m_resourceName,
-                m_relatedLock.m_userId,
-                m_relatedLock.m_project,
-                m_relatedLock.m_type));
+            lock.setRelatedLock(
+                new CmsLock(
+                    m_relatedLock.m_resourceName,
+                    m_relatedLock.m_userId,
+                    m_relatedLock.m_project,
+                    m_relatedLock.m_type));
         }
         return lock;
     }

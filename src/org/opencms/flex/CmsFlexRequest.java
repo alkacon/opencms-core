@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,8 +61,8 @@ import org.apache.commons.logging.Log;
  *
  * This class wraps the standard HttpServletRequest so that it's output can be delivered to
  * the CmsFlexCache.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
 
@@ -148,62 +148,81 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                 boolean p_on = paramList.contains("online");
                 boolean p_off = paramList.contains("offline");
                 if (paramList.contains("purge") && firstCall) {
-                    OpenCms.fireCmsEvent(new CmsEvent(
-                        I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
-                        new HashMap<String, Object>(0)));
-                    OpenCms.fireCmsEvent(new CmsEvent(
-                        I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                        Collections.<String, Object> singletonMap("action", new Integer(CmsFlexCache.CLEAR_ENTRIES))));
+                    OpenCms.fireCmsEvent(
+                        new CmsEvent(
+                            I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
+                            new HashMap<String, Object>(0)));
+                    OpenCms.fireCmsEvent(
+                        new CmsEvent(
+                            I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                            Collections.<String, Object> singletonMap(
+                                "action",
+                                new Integer(CmsFlexCache.CLEAR_ENTRIES))));
                     dorecompile = false;
                 } else if ((paramList.contains("clearcache") || dorecompile) && firstCall) {
                     if (!(p_on || p_off)) {
-                        OpenCms.fireCmsEvent(new CmsEvent(
-                            I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                            Collections.<String, Object> singletonMap("action", new Integer(CmsFlexCache.CLEAR_ALL))));
+                        OpenCms.fireCmsEvent(
+                            new CmsEvent(
+                                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                                Collections.<String, Object> singletonMap(
+                                    "action",
+                                    new Integer(CmsFlexCache.CLEAR_ALL))));
                     } else {
                         if (p_on) {
-                            OpenCms.fireCmsEvent(new CmsEvent(
-                                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                                Collections.<String, Object> singletonMap("action", new Integer(
-                                    CmsFlexCache.CLEAR_ONLINE_ALL))));
+                            OpenCms.fireCmsEvent(
+                                new CmsEvent(
+                                    I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                                    Collections.<String, Object> singletonMap(
+                                        "action",
+                                        new Integer(CmsFlexCache.CLEAR_ONLINE_ALL))));
                         }
                         if (p_off) {
-                            OpenCms.fireCmsEvent(new CmsEvent(
-                                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                                Collections.<String, Object> singletonMap("action", new Integer(
-                                    CmsFlexCache.CLEAR_OFFLINE_ALL))));
+                            OpenCms.fireCmsEvent(
+                                new CmsEvent(
+                                    I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                                    Collections.<String, Object> singletonMap(
+                                        "action",
+                                        new Integer(CmsFlexCache.CLEAR_OFFLINE_ALL))));
                         }
                     }
                 } else if (paramList.contains("clearvariations") && firstCall) {
                     if (!(p_on || p_off)) {
-                        OpenCms.fireCmsEvent(new CmsEvent(
-                            I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                            Collections.<String, Object> singletonMap("action", new Integer(CmsFlexCache.CLEAR_ENTRIES))));
+                        OpenCms.fireCmsEvent(
+                            new CmsEvent(
+                                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                                Collections.<String, Object> singletonMap(
+                                    "action",
+                                    new Integer(CmsFlexCache.CLEAR_ENTRIES))));
                     } else {
                         if (p_on) {
-                            OpenCms.fireCmsEvent(new CmsEvent(
-                                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                                Collections.<String, Object> singletonMap("action", new Integer(
-                                    CmsFlexCache.CLEAR_ONLINE_ENTRIES))));
+                            OpenCms.fireCmsEvent(
+                                new CmsEvent(
+                                    I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                                    Collections.<String, Object> singletonMap(
+                                        "action",
+                                        new Integer(CmsFlexCache.CLEAR_ONLINE_ENTRIES))));
                         }
                         if (p_off) {
-                            OpenCms.fireCmsEvent(new CmsEvent(
-                                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                                Collections.<String, Object> singletonMap("action", new Integer(
-                                    CmsFlexCache.CLEAR_OFFLINE_ENTRIES))));
+                            OpenCms.fireCmsEvent(
+                                new CmsEvent(
+                                    I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                                    Collections.<String, Object> singletonMap(
+                                        "action",
+                                        new Integer(CmsFlexCache.CLEAR_OFFLINE_ENTRIES))));
                         }
                     }
                 }
             }
         }
-        m_canCache = ((((m_isOnline && m_controller.getCmsCache().isEnabled()) || (!m_isOnline && m_controller.getCmsCache().cacheOffline())) && !nocachepara) || dorecompile);
+        m_canCache = ((((m_isOnline && m_controller.getCmsCache().isEnabled())
+            || (!m_isOnline && m_controller.getCmsCache().cacheOffline())) && !nocachepara) || dorecompile);
         m_doRecompile = dorecompile;
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXREQUEST_CREATED_NEW_REQUEST_1, m_elementUri));
         }
     }
 
-    /** 
+    /**
      * Constructs a new wrapper layer around an (already wrapped) CmsFlexRequest.<p>
      *
      * @param req the request to be wrapped
@@ -229,11 +248,11 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * Adds the specified Map to the attributes of the request,
-     * added attributes will not overwrite existing attributes in the 
-     * request.<p> 
-     * 
+     * added attributes will not overwrite existing attributes in the
+     * request.<p>
+     *
      * @param map the map to add
-     * 
+     *
      * @return the merged map of attributes
      */
     public Map<String, Object> addAttributeMap(Map<String, Object> map) {
@@ -268,17 +287,17 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * Adds the specified Map to the parameters of the request,
-     * added parameters will not overwrite existing parameters in the 
-     * request.<p> 
-     * 
+     * added parameters will not overwrite existing parameters in the
+     * request.<p>
+     *
      * Remember that the value for a parameter name in
      * a HttpRequest is a String array. If a parameter name already
      * exists in the HttpRequest, the values will be added to the existing
-     * value array. Multiple occurrences of the same value for one 
+     * value array. Multiple occurrences of the same value for one
      * parameter are also possible.<p>
-     * 
+     *
      * @param map the map to add
-     * 
+     *
      * @return the merged map of parameters
      */
     public Map<String, String[]> addParameterMap(Map<String, String[]> map) {
@@ -332,11 +351,11 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     /**
      * Return the value of the specified request attribute, if any; otherwise,
      * return <code>null</code>.<p>
-     * 
+     *
      * @param name the name of the desired request attribute
-     * 
+     *
      * @return the value of the specified request attribute
-     * 
+     *
      * @see javax.servlet.ServletRequest#getAttribute(java.lang.String)
      */
     @Override
@@ -351,7 +370,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * Returns a <code>Map</code> of the attributes of this request.<p>
-     * 
+     *
      * @return a <code>Map</code> containing attribute names as keys
      *  and attribute values as map values
      */
@@ -362,9 +381,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * Return the names of all defined request attributes for this request.<p>
-     * 
+     *
      * @return the names of all defined request attributes for this request
-     * 
+     *
      * @see javax.servlet.ServletRequest#getAttributeNames
      */
     @Override
@@ -375,9 +394,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         return v.elements();
     }
 
-    /** 
+    /**
      * Returns the full element URI site root path to the resource currently processed.<p>
-     * 
+     *
      * @return the name of the resource currently processed
      */
     public String getElementRootPath() {
@@ -385,13 +404,13 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         return m_controller.getCmsObject().getRequestContext().addSiteRoot(m_elementUriSiteRoot, m_elementUri);
     }
 
-    /** 
+    /**
      * Returns the element URI of the resource currently processed,
      * relative to the current site root.<p>
-     * 
+     *
      * This might be the name of an included resource,
      * not necessarily the name the resource requested by the user.<p>
-     * 
+     *
      * @return the name of the resource currently processed
      */
     public String getElementUri() {
@@ -402,14 +421,14 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     /**
      * Return the value of the specified request parameter, if any; otherwise,
      * return <code>null</code>.<p>
-     * 
+     *
      * If there is more than one value defined,
      * return only the first one.<p>
      *
      * @param name the name of the desired request parameter
-     * 
+     *
      * @return the value of the specified request parameter
-     * 
+     *
      * @see javax.servlet.ServletRequest#getParameter(java.lang.String)
      */
     @Override
@@ -429,8 +448,8 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * Gets the parameter escaper.<p>
-     * 
-     * @return the parameter escaper 
+     *
+     * @return the parameter escaper
      */
     public CmsParameterEscaper getParameterEscaper() {
 
@@ -439,14 +458,14 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * Returns a <code>Map</code> of the parameters of this request.<p>
-     * 
+     *
      * Request parameters are extra information sent with the request.
      * For HTTP servlets, parameters are contained in the query string
      * or posted form data.<p>
      *
      * @return a <code>Map</code> containing parameter names as keys
      *  and parameter values as map values
-     *  
+     *
      * @see javax.servlet.ServletRequest#getParameterMap()
      */
     @Override
@@ -459,9 +478,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * Return the names of all defined request parameters for this request.<p>
-     * 
+     *
      * @return the names of all defined request parameters for this request
-     * 
+     *
      * @see javax.servlet.ServletRequest#getParameterNames()
      */
     @Override
@@ -477,10 +496,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * otherwise, return <code>null</code>.<p>
      *
      * @param name Name of the desired request parameter
-     * 
+     *
      * @return the defined values for the specified request parameter, if any;
      *          <code>null</code> otherwise
-     *          
+     *
      * @see javax.servlet.ServletRequest#getParameterValues(java.lang.String)
      */
     @Override
@@ -493,12 +512,12 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         }
     }
 
-    /** 
-     * Allows requests to be dispatched to internal VFS resources or 
+    /**
+     * Allows requests to be dispatched to internal VFS resources or
      * external JSP pages, overloads the standard servlet API <code>getRequestDispatcher()</code> method.<p>
      *
      * @param target the target for the request dispatcher
-     * 
+     *
      * @return a special RequestDispatcher that allows access to VFS resources
      */
     @Override
@@ -511,16 +530,16 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
             null);
     }
 
-    /** 
+    /**
      * Replacement for the standard servlet API getRequestDispatcher() method.<p>
-     * 
+     *
      * This variation is used if an external file (probably JSP) is dispatched to.
      * This external file must have a "mirror" version, i.e. a file in the OpenCms VFS
      * that represents the external file.<p>
      *
      * @param vfs_target the OpenCms file that is a "mirror" version of the external file
      * @param ext_target the external file (outside the OpenCms VFS)
-     * 
+     *
      * @return the constructed CmsFlexRequestDispatcher
      */
     public CmsFlexRequestDispatcher getRequestDispatcherToExternal(String vfs_target, String ext_target) {
@@ -531,16 +550,16 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
             ext_target);
     }
 
-    /** 
+    /**
      * Wraps the request URI, overloading the standard API.<p>
-     * 
+     *
      * This ensures that any wrapped request will use the "faked"
      * target parameters. Remember that for the real request,
      * a mixture of PathInfo and other request information is used to
      * identify the target.<p>
      *
-     * @return a faked URI that will point to the wrapped target in the VFS 
-     * 
+     * @return a faked URI that will point to the wrapped target in the VFS
+     *
      * @see javax.servlet.http.HttpServletRequest#getRequestURI()
      */
     @Override
@@ -556,12 +575,12 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         return m_requestUri;
     }
 
-    /** 
+    /**
      * Wraps the request URL, overloading the standard API,
      * the wrapped URL will always point to the currently included VFS resource.<p>
      *
      * @return a faked URL that will point to the included target in the VFS
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequest#getRequestURL()
      */
     @Override
@@ -582,10 +601,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * This is a work around for servlet containers creating a new application dispatcher 
-     * instead of using our request dispatcher, so missing RFS JSP pages are not requested to 
+     * This is a work around for servlet containers creating a new application dispatcher
+     * instead of using our request dispatcher, so missing RFS JSP pages are not requested to
      * OpenCms and the dispatcher is unable to load the included/forwarded JSP file.<p>
-     * 
+     *
      * @see javax.servlet.http.HttpServletRequestWrapper#getServletPath()
      */
     @Override
@@ -613,9 +632,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         return servletPath;
     }
 
-    /** 
+    /**
      * Checks if JSPs should always be recompiled.<p>
-     * 
+     *
      * This is useful in case directive based includes are used
      * with &lt;%@ include file="..." %&gt; on a JSP.
      * Note that this also forces the request not to be cached.<p>
@@ -627,21 +646,21 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         return m_doRecompile;
     }
 
-    /** 
+    /**
      * Indicates that this request belongs to an online project.<p>
-     * 
+     *
      * This is required to distinguish between online and offline
      * resources in the cache. Since the resources have the same name,
      * a suffix [online] or [offline] is added to distinguish the strings
      * when building cache keys.
      * Any resource from a request that isOnline() will be saved with
      * the [online] suffix and vice versa.<p>
-     * 
-     * Resources in the OpenCms workplace are not distinguished between 
+     *
+     * Resources in the OpenCms workplace are not distinguished between
      * online and offline but have their own suffix [workplace].
      * The assumption is that if you do change the workplace, this is
-     * only on true development machines so you can do the cache clearing 
-     * manually if required.<p> 
+     * only on true development machines so you can do the cache clearing
+     * manually if required.<p>
      *
      * The suffixes are used so that we have a simple String name
      * for the resources in the cache. This makes it easy to
@@ -676,14 +695,14 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * Sets the specified Map as attribute map of the request.<p>
-     * 
-     * The map should be immutable. 
-     * This will completely replace the attribute map. 
+     *
+     * The map should be immutable.
+     * This will completely replace the attribute map.
      * Use this in combination with {@link #getAttributeMap()} and
      * {@link #addAttributeMap(Map)} in case you want to set the old status
      * of the attribute map after you have modified it for
      * a specific operation.<p>
-     * 
+     *
      * @param map the map to set
      */
     public void setAttributeMap(Map<String, Object> map) {
@@ -693,14 +712,14 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * Sets the specified Map as parameter map of the request.<p>
-     * 
-     * The map should be immutable. 
-     * This will completely replace the parameter map. 
+     *
+     * The map should be immutable.
+     * This will completely replace the parameter map.
      * Use this in combination with {@link #getParameterMap()} and
      * {@link #addParameterMap(Map)} in case you want to set the old status
      * of the parameter map after you have modified it for
      * a specific operation.<p>
-     * 
+     *
      * @param map the map to set
      */
     public void setParameterMap(Map<String, String[]> map) {
@@ -720,10 +739,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * Returns the List of include calls which will be passed to the next wrapping layer.<p>
-     * 
-     * The set of include calls is maintained to detect 
+     *
+     * The set of include calls is maintained to detect
      * an endless inclusion loop.<p>
-     * 
+     *
      * @return the List of include calls
      */
     protected List<String> getCmsIncludeCalls() {
@@ -733,7 +752,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * Returns the jsp loader instance.<p>
-     * 
+     *
      * @return the jsp loader instance
      */
     protected CmsJspLoader getJspLoader() {
@@ -750,10 +769,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * Adds another include call to this wrapper.<p>
-     * 
-     * The set of include calls is maintained to detect 
+     *
+     * The set of include calls is maintained to detect
      * an endless inclusion loop.<p>
-     * 
+     *
      * @param target the target name (absolute OpenCms URI) to add
      */
     void addInlucdeCall(String target) {
@@ -763,10 +782,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * Checks if a given target has been included earlier and exceeds the max allowed recursions.<p>
-     * 
-     * The set of include calls is maintained to detect 
+     *
+     * The set of include calls is maintained to detect
      * an endless inclusion loop.<p>
-     * 
+     *
      * @param target the target name (absolute OpenCms URI) to check for
      * @return true if the target is already included, false otherwise
      */
@@ -786,10 +805,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         return false;
     }
 
-    /** 
+    /**
      * Returns the CmsFlexCacheKey for this request,
      * the key will be calculated if necessary.<p>
-     * 
+     *
      * @return the CmsFlexCacheKey for this request
      */
     CmsFlexRequestKey getCmsCacheKey() {
@@ -801,9 +820,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         return m_key;
     }
 
-    /** 
+    /**
      * This is needed to decide if this request can be cached or not.<p>
-     * 
+     *
      * Using the request to decide if caching is used or not
      * makes it possible to set caching to false e.g. on a per-user
      * or per-project basis.<p>
@@ -817,10 +836,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * Removes an include call from this wrapper.<p>
-     * 
-     * The set of include calls is maintained to detect 
+     *
+     * The set of include calls is maintained to detect
      * an endless inclusion loop.<p>
-     * 
+     *
      * @param target the target name (absolute OpenCms URI) to remove
      */
     void removeIncludeCall(String target) {

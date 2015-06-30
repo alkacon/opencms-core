@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,8 +46,8 @@ import java.util.Locale;
 
 /**
  * The main class of the html list widget.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsHtmlList {
 
@@ -119,9 +119,9 @@ public class CmsHtmlList {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id unique id of the list, is used as name for controls and js functions and vars
-     * @param name the display name 
+     * @param name the display name
      * @param metadata the list's metadata
      */
     public CmsHtmlList(String id, CmsMessageContainer name, CmsListMetadata metadata) {
@@ -135,13 +135,13 @@ public class CmsHtmlList {
 
     /**
      * Generates the list of html option elements for a html select control to select a page of a list.<p>
-     * 
+     *
      * @param nrPages the total number of pages
      * @param itemsPage the maximum number of items per page
      * @param nrItems the total number of items
      * @param curPage the current page
      * @param locale the locale
-     * 
+     *
      * @return html code
      */
     public static String htmlPageSelector(int nrPages, int itemsPage, int nrItems, int curPage, Locale locale) {
@@ -155,11 +155,12 @@ public class CmsHtmlList {
             html.append("'");
             html.append((i + 1) == curPage ? " selected" : "");
             html.append(">");
-            html.append(Messages.get().getBundle(locale).key(
-                Messages.GUI_LIST_PAGE_ENTRY_3,
-                new Integer(i + 1),
-                new Integer(displayedFrom),
-                new Integer(displayedTo)));
+            html.append(
+                Messages.get().getBundle(locale).key(
+                    Messages.GUI_LIST_PAGE_ENTRY_3,
+                    new Integer(i + 1),
+                    new Integer(displayedFrom),
+                    new Integer(displayedTo)));
             html.append("</option>\n");
         }
         return html.toString();
@@ -184,8 +185,8 @@ public class CmsHtmlList {
     }
 
     /**
-     * Returns all list items in the list, may be not visible and sorted.<p> 
-     * 
+     * Returns all list items in the list, may be not visible and sorted.<p>
+     *
      * @return all list items
      */
     public List<CmsListItem> getAllContent() {
@@ -207,9 +208,9 @@ public class CmsHtmlList {
 
     /**
      * Returns the filtered list of list items.<p>
-     * 
+     *
      * Equals to <code>{@link #getAllContent()}</code> if no filter is set.<p>
-     * 
+     *
      * @return the filtered list of list items
      */
     public List<CmsListItem> getContent() {
@@ -223,7 +224,7 @@ public class CmsHtmlList {
 
     /**
      * returns the number of the current page.<p>
-     * 
+     *
      * @return the number of the current page
      */
     public int getCurrentPage() {
@@ -233,7 +234,7 @@ public class CmsHtmlList {
 
     /**
      * Returns all items of the current page.<p>
-     * 
+     *
      * @return all items of the current page, a list of {@link CmsListItem} objects
      */
     public List<CmsListItem> getCurrentPageItems() {
@@ -249,7 +250,7 @@ public class CmsHtmlList {
 
     /**
      * Returns the current used sort order.<p>
-     * 
+     *
      * @return the current used sort order
      */
     public CmsListOrderEnum getCurrentSortOrder() {
@@ -269,11 +270,11 @@ public class CmsHtmlList {
 
     /**
      * This method returns the item identified by the parameter id.<p>
-     * 
-     * Only current visible item can be retrieved using this method.<p> 
-     * 
+     *
+     * Only current visible item can be retrieved using this method.<p>
+     *
      * @param id the id of the item to look for
-     * 
+     *
      * @return the requested item or <code>null</code> if not found
      */
     public CmsListItem getItem(String id) {
@@ -310,7 +311,7 @@ public class CmsHtmlList {
 
     /**
      * Returns the name of the list.<p>
-     * 
+     *
      * @return the list's name
      */
     public CmsMessageContainer getName() {
@@ -320,9 +321,9 @@ public class CmsHtmlList {
 
     /**
      * Returns the filtered number of pages.<p>
-     * 
+     *
      * Equals to <code>{@link #getTotalNumberOfPages()}</code> if no filter is set.<p>
-     * 
+     *
      * @return the filtered of pages
      */
     public int getNumberOfPages() {
@@ -342,9 +343,9 @@ public class CmsHtmlList {
 
     /**
      * Return the filtered number of items.<p>
-     * 
+     *
      * Equals to <code>{@link #getTotalSize()}</code> if no filter is set.<p>
-     * 
+     *
      * @return the filtered number of items
      */
     public int getSize() {
@@ -357,7 +358,7 @@ public class CmsHtmlList {
 
     /**
      * Returns the sorted column's name.<p>
-     * 
+     *
      * @return the sorted column's name
      */
     public String getSortedColumn() {
@@ -367,7 +368,7 @@ public class CmsHtmlList {
 
     /**
      * Returns a filled list state.<p>
-     * 
+     *
      * @return the state of the list
      */
     public CmsListState getState() {
@@ -376,8 +377,8 @@ public class CmsHtmlList {
     }
 
     /**
-     * Returns the total number of pages.<p> 
-     * 
+     * Returns the total number of pages.<p>
+     *
      * @return the total number of pages
      */
     public int getTotalNumberOfPages() {
@@ -387,7 +388,7 @@ public class CmsHtmlList {
 
     /**
      * Return the total number of items.<p>
-     * 
+     *
      * @return the total number of items
      */
     public int getTotalSize() {
@@ -432,7 +433,7 @@ public class CmsHtmlList {
 
     /**
      * Returns if the list title is shown.<p>
-     * 
+     *
      * @return true if the list title is shown, otherwise false
      */
     public boolean isShowTitle() {
@@ -442,7 +443,7 @@ public class CmsHtmlList {
 
     /**
      * Generates the csv output for the list.<p>
-     * 
+     *
      * @return csv output
      */
     public String listCsv() {
@@ -463,7 +464,7 @@ public class CmsHtmlList {
 
     /**
      * Generates the html code for the list.<p>
-     * 
+     *
      * @return html code
      */
     public synchronized String listHtml() {
@@ -502,7 +503,7 @@ public class CmsHtmlList {
             html.append("}\n");
             html.append("</style>");
         }
-        // avoiding the layout problem where, if some table cells contain a lot of text, 
+        // avoiding the layout problem where, if some table cells contain a lot of text,
         // the right side of the table is cut off and can not be reached using the scroll bar.
         html.append("<!--[if IE 7]>");
         html.append("<style type='text/css'>");
@@ -526,14 +527,16 @@ public class CmsHtmlList {
                 if (thread != null) {
 
                     if (thread.isInterrupted()) {
-                        throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
-                            org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
+                        throw new CmsIllegalStateException(
+                            org.opencms.workplace.commons.Messages.get().container(
+                                org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
                     }
                     thread.setProgress(((count * (100 - progressOffset)) / m_visibleItems.size()) + progressOffset);
-                    thread.setDescription(org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
-                        org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP4_2,
-                        new Integer(count),
-                        new Integer(m_visibleItems.size())));
+                    thread.setDescription(
+                        org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
+                            org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP4_2,
+                            new Integer(count),
+                            new Integer(m_visibleItems.size())));
                 }
 
                 CmsListItem item = itItems.next();
@@ -552,7 +555,7 @@ public class CmsHtmlList {
 
     /**
      * Generate the need js code for the list.<p>
-     * 
+     *
      * @return js code
      */
     public String listJs() {
@@ -584,9 +587,11 @@ public class CmsHtmlList {
                     js.append(NO_SELECTION_MATCH_HELP_VAR);
                     js.append(rAction.getId());
                     js.append(" = '");
-                    js.append(CmsStringUtil.escapeJavaScript(messages.key(
-                        Messages.GUI_LIST_ACTION_NO_SELECTION_MATCH_1,
-                        new Integer(rAction.getSelections()))));
+                    js.append(
+                        CmsStringUtil.escapeJavaScript(
+                            messages.key(
+                                Messages.GUI_LIST_ACTION_NO_SELECTION_MATCH_1,
+                                new Integer(rAction.getSelections()))));
                     js.append("';\n");
                 }
             }
@@ -597,8 +602,8 @@ public class CmsHtmlList {
 
     /**
      * Returns a new list item for this list.<p>
-     * 
-     * @param id the id of the item has to be unique 
+     *
+     * @param id the id of the item has to be unique
      * @return a new list item
      */
     public CmsListItem newItem(String id) {
@@ -608,7 +613,7 @@ public class CmsHtmlList {
 
     /**
      * Returns html code for printing the list.<p>
-     * 
+     *
      * @return html code
      */
     public String printableHtml() {
@@ -620,14 +625,14 @@ public class CmsHtmlList {
     }
 
     /**
-     * Removes an item from the list.<p> 
-     * 
+     * Removes an item from the list.<p>
+     *
      * Keeping care of all the state like sorted column, sorting order, displayed page and search filter.<p>
-     * 
+     *
      * Try to use it instead of <code>{@link A_CmsListDialog#refreshList()}</code>.<p>
-     * 
+     *
      * @param id the id of the item to remove
-     * 
+     *
      * @return the removed list item
      */
     public CmsListItem removeItem(String id) {
@@ -667,7 +672,7 @@ public class CmsHtmlList {
 
     /**
      * Sets the list item to display in the list.<p>
-     * 
+     *
      * @param listItems a collection of {@link CmsListItem} objects
      */
     public void setContent(Collection<CmsListItem> listItems) {
@@ -685,16 +690,15 @@ public class CmsHtmlList {
      * Sets the current page.<p>
      *
      * @param currentPage the current page to set
-     * 
+     *
      * @throws CmsIllegalArgumentException if the argument is invalid
      */
     public void setCurrentPage(int currentPage) throws CmsIllegalArgumentException {
 
         if (getSize() != 0) {
             if ((currentPage < 1) || (currentPage > getNumberOfPages())) {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_LIST_INVALID_PAGE_1,
-                    new Integer(currentPage)));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(Messages.ERR_LIST_INVALID_PAGE_1, new Integer(currentPage)));
             }
         }
         m_currentPage = currentPage;
@@ -707,12 +711,12 @@ public class CmsHtmlList {
      */
     public void setMaxItemsPerPage(int maxItemsPerPage) {
 
-        this.m_maxItemsPerPage = maxItemsPerPage;
+        m_maxItemsPerPage = maxItemsPerPage;
     }
 
     /**
      * Sets the name of the list.<p>
-     * 
+     *
      * @param name the name of the list
      */
     public void setName(CmsMessageContainer name) {
@@ -759,7 +763,7 @@ public class CmsHtmlList {
 
     /**
      * Sets if the list title is shown.<p>
-     * 
+     *
      * @param showTitle true if the list title is shown, otherwise false
      */
     public void setShowTitle(boolean showTitle) {
@@ -781,7 +785,7 @@ public class CmsHtmlList {
      * Sets the sorted column.<p>
      *
      * @param sortedColumn the sorted column to set
-     * 
+     *
      * @throws CmsIllegalArgumentException if the <code>sortedColumn</code> argument is invalid
      */
     public void setSortedColumn(String sortedColumn) throws CmsIllegalArgumentException {
@@ -822,9 +826,9 @@ public class CmsHtmlList {
 
     /**
      * Sets the list state.<p>
-     * 
+     *
      * This may involve sorting, filtering and paging.<p>
-     * 
+     *
      * @param listState the state to be set
      */
     public void setState(CmsListState listState) {
@@ -874,7 +878,7 @@ public class CmsHtmlList {
 
     /**
      * Returns the number (from 1) of the first displayed item.<p>
-     * 
+     *
      * @return the number (from 1) of the first displayed item, or zero if the list is empty
      */
     protected int displayedFrom() {
@@ -891,7 +895,7 @@ public class CmsHtmlList {
 
     /**
      * Returns the number (from 1) of the last displayed item.<p>
-     * 
+     *
      * @return the number (from 1) of the last displayed item, or zero if the list is empty
      */
     protected int displayedTo() {
@@ -947,7 +951,7 @@ public class CmsHtmlList {
 
     /**
      * Generates the need html code for ending a list.<p>
-     * 
+     *
      * @return html code
      */
     protected String htmlEnd() {
@@ -964,7 +968,7 @@ public class CmsHtmlList {
 
     /**
      * Generates the needed html code for the paging bar.<p>
-     * 
+     *
      * @return html code
      */
     protected String htmlPagingBar() {
@@ -1022,12 +1026,13 @@ public class CmsHtmlList {
         html.append("\t\t\t<select name='listPageSet' id='id-page_set' onChange =\"listSetPage('");
         html.append(getId());
         html.append("', this.value);\" style='vertical-align: bottom;'>\n");
-        html.append(htmlPageSelector(
-            getNumberOfPages(),
-            getMaxItemsPerPage(),
-            getSize(),
-            getCurrentPage(),
-            getWp().getLocale()));
+        html.append(
+            htmlPageSelector(
+                getNumberOfPages(),
+                getMaxItemsPerPage(),
+                getSize(),
+                getCurrentPage(),
+                getWp().getLocale()));
         html.append("\t\t\t</select>\n");
         html.append("\t\t\t&nbsp;&nbsp;&nbsp;");
         boolean isNotSearching = true;
@@ -1035,9 +1040,10 @@ public class CmsHtmlList {
             isNotSearching = CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter);
         }
         if (isNotSearching) {
-            html.append(messages.key(Messages.GUI_LIST_PAGING_TEXT_2, new Object[] {
-                m_name.key(getWp().getLocale()),
-                new Integer(getTotalSize())}));
+            html.append(
+                messages.key(
+                    Messages.GUI_LIST_PAGING_TEXT_2,
+                    new Object[] {m_name.key(getWp().getLocale()), new Integer(getTotalSize())}));
         } else {
             html.append(messages.key(
                 Messages.GUI_LIST_PAGING_FILTER_TEXT_3,
@@ -1051,7 +1057,7 @@ public class CmsHtmlList {
 
     /**
      * Returns the html for the title of the list.<p>
-     * 
+     *
      * @return html code
      */
     protected String htmlTitle() {
@@ -1126,7 +1132,7 @@ public class CmsHtmlList {
 
     /**
      * Returns the html code for the toolbar (search bar + multiactions bar).<p>
-     * 
+     *
      * @return html code
      */
     protected String htmlToolBar() {
@@ -1153,11 +1159,11 @@ public class CmsHtmlList {
 
     /**
      * Sets the metadata for this list.<p>
-     * 
+     *
      * Should only be used by the <code>{@link A_CmsListDialog}</code> class
-     * for temporally removing the metadata object while the list is saved in the 
-     * <code>{@link org.opencms.workplace.CmsWorkplaceSettings}</code>.<p>     
-     * 
+     * for temporally removing the metadata object while the list is saved in the
+     * <code>{@link org.opencms.workplace.CmsWorkplaceSettings}</code>.<p>
+     *
      * @param metadata the list metadata
      */
     protected void setMetadata(CmsListMetadata metadata) {

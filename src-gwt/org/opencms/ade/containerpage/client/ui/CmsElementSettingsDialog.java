@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -103,7 +103,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the container page controller
      * @param elementWidget the element panel
      * @param elementBean the element data bean
@@ -139,8 +139,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 CmsFieldSet formatterFieldset = new CmsFieldSet();
                 // insert as first field-set after the element info box
                 fieldSetPanel.getMainPanel().insert(formatterFieldset, 1);
-                formatterFieldset.setLegend(org.opencms.ade.containerpage.client.Messages.get().key(
-                    org.opencms.ade.containerpage.client.Messages.GUI_FORMATTERS_LEGEND_0));
+                formatterFieldset.setLegend(
+                    org.opencms.ade.containerpage.client.Messages.get().key(
+                        org.opencms.ade.containerpage.client.Messages.GUI_FORMATTERS_LEGEND_0));
                 formatterFieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
                 LinkedHashMap<String, String> formatters = new LinkedHashMap<String, String>();
                 m_formatterSelect = new CmsSelectBox();
@@ -161,13 +162,15 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             }
             if (isEditableModelPage) {
                 CmsFieldSet createNewFieldSet = new CmsFieldSet();
-                createNewFieldSet.setLegend(org.opencms.ade.containerpage.client.Messages.get().key(
-                    org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LEGEND_0
+                createNewFieldSet.setLegend(
+                    org.opencms.ade.containerpage.client.Messages.get().key(
+                        org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LEGEND_0
 
                 ));
                 createNewFieldSet.getElement().getStyle().setMarginTop(10, Unit.PX);
-                m_createNewCheckBox = new CmsCheckBox(org.opencms.ade.containerpage.client.Messages.get().key(
-                    org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LABEL_0));
+                m_createNewCheckBox = new CmsCheckBox(
+                    org.opencms.ade.containerpage.client.Messages.get().key(
+                        org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LABEL_0));
                 createNewFieldSet.add(m_createNewCheckBox);
                 fieldSetPanel.getMainPanel().insert(createNewFieldSet, 1);
                 m_createNewCheckBox.setChecked(elementWidget.isCreateNew());
@@ -191,10 +194,8 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
                 CmsFieldSet contextsFieldset = new CmsFieldSet();
                 contextsFieldset.setLegend(m_contextInfo.getSettingDefinition().getNiceName());
                 contextsFieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
-                m_contextsWidget = new CmsMultiCheckBox(CmsStringUtil.splitAsMap(
-                    m_contextInfo.getSettingDefinition().getWidgetConfiguration(),
-                    "|",
-                    ":"));
+                m_contextsWidget = new CmsMultiCheckBox(
+                    CmsStringUtil.splitAsMap(m_contextInfo.getSettingDefinition().getWidgetConfiguration(), "|", ":"));
                 for (CmsCheckBox checkbox : m_contextsWidget.getCheckboxes()) {
                     Style checkboxStyle = checkbox.getElement().getStyle();
                     checkbox.getButton().getElement().getStyle().setFontWeight(Style.FontWeight.NORMAL);
@@ -225,7 +226,10 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             /**
              * @see org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler#onSubmitForm(org.opencms.gwt.client.ui.input.form.CmsForm, java.util.Map, java.util.Set)
              */
-            public void onSubmitForm(CmsForm formParam, final Map<String, String> fieldValues, Set<String> editedFields) {
+            public void onSubmitForm(
+                CmsForm formParam,
+                final Map<String, String> fieldValues,
+                Set<String> editedFields) {
 
                 submitForm(formParam, fieldValues, editedFields);
             }
@@ -251,7 +255,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /**
      * Returns if the template context has been changed.<p>
-     * 
+     *
      * @return <code>true</code> if the template context has been changed
      */
     boolean isTemplateContextChanged() {
@@ -261,7 +265,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /**
      * Handles the formatter selection changes.<p>
-     * 
+     *
      * @param formatterId the formatter id
      */
     void onFormatterChange(String formatterId) {
@@ -272,7 +276,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /**
      * Renders the settings form.<p>
-     * 
+     *
      * @param settingsConfig the settings configuration
      */
     void renderSettingsForm(Map<String, CmsXmlContentProperty> settingsConfig) {
@@ -309,7 +313,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /**
      * Submits the settings form.<p>
-     * 
+     *
      * @param formParam the form
      * @param fieldValues the field values
      * @param editedFields the changed fields
@@ -323,7 +327,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             String newTemplateContexts = m_contextsWidget.getFormValueAsString();
             if ((newTemplateContexts == null) || "".equals(newTemplateContexts)) {
                 newTemplateContexts = CmsTemplateContextInfo.EMPTY_VALUE;
-                // translate an empty selection to "none" 
+                // translate an empty selection to "none"
             }
             fieldValues.put(CmsTemplateContextInfo.SETTING, newTemplateContexts);
         }
@@ -397,7 +401,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
 
     /**
      * Ensures the CSS snippet with the given ID is present.<p>
-     * 
+     *
      * @param formatterId the ID
      * @param cssContent the CSS snippet
      */

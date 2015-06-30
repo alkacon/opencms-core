@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,17 +55,17 @@ import org.apache.commons.logging.Log;
 
 /**
  * Shows a preview of the selected resource in the Explorer view.<p>
- * 
+ *
  * This is required to get correct previews of statically exported pages
  * in the Online project.<p>
- * 
+ *
  * The following file uses this class:
  * <ul>
  * <li>/commons/displayresource.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDisplayResource extends CmsDialog {
 
@@ -80,7 +80,7 @@ public class CmsDisplayResource extends CmsDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDisplayResource(CmsJspActionElement jsp) {
@@ -90,7 +90,7 @@ public class CmsDisplayResource extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -102,11 +102,11 @@ public class CmsDisplayResource extends CmsDialog {
 
     /**
      * Returns the content of an historical resource.<p>
-     * 
+     *
      * @param cms a CmsObject
      * @param resource the name of the historical resource
      * @param version the version number of the historical resource
-     * 
+     *
      * @return the content of an historical resource
      */
     protected static byte[] getHistoricalResourceContent(CmsObject cms, String resource, String version) {
@@ -151,7 +151,7 @@ public class CmsDisplayResource extends CmsDialog {
 
     /**
      * Redirects to the specified file or shows an historical resource.<p>
-     * 
+     *
      * @throws Exception if redirection fails
      */
     public void actionShow() throws Exception {
@@ -171,13 +171,13 @@ public class CmsDisplayResource extends CmsDialog {
                     getCms().getRequestContext().getCurrentProject().getName()));
             }
 
-            // check for release / expiration time window 
+            // check for release / expiration time window
             autoTimeWarp(resource);
 
             // code for display resource after all tests for displayability (exists, not deleted)
             //            if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
-            //                // if we have a container page look for the first sitemap entry 
-            //                // and use that to display the container page  
+            //                // if we have a container page look for the first sitemap entry
+            //                // and use that to display the container page
             //                List<CmsInternalSitemapEntry> entries = OpenCms.getSitemapManager().getEntriesForStructureId(
             //                    getJsp().getCmsObject(),
             //                    resource.getStructureId());
@@ -224,11 +224,11 @@ public class CmsDisplayResource extends CmsDialog {
      * Performs a timewarp for resources that are expired or not released yet to always allow a
      * preview of a page out of the workplace.<p>
      *
-     * If the user has a configured timewarp (preferences dialog) a mandatory timewarp will lead to 
+     * If the user has a configured timewarp (preferences dialog) a mandatory timewarp will lead to
      * an exception. One cannot auto timewarp with configured timewarp time.<p>
-     * 
+     *
      * @param resource the resource to show
-     * 
+     *
      * @throws CmsVfsResourceNotFoundException if a warp would be needed to show the resource but the user has a configured
      *      timewarp which disallows auto warping
      */
@@ -261,9 +261,8 @@ public class CmsDisplayResource extends CmsDialog {
         } else {
             // resource is not vaild in the time window set by the user,
             // report an error message
-            throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                Messages.ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1,
-                getParamResource()));
+            throw new CmsVfsResourceNotFoundException(
+                Messages.get().container(Messages.ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1, getParamResource()));
         }
     }
 
@@ -278,9 +277,9 @@ public class CmsDisplayResource extends CmsDialog {
 
     /**
      * Returns if the given resource has the state "deleted".<p>
-     * 
+     *
      * @param resource the resource
-     * 
+     *
      * @return <code>true</code> if the resource is of state "deleted"
      */
     private boolean isDeleted(CmsResource resource) {
@@ -290,9 +289,9 @@ public class CmsDisplayResource extends CmsDialog {
 
     /**
      * Prepends the site-root to the given URL.<p>
-     *  
+     *
      * @param url the URL
-     * 
+     *
      * @return the absolute URL
      */
     private String prependSiteRoot(String url) {
@@ -312,11 +311,11 @@ public class CmsDisplayResource extends CmsDialog {
 
     /**
      * Reads the resource from the DB.<p>
-     * 
+     *
      * @param resourceName the resource name
-     * 
+     *
      * @return the resource
-     * 
+     *
      * @throws CmsException if the resource can not be read
      */
     private CmsResource readResource(String resourceName) throws CmsException {
@@ -325,11 +324,13 @@ public class CmsDisplayResource extends CmsDialog {
         try {
             resource = getCms().readResource(resourceName, CmsResourceFilter.ALL);
         } catch (CmsVfsResourceNotFoundException e) {
-            throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                Messages.ERR_RESOURCE_DOES_NOT_EXIST_3,
-                resourceName,
-                getCms().getRequestContext().getCurrentProject().getName(),
-                getCms().getRequestContext().getSiteRoot()), e);
+            throw new CmsVfsResourceNotFoundException(
+                Messages.get().container(
+                    Messages.ERR_RESOURCE_DOES_NOT_EXIST_3,
+                    resourceName,
+                    getCms().getRequestContext().getCurrentProject().getName(),
+                    getCms().getRequestContext().getSiteRoot()),
+                e);
         }
         return resource;
     }

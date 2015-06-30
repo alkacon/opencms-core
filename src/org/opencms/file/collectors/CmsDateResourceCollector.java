@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,7 +39,7 @@ import java.util.List;
 
 /**
  * A default resource collector that supports flexible sorting based on resource dates.<p>
- * 
+ *
  * @since 7.0.2
  */
 public class CmsDateResourceCollector extends A_CmsResourceCollector {
@@ -85,9 +85,8 @@ public class CmsDateResourceCollector extends A_CmsResourceCollector {
                 // "allInSubTreeDateAsc"
                 return null;
             default:
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
-                    collectorName));
+                throw new CmsDataAccessException(
+                    Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
     }
 
@@ -113,9 +112,8 @@ public class CmsDateResourceCollector extends A_CmsResourceCollector {
                 // "allInSubTreeDateAsc"
                 return null;
             default:
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
-                    collectorName));
+                throw new CmsDataAccessException(
+                    Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
     }
 
@@ -166,25 +164,24 @@ public class CmsDateResourceCollector extends A_CmsResourceCollector {
                 // "allInSubTreeDateAsc"
                 return allInFolderDate(cms, param, true, true, numResults);
             default:
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
-                    collectorName));
+                throw new CmsDataAccessException(
+                    Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
     }
 
     /**
-     * Returns a List of all resources in the folder pointed to by the parameter 
+     * Returns a List of all resources in the folder pointed to by the parameter
      * sorted by the selected dates.<p>
-     * 
+     *
      * @param cms the current CmsObject
      * @param param must contain an extended collector parameter set as described by {@link CmsExtendedCollectorData}
      * @param tree if true, look in folder and all child folders, if false, look only in given folder
-     * @param asc if <code>true</code>, the sort is ascending (old dates first), otherwise it is descending 
+     * @param asc if <code>true</code>, the sort is ascending (old dates first), otherwise it is descending
      *      (new dates first)
-     * @param numResults number of results 
-     * 
+     * @param numResults number of results
+     *
      * @return a List of all resources in the folder pointed to by the parameter sorted by the selected dates
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected List<CmsResource> allInFolderDate(CmsObject cms, String param, boolean tree, boolean asc, int numResults)

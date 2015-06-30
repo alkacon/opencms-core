@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,14 +32,14 @@ import org.opencms.workplace.CmsWorkplace;
 
 /**
  * Default implementation of a independent action for a html list column that can execute java script code.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsListIndependentJsAction extends CmsListIndependentAction {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id unique id
      */
     public A_CmsListIndependentJsAction(String id) {
@@ -69,9 +69,9 @@ public abstract class A_CmsListIndependentJsAction extends CmsListIndependentAct
 
     /**
      * The js code to execute.<p>
-     * 
+     *
      * @param wp the workplace context
-     * 
+     *
      * @return js code to execute
      */
     public abstract String jsCode(CmsWorkplace wp);

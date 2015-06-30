@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Provides a generic error dialog.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsErrorDialog extends CmsPopup {
@@ -69,7 +69,7 @@ public class CmsErrorDialog extends CmsPopup {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param message the error message
      * @param details the error details
      */
@@ -106,7 +106,7 @@ public class CmsErrorDialog extends CmsPopup {
 
                 /**
                  * On open.<p>
-                 * 
+                 *
                  * @param event the open event
                  */
                 public void onOpen(OpenEvent<CmsFieldSet> event) {
@@ -121,7 +121,7 @@ public class CmsErrorDialog extends CmsPopup {
 
     /**
      * Handles the exception by logging the exception to the server log and displaying an error dialog on the client.<p>
-     * 
+     *
      * @param t the throwable
      */
     public static void handleException(Throwable t) {
@@ -161,8 +161,8 @@ public class CmsErrorDialog extends CmsPopup {
 
     /**
      * Checks if any error dialogs are showing.<p>
-     * 
-     * @return true if any error dialogs are showing 
+     *
+     * @return true if any error dialogs are showing
      */
     public static boolean isShowingErrorDialogs() {
 
@@ -213,9 +213,9 @@ public class CmsErrorDialog extends CmsPopup {
 
     /**
      * Creates a field-set containing the error details.<p>
-     * 
+     *
      * @param details the error details
-     * 
+     *
      * @return the field-set widget
      */
     private CmsFieldSet createDetailsFieldSet(String details) {
@@ -230,9 +230,9 @@ public class CmsErrorDialog extends CmsPopup {
 
     /**
      * Creates the message HTML widget containing error icon and message.<p>
-     * 
+     *
      * @param message the message
-     * 
+     *
      * @return the HTML widget
      */
     private CmsMessageWidget createMessageWidget(String message) {

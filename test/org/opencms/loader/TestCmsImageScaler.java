@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ public class TestCmsImageScaler extends OpenCmsTestCase {
 
     /**
      * Tests the image downscaling option.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testDownScaling() throws Exception {
@@ -52,7 +52,7 @@ public class TestCmsImageScaler extends OpenCmsTestCase {
         assertEquals(800, image.getWidth());
         assertEquals(600, image.getHeight());
 
-        // now create a downscaler 
+        // now create a downscaler
         CmsImageScaler downScaler = new CmsImageScaler("w:800,h:600,t:1,q:80");
 
         // downscaling should not be required because the image fits
@@ -99,7 +99,7 @@ public class TestCmsImageScaler extends OpenCmsTestCase {
         assertEquals(480, image.getWidth());
         assertEquals(643, image.getHeight());
 
-        // now create a downscaler 
+        // now create a downscaler
         downScaler = new CmsImageScaler("w:800,h:600,t:1,q:80");
         assertFalse(image.isDownScaleRequired(downScaler));
         downScaler = new CmsImageScaler("w:600,h:800,t:1,q:80");
@@ -112,7 +112,7 @@ public class TestCmsImageScaler extends OpenCmsTestCase {
 
     /**
      * Tests the image scaling type 5.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testScaleType5() throws Exception {
@@ -173,7 +173,7 @@ public class TestCmsImageScaler extends OpenCmsTestCase {
 
     /**
      * Tests the image scaling type 5 in the image tag (with cropping).<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testScaleType5InImageTag() throws Exception {

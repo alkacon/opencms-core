@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -71,7 +71,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param infoBean the data to display
          */
         public CmsGalleryListItemWidget(CmsListInfoBean infoBean) {
@@ -104,7 +104,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param galleryFolder the gallery folder
      */
     public CmsGalleryTreeItem(CmsGalleryFolderEntry galleryFolder) {
@@ -116,7 +116,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param galleryType the gallery type
      */
     public CmsGalleryTreeItem(CmsGalleryType galleryType) {
@@ -135,9 +135,9 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
 
     /**
      * Creates the list item widget for the given type.<p>
-     * 
+     *
      * @param galleryType the gallery type
-     * 
+     *
      * @return the list item widget
      */
     public static CmsListItemWidget createListWidget(CmsGalleryType galleryType) {
@@ -150,7 +150,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
 
     /**
      * Returns the folder entry id.<p>
-     * 
+     *
      * @return the folder entry id
      */
     public CmsUUID getEntryId() {
@@ -160,7 +160,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
 
     /**
      * Returns the site path.<p>
-     * 
+     *
      * @return the site path
      */
     public String getSitePath() {
@@ -171,7 +171,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
 
     /**
      * Updates the site path info.<p>
-     * 
+     *
      * @param sitePath the new site path
      */
     public void updateSitePath(String sitePath) {
@@ -185,7 +185,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
 
     /**
      * Shows the gallery dialog for the given entry.<p>
-     * 
+     *
      * @param entry the gallery folder entry
      */
     protected void showGallery(CmsClientSitemapEntry entry) {
@@ -206,7 +206,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
 
     /**
      * Handles direct editing of the gallery title.<p>
-     * 
+     *
      * @param editEntry the edit entry
      * @param newTitle the new title
      */
@@ -235,9 +235,9 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
 
     /**
      * Creates the list item widget for the given folder.<p>
-     * 
+     *
      * @param galleryFolder the gallery folder
-     * 
+     *
      * @return the list item widget
      */
     private CmsListItemWidget createListWidget(CmsGalleryFolderEntry galleryFolder) {
@@ -253,10 +253,8 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
         }
         CmsListInfoBean infoBean = new CmsListInfoBean(title, galleryFolder.getSitePath(), null);
         CmsListItemWidget result = new CmsGalleryListItemWidget(infoBean);
-        result.setIcon(CmsIconUtil.getResourceIconClasses(
-            galleryFolder.getResourceType(),
-            galleryFolder.getSitePath(),
-            false));
+        result.setIcon(
+            CmsIconUtil.getResourceIconClasses(galleryFolder.getResourceType(), galleryFolder.getSitePath(), false));
         result.addIconClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -265,17 +263,17 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
                     getSitePath(),
                     new AsyncCallback<CmsClientSitemapEntry>() {
 
-                        public void onFailure(Throwable caught) {
+                    public void onFailure(Throwable caught) {
 
-                            // nothing to do
+                        // nothing to do
 
-                        }
+                    }
 
-                        public void onSuccess(CmsClientSitemapEntry entry) {
+                    public void onSuccess(CmsClientSitemapEntry entry) {
 
-                            showGallery(entry);
-                        }
-                    });
+                        showGallery(entry);
+                    }
+                });
             }
         });
         if ((CmsSitemapView.getInstance().getController().getEntryById(galleryFolder.getStructureId()) == null)
@@ -293,18 +291,18 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
                         getSitePath(),
                         new AsyncCallback<CmsClientSitemapEntry>() {
 
-                            public void onFailure(Throwable caught) {
+                        public void onFailure(Throwable caught) {
 
-                                // nothing to do
-                            }
+                            // nothing to do
+                        }
 
-                            public void onSuccess(CmsClientSitemapEntry editEntry) {
+                        public void onSuccess(CmsClientSitemapEntry editEntry) {
 
-                                CmsGalleryTreeItem.this.handleEdit(editEntry, box.getText());
-                                box.removeFromParent();
-                                titleLabel.setVisible(true);
-                            }
-                        });
+                            CmsGalleryTreeItem.this.handleEdit(editEntry, box.getText());
+                            box.removeFromParent();
+                            titleLabel.setVisible(true);
+                        }
+                    });
                 }
             });
         }
@@ -313,7 +311,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
 
     /**
      * Updates the site path info.<p>
-     * 
+     *
      * @param newParentPath the new parent path
      * @param oldParentPath the previous parent path
      */

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,41 +32,41 @@ import com.google.gwt.dom.client.InputElement;
 
 /**
  * The interface for various implementations of a file input field.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsFileInputService {
 
     /**
      * Returns a JsArray of CmsFile objects.<p>
-     * 
+     *
      * @param inputElement the input element
-     * 
+     *
      * @return a JsArray of CmsFile objects
      */
     JsArray<CmsFileInfo> getFiles(InputElement inputElement);
 
     /**
      * The default implementation of the file input field does not support multiple file selection.<p>
-     * 
+     *
      * @param inputElement the input element
-     * 
+     *
      * @return <code>false</code> by default
      */
     boolean isAllowMultipleFiles(InputElement inputElement);
 
     /**
      * A dummy method, only used for sub classes.<p>
-     * 
+     *
      * @param inputElement the input element
-     * 
+     *
      * @param allow the flag that indicates if multiple file selection is supported
      */
     void setAllowMultipleFiles(InputElement inputElement, boolean allow);
 
     /**
      * The default implementation of the file input field does not support multiple file selection.<p>
-     * 
+     *
      * @return <code>false</code> by default
      */
     boolean supportsFileAPI();

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,15 +58,15 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the delete resources dialog.<p> 
- * 
+ * Provides methods for the delete resources dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/delete_standard.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
@@ -98,7 +98,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDelete(CmsJspActionElement jsp) {
@@ -108,7 +108,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -120,7 +120,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Performs the delete action, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionDelete() throws JspException {
@@ -163,7 +163,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Returns the html for the confirmation message.<p>
-     * 
+     *
      * @return the html for the confirmation message
      */
     public String buildConfirmation() {
@@ -189,7 +189,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Returns the html for the "delete siblings" options when deleting a a resource with siblings.<p>
-     * 
+     *
      * @return the html for the "delete siblings" options
      */
     public String buildDeleteSiblings() {
@@ -228,9 +228,9 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Returns html code for the possible broken relations.<p>
-     * 
+     *
      * @return html code for the possible broken relations
-     * 
+     *
      * @throws JspException if dialog actions fail
      * @throws IOException in case of errros forwarding to the required result page
      * @throws ServletException in case of errros forwarding to the required result page
@@ -283,7 +283,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Returns the value of the boolean option to delete siblings.<p>
-     * 
+     *
      * @return the value of the boolean option to delete siblings as a lower case string
      */
     public String getParamDeleteSiblings() {
@@ -302,10 +302,10 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
-     * Returns <code>true</code> if the current user is allowed 
+     * Returns <code>true</code> if the current user is allowed
      * to delete the selected resources.<p>
-     * 
-     * @return <code>true</code> if the current user is allowed 
+     *
+     * @return <code>true</code> if the current user is allowed
      *          to delete the selected resources
      */
     public boolean isCanDelete() {
@@ -316,7 +316,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Sets the value of the boolean option to delete siblings.<p>
-     * 
+     *
      * @param value the value of the boolean option to delete siblings
      */
     public void setParamDeleteSiblings(String value) {
@@ -334,9 +334,10 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         fillParamValues(request);
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamDeleteSiblings())) {
-            setParamDeleteSiblings(Boolean.toString(getSettings().getUserSettings().getDialogDeleteFileMode() == CmsResource.DELETE_REMOVE_SIBLINGS));
+            setParamDeleteSiblings(Boolean.toString(
+                getSettings().getUserSettings().getDialogDeleteFileMode() == CmsResource.DELETE_REMOVE_SIBLINGS));
         }
-        // check the required permissions to delete the resource       
+        // check the required permissions to delete the resource
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
@@ -344,7 +345,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_DELETE);
         } else if (DIALOG_LOCKS_CONFIRMED.equals(getParamAction())) {
@@ -355,14 +356,14 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for delete dialog     
+            // build title for delete dialog
             setDialogTitle(Messages.GUI_DELETE_RESOURCE_1, Messages.GUI_DELETE_MULTI_2);
         }
     }
 
     /**
      * Performs the resource deletion.<p>
-     * 
+     *
      * @return true, if the resource(s) was/were deleted, otherwise false
      * @throws CmsException if deletion is not successful
      */
@@ -406,7 +407,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Performs the delete operation for a single VFS resource.<p>
-     * 
+     *
      * @param resource the resource VFS path
      * @param deleteOption the delete option for sibling deletion
      * @throws CmsException if deleting the resource fails

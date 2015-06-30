@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,38 +35,38 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Describes an OpenCms request handler.<p>
- * 
- * Request handlers are used for special requests to OpenCms 
+ *
+ * Request handlers are used for special requests to OpenCms
  * that should NOT be mapped to a VFS resource.
- * A request handler URI always start with <code>/handle</code> and then 
- * one or more possible handler names as defined with the {@link #getHandlerNames()} 
+ * A request handler URI always start with <code>/handle</code> and then
+ * one or more possible handler names as defined with the {@link #getHandlerNames()}
  * method.<p>
- * 
+ *
  * For example, if a registerd request handler has the name <code>"MyName"</code>,
- * any request (in a simple setup) to <code>/opencms/opencms/handlerMyName...</code> will directly be transfered 
- * to the {@link #handle(HttpServletRequest, HttpServletResponse, String)} method of this 
+ * any request (in a simple setup) to <code>/opencms/opencms/handlerMyName...</code> will directly be transfered
+ * to the {@link #handle(HttpServletRequest, HttpServletResponse, String)} method of this
  * handler.<p>
- * 
- * In essence, the request handlers are like simplified mini-servlets that run inside OpenCms. 
+ *
+ * In essence, the request handlers are like simplified mini-servlets that run inside OpenCms.
  * Of course they are not intended as replacements for real servlets.
  * In case you require sophisticated lifecycle support use a genuine servlet instead.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsRequestHandler {
 
     /**
      * Returns the handler name.<p>
-     * 
+     *
      * @return the handler name
      */
     String[] getHandlerNames();
 
     /**
      * Handles an OpenCms request.<p>
-     * 
+     *
      * @param req the current request
-     * @param res the current response 
+     * @param res the current response
      * @param name the handler name to invoke
      * @throws ServletException in case an error occurs
      * @throws IOException in case an error occurs

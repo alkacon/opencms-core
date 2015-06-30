@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,19 +31,19 @@ import java.util.Locale;
 
 /**
  * Provides an interface for list data formatting.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsListFormatter {
 
     /**
      * Returns a formatted string for the specified data.<p>
-     * 
+     *
      * Take care of <code>null</code> data.<p>
-     * 
+     *
      * @param data the data to format
      * @param locale the locale for formatting
-     * 
+     *
      * @return formatted data
      */
     String format(Object data, Locale locale);

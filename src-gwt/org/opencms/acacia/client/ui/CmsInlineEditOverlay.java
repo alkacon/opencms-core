@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -157,7 +157,7 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param element the element to surround with the overlay
      */
     public CmsInlineEditOverlay(Element element) {
@@ -187,9 +187,9 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
 
     /**
      * Adds an overlay surrounding the given DOM element.<p>
-     * 
+     *
      * @param element the element
-     * 
+     *
      * @return the overlay widget
      */
     public static CmsInlineEditOverlay addOverlayForElement(Element element) {
@@ -207,7 +207,7 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
 
     /**
      * Returns the root overlay if available.<p>
-     * 
+     *
      * @return the root overlay
      */
     public static CmsInlineEditOverlay getRootOverlay() {
@@ -252,7 +252,7 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
 
     /**
      * Adds a button widget to the button panel.<p>
-     *  
+     *
      * @param widget the button widget
      * @param absoluteTop the absolute top position
      */
@@ -302,7 +302,7 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
 
     /**
      * Updates the position of the given button widget.<p>
-     * 
+     *
      * @param widget the button widget
      * @param absoluteTop the top absolute top position
      */
@@ -320,7 +320,7 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
 
     /**
      * Sets the overlay offset.<p>
-     * 
+     *
      * @param offset the offset
      */
     public void setOffset(int offset) {
@@ -359,10 +359,10 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
 
     /**
      * Returns the available absolute top position for the given button.<p>
-     * 
+     *
      * @param widget the button widget
      * @param absoluteTop the proposed position
-     * 
+     *
      * @return the available position
      */
     private int getAvailablePosition(CmsInlineEntityWidget widget, int absoluteTop) {
@@ -385,7 +385,7 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
 
     /**
      * Increases the overlay height to make space for edit buttons.<p>
-     * 
+     *
      * @param height the height to set
      */
     private void increaseOverlayHeight(int height) {
@@ -398,7 +398,7 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
 
     /**
      * Sets button bar visibility.<p>
-     * 
+     *
      * @param visible <code>true</code> to set the button bar visible
      */
     private void setButtonBarVisible(boolean visible) {
@@ -411,22 +411,24 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
                 int width = CmsClientStringUtil.parseInt(m_borderTopStyle.getWidth()) + BUTTON_BAR_WIDTH;
                 m_borderTopStyle.setWidth(width, Unit.PX);
                 m_borderBottomStyle.setWidth(width, Unit.PX);
-                m_borderRightStyle.setLeft(CmsClientStringUtil.parseInt(m_borderRightStyle.getLeft())
-                    + BUTTON_BAR_WIDTH, Unit.PX);
+                m_borderRightStyle.setLeft(
+                    CmsClientStringUtil.parseInt(m_borderRightStyle.getLeft()) + BUTTON_BAR_WIDTH,
+                    Unit.PX);
             } else {
                 m_buttonBar.getStyle().setDisplay(Display.NONE);
                 int width = CmsClientStringUtil.parseInt(m_borderTopStyle.getWidth()) - BUTTON_BAR_WIDTH;
                 m_borderTopStyle.setWidth(width, Unit.PX);
                 m_borderBottomStyle.setWidth(width, Unit.PX);
-                m_borderRightStyle.setLeft(CmsClientStringUtil.parseInt(m_borderRightStyle.getLeft())
-                    - BUTTON_BAR_WIDTH, Unit.PX);
+                m_borderRightStyle.setLeft(
+                    CmsClientStringUtil.parseInt(m_borderRightStyle.getLeft()) - BUTTON_BAR_WIDTH,
+                    Unit.PX);
             }
         }
     }
 
     /**
      * Sets position and size of the overlay area.<p>
-     * 
+     *
      * @param position the position of highlighted area
      */
     private void setPosition(CmsPositionBean position) {
@@ -437,7 +439,7 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
 
     /**
      * Sets position and size of the overlay area.<p>
-     * 
+     *
      * @param posX the new X position
      * @param posY the new Y position
      * @param height the new height

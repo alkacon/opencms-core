@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -75,8 +75,8 @@ import org.xml.sax.SAXException;
 
 /**
  * Import/export handler implementation for Cms modules.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
@@ -113,11 +113,11 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
     /**
      * Reads a module object from an external file source.<p>
-     * 
+     *
      * @param importResource the name of the input source
-     * 
+     *
      * @return the imported module
-     *  
+     *
      * @throws CmsConfigurationException if the module could not be imported
      */
     public static CmsModule readModuleFromImport(String importResource) throws CmsConfigurationException {
@@ -157,7 +157,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                 stream = new FileInputStream(file);
             }
 
-            // start the parsing process        
+            // start the parsing process
             digester.parse(stream);
         } catch (IOException e) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IO_MODULE_IMPORT_1, importResource);
@@ -184,9 +184,8 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
         // the digester must have set the module now
         if (importedModule == null) {
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_IMPORT_MOD_ALREADY_INSTALLED_1,
-                importResource));
+            throw new CmsConfigurationException(
+                Messages.get().container(Messages.ERR_IMPORT_MOD_ALREADY_INSTALLED_1, importResource));
         }
 
         return importedModule;
@@ -203,9 +202,10 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
         report.print(Messages.get().container(Messages.RPT_EXPORT_MODULE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
         if (report instanceof CmsHtmlReport) {
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                "<i>" + getModuleName() + "</i>"));
+            report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    "<i>" + getModuleName() + "</i>"));
 
         } else {
             report.print(org.opencms.report.Messages.get().container(
@@ -216,9 +216,8 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
         if (!OpenCms.getModuleManager().hasModule(getModuleName())) {
             // module not available
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_NO_MOD_FOR_EXPORT_1,
-                getModuleName()));
+            throw new CmsConfigurationException(
+                Messages.get().container(Messages.ERR_NO_MOD_FOR_EXPORT_1, getModuleName()));
         }
 
         // generate module XML
@@ -248,7 +247,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
     /**
      * Returns the VFS resources to be exported additionally with the module.<p>
-     * 
+     *
      * @return the VFS resources to be exported additionally with the module
      */
     public List<String> getAdditionalResources() {
@@ -266,7 +265,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
     /**
      * Returns the name of the export file in the real file system.<p>
-     * 
+     *
      * @return the name of the export file in the real file system
      */
     public String getFileName() {
@@ -286,7 +285,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
     /**
      * Returns the (package) name of the module to be exported.<p>
-     * 
+     *
      * @return the (package) name of the module to be exported
      */
     public String getModuleName() {
@@ -296,7 +295,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
     /**
      * Returns the VFS resources to be exported additionally with the module as a list.<p>
-     * 
+     *
      * @return the VFS resources to be exported additionally with the module as a list
      */
     public List<String> getResourcesAsList() {
@@ -324,9 +323,10 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
                 try {
                     // try to read a (leftover) module import project
-                    importProject = cms.readProject(Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
-                        Messages.GUI_IMPORT_MODULE_PROJECT_NAME_1,
-                        new Object[] {modulePackageName}));
+                    importProject = cms.readProject(
+                        Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
+                            Messages.GUI_IMPORT_MODULE_PROJECT_NAME_1,
+                            new Object[] {modulePackageName}));
                 } catch (CmsException e) {
                     // create a Project to import the module
                     importProject = cms.createProject(
@@ -346,9 +346,9 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                 // copy the root folder to the project
                 cms.copyResourceToProject("/");
             } catch (Exception e) {
-                throw new CmsImportExportException(Messages.get().container(
-                    Messages.ERR_IO_MODULE_IMPORT_1,
-                    parameters.getPath()), e);
+                throw new CmsImportExportException(
+                    Messages.get().container(Messages.ERR_IO_MODULE_IMPORT_1, parameters.getPath()),
+                    e);
             } finally {
                 helper.closeFile();
                 cms.getRequestContext().setSiteRoot(storedSiteRoot);
@@ -356,13 +356,15 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
             report.print(Messages.get().container(Messages.RPT_IMPORT_MODULE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
             if (report instanceof CmsHtmlReport) {
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    "<i>" + modulePackageName + "</i>"));
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        "<i>" + modulePackageName + "</i>"));
             } else {
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    modulePackageName));
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        modulePackageName));
             }
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             importModule(cms, report, parameters);
@@ -381,7 +383,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
     /**
      * @see org.opencms.importexport.I_CmsImportExportHandler#importData(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.report.I_CmsReport)
-     * 
+     *
      * @deprecated use {@link #importData(CmsObject, I_CmsReport)} instead
      */
     @Deprecated
@@ -406,7 +408,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
     /**
      * Sets the VFS resources to be exported additionally with the module.<p>
-     * 
+     *
      * @param resources the VFS resources to be exported additionally with the module
      */
     public void setAdditionalResources(String[] resources) {
@@ -424,7 +426,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
     /**
      * Sets the name of the export file in the real file system.<p>
-     * 
+     *
      * @param fileName the name of the export file in the real file system
      */
     public void setFileName(String fileName) {
@@ -444,7 +446,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
     /**
      * Will be called by the digester if a module was imported.<p>
-     * 
+     *
      * @param moduleHandler contains the imported module
      */
     public void setModule(CmsModuleXmlHandler moduleHandler) {
@@ -454,7 +456,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
     /**
      * Sets the (package) name of the module to be exported.<p>
-     * 
+     *
      * @param moduleName the (package) name of the module to be exported
      */
     public void setModuleName(String moduleName) {
@@ -464,7 +466,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
     /**
      * Returns the module imported with the digester.<p>
-     * 
+     *
      * @return the module imported with the digester
      */
     private CmsModule getModule() {
@@ -474,15 +476,15 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
     /**
      * Imports a module from an external file source.<p>
-     * 
+     *
      * @param cms must have been initialized with {@link CmsRole#DATABASE_MANAGER} permissions
      * @param report the report to print the progress information to
      * @param parameters the import parameters
-     * 
-     * @return the imported module 
-     * 
+     *
+     * @return the imported module
+     *
      * @throws CmsSecurityException if no {@link CmsRole#DATABASE_MANAGER} permissions are available
-     * @throws CmsConfigurationException if the module is already installed or the 
+     * @throws CmsConfigurationException if the module is already installed or the
      *      dependencies are not fulfilled
      * @throws CmsException if errors occur reading the module data
      */
@@ -497,9 +499,8 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
         // check if the module is already installed
         if (OpenCms.getModuleManager().hasModule(importedModule.getName())) {
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_MOD_ALREADY_INSTALLED_1,
-                importedModule.getName()));
+            throw new CmsConfigurationException(
+                Messages.get().container(Messages.ERR_MOD_ALREADY_INSTALLED_1, importedModule.getName()));
         }
 
         // check the module dependencies
@@ -513,10 +514,11 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                 missingModules.append("  ").append(dependency.getName()).append(", Version ").append(
                     dependency.getVersion()).append("\r\n");
             }
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_MOD_DEPENDENCY_INFO_2,
-                importedModule.getName() + ", Version " + importedModule.getVersion(),
-                missingModules));
+            throw new CmsConfigurationException(
+                Messages.get().container(
+                    Messages.ERR_MOD_DEPENDENCY_INFO_2,
+                    importedModule.getName() + ", Version " + importedModule.getVersion(),
+                    missingModules));
         }
 
         // check the imported resource types for name / id conflicts
@@ -529,28 +531,30 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                     externalConflictIndex);
                 if (!type.isIdentical(conflictingType)) {
                     // if name and id are identical, we assume this is a module replace operation
-                    throw new CmsConfigurationException(org.opencms.loader.Messages.get().container(
-                        org.opencms.loader.Messages.ERR_CONFLICTING_MODULE_RESOURCE_TYPES_5,
-                        new Object[] {
-                            type.getTypeName(),
-                            new Integer(type.getTypeId()),
-                            importedModule.getName(),
-                            conflictingType.getTypeName(),
-                            new Integer(conflictingType.getTypeId())}));
+                    throw new CmsConfigurationException(
+                        org.opencms.loader.Messages.get().container(
+                            org.opencms.loader.Messages.ERR_CONFLICTING_MODULE_RESOURCE_TYPES_5,
+                            new Object[] {
+                                type.getTypeName(),
+                                new Integer(type.getTypeId()),
+                                importedModule.getName(),
+                                conflictingType.getTypeName(),
+                                new Integer(conflictingType.getTypeId())}));
                 }
             }
             // now check against the other resource types of the imported module
             int internalConflictIndex = checkedTypes.indexOf(type);
             if (internalConflictIndex >= 0) {
                 I_CmsResourceType conflictingType = checkedTypes.get(internalConflictIndex);
-                throw new CmsConfigurationException(org.opencms.loader.Messages.get().container(
-                    org.opencms.loader.Messages.ERR_CONFLICTING_RESTYPES_IN_MODULE_5,
-                    new Object[] {
-                        importedModule.getName(),
-                        type.getTypeName(),
-                        new Integer(type.getTypeId()),
-                        conflictingType.getTypeName(),
-                        new Integer(conflictingType.getTypeId())}));
+                throw new CmsConfigurationException(
+                    org.opencms.loader.Messages.get().container(
+                        org.opencms.loader.Messages.ERR_CONFLICTING_RESTYPES_IN_MODULE_5,
+                        new Object[] {
+                            importedModule.getName(),
+                            type.getTypeName(),
+                            new Integer(type.getTypeId()),
+                            conflictingType.getTypeName(),
+                            new Integer(conflictingType.getTypeId())}));
             }
             // add the resource type for the next check
             checkedTypes.add(type);

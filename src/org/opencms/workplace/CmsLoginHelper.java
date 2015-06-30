@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,9 +45,9 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Handles front-end login of users to the OpenCms workplace into the given site and project.<p> 
- * 
- * @since 7.0.3 
+ * Handles front-end login of users to the OpenCms workplace into the given site and project.<p>
+ *
+ * @since 7.0.3
  */
 public class CmsLoginHelper extends CmsWorkplace {
 
@@ -56,7 +56,7 @@ public class CmsLoginHelper extends CmsWorkplace {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -78,7 +78,7 @@ public class CmsLoginHelper extends CmsWorkplace {
 
     /**
      * Returns the formatted stack trace.<p>
-     * 
+     *
      * @return the formatted stack trace
      */
     public String getStacktrace() {
@@ -90,15 +90,15 @@ public class CmsLoginHelper extends CmsWorkplace {
 
     /**
      * Logs the user into the given project and site.<p>
-     * 
+     *
      * Check the {@link #getLoginException()} for the error message.<p>
-     * 
+     *
      * @param userName the user name
      * @param password the password
      * @param projectName the optional project name, if <code>null</code> the default project is used
      * @param siteRoot the site of the resource, if <code>null</code> the default site is used
      * @param resourceName the resource to display
-     * 
+     *
      * @return <code>true</code> if the login has been successful
      */
     public boolean login(String userName, String password, String projectName, String siteRoot, String resourceName) {
@@ -131,10 +131,8 @@ public class CmsLoginHelper extends CmsWorkplace {
                 // user has access to the project, set this as current project
                 getCms().getRequestContext().setCurrentProject(project);
             } else {
-                throw new CmsSecurityException(Messages.get().container(
-                    Messages.ERR_PROJECT_NOT_ACCESSIBLE_2,
-                    userName,
-                    projectName));
+                throw new CmsSecurityException(
+                    Messages.get().container(Messages.ERR_PROJECT_NOT_ACCESSIBLE_2, userName, projectName));
             }
         } catch (CmsException e) {
             m_loginException = e;
@@ -168,10 +166,8 @@ public class CmsLoginHelper extends CmsWorkplace {
                     // user has access to the site, set this as current site
                     getCms().getRequestContext().setSiteRoot(siteRoot);
                 } else {
-                    throw new CmsSecurityException(Messages.get().container(
-                        Messages.ERR_SITE_NOT_ACCESSIBLE_2,
-                        userName,
-                        siteRoot));
+                    throw new CmsSecurityException(
+                        Messages.get().container(Messages.ERR_SITE_NOT_ACCESSIBLE_2, userName, siteRoot));
                 }
             } catch (CmsException e) {
                 m_loginException = e;
@@ -196,7 +192,7 @@ public class CmsLoginHelper extends CmsWorkplace {
 
         // only for content creators so that direct edit works
         if (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ELEMENT_AUTHOR)) {
-            // get / create the workplace settings 
+            // get / create the workplace settings
             CmsWorkplaceSettings wpSettings = getSettings();
             if (wpSettings == null) {
                 // create the settings object

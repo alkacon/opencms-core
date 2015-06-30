@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,11 +38,11 @@ import com.google.gwt.user.client.Command;
 
 /**
  * Preview dialog handler.<p>
- * 
+ *
  * Delegates the actions of the preview controller to the preview dialog.<p>
- * 
+ *
  * @param <T> the resource info bean type
- * 
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> implements I_CmsPreviewHandler<T> {
@@ -55,7 +55,7 @@ public abstract class A_CmsPreviewHandler<T extends CmsResourceInfoBean> impleme
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param resourcePreview the resource preview instance
      */
     public A_CmsPreviewHandler(I_CmsResourcePreview<T> resourcePreview) {

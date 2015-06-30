@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Client side lock class.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsClientLock implements IsSerializable {
@@ -40,8 +40,8 @@ public class CmsClientLock implements IsSerializable {
      * The available lock types. Replace with {@link org.opencms.lock.CmsLockType} as soon that fulfills the serializable convention.
      */
     public enum LockType {
-        /** 
-         * A lock that allows the user to edit the resource's structure record, 
+        /**
+         * A lock that allows the user to edit the resource's structure record,
          * it's resource record, and its content record.<p>
          *
          * This lock is assigned to files that are locked via the context menu.
@@ -55,28 +55,28 @@ public class CmsClientLock implements IsSerializable {
         PUBLISH(7),
 
         /**
-         * A lock that allows the user to edit the resource's structure record only, 
+         * A lock that allows the user to edit the resource's structure record only,
          * but not it's resource record nor content record.<p>
-         * 
+         *
          * This lock is assigned to files if a sibling of the resource record has
-         * already an exclusive lock. 
+         * already an exclusive lock.
          */
         SHARED_EXCLUSIVE(2),
 
         /**
-         * A lock that allows the user to edit the resource's structure record only, 
+         * A lock that allows the user to edit the resource's structure record only,
          * but not it's resource record nor content record.<p>
-         * 
+         *
          * This lock is assigned to resources that already have a shared exclusive lock,
          * and then inherit a lock because one if it's parent folders gets locked.
          */
         SHARED_INHERITED(1),
 
-        /** 
-         * A temporary exclisive lock that allows the user to edit the resource's structure record, 
+        /**
+         * A temporary exclisive lock that allows the user to edit the resource's structure record,
          * it's resource record, and its content record.<p>
-         * 
-         * This lock is identical to the {@link #EXCLUSIVE} lock, but it is automatically removed after 
+         *
+         * This lock is identical to the {@link #EXCLUSIVE} lock, but it is automatically removed after
          * a user is logged out.<p>
          */
         TEMPORARY(6),
@@ -92,7 +92,7 @@ public class CmsClientLock implements IsSerializable {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param mode the lock mode/type
          */
         LockType(int mode) {
@@ -102,9 +102,9 @@ public class CmsClientLock implements IsSerializable {
 
         /**
          * Returns the lock type according to the given mode.<p>
-         * 
+         *
          * @param mode the lock mode/type int
-         * 
+         *
          * @return the lock type
          */
         public static LockType valueOf(int mode) {
@@ -131,10 +131,10 @@ public class CmsClientLock implements IsSerializable {
 
         /**
          * Returns <code>true</code> if this lock is in fact unlocked.<p>
-         * 
+         *
          * Only if this is <code>true</code>, the result lock is equal to the <code>NULL</code> lock,
          * which can be obtained by {@link org.opencms.lock.CmsLock#getNullLock()}.<p>
-         * 
+         *
          * @return <code>true</code> if this lock is in fact unlocked
          */
         public boolean isUnlocked() {
@@ -170,7 +170,7 @@ public class CmsClientLock implements IsSerializable {
 
         /**
          * Return the lock mode/type.<p>
-         * 
+         *
          * @return the lock mode/type
          */
         public int getMode() {

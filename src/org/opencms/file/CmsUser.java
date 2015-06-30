@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,29 +43,29 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/** 
+/**
  * A user principal in the OpenCms permission system.<p>
  *
  * A user in OpenCms is uniquely defined by its user named returned by
  * <code>{@link #getName()}</code>.<p>
- * 
+ *
  * Basic users in OpenCms are users that can access the OpenCms Workplace.
  * Moreover, the user must be created by another user with the
  * <code>{@link org.opencms.security.CmsRole#ACCOUNT_MANAGER}</code> role.
- * These users are "content managers" that actually have write permissions in 
+ * These users are "content managers" that actually have write permissions in
  * at last some parts of the VFS.<p>
- * 
+ *
  * Another possibility is to have users in a 'Guests' group.
- * These users do not have access to the OpenCms Workplace. 
- * However, an user in a 'Guests' group can be created by every user, for example 
- * the "Guest" user. The main use case is that these users are used for users of 
- * the website that can generate their own accounts, in a "please register your 
- * account..." scenario. 
+ * These users do not have access to the OpenCms Workplace.
+ * However, an user in a 'Guests' group can be created by every user, for example
+ * the "Guest" user. The main use case is that these users are used for users of
+ * the website that can generate their own accounts, in a "please register your
+ * account..." scenario.
  * These user accounts can then be used to build personalized web sites.<p>
- * 
+ *
  * @since 6.0.0
- * 
- * @see CmsGroup 
+ *
+ * @see CmsGroup
  */
 public class CmsUser extends CmsPrincipal implements Cloneable {
 
@@ -115,14 +115,14 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Creates a new OpenCms user principal.<p>
-     * 
+     *
      * @param id the unique id of the new user
      * @param name the fully qualified name of the new user
      * @param password the password of the user
      * @param firstname the first name
      * @param lastname the last name
      * @param email the email address
-     * @param lastlogin time stamp 
+     * @param lastlogin time stamp
      * @param flags flags
      * @param dateCreated the creation date
      * @param additionalInfo user related information
@@ -163,9 +163,9 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Validates an email address.<p>
-     * 
+     *
      * That means, the parameter should only be composed by digits and standard english letters, points, underscores and exact one "At" symbol.<p>
-     * 
+     *
      * @param email the email to validate
      */
     public static void checkEmail(String email) {
@@ -175,9 +175,9 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Validates a zip code.<p>
-     * 
+     *
      * That means, the parameter should only be composed by digits and standard english letters.<p>
-     * 
+     *
      * @param zipcode the zip code to validate
      */
     public static void checkZipCode(String zipcode) {
@@ -188,11 +188,11 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * Returns the "full" name of the given user in the format <code>"{firstname} {lastname} ({username})"</code>,
      * or the empty String <code>""</code> if the user is null.<p>
-     * 
+     *
      * @param user the user to get the full name from
      * @return the "full" name the user
-     * 
-     * @see #getFullName() 
+     *
+     * @see #getFullName()
      */
     public static String getFullName(CmsUser user) {
 
@@ -205,17 +205,17 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Checks if the given String starts with {@link I_CmsPrincipal#PRINCIPAL_USER} followed by a dot.<p>
-     * 
+     *
      * <ul>
      * <li>Works if the given String is <code>null</code>.
      * <li>Removes white spaces around the String before the check.
      * <li>Also works with prefixes not being in upper case.
      * <li>Does not check if the user after the prefix actually exists.
      * </ul>
-     * 
+     *
      * @param principalName the user name to check
-     * 
-     * @return <code>true</code> in case the String starts with {@link I_CmsPrincipal#PRINCIPAL_USER} followed by a dot 
+     *
+     * @return <code>true</code> in case the String starts with {@link I_CmsPrincipal#PRINCIPAL_USER} followed by a dot
      */
     public static boolean hasPrefix(String principalName) {
 
@@ -225,7 +225,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Removes the prefix if the given String starts with {@link I_CmsPrincipal#PRINCIPAL_USER} followed by a dot.<p>
-     * 
+     *
      * <ul>
      * <li>Works if the given String is <code>null</code>.
      * <li>If the given String does not start with {@link I_CmsPrincipal#PRINCIPAL_USER} followed by a dot it is returned unchanged.
@@ -233,9 +233,9 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
      * <li>Also works with prefixes not being in upper case.
      * <li>Does not check if the user after the prefix actually exists.
      * </ul>
-     * 
+     *
      * @param principalName the user name to remove the prefix from
-     * 
+     *
      * @return the given String with the prefix {@link I_CmsPrincipal#PRINCIPAL_USER} and the following dot removed
      */
     public static String removePrefix(String principalName) {
@@ -250,11 +250,11 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     }
 
     /**
-     * Checks if the provided user name is a valid user name and can be used as an argument value 
-     * for {@link #setName(String)}.<p> 
-     * 
+     * Checks if the provided user name is a valid user name and can be used as an argument value
+     * for {@link #setName(String)}.<p>
+     *
      * @param name the user name to check
-     * 
+     *
      * @throws CmsIllegalArgumentException if the check fails
      */
     public void checkName(String name) throws CmsIllegalArgumentException {
@@ -285,7 +285,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
      * Deletes a value from this users "additional information" storage map.<p>
      *
      * @param key the additional user information to delete
-     * 
+     *
      * @see #getAdditionalInfo()
      */
     public void deleteAdditionalInfo(String key) {
@@ -300,7 +300,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
      * that can be used to store any key / value pairs for the user.
      * Some information parts of the users address are stored in this map
      * by default.<p>
-     * 
+     *
      * @return this users complete "additional information" storage map
      */
     public Map<String, Object> getAdditionalInfo() {
@@ -311,11 +311,11 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * Returns a value from this users "additional information" storage map,
      * or <code>null</code> if no value for the given key is available.<p>
-     * 
+     *
      * @param key selects the value to return from the "additional information" storage map
-     * 
+     *
      * @return the selected value from this users "additional information" storage map
-     * 
+     *
      * @see #getAdditionalInfo()
      */
     public Object getAdditionalInfo(String key) {
@@ -335,10 +335,10 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Returns the city information of this user.<p>
-     * 
+     *
      * This information is stored in the "additional information" storage map
      * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_CITY}</code>.<p>
-     * 
+     *
      * @return the city information of this user
      */
     public String getCity() {
@@ -430,7 +430,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Returns the "full" name of the this user in the format <code>"{firstname} {lastname} ({username})"</code>.<p>
-     * 
+     *
      * @return the "full" name this user
      */
     public String getFullName() {
@@ -454,10 +454,10 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Returns the institution information of this user.<p>
-     * 
+     *
      * This information is stored in the "additional information" storage map
      * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_INSTITUTION}</code>.<p>
-     * 
+     *
      * @return the institution information of this user
      */
     public String getInstitution() {
@@ -497,11 +497,11 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Returns the zip code information of this user.<p>
-     * 
+     *
      * This information is stored in the "additional information" storage map
      * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_ZIPCODE}</code>.<p>
      *
-     * @return the zip code information of this user 
+     * @return the zip code information of this user
      */
     public String getZipcode() {
 
@@ -519,7 +519,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Checks if this user is the default guest user.<p>
-     * 
+     *
      * @return <code>true</code> if this user is the default guest user
      */
     public boolean isGuestUser() {
@@ -528,9 +528,9 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     }
 
     /**
-     * Returns <code>true</code> if this user is not able to manage itself.<p> 
-     * 
-     * @return <code>true</code> if this user is not able to manage itself 
+     * Returns <code>true</code> if this user is not able to manage itself.<p>
+     *
+     * @return <code>true</code> if this user is not able to manage itself
      */
     public boolean isManaged() {
 
@@ -539,7 +539,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Returns <code>true</code> if this user was touched.<p>
-     * 
+     *
      * @return boolean true if this user was touched
      */
     public boolean isTouched() {
@@ -558,7 +558,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Checks if the user is marked as webuser.<p>
-     * 
+     *
      * @return <code>true</code> if the user is marked as webuser
      */
     public boolean isWebuser() {
@@ -568,9 +568,9 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Sets this users complete "additional information" storage map to the given value.<p>
-     * 
+     *
      * @param additionalInfo the complete "additional information" map to set
-     * 
+     *
      * @see #getAdditionalInfo()
      */
     public void setAdditionalInfo(Map<String, Object> additionalInfo) {
@@ -580,18 +580,17 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Stores a value in this users "additional information" storage map with the given access key.<p>
-     * 
+     *
      * @param key the key to store the value under
      * @param value the value to store in the users "additional information" storage map
-     * 
+     *
      * @see #getAdditionalInfo()
      */
     public void setAdditionalInfo(String key, Object value) {
 
         if (key == null) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_USER_ADDINFO_KEY_NULL_1,
-                getFullName()));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_USER_ADDINFO_KEY_NULL_1, getFullName()));
         }
         m_additionalInfo.put(key, value);
     }
@@ -608,7 +607,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Sets the city information of this user.<p>
-     * 
+     *
      * @param city the city information to set
      */
     public void setCity(String city) {
@@ -618,7 +617,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Sets the country information of this user.<p>
-     * 
+     *
      * @param country the city information to set
      */
     public void setCountry(String country) {
@@ -665,7 +664,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Sets the institution information of this user.<p>
-     * 
+     *
      * @param institution the institution information to set
      */
     public void setInstitution(String institution) {
@@ -700,7 +699,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Sets the managed flag for this user to the given value.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setManaged(boolean value) {
@@ -727,7 +726,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /**
      * Sets the zip code information of this user.<p>
-     * 
+     *
      * @param zipcode the zip code information to set
      */
     public void setZipcode(String zipcode) {

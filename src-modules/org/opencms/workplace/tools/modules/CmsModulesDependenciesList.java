@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,8 +58,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Module dependencies view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsModulesDependenciesList extends A_CmsListDialog {
 
@@ -104,7 +104,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsModulesDependenciesList(CmsJspActionElement jsp) {
@@ -120,7 +120,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -132,9 +132,10 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
 
     /**
      * This method should handle every defined list multi action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
+     * by comparing <code>{@link #getParamListAction()}</code> with the id
+     * of the action to execute.<p>
      */
+    @Override
     public void executeListMultiActions() {
 
         if (getParamListAction().equals(LIST_MACTION_DELETE)) {
@@ -161,6 +162,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         String moduleName = getParamModule();
@@ -189,7 +191,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
 
     /**
      * Gets the module parameter.<p>
-     * 
+     *
      * @return the module parameter
      */
     public String getParamModule() {
@@ -197,7 +199,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
         return m_paramModule;
     }
 
-    /** 
+    /**
      * Sets the module parameter.<p>
      * @param paramModule the module parameter
      */
@@ -209,6 +211,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -217,6 +220,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List ret = new ArrayList();
@@ -242,6 +246,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -253,6 +258,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         //add column for edit action
@@ -280,8 +286,8 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
         // direct action: delete module
         CmsListDirectAction delDependency = new CmsListDirectAction(LIST_ACTION_DELETE);
         delDependency.setName(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_DELETE_NAME_0));
-        delDependency.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_DEPENDENCIES_LIST_ACTION_DELETE_CONF_0));
+        delDependency.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_DELETE_CONF_0));
         delDependency.setIconPath(ICON_DELETE);
         delDependency.setEnabled(true);
         delDependency.setHelpText(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_DELETE_HELP_0));
@@ -315,6 +321,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // noop
@@ -323,13 +330,14 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the delete dependencies multi action
         CmsListMultiAction deleteDependencies = new CmsListMultiAction(LIST_MACTION_DELETE);
         deleteDependencies.setName(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_MDELETE_NAME_0));
-        deleteDependencies.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_DEPENDENCIES_LIST_ACTION_MDELETE_CONF_0));
+        deleteDependencies.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_MDELETE_CONF_0));
         deleteDependencies.setIconPath(ICON_MULTI_DELETE);
         deleteDependencies.setEnabled(true);
         deleteDependencies.setHelpText(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_MDELETE_HELP_0));
@@ -339,10 +347,11 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (OpenCms.getModuleManager().getModule(getParamModule()) == null) {
-            // just throw a dummy exception here since getModule does not produce an exception when a 
+            // just throw a dummy exception here since getModule does not produce an exception when a
             // module is not found
             throw new Exception();
         }
@@ -350,7 +359,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
 
     /**
      * Deletes a module dependency from a module.<p>
-     * 
+     *
      * @param module the module to delete the dependency from
      * @param dependencyName the name of the dependcency to delete
      */
@@ -371,16 +380,14 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
             OpenCms.getModuleManager().updateModule(getCms(), module);
         } catch (CmsConfigurationException ce) {
             // should never happen
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_ACTION_DEPENDENCIES_DELETE_2,
-                dependencyName,
-                module.getName()), ce);
+            throw new CmsRuntimeException(
+                Messages.get().container(Messages.ERR_ACTION_DEPENDENCIES_DELETE_2, dependencyName, module.getName()),
+                ce);
 
         } catch (CmsRoleViolationException re) {
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_ACTION_DEPENDENCIES_DELETE_2,
-                dependencyName,
-                module.getName()), re);
+            throw new CmsRuntimeException(
+                Messages.get().container(Messages.ERR_ACTION_DEPENDENCIES_DELETE_2, dependencyName, module.getName()),
+                re);
         }
     }
 }

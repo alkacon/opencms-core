@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,7 +54,7 @@ public class CmsGalleryPopup extends CmsPopup implements I_CmsGalleryHandler {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param handler the widget handler, used to set the widgets value
      * @param conf the gallery configuration
      */
@@ -103,8 +103,8 @@ public class CmsGalleryPopup extends CmsPopup implements I_CmsGalleryHandler {
 
     /**
      * Returns the popup content.<p>
-     * 
-     * @return the popup content 
+     *
+     * @return the popup content
      */
     public Panel getContainer() {
 
@@ -130,7 +130,7 @@ public class CmsGalleryPopup extends CmsPopup implements I_CmsGalleryHandler {
 
     /**
      * Searches for a specific element and opens it's preview if found.<p>
-     * 
+     *
      * @param path the element path
      */
     public void searchElement(String path) {

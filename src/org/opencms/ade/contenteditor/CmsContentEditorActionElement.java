@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,7 +59,7 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param context the page context
      * @param req the servlet request
      * @param res the servlet response
@@ -100,7 +100,7 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
 
     /**
      * Adds link and script tags to the buffer if required for external widgets.<p>
-     * 
+     *
      * @param sb the string buffer to append the tags to
      * @param definition the content definition
      */
@@ -128,9 +128,9 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
 
     /**
      * Returns the prefetch data include.<p>
-     * 
+     *
      * @return the prefetch data include
-     *  
+     *
      * @throws Exception if something goes wrong
      */
     private String getPrefetch() throws Exception {
@@ -156,10 +156,11 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
         sb.append(prefetchedData);
         addExternalResourceTags(sb, definition);
         if (CmsContentService.LOG.isDebugEnabled()) {
-            CmsContentService.LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_TAKE_PREFETCHING_TIME_FOR_RESOURCE_2,
-                definition.getSitePath(),
-                "" + (System.currentTimeMillis() - timer)));
+            CmsContentService.LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_TAKE_PREFETCHING_TIME_FOR_RESOURCE_2,
+                    definition.getSitePath(),
+                    "" + (System.currentTimeMillis() - timer)));
         }
         return sb.toString();
     }

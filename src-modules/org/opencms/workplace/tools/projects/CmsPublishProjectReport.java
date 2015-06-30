@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,9 +47,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides a report for publishing a project.<p> 
- * 
- * @since 6.0.0 
+ * Provides a report for publishing a project.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsPublishProjectReport extends CmsReport {
 
@@ -61,7 +61,7 @@ public class CmsPublishProjectReport extends CmsReport {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsPublishProjectReport(CmsJspActionElement jsp) {
@@ -71,7 +71,7 @@ public class CmsPublishProjectReport extends CmsReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -83,7 +83,7 @@ public class CmsPublishProjectReport extends CmsReport {
 
     /**
      * Performs the dialog actions depending on the initialized action.<p>
-     * 
+     *
      * @throws JspException if dialog actions fail
      */
     public void displayReport() throws JspException {
@@ -106,7 +106,8 @@ public class CmsPublishProjectReport extends CmsReport {
             case ACTION_DEFAULT:
             default:
                 try {
-                    if (getCms().readProject(new CmsUUID(getParamProjectid())).getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
+                    if (getCms().readProject(
+                        new CmsUUID(getParamProjectid())).getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
                         // set the flag that this is a temporary project
                         setParamRefreshWorkplace(CmsStringUtil.TRUE);
                     }
@@ -137,7 +138,7 @@ public class CmsPublishProjectReport extends CmsReport {
 
     /**
      * Gets the project id parameter.<p>
-     * 
+     *
      * @return the project id parameter
      */
     public String getParamProjectid() {
@@ -145,9 +146,9 @@ public class CmsPublishProjectReport extends CmsReport {
         return m_paramProjectid;
     }
 
-    /** 
+    /**
      * Sets the project id parameter.<p>
-     * 
+     *
      * @param projectId the project id parameter
      */
     public void setParamProjectid(String projectId) {
@@ -158,6 +159,7 @@ public class CmsPublishProjectReport extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -178,7 +180,7 @@ public class CmsPublishProjectReport extends CmsReport {
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {
-            // set the default action               
+            // set the default action
             setAction(ACTION_DEFAULT);
         }
     }
@@ -205,9 +207,9 @@ public class CmsPublishProjectReport extends CmsReport {
 
     /**
      * Starts the link validation thread for the project.<p>
-     * 
+     *
      * @param publishList the list of resources to publish
-     * 
+     *
      * @throws JspException if something goes wrong
      */
     private void startValidationThread(CmsPublishList publishList) throws JspException {

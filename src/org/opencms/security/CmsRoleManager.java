@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import com.google.common.collect.Lists;
 
 /**
  * This manager provide access to the role related operations.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsRoleManager {
@@ -56,14 +56,14 @@ public class CmsRoleManager {
     /**
      * Returns the groups which constitute a given role, i.e. the set of groups such that a member of any of them
      * has the given role.<p>
-     * 
-     * @param cms the CMS context 
-     * @param role the role 
+     *
+     * @param cms the CMS context
+     * @param role the role
      * @param directUsersOnly if true, only the role's direct group will be returned
-     *  
+     *
      * @return the groups constituting the given role
-     * 
-     * @throws CmsException if something goes wrong  
+     *
+     * @throws CmsException if something goes wrong
      */
     public Set<CmsGroup> getRoleGroups(CmsObject cms, CmsRole role, boolean directUsersOnly) throws CmsException {
 
@@ -72,7 +72,7 @@ public class CmsRoleManager {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param securityManager the security manager
      */
     public CmsRoleManager(CmsSecurityManager securityManager) {
@@ -82,11 +82,11 @@ public class CmsRoleManager {
 
     /**
      * Adds a user to the given role.<p>
-     * 
+     *
      * @param cms the opencms context
      * @param role the role
      * @param username the name of the user that is to be added to the role
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void addUserToRole(CmsObject cms, CmsRole role, String username) throws CmsException {
@@ -97,12 +97,12 @@ public class CmsRoleManager {
     /**
      * Checks if the user of this OpenCms context is a member of the given role
      * for the given organizational unit.<p>
-     * 
+     *
      * The user must have the given role in at least one parent organizational unit.<p>
-     * 
+     *
      * @param cms the opencms context
      * @param role the role to check
-     * 
+     *
      * @throws CmsRoleViolationException if the user does not have the required role permissions
      */
     public void checkRole(CmsObject cms, CmsRole role) throws CmsRoleViolationException {
@@ -113,13 +113,13 @@ public class CmsRoleManager {
     /**
      * Checks if the user of this OpenCms context is a member of the given role
      * for the given resource.<p>
-     * 
+     *
      * The user must have the given role in at least one organizational unit to which this resource belongs.<p>
-     * 
+     *
      * @param cms the opencms context
      * @param role the role to check
      * @param resourceName the name of the resource to check the role for
-     * 
+     *
      * @throws CmsRoleViolationException if the user does not have the required role permissions
      * @throws CmsException if something goes wrong, while reading the resource
      */
@@ -131,15 +131,15 @@ public class CmsRoleManager {
     }
 
     /**
-     * Returns all groups of organizational units for which the current user 
+     * Returns all groups of organizational units for which the current user
      * has the {@link CmsRole#ACCOUNT_MANAGER} role.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param ouFqn the fully qualified name of the organizational unit
-     * @param includeSubOus if sub organizational units should be included in the search 
-     *  
+     * @param includeSubOus if sub organizational units should be included in the search
+     *
      * @return a list of {@link org.opencms.file.CmsGroup} objects
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public List<CmsGroup> getManageableGroups(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
@@ -157,14 +157,14 @@ public class CmsRoleManager {
     }
 
     /**
-     * Returns all resources of organizational units for which the current user has 
+     * Returns all resources of organizational units for which the current user has
      * the given role role.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param role the role to check
-     *  
+     *
      * @return a list of {@link org.opencms.file.CmsResource} objects
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public List<CmsResource> getManageableResources(CmsObject cms, CmsRole role) throws CmsException {
@@ -173,15 +173,15 @@ public class CmsRoleManager {
     }
 
     /**
-     * Returns all users of organizational units for which the current user has 
+     * Returns all users of organizational units for which the current user has
      * the {@link CmsRole#ACCOUNT_MANAGER} role.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param ouFqn the fully qualified name of the organizational unit
-     * @param includeSubOus if sub organizational units should be included in the search 
-     *  
+     * @param includeSubOus if sub organizational units should be included in the search
+     *
      * @return a list of {@link org.opencms.file.CmsUser} objects
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public List<CmsUser> getManageableUsers(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
@@ -190,16 +190,16 @@ public class CmsRoleManager {
     }
 
     /**
-     * Returns all users of organizational units for which the current user has 
+     * Returns all users of organizational units for which the current user has
      * the {@link CmsRole#ACCOUNT_MANAGER} role.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param ouFqn the fully qualified name of the organizational unit
      * @param includeSubOus if sub organizational units should be included in the search
      * @param includeWebusers if webuser organizational units should be included in the search
-     *  
+     *
      * @return a list of {@link org.opencms.file.CmsUser} objects
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public List<CmsUser> getManageableUsers(CmsObject cms, String ouFqn, boolean includeSubOus, boolean includeWebusers)
@@ -217,15 +217,15 @@ public class CmsRoleManager {
 
     /**
      * Returns a list of those organizational units whose members can be managed by the current user.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param ouFqn the fully qualified name of the organizational unit 
-     * @param includeSubOus if sub organizational units should be included in the search 
-     * @param includeWebusers if webuser organizational units should be included in the search 
-     * 
-     * @return a list of organizational units 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param ouFqn the fully qualified name of the organizational unit
+     * @param includeSubOus if sub organizational units should be included in the search
+     * @param includeWebusers if webuser organizational units should be included in the search
+     *
+     * @return a list of organizational units
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsOrganizationalUnit> getManageableOrgUnits(
         CmsObject cms,
@@ -248,13 +248,13 @@ public class CmsRoleManager {
 
     /**
      * Returns all the organizational units for which the current user has the given role.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param role the role to check
-     * @param includeSubOus if sub organizational units should be included in the search 
-     *  
+     * @param includeSubOus if sub organizational units should be included in the search
+     *
      * @return a list of {@link org.opencms.security.CmsOrganizationalUnit} objects
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public List<CmsOrganizationalUnit> getOrgUnitsForRole(CmsObject cms, CmsRole role, boolean includeSubOus)
@@ -269,7 +269,7 @@ public class CmsRoleManager {
      * @param cms the opencms context
      * @param ouFqn the fully qualified name of the organizational unit of the role
      * @param includeSubOus include roles of child organizational units
-     * 
+     *
      * @return a list of all <code>{@link CmsRole}</code> objects
      *
      * @throws CmsException if operation was not successful
@@ -289,13 +289,13 @@ public class CmsRoleManager {
 
     /**
      * Returns all roles the given user has over the given resource.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param userFqn the user name to check
      * @param resourceName the resource name
-     * 
+     *
      * @return a list of {@link CmsRole} objects
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public List<CmsRole> getRolesForResource(CmsObject cms, String userFqn, String resourceName) throws CmsException {
@@ -314,7 +314,7 @@ public class CmsRoleManager {
      * @param includeChildOus include roles of child organizational units
      * @param directRolesOnly if set only the direct assigned roles will be returned, if not also indirect roles
      * @param recursive if this is set, also roles of higher organizational unit are considered
-     * 
+     *
      * @return a list of <code>{@link org.opencms.security.CmsRole}</code> objects
      *
      * @throws CmsException if operation was not successful
@@ -375,9 +375,9 @@ public class CmsRoleManager {
      * @param cms the opencms context
      * @param role the role to get all users for
      * @param includeOtherOuUsers include users of other organizational units
-     * @param directUsersOnly if set only the direct assigned users will be returned, 
+     * @param directUsersOnly if set only the direct assigned users will be returned,
      *                          if not also indirect users, ie. members of child groups
-     * 
+     *
      * @return all <code>{@link org.opencms.file.CmsUser}</code> objects in the group
      *
      * @throws CmsException if operation was not successful
@@ -398,10 +398,10 @@ public class CmsRoleManager {
 
     /**
      * Checks if the given context user has the given role in the given organizational unit.<p>
-     *  
+     *
      * @param cms the opencms context
      * @param role the role to check
-     * 
+     *
      * @return <code>true</code> if the given context user has the given role in the given organizational unit
      */
     public boolean hasRole(CmsObject cms, CmsRole role) {
@@ -410,12 +410,12 @@ public class CmsRoleManager {
     }
 
     /**
-     * Checks if the given user has the given role in the given organizational unit.<p> 
-     *  
+     * Checks if the given user has the given role in the given organizational unit.<p>
+     *
      * @param cms the opencms context
      * @param userName the name of the user to check the role for
      * @param role the role to check
-     * 
+     *
      * @return <code>true</code> if the given user has the given role in the given organizational unit
      */
     public boolean hasRole(CmsObject cms, String userName, CmsRole role) {
@@ -432,11 +432,11 @@ public class CmsRoleManager {
 
     /**
      * Checks if the given context user has the given role for the given resource.<p>
-     *  
+     *
      * @param cms the opencms context
      * @param role the role to check
      * @param resourceName the name of the resource to check
-     * 
+     *
      * @return <code>true</code> if the given context user has the given role for the given resource
      */
     public boolean hasRoleForResource(CmsObject cms, CmsRole role, String resourceName) {
@@ -457,12 +457,12 @@ public class CmsRoleManager {
 
     /**
      * Checks if the given context user has the given role for the given resource.<p>
-     *  
+     *
      * @param cms the opencms context
      * @param userName the name of the user to check the role for
      * @param role the role to check
      * @param resourceName the name of the resource to check
-     * 
+     *
      * @return <code>true</code> if the given context user has the given role for the given resource
      */
     public boolean hasRoleForResource(CmsObject cms, String userName, CmsRole role, String resourceName) {
@@ -490,7 +490,7 @@ public class CmsRoleManager {
      * @param cms the opencms context
      * @param role the role to remove the user from
      * @param username the name of the user that is to be removed from the group
-     * 
+     *
      * @throws CmsException if operation was not successful
      */
     public void removeUserFromRole(CmsObject cms, CmsRole role, String username) throws CmsException {

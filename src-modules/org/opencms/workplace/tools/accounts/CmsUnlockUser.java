@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,10 +47,10 @@ public class CmsUnlockUser extends CmsDialog {
 
     /**
      * Creates a new dialog instance.<p>
-     * 
-     * @param context the page context 
-     * @param req the current request 
-     * @param res the current response 
+     *
+     * @param context the page context
+     * @param req the current request
+     * @param res the current response
      */
     public CmsUnlockUser(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
@@ -60,8 +60,8 @@ public class CmsUnlockUser extends CmsDialog {
 
     /**
      * Unlocks the user.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void actionUnlockUser() throws Exception {
 
@@ -74,7 +74,7 @@ public class CmsUnlockUser extends CmsDialog {
 
     /**
      * Sets the user id parameter value.<p>
-     * 
+     *
      * @param userId the user id parameter value
      */
     public void setParamUserid(String userId) {

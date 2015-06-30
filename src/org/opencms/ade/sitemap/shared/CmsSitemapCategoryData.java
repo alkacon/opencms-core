@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-/** 
+/**
  * The category data for the current sitemap.<p>
  */
 public class CmsSitemapCategoryData implements IsSerializable {
@@ -62,8 +62,8 @@ public class CmsSitemapCategoryData implements IsSerializable {
 
     /**
      * Adds a new category entry.<p>
-     * 
-     * @param item the category entry 
+     *
+     * @param item the category entry
      */
     public void add(CmsCategoryTreeEntry item) {
 
@@ -72,16 +72,15 @@ public class CmsSitemapCategoryData implements IsSerializable {
 
     /**
      * Gets a multimap of the top-level entries, indexed by whether they are local categories or not.<p>
-     * 
+     *
      * A category counts as local if all of its parent categories are defined in the current sitemap.
-     * 
-     * @return the multimap of entries 
+     *
+     * @return the multimap of entries
      */
     public Multimap<Boolean, CmsCategoryTreeEntry> getEntriesIndexedByLocality() {
 
-        return ArrayListMultimap.create(Multimaps.index(
-            m_categoryEntries,
-            new Function<CmsCategoryTreeEntry, Boolean>() {
+        return ArrayListMultimap.create(
+            Multimaps.index(m_categoryEntries, new Function<CmsCategoryTreeEntry, Boolean>() {
 
                 @SuppressWarnings("synthetic-access")
                 public Boolean apply(CmsCategoryTreeEntry entry) {
@@ -93,9 +92,9 @@ public class CmsSitemapCategoryData implements IsSerializable {
 
     /**
      * Gets the category bean by id.<p>
-     * 
-     * @param id a structure id 
-     * @return the entry with the given id, or null if no such entry was found 
+     *
+     * @param id a structure id
+     * @return the entry with the given id, or null if no such entry was found
      */
     public CmsCategoryTreeEntry getEntryById(CmsUUID id) {
 
@@ -109,8 +108,8 @@ public class CmsSitemapCategoryData implements IsSerializable {
 
     /**
      * Sets the base path.<p>
-     * 
-     * @param basePath the base path 
+     *
+     * @param basePath the base path
      */
     public void setBasePath(String basePath) {
 
@@ -119,8 +118,8 @@ public class CmsSitemapCategoryData implements IsSerializable {
 
     /**
      * Returns the category entries in a flat list instead of a tree structure.<p>
-     * 
-     * @return the list of all tree entries 
+     *
+     * @return the list of all tree entries
      */
     List<CmsCategoryTreeEntry> getFlatList() {
 
@@ -140,10 +139,10 @@ public class CmsSitemapCategoryData implements IsSerializable {
         return result;
     }
 
-    /** 
+    /**
      * Gets the top-level entries.<p>
-     * 
-     * @return the top-level entries 
+     *
+     * @return the top-level entries
      */
     List<CmsCategoryTreeEntry> getRootEntries() {
 

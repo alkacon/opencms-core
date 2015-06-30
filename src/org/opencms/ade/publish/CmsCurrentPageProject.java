@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -132,22 +132,23 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                 Set<CmsResource> result = Sets.newHashSet();
 
                 if (res.getStructureId().toString().equals(detailId)) {
-                    String detailContentPagePath = CmsJspTagContainer.getDetailOnlyPageName(cms.getRequestContext().removeSiteRoot(
-                        res.getRootPath()));
+                    String detailContentPagePath = CmsJspTagContainer.getDetailOnlyPageName(
+                        cms.getRequestContext().removeSiteRoot(res.getRootPath()));
                     try {
                         CmsResource detailContentPage = cms.readResource(
                             detailContentPagePath,
                             CmsResourceFilter.IGNORE_EXPIRATION);
                         result.add(detailContentPage);
                     } catch (CmsVfsResourceNotFoundException e) {
-                        // ignore 
+                        // ignore
                     } catch (CmsException e) {
                         LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
                 if (res.getStructureId().toString().equals(pageId)) {
 
-                    I_CmsCollectorInfoFactory collectorInfoFactory = AutoBeanFactorySource.create(I_CmsCollectorInfoFactory.class);
+                    I_CmsCollectorInfoFactory collectorInfoFactory = AutoBeanFactorySource.create(
+                        I_CmsCollectorInfoFactory.class);
                     for (Map.Entry<String, String> entry : params.entrySet()) {
                         if (entry.getKey().startsWith(CmsPublishOptions.PARAM_COLLECTOR_INFO)) {
                             try {
@@ -160,7 +161,8 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                                 if (collector == null) {
                                     continue;
                                 }
-                                I_CmsCollectorPublishListProvider publishListProvider = getCollectorPublishListProvider(collector);
+                                I_CmsCollectorPublishListProvider publishListProvider = getCollectorPublishListProvider(
+                                    collector);
                                 result.addAll(publishListProvider.getPublishResources(cmsObject, autoBean.as()));
                             } catch (Exception e) {
                                 LOG.error(e.getLocalizedMessage(), e);
@@ -174,10 +176,10 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
 
             /**
              * Gets the  publish list provider for the given collector.<p>
-             * 
-             * @param collector the collector 
-             * 
-             * @return the publish list provider 
+             *
+             * @param collector the collector
+             *
+             * @return the publish list provider
              */
             public I_CmsCollectorPublishListProvider getCollectorPublishListProvider(I_CmsResourceCollector collector) {
 

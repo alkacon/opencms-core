@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,8 +53,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Explorer type access object, encapsulates access control entries and lists of a explorer type.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsExplorerTypeAccess {
 
@@ -90,12 +90,12 @@ public class CmsExplorerTypeAccess {
         flushListener.install();
     }
 
-    /** 
+    /**
      * Adds a single access entry to the map of access entries of the explorer type setting.<p>
-     * 
-     * This stores the configuration data in a map which is used in the initialize process 
-     * to create the access control list.<p> 
-     * 
+     *
+     * This stores the configuration data in a map which is used in the initialize process
+     * to create the access control list.<p>
+     *
      * @param key the principal of the ace
      * @param value the permissions for the principal
      */
@@ -107,11 +107,11 @@ public class CmsExplorerTypeAccess {
         }
     }
 
-    /** 
+    /**
      * Creates the access control list from the temporary map.<p>
-     *  
-     * @param resourceType the name of the resource type 
-     * 
+     *
+     * @param resourceType the name of the resource type
+     *
      * @throws CmsException if something goes wrong
      */
     public void createAccessControlList(String resourceType) throws CmsException {
@@ -191,7 +191,7 @@ public class CmsExplorerTypeAccess {
 
     /**
      * Returns the map of access entries of the explorer type setting.<p>
-     * 
+     *
      * @return the map of access entries of the explorer type setting
      */
     public Map<String, String> getAccessEntries() {
@@ -200,13 +200,13 @@ public class CmsExplorerTypeAccess {
     }
 
     /**
-     * Calculates the permissions for this explorer type settings 
-     * for the user in the given OpenCms user context.<p>  
-     *  
+     * Calculates the permissions for this explorer type settings
+     * for the user in the given OpenCms user context.<p>
+     *
      * @param cms the OpenCms user context to calculate the permissions for
      * @param resource the resource to check the permissions for
-     * 
-     * @return the permissions for this explorer type settings for the user in the given OpenCms user context 
+     *
+     * @return the permissions for this explorer type settings for the user in the given OpenCms user context
      */
     public CmsPermissionSet getPermissions(CmsObject cms, CmsResource resource) {
 
@@ -283,7 +283,7 @@ public class CmsExplorerTypeAccess {
 
     /**
      * Tests if there are any access information stored.<p>
-     * 
+     *
      * @return true or false
      */
     public boolean isEmpty() {
@@ -303,14 +303,14 @@ public class CmsExplorerTypeAccess {
 
     /**
      * Returns the cache key for the roles and groups of the current user and the given resource.<p>
-     * 
+     *
      * In this way, it does not matter if the resource and/or user permissions changes, so we never need to clean the cache.<p>
-     * 
-     * And since the cache is a LRU map, old trash entries will be automatically removed.<p> 
-     * 
+     *
+     * And since the cache is a LRU map, old trash entries will be automatically removed.<p>
+     *
      * @param cms the current cms context
      * @param resource the resource
-     * 
+     *
      * @return the cache key
      */
     private String getPermissionsCacheKey(CmsObject cms, CmsResource resource) {
@@ -324,7 +324,13 @@ public class CmsExplorerTypeAccess {
                 CmsGroup group = (CmsGroup)itGroups.next();
                 key.append(group.getName()).append("_");
             }
-            Iterator<?> itRoles = OpenCms.getRoleManager().getRolesOfUser(cms, userName, "", true, true, false).iterator();
+            Iterator<?> itRoles = OpenCms.getRoleManager().getRolesOfUser(
+                cms,
+                userName,
+                "",
+                true,
+                true,
+                false).iterator();
             while (itRoles.hasNext()) {
                 CmsRole role = (CmsRole)itRoles.next();
                 key.append(role.getGroupName()).append("_");

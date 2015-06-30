@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,14 +32,14 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 
 /**
  * For adding text style to the columns in the explorer list.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListExplorerColumn extends CmsListColumnDefinition {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param id the unique id
      */
     public CmsListExplorerColumn(String id) {
@@ -73,7 +73,7 @@ public class CmsListExplorerColumn extends CmsListColumnDefinition {
 
     /**
      * Generates the needed style sheet definitions.<p>
-     * 
+     *
      * @return html code
      */
     public static String getExplorerStyleDef() {

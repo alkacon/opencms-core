@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * This class represents the result of a "return link" lookup, which is what happens if the user
  * clicks the "go to last page" button in the sitemap editor. It contains a link string (possibly null)
  * and a status to indicate possible errors.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsReturnLinkInfo implements IsSerializable {
@@ -43,8 +43,7 @@ public class CmsReturnLinkInfo implements IsSerializable {
      */
     public enum Status {
         /** The link was successfully looked up. */
-        ok,
-        /** The resource(s) was not found. */
+        ok, /** The resource(s) was not found. */
         notfound
     }
 
@@ -56,9 +55,9 @@ public class CmsReturnLinkInfo implements IsSerializable {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param link the return link 
-     * @param status the link lookup status 
+     *
+     * @param link the return link
+     * @param status the link lookup status
      */
     public CmsReturnLinkInfo(String link, Status status) {
 
@@ -76,8 +75,8 @@ public class CmsReturnLinkInfo implements IsSerializable {
 
     /**
      * Returns the return link.<p>
-     * 
-     * @return the return link 
+     *
+     * @return the return link
      */
     public String getLink() {
 
@@ -86,8 +85,8 @@ public class CmsReturnLinkInfo implements IsSerializable {
 
     /**
      * Returns the link lookup status.<p>
-     * 
-     * @return the link lookup status 
+     *
+     * @return the link lookup status
      */
     public Status getStatus() {
 

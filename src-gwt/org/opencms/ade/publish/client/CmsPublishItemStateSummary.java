@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,9 +29,9 @@ package org.opencms.ade.publish.client;
 
 /**
  * A bean containing statistics about the states of publish items in the publish dialog.<p>
- * 
+ *
  * This is used for updating the check box states in the publish dialog.<p>
- * 
+ *
  */
 public class CmsPublishItemStateSummary {
 
@@ -43,10 +43,10 @@ public class CmsPublishItemStateSummary {
     /** The count for the remove state. */
     private int m_removeCount;
 
-    /** 
+    /**
      * Adds a new state value to the statistics.<p>
-     * 
-     * @param state the state  to add 
+     *
+     * @param state the state  to add
      */
     public void addState(CmsPublishItemStatus.State state) {
 
@@ -66,8 +66,8 @@ public class CmsPublishItemStateSummary {
 
     /**
      * Gets the count of 'normal' states.<p>
-     * 
-     * @return the count 
+     *
+     * @return the count
      */
     public int getNormalCount() {
 
@@ -76,8 +76,8 @@ public class CmsPublishItemStateSummary {
 
     /**
      * Gets the count of 'publish' states.<p>
-     * 
-     * @return the count 
+     *
+     * @return the count
      */
     public int getPublishCount() {
 
@@ -86,8 +86,8 @@ public class CmsPublishItemStateSummary {
 
     /**
      * Gets the count of 'remove' states.<p>
-     * 
-     * @return the count 
+     *
+     * @return the count
      */
     public int getRemoveCount() {
 

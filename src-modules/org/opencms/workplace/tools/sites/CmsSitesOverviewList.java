@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -70,8 +70,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Main site management view.<p>
- * 
- * @since 9.0.0 
+ *
+ * @since 9.0.0
  */
 public class CmsSitesOverviewList extends A_CmsListDialog {
 
@@ -161,7 +161,7 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSitesOverviewList(CmsJspActionElement jsp) {
@@ -177,7 +177,7 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -367,7 +367,8 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
             }
         };
         activateForConig.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_NAME_0));
-        activateForConig.setConfirmationMessage(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_CONF_0));
+        activateForConig.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_CONF_0));
         activateForConig.setIconPath(ICON_INACTIVE);
         activateForConig.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_ACTIVATE_HELP_0));
         activateCol.addDirectAction(activateForConig);
@@ -387,8 +388,8 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
             }
         };
         deactivateForConfig.setName(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_NAME_0));
-        deactivateForConfig.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_CONF_0));
+        deactivateForConfig.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_CONF_0));
         deactivateForConfig.setIconPath(ICON_ACTIVE);
         deactivateForConfig.setHelpText(Messages.get().container(Messages.GUI_SITES_LIST_ACTION_DEACTIVATE_HELP_0));
         activateCol.addDirectAction(deactivateForConfig);
@@ -527,8 +528,8 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
         CmsListItemDetails aliasesDetails = new CmsListItemDetails(LIST_DETAIL_ALIASES);
         aliasesDetails.setAtColumn(LIST_COLUMN_SERVER);
         aliasesDetails.setVisible(false);
-        aliasesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_SITES_DETAIL_LABEL_ALIASES_0)));
+        aliasesDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_SITES_DETAIL_LABEL_ALIASES_0)));
         aliasesDetails.setShowActionName(Messages.get().container(Messages.GUI_SITES_DETAIL_SHOW_ALIASES_NAME_0));
         aliasesDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_SITES_DETAIL_SHOW_ALIASES_HELP_0));
         aliasesDetails.setHideActionName(Messages.get().container(Messages.GUI_SITES_DETAIL_HIDE_ALIASES_NAME_0));
@@ -540,8 +541,8 @@ public class CmsSitesOverviewList extends A_CmsListDialog {
         CmsListItemDetails secureDetails = new CmsListItemDetails(LIST_DETAIL_SECURE);
         secureDetails.setAtColumn(LIST_COLUMN_SERVER);
         secureDetails.setVisible(false);
-        secureDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_SITES_DETAIL_LABEL_SECURE_0)));
+        secureDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_SITES_DETAIL_LABEL_SECURE_0)));
         secureDetails.setShowActionName(Messages.get().container(Messages.GUI_SITES_DETAIL_SHOW_SECURE_NAME_0));
         secureDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_SITES_DETAIL_SHOW_SECURE_HELP_0));
         secureDetails.setHideActionName(Messages.get().container(Messages.GUI_SITES_DETAIL_HIDE_SECURE_NAME_0));

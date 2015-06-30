@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,8 +35,8 @@ import org.opencms.workplace.tools.CmsToolMacroResolver;
 /**
  * Html icon button implementation that generates the
  * required html code for a menu item.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsAdminMenuItem {
 
@@ -62,8 +62,8 @@ public class CmsAdminMenuItem {
     private final String m_target;
 
     /**
-     * Default Constructor.<p> 
-     * 
+     * Default Constructor.<p>
+     *
      * @param id a unique id
      * @param name the name of the item
      * @param iconPath the icon to display
@@ -162,9 +162,9 @@ public class CmsAdminMenuItem {
 
     /**
      * Returns the necessary html code.<p>
-     * 
+     *
      * @param wp the workplace
-     * 
+     *
      * @return html code
      */
     public String itemHtml(CmsWorkplace wp) {

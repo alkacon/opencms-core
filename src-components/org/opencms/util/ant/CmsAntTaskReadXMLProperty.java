@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import org.xml.sax.SAXParseException;
 
 /**
  * Ant task for reading a property from a XML attribute or element.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsAntTaskReadXMLProperty extends Task {
@@ -68,14 +68,15 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Run the task.<p>
-     * 
+     *
      * Sets the given property to <code>__ABORT__</code> if canceled, or to a list of selected
      * modules if not.<p>
-     * 
+     *
      * @throws BuildException if something goes wrong
-     * 
+     *
      * @see org.apache.tools.ant.Task#execute()
      */
+    @Override
     public void execute() throws BuildException {
 
         boolean isAttr = ((m_attribute != null) && (m_attribute.trim().length() > 0));
@@ -133,7 +134,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Returns the optional XML attribute.<p>
-     * 
+     *
      * @return the optional XML attribute
      */
     public String getAttribute() {
@@ -143,7 +144,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Returns the XML element path.<p>
-     * 
+     *
      * @return the XML element path
      */
     public String getElement() {
@@ -153,7 +154,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Returns the property to store the user selection.<p>
-     * 
+     *
      * @return Returns the property
      */
     public String getProperty() {
@@ -163,7 +164,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Returns the return value.<p>
-     * 
+     *
      * @return the return value
      */
     public String getValue() {
@@ -173,7 +174,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Returns the xmlFile absolute path.<p>
-     * 
+     *
      * @return the xmlFile absolute path
      */
     public String getXmlFile() {
@@ -183,7 +184,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Sets the optional XML attribute.<p>
-     * 
+     *
      * @param attribute the optional XML attribute to set
      */
     public void setAttribute(String attribute) {
@@ -193,7 +194,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Sets the XML element path.<p>
-     * 
+     *
      * @param element the XML element path to set
      */
     public void setElement(String element) {
@@ -203,7 +204,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Sets the property for storing the selected value.<p>
-     * 
+     *
      * @param property The property to set
      */
     public void setProperty(String property) {
@@ -213,7 +214,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Sets the return value.<p>
-     * 
+     *
      * @param value the return value to set
      */
     public void setValue(String value) {
@@ -226,7 +227,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Sets the xmlFile absolute path.<p>
-     * 
+     *
      * @param xmlFile the xmlFile absolute path to set
      */
     public void setXmlFile(String xmlFile) {
@@ -236,7 +237,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Test case.<p>
-     * 
+     *
      * @param args not used
      */
     public static void main(String[] args) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,8 +37,8 @@ import java.util.Map.Entry;
 
 /**
  * Stores the result of a pointer link validation. <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsExternalLinksValidationResult {
 
@@ -50,7 +50,7 @@ public class CmsExternalLinksValidationResult {
 
     /**
      * Constructs a new pointer link validation result.<p>
-     * 
+     *
      * @param brokenLinks a list of the broken links
      */
     public CmsExternalLinksValidationResult(Map<String, String> brokenLinks) {
@@ -61,9 +61,9 @@ public class CmsExternalLinksValidationResult {
 
     /**
      * Returns a Html representation of this pointer link validation result.<p>
-     * 
+     *
      * @param locale the Locale to display the result in
-     * 
+     *
      * @return a Html representation of this external link validation result
      */
     public String toHtml(Locale locale) {

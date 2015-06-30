@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -85,7 +85,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsImportExport(String arg0) {
@@ -95,7 +95,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -145,7 +145,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import of a resource that has been edited.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportChangedContent() throws Exception {
@@ -243,7 +243,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import of a resource overwriting a sibling with different type.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportContentIssue() throws Exception {
@@ -362,7 +362,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import of linked XmlPages in a different site, so that the link paths get broken.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportExportBrokenLinksHtml() throws Exception {
@@ -379,7 +379,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         try {
             cms.getRequestContext().setSiteRoot("/sites/default/");
 
-            // create files 
+            // create files
             CmsResource res1 = cms.createResource(filename1, CmsResourceTypeXmlPage.getStaticTypeId());
 
             CmsResource res2 = cms.createResource(filename2, CmsResourceTypeXmlPage.getStaticTypeId());
@@ -478,7 +478,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import of linked XmlContent in a different site, so that the link paths get broken.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportExportBrokenLinksXml() throws Exception {
@@ -494,7 +494,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
         cms.getRequestContext().setSiteRoot("/sites/default/");
 
-        // create files 
+        // create files
         CmsResource res1 = cms.createResource(filename1, OpenCmsTestCase.ARTICLE_TYPEID);
 
         CmsResource res2 = cms.createResource(filename2, OpenCmsTestCase.ARTICLE_TYPEID);
@@ -600,7 +600,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests an overwriting import of VFS data.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportExportFolder() throws Exception {
@@ -661,7 +661,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests import with structure id.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportExportId() throws Exception {
@@ -745,7 +745,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import of a folder that has been moved.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportMovedFolder() throws Exception {
@@ -855,7 +855,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import of a resource that has been moved.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportMovedResource() throws Exception {
@@ -948,7 +948,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import of a resource with permissions.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportPermissionIssue() throws Exception {
@@ -1034,7 +1034,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import of a resource that has been recreated.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportRecreatedFile() throws Exception {
@@ -1092,7 +1092,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
             assertFalse(cms.existsResource(filename1));
 
-            // create new file at the same location 
+            // create new file at the same location
             cms.createResource(filename1, CmsResourceTypeImage.getStaticTypeId());
 
             // publish the new file
@@ -1140,7 +1140,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import of a sibling that has been recreated.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportRecreatedSibling() throws Exception {
@@ -1246,7 +1246,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import of a resource that has been edited.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportRelations() throws Exception {
@@ -1261,7 +1261,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
         try {
             // first there are no relations
-            assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterNotDefinedInContent()).isEmpty());
+            assertTrue(
+                cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterNotDefinedInContent()).isEmpty());
 
             // add relation
             cms.lockResource(filename);
@@ -1274,10 +1275,9 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 filename,
                 CmsRelationFilter.TARGETS.filterNotDefinedInContent());
             assertEquals(1, relations.size());
-            assertRelation(new CmsRelation(
-                cms.readResource(filename),
-                cms.readResource(cat.getId()),
-                CmsRelationType.CATEGORY), (CmsRelation)relations.get(0));
+            assertRelation(
+                new CmsRelation(cms.readResource(filename), cms.readResource(cat.getId()), CmsRelationType.CATEGORY),
+                (CmsRelation)relations.get(0));
 
             // export the file
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
@@ -1312,7 +1312,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId());
 
             // recheck that there are no relations
-            assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterNotDefinedInContent()).isEmpty());
+            assertTrue(
+                cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterNotDefinedInContent()).isEmpty());
 
             // re-import the exported files
             OpenCms.getImportExportManager().importData(
@@ -1323,10 +1324,9 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // now check the imported relation
             relations = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterNotDefinedInContent());
             assertEquals(1, relations.size());
-            assertRelation(new CmsRelation(
-                cms.readResource(filename),
-                cms.readResource(cat.getId()),
-                CmsRelationType.CATEGORY), (CmsRelation)relations.get(0));
+            assertRelation(
+                new CmsRelation(cms.readResource(filename), cms.readResource(cat.getId()), CmsRelationType.CATEGORY),
+                (CmsRelation)relations.get(0));
         } finally {
             try {
                 if (zipExportFilename != null) {
@@ -1344,7 +1344,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the resource translation during import.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportResourceTranslator() throws Exception {
@@ -1360,14 +1360,16 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
         CmsResourceTranslator oldFolderTranslator = OpenCms.getResourceManager().getFolderTranslator();
 
-        CmsResourceTranslator folderTranslator = new CmsResourceTranslator(new String[] {
-            "s#^/sites/default/content/bodys(.*)#/system/bodies$1#",
-            "s#^/sites/default/pics/system(.*)#/system/workplace/resources$1#",
-            "s#^/sites/default/pics(.*)#/system/galleries/pics$1#",
-            "s#^/sites/default/download(.*)#/system/galleries/download$1#",
-            "s#^/sites/default/externallinks(.*)#/system/galleries/externallinks$1#",
-            "s#^/sites/default/htmlgalleries(.*)#/system/galleries/htmlgalleries$1#",
-            "s#^/sites/default/content(.*)#/system$1#"}, false);
+        CmsResourceTranslator folderTranslator = new CmsResourceTranslator(
+            new String[] {
+                "s#^/sites/default/content/bodys(.*)#/system/bodies$1#",
+                "s#^/sites/default/pics/system(.*)#/system/workplace/resources$1#",
+                "s#^/sites/default/pics(.*)#/system/galleries/pics$1#",
+                "s#^/sites/default/download(.*)#/system/galleries/download$1#",
+                "s#^/sites/default/externallinks(.*)#/system/galleries/externallinks$1#",
+                "s#^/sites/default/htmlgalleries(.*)#/system/galleries/htmlgalleries$1#",
+                "s#^/sites/default/content(.*)#/system$1#"},
+            false);
 
         // set modified folder translator
         OpenCms.getResourceManager().setTranslators(
@@ -1501,7 +1503,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the resource translation during import with multiple sites.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportResourceTranslatorMultipleSite() throws Exception {
@@ -1519,17 +1521,19 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
         CmsResourceTranslator oldFolderTranslator = OpenCms.getResourceManager().getFolderTranslator();
 
-        CmsResourceTranslator folderTranslator = new CmsResourceTranslator(new String[] {
-            "s#^/sites(.*)#/sites$1#",
-            "s#^/system(.*)#/system$1#",
-            "s#^/content/bodys(.*)#/system/bodies$1#",
-            "s#^/pics(.*)#/system/galleries/pics$1#",
-            "s#^/download(.*)#/system/galleries/download$1#",
-            "s#^/externallinks(.*)#/system/galleries/externallinks$1#",
-            "s#^/htmlgalleries(.*)#/system/galleries/htmlgalleries$1#",
-            "s#^/content(.*)#/system$1#",
-            "s#^/othertest(.*)#/sites/othersite$1#",
-            "s#^/(.*)#/sites/mysite/$1#"}, false);
+        CmsResourceTranslator folderTranslator = new CmsResourceTranslator(
+            new String[] {
+                "s#^/sites(.*)#/sites$1#",
+                "s#^/system(.*)#/system$1#",
+                "s#^/content/bodys(.*)#/system/bodies$1#",
+                "s#^/pics(.*)#/system/galleries/pics$1#",
+                "s#^/download(.*)#/system/galleries/download$1#",
+                "s#^/externallinks(.*)#/system/galleries/externallinks$1#",
+                "s#^/htmlgalleries(.*)#/system/galleries/htmlgalleries$1#",
+                "s#^/content(.*)#/system$1#",
+                "s#^/othertest(.*)#/sites/othersite$1#",
+                "s#^/(.*)#/sites/mysite/$1#"},
+            false);
 
         // set modified folder translator
         OpenCms.getResourceManager().setTranslators(
@@ -1659,7 +1663,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import of a sibling.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportSibling() throws Exception {
@@ -1758,7 +1762,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import of a (non-existing) sibling of a file in a different site.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportSiblingIssue() throws Exception {
@@ -1866,7 +1870,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import xml validation.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportValidation() throws Exception {
@@ -1934,7 +1938,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import of a resource in the wrong site.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testImportWrongSite() throws Exception {
@@ -1993,7 +1997,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 new CmsShellReport(cms.getRequestContext().getLocale()),
                 new CmsImportParameters(zipExportFilename, "/", true));
 
-            // now check 
+            // now check
             cms.getRequestContext().setSiteRoot("");
             cms.readResource(res.getStructureId());
 
@@ -2025,7 +2029,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Tests the import of resources during setup.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testSetup() throws Exception {
@@ -2045,11 +2049,11 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Compares imported and exported resources.<p>
-     * 
+     *
      * @param cms the current OpenCms Object
      * @param path the path the the root folder
      * @param startResources the list of original resources before exporting and importing
-     * 
+     *
      * @throws CmsException in case of errors accessing the OpenCms VFS
      */
     private void assertResources(CmsObject cms, String path, List<CmsResource> startResources) throws CmsException {
@@ -2070,10 +2074,10 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
     /**
      * Convert a given timestamp from a String format to a long value.<p>
-     * 
+     *
      * The timestamp is either the string representation of a long value (old export format)
      * or a user-readable string format.
-     * 
+     *
      * @param timestamp timestamp to convert
      * @return long value of the timestamp
      */

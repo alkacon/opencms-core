@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,8 +46,8 @@ public class CmsLanguagePreference extends CmsBuiltinPreference {
         + ")";
 
     /**
-     * Creates a new instance.<p> 
-     * 
+     * Creates a new instance.<p>
+     *
      * @param name the name
      */
     public CmsLanguagePreference(String name) {
@@ -62,7 +62,8 @@ public class CmsLanguagePreference extends CmsBuiltinPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
             "string", //type
             null, //widget
             null, //widgetconfig
@@ -85,7 +86,8 @@ public class CmsLanguagePreference extends CmsBuiltinPreference {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         SelectOptions options = CmsPreferences.getOptionsForLanguageStatic(locale, Locale.ENGLISH);
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
             "string", //type
             "select_notnull", //widget
             options.toClientSelectWidgetConfiguration(), //widgetconfig

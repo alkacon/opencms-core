@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ public class TestGroupOperations extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestGroupOperations(String arg0) {
@@ -55,7 +55,7 @@ public class TestGroupOperations extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -91,7 +91,7 @@ public class TestGroupOperations extends OpenCmsTestCase {
 
     /**
      * Tests the "getChildren" method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testChildGroups() throws Throwable {
@@ -139,7 +139,7 @@ public class TestGroupOperations extends OpenCmsTestCase {
 
     /**
      * Tests group deletion.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testDeleteGroup() throws Throwable {
@@ -182,7 +182,7 @@ public class TestGroupOperations extends OpenCmsTestCase {
 
     /**
      * Tests group deletion with children groups.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testDeleteGroupWithChildren() throws Throwable {
@@ -214,7 +214,7 @@ public class TestGroupOperations extends OpenCmsTestCase {
 
     /**
      * Tests the "getUsersOfGroup" method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testGetUsersOfGroup() throws Throwable {
@@ -230,7 +230,7 @@ public class TestGroupOperations extends OpenCmsTestCase {
 
     /**
      * Tests the "getParentGroup" method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testParentGroups() throws Throwable {

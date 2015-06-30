@@ -186,9 +186,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
         StringBuffer result = new StringBuffer();
         result.append("about=\"");
-        result.append(CmsContentDefinition.uuidToEntityId(
-            parentValue.getDocument().getFile().getStructureId(),
-            parentValue.getLocale().toString()));
+        result.append(
+            CmsContentDefinition.uuidToEntityId(
+                parentValue.getDocument().getFile().getStructureId(),
+                parentValue.getLocale().toString()));
         result.append("/").append(parentValue.getPath());
         result.append("\" ");
         String[] children = childNames.split("\\|");
@@ -222,9 +223,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         StringBuffer result = new StringBuffer();
         if (schemaType != null) {
             result.append("about=\"");
-            result.append(CmsContentDefinition.uuidToEntityId(
-                document.getFile().getStructureId(),
-                contentLocale.toString()));
+            result.append(
+                CmsContentDefinition.uuidToEntityId(document.getFile().getStructureId(), contentLocale.toString()));
             result.append("\" property=\"");
             result.append(getTypeUri(schemaType.getContentDefinition())).append("/").append(childName);
             result.append("\"");
@@ -336,7 +336,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsFile file = getCmsObject().readFile(resource);
             CmsXmlContent content = getSessionCache().getCacheXmlContent(structureId);
             synchronizeLocaleIndependentForEntity(file, content, Collections.<String> emptyList(), sourceLocale);
-            Locale sourceContentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(sourceLocale.getId()));
+            Locale sourceContentLocale = CmsLocaleManager.getLocale(
+                CmsContentDefinition.getLocaleFromId(sourceLocale.getId()));
             for (String loc : locales) {
                 Locale targetLocale = CmsLocaleManager.getLocale(loc);
                 if (content.hasLocale(targetLocale)) {
@@ -601,7 +602,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /**
      * @see org.opencms.acacia.shared.rpc.I_CmsContentService#updateEntityHtml(org.opencms.acacia.shared.CmsEntity, java.lang.String, java.lang.String)
      */
-    public CmsEntityHtml updateEntityHtml(CmsEntity entity, String contextUri, String htmlContextInfo) throws Exception {
+    public CmsEntityHtml updateEntityHtml(CmsEntity entity, String contextUri, String htmlContextInfo)
+    throws Exception {
 
         CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entity.getId());
         if (structureId != null) {
@@ -835,14 +837,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 previousName = attributeName;
             }
             if (isChoice) {
-                result = new CmsEntity(newEntityId
-                    + "/"
-                    + CmsType.CHOICE_ATTRIBUTE_NAME
-                    + "_"
-                    + child.getName()
-                    + "["
-                    + counter
-                    + "]", choiceTypeName);
+                result = new CmsEntity(
+                    newEntityId + "/" + CmsType.CHOICE_ATTRIBUTE_NAME + "_" + child.getName() + "[" + counter + "]",
+                    choiceTypeName);
                 newEntity.addAttributeValue(CmsType.CHOICE_ATTRIBUTE_NAME, result);
             }
             String path = parentPath + child.getName();
@@ -947,8 +944,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param parentPath the parent path
      * @param entity the entity
      * @param contentLocale the content locale
-     * 
-     * @return the set of xpaths of simple fields in the XML content which were set by this method 
+     *
+     * @return the set of xpaths of simple fields in the XML content which were set by this method
      */
     private Set<String> addEntityAttributes(
         CmsObject cms,
@@ -970,7 +967,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param parentPath the parent path
      * @param entity the entity
      * @param contentLocale the content locale
-     * @param fieldsSet set to store which fields were set in the XML content 
+     * @param fieldsSet set to store which fields were set in the XML content
      */
     private void addEntityAttributes(
         CmsObject cms,
@@ -986,7 +983,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 for (int i = 0; i < choiceEntities.size(); i++) {
                     List<CmsEntityAttribute> choiceAttributes = choiceEntities.get(i).getAttributes();
                     // each choice entity may only have a single attribute with a single value
-                    assert (choiceAttributes.size() == 1) && choiceAttributes.get(0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
+                    assert(choiceAttributes.size() == 1)
+                        && choiceAttributes.get(
+                            0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
                     CmsEntityAttribute choiceAttribute = choiceAttributes.get(0);
                     String elementPath = parentPath + getElementName(choiceAttribute.getAttributeName());
                     if (choiceAttribute.isSimpleValue()) {
@@ -1059,13 +1058,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Evaluates any wildcards in the given scope and returns all allowed permutations of it.<p>
-     * 
+     *
      * a path like Paragraph* /Image should result in Paragraph[0]/Image, Paragraph[1]/Image and Paragraph[2]/Image
      * in case max occurrence for Paragraph is 3
-     * 
+     *
      * @param scope the scope
      * @param definition the content definition
-     * 
+     *
      * @return the evaluate scope permutations
      */
     private Set<String> evaluateScope(String scope, CmsXmlContentDefinition definition) {
@@ -1153,7 +1152,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                                 // in case the current value does not match the previously stored value,
                                 // remove it and add the parent path to the skipPaths list
                                 syncValues.remove(valuePath);
-                                int pathLevelDiff = (CmsResource.getPathLevel(valuePath) - CmsResource.getPathLevel(elementPath)) + 1;
+                                int pathLevelDiff = (CmsResource.getPathLevel(valuePath)
+                                    - CmsResource.getPathLevel(elementPath)) + 1;
                                 for (int i = 0; i < pathLevelDiff; i++) {
                                     valuePath = CmsXmlUtils.removeLastXpathElement(valuePath);
                                 }
@@ -1210,9 +1210,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the change handler scopes.<p>
-     * 
+     *
      * @param definition the content definition
-     * 
+     *
      * @return the scopes
      */
     private Set<String> getChangeHandlerScopes(CmsXmlContentDefinition definition) {
@@ -1228,12 +1228,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the XML content document.<p>
-     * 
+     *
      * @param file the resource file
      * @param fromCache <code>true</code> to use the cached document
-     * 
+     *
      * @return the content document
-     * 
+     *
      * @throws CmsXmlException if reading the XML fails
      */
     private CmsXmlContent getContentDocument(CmsFile file, boolean fromCache) throws CmsXmlException {
@@ -1279,7 +1279,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     /**
      * Returns the session cache.<p>
-     * 
+     *
      * @return the session cache
      */
     private CmsADESessionCache getSessionCache() {
@@ -1338,13 +1338,14 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 locale,
                 defaultLocales,
                 availableLocalesList);
-            LOG.info("Can't edit locale "
-                + locale
-                + " of file "
-                + file.getRootPath()
-                + " because it is not configured as available locale. Using locale "
-                + replacementLocale
-                + " instead.");
+            LOG.info(
+                "Can't edit locale "
+                    + locale
+                    + " of file "
+                    + file.getRootPath()
+                    + " because it is not configured as available locale. Using locale "
+                    + replacementLocale
+                    + " instead.");
             locale = replacementLocale;
             entityId = CmsContentDefinition.uuidToEntityId(file.getStructureId(), locale.toString());
         }
@@ -1357,9 +1358,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             content.initDocument();
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_TAKE_UNMARSHALING_TIME_1,
-                "" + (System.currentTimeMillis() - timer)));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_TAKE_UNMARSHALING_TIME_1,
+                    "" + (System.currentTimeMillis() - timer)));
         }
         CmsContentTypeVisitor visitor = new CmsContentTypeVisitor(cms, file, locale);
         if (LOG.isDebugEnabled()) {
@@ -1367,9 +1369,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         }
         visitor.visitTypes(content.getContentDefinition(), getWorkplaceLocale(cms));
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_TAKE_VISITING_TYPES_TIME_1,
-                "" + (System.currentTimeMillis() - timer)));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_TAKE_VISITING_TYPES_TIME_1,
+                    "" + (System.currentTimeMillis() - timer)));
         }
         CmsEntity entity = null;
         Map<String, String> syncValues = new HashMap<String, String>();
@@ -1404,9 +1407,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             visitor,
             false);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_TAKE_READING_ENTITY_TIME_1,
-                "" + (System.currentTimeMillis() - timer)));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_TAKE_READING_ENTITY_TIME_1,
+                    "" + (System.currentTimeMillis() - timer)));
         }
         List<String> contentLocales = new ArrayList<String>();
         for (Locale contentLocale : content.getLocales()) {
@@ -1583,7 +1587,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param cms the cms context
      * @param structureId the structure id
      * @param content the XML content
-     * @param fieldNames if not null, only validation errors in paths from this set will be added to the validation result 
+     * @param fieldNames if not null, only validation errors in paths from this set will be added to the validation result
      *
      * @return the validation result
      */
@@ -1656,9 +1660,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         try {
             file.setContents(decodedContent.getBytes(encoding));
         } catch (UnsupportedEncodingException e) {
-            throw new CmsException(org.opencms.workplace.editors.Messages.get().container(
-                org.opencms.workplace.editors.Messages.ERR_INVALID_CONTENT_ENC_1,
-                file.getRootPath()), e);
+            throw new CmsException(
+                org.opencms.workplace.editors.Messages.get().container(
+                    org.opencms.workplace.editors.Messages.ERR_INVALID_CONTENT_ENC_1,
+                    file.getRootPath()),
+                e);
         }
         // the file content might have been modified during the write operation
         file = cms.writeFile(file);

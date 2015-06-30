@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 
 /**
  * Widget to display resource informations within the resource preview.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsBinaryPreviewContent extends Composite {
@@ -89,9 +89,9 @@ public class CmsBinaryPreviewContent extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param info the resource info to display
-     * @param previewHandler the preview handler  
+     * @param previewHandler the preview handler
      */
     public CmsBinaryPreviewContent(CmsResourceInfoBean info, CmsBinaryPreviewHandler previewHandler) {
 
@@ -112,19 +112,19 @@ public class CmsBinaryPreviewContent extends Composite {
 
     /**
      * Creates the list item for the resource information bean.<p>
-     * 
+     *
      * @param resourceInfo the resource information bean
      * @param dndHandler the drag and drop handler
-     * 
-     * @return the list item widget 
+     *
+     * @return the list item widget
      */
     private CmsListItem createListItem(CmsResourceInfoBean resourceInfo, CmsDNDHandler dndHandler) {
 
         CmsListInfoBean infoBean = new CmsListInfoBean();
-        infoBean.setTitle(CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourceInfo.getProperties().get(
-            CmsClientProperty.PROPERTY_TITLE))
-        ? resourceInfo.getProperties().get(CmsClientProperty.PROPERTY_TITLE)
-        : resourceInfo.getTitle());
+        infoBean.setTitle(
+            CmsStringUtil.isNotEmptyOrWhitespaceOnly(resourceInfo.getProperties().get(CmsClientProperty.PROPERTY_TITLE))
+            ? resourceInfo.getProperties().get(CmsClientProperty.PROPERTY_TITLE)
+            : resourceInfo.getTitle());
         infoBean.setSubTitle(resourceInfo.getResourcePath());
         infoBean.setResourceType(resourceInfo.getResourceType());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_PREVIEW_LABEL_SIZE_0), resourceInfo.getSize());

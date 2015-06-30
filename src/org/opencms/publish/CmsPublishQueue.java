@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * This queue contains all not jet started publish jobs.<p>
- * 
+ *
  * @since 6.5.5
  */
 public class CmsPublishQueue {
@@ -61,7 +61,7 @@ public class CmsPublishQueue {
 
     /**
      * Default constructor, for an empty queue.<p>
-     * 
+     *
      * @param publishEngine the publish engine instance
      */
     protected CmsPublishQueue(final CmsPublishEngine publishEngine) {
@@ -71,7 +71,7 @@ public class CmsPublishQueue {
 
     /**
      * Creates the buffer used as publish queue.<p>
-     * 
+     *
      * @return the queue buffer
      */
     public static Buffer getQueue() {
@@ -83,7 +83,7 @@ public class CmsPublishQueue {
 
             /**
              * Called when the queue is full to remove the oldest element.<p>
-             * 
+             *
              * @see org.apache.commons.collections.buffer.BoundedFifoBuffer#remove()
              */
             @Override
@@ -97,9 +97,9 @@ public class CmsPublishQueue {
 
     /**
      * Aborts the given publish job.<p>
-     * 
+     *
      * @param publishJob the publish job to abort
-     * 
+     *
      * @return <code>true</code> if the publish job was found
      */
     protected boolean abortPublishJob(CmsPublishJobInfoBean publishJob) {
@@ -115,11 +115,11 @@ public class CmsPublishQueue {
 
     /**
      * Pushes a new publish job with the given information in publish queue.<p>
-     * 
+     *
      * If possible, the publish job starts immediately.<p>
-     * 
+     *
      * @param publishJob the publish job to enqueue
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected void add(CmsPublishJobInfoBean publishJob) throws CmsException {
@@ -131,7 +131,7 @@ public class CmsPublishQueue {
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
             CmsDbContext dbc = m_publishEngine.getDbContext(null);
             try {
-                // this operation may in rare circumstances fail with a DB exception 
+                // this operation may in rare circumstances fail with a DB exception
                 // if this is the case the publish job must NOT be in the queue
                 m_publishEngine.getDriverManager().createPublishJob(dbc, publishJob);
             } catch (CmsException e) {
@@ -149,7 +149,7 @@ public class CmsPublishQueue {
 
     /**
      * Returns an unmodifiable list representation of this queue.<p>
-     * 
+     *
      * @return a list of {@link CmsPublishJobEnqueued} objects
      */
     protected List<CmsPublishJobEnqueued> asList() {
@@ -166,9 +166,9 @@ public class CmsPublishQueue {
 
     /**
      * Checks if the given job is already in the queue, this does only check for the identical job.<p>
-     * 
+     *
      * @param publishJob the publish job to check for
-     * 
+     *
      * @return true if the given job is already in the queue
      */
     protected boolean contains(CmsPublishJobInfoBean publishJob) {
@@ -187,7 +187,7 @@ public class CmsPublishQueue {
 
     /**
      * Initializes the internal FIFO queue with publish jobs from the database.<p>
-     * 
+     *
      * @param adminCms an admin cms object
      * @param revive <code>true</code> if the publish queue should be revived from the database
      */
@@ -259,18 +259,19 @@ public class CmsPublishQueue {
 
     /**
      * Checks if the queue is empty.<p>
-     * 
+     *
      * @return <code>true</code> if the queue is empty
      */
     protected boolean isEmpty() {
 
-        return ((OpenCms.getMemoryMonitor() == null) || (OpenCms.getMemoryMonitor().getFirstCachedPublishJob() == null));
+        return ((OpenCms.getMemoryMonitor() == null)
+            || (OpenCms.getMemoryMonitor().getFirstCachedPublishJob() == null));
     }
 
     /**
-     * Returns the next publish job to be published, removing it 
-     * from the queue, or <code>null</code> if the queue is empty.<p> 
-     * 
+     * Returns the next publish job to be published, removing it
+     * from the queue, or <code>null</code> if the queue is empty.<p>
+     *
      * @return the next publish job to be published
      */
     protected CmsPublishJobInfoBean next() {
@@ -284,9 +285,9 @@ public class CmsPublishQueue {
 
     /**
      * Removes the given job from the list.<p>
-     * 
+     *
      * @param publishJob the publish job to remove
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected void remove(CmsPublishJobInfoBean publishJob) throws CmsException {
@@ -316,8 +317,8 @@ public class CmsPublishQueue {
 
     /**
      * Updates the given job in the list.<p>
-     * 
-     * @param publishJob the publish job to 
+     *
+     * @param publishJob the publish job to
      */
     protected void update(CmsPublishJobInfoBean publishJob) {
 

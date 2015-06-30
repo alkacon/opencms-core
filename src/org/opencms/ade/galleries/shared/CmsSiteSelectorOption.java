@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,12 +37,9 @@ public class CmsSiteSelectorOption implements IsSerializable {
     /** Enum for indicating the site type. */
     public enum Type {
         /** Current subsite. */
-        currentSubsite,
-        /** Root site. */
-        root,
-        /** Shared folder. */
-        shared,
-        /** Normally configured site. */
+        currentSubsite, /** Root site. */
+        root, /** Shared folder. */
+        shared, /** Normally configured site. */
         site;
     }
 
@@ -68,11 +65,11 @@ public class CmsSiteSelectorOption implements IsSerializable {
 
     /**
      * Creates a new site selector option.<p>
-     * 
-     * @param type the site type 
-     * @param siteRoot the site root 
-     * @param isCurrentSite true if this is the current site 
-     * @param message the message to display for this site 
+     *
+     * @param type the site type
+     * @param siteRoot the site root
+     * @param isCurrentSite true if this is the current site
+     * @param message the message to display for this site
      */
     public CmsSiteSelectorOption(Type type, String siteRoot, boolean isCurrentSite, String message) {
 
@@ -84,7 +81,7 @@ public class CmsSiteSelectorOption implements IsSerializable {
 
     /**
      * Gets the message to display for this site.<p>
-     * 
+     *
      * @return the message to display for this site
      */
     public String getMessage() {
@@ -94,8 +91,8 @@ public class CmsSiteSelectorOption implements IsSerializable {
 
     /**
      * Gets the site root for the site.<p>
-     * 
-     * @return the site root 
+     *
+     * @return the site root
      */
     public String getSiteRoot() {
 
@@ -104,8 +101,8 @@ public class CmsSiteSelectorOption implements IsSerializable {
 
     /**
      * Gets the type of the site.<p>
-     * 
-     * @return the type of the site 
+     *
+     * @return the type of the site
      */
     public Type getType() {
 
@@ -114,7 +111,7 @@ public class CmsSiteSelectorOption implements IsSerializable {
 
     /**
      * Returns true if this site is the current site.<p>
-     * 
+     *
      * @return true if this is the current site
      */
     public boolean isCurrentSite() {

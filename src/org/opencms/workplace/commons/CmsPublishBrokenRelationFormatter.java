@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,8 +33,8 @@ import java.util.Locale;
 
 /**
  * This list item detail formatter for broken links.<p>
- * 
- * @since 6.5.5 
+ *
+ * @since 6.5.5
  */
 public class CmsPublishBrokenRelationFormatter implements I_CmsListFormatter {
 
@@ -52,7 +52,7 @@ public class CmsPublishBrokenRelationFormatter implements I_CmsListFormatter {
         String message = Messages.get().getBundle(locale).key(
             Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_RELATION_SOURCES_0);
         String content = "";
-        if (data != null && data.toString().length() > 0) {
+        if ((data != null) && (data.toString().length() > 0)) {
             content = data.toString().substring(1);
             if (data.toString().startsWith(PREFIX_TARGETS)) {
                 message = Messages.get().getBundle(locale).key(

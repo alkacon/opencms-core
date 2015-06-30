@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Image format form.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsImageFormatsForm extends Composite implements ValueChangeHandler<String>, KeyPressHandler {
@@ -124,7 +124,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param formatHandler the image format handler
      */
     public CmsImageFormatsForm(CmsImageFormatHandler formatHandler) {
@@ -164,22 +164,22 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Parses <code>String</code> to <code>int</code>. Return -1 for invalid input.<p>
-     * 
+     *
      * @param value the value to parse
-     * 
+     *
      * @return the int-value
      */
     private static native int parseInt(String value) /*-{
-        var ret = parseInt(value);
-        if (isNaN(ret)) {
-            return -1;
-        }
-        return ret;
-    }-*/;
+                                                     var ret = parseInt(value);
+                                                     if (isNaN(ret)) {
+                                                     return -1;
+                                                     }
+                                                     return ret;
+                                                     }-*/;
 
     /**
      * Adds a format select option.<p>
-     * 
+     *
      * @param value the option value
      * @param label the option label
      */
@@ -190,7 +190,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Returns the selected format value.<p>
-     * 
+     *
      * @return the selected format value
      */
     public String getFormatSelectValue() {
@@ -200,7 +200,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Returns the height input or -1 if input is empty or not valid.<p>
-     * 
+     *
      * @return the height input
      */
     public int getHeightInput() {
@@ -210,7 +210,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Returns the width input or -1 if input is empty or not valid.<p>
-     * 
+     *
      * @return the width input
      */
     public int getWidthInput() {
@@ -220,7 +220,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Opens the cropping dialog on crop button click.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_cropButton")
@@ -231,7 +231,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Removes the cropping on button click.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_removeCropButton")
@@ -242,7 +242,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Toggle the ratio lock on button click.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_ratioLock")
@@ -253,7 +253,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Resets the size on button click.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_resetSize")
@@ -314,7 +314,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Enables/disables buttons and input fields necessary if the image if cropped.<p>
-     * 
+     *
      * @param cropped <code>true</code> if the image is cropped
      */
     public void setCropped(boolean cropped) {
@@ -345,7 +345,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Sets the format select value.<p>
-     * 
+     *
      * @param value the value
      */
     public void setFormatSelectValue(String value) {
@@ -355,7 +355,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Sets the format form enabled.<p>
-     * 
+     *
      * @param enabled if <code>true</code> the form will be enabled
      */
     public void setFormEnabled(boolean enabled) {
@@ -375,7 +375,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Sets the height input field.<p>
-     * 
+     *
      * @param height the value
      */
     public void setHeightInput(int height) {
@@ -385,7 +385,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Enables the height input field.<p>
-     * 
+     *
      * @param enabled <code>true</code> to enable the input field
      */
     public void setHeightInputEnabled(boolean enabled) {
@@ -395,7 +395,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Sets the state of the ratio lock button.<p>
-     * 
+     *
      * @param down if <code>true</code> button will be set down / lock open
      * @param enabled if <code>true</code> button will be enabled
      * @param disableMessage message to show for disabled button
@@ -412,7 +412,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Sets the width input field.<p>
-     * 
+     *
      * @param width the value
      */
     public void setWidthInput(int width) {
@@ -422,7 +422,7 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
 
     /**
      * Enables the width input field.<p>
-     * 
+     *
      * @param enabled <code>true</code> to enable the input field
      */
     public void setWidthInputEnabled(boolean enabled) {

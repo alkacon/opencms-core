@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,13 +41,13 @@ public interface I_CmsCollectorPublishListProvider {
 
     /**
      * Gets the publish list for the collector.<p>
-     *  
-     * @param cms  the CMS context to use 
-     * @param info the collector information 
-     * 
-     * @return  the resources to include in the publish list 
-     * 
-     * @throws CmsException if soemthing goes wrong 
+     *
+     * @param cms  the CMS context to use
+     * @param info the collector information
+     *
+     * @return  the resources to include in the publish list
+     *
+     * @throws CmsException if soemthing goes wrong
      */
     Set<CmsResource> getPublishResources(CmsObject cms, I_CmsContentLoadCollectorInfo info) throws CmsException;
 

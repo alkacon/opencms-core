@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,18 +47,18 @@ import org.htmlparser.util.ParserException;
 /**
  * Simple html tag stripper that allows configuration of html tag names that are allowed.
  * <p>
- * 
- * All tags that are not explicitly allowed via invocation of one of the 
- * <code>addPreserve...</code> methods will be missing in the result of the method 
+ *
+ * All tags that are not explicitly allowed via invocation of one of the
+ * <code>addPreserve...</code> methods will be missing in the result of the method
  * <code>{@link #stripHtml(String)}</code>.<p>
- * 
- * Instances are reusable but not shareable (multithreading). If configuration should be changed 
- * between subsequent invocations of <code>{@link #stripHtml(String)}</code> method 
+ *
+ * Instances are reusable but not shareable (multithreading). If configuration should be changed
+ * between subsequent invocations of <code>{@link #stripHtml(String)}</code> method
  * <code>{@link #reset()}</code> has to be called.
  * <p>
- * 
+ *
  * @since 6.9.2
- * 
+ *
  */
 public final class CmsHtmlStripper {
 
@@ -82,7 +82,7 @@ public final class CmsHtmlStripper {
 
     /**
      * Creates an instance with control whether tidy is used.<p>
-     * 
+     *
      * @param useTidy if true tidy will be used
      */
     public CmsHtmlStripper(final boolean useTidy) {
@@ -93,9 +93,9 @@ public final class CmsHtmlStripper {
 
     /**
      * Adds a tag that will be preserved by <code>{@link #stripHtml(String)}</code>.<p>
-     *  
-     * @param tagName the name of the tag to keep (case insensitive) 
-     *      
+     *
+     * @param tagName the name of the tag to keep (case insensitive)
+     *
      * @return true if the tagName was added correctly to the internal engine
      */
     public boolean addPreserveTag(final String tagName) {
@@ -111,9 +111,9 @@ public final class CmsHtmlStripper {
 
     /**
      * Convenience method for adding several tags to preserve.<p>
-     * 
+     *
      * @param preserveTags a <code>List&lt;String&gt;</code> with the case-insensitive tag names of the tags to preserve
-     *      
+     *
      * @see #addPreserveTag(String)
      */
     public void addPreserveTagList(List<String> preserveTags) {
@@ -124,17 +124,17 @@ public final class CmsHtmlStripper {
     }
 
     /**
-     * Convenience method for adding several tags to preserve 
+     * Convenience method for adding several tags to preserve
      * in form of a delimiter-separated String.<p>
-     * 
+     *
      * The String will be <code>{@link CmsStringUtil#splitAsList(String, char, boolean)}</code>
-     * with <code>tagList</code> as the first argument, <code>separator</code> as the 
+     * with <code>tagList</code> as the first argument, <code>separator</code> as the
      * second argument and the third argument set to true (trimming - support).<p>
-     * 
-     * @param tagList a delimiter-separated String with case-insensitive tag names to preserve by  
+     *
+     * @param tagList a delimiter-separated String with case-insensitive tag names to preserve by
      *      <code>{@link #stripHtml(String)}</code>
-     * @param separator the delimiter that separates tag names in the <code>tagList</code> argument 
-     *      
+     * @param separator the delimiter that separates tag names in the <code>tagList</code> argument
+     *
      * @see #addPreserveTag(String)
      */
     public void addPreserveTags(final String tagList, final char separator) {
@@ -145,8 +145,8 @@ public final class CmsHtmlStripper {
 
     /**
      * Resets the configuration of the tags to preserve.<p>
-     * 
-     * This is called from the constructor and only has to be called if this 
+     *
+     * This is called from the constructor and only has to be called if this
      * instance is reused with a differen configuration (of tags to keep).<p>
      *
      */
@@ -160,16 +160,16 @@ public final class CmsHtmlStripper {
      * <p>
      * Additionally tags are replaced / removed according to the configuration of this instance.
      * <p>
-     * 
+     *
      * <h3>Please note:</h3>
      * There are static process methods in the superclass that will not do the replacements /
      * removals. Don't mix them up with this method.
      * <p>
-     * 
+     *
      * @param html the content to extract the plain text from.
-     * 
+     *
      * @return the text extracted from the given html content.
-     * 
+     *
      * @throws ParserException if something goes wrong.
      */
     public String stripHtml(final String html) throws ParserException {
@@ -186,7 +186,7 @@ public final class CmsHtmlStripper {
         Page page = new Page(content);
         lexer.setPage(page);
         parser.setLexer(lexer);
-        // process the page using a string collection wizard 
+        // process the page using a string collection wizard
         // echo on
         CmsHtmlParser visitor = new CmsHtmlParser(true);
         parser.visitAllNodesWith(visitor);
@@ -195,16 +195,17 @@ public final class CmsHtmlStripper {
     }
 
     /**
-     * Internally tidies with cleanup and XHTML.<p> 
-     * 
-     * @param content HTML to clean 
-     * 
+     * Internally tidies with cleanup and XHTML.<p>
+     *
+     * @param content HTML to clean
+     *
      * @return the tidy HTML
      */
     private String tidy(final String content) {
 
-        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_UTF_8, new StringBuffer(
-            CmsHtmlConverter.PARAM_WORD).append(";").append(CmsHtmlConverter.PARAM_XHTML).toString());
+        CmsHtmlConverter converter = new CmsHtmlConverter(
+            CmsEncoder.ENCODING_UTF_8,
+            new StringBuffer(CmsHtmlConverter.PARAM_WORD).append(";").append(CmsHtmlConverter.PARAM_XHTML).toString());
         String result = content;
         try {
             result = converter.convertToString(content);

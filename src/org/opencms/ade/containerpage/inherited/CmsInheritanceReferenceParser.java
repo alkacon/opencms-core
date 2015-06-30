@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,8 +63,8 @@ public class CmsInheritanceReferenceParser {
 
     /**
      * Creates a new parser instance.<p>
-     * 
-     * @param cms the CMS context to use 
+     *
+     * @param cms the CMS context to use
      */
     public CmsInheritanceReferenceParser(CmsObject cms) {
 
@@ -73,11 +73,11 @@ public class CmsInheritanceReferenceParser {
 
     /**
      * Gets the parsed reference for a locale.<p>
-     * 
+     *
      * Gets the reference object for the locale, and uses the reference for the English language as a fallback.<p>
-     * 
-     * @param  locale the locale to get the reference for 
-     * @return the reference for the locale 
+     *
+     * @param  locale the locale to get the reference for
+     * @return the reference for the locale
      */
     public CmsInheritanceReference getReference(Locale locale) {
 
@@ -90,10 +90,10 @@ public class CmsInheritanceReferenceParser {
 
     /**
      * Parses a given resource.<p>
-     * 
-     * @param resource the resource to parse 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param resource the resource to parse
+     *
+     * @throws CmsException if something goes wrong
      */
     public void parse(CmsResource resource) throws CmsException {
 
@@ -105,8 +105,8 @@ public class CmsInheritanceReferenceParser {
 
     /**
      * Parses the given XML content.<p>
-     * 
-     * @param content the XML content to parse 
+     *
+     * @param content the XML content to parse
      */
     protected void parse(CmsXmlContent content) {
 
@@ -122,13 +122,13 @@ public class CmsInheritanceReferenceParser {
 
     /**
      * Extracts a single inheritance reference from a location in the XML content.<p>
-     * 
+     *
      * This method may return null if the given location doesn't contain a valid inheritance container reference.<p>
-     * 
-     * @param location the location from which to parse the inheritance reference 
+     *
+     * @param location the location from which to parse the inheritance reference
      * @param locale the locale from  which to parse the inheritance reference
-     * 
-     * @return the parsed inheritance reference, or null 
+     *
+     * @return the parsed inheritance reference, or null
      */
     protected CmsInheritanceReference parseReference(I_CmsXmlContentLocation location, Locale locale) {
 

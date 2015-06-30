@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,8 +61,8 @@ import com.google.common.collect.Lists;
 
 /**
  * User account view over all manageable organizational units.<p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
 
@@ -80,7 +80,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUsersAllOrgUnitsList(CmsJspActionElement jsp) {
@@ -90,7 +90,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUsersAllOrgUnitsList(CmsJspActionElement jsp, boolean lazy) {
@@ -100,9 +100,9 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
 
     /**
      * Public constructor.<p>
-     * 
-     * @param context a page context 
-     * @param req a request 
+     *
+     * @param context a page context
+     * @param req a request
      * @param res a response
      */
     public CmsUsersAllOrgUnitsList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
@@ -112,11 +112,11 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
-     * @param lazy the lazy flag 
+     * @param lazy the lazy flag
      */
     public CmsUsersAllOrgUnitsList(PageContext context, HttpServletRequest req, HttpServletResponse res, boolean lazy) {
 
@@ -126,6 +126,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         String userId = getSelectedItem().getId();
@@ -151,6 +152,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         super.fillDetails(detailId);
@@ -164,8 +166,9 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
             try {
                 if (detailId.equals(LIST_DETAIL_ORGUNIT_DESC)) {
                     CmsUser user = readUser(userName);
-                    html.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), user.getOuFqn()).getDescription(
-                        getLocale()));
+                    html.append(
+                        OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), user.getOuFqn()).getDescription(
+                            getLocale()));
                 } else {
                     continue;
                 }
@@ -179,6 +182,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getGroupIcon()
      */
+    @Override
     protected String getGroupIcon() {
 
         return null;
@@ -210,10 +214,10 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
 
     /**
      * Gets the search parameters.<p>
-     * 
+     *
      * @return the search parameters
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsUserSearchParameters getSearchParams() throws CmsException {
 
@@ -233,9 +237,9 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
 
     /**
      * Returns the sort key for the column.<p>
-     * 
-     * @param column the list column 
-     * @return the sort key 
+     *
+     * @param column the list column
+     * @return the sort key
      */
     protected SortKey getSortKey(String column) {
 
@@ -261,6 +265,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getUsers()
      */
+    @Override
     protected List<CmsUser> getUsers() throws CmsException {
 
         return CmsPrincipal.filterCoreUsers(OpenCms.getRoleManager().getManageableUsers(getCms(), "", true));
@@ -269,6 +274,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#readUser(java.lang.String)
      */
+    @Override
     protected CmsUser readUser(String name) throws CmsException {
 
         return getCms().readUser(name);
@@ -277,6 +283,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         if (m_lazy) {
@@ -293,13 +300,15 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
         CmsListColumnDefinition orgUnitCol = new CmsListColumnDefinition(LIST_COLUMN_ORGUNIT);
         orgUnitCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ORGUNIT_0));
         orgUnitCol.setWidth("30%");
-        metadata.addColumn(orgUnitCol, metadata.getColumnDefinitions().indexOf(
-            metadata.getColumnDefinition(LIST_COLUMN_NAME)));
+        metadata.addColumn(
+            orgUnitCol,
+            metadata.getColumnDefinitions().indexOf(metadata.getColumnDefinition(LIST_COLUMN_NAME)));
     }
 
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setDeleteAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setDeleteAction(CmsListColumnDefinition deleteCol) {
 
         // noop
@@ -308,6 +317,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setEditAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setEditAction(CmsListColumnDefinition editCol) {
 
         CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_OVERVIEW);
@@ -320,6 +330,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         super.setIndependentActions(metadata);
@@ -328,17 +339,17 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
         CmsListItemDetails orgUnitDescDetails = new CmsListItemDetails(LIST_DETAIL_ORGUNIT_DESC);
         orgUnitDescDetails.setAtColumn(LIST_COLUMN_DISPLAY);
         orgUnitDescDetails.setVisible(false);
-        orgUnitDescDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_SHOW_ORGUNIT_DESC_NAME_0));
-        orgUnitDescDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_SHOW_ORGUNIT_DESC_HELP_0));
-        orgUnitDescDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_HIDE_ORGUNIT_DESC_NAME_0));
-        orgUnitDescDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_HIDE_ORGUNIT_DESC_HELP_0));
+        orgUnitDescDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ORGUNIT_DESC_NAME_0));
+        orgUnitDescDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ORGUNIT_DESC_HELP_0));
+        orgUnitDescDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ORGUNIT_DESC_NAME_0));
+        orgUnitDescDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ORGUNIT_DESC_HELP_0));
         orgUnitDescDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_ORGUNIT_DESC_NAME_0));
-        orgUnitDescDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_ORGUNIT_DESC_NAME_0)));
+        orgUnitDescDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_USERS_DETAIL_ORGUNIT_DESC_NAME_0)));
         metadata.addItemDetails(orgUnitDescDetails);
         metadata.getSearchAction().addColumn(metadata.getColumnDefinition(LIST_COLUMN_EMAIL));
         metadata.getSearchAction().addColumn(metadata.getColumnDefinition(LIST_COLUMN_ORGUNIT));
@@ -347,6 +358,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop
@@ -355,6 +367,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setUserData(org.opencms.file.CmsUser, org.opencms.workplace.list.CmsListItem)
      */
+    @Override
     protected void setUserData(CmsUser user, CmsListItem item) {
 
         super.setUserData(user, item);
@@ -364,6 +377,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // no param check needed

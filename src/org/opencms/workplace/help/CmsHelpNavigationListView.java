@@ -18,7 +18,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,13 +39,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Generates a simple TOC - list by using a navigation model 
+ * Generates a simple TOC - list by using a navigation model
  * obtained from a <code>{@link org.opencms.jsp.CmsJspNavBuilder}</code>. <p>
- * 
- * This is a simpler facade to a fixed html - list based layout. 
- * Only a navigation root path and a desired depth have to be set. 
+ *
+ * This is a simpler facade to a fixed html - list based layout.
+ * Only a navigation root path and a desired depth have to be set.
  * It is not specific to the online help.<p>
- * 
+ *
  * @since 6.0.0
  */
 public final class CmsHelpNavigationListView {
@@ -60,10 +60,10 @@ public final class CmsHelpNavigationListView {
     private String m_navRootPath;
 
     /**
-     * Creates a <code>CmsNaviationListView</code> which uses the given 
-     * <code>CmsJspActionElement</code> for accessing the underlying 
+     * Creates a <code>CmsNaviationListView</code> which uses the given
+     * <code>CmsJspActionElement</code> for accessing the underlying
      * navigation API. <p>
-     *   
+     *
      * @param jsp the <code>CmsJspActionElement</code> to use
      */
     public CmsHelpNavigationListView(CmsJspActionElement jsp) {
@@ -74,14 +74,14 @@ public final class CmsHelpNavigationListView {
     }
 
     /**
-     * Creates a <code>CmsNaviationListView</code> which creates a 
-     * <code>CmsJspActionElement</code> for accessing the underlying 
+     * Creates a <code>CmsNaviationListView</code> which creates a
+     * <code>CmsJspActionElement</code> for accessing the underlying
      * navigation API with the given arguments . <p>
-     * 
+     *
      * @param context the <code>PageContext</code> to use
-     * @param request the <code>HttpServletRequest</code> to use 
-     * @param response the <code>HttpServletResponse</code> to use 
-     * 
+     * @param request the <code>HttpServletRequest</code> to use
+     * @param response the <code>HttpServletResponse</code> to use
+     *
      */
     public CmsHelpNavigationListView(PageContext context, HttpServletRequest request, HttpServletResponse response) {
 
@@ -90,9 +90,9 @@ public final class CmsHelpNavigationListView {
 
     /**
      * Returns a String of spaces.<p>
-     * 
+     *
      * @param n the count of spaces
-     * 
+     *
      * @return a String of spaces
      */
     private static String getSpaces(int n) {
@@ -108,9 +108,9 @@ public final class CmsHelpNavigationListView {
 
     /**
      * Returns a string containing the navigation created by using the internal members.<p>
-     * 
+     *
      * The navigation is a nested html list. <p>
-     * 
+     *
      * @return a string containing the navigation created by using the internal members
      */
     public String createNavigation() {
@@ -129,17 +129,16 @@ public final class CmsHelpNavigationListView {
             buffer.append(spaces).append("</p>");
             return buffer.toString();
         } else {
-            CmsIllegalArgumentException ex = new CmsIllegalArgumentException(Messages.get().container(
-                Messages.GUI_HELP_ERR_SITEMAP_MISSING_PARAM_1,
-                "navRootPath"));
+            CmsIllegalArgumentException ex = new CmsIllegalArgumentException(
+                Messages.get().container(Messages.GUI_HELP_ERR_SITEMAP_MISSING_PARAM_1, "navRootPath"));
             throw ex;
         }
     }
 
     /**
      * Returns the depth in levels of the navigation. <p>
-     * 
-     * @return the depth in levels of the navigation. 
+     *
+     * @return the depth in levels of the navigation.
      */
     public int getDepth() {
 
@@ -148,7 +147,7 @@ public final class CmsHelpNavigationListView {
 
     /**
      * Returns the navigation root path of the navigation to generate a view for. <p>
-     * 
+     *
      * @return the navigation root path of the navigation to generate a view for.
      */
     public String getSiteRootPath() {
@@ -158,7 +157,7 @@ public final class CmsHelpNavigationListView {
 
     /**
      * Set the depth in level of the navigation to generate a view for. <p>
-     * 
+     *
      * @param depth  the depth in level of the navigation to generate a view for to set
      */
     public void setDepth(int depth) {
@@ -167,10 +166,10 @@ public final class CmsHelpNavigationListView {
     }
 
     /**
-     * Set the navigation root path of the navigation to generate a view for. <p> 
-     * 
-     * The navigation will start there. <p> 
-     * 
+     * Set the navigation root path of the navigation to generate a view for. <p>
+     *
+     * The navigation will start there. <p>
+     *
      * @param navRootPath the navigation root path of the navigation to generate a view for to set
      */
     public void setNavigationRootPath(String navRootPath) {
@@ -180,7 +179,7 @@ public final class CmsHelpNavigationListView {
 
     /**
      * Calculates and returns the navigation end level.<p>
-     * 
+     *
      * @return the navigation end level
      */
     private int calculateEndLevel() {
@@ -206,7 +205,7 @@ public final class CmsHelpNavigationListView {
 
     /**
      * Creates the HTML for the internal help.<p>
-     * 
+     *
      * @param buffer the StringBuffer to which the Navigation will be appended
      * @param navElements the navigation elements to build the navigation for
      */

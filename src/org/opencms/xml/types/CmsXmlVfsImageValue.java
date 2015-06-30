@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,8 +45,8 @@ import org.dom4j.Element;
  * Describes the XML content type "OpenCmsVfsImage".<p>
  *
  * This type allows links to internal VFS images only.<p>
- * 
- * @since 7.5.0 
+ *
+ * @since 7.5.0
  */
 public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
@@ -87,7 +87,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
     /**
      * Creates a new XML content value of type "OpenCmsVfsImage".<p>
-     * 
+     *
      * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
@@ -100,7 +100,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
     /**
      * Creates a new schema type descriptor for the type "OpenCmsVfsImage".<p>
-     * 
+     *
      * @param name the name of the XML node containing the value according to the XML schema
      * @param minOccurs minimum number of occurrences of this type according to the XML schema
      * @param maxOccurs maximum number of occurrences of this type according to the XML schema
@@ -121,7 +121,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
     /**
      * Returns the description of the image.<p>
-     * 
+     *
      * @param cms the current users context
      * @return the description of the image or an empty String
      */
@@ -141,7 +141,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
     /**
      * Returns the format information of the image.<p>
-     * 
+     *
      * @param cms the current users context
      * @return the format information of the image or an empty String
      */
@@ -160,7 +160,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
     /**
      * Returns the link without parameters from the string value.<p>
-     * 
+     *
      * @param cms the current users context
      * @return the link without parameters
      */
@@ -171,7 +171,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
     /**
      * Returns the scale options of the image.<p>
-     * 
+     *
      * @param cms the current users context
      * @return the scale options of the image or an empty String
      */
@@ -221,7 +221,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
     /**
      * Sets the description of the image.<p>
-     * 
+     *
      * @param cms the current users context
      * @param description the description of the image
      */
@@ -241,7 +241,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
     /**
      * Sets the format information of the image.<p>
-     * 
+     *
      * @param cms the current users contexts
      * @param format the format information of the image
      */
@@ -260,7 +260,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
     /**
      * Sets the scale options of the image.<p>
-     * 
+     *
      * @param cms the current users context
      * @param scaleOptions the scale options of the image
      */
@@ -319,7 +319,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
     /**
      * Returns the parameters as Map from the given url String.<p>
-     * 
+     *
      * @param url the url String to get the parameters from
      * @return the parameters as Map
      */
@@ -337,9 +337,9 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
     /**
      * Returns the value of the given parameter name from a parameter map.<p>
-     * 
+     *
      * @param cms the current users context
-     * @param parameterMap the map containing the parameters 
+     * @param parameterMap the map containing the parameters
      * @param key the parameter name
      * @return the value of the parameter or an empty String
      */
@@ -358,7 +358,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
     /**
      * Returns the value of the given parameter name from the current parameter map.<p>
-     * 
+     *
      * @param cms the current users context
      * @param key the parameter name
      * @return the value of the parameter or an empty String
@@ -373,7 +373,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
     /**
      * Sets a parameter for the image with the provided key as name and the value.<p>
-     * 
+     *
      * @param cms the current users context
      * @param key the parameter name to set
      * @param value the value of the parameter

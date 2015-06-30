@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,13 +47,13 @@ import junit.framework.TestSuite;
 
 /**
  * Unit test for the "undoChanges" method of the CmsObject.<p>
- * 
+ *
  */
 public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestUndoChanges(String arg0) {
@@ -63,7 +63,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -211,7 +211,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void undoChangesFolderRecursive(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {
+    public static void undoChangesFolderRecursive(OpenCmsTestCase tc, CmsObject cms, String resource1)
+    throws Throwable {
 
         // create a global storage and store the resource
         tc.createStorage("undoChanges");
@@ -258,9 +259,9 @@ public class TestUndoChanges extends OpenCmsTestCase {
     }
 
     /**
-     * Tests undo changes after a resource was deleted and another 
+     * Tests undo changes after a resource was deleted and another
      * resource was copied over the deleted file "as new".<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesAfterCopyNewOverDeleted() throws Throwable {
@@ -297,24 +298,24 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Tests undo changes of move operations as follows:<p>
-     * 
+     *
      * having following start structure:
      * - (black) /folder
      * - (black) /folder/subfolder
-     * - (black) /folder/subfolder/subsubfolder 
-     * 
+     * - (black) /folder/subfolder/subsubfolder
+     *
      * a. move /folder/subfolder to /subfolder
      * b. move /subfolder/subsubfolder to /subsubfolder
      * c. move /subfolder back to its starting location: /folder/subfolder
      * d. undo changes of move operation for /subsubfolder
-     * 
+     *
      * to get following scenario:
      * - (black) /folder
      * - (red) /folder/subfolder
-     * - (black) /folder/subfolder/subsubfolder 
-     * 
+     * - (black) /folder/subfolder/subsubfolder
+     *
      * e. undo changes of move operation for /folder/subfolder
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesScenario1() throws Throwable {
@@ -395,9 +396,9 @@ public class TestUndoChanges extends OpenCmsTestCase {
     }
 
     /**
-     * Tests undo changes after a resource was deleted and another 
+     * Tests undo changes after a resource was deleted and another
      * resource was copied over the deleted file "as sibling".<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesAfterCopySiblingOverDeleted() throws Throwable {
@@ -434,7 +435,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Test undoChanges method to a single folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesFolder() throws Throwable {
@@ -446,7 +447,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Test undoChanges method to a single folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesFolderRecursive() throws Throwable {
@@ -458,7 +459,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Tests undo changes for the move operation only.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesMove() throws Throwable {
@@ -520,7 +521,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Tests undo changes for the content changes only.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesMoveContent() throws Throwable {
@@ -607,7 +608,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Tests undo changes after a file was moved and edited.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesMovedFileAfterEdit() throws Throwable {
@@ -654,7 +655,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Tests undo changes after a folder was moved.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesMovedFolder() throws Throwable {
@@ -686,7 +687,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Tests undo changes after a folder was moved and a file in the folder edited.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesMovedFolderAfterEdit() throws Throwable {
@@ -734,7 +735,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Tests undo changes after a folder was moved and a file in the folder edited.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesMovedFolderNewFile() throws Throwable {
@@ -787,7 +788,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Tests undo changes on a new resource, this must lead to an exception!<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesOnNewResource() throws Throwable {
@@ -812,7 +813,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Test undoChanges method to a single file.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesResource() throws Throwable {
@@ -820,7 +821,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
 
         // this is the first test, so set up the global storage used for all other
-        // tests        
+        // tests
         createStorage(OpenCmsTestResourceStorage.GLOBAL_STORAGE);
         switchStorage(OpenCmsTestResourceStorage.GLOBAL_STORAGE);
         storeResources(cms, "/");
@@ -832,7 +833,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Tests undo changes after a folder was moved several times.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesSeveralMovedFolder() throws Throwable {
@@ -880,7 +881,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Test undoChanges method to a resource with an ace.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesSharedProperty() throws Throwable {
@@ -946,7 +947,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Test undoChanges method to a sub folder after moving a whole folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesSubfolderAfterMoving() throws Throwable {
@@ -960,7 +961,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
         cms.lockResource(source);
 
-        // move 
+        // move
         cms.moveResource(source, destination);
 
         // now undo all changes on the subfolder
@@ -980,7 +981,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Test undoChanges method to a resource with an ace.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesWithAce() throws Throwable {

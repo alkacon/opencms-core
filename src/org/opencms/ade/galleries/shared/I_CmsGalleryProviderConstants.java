@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Shared constants interface.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsGalleryProviderConstants {
@@ -46,7 +46,8 @@ public interface I_CmsGalleryProviderConstants {
         adeView(CmsGalleryTabConfiguration.resolve(CmsGalleryTabConfiguration.TC_SELECT_DOC)),
 
         /** The wysiwyg editor mode. */
-        editor(CmsGalleryTabConfiguration.resolve(CmsGalleryTabConfiguration.TC_SELECT_DOC) /* may be overwritten by configuration */),
+        editor(CmsGalleryTabConfiguration.resolve(
+            CmsGalleryTabConfiguration.TC_SELECT_DOC) /* may be overwritten by configuration */),
 
         /** The explorer mode. */
         view(CmsGalleryTabConfiguration.resolve(CmsGalleryTabConfiguration.TC_SELECT_DOC)),
@@ -59,16 +60,16 @@ public interface I_CmsGalleryProviderConstants {
 
         /** Constructor.<p>
          *
-         * @param tabConfig the tab configuration 
+         * @param tabConfig the tab configuration
          */
         private GalleryMode(CmsGalleryTabConfiguration tabConfig) {
 
             m_tabConfig = tabConfig;
         }
 
-        /** 
+        /**
          * Returns the configured tabs.<p>
-         * 
+         *
          * @return the configured tabs
          */
         public GalleryTabId[] getTabs() {

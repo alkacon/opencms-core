@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,8 +45,8 @@ import java.util.List;
 
 /**
  * Resource type descriptor for the type "folder".<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
@@ -67,9 +67,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         if (!OpenCms.getResourceManager().getResourceType(newType).isFolder()) {
             // it is not possible to change the type of a folder to a file type
-            throw new CmsDataNotImplementedException(Messages.get().container(
-                Messages.ERR_CHTYPE_FOLDER_1,
-                cms.getSitePath(filename)));
+            throw new CmsDataNotImplementedException(
+                Messages.get().container(Messages.ERR_CHTYPE_FOLDER_1, cms.getSitePath(filename)));
         }
         super.chtype(cms, securityManager, filename, newType);
     }
@@ -151,8 +150,11 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
      * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.lang.String)
      */
     @Override
-    public void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
-    throws CmsException, CmsIllegalArgumentException {
+    public void moveResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        String destination) throws CmsException, CmsIllegalArgumentException {
 
         String dest = cms.getRequestContext().addSiteRoot(destination);
         if (!CmsResource.isFolder(dest)) {
@@ -161,25 +163,26 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         }
         if (resource.getRootPath().equals(dest)) {
             // move to target with same name is not allowed
-            throw new CmsVfsException(org.opencms.file.Messages.get().container(
-                org.opencms.file.Messages.ERR_MOVE_SAME_NAME_1,
-                destination));
+            throw new CmsVfsException(
+                org.opencms.file.Messages.get().container(org.opencms.file.Messages.ERR_MOVE_SAME_NAME_1, destination));
         }
         if (dest.startsWith(resource.getRootPath())) {
             // move of folder inside itself is not allowed
-            throw new CmsVfsException(org.opencms.file.Messages.get().container(
-                org.opencms.file.Messages.ERR_MOVE_SAME_FOLDER_2,
-                cms.getSitePath(resource),
-                destination));
+            throw new CmsVfsException(
+                org.opencms.file.Messages.get().container(
+                    org.opencms.file.Messages.ERR_MOVE_SAME_FOLDER_2,
+                    cms.getSitePath(resource),
+                    destination));
         }
 
         // check the destination
         try {
             securityManager.readResource(cms.getRequestContext(), dest, CmsResourceFilter.ALL);
-            throw new CmsVfsException(org.opencms.file.Messages.get().container(
-                org.opencms.file.Messages.ERR_OVERWRITE_RESOURCE_2,
-                cms.getRequestContext().removeSiteRoot(resource.getRootPath()),
-                destination));
+            throw new CmsVfsException(
+                org.opencms.file.Messages.get().container(
+                    org.opencms.file.Messages.ERR_OVERWRITE_RESOURCE_2,
+                    cms.getRequestContext().removeSiteRoot(resource.getRootPath()),
+                    destination));
         } catch (CmsVfsResourceNotFoundException e) {
             // ok
         }
@@ -206,9 +209,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         if (type != getTypeId()) {
             // it is not possible to replace a folder with a different type
-            throw new CmsDataNotImplementedException(Messages.get().container(
-                Messages.ERR_REPLACE_RESOURCE_FOLDER_1,
-                cms.getSitePath(resource)));
+            throw new CmsDataNotImplementedException(
+                Messages.get().container(Messages.ERR_REPLACE_RESOURCE_FOLDER_1, cms.getSitePath(resource)));
         }
         // properties of a folder can be replaced, content is ignored
         super.replaceResource(cms, securityManager, resource, getTypeId(), null, properties);
@@ -387,7 +389,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         // handle the folder itself, undo move op
         super.undoChanges(cms, securityManager, resource, mode);
 
-        // the folder may have been moved back to its original position        
+        // the folder may have been moved back to its original position
         CmsResource undoneResource2 = securityManager.readResource(
             cms.getRequestContext(),
             resource.getStructureId(),
@@ -419,8 +421,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                                 securityManager.readResource(
                                     cms.getRequestContext(),
                                     resource.getStructureId(),
-                                    CmsResourceFilter.ALL).getRootPath()
-                                    + childResource.getName());
+                                    CmsResourceFilter.ALL).getRootPath() + childResource.getName());
                             type.moveResource(cms, securityManager, childResource, newPath);
                         }
                     }
@@ -430,8 +431,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                         securityManager.readResource(
                             cms.getRequestContext(),
                             resource.getStructureId(),
-                            CmsResourceFilter.ALL).getRootPath()
-                            + childResource.getName());
+                            CmsResourceFilter.ALL).getRootPath() + childResource.getName());
                     type.moveResource(cms, securityManager, childResource, newPath);
                 }
             }
@@ -449,17 +449,16 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
      * also ensures that it starts and ends with a '/'.<p>
      *
      * @param resourcename folder name to check (complete path)
-     * 
+     *
      * @return the validated folder name
-     * 
+     *
      * @throws CmsIllegalArgumentException if the folder name is empty or <code>null</code>
      */
     private String validateFoldername(String resourcename) throws CmsIllegalArgumentException {
 
         if (CmsStringUtil.isEmpty(resourcename)) {
-            throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
-                org.opencms.db.Messages.ERR_BAD_RESOURCENAME_1,
-                resourcename));
+            throw new CmsIllegalArgumentException(
+                org.opencms.db.Messages.get().container(org.opencms.db.Messages.ERR_BAD_RESOURCENAME_1, resourcename));
         }
         if (!CmsResource.isFolder(resourcename)) {
             resourcename = resourcename.concat("/");

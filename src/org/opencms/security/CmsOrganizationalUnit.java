@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,8 +38,8 @@ import java.util.Locale;
  * An organizational unit in OpenCms.<p>
  *
  * Be sure the flags does not conflict with the flags defined in {@link org.opencms.file.CmsResource}.<p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public class CmsOrganizationalUnit {
 
@@ -69,7 +69,7 @@ public class CmsOrganizationalUnit {
 
     /**
      * Creates a new OpenCms organizational unit principal.
-     * 
+     *
      * @param id the unique id of the organizational unit
      * @param fqn the fully qualified name of the this organizational unit (should end with slash)
      * @param description the description of the organizational unit
@@ -87,12 +87,12 @@ public class CmsOrganizationalUnit {
 
     /**
      * Returns the parent fully qualified name.<p>
-     * 
-     * This is <code>null</code> for the root ou, and 
+     *
+     * This is <code>null</code> for the root ou, and
      * the empty string for first level ous.<p>
-     * 
+     *
      * @param fqn the fully qualified name to get the parent from
-     * 
+     *
      * @return the parent fully qualified name
      */
     public static final String getParentFqn(String fqn) {
@@ -116,9 +116,9 @@ public class CmsOrganizationalUnit {
 
     /**
      * Returns the last name of the given fully qualified name.<p>
-     * 
+     *
      * @param fqn the fully qualified name to get the last name from
-     * 
+     *
      * @return the last name of the given fully qualified name
      */
     public static final String getSimpleName(String fqn) {
@@ -135,11 +135,11 @@ public class CmsOrganizationalUnit {
 
     /**
      * Prefixes a simple name with an OU.<p>
-     * 
-     * @param ou the OU to use as a prefix 
+     *
+     * @param ou the OU to use as a prefix
      * @param principal the simple name to which the OU should be prepended
-     * 
-     * @return the FQN 
+     *
+     * @return the FQN
      */
     public static String prefixWithOu(String ou, String principal) {
 
@@ -151,10 +151,10 @@ public class CmsOrganizationalUnit {
     }
 
     /**
-     * Returns the given fully qualified name without leading separator.<p> 
-     * 
+     * Returns the given fully qualified name without leading separator.<p>
+     *
      * @param fqn the fully qualified name to fix
-     * 
+     *
      * @return the given fully qualified name without leading separator
      */
     public static String removeLeadingSeparator(String fqn) {
@@ -167,7 +167,7 @@ public class CmsOrganizationalUnit {
 
     /**
      * Adds the given flag to the flags for this organizational unit.<p>
-     * 
+     *
      * @param flag the flag to add
      */
     public void addFlag(int flag) {
@@ -204,7 +204,7 @@ public class CmsOrganizationalUnit {
     /**
      * Returns the description of this organizational unit.<p>
      *
-     * This could return also just a macro, so please use the 
+     * This could return also just a macro, so please use the
      * {@link #getDescription(Locale)} method.<p>
      *
      * @return the description of this organizational unit
@@ -230,9 +230,9 @@ public class CmsOrganizationalUnit {
 
     /**
      * Returns the display name for this organizational unit.<p>
-     * 
+     *
      * @param locale the locale
-     * 
+     *
      * @return the display name for this organizational unit
      */
     public String getDisplayName(Locale locale) {
@@ -250,10 +250,10 @@ public class CmsOrganizationalUnit {
     /**
      * Returns the flags of this organizational unit.<p>
      *
-     * The organizational unit flags are used to store special information about the 
-     * organizational unit state encoded bitwise. Usually the flags int value should not 
+     * The organizational unit flags are used to store special information about the
+     * organizational unit state encoded bitwise. Usually the flags int value should not
      * be directly accessed. <p>
-     * 
+     *
      * @return the flags of this organizational unit
      */
     public int getFlags() {
@@ -273,7 +273,7 @@ public class CmsOrganizationalUnit {
 
     /**
      * Returns the fully qualified name of this organizational unit.<p>
-     * 
+     *
      * @return the fully qualified name of this organizational unit
      */
     public String getName() {
@@ -283,9 +283,9 @@ public class CmsOrganizationalUnit {
 
     /**
      * Returns the full qualified name of the parent organizational unit of this organizational unit.<p>
-     * 
+     *
      * This is <code>null</code> for the root ou, and the empty string for first level ous.<p>
-     * 
+     *
      * @return the full qualified name of the parent organizational unit of this organizational unit
      */
     public String getParentFqn() {
@@ -315,9 +315,9 @@ public class CmsOrganizationalUnit {
 
     /**
      * Checks if this organizational unit has the given flag set.<p>
-     * 
+     *
      * @param flag the flag to check
-     * 
+     *
      * @return <code>true</code> if this organizational unit has the given flag set
      */
     public boolean hasFlag(int flag) {
@@ -327,7 +327,7 @@ public class CmsOrganizationalUnit {
 
     /**
      * Checks if this organizational unit has the "hide from login form" flag set.<p>
-     * 
+     *
      * @return <code>true</code> if this organizational unit has the "hide from login form" flag set
      */
     public boolean hasFlagHideLogin() {
@@ -337,7 +337,7 @@ public class CmsOrganizationalUnit {
 
     /**
      * Checks if this organizational unit has the "webusers" flag set.<p>
-     * 
+     *
      * @return <code>true</code> if this organizational unit has the "webusers" flag set
      */
     public boolean hasFlagWebuser() {
@@ -359,14 +359,14 @@ public class CmsOrganizationalUnit {
 
     /**
      * Sets the description of this organizational unit.<p>
-     * 
+     *
      * @param description the principal organizational unit to set
      */
     public void setDescription(String description) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(description)) {
-            throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
-                org.opencms.db.Messages.ERR_BAD_OU_DESCRIPTION_EMPTY_0));
+            throw new CmsIllegalArgumentException(
+                org.opencms.db.Messages.get().container(org.opencms.db.Messages.ERR_BAD_OU_DESCRIPTION_EMPTY_0));
         }
 
         m_description = description;
@@ -383,8 +383,8 @@ public class CmsOrganizationalUnit {
     /**
      * Sets this organizational unit flags to the specified value.<p>
      *
-     * The organizational unit flags are used to store special information about the 
-     * organizational units state encoded bitwise. Usually the flags int value should not 
+     * The organizational unit flags are used to store special information about the
+     * organizational units state encoded bitwise. Usually the flags int value should not
      * be directly accessed. <p>
      *
      * @param value the value to set this organizational units flags to

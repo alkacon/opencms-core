@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,7 +29,7 @@ package org.opencms.util;
 
 /**
  * Represents a single HTML converter configuration as defined in the OpenCms configuration file <code>opencms-vfs.xml</code>.<p>
- * 
+ *
  * This is only used to write back the definitions to the configuration file.<p>
  */
 public class CmsHtmlConverterOption {
@@ -45,7 +45,7 @@ public class CmsHtmlConverterOption {
 
     /**
      * Constructor, with parameters.<p>
-     * 
+     *
      * @param name the name of the configured option
      * @param className the class used for HTML conversion of the configured option
      */
@@ -56,7 +56,7 @@ public class CmsHtmlConverterOption {
 
     /**
      * Constructor, with parameters.<p>
-     * 
+     *
      * @param name the name of the configured option
      * @param className the class used for HTML conversion of the configured option
      * @param isDefault the flag indicating if this is an automatically generated default option
@@ -70,7 +70,7 @@ public class CmsHtmlConverterOption {
 
     /**
      * Returns the class used for HTML conversion of the configured option.<p>
-     * 
+     *
      * @return the class used for HTML conversion of the configured option
      */
     public String getClassName() {
@@ -80,7 +80,7 @@ public class CmsHtmlConverterOption {
 
     /**
      * Returns the name of the configured option.<p>
-     * 
+     *
      * @return the name of the configured option
      */
     public String getName() {
@@ -90,7 +90,7 @@ public class CmsHtmlConverterOption {
 
     /**
      * Returns if the option is an automatically generated default option.<p>
-     * 
+     *
      * @return <code>true</code> if the option is an automatically generated default option, otherwise <code>false</code>
      */
     public boolean isDefault() {

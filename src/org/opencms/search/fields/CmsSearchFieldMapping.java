@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,8 +49,8 @@ import org.apache.lucene.document.DateTools;
 
 /**
  * Describes a mapping of a piece of content from an OpenCms VFS resource to a field of a search index.<p>
- * 
- * @since 7.0.0 
+ *
+ * @since 7.0.0
  */
 public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
 
@@ -85,7 +85,7 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
 
     /**
      * Public constructor for a new search field mapping.<p>
-     * 
+     *
      * @param type the type to use, see {@link #setType(CmsSearchFieldMappingType)}
      * @param param the mapping parameter, see {@link #setParam(String)}
      */
@@ -98,9 +98,9 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
 
     /**
      * Returns the default expiration date, meaning the resource never expires.<p>
-     * 
+     *
      * @return the default expiration date
-     * 
+     *
      * @throws ParseException if something goes wrong parsing the default date string
      */
     public static Date getDefaultDateExpired() throws ParseException {
@@ -113,7 +113,7 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
 
     /**
      * Two mappings are equal if the type and the parameter is equal.<p>
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -190,10 +190,14 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
                         // map all attributes for a resource
                         switch (attribute) {
                             case dateContent:
-                                content = DateTools.timeToString(res.getDateContent(), DateTools.Resolution.MILLISECOND);
+                                content = DateTools.timeToString(
+                                    res.getDateContent(),
+                                    DateTools.Resolution.MILLISECOND);
                                 break;
                             case dateCreated:
-                                content = DateTools.timeToString(res.getDateCreated(), DateTools.Resolution.MILLISECOND);
+                                content = DateTools.timeToString(
+                                    res.getDateCreated(),
+                                    DateTools.Resolution.MILLISECOND);
                                 break;
                             case dateExpired:
                                 long expirationDate = res.getDateExpired();
@@ -294,7 +298,7 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
 
     /**
      * The hash code depends on the type and the parameter.<p>
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -350,20 +354,18 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
         CmsSearchFieldMappingType mappingType = CmsSearchFieldMappingType.valueOf(type);
         if (mappingType == null) {
             // invalid mapping type has been used, throw an exception
-            throw new CmsRuntimeException(new CmsMessageContainer(
-                Messages.get(),
-                Messages.ERR_FIELD_TYPE_UNKNOWN_1,
-                new Object[] {type}));
+            throw new CmsRuntimeException(
+                new CmsMessageContainer(Messages.get(), Messages.ERR_FIELD_TYPE_UNKNOWN_1, new Object[] {type}));
         }
         setType(mappingType);
     }
 
     /**
      * Returns a "\n" separated String of values for the given XPath if according content items can be found.<p>
-     * 
+     *
      * @param contentItems the content items to get the value from
      * @param xpath the short XPath parameter to get the value for
-     * 
+     *
      * @return a "\n" separated String of element values found in the content items for the given XPath
      */
     private String getContentItemForXPath(Map<String, String> contentItems, String xpath) {

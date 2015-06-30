@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,8 +49,8 @@ public class CmsChoiceSubmenu extends Composite {
 
     /**
      * Creates a new submenu.<p>
-     * 
-     * @param parentEntry the parent menu entry bean 
+     *
+     * @param parentEntry the parent menu entry bean
      */
     public CmsChoiceSubmenu(CmsChoiceMenuEntryBean parentEntry) {
 
@@ -61,7 +61,7 @@ public class CmsChoiceSubmenu extends Composite {
 
     /**
      * Adds a new choice widget.<p>
-     * 
+     *
      * @param choice the choice widget
      */
     public void addChoice(CmsChoiceMenuEntryWidget choice) {
@@ -71,9 +71,9 @@ public class CmsChoiceSubmenu extends Composite {
 
     /**
      * Checks whether the submenu should be opened above instead of below.<p>
-     * 
-     * @param referenceElement the reference element 
-     * @return true if the new submenu should be opened above 
+     *
+     * @param referenceElement the reference element
+     * @return true if the new submenu should be opened above
      */
     public boolean openAbove(Element referenceElement) {
 
@@ -86,8 +86,8 @@ public class CmsChoiceSubmenu extends Composite {
 
     /**
      * Positions a new submenu asynchronously.<p>
-     * 
-     * @param widgetEntry the menu entry relative to which the submenu should be positioned 
+     *
+     * @param widgetEntry the menu entry relative to which the submenu should be positioned
      */
     public void positionDeferred(final CmsChoiceMenuEntryWidget widgetEntry) {
 
@@ -106,8 +106,8 @@ public class CmsChoiceSubmenu extends Composite {
 
     /**
      * Helper method to position a submenu on the left side of a menu entry.<p>
-     * 
-     * @param widgetEntry the widget entry relative to which the submenu should  be positioned 
+     *
+     * @param widgetEntry the widget entry relative to which the submenu should  be positioned
      */
     protected void positionNextToMenuEntry(final CmsChoiceMenuEntryWidget widgetEntry) {
 

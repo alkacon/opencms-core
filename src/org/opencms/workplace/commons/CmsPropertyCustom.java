@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,18 +55,18 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the customized property dialog.<p> 
- * 
+ * Provides methods for the customized property dialog.<p>
+ *
  * This is a special dialog that is used for the different resource types in the workplace.<p>
  * For the xmlpage resource type, this class is extended in the editor subpackage.<p>
- * 
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/property_custom.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
@@ -84,7 +84,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsPropertyCustom(CmsJspActionElement jsp) {
@@ -94,7 +94,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -106,7 +106,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Performs the edit properties action, will be called by the JSP page.<p>
-     * 
+     *
      * @param request the HttpServletRequest
      * @throws JspException if problems including sub-elements occur
      */
@@ -128,7 +128,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Creates the HTML String for the edit properties form.<p>
-     * 
+     *
      * @return the HTML output String for the edit properties form
      */
     @Override
@@ -148,7 +148,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         result.append("\t<td class=\"textbold\">");
         result.append(key(Messages.GUI_PROPERTY_VALUE_0));
         result.append("</td>\n");
-        // empty column for the checkboxes 
+        // empty column for the checkboxes
         result.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">");
         result.append("&nbsp;");
         result.append("</td>\n");
@@ -169,14 +169,14 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Builds the JavaScript to set the property form values delayed.<p>
-     * 
+     *
      * The values of the properties are not inserted directly in the &lt;input&gt; tag,
      * because there is a display issue when the property values are very long.
      * This method creates JavaScript to set the property input field values delayed.
-     * On the JSP, the code which is created from this method has to be executed delayed after 
+     * On the JSP, the code which is created from this method has to be executed delayed after
      * the creation of the html form, e.g. in the &lt;body&gt; tag with the attribute
      * onload="window.setTimeout('doSet()',50);".<p>
-     * 
+     *
      * @return the JavaScript to set the property form values delayed
      */
     @Override
@@ -224,14 +224,17 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Builds a button row with an "ok", a "cancel" and an "advanced" button.<p>
-     * 
+     *
      * @param okAttributes additional attributes for the "ok" button
      * @param cancelAttributes additional attributes for the "cancel" button
      * @param advancedAttributes additional attributes for the "advanced" button
-     * @return the button row 
+     * @return the button row
      */
     @Override
-    public String dialogButtonsOkCancelAdvanced(String okAttributes, String cancelAttributes, String advancedAttributes) {
+    public String dialogButtonsOkCancelAdvanced(
+        String okAttributes,
+        String cancelAttributes,
+        String advancedAttributes) {
 
         if (isEditable()) {
             int okButton = BUTTON_OK;
@@ -239,30 +242,31 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 // in wizard mode, display finish button instead of ok button
                 okButton = BUTTON_FINISH;
             }
-            // hide "advanced" button 
+            // hide "advanced" button
             if (isHideButtonAdvanced()) {
-                return dialogButtons(new int[] {okButton, BUTTON_CANCEL}, new String[] {okAttributes, cancelAttributes});
+                return dialogButtons(
+                    new int[] {okButton, BUTTON_CANCEL},
+                    new String[] {okAttributes, cancelAttributes});
             }
             // show "advanced" button
-            return dialogButtons(new int[] {okButton, BUTTON_CANCEL, BUTTON_ADVANCED}, new String[] {
-                okAttributes,
-                cancelAttributes,
-                advancedAttributes});
+            return dialogButtons(
+                new int[] {okButton, BUTTON_CANCEL, BUTTON_ADVANCED},
+                new String[] {okAttributes, cancelAttributes, advancedAttributes});
         } else {
-            // hide "advanced" button 
+            // hide "advanced" button
             if (isHideButtonAdvanced()) {
                 return dialogButtons(new int[] {BUTTON_CLOSE}, new String[] {cancelAttributes});
             }
             // show "advanced" button
-            return dialogButtons(new int[] {BUTTON_CLOSE, BUTTON_ADVANCED}, new String[] {
-                cancelAttributes,
-                advancedAttributes});
+            return dialogButtons(
+                new int[] {BUTTON_CLOSE, BUTTON_ADVANCED},
+                new String[] {cancelAttributes, advancedAttributes});
         }
     }
 
     /**
      * Returns the explorer type settings for the current resource type.<p>
-     * 
+     *
      * @return the explorer type settings for the current resource type
      */
     public CmsExplorerTypeSettings getExplorerTypeSettings() {
@@ -272,7 +276,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Sets the explorer type settings for the current resource type.<p>
-     * 
+     *
      * @param typeSettings the explorer type settings for the current resource type
      */
     public void setExplorerTypeSettings(CmsExplorerTypeSettings typeSettings) {
@@ -282,7 +286,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Sets if navigation properties are shown.<p>
-     * 
+     *
      * @param showNav true, if navigation properties are shown, otherwise false
      */
     public void setShowNavigation(boolean showNav) {
@@ -292,7 +296,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Returns if navigation properties are shown.<p>
-     * 
+     *
      * @return true, if navigation properties are shown, otherwise false
      */
     public boolean showNavigation() {
@@ -302,7 +306,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Builds the HTML code for the special properties of an xmlpage resource.<p>
-     * 
+     *
      * @param editable indicates if the properties are editable
      * @return the HTML code for the special properties of a file resource
      */
@@ -318,7 +322,8 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
         // create "add to navigation" checkbox
         result.append(buildTableRowStart(key(Messages.GUI_PROPERTY_ADD_TO_NAV_0)));
-        result.append("<input type=\"checkbox\" name=\"enablenav\" id=\"enablenav\" value=\"true\" onClick=\"toggleNav();\"");
+        result.append(
+            "<input type=\"checkbox\" name=\"enablenav\" id=\"enablenav\" value=\"true\" onClick=\"toggleNav();\"");
         if (getActiveProperties().containsKey(CmsPropertyDefinition.PROPERTY_NAVTEXT)
             || getActiveProperties().containsKey(CmsPropertyDefinition.PROPERTY_NAVPOS)) {
             result.append(" checked=\"checked\"");
@@ -331,19 +336,23 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         result.append(buildTableRowEnd());
 
         // create NavText input row
-        result.append(buildPropertyEntry(
-            CmsPropertyDefinition.PROPERTY_NAVTEXT,
-            key(Messages.GUI_LABEL_NAVTEXT_0),
-            editable));
+        result.append(
+            buildPropertyEntry(CmsPropertyDefinition.PROPERTY_NAVTEXT, key(Messages.GUI_LABEL_NAVTEXT_0), editable));
 
         // create NavPos select box row
         result.append(buildTableRowStart(key(Messages.GUI_CHNAV_INSERT_AFTER_0)));
-        result.append(CmsChnav.buildNavPosSelector(getCms(), getParamResource(), disabled
-            + " id=\"navpos\" class=\"maxwidth noborder\"", getMessages()));
+        result.append(CmsChnav.buildNavPosSelector(
+            getCms(),
+            getParamResource(),
+            disabled + " id=\"navpos\" class=\"maxwidth noborder\"",
+            getMessages()));
         // get the old NavPos value and store it in hidden field
         String navPos = null;
         try {
-            navPos = getCms().readPropertyObject(getParamResource(), CmsPropertyDefinition.PROPERTY_NAVPOS, false).getValue();
+            navPos = getCms().readPropertyObject(
+                getParamResource(),
+                CmsPropertyDefinition.PROPERTY_NAVPOS,
+                false).getValue();
         } catch (CmsException e) {
             // should usually never happen
             if (LOG.isInfoEnabled()) {
@@ -369,10 +378,10 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Builds the html for a single text input property row.<p>
-     * 
+     *
      * The html does not include the value of the created property,
      * the values are set delayed (see buildSetFormValues() for details).<p>
-     * 
+     *
      * @param propertyName the name of the property
      * @param propertyTitle the nice name of the property
      * @param editable indicates if the properties are editable
@@ -452,7 +461,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Builds the HTML for the end of a table row for a single property.<p>
-     * 
+     *
      * @return the HTML code for a table row end
      */
     protected String buildTableRowEnd() {
@@ -462,7 +471,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Builds the HTML for the start of a table row for a single property.<p>
-     * 
+     *
      * @param propertyName the name of the current property
      * @return the HTML code for the start of a table row
      */
@@ -479,7 +488,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Builds the HTML for the common text input property values stored in the String array "PROPERTIES".<p>
-     * 
+     *
      * @param editable indicates if the properties are editable
      * @return the HTML code for the common text input fields
      */
@@ -517,9 +526,8 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             try {
                 includeErrorpage(this, e);
             } catch (JspException exc) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_ERROR_INCLUDE_FAILED_1,
-                    FILE_DIALOG_SCREEN_ERRORPAGE));
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.LOG_ERROR_INCLUDE_FAILED_1, FILE_DIALOG_SCREEN_ERRORPAGE));
             }
         }
     }
@@ -537,7 +545,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         boolean isPopup = Boolean.valueOf(getParamIsPopup()).booleanValue();
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_SHOW_DEFAULT.equals(getParamAction())) {
             // save changed properties and redirect to the default OpenCms dialog
             setAction(ACTION_DEFAULT);
@@ -576,14 +584,14 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
     }
 
     /**
-     * Checks the optional parameters of the handler configuration. <p> 
-     * 
-     * Decides if the "advanced" button should be shown or not. 
-     * The "advanced" button is shown if no parameters are given (default) 
+     * Checks the optional parameters of the handler configuration. <p>
+     *
+     * Decides if the "advanced" button should be shown or not.
+     * The "advanced" button is shown if no parameters are given (default)
      * or the "hideadvanced" attribute is set to false. The "advanced" button
-     * is hidden only, if "hideadvanced" is true and the user is not a member 
-     * of the specified user groups.  
-     * 
+     * is hidden only, if "hideadvanced" is true and the user is not a member
+     * of the specified user groups.
+     *
      * @return  false if the "advanced" button is shown (default) <br>
      *          true if the "advanced" button is hidden
      */
@@ -625,7 +633,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Performs the editing of the resources properties.<p>
-     * 
+     *
      * @param request the HttpServletRequest
      * @return true, if the properties were successfully changed, otherwise false
      * @throws CmsException if editing is not successful
@@ -679,10 +687,10 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
     /**
      * Writes a property value for a resource, if the value was changed.<p>
-     * 
+     *
      * If a property definition for the resource does not exist,
      * it is automatically created by this method.<p>
-     * 
+     *
      * @param propName the name of the property
      * @param propValue the new value of the property
      * @param oldValue the old value of the property

@@ -73,8 +73,8 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
 
     /**
      * Creates the button to add an element to the user's favorites.<p>
-     * 
-     * @return the created button 
+     *
+     * @return the created button
      */
     public CmsPushButton createFavButton() {
 
@@ -97,18 +97,18 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
 
     /**
      * Returns true if the element view of the element is compatible with the currently set element view in the container page editor.<p>
-     * 
-     * @return true if the element should be visible in the current mode 
+     *
+     * @return true if the element should be visible in the current mode
      */
     public boolean isVisibleInCurrentView() {
 
         return Objects.equal(m_editableData.getElementView(), CmsContainerpageController.get().getElementView());
     }
 
-    /** 
+    /**
      * Sets the 'parentHasDimensions' flag.<p>
-     * 
-     * @param parentHasDimensions the new value of the flag 
+     *
+     * @param parentHasDimensions the new value of the flag
      */
     public void setParentHasDimensions(boolean parentHasDimensions) {
 
@@ -263,8 +263,8 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
 
     /**
      * Sets the display CSS property to none, or clears it, depending on the given parameter.<p>
-     * 
-     * @param displayNone true if the widget should not be displayed 
+     *
+     * @param displayNone true if the widget should not be displayed
      */
     void setDisplayNone(boolean displayNone) {
 

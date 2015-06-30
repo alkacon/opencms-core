@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,9 +36,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Handles all RPC services related to the upload dialog.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.ade.upload.CmsUploadService
  * @see org.opencms.gwt.shared.rpc.I_CmsUploadService
  * @see org.opencms.gwt.shared.rpc.I_CmsUploadServiceAsync
@@ -47,17 +47,17 @@ public interface I_CmsUploadServiceAsync {
 
     /**
      * Cancels the upload.<p>
-     * 
+     *
      * @param callback the asynchronous callback
      */
     void cancelUpload(AsyncCallback<Boolean> callback);
 
     /**
-     * Checks the availability of a resource in the VFS, using the 
+     * Checks the availability of a resource in the VFS, using the
      * {@link org.opencms.file.CmsResourceFilter#IGNORE_EXPIRATION} filter.<p>
-     * 
+     *
      * Calculates the VFS path for each filename in the given list and checks its availability.<p>
-     * 
+     *
      * @param fileNames the filenames to check
      * @param targetFolder the folder to check
      * @param callback the async callback
@@ -66,7 +66,7 @@ public interface I_CmsUploadServiceAsync {
 
     /**
      * Returns the upload progress information.<p>
-     * 
+     *
      * @param callback the asynchronous callback
      */
     void getUploadProgressInfo(AsyncCallback<CmsUploadProgessInfo> callback);

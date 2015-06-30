@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -64,7 +64,7 @@ public final class WidgetFactoryWrapper extends JavaScriptObject implements I_Cm
 
     /**
      * Returns the widget name.<p>
-     * 
+     *
      * @return the widget name
      */
     public native String getName()/*-{
@@ -73,9 +73,9 @@ public final class WidgetFactoryWrapper extends JavaScriptObject implements I_Cm
 
     /**
      * Creates a native java script widget.<p>
-     * 
+     *
      * @param configuration the widget configuration
-     * 
+     *
      * @return the created widget
      */
     private native NativeEditWidget createNativeWidget(String configuration)/*-{
@@ -84,10 +84,10 @@ public final class WidgetFactoryWrapper extends JavaScriptObject implements I_Cm
 
     /**
      * Creates a native java script widget wrapping an existing DOM element.<p>
-     * 
+     *
      * @param configuration the configuration
      * @param element the element to wrap
-     * 
+     *
      * @return the native widget
      */
     private native NativeEditWidget createNativeWrapedElement(String configuration, Element element)/*-{

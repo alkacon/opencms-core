@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,9 +61,9 @@ import javax.swing.tree.TreePath;
 /**
  * This is a highly configurable Swing GUI dialog for selection.
  * <p>
- * 
+ *
  * @since 6.1.6
- * 
+ *
  * @see CmsAntTaskSelectionPrompt
  */
 public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionListener {
@@ -113,7 +113,7 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
     /**
      * Default Constructor.
      * <p>
-     * 
+     *
      * @param promptTask the <code>{@link CmsAntTaskSelectionPrompt}</code> object.
      *            <p>
      */
@@ -126,6 +126,7 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
 
         addWindowListener(new WindowAdapter() {
 
+            @Override
             public void windowClosed(WindowEvent e) {
 
                 setVisible(false);
@@ -158,7 +159,7 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
         scrollpane.setPreferredSize(new Dimension(300, 800));
         // parse the String-list to a clean list as it is not only used for tree-creation but for
         // tree-selection determination too:
-        this.parseModuleList();
+        parseModuleList();
         TreeModel treeModel = createTree();
         m_tree = new SelectionTree();
         m_tree.setModel(treeModel);
@@ -175,11 +176,8 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
 
         contentPane.add(scrollpane);
 
-        m_buttons.setBorder(BorderFactory.createEmptyBorder(
-            C_BORDER_SIZE,
-            C_BORDER_SIZE,
-            C_BORDER_SIZE / 2,
-            C_BORDER_SIZE));
+        m_buttons.setBorder(
+            BorderFactory.createEmptyBorder(C_BORDER_SIZE, C_BORDER_SIZE, C_BORDER_SIZE / 2, C_BORDER_SIZE));
         m_ok.addActionListener(this);
         m_buttons.add(m_ok);
         m_cancel.addActionListener(this);
@@ -214,7 +212,7 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
     /**
      * Returns <code>null</code> if the dialog was canceled, or a list of selected items if not.
      * <p>
-     * 
+     *
      * @return the user selection
      */
     public String getSelection() {
@@ -247,7 +245,7 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
             // skip "root"
             for (int j = 1; j < entries.length; j++) {
                 pathString.append(entries[j]);
-                if (j < entries.length - 1) {
+                if (j < (entries.length - 1)) {
                     pathString.append(".");
                 }
             }
@@ -281,7 +279,7 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
     /**
      * Centers the dialog on the screen.
      * <p>
-     * 
+     *
      * If the size of the dialog exceeds that of the screen, then the size of the dialog is reset to
      * the size of the screen.
      * <p>
@@ -301,8 +299,8 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
         if (window.width > screen.width) {
             window.width = screen.width;
         }
-        int xCoord = (screen.width / 2 - window.width / 2);
-        int yCoord = (screen.height / 2 - window.height / 2);
+        int xCoord = ((screen.width / 2) - (window.width / 2));
+        int yCoord = ((screen.height / 2) - (window.height / 2));
         setLocation(xCoord, yCoord);
         setSize(width, height);
     }
@@ -353,7 +351,7 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
     /**
      * Recursive depth first traversal that stops at expansion level and expands those paths.
      * <p>
-     * 
+     *
      * @param treePath the current path in recursion
      */
     private void expandTree(TreePath treePath) {
@@ -398,7 +396,7 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
      * Parses the string of comma separated module names obtained from the ant script into the
      * internal list of module names for better access in several locations.
      * <p>
-     * 
+     *
      */
     private void parseModuleList() {
 
@@ -416,7 +414,7 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
 
     /**
      * Recursivley selects the nodes that are qualified by the default selections.
-     * 
+     *
      * @param node the current Node
      * @param path the node path
      * @param treePath the tree path
@@ -430,7 +428,9 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
                 m_tree.setSelectionPath(treePath);
             }
         } else {
-            StringTokenizer tokenizer = new StringTokenizer(defaultString, CmsAntTaskSelectionTreePrompt.LIST_SEPARATOR);
+            StringTokenizer tokenizer = new StringTokenizer(
+                defaultString,
+                CmsAntTaskSelectionTreePrompt.LIST_SEPARATOR);
             String defaultEntry;
             while (tokenizer.hasMoreTokens()) {
                 defaultEntry = tokenizer.nextToken();

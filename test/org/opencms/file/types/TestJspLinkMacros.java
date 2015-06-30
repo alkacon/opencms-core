@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,7 +52,7 @@ public class TestJspLinkMacros extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestJspLinkMacros(String arg0) {
@@ -62,7 +62,7 @@ public class TestJspLinkMacros extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -95,7 +95,7 @@ public class TestJspLinkMacros extends OpenCmsTestCase {
 
     /**
      * Test link parsing when using the link macro.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testLinkParsing() throws Throwable {
@@ -111,8 +111,11 @@ public class TestJspLinkMacros extends OpenCmsTestCase {
             CmsResourceTypeJsp.getJSPTypeId(),
             "Test".getBytes("UTF-8"),
             null);
-        CmsResource res = cms.createResource(sourceName, CmsResourceTypeJsp.getJSPTypeId(), ("%(link.strong:"
-            + targetName + ")").getBytes("UTF-8"), null);
+        CmsResource res = cms.createResource(
+            sourceName,
+            CmsResourceTypeJsp.getJSPTypeId(),
+            ("%(link.strong:" + targetName + ")").getBytes("UTF-8"),
+            null);
 
         CmsFile file = cms.readFile(res);
 
@@ -125,7 +128,7 @@ public class TestJspLinkMacros extends OpenCmsTestCase {
 
     /**
      * Test link parsing when using the link macro.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testLinkGeneration() throws Throwable {

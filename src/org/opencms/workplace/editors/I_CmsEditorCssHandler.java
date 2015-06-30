@@ -19,29 +19,29 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsObject;
 
 /**
  * Provides methods to determine the CSS style sheet URI for the editors based on the edited resource path.<p>
- * 
+ *
  * The method {@link #matches(CmsObject, String)} can be used to check
  * if the handler matches the currently edited resource.<p>
- * 
- * @since 6.9.2 
+ *
+ * @since 6.9.2
  */
 public interface I_CmsEditorCssHandler {
 
     /**
      * Returns the absolute VFS path of the CSS style sheet to use.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param editedResourcePath the absolute VFS path of the currently edited resource
      * @return the absolute VFS path of the CSS style sheet to use
@@ -50,7 +50,7 @@ public interface I_CmsEditorCssHandler {
 
     /**
      * Checks if the handler can be used to determine the CSS style sheet based on the edited resource.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param editedResourcePath the absolute VFS path of the currently edited resource
      * @return  true if the handler matches, otherwise false

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ public class NativeEventHandler implements ValueChangeHandler<String>, FocusHand
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param connector the native connector object that needs to provide an onChange method
      */
     public NativeEventHandler(NativeEditWidget connector) {
@@ -54,20 +54,20 @@ public class NativeEventHandler implements ValueChangeHandler<String>, FocusHand
      * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
      */
     public native void onValueChange(ValueChangeEvent<String> event) /*-{
-        var connector = this.@org.opencms.ade.contenteditor.widgetregistry.client.NativeEventHandler::m_connector;
-        if (connector.onChange != null) {
-            connector.onChange();
-        }
-    }-*/;
+                                                                     var connector = this.@org.opencms.ade.contenteditor.widgetregistry.client.NativeEventHandler::m_connector;
+                                                                     if (connector.onChange != null) {
+                                                                     connector.onChange();
+                                                                     }
+                                                                     }-*/;
 
     /**
      * @see com.google.gwt.event.dom.client.FocusHandler#onFocus(com.google.gwt.event.dom.client.FocusEvent)
      */
     public native void onFocus(FocusEvent event) /*-{
 
-        var connector = this.@org.opencms.ade.contenteditor.widgetregistry.client.NativeEventHandler::m_connector;
-        if (connector.onFocus != null) {
-            connector.onFocus();
-        }
-    }-*/;
+                                                 var connector = this.@org.opencms.ade.contenteditor.widgetregistry.client.NativeEventHandler::m_connector;
+                                                 if (connector.onFocus != null) {
+                                                 connector.onFocus();
+                                                 }
+                                                 }-*/;
 }

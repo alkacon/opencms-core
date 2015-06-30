@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -81,7 +81,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The container page editor.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainerpageEditor extends A_CmsEntryPoint {
@@ -155,9 +155,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
 
-    /** 
-     * Returns the Z index manager for the container page editor.<p> 
-     * 
+    /**
+     * Returns the Z index manager for the container page editor.<p>
+     *
      * @return the Z index manager
      **/
     public static I_CmsContainerZIndexManager getZIndexManager() {
@@ -167,7 +167,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /**
      * Opens a message dialog with the given content.<p>
-     * 
+     *
      * @param title the dialog title
      * @param displayHtmlContent the dialog content
      */
@@ -187,8 +187,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /**
      * Disables the edit functionality.<p>
-     * 
-     * @param reason the text stating the reason why the edit functionality was disabled 
+     *
+     * @param reason the text stating the reason why the edit functionality was disabled
      */
     public void disableEditing(String reason) {
 
@@ -214,13 +214,13 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /**
      * Enables the toolbar buttons.<p>
-     * 
-     * @param hasChanges if the page has changes 
+     *
+     * @param hasChanges if the page has changes
      */
     public void enableToolbarButtons(boolean hasChanges) {
 
         for (Widget button : m_toolbar.getAll()) {
-            // enable all buttons that are not equal save or reset or the page has changes 
+            // enable all buttons that are not equal save or reset or the page has changes
             if ((button instanceof I_CmsToolbarButton) && (((button != m_save) && (button != m_reset)) || hasChanges)) {
                 ((I_CmsToolbarButton)button).setEnabled(true);
             }
@@ -261,7 +261,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /**
      * Returns the available context menu commands as a map by class name.<p>
-     * 
+     *
      * @return the available context menu commands as a map by class name
      */
     public Map<String, I_CmsContextMenuCommand> getContextMenuCommands() {
@@ -315,7 +315,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /**
      * Returns the tool-bar widget.<p>
-     * 
+     *
      * @return the tool-bar widget
      */
     public CmsToolbar getToolbar() {
@@ -325,7 +325,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /**
      * Returns if the tool-bar is visible.<p>
-     * 
+     *
      * @return <code>true</code> if the tool-bar is visible
      */
     public boolean isToolbarVisible() {
@@ -380,8 +380,10 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toggleToolbarButton.setButtonStyle(ButtonStyle.TEXT, null);
         m_toggleToolbarButton.setSize(Size.small);
         m_toggleToolbarButton.setImageClass(I_CmsImageBundle.INSTANCE.style().opencmsSymbol());
-        m_toggleToolbarButton.removeStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
-        m_toggleToolbarButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        m_toggleToolbarButton.removeStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
+        m_toggleToolbarButton.addStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         root.add(m_toggleToolbarButton);
         m_toggleToolbarButton.addClickHandler(new ClickHandler() {
 
@@ -468,7 +470,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_reset.setVisible(false);
         containerpageHandler.enableSaveReset(false);
         m_toolbarVisibility = new CmsStyleVariable(m_toolbar);
-        m_toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+        m_toolbarVisibility.setValue(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
         if (CmsCoreProvider.get().isToolbarVisible()) {
             showToolbar(true);
             containerpageHandler.activateSelection();
@@ -490,7 +493,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /**
      * Shows the tool-bar.<p>
-     * 
+     *
      * @param show if <code>true</code> the tool-bar will be shown
      */
     public void showToolbar(boolean show) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,12 +59,12 @@ public class CmsJspTagSecureParams extends TagSupport {
 
     /**
      * Static method which provides the actual functionality of this tag.<p>
-     * 
+     *
      * @param request the request for which the parameters should be escaped
-     *  
+     *
      * @param allowXml the comma-separated list of parameters for which XML characters will not be escaped
      * @param allowHtml the comma-separated list of parameters for which HTML will be allowed, but be escaped
-     * @param policy  the site path of an AntiSamy policy file 
+     * @param policy  the site path of an AntiSamy policy file
      */
     public static void secureParamsTagAction(ServletRequest request, String allowXml, String allowHtml, String policy) {
 
@@ -97,8 +97,8 @@ public class CmsJspTagSecureParams extends TagSupport {
 
     /**
      * Sets the 'allowHtml' parameter.<p>
-     * 
-     * @param allowHtml the new 'allowHtml' parameter 
+     *
+     * @param allowHtml the new 'allowHtml' parameter
      */
     public void setAllowHtml(String allowHtml) {
 
@@ -107,8 +107,8 @@ public class CmsJspTagSecureParams extends TagSupport {
 
     /**
      * Sets the 'allowXml' parameter.<p>
-     * 
-     * @param allowXml the new 'allowXml' parameter 
+     *
+     * @param allowXml the new 'allowXml' parameter
      */
     public void setAllowXml(String allowXml) {
 
@@ -117,8 +117,8 @@ public class CmsJspTagSecureParams extends TagSupport {
 
     /**
      * Sets the 'policy' parameter.<p>
-     * 
-     * @param policy the new 'policy' parameter 
+     *
+     * @param policy the new 'policy' parameter
      */
     public void setPolicy(String policy) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -69,7 +69,7 @@ import com.google.gwt.user.client.ui.WidgetCollection;
 
 /**
  * Provides a pop up dialog base.
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
@@ -89,7 +89,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
         /**
          * Making function visible.<p>
-         * 
+         *
          * @see com.google.gwt.user.client.ui.Widget#onAttach()
          */
         @Override
@@ -100,7 +100,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
         /**
          * Making function visible.<p>
-         * 
+         *
          * @see com.google.gwt.user.client.ui.Widget#onDetach()
          */
         @Override
@@ -125,7 +125,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
         /**
          * Making function visible.<p>
-         * 
+         *
          * @see com.google.gwt.user.client.ui.Widget#onAttach()
          */
         @Override
@@ -136,7 +136,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
         /**
          * Making function visible.<p>
-         * 
+         *
          * @see com.google.gwt.user.client.ui.Widget#onDetach()
          */
         @Override
@@ -161,7 +161,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
         /**
          * Making function visible.<p>
-         * 
+         *
          * @see com.google.gwt.user.client.ui.Widget#onAttach()
          */
         @Override
@@ -172,7 +172,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
         /**
          * Making function visible.<p>
-         * 
+         *
          * @see com.google.gwt.user.client.ui.Widget#onDetach()
          */
         @Override
@@ -299,7 +299,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Constructor setting the width of the dialog.<p>
-     * 
+     *
      * @param width the width to set
      */
     public CmsPopup(int width) {
@@ -344,7 +344,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Constructor setting the dialog caption.<p>
-     * 
+     *
      * @param caption the caption to set
      */
     public CmsPopup(String caption) {
@@ -355,7 +355,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Constructor setting caption and width.<p>
-     * 
+     *
      * @param caption the caption to set
      * @param width the width to set
      */
@@ -367,7 +367,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * The constructor.<p>
-     * 
+     *
      * @param title the title and heading of the dialog
      * @param content the content widget
      */
@@ -379,9 +379,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Wraps the given Widget with a cornered border, padding and margin.<p>
-     *  
+     *
      * @param w the widget to wrap
-     * 
+     *
      * @return a new widget that wraps the given one
      */
     public static Widget wrapWithBorderPadding(Widget w) {
@@ -395,7 +395,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Adds the given child widget.<p>
-     * 
+     *
      * @param w the widget
      */
     @Override
@@ -406,7 +406,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Adds a button widget to the button panel.<p>
-     * 
+     *
      * @param button the button widget
      */
     public void addButton(Widget button) {
@@ -416,7 +416,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Adds a button widget to the button panel before the given position.<p>
-     * 
+     *
      * @param button the button widget
      * @param position the position to insert the button
      */
@@ -428,7 +428,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Adds a close "button" to the top of the popup.<p>
-     * 
+     *
      * @param cmd the command that should be executed when the close button is clicked
      */
     public void addDialogClose(final Command cmd) {
@@ -480,7 +480,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
             // when closing the dialog
             m_closingHandlerRegistration = addCloseHandler(new CloseHandler<PopupPanel>() {
 
-                /** 
+                /**
                  * @see CloseHandler#onClose(CloseEvent)
                  */
                 public void onClose(CloseEvent<PopupPanel> event) {
@@ -511,7 +511,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Shows the dialog and centers it horizontally, but positions it at a fixed vertical position.<p>
-     * 
+     *
      * @param top the top position
      */
     public void centerHorizontally(int top) {
@@ -550,9 +550,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Returns the maximum available height inside the popup.<p>
-     * 
+     *
      * @param fixedContentHeight fixed content height to deduct from the available height
-     * 
+     *
      * @return the maximum available height
      */
     public int getAvailableHeight(int fixedContentHeight) {
@@ -565,7 +565,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Returns the dialog caption text.<p>
-     * 
+     *
      * @return the dialog caption
      */
     public String getCaption() {
@@ -575,9 +575,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Returns the child widget with the given index.<p>
-     * 
+     *
      * @param index the index
-     * 
+     *
      * @return the child widget
      */
     public Widget getWidget(int index) {
@@ -587,7 +587,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Returns the number of child widgets.<p>
-     * 
+     *
      * @return the number of child widgets
      */
     public int getWidgetCount() {
@@ -597,9 +597,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Returns the index of the given widget.<p>
-     * 
+     *
      * @param child the child widget
-     * 
+     *
      * @return the index of the child widget
      */
     public int getWidgetIndex(IsWidget child) {
@@ -609,9 +609,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Returns the index of the given child widget.<p>
-     * 
+     *
      * @param child the child widget
-     * 
+     *
      * @return the index
      */
     public int getWidgetIndex(Widget child) {
@@ -621,7 +621,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Returns the dialog content width, -1 if not set.<p>
-     * 
+     *
      * @return the dialog content width
      */
     public int getWidth() {
@@ -631,7 +631,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Returns <code>true</code> if a caption is set for this popup <code>false</code> otherwise.<p>
-     * 
+     *
      * @return <code>true</code> if a caption is set for this popup <code>false</code> otherwise
      */
     public boolean hasCaption() {
@@ -654,10 +654,10 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Inserts a child widget before the given index.<p>
-     * 
+     *
      * @param w the child widget
      * @param beforeIndex the index
-     * 
+     *
      * @throws IndexOutOfBoundsException if the index is out of bounds
      */
     public void insert(Widget w, int beforeIndex) throws IndexOutOfBoundsException {
@@ -667,8 +667,8 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Inserts a widget as the first widget in the popup.<p>
-     * 
-     * @param widget the widget to insert 
+     *
+     * @param widget the widget to insert
      */
     public void insertFront(Widget widget) {
 
@@ -710,9 +710,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Removes a child widget.<p>
-     * 
+     *
      * @param index the index of the widget to remove
-     * 
+     *
      * @return <code>true</code> if the there was a widget at the given index to remove
      */
     public boolean remove(int index) {
@@ -758,7 +758,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Removes the given button widget from the button panel.<p>
-     * 
+     *
      * @param button the button widget to remove
      */
     public void removeButton(Widget button) {
@@ -780,7 +780,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Sets the popup's content background.<p>
-     * 
+     *
      * @param color the color to set
      */
     public void setBackgroundColor(String color) {
@@ -790,7 +790,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Sets the captions text.<p>
-     * 
+     *
      * @param caption the text to set
      */
     public void setCaption(String caption) {
@@ -805,7 +805,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Sets the height for the popup content.<p>
-     * 
+     *
      * @param height the height in pixels
      */
     public void setHeight(int height) {
@@ -838,7 +838,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Replaces the content from the main widget.<p>
-     * 
+     *
      * @param w the widget that should replace the main content
      */
     public void setMainContent(Widget w) {
@@ -877,7 +877,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Sets an additional CSS class to the main content element.<p>
-     * 
+     *
      * @param cssClassName the CSS class to set
      */
     public void setSpecialBackgroundClass(String cssClassName) {
@@ -887,7 +887,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Sets the use animation flag.<p>
-     * 
+     *
      * @param use <code>true</code> if the animation should be used, default is <code>true</code>
      */
     public void setUseAnimation(boolean use) {
@@ -897,7 +897,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Unsupported operation.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.PopupPanel#setWidget(com.google.gwt.user.client.ui.Widget)
      */
     @Override
@@ -909,7 +909,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Sets the width for the popup content.<p>
-     * 
+     *
      * @param width the width in pixels
      */
     public void setWidth(int width) {
@@ -966,7 +966,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /**
      * Adds a new child widget to the panel, attaching its Element to the
      * specified container Element.
-     * 
+     *
      * @param child the child widget to be added
      * @param container the element within which the child will be contained
      */
@@ -988,7 +988,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /**
      * Adjusts beforeIndex to account for the possibility that the given widget is
      * already a child of this panel.
-     * 
+     *
      * @param child the widget that might be an existing child
      * @param beforeIndex the index at which it will be added to this panel
      * @return the modified index
@@ -1013,7 +1013,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /**
      * Called on mouse down in the caption area, begins the dragging loop by
      * turning on event capture.
-     * 
+     *
      * @see DOM#setCapture
      * @see #continueDragging
      * @param event the mouse down event that triggered dragging
@@ -1033,7 +1033,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /**
      * Checks that <code>index</code> is in the range [0, getWidgetCount()), which
      * is the valid range on accessible indexes.
-     * 
+     *
      * @param index the index being accessed
      */
     protected void checkIndexBoundsForAccess(int index) {
@@ -1046,7 +1046,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /**
      * Checks that <code>index</code> is in the range [0, getWidgetCount()], which
      * is the valid range for indexes on an insertion.
-     * 
+     *
      * @param index the index where insertion will occur
      */
     protected void checkIndexBoundsForInsertion(int index) {
@@ -1059,7 +1059,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /**
      * Called on mouse move in the caption area, continues dragging if it was
      * started by {@link #beginDragging}.
-     * 
+     *
      * @see #beginDragging
      * @see #endDragging
      * @param event the mouse move event that continues dragging
@@ -1081,10 +1081,10 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
         }
     }
 
-    /** 
+    /**
      * Creates a new notification widget for this dialog.<p>
-     * 
-     * @return the notification widget for this dialog 
+     *
+     * @return the notification widget for this dialog
      */
     protected CmsNotificationWidget createDialogNotificationWidget() {
 
@@ -1133,9 +1133,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     /**
      * Called on mouse up in the caption area, ends dragging by ending event
      * capture.
-     * 
+     *
      * @param event the mouse up event that ended dragging
-     * 
+     *
      * @see DOM#releaseCapture
      * @see #beginDragging
      * @see #endDragging
@@ -1149,7 +1149,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Gets the list of children contained in this panel.
-     * 
+     *
      * @return a collection of child widgets
      */
     protected WidgetCollection getChildren() {
@@ -1175,7 +1175,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
      * its Element to the specified container Element. The child Element will
      * either be attached to the container at the same index, or simply appended
      * to the container, depending on the value of <code>domInsert</code>.
-     * 
+     *
      * @param child the child Widget to be added
      * @param container the Element within which <code>child</code> will be
      *          contained
@@ -1207,7 +1207,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
         adopt(child);
     }
 
-    /** 
+    /**
      * Sets the notification widget.<p>
      */
     protected void installNotificationWidget() {
@@ -1228,7 +1228,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Override to work around the glass overlay still showing after dialog hide.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.Widget#onDetach()
      */
     @Override
@@ -1259,7 +1259,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Appends the arrow element to the popup's dialog.<p>
-     * 
+     *
      * @param arrow the arrow element to add
      */
     protected void showArrow(Element arrow) {
@@ -1284,7 +1284,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Returns <code>true</code> if this popup has buttons <code>false</code> otherwise.<p>
-     * 
+     *
      * @return <code>true</code> if this popup has buttons <code>false</code> otherwise
      */
     private boolean hasButtons() {
@@ -1294,9 +1294,9 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
 
     /**
      * Checks if the target of the given event is the caption or a child of the caption.<p>
-     * 
+     *
      * @param event the event to check
-     * 
+     *
      * @return <code>true</code> if the target of the given event is the caption <code>false</code> otherwise
      */
     private boolean isCaptionEvent(NativeEvent event) {

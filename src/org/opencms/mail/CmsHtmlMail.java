@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,14 +37,14 @@ import org.apache.commons.mail.HtmlEmail;
 
 /**
  * This class is used to send an HTML formatted email with optional attachments.<p>
- * 
+ *
  * A text message can also be set for HTML unaware email clients,
  * such as text-based email clients.<p>
  *
  * It uses the Apache Commons Email API and extends the provided classes
- * to conveniently generate emails using the OpenCms configuration.<p> 
- * 
- * @since 6.0.0 
+ * to conveniently generate emails using the OpenCms configuration.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsHtmlMail extends HtmlEmail {
 
@@ -53,10 +53,10 @@ public class CmsHtmlMail extends HtmlEmail {
 
     /**
      * Default constructor of a CmsHtmlMail.<p>
-     * 
+     *
      * The mail host name and the mail from address are set to the OpenCms
      * default values of the configuration.<p>
-     * 
+     *
      */
     public CmsHtmlMail() {
 
@@ -65,7 +65,7 @@ public class CmsHtmlMail extends HtmlEmail {
         // set the host to the default mail host
         CmsMailHost host = OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost();
         setHostName(host.getHostname());
-        this.setSmtpPort(host.getPort());
+        setSmtpPort(host.getPort());
 
         // check if username and password are provided
         String userName = host.getUsername();

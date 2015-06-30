@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,10 +42,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A row in a properties form.<p>
- * 
- * This widget contains both a label and a panel into which an input widget for the form field can be placed. 
+ *
+ * This widget contains both a label and a panel into which an input widget for the form field can be placed.
  * These widgets are next to each other horizontally.
- * 
+ *
  * @since 8.0.0
  */
 public class CmsFormRow extends Composite implements I_CmsTruncable {
@@ -86,7 +86,7 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
     protected Panel m_widgetContainer;
 
     /**
-     * The default constructor. 
+     * The default constructor.
      */
     public CmsFormRow() {
 
@@ -95,10 +95,10 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
         main.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().highTextBoxes());
     }
 
-    /** 
+    /**
      * Returns the width of the label as a string.<p>
-     * 
-     * @return the width of the label as a string 
+     *
+     * @return the width of the label as a string
      */
     public static String getLabelWidth() {
 
@@ -107,8 +107,8 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
 
     /**
      * Returns the width of the opener as a string.<p>
-     * 
-     * @return the width of the opener as a string 
+     *
+     * @return the width of the opener as a string
      */
     public static String getOpenerWidth() {
 
@@ -117,8 +117,8 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
 
     /**
      * Returns the left margin of the widget container as a string.<p>
-     * 
-     * @return the left margin of the widget container as a string 
+     *
+     * @return the left margin of the widget container as a string
      */
     public static String getWidgetContainerLeftMargin() {
 
@@ -127,8 +127,8 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
 
     /**
      * Returns the left margin of the widget container as a string.<p>
-     * 
-     * @return the left margin of the widget container as a string 
+     *
+     * @return the left margin of the widget container as a string
      */
     public static String getWidgetContainerWidth() {
 
@@ -137,8 +137,8 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
 
     /**
      * Returns the label for the form row.<p>
-     * 
-     * @return the label for the form row 
+     *
+     * @return the label for the form row
      */
     public Label getLabel() {
 
@@ -147,7 +147,7 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
 
     /**
      * Returns the widget container for the form row.<p>
-     * 
+     *
      * @return the widget container for the form row
      */
     public Panel getWidgetContainer() {
@@ -156,8 +156,8 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
     }
 
     /**
-     * Shows the info icon and sets the information text as its title.<p> 
-     * 
+     * Shows the info icon and sets the information text as its title.<p>
+     *
      * @param info
      */
     public void setInfo(String info) {
@@ -176,9 +176,8 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
 
         if (clientWidth > (WIDGET_CONTAINER_WIDTH + OPENER_WIDTH + LABEL_WIDTH + WIDGET_MARGIN_RIGHT)) {
             int availableWidth = clientWidth - OPENER_WIDTH - WIDGET_MARGIN_RIGHT;
-            int widgetContainerWidth = (int)Math.round(1.00
-                * availableWidth
-                * ((1.00 + WIDGET_CONTAINER_WIDTH) / (WIDGET_CONTAINER_WIDTH + LABEL_WIDTH)));
+            int widgetContainerWidth = (int)Math.round(
+                1.00 * availableWidth * ((1.00 + WIDGET_CONTAINER_WIDTH) / (WIDGET_CONTAINER_WIDTH + LABEL_WIDTH)));
             int labelWidth = availableWidth - widgetContainerWidth;
             m_label.setWidth(labelWidth + "px");
             m_widgetContainer.setWidth(widgetContainerWidth + "px");

@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,7 +48,7 @@ import org.xml.sax.InputSource;
 
 /**
  * The Solr configuration class.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSolrConfiguration {
@@ -59,10 +59,10 @@ public class CmsSolrConfiguration {
     /** The Solr configuration file name. */
     public static final String SOLR_CONFIG_FILE = "solr.xml";
 
-    /** 
+    /**
      * The default max time in ms before a commit will happen (10 seconds by default).<p>
-     * 
-     * Can be configured in 'opencms-search.xml'.<p> 
+     *
+     * Can be configured in 'opencms-search.xml'.<p>
      */
     public static final long SOLR_DEFAULT_COMMIT_MS = 10000;
 
@@ -115,7 +115,7 @@ public class CmsSolrConfiguration {
 
     /**
      * Returns the home directory of Solr as String.<p>
-     * 
+     *
      * @return the home directory of Solr as String
      */
     public String getHome() {
@@ -137,7 +137,7 @@ public class CmsSolrConfiguration {
 
     /**
      * Returns the configured Solr home.<p>
-     * 
+     *
      * @return the configured Solr home
      */
     public String getHomeFolderPath() {
@@ -147,7 +147,7 @@ public class CmsSolrConfiguration {
 
     /**
      * Returns the servers URL if embedded is set to <code>false</code>.<p>
-     * 
+     *
      * @return the external servers URL
      */
     public String getServerUrl() {
@@ -157,7 +157,7 @@ public class CmsSolrConfiguration {
 
     /**
      * Returns the max time (in ms) before a commit will happen.<p>
-     * 
+     *
      * @return the max time (in ms) before a commit will happen
      */
     public long getSolrCommitMs() {
@@ -167,9 +167,9 @@ public class CmsSolrConfiguration {
 
     /**
      * Returns the Solr configuration (object representation of <code>'solrconfig.xml'</code>).<p>
-     * 
+     *
      * @return the Solr configuration
-     * 
+     *
      */
     public SolrConfig getSolrConfig() {
 
@@ -178,14 +178,14 @@ public class CmsSolrConfiguration {
                 InputSource solrConfig = new InputSource(new FileInputStream(getSolrConfigFile()));
                 m_solrConfig = new SolrConfig(getHome(), null, solrConfig);
             } catch (FileNotFoundException e) {
-                CmsConfigurationException ex = new CmsConfigurationException(Messages.get().container(
-                    Messages.LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1,
-                    getSolrConfigFile()), e);
+                CmsConfigurationException ex = new CmsConfigurationException(
+                    Messages.get().container(Messages.LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1, getSolrConfigFile()),
+                    e);
                 LOG.error(ex.getLocalizedMessage(), ex);
             } catch (Exception e) {
-                CmsConfigurationException ex = new CmsConfigurationException(Messages.get().container(
-                    Messages.LOG_SOLR_ERR_CONFIG_XML_NOT_READABLE_1,
-                    getSolrConfigFile()), e);
+                CmsConfigurationException ex = new CmsConfigurationException(
+                    Messages.get().container(Messages.LOG_SOLR_ERR_CONFIG_XML_NOT_READABLE_1, getSolrConfigFile()),
+                    e);
                 LOG.error(ex.getLocalizedMessage(), ex);
             }
         }
@@ -194,7 +194,7 @@ public class CmsSolrConfiguration {
 
     /**
      * Returns the solr configuration file, default: <code>'conf/solrconfig.xml'</code>.<p>
-     * 
+     *
      * @return the solr configuration file
      */
     public File getSolrConfigFile() {
@@ -204,7 +204,7 @@ public class CmsSolrConfiguration {
 
     /**
      * Returns the Solr xml file, default: <code>'solr.xml'</code>.<p>
-     * 
+     *
      * @return the Solr xml file
      */
     public File getSolrFile() {
@@ -218,7 +218,7 @@ public class CmsSolrConfiguration {
 
     /**
      * Returns the Solr xml file name, default: <code>'solr.xml'</code>.<p>
-     * 
+     *
      * @return the Solr xml file name
      */
     public String getSolrFileName() {
@@ -228,7 +228,7 @@ public class CmsSolrConfiguration {
 
     /**
      * Returns the Solr index schema.<p>
-     * 
+     *
      * @return the Solr index schema
      */
     public IndexSchema getSolrSchema() {
@@ -238,18 +238,20 @@ public class CmsSolrConfiguration {
                 InputSource solrSchema = new InputSource(new FileInputStream(getSolrSchemaFile()));
                 m_schema = new IndexSchema(getSolrConfig(), SOLR_SCHEMA_NAME, solrSchema);
             } catch (FileNotFoundException e) {
-                CmsConfigurationException ex = new CmsConfigurationException(Messages.get().container(
-                    Messages.LOG_SOLR_ERR_SCHEMA_XML_NOT_FOUND_1,
-                    getSolrSchemaFile().getPath()), e);
+                CmsConfigurationException ex = new CmsConfigurationException(
+                    Messages.get().container(
+                        Messages.LOG_SOLR_ERR_SCHEMA_XML_NOT_FOUND_1,
+                        getSolrSchemaFile().getPath()),
+                    e);
                 LOG.error(ex.getLocalizedMessage(), ex);
             }
         }
         return m_schema;
     }
 
-    /** 
+    /**
      * Returns the Solr index schema file.<p>
-     * 
+     *
      * @return the Solr index schema file
      */
     public File getSolrSchemaFile() {
@@ -259,7 +261,7 @@ public class CmsSolrConfiguration {
 
     /**
      * Returns <code>true</code> if the Solr server is embedded, <code>false</code> otherwise.<p>
-     * 
+     *
      * @return <code>true</code> if the Solr server is embedded, <code>false</code> otherwise
      */
     public boolean isEnabled() {
@@ -269,7 +271,7 @@ public class CmsSolrConfiguration {
 
     /**
      * Sets the enabled flag.<p>
-     * 
+     *
      * @param isEnabled <code>true</code>, if the Solr server should be used, <code>false</code> otherwise
      */
     public void setEnabled(String isEnabled) {
@@ -279,8 +281,8 @@ public class CmsSolrConfiguration {
 
     /**
      * Sets the home folder for Solr.<p>
-     * 
-     * @param homeFolderPath the Solr home folder to set 
+     *
+     * @param homeFolderPath the Solr home folder to set
      */
     public void setHomeFolderPath(String homeFolderPath) {
 
@@ -289,7 +291,7 @@ public class CmsSolrConfiguration {
 
     /**
      * Sets the external servers URL, should be not null if the embedded falg is <code>false</code>.<p>
-     * 
+     *
      * @param url the URL
      */
     public void setServerUrl(String url) {
@@ -299,7 +301,7 @@ public class CmsSolrConfiguration {
 
     /**
      * Sets the max time (in ms) before a commit will happen.<p>
-     * 
+     *
      * @param time the time as long value
      */
     public void setSolrCommitMs(String time) {
@@ -309,7 +311,7 @@ public class CmsSolrConfiguration {
 
     /**
      * Sets the Solr file name.<p>
-     * 
+     *
      * @param name the file name to set
      */
     public void setSolrFileName(String name) {

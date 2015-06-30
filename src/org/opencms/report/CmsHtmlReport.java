@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,18 +37,18 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 
 /**
- * HTML report output to be used for import / export / publish operations 
+ * HTML report output to be used for import / export / publish operations
  * in the entire OpenCms system.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsHtmlReport extends A_CmsReport {
 
     /** Constant for a HTML linebreak with added "real" line break. */
     protected static final String LINEBREAK = "<br>";
 
-    /** 
-     * Constant for a HTML linebreak with added "real" line break- 
+    /**
+     * Constant for a HTML linebreak with added "real" line break-
      * traditional style for report threads that still use XML templates for their output.
      */
     protected static final String LINEBREAK_TRADITIONAL = "<br>\\n";
@@ -73,7 +73,7 @@ public class CmsHtmlReport extends A_CmsReport {
 
     /**
      * Constructs a new report using the provided locale for the output language.<p>
-     * 
+     *
      * @param locale the locale to use for the output language
      * @param siteRoot the site root of the user who started this report (may be <code>null</code>)
      */
@@ -84,7 +84,7 @@ public class CmsHtmlReport extends A_CmsReport {
 
     /**
      * Constructs a new report using the provided locale for the output language.<p>
-     *  
+     *
      * @param locale the locale to use for the output language
      * @param siteRoot the site root of the user who started this report (may be <code>null</code>)
      * @param writeHtml if <code>true</code>, this report should generate HTML instead of JavaScript output
@@ -123,8 +123,8 @@ public class CmsHtmlReport extends A_CmsReport {
     }
 
     /**
-     * Returns if the report writes html or javascript code.<p> 
-     * 
+     * Returns if the report writes html or javascript code.<p>
+     *
      * @return <code>true</code> if the report writes html, and <code>false</code> if the report writes javascript code
      */
     public boolean isWriteHtml() {
@@ -255,7 +255,7 @@ public class CmsHtmlReport extends A_CmsReport {
 
     /**
      * Returns the correct line break notation depending on the output style of this report.
-     * 
+     *
      * @return the correct line break notation
      */
     protected String getLineBreak() {
@@ -265,16 +265,16 @@ public class CmsHtmlReport extends A_CmsReport {
 
     /**
      * Output helper method to format a reported {@link Throwable} element.<p>
-     * 
+     *
      * This method ensures that exception stack traces are properly escaped
      * when they are added to the report.<p>
-     * 
+     *
      * There is a member variable {@link #m_showExceptionStackTrace} in this
      * class that controls if the stack track is shown or not.
      * In a later version this might be configurable on a per-user basis.<p>
-     *      
+     *
      * @param throwable the exception to format
-     * 
+     *
      * @return the formatted StringBuffer
      */
     private StringBuffer getExceptionElement(Throwable throwable) {

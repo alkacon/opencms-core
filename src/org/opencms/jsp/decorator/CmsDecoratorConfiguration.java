@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,11 +41,11 @@ import java.util.Locale;
 
 /**
  * The CmsDecoratorConfiguration initalizes and stores the text decorations.<p>
- * 
+ *
  * It uses uses the information of one or more <code>{@link CmsDecorationDefintion}</code> to create the
  * pre- and postfixs for text decorations.
- * 
- * @since 6.1.3 
+ *
+ * @since 6.1.3
  */
 
 public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
@@ -121,7 +121,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
 
     /**
      * Constructor, creates a new, empty CmsDecoratorConfiguration.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @throws CmsException if something goes wrong
      *
@@ -141,7 +141,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
 
     /**
      * Constructor, creates a new, CmsDecoratorConfiguration with a given config file.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param configFile the configuration file
      * @throws CmsException if something goes wrong
@@ -161,7 +161,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
 
     /**
      * Constructor, creates a new, CmsDecoratorConfiguration with a given config file and locale.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param configFile the configuration file
      * @param locale to locale to build this configuration for
@@ -222,7 +222,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
 
     /**
      * Builds a CmsDecorationDefintion from a given configuration file.<p>
-     * 
+     *
      * @param configuration the configuration file
      * @param i the number of the decoration definition to create
      * @return CmsDecorationDefintion created form configuration file
@@ -230,8 +230,9 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
     public CmsDecorationDefintion getDecorationDefinition(CmsXmlContent configuration, int i) {
 
         CmsDecorationDefintion decDef = new CmsDecorationDefintion();
-        String name = configuration.getValue(XPATH_DECORATION + "[" + i + "]/" + XPATH_NAME, m_configurationLocale).getStringValue(
-            m_cms);
+        String name = configuration.getValue(
+            XPATH_DECORATION + "[" + i + "]/" + XPATH_NAME,
+            m_configurationLocale).getStringValue(m_cms);
         String markfirst = configuration.getValue(
             XPATH_DECORATION + "[" + i + "]/" + XPATH_MARKFIRST,
             m_configurationLocale).getStringValue(m_cms);
@@ -263,10 +264,10 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
     }
 
     /**
-     * Returns the list with all <code>{@link CmsDecorationDefintion}</code> 
+     * Returns the list with all <code>{@link CmsDecorationDefintion}</code>
      * instances parsed from the config file.<p>
-     * 
-     * @return The list with all <code>{@link CmsDecorationDefintion}</code> instances 
+     *
+     * @return The list with all <code>{@link CmsDecorationDefintion}</code> instances
      *      parsed from the config file
      */
     public List<CmsDecorationDefintion> getDecorationDefinitions() {
@@ -377,7 +378,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
 
     /**
      * Tests if a tag is contained in the exclude list of the decorator.<p>
-     * 
+     *
      * @param tag the tag to test
      * @return true if the tag is in the exclode list, false othwerwise.
      */
@@ -444,8 +445,8 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
     }
 
     /**
-     * Sets the decoration bundle, overwriting an exiting one.<p> 
-     * 
+     * Sets the decoration bundle, overwriting an exiting one.<p>
+     *
      * @param decorations new decoration bundle
      */
     public void setDecorations(CmsDecorationBundle decorations) {

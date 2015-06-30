@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,9 +47,9 @@ import com.google.gwt.user.client.ui.HasAnimation;
 
 /**
  * A tree of list items.<p>
- * 
- * @param <I> the specific tree item implementation 
- * 
+ *
+ * @param <I> the specific tree item implementation
+ *
  * @since 8.0.0
  */
 public class CmsTree<I extends CmsTreeItem> extends CmsList<I>
@@ -65,7 +65,7 @@ implements HasOpenHandlers<I>, HasCloseHandlers<I>, HasAnimation {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param item the tree item
          */
         protected OpenTimer(CmsTreeItem item) {
@@ -85,7 +85,7 @@ implements HasOpenHandlers<I>, HasCloseHandlers<I>, HasAnimation {
 
         /**
          * Checks if the timer is running for the given tree item.<p>
-         * 
+         *
          * @param item the tree item to check
          * @return <code>true</code> if the given item matches the timer item
          */
@@ -164,8 +164,8 @@ implements HasOpenHandlers<I>, HasCloseHandlers<I>, HasAnimation {
 
     /**
      * Fires the close event for an item.<p>
-     * 
-     * @param item the item for which to fire the close event 
+     *
+     * @param item the item for which to fire the close event
      */
     public void fireClose(I item) {
 
@@ -193,7 +193,7 @@ implements HasOpenHandlers<I>, HasCloseHandlers<I>, HasAnimation {
 
     /**
      * Returns the placeholder path.<p>
-     * 
+     *
      * @return the path
      */
     public String getPlaceholderPath() {
@@ -273,7 +273,8 @@ implements HasOpenHandlers<I>, HasCloseHandlers<I>, HasAnimation {
                         if (item.isOpen() && (item.getChildCount() > 0)) {
                             int originalPathLevel = -1;
                             if ((getDnDHandler() != null) && (getDnDHandler().getDraggable() instanceof CmsTreeItem)) {
-                                originalPathLevel = CmsTreeItem.getPathLevel(((CmsTreeItem)getDnDHandler().getDraggable()).getPath()) - 1;
+                                originalPathLevel = CmsTreeItem.getPathLevel(
+                                    ((CmsTreeItem)getDnDHandler().getDraggable()).getPath()) - 1;
                             }
                             // insert into the tree as last visible item
                             CmsTreeItem lastOpened = CmsTreeItem.getLastOpenedItem(item, originalPathLevel, true);
@@ -299,9 +300,9 @@ implements HasOpenHandlers<I>, HasCloseHandlers<I>, HasAnimation {
 
     /**
      * Here the meaning is enabling dropping on the root level.<p>
-     * 
+     *
      * Use {@link CmsTreeItem#setDropEnabled(boolean)} for dropping on tree items.<p>
-     * 
+     *
      * @see org.opencms.gwt.client.ui.CmsList#setDropEnabled(boolean)
      */
     @Override
@@ -312,7 +313,7 @@ implements HasOpenHandlers<I>, HasCloseHandlers<I>, HasAnimation {
 
     /**
      * Sets a timer to set a tree item open.<p>
-     * 
+     *
      * @param item the item to open
      */
     public void setOpenTimer(CmsTreeItem item) {
@@ -370,7 +371,7 @@ implements HasOpenHandlers<I>, HasCloseHandlers<I>, HasAnimation {
 
     /**
      * Sets the placeholder path.<p>
-     * 
+     *
      * @param path the path
      */
     protected void setPlaceholderPath(String path) {

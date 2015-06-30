@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,8 +53,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Creates HTML code for &lt;img src&gt; tags that use the OpenCms image scaling capabilities.<p>
- * 
- * @since 6.2.0 
+ *
+ * @since 6.2.0
  */
 public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamParent {
 
@@ -184,11 +184,11 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Creates the images scaler used by this image tag.<p>
-     * 
+     *
      * @param scaler the scaler created from this tags parameters
      * @param original a scaler that contains the original image dimensions
      * @param scaleParam optional scaler parameters for cropping
-     * 
+     *
      * @return the images scaler used by this image tag
      */
     public static CmsImageScaler getScaler(CmsImageScaler scaler, CmsImageScaler original, String scaleParam) {
@@ -204,7 +204,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
             }
             scaler = cropScaler.getCropScaler(scaler);
         }
-        // calculate target scale dimensions (if required)  
+        // calculate target scale dimensions (if required)
         if (((scaler.getHeight() <= 0) || (scaler.getWidth() <= 0))
             || ((scaler.getType() == 5) && scaler.isValid() && !scaler.isCropping())) {
             // read the image properties for the selected resource
@@ -217,16 +217,16 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Internal action method to create the tag content.<p>
-     * 
+     *
      * @param src the image source
-     * @param scaler the image scaleing parameters 
+     * @param scaler the image scaleing parameters
      * @param attributes the additional image HTML attributes
      * @param partialTag if <code>true</code>, the opening <code>&lt;img</code> and closing <code> /&gt;</code> is omitted
      * @param noDim if <code>true</code>, the <code>height</code> and <code>width</code> attributes are omitted
      * @param req the current request
-     * 
+     *
      * @return the created &lt;img src&gt; tag content
-     * 
+     *
      * @throws CmsException in case something goes wrong
      */
     public static String imageTagAction(
@@ -263,7 +263,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
             result.append("<img");
         }
 
-        // append the image source              
+        // append the image source
         result.append(" src=\"");
 
         String imageLink = cms.getSitePath(imageRes);
@@ -306,15 +306,15 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Internal action method to create the tag content.<p>
-     * 
+     *
      * @param src the image source
-     * @param scaler the image scaleing parameters 
+     * @param scaler the image scaleing parameters
      * @param attributes the additional image HTML attributes
      * @param partialTag if <code>true</code>, the opening <code>&lt;img</code> and closing <code> /&gt;</code> is omitted
      * @param req the current request
-     * 
+     *
      * @return the created &lt;img src&gt; tag content
-     * 
+     *
      * @throws CmsException in case something goes wrong
      */
     public static String imageTagAction(
@@ -386,16 +386,16 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
         ServletRequest req = pageContext.getRequest();
 
-        // this will always be true if the page is called through OpenCms 
+        // this will always be true if the page is called through OpenCms
         if (CmsFlexController.isCmsRequest(req)) {
 
             try {
-                // create the HTML image tag 
+                // create the HTML image tag
                 String imageTag = null;
                 try {
                     imageTag = imageTagAction(m_src, m_scaler, m_attributes, m_partialTag, m_noDim, req);
                 } catch (CmsException e) {
-                    // any issue accessing the VFS - just return an empty string 
+                    // any issue accessing the VFS - just return an empty string
                     // otherwise template layout will get mixed up with nasty exception messages
                     if (LOG.isWarnEnabled()) {
                         LOG.warn(Messages.get().getBundle().key(Messages.ERR_IMAGE_TAG_VFS_ACCESS_1, m_src), e);
@@ -417,9 +417,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Returns <code>{@link #EVAL_BODY_BUFFERED}</code>.<p>
-     * 
+     *
      * @return <code>{@link #EVAL_BODY_BUFFERED}</code>
-     * 
+     *
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
@@ -428,9 +428,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         return EVAL_BODY_BUFFERED;
     }
 
-    /** 
+    /**
      * Returns the value of the HTML "align" attribute.<p>
-     * 
+     *
      * @return the value of the HTML "align" attribute
      */
     public String getAlign() {
@@ -438,9 +438,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         return getAttribute(ATTR_ALIGN);
     }
 
-    /** 
+    /**
      * Returns the value of the HTML "alt" attribute.<p>
-     * 
+     *
      * @return the value of the HTML "alt" attribute
      */
     public String getAlt() {
@@ -448,9 +448,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         return getAttribute(ATTR_ALT);
     }
 
-    /** 
+    /**
      * Returns the value of the HTML "border" attribute.<p>
-     * 
+     *
      * @return the value of the HTML "border" attribute
      */
     public String getBorder() {
@@ -458,9 +458,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         return getAttribute(ATTR_BORDER);
     }
 
-    /** 
+    /**
      * Returns the value of the HTML "class" attribute.<p>
-     * 
+     *
      * @return the value of the HTML "class" attribute
      */
     public String getCssclass() {
@@ -470,7 +470,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Returns the scaling height for the image.<p>
-     * 
+     *
      * @return the scaling height for the image
      */
     public String getHeight() {
@@ -478,9 +478,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         return String.valueOf(m_scaler.getHeight());
     }
 
-    /** 
+    /**
      * Returns the value of the HTML "hspace" attribute.<p>
-     * 
+     *
      * @return the value of the HTML "hspace" attribute
      */
     public String getHspace() {
@@ -488,9 +488,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         return getAttribute(ATTR_HSPACE);
     }
 
-    /** 
+    /**
      * Returns the value of the HTML "id" attribute.<p>
-     * 
+     *
      * @return the value of the HTML "id" attribute
      */
     @Override
@@ -499,9 +499,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         return getAttribute(ATTR_ID);
     }
 
-    /** 
+    /**
      * Returns the value of the HTML "longdesc" attribute.<p>
-     * 
+     *
      * @return the value of the HTML "longdesc" attribute
      */
     public String getLongdesc() {
@@ -511,7 +511,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Returns the maximum scaling height for the image, only needed if scale type is 5.<p>
-     * 
+     *
      * @return the maximum scaling height for the image
      */
     public String getMaxHeight() {
@@ -521,7 +521,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Returns the maximum scaling width for the image, only needed if scale type is 5.<p>
-     * 
+     *
      * @return the maximum scaling width for the image
      */
     public String getMaxWidth() {
@@ -529,9 +529,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         return String.valueOf(m_scaler.getMaxWidth());
     }
 
-    /** 
+    /**
      * Returns the value of the HTML "name" attribute.<p>
-     * 
+     *
      * @return the value of the HTML "name" attribute
      */
     public String getName() {
@@ -602,7 +602,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Returns the scaling type for the image.<p>
-     * 
+     *
      * @return the scaling type for the image
      */
     public String getScaleType() {
@@ -611,9 +611,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     }
 
     /**
-     * Returns the source of the image to scale, 
+     * Returns the source of the image to scale,
      * which will have the OpenCms webapp / servlet prefix added.<p>
-     * 
+     *
      * @return the source of the image to scale
      */
     public String getSrc() {
@@ -621,9 +621,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         return m_src;
     }
 
-    /** 
+    /**
      * Returns the value of the HTML "style" attribute.<p>
-     * 
+     *
      * @return the value of the HTML "style" attribute
      */
     public String getStyle() {
@@ -631,9 +631,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         return getAttribute(ATTR_STYLE);
     }
 
-    /** 
+    /**
      * Returns the value of the HTML "title" attribute.<p>
-     * 
+     *
      * @return the value of the HTML "title" attribute
      */
     public String getTitle() {
@@ -641,9 +641,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         return getAttribute(ATTR_TITLE);
     }
 
-    /** 
+    /**
      * Returns the value of the HTML "usemap" attribute.<p>
-     * 
+     *
      * @return the value of the HTML "usemap" attribute
      */
     public String getUsemap() {
@@ -651,9 +651,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         return getAttribute(ATTR_USEMAP);
     }
 
-    /** 
+    /**
      * Returns the value of the HTML "vspace" attribute.<p>
-     * 
+     *
      * @return the value of the HTML "vspace" attribute
      */
     public String getVspace() {
@@ -663,7 +663,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Returns the scaling width for the image.<p>
-     * 
+     *
      * @return the scaling width for the image
      */
     public String getWidth() {
@@ -695,9 +695,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         super.release();
     }
 
-    /** 
+    /**
      * Sets the value of the HTML "align" attribute.<p>
-     * 
+     *
      * @param value the value of the HTML "align" attribute to set
      */
     public void setAlign(String value) {
@@ -705,9 +705,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         setAttribute(ATTR_ALIGN, value);
     }
 
-    /** 
+    /**
      * Sets the value of the HTML "alt" attribute.<p>
-     * 
+     *
      * @param value the value of the HTML "alt" attribute to set
      */
     public void setAlt(String value) {
@@ -716,9 +716,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     }
 
-    /** 
+    /**
      * Sets the value of the HTML "border" attribute.<p>
-     * 
+     *
      * @param value the value of the HTML "border" attribute to set
      */
     public void setBorder(String value) {
@@ -727,9 +727,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     }
 
-    /** 
+    /**
      * Sets the value of the HTML "class" attribute.<p>
-     * 
+     *
      * @param value the value of the HTML "class" attribute to set
      */
     public void setCssclass(String value) {
@@ -740,9 +740,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Sets the scaling height for the image.<p>
-     * 
+     *
      * If no valid integer is given, then "0" is used as value.<p>
-     * 
+     *
      * @param value the scaling height for the image to set
      */
     public void setHeight(String value) {
@@ -750,9 +750,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         m_scaler.setHeight(CmsStringUtil.getIntValueRounded(value, 0, SCALE_ATTR_HEIGHT));
     }
 
-    /** 
+    /**
      * Sets the value of the HTML "hspace" attribute.<p>
-     * 
+     *
      * @param value the value of the HTML "hspace" attribute to set
      */
     public void setHspace(String value) {
@@ -761,9 +761,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     }
 
-    /** 
+    /**
      * Sets the value of the HTML "id" attribute.<p>
-     * 
+     *
      * @param value the value of the HTML "id" attribute to set
      */
     @Override
@@ -773,9 +773,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     }
 
-    /** 
+    /**
      * Sets the value of the HTML "longdesc" attribute.<p>
-     * 
+     *
      * @param value the value of the HTML "longdesc" attribute to set
      */
     public void setLongdesc(String value) {
@@ -786,9 +786,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Sets the maximum scaling height for the image, only needed if scale type is 5.<p>
-     * 
+     *
      * If no valid integer is given, then the value of {@link #getHeight()} is used as value.<p>
-     * 
+     *
      * @param value the maximum scaling height for the image to set
      */
     public void setMaxHeight(String value) {
@@ -798,9 +798,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Sets the maximum scaling width for the image, only needed if scale type is 5.<p>
-     * 
+     *
      * If no valid integer is given, then the value of {@link #getWidth()} is used as value.<p>
-     * 
+     *
      * @param value the maximum scaling width for the image to set
      */
     public void setMaxWidth(String value) {
@@ -808,9 +808,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         m_scaler.setMaxWidth(CmsStringUtil.getIntValueRounded(value, -1, SCALE_ATTR_MAXWIDTH));
     }
 
-    /** 
+    /**
      * Sets the value of the HTML "name" attribute.<p>
-     * 
+     *
      * @param value the value of the HTML "name" attribute to set
      */
     public void setName(String value) {
@@ -891,9 +891,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Sets the scaling type for the image.<p>
-     * 
+     *
      * If no valid integer is given, then "0" is used as value.<p>
-     * 
+     *
      * @param value the scaling type for the image to set
      */
     public void setScaleType(String value) {
@@ -903,10 +903,10 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Sets the source of the image.<p>
-     * 
+     *
      * The source must be an absolute path in the current users OpenCms site, without any
      * webapp or servlet prefix.<p>
-     * 
+     *
      * @param value the image source to set
      */
     public void setSrc(String value) {
@@ -914,9 +914,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         m_src = value;
     }
 
-    /** 
+    /**
      * Sets the value of the HTML "style" attribute.<p>
-     * 
+     *
      * @param value the value of the HTML "style" attribute to set
      */
     public void setStyle(String value) {
@@ -924,9 +924,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         setAttribute(ATTR_STYLE, value);
     }
 
-    /** 
+    /**
      * Sets the value of the HTML "title" attribute.<p>
-     * 
+     *
      * @param value the value of the HTML "title" attribute to set
      */
     public void setTitle(String value) {
@@ -934,9 +934,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         setAttribute(ATTR_TITLE, value);
     }
 
-    /** 
+    /**
      * Sets the value of the HTML "usemap" attribute.<p>
-     * 
+     *
      * @param value the value of the HTML "usemap" attribute to set
      */
     public void setUsemap(String value) {
@@ -944,9 +944,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         setAttribute(ATTR_USEMAP, value);
     }
 
-    /** 
+    /**
      * Sets the value of the HTML "vspace" attribute.<p>
-     * 
+     *
      * @param value the value of the HTML "vspace" attribute to set
      */
     public void setVspace(String value) {
@@ -957,9 +957,9 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Sets the scaling width for the image.<p>
-     * 
+     *
      * If no valid integer is given, then "0" is used as value.<p>
-     * 
+     *
      * @param value the scaling width for the image to set
      */
     public void setWidth(String value) {
@@ -969,7 +969,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Returns the given keys attribute value from the attribute map.<p>
-     * 
+     *
      * @param key the attribute to read from the map
      * @return the given keys attribute value from the attribute map
      */
@@ -983,7 +983,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Sets the given key with the given value in the attribute map.<p>
-     * 
+     *
      * @param key the key to set
      * @param value the value to set
      */
@@ -994,7 +994,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
     /**
      * Sets the given key with the given value in the attribute map.<p>
-     * 
+     *
      * @param key the key to set
      * @param value the value to set
      * @param allowEmptyValue flag to determine if an empty value (not <code>null</code>!) should be set

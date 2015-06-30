@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Sitemap context menu button.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_CmsContextMenuItemProvider {
@@ -65,11 +65,13 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
-     * @param menuItemProvider the context menu item provider 
+     *
+     * @param hoverbar the hoverbar
+     * @param menuItemProvider the context menu item provider
      */
-    public CmsHoverbarContextMenuButton(final CmsSitemapHoverbar hoverbar, I_CmsContextMenuItemProvider menuItemProvider) {
+    public CmsHoverbarContextMenuButton(
+        final CmsSitemapHoverbar hoverbar,
+        I_CmsContextMenuItemProvider menuItemProvider) {
 
         super(null, I_CmsImageBundle.INSTANCE.buttonCss().hoverbarContext());
         // create the menu panel (it's a table because of ie6)
@@ -133,13 +135,16 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
         result.add(new CmsAddToNavMenuEntry(hoverbar));
         result.add(new CmsBumpDetailPageMenuEntry(hoverbar));
         result.add(new CmsRefreshMenuEntry(hoverbar));
-        result.add(new CmsAdvancedSubmenu(hoverbar, Arrays.asList(
-            new CmsAvailabilityMenuEntry(hoverbar),
-            new CmsLockReportMenuEntry(hoverbar),
-            new CmsSeoMenuEntry(hoverbar),
-            new CmsSubSitemapMenuEntry(hoverbar),
-            new CmsMergeMenuEntry(hoverbar),
-            new CmsRemoveMenuEntry(hoverbar))));
+        result.add(
+            new CmsAdvancedSubmenu(
+                hoverbar,
+                Arrays.asList(
+                    new CmsAvailabilityMenuEntry(hoverbar),
+                    new CmsLockReportMenuEntry(hoverbar),
+                    new CmsSeoMenuEntry(hoverbar),
+                    new CmsSubSitemapMenuEntry(hoverbar),
+                    new CmsMergeMenuEntry(hoverbar),
+                    new CmsRemoveMenuEntry(hoverbar))));
         result.add(new CmsModelPageLockReportMenuEntry(hoverbar));
         result.add(new CmsDeleteMenuEntry(hoverbar));
 
@@ -148,7 +153,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
 
     /**
      * Rests the button state and hides the hoverbar.<p>
-     * 
+     *
      * @param hoverbar the hoverbar
      */
     protected void onMenuClose(CmsSitemapHoverbar hoverbar) {
@@ -163,7 +168,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
 
     /**
      * Sets the context menu visible.<p>
-     * 
+     *
      * @param hoverbar the hoverbar instance
      */
     protected void setMenuVisible(final CmsSitemapHoverbar hoverbar) {
@@ -186,7 +191,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
 
     /**
      * Shows the context menu.<p>
-     * 
+     *
      * @param hoverbar the hoverbar instance
      */
     protected void showMenu(final CmsSitemapHoverbar hoverbar) {
@@ -220,8 +225,8 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
 
     /**
      * Updates the visibility for an entry and its sub-entries.<p>
-     * 
-     * @param entry the entry to update 
+     *
+     * @param entry the entry to update
      */
     private void updateVisibility(A_CmsSitemapMenuEntry entry) {
 

@@ -3,32 +3,32 @@
 //
 // File version date: April 23, 2012
 //      Update:
-//      - Updated DetectAmazonSilk(): Fixed an issue in the detection logic.  
+//      - Updated DetectAmazonSilk(): Fixed an issue in the detection logic.
 //
 // File version date: April 22, 2012 - Second update
 //      Update: To address additional Kindle issues...
-//      - Updated DetectRichCSS(): Excluded e-Ink Kindle devices. 
-//      - Created DetectAmazonSilk(): Created to detect Kindle Fire devices in Silk mode. 
-//      - Updated DetectMobileQuick(): Updated to include e-Ink Kindle devices and the Kindle Fire in Silk mode.  
+//      - Updated DetectRichCSS(): Excluded e-Ink Kindle devices.
+//      - Created DetectAmazonSilk(): Created to detect Kindle Fire devices in Silk mode.
+//      - Updated DetectMobileQuick(): Updated to include e-Ink Kindle devices and the Kindle Fire in Silk mode.
 //
 // File version date: April 11, 2012
-//      Update: 
-//      - Added a new variable for the new BlackBerry Curve Touch (9380): deviceBBCurveTouch. 
+//      Update:
+//      - Added a new variable for the new BlackBerry Curve Touch (9380): deviceBBCurveTouch.
 //      - Updated DetectBlackBerryTouch() to support the new BlackBerry Curve Touch (9380).
 //
 // File version date: January 21, 2012
-//      Update: 
-//      - Moved Windows Phone 7 to the iPhone Tier. WP7.5's IE 9-based browser is good enough now.  
-//      - Added a new variable for 2 versions of the new BlackBerry Bold Touch (9900 and 9930): deviceBBBoldTouch. 
-//      - Updated DetectBlackBerryTouch() to support the 2 versions of the new BlackBerry Bold Touch (9900 and 9930). 
+//      Update:
+//      - Moved Windows Phone 7 to the iPhone Tier. WP7.5's IE 9-based browser is good enough now.
+//      - Added a new variable for 2 versions of the new BlackBerry Bold Touch (9900 and 9930): deviceBBBoldTouch.
+//      - Updated DetectBlackBerryTouch() to support the 2 versions of the new BlackBerry Bold Touch (9900 and 9930).
 //      - Updated DetectKindle() to focus on eInk devices only. The Kindle Fire should be detected as a regular Android device.
 //
 // File version date: August 22, 2011
-//      Update: 
+//      Update:
 //      - Updated DetectAndroidTablet() to fix a bug I introduced in the last fix!
 //
 // File version date: August 16, 2011
-//      Update: 
+//      Update:
 //      - Updated DetectAndroidTablet() to exclude Opera Mini, which was falsely reporting as running on a tablet device when on a phone.
 //
 //
@@ -41,7 +41,7 @@
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
 // either express or implied. See the License for the specific
-// language governing permissions and limitations under the License. 
+// language governing permissions and limitations under the License.
 //
 //
 // ABOUT THIS PROJECT
@@ -67,7 +67,7 @@ package org.opencms.jsp.util;
  * For example, enquiring whether it's as specific as an iPod Touch or
  * as general as a smartphone class device.
  * The object's methods return true, or false.
- *   
+ *
  * This class is an exact copy of http://mobileesp.googlecode.com/svn/Java/UAgentInfo.java.
  * When updating only adjust the package name.
  */
@@ -273,12 +273,12 @@ public class UAgentInfo {
      */
     public void initDeviceScan() {
 
-        this.isIphone = detectIphoneOrIpod();
-        this.isAndroidPhone = detectAndroidPhone();
-        this.isTierTablet = detectTierTablet();
-        this.isTierIphone = detectTierIphone();
-        this.isTierRichCss = detectTierRichCss();
-        this.isTierGenericMobile = detectTierOtherPhones();
+        isIphone = detectIphoneOrIpod();
+        isAndroidPhone = detectAndroidPhone();
+        isTierTablet = detectTierTablet();
+        isTierIphone = detectTierIphone();
+        isTierRichCss = detectTierRichCss();
+        isTierGenericMobile = detectTierOtherPhones();
     }
 
     /**
@@ -482,7 +482,7 @@ public class UAgentInfo {
     }
 
     /**
-     * Detects if the current browser is a 
+     * Detects if the current browser is a
      * Windows Phone 7 device.
      * @return detection of Windows Phone 7
      */
@@ -576,7 +576,8 @@ public class UAgentInfo {
         if (detectBlackBerry()
             && ((userAgent.indexOf(deviceBBStorm) != -1)
                 || (userAgent.indexOf(deviceBBTorch) != -1)
-                || (userAgent.indexOf(deviceBBBoldTouch) != -1) || (userAgent.indexOf(deviceBBCurveTouch) != -1))) {
+                || (userAgent.indexOf(deviceBBBoldTouch) != -1)
+                || (userAgent.indexOf(deviceBBCurveTouch) != -1))) {
             return true;
         }
         return false;
@@ -703,7 +704,8 @@ public class UAgentInfo {
             || detectWindowsPhone7()
             || detectBlackBerry()
             || detectPalmWebOS()
-            || detectPalmOS() || detectGarminNuvifone());
+            || detectPalmOS()
+            || detectGarminNuvifone());
     }
 
     /**
@@ -809,7 +811,7 @@ public class UAgentInfo {
 
     /**
      *  Detects if the current device is a mobile device.
-     *  This method catches most of the popular modern devices. 
+     *  This method catches most of the popular modern devices.
      *  Excludes Apple iPads and other modern tablets.
      * @return detection of any mobile device using the quicker method
      */
@@ -1076,7 +1078,7 @@ public class UAgentInfo {
      * The quick way to detect for a tier of devices.
      *   This method detects for all other types of phones,
      *   but excludes the iPhone and RichCSS Tier devices.
-     * @return detection of a mobile device in the less capable tier 
+     * @return detection of a mobile device in the less capable tier
      */
     public boolean detectTierOtherPhones() {
 

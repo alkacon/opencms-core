@@ -63,12 +63,12 @@ public interface I_CmsVfsServiceAsync {
 
     /**
      * Creates a new external link resource.<p>
-     * 
+     *
      * @param title the title
      * @param link the link
      * @param resourceName the name of the link resource to create
      * @param parentFolderPath the parent folder site path
-     * @param callback the async callback  
+     * @param callback the async callback
      */
     void createNewExternalLink(
         String title,
@@ -187,11 +187,11 @@ public interface I_CmsVfsServiceAsync {
 
     /**
      * Gets th historical preview information for the given resource.<p>
-     * 
+     *
      * @param structureId the structure id of the resource
      * @param locale the locale for which to get the preview info
      * @param version thee version for which to get the preview information
-     *  
+     *
      * @param resultCallback if something goe
      */
     void getHistoryPreviewInfo(
@@ -252,9 +252,9 @@ public interface I_CmsVfsServiceAsync {
 
     /**
      * Gets the history of a resource.<p>
-     * 
+     *
      * @param structureId the structure id of the resource
-     * @param resultCallback the callback to call with the result 
+     * @param resultCallback the callback to call with the result
      */
     void getResourceHistory(CmsUUID structureId, AsyncCallback<CmsHistoryResourceCollection> resultCallback);
 
@@ -299,7 +299,7 @@ public interface I_CmsVfsServiceAsync {
 
     /**
      * Loads the external link info.<p>
-     * 
+     *
      * @param structureId the external link structure id
      * @param callback the callback
      */
@@ -335,10 +335,10 @@ public interface I_CmsVfsServiceAsync {
 
     /**
      * Restores a previous version of the resource.<p>
-     * 
+     *
      * @param structureId the structure id of the version
-     * @param version the number of the version to which  the resource should be reverted 
-     * @param callback the callback to call with the results 
+     * @param version the number of the version to which  the resource should be reverted
+     * @param callback the callback to call with the results
      */
     void restoreResource(CmsUUID structureId, int version, AsyncCallback<Void> callback);
 
@@ -353,14 +353,19 @@ public interface I_CmsVfsServiceAsync {
 
     /**
      * Saves the external link.<p>
-     * 
+     *
      * @param structureId the link structure id
      * @param title the link title
      * @param link the link
      * @param fileName the file name
-     * @param callback the asynchronous callback 
+     * @param callback the asynchronous callback
      */
-    void saveExternalLink(CmsUUID structureId, String title, String link, String fileName, AsyncCallback<Void> callback);
+    void saveExternalLink(
+        CmsUUID structureId,
+        String title,
+        String link,
+        String fileName,
+        AsyncCallback<Void> callback);
 
     /**
      * Saves a set of property changes.<p>
@@ -392,10 +397,10 @@ public interface I_CmsVfsServiceAsync {
 
     /**
      * Undeletes a resource.<p>
-     * 
+     *
      * @param structureId the structure id of the resource
-     * 
-     * @param callback the result callback 
+     *
+     * @param callback the result callback
      */
     void undelete(CmsUUID structureId, AsyncCallback<Void> callback);
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -71,7 +71,7 @@ public class CmsAliasTableRow implements IsSerializable {
      */
     public CmsAliasTableRow() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -80,7 +80,7 @@ public class CmsAliasTableRow implements IsSerializable {
     public void clearErrors() {
 
         if ((getAliasError() != null) || (getPathError() != null)) {
-            // ensure rows with errors are updated correctly 
+            // ensure rows with errors are updated correctly
             m_isChanged = true;
         }
         m_pathError = null;
@@ -89,7 +89,7 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Copies this object.<p>
-     * 
+     *
      * @return a copy of the alias row
      */
     public CmsAliasTableRow copy() {
@@ -111,8 +111,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Changes the alias path.<p>
-     * 
-     * @param newPath the new alias path 
+     *
+     * @param newPath the new alias path
      */
     public void editAliasPath(String newPath) {
 
@@ -122,8 +122,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Changes the resource path.<p>
-     * 
-     * @param newPath the new resource path 
+     *
+     * @param newPath the new resource path
      */
     public void editResourcePath(String newPath) {
 
@@ -145,8 +145,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Gets the alias path  error message.<p>
-     * 
-     * @return the alias path error message  
+     *
+     * @return the alias path error message
      */
     public String getAliasError() {
 
@@ -155,8 +155,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Gets the resource path error message.<p>
-     * 
-     * @return the resource path error message 
+     *
+     * @return the resource path error message
      */
     public String getAliasPath() {
 
@@ -165,11 +165,11 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Gets the internal key for the row.<p>
-     * 
-     * This key is artificially generated, it has no significance for the alias itself but is only used 
+     *
+     * This key is artificially generated, it has no significance for the alias itself but is only used
      * during editing to keep track of rows.<p>
-     * 
-     * @return the internal key  
+     *
+     * @return the internal key
      */
     public String getKey() {
 
@@ -178,8 +178,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Gets the alias mode.<p>
-     * 
-     * @return the alias mode 
+     *
+     * @return the alias mode
      */
     public CmsAliasMode getMode() {
 
@@ -188,8 +188,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Gets the original structure id.<p>
-     * 
-     * @return the original structure id 
+     *
+     * @return the original structure id
      */
     public CmsUUID getOriginalStructureId() {
 
@@ -198,8 +198,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Gets the resource path error message.<p>
-     * 
-     * @return the resource path error message 
+     *
+     * @return the resource path error message
      */
     public String getPathError() {
 
@@ -208,8 +208,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Gets the resource path.<p>
-     * 
-     * @return the resource path 
+     *
+     * @return the resource path
      */
     public String getResourcePath() {
 
@@ -218,8 +218,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Gets the structure id.<p>
-     * 
-     * @return the structure id 
+     *
+     * @return the structure id
      */
     public CmsUUID getStructureId() {
 
@@ -228,8 +228,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Checks whether any validation errors have been set.<p>
-     * 
-     * @return true if any validation errors have been set 
+     *
+     * @return true if any validation errors have been set
      */
     public boolean hasErrors() {
 
@@ -247,8 +247,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Checks whether this row is changed.<p>
-     * 
-     * @return true if this row is changed 
+     *
+     * @return true if this row is changed
      */
     public boolean isChanged() {
 
@@ -257,8 +257,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Checks whether this row is edited.<p>
-     * 
-     * @return true if this row is edited 
+     *
+     * @return true if this row is edited
      */
     public boolean isEdited() {
 
@@ -267,8 +267,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Sets the alias error message.<p>
-     * 
-     * @param aliasError the alias error message 
+     *
+     * @param aliasError the alias error message
      */
     public void setAliasError(String aliasError) {
 
@@ -278,8 +278,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Sets the alias path.<p>
-     * 
-     * @param aliasPath the new alias path 
+     *
+     * @param aliasPath the new alias path
      */
     public void setAliasPath(String aliasPath) {
 
@@ -288,8 +288,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Sets the 'changed' flag.<p>
-     * 
-     * @param isChanged the new value of the 'changed' flag 
+     *
+     * @param isChanged the new value of the 'changed' flag
      */
     public void setChanged(boolean isChanged) {
 
@@ -298,8 +298,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Sets the 'edited' flag.<p>
-     * 
-     * @param isEdited the new value of the 'edited' flag 
+     *
+     * @param isEdited the new value of the 'edited' flag
      */
     public void setEdited(boolean isEdited) {
 
@@ -308,8 +308,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Sets the internal key.<p>
-     * 
-     * @param key the internal key 
+     *
+     * @param key the internal key
      */
     public void setKey(String key) {
 
@@ -318,8 +318,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Sets the alias mode.<p>
-     * 
-     * @param mode the new alias mode 
+     *
+     * @param mode the new alias mode
      */
     public void setMode(CmsAliasMode mode) {
 
@@ -328,8 +328,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Sets the original structure id.<p>
-     * 
-     * @param originalStructureId the original structure id value 
+     *
+     * @param originalStructureId the original structure id value
      */
     public void setOriginalStructureId(CmsUUID originalStructureId) {
 
@@ -338,8 +338,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Sets the resource path error message.<p>
-     *  
-     * @param pathError the resource path error message 
+     *
+     * @param pathError the resource path error message
      */
     public void setPathError(String pathError) {
 
@@ -349,8 +349,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Sets the resource path.<p>
-     * 
-     * @param resourcePath the resource path 
+     *
+     * @param resourcePath the resource path
      */
     public void setResourcePath(String resourcePath) {
 
@@ -359,8 +359,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Sets the structure id.<p>
-     * 
-     * @param structureId the structure id 
+     *
+     * @param structureId the structure id
      */
     public void setStructureId(CmsUUID structureId) {
 
@@ -369,8 +369,8 @@ public class CmsAliasTableRow implements IsSerializable {
 
     /**
      * Updates this bean with data from another instance.<p>
-     * 
-     * @param updateRow the bean which the data should be updated from 
+     *
+     * @param updateRow the bean which the data should be updated from
      */
     public void update(CmsAliasTableRow updateRow) {
 

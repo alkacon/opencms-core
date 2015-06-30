@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,10 +58,10 @@ public class CmsResourceInfoConfirmDialog {
     /** The OK button. */
     private CmsPushButton m_okButton;
 
-    /** 
+    /**
      * Creates a new dialog instance for the given resource info.<p>
-     * 
-     * @param resourceStatus the resource information 
+     *
+     * @param resourceStatus the resource information
      */
     public CmsResourceInfoConfirmDialog(CmsResourceStatusBean resourceStatus) {
 
@@ -116,7 +116,7 @@ public class CmsResourceInfoConfirmDialog {
 
     /**
      * Gets the cancel button text.<p>
-     * 
+     *
      * @return the cancel button text
      */
     public String getCancelText() {
@@ -126,8 +126,8 @@ public class CmsResourceInfoConfirmDialog {
 
     /**
      * Gets the dialog title.<p>
-     * 
-     * @return the dialog title 
+     *
+     * @return the dialog title
      */
     public String getCaption() {
 
@@ -136,8 +136,8 @@ public class CmsResourceInfoConfirmDialog {
 
     /**
      * Gets the OK button text.<p>
-     * 
-     * @return the OK button text 
+     *
+     * @return the OK button text
      */
     public String getOkText() {
 
@@ -146,29 +146,29 @@ public class CmsResourceInfoConfirmDialog {
 
     /**
      * Gets the dialog text.<p>
-     * 
-     * @return the dialog text 
+     *
+     * @return the dialog text
      */
     public String getText() {
 
         return "??? Confirm";
     }
 
-    /** 
+    /**
      * Method to execute when the user confirms the action.<p>
      */
     public void onConfirm() {
 
-        // do nothing 
+        // do nothing
 
     }
 
     /**
      * Creates a button for the dialog.<p>
-     * 
-     * @param text the button text 
-     * 
-     * @return the created button 
+     *
+     * @param text the button text
+     *
+     * @return the created button
      */
     private CmsPushButton createButton(String text) {
 

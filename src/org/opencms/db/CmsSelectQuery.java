@@ -1,6 +1,6 @@
 /*
  * This library is part of OpenCms -
- * the Open Source Content Management System 
+ * the Open Source Content Management System
  *
  * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
  *
@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import com.google.common.collect.Lists;
 
 /**
  * A class for generating SQL SELECT statements.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSelectQuery implements I_CmsQueryFragment {
@@ -50,10 +50,10 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
         /** The table alias. */
         String m_name;
 
-        /** 
+        /**
          * Creates a new instance.<p>
-         * 
-         * @param name the table alias 
+         *
+         * @param name the table alias
          */
         public TableAlias(String name) {
 
@@ -62,10 +62,10 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
 
         /**
          * Adds the table alias before a column name.<p>
-         * 
+         *
          * @param colName the column name
-         *  
-         * @return the column name, qualified by the table alias 
+         *
+         * @return the column name, qualified by the table alias
          */
         public String column(String colName) {
 
@@ -74,8 +74,8 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
 
         /**
          * Returns the name of the table alias.<p>
-         * 
-         * @return the name of the table alias 
+         *
+         * @return the name of the table alias
          */
         public String getName() {
 
@@ -106,7 +106,7 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
      */
     public CmsSelectQuery() {
 
-        // always use 1 = 1 as a condition so we don't have to worry about whether we need a "WHERE" keyword  
+        // always use 1 = 1 as a condition so we don't have to worry about whether we need a "WHERE" keyword
         m_conditions.add(new CmsSimpleQueryFragment("1 = 1", Collections.<Object> emptyList()));
         m_conditions.setSeparator(" AND ");
         m_otherClauses.setSeparator("\n");
@@ -115,8 +115,8 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
 
     /**
      * Adds another clause to the query.<p>
-     * 
-     * @param clause the clause to add 
+     *
+     * @param clause the clause to add
      */
     public void addClause(I_CmsQueryFragment clause) {
 
@@ -125,8 +125,8 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
 
     /**
      * Adds an expression which should be added as a column in the result set.<p>
-     * 
-     * @param node the expression which should be added as a column 
+     *
+     * @param node the expression which should be added as a column
      */
     public void addColumn(I_CmsQueryFragment node) {
 
@@ -135,8 +135,8 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
 
     /**
      * Adds an expression which should be added as a column in the result set.<p>
-     * 
-     * @param column the expression which should be added as a column  
+     *
+     * @param column the expression which should be added as a column
      */
     public void addColumn(String column) {
 
@@ -145,8 +145,8 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
 
     /**
      * Adds a new condition to the query.<p>
-     * 
-     * @param node the condition to add to the query 
+     *
+     * @param node the condition to add to the query
      */
     public void addCondition(I_CmsQueryFragment node) {
 
@@ -155,9 +155,9 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
 
     /**
      * Adds a new condition to the query.<p>
-     * 
-     * @param fragment the condition SQL 
-     * @param params the condition parameters 
+     *
+     * @param fragment the condition SQL
+     * @param params the condition parameters
      */
     public void addCondition(String fragment, Object... params) {
 
@@ -166,8 +166,8 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
 
     /**
      * Adds a table to the query's FROM clause.<p>
-     * 
-     * @param table the table to add 
+     *
+     * @param table the table to add
      */
     public void addTable(String table) {
 
@@ -176,11 +176,11 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
 
     /**
      * Adds a table the query's FROM clause.<p>
-     * 
-     * @param table the table to add 
+     *
+     * @param table the table to add
      * @param aliasPrefix the prefix used to generate the alias
-     *  
-     * @return an alias for the table 
+     *
+     * @return an alias for the table
      */
     public TableAlias addTable(String table, String aliasPrefix) {
 
@@ -192,8 +192,8 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
 
     /**
      * Returns the fragment for the ORDER BY clause.<p>
-     * 
-     * @return the fragment for the ORDER BY clause 
+     *
+     * @return the fragment for the ORDER BY clause
      */
     public I_CmsQueryFragment getOrdering() {
 
@@ -202,7 +202,7 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
 
     /**
      * Sets the SQL used for the ORDER BY clause.<p>
-     * 
+     *
      * @param ordering the SQL used for the ORDER BY clause
      */
     public void setOrdering(String ordering) {
@@ -237,10 +237,10 @@ public class CmsSelectQuery implements I_CmsQueryFragment {
     /**
      * Helper method for generating an alias by taking a prefix and appending the first number to it for which
      * the resulting string is not already used as an alias.<p>
-     *  
-     * @param prefix the alias prefix 
-     * 
-     * @return the table alias 
+     *
+     * @param prefix the alias prefix
+     *
+     * @return the table alias
      */
     private String makeAlias(String prefix) {
 

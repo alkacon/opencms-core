@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -78,7 +78,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Content element within a container-page.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainerPageElementPanel extends AbsolutePanel
@@ -156,20 +156,20 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     private String m_title;
 
     /**
-     * Indicates if the current user has view permissions on the element resource. 
-     * Without view permissions, the element can neither be edited, nor moved. 
+     * Indicates if the current user has view permissions on the element resource.
+     * Without view permissions, the element can neither be edited, nor moved.
      **/
     private boolean m_viewPermission;
 
-    /** 
-     * Indicates if the current user has write permissions on the element resource. 
-     * Without write permissions, the element can not be edited. 
+    /**
+     * Indicates if the current user has write permissions on the element resource.
+     * Without write permissions, the element can not be edited.
      **/
     private boolean m_writePermission;
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param element the DOM element
      * @param parent the drag parent
      * @param clientId the client id
@@ -178,12 +178,12 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * @param title the resource title
      * @param subTitle the sub title
      * @param resourceType the resource type
-     * @param hasSettings should be true if the element has settings which can be edited 
+     * @param hasSettings should be true if the element has settings which can be edited
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
      * @param hasWritePermission indicates if the current user has write permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
-     * @param disableNewEditor flag to disable the new editor for this element 
-     * @param elementView theelement view of the element 
+     * @param disableNewEditor flag to disable the new editor for this element
+     * @param elementView theelement view of the element
      */
     public CmsContainerPageElementPanel(
         Element element,
@@ -220,9 +220,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Checks if the element is an overlay for a container page element.<p>
-     * 
-     * @param element the element to check 
-     * @return true if the element is an overlay 
+     *
+     * @param element the element to check
+     * @return true if the element is an overlay
      */
     public static boolean isOverlay(Element element) {
 
@@ -275,7 +275,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         int parentTop = parentElement.getAbsoluteTop();
         m_provisionalParent = DOM.createElement(parentElement.getTagName());
         RootPanel.getBodyElement().appendChild(m_provisionalParent);
-        m_provisionalParent.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().clearStyles());
+        m_provisionalParent.addClassName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().clearStyles());
         m_provisionalParent.getStyle().setWidth(parentElement.getOffsetWidth(), Unit.PX);
         m_provisionalParent.appendChild(helper);
         Style style = helper.getStyle();
@@ -293,7 +294,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns the option bar of this element.<p>
-     * 
+     *
      * @return the option bar widget
      */
     public CmsElementOptionBar getElementOptionBar() {
@@ -303,7 +304,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns the elements element view.<p>
-     * 
+     *
      * @return the element view
      */
     public CmsUUID getElementView() {
@@ -331,7 +332,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns the new element type.
-     * 
+     *
      * @return the new element type
      */
     public String getNewType() {
@@ -369,7 +370,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns if the element resource is currently released and not expired.<p>
-     * 
+     *
      * @return <code>true</code> if the element resource is currently released and not expired
      */
     public boolean getReleasedAndNotExpired() {
@@ -389,8 +390,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns the structure id of the element.<p>
-     * 
-     * @return the structure id of the element 
+     *
+     * @return the structure id of the element
      */
     public CmsUUID getStructureId() {
 
@@ -402,8 +403,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns true if the element has settings to edit.<p>
-     * 
-     * @return true if the element has settings to edit 
+     *
+     * @return true if the element has settings to edit
      */
     public boolean hasSettings() {
 
@@ -448,8 +449,11 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public void highlightElement() {
 
         if (m_highlighting == null) {
-            m_highlighting = new CmsHighlightingBorder(CmsPositionBean.getBoundingClientRect(getElement()), isNew()
-                || isCreateNew() ? CmsHighlightingBorder.BorderColor.blue : CmsHighlightingBorder.BorderColor.red);
+            m_highlighting = new CmsHighlightingBorder(
+                CmsPositionBean.getBoundingClientRect(getElement()),
+                isNew() || isCreateNew()
+                ? CmsHighlightingBorder.BorderColor.blue
+                : CmsHighlightingBorder.BorderColor.red);
             RootPanel.get().add(m_highlighting);
         } else {
             m_highlighting.setPosition(CmsPositionBean.getBoundingClientRect(getElement()));
@@ -458,7 +462,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Initializes the editor click handler.<p>
-     * 
+     *
      * @param controller the container page controller instance
      */
     public void initInlineEditor(final CmsContainerpageController controller) {
@@ -479,7 +483,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
                             return;
                         }
                         Element eventTarget = event.getNativeEvent().getEventTarget().cast();
-                        // check if the event target is a child 
+                        // check if the event target is a child
                         if (getElement().isOrHasChild(eventTarget)) {
                             Element target = event.getNativeEvent().getEventTarget().cast();
                             // check if the target closest ancestor drag element is this element
@@ -510,10 +514,10 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         }
     }
 
-    /** 
+    /**
      * Checks if this element has 'createNew' status, i.e. will be copied when using this page as a model for a new container page.<p>
-     * 
-     * @return true if this element has createNew status 
+     *
+     * @return true if this element has createNew status
      */
     public boolean isCreateNew() {
 
@@ -525,7 +529,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns if this is e newly created element.<p>
-     * 
+     *
      * @return <code>true</code> if the element is new
      */
     public boolean isNew() {
@@ -535,7 +539,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns true if the new content editor is disabled for this element.<p>
-     * 
+     *
      * @return true if the new editor is disabled for this element
      */
     public boolean isNewEditorDisabled() {
@@ -616,8 +620,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Sets the 'create new' status of the element.<p>
-     * 
-     * @param createNew the new value for the 'create new' status 
+     *
+     * @param createNew the new value for the 'create new' status
      */
     public void setCreateNew(boolean createNew) {
 
@@ -643,7 +647,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Sets the element id.<p>
-     * 
+     *
      * @param id the id
      */
     public void setId(String id) {
@@ -663,7 +667,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Sets the new-type of the element.<p>
-     * 
+     *
      * @param newType the new-type
      */
     public void setNewType(String newType) {
@@ -683,7 +687,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Sets if the element resource is currently released and not expired.<p>
-     * 
+     *
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      */
     public void setReleasedAndNotExpired(boolean releasedAndNotExpired) {
@@ -859,15 +863,15 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Gets the editable list elements.<p>
-     * 
-     * @return the editable list elements 
+     *
+     * @return the editable list elements
      */
     protected List<Element> getEditableElements() {
 
         List<Element> elems = CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement());
         List<Element> result = Lists.newArrayList();
         for (Element currentElem : elems) {
-            // don't return elements which are contained in nested containers 
+            // don't return elements which are contained in nested containers
             if (m_parent.getContainerId().equals(getParentContainerId(currentElem))) {
                 result.add(currentElem);
             }
@@ -877,7 +881,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns if the list collector direct edit content has changed.<p>
-     * 
+     *
      * @return <code>true</code> if the list collector direct edit content has changed
      */
     protected boolean hasChangedEditables() {
@@ -938,7 +942,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns if the minimum element height has been checked.<p>
-     * 
+     *
      * @return <code>true</code> if the minimum element height has been checked
      */
     boolean hasCheckedHeight() {
@@ -948,7 +952,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Sets the checked height flag.<p>
-     * 
+     *
      * @param checked the checked height flag
      */
     void setCheckedHeight(boolean checked) {
@@ -975,9 +979,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Gets the container id of the most deeply nested container containing the given element, or null if no such container can be found.<p>
-     * 
-     * @param elem the element 
-     * @return the container id of the deepest container containing the element 
+     *
+     * @param elem the element
+     * @return the container id of the deepest container containing the element
      */
     private String getParentContainerId(Element elem) {
 
@@ -996,10 +1000,10 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns if the option bar position collides with any iframe child elements.<p>
-     * 
-     * @param optionTop the option bar absolute top 
-     * @param optionWidth the option bar width 
-     * 
+     *
+     * @param optionTop the option bar absolute top
+     * @param optionWidth the option bar width
+     *
      * @return <code>true</code> if there are iframe child elements located no less than 25px below the upper edge of the element
      */
     private boolean isOptionbarIFrameCollision(int optionTop, int optionWidth) {
@@ -1051,7 +1055,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * This method removes the option-bar widget from DOM and re-attaches it at it's original position.<p>
-     * Use to avoid mouse-over and mouse-down malfunction.<p> 
+     * Use to avoid mouse-over and mouse-down malfunction.<p>
      */
     private void resetOptionbar() {
 

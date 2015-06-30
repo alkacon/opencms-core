@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import org.opencms.util.A_CmsModeIntEnumeration;
 
 /**
  * The read modes to get subscribed resources of a user or group.<p>
- * 
+ *
  * @since 8.0
  */
 public final class CmsSubscriptionReadMode extends A_CmsModeIntEnumeration {
@@ -59,7 +59,7 @@ public final class CmsSubscriptionReadMode extends A_CmsModeIntEnumeration {
 
     /**
      * Private constructor.<p>
-     * 
+     *
      * @param mode the subscription read mode integer representation
      */
     private CmsSubscriptionReadMode(int mode) {
@@ -69,9 +69,9 @@ public final class CmsSubscriptionReadMode extends A_CmsModeIntEnumeration {
 
     /**
      * Returns the subscription read mode for the given mode name.<p>
-     *  
+     *
      * @param modeName the subscription read mode name to get the read mode for
-     * 
+     *
      * @return the subscription read mode for the given mode name
      */
     public static CmsSubscriptionReadMode modeForName(String modeName) {
@@ -86,11 +86,11 @@ public final class CmsSubscriptionReadMode extends A_CmsModeIntEnumeration {
 
     /**
      * Returns the subscription read mode for the given mode value.<p>
-     * 
+     *
      * This is used only for serialization and should not be accessed for other purposes.<p>
-     *  
+     *
      * @param type the subscription read mode value to get the read mode for
-     * 
+     *
      * @return the subscription read mode for the given mode value
      */
     public static CmsSubscriptionReadMode valueOf(int type) {
@@ -109,7 +109,7 @@ public final class CmsSubscriptionReadMode extends A_CmsModeIntEnumeration {
 
     /**
      * Returns if the mode is set to {@link #ALL}.<p>
-     * 
+     *
      * @return true if the mode is set to {@link #ALL}, otherwise false
      */
     public boolean isAll() {
@@ -119,7 +119,7 @@ public final class CmsSubscriptionReadMode extends A_CmsModeIntEnumeration {
 
     /**
      * Returns if the mode is set to {@link #UNVISITED}.<p>
-     * 
+     *
      * @return true if the mode is set to {@link #UNVISITED}, otherwise false
      */
     public boolean isUnVisited() {
@@ -129,7 +129,7 @@ public final class CmsSubscriptionReadMode extends A_CmsModeIntEnumeration {
 
     /**
      * Returns if the mode is set to {@link #VISITED}.<p>
-     * 
+     *
      * @return true if the mode is set to {@link #VISITED}, otherwise false
      */
     public boolean isVisited() {
@@ -138,7 +138,7 @@ public final class CmsSubscriptionReadMode extends A_CmsModeIntEnumeration {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.util.A_CmsModeIntEnumeration#toString()
      */
     @Override
@@ -162,7 +162,7 @@ public final class CmsSubscriptionReadMode extends A_CmsModeIntEnumeration {
     @Override
     protected Object clone() {
 
-        return new CmsSubscriptionReadMode(this.getMode());
+        return new CmsSubscriptionReadMode(getMode());
     }
 
 }

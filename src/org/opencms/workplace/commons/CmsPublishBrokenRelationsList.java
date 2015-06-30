@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,8 +55,8 @@ import java.util.List;
 
 /**
  * List for resources with links that could get broken after publishing.<p>
- * 
- * @since 6.5.5 
+ *
+ * @since 6.5.5
  */
 public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
 
@@ -83,7 +83,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param relativeTo the 'relative to' path, this only affects the generation of the path for the resource
      */
@@ -277,7 +277,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
 
             /**
              * Default constructor.<p>
-             * 
+             *
              * @param id the action id
              */
             public DetailsJsAction(String id) {
@@ -333,8 +333,8 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
         };
         hideAction.setIconPath(A_CmsListDialog.ICON_DETAILS_HIDE);
         hideAction.setName(Messages.get().container(Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_NAME_0));
-        hideAction.setHelpText(Messages.get().container(
-            Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_HELP_0));
+        hideAction.setHelpText(
+            Messages.get().container(Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_HELP_0));
         metadata.addIndependentAction(hideAction);
 
         I_CmsListAction showAction = new DetailsJsAction(LIST_DETAIL_RELATIONS_SHOW) {
@@ -350,8 +350,8 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
         };
         showAction.setIconPath(A_CmsListDialog.ICON_DETAILS_SHOW);
         showAction.setName(Messages.get().container(Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_NAME_0));
-        showAction.setHelpText(Messages.get().container(
-            Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_HELP_0));
+        showAction.setHelpText(
+            Messages.get().container(Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_HELP_0));
         metadata.addIndependentAction(showAction);
 
         // create list item detail
@@ -380,14 +380,14 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
         relationsDetails.setVisible(true);
         relationsDetails.setPrintable(false);
         relationsDetails.setFormatter(new CmsPublishBrokenRelationFormatter());
-        relationsDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_NAME_0));
-        relationsDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_HELP_0));
-        relationsDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_NAME_0));
-        relationsDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_HELP_0));
+        relationsDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_NAME_0));
+        relationsDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_HELP_0));
+        relationsDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_NAME_0));
+        relationsDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_HIDE_RELATIONS_HELP_0));
 
         // add resources info item detail to meta data
         metadata.addItemDetails(relationsDetails);

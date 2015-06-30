@@ -21,7 +21,7 @@ public final class TestThreadUtils {
 
     /**
      * Returns all thread infos.<p>
-     * 
+     *
      * @return all thread infos
      */
     public static ThreadInfo[] getAllThreadInfos() {
@@ -51,7 +51,7 @@ public final class TestThreadUtils {
 
     /**
      * Returns all threads.<p>
-     * 
+     *
      * @return all threads
      */
     public static Thread[] getAllThreads() {
@@ -71,9 +71,9 @@ public final class TestThreadUtils {
 
     /**
      * Returns the thread that is blocking the given one.<p>
-     * 
+     *
      * @param thread the thread to get the blocking thread for
-     * 
+     *
      * @return the thread that is blocking the given one
      */
     public static Thread getBlockingThread(final Thread thread) {
@@ -91,9 +91,9 @@ public final class TestThreadUtils {
 
     /**
      * Returns a list of all threads belonging to one thread group.<p>
-     * 
+     *
      * @param group the group to get the threads for
-     * 
+     *
      * @return an array of threads for the given group
      */
     public static Thread[] getGroupThreads(final ThreadGroup group) {
@@ -114,10 +114,10 @@ public final class TestThreadUtils {
 
     /**
      * Returns the thread that is locking the thread identified by the given id.<p>
-     * 
+     *
      * @param identity the thread id to get the locking thread for
-     * 
-     * @return the locaking thread or <code>null</code> if the thread for the given id is not locked 
+     *
+     * @return the locaking thread or <code>null</code> if the thread for the given id is not locked
      */
     public static Thread getLockingThread(long identity) {
 
@@ -141,9 +141,9 @@ public final class TestThreadUtils {
 
     /**
      * Returns the locking thread for the given object.<p>
-     * 
+     *
      * @param object the object that is potentially locked
-     * 
+     *
      * @return the locking thread for the given object or <code>null</code> if not locked
      */
     public static Thread getLockingThread(final Object object) {
@@ -173,7 +173,7 @@ public final class TestThreadUtils {
 
     /**
      * Returns the thread group of the current thread.<p>
-     * 
+     *
      * @return the thread group
      */
     public static ThreadGroup getRootThreadGroup() {
@@ -188,9 +188,9 @@ public final class TestThreadUtils {
 
     /**
      * Returns the thread for the given id.<p>
-     * 
+     *
      * @param id of a thread
-     *  
+     *
      * @return the thread or <code>null</code> if not existent
      */
     public static Thread getThread(final long id) {
@@ -206,9 +206,9 @@ public final class TestThreadUtils {
 
     /**
      * Returns the thread for the given name.<p>
-     * 
+     *
      * @param name the name of the thread to get
-     * 
+     *
      * @return the thread for the given name or <code>null</code> if not existent
      */
     public static Thread getThread(final String name) {
@@ -227,9 +227,9 @@ public final class TestThreadUtils {
 
     /**
      * Returns the thread info for the thread identified by the given id.<p>
-     * 
+     *
      * @param id the id og the thread to get the info for
-     * 
+     *
      * @return the thread info for the thread identified by the given id or <code>null</code> if not existent
      */
     public static ThreadInfo getThreadInfo(final long id) {
@@ -249,9 +249,9 @@ public final class TestThreadUtils {
 
     /**
      * Returns the thread info for the thread identified by the given name.<p>
-     * 
+     *
      * @param name the name of the thread to get the info for
-     * 
+     *
      * @return the thread info for the thread identified by the given name or <code>null</code> if not existent
      */
     public static ThreadInfo getThreadInfo(final String name) {
@@ -270,9 +270,9 @@ public final class TestThreadUtils {
 
     /**
      * Returns the thread info of the given thread.<p>
-     * 
+     *
      * @param thread the thread to get the info for
-     * 
+     *
      * @return  the thread info of the given thread or <code>null</code> if not existent
      */
     public static ThreadInfo getThreadInfo(final Thread thread) {

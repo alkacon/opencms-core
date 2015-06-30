@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
 /**
- * Exportable wrapper class for an entity attribute.<p> 
+ * Exportable wrapper class for an entity attribute.<p>
  */
 @Export
 @ExportPackage("acacia")
@@ -43,16 +43,16 @@ public class CmsEntityAttributeWrapper implements Exportable {
     /** The wrapped attribute. */
     private CmsEntityAttribute m_attribute;
 
-    /** 
+    /**
      * Default constructor.<p>
      */
     public CmsEntityAttributeWrapper() {
 
     }
 
-    /** 
+    /**
      * Constructor.<p>
-     * 
+     *
      * @param attribute the attribute to wrap
      */
     public CmsEntityAttributeWrapper(CmsEntityAttribute attribute) {
@@ -62,8 +62,8 @@ public class CmsEntityAttributeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     *  
-     * @return the result of the wrapped method  
+     *
+     * @return the result of the wrapped method
      */
     public String getAttributeName() {
 
@@ -72,8 +72,8 @@ public class CmsEntityAttributeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     *  
-     * @return the result of the wrapped method  
+     *
+     * @return the result of the wrapped method
      */
     public CmsEntityWrapper getComplexValue() {
 
@@ -82,8 +82,8 @@ public class CmsEntityAttributeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     *  
-     * @return the result of the wrapped method  
+     *
+     * @return the result of the wrapped method
      */
     public CmsEntityWrapper[] getComplexValues() {
 
@@ -92,8 +92,8 @@ public class CmsEntityAttributeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @return the result of the wrapped method
      */
     public String getSimpleValue() {
 
@@ -102,8 +102,8 @@ public class CmsEntityAttributeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @return the result of the wrapped method
      */
     public String[] getSimpleValues() {
 
@@ -112,8 +112,8 @@ public class CmsEntityAttributeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @return the result of the wrapped method
      */
     public int getValueCount() {
 
@@ -122,7 +122,7 @@ public class CmsEntityAttributeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
+     *
      * @return the result of the wrapped method
      */
     public boolean isComplexValue() {
@@ -132,8 +132,8 @@ public class CmsEntityAttributeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @return the result of the wrapped method
      */
     public boolean isSimpleValue() {
 
@@ -142,8 +142,8 @@ public class CmsEntityAttributeWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @return the result of the wrapped method
      */
     public boolean isSingleValue() {
 
@@ -152,8 +152,8 @@ public class CmsEntityAttributeWrapper implements Exportable {
 
     /**
      * Sets the wrapped attribute.<p>
-     * 
-     * @param attribute the attribute to wrap 
+     *
+     * @param attribute the attribute to wrap
      */
     public void setAttribute(CmsEntityAttribute attribute) {
 

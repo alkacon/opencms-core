@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,10 +50,8 @@ public class CmsTriStateCheckBox extends Composite implements HasValueChangeHand
      */
     public enum State {
         /** neither on nor off. */
-        middle,
-        /** off. **/
-        off,
-        /** on. **/
+        middle, /** off. **/
+        off, /** on. **/
         on;
     }
 
@@ -74,8 +72,8 @@ public class CmsTriStateCheckBox extends Composite implements HasValueChangeHand
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param labelText the label text 
+     *
+     * @param labelText the label text
      */
     public CmsTriStateCheckBox(String labelText) {
 
@@ -106,8 +104,8 @@ public class CmsTriStateCheckBox extends Composite implements HasValueChangeHand
 
     /**
      * Sets the state which the check box should transition to if the user clicks on it while it is neither on nor off.<p>
-     * 
-     * @param state the target state 
+     *
+     * @param state the target state
      */
     public void setNextStateAfterIntermediateState(State state) {
 
@@ -116,9 +114,9 @@ public class CmsTriStateCheckBox extends Composite implements HasValueChangeHand
 
     /**
      * Sets the state of the check box and optionally fires an event.<p>
-     * 
-     * @param state the new state 
-     * @param fireEvent true if a ValueChangeEvent should be fired 
+     *
+     * @param state the new state
+     * @param fireEvent true if a ValueChangeEvent should be fired
      */
     public void setState(State state, boolean fireEvent) {
 
@@ -134,8 +132,8 @@ public class CmsTriStateCheckBox extends Composite implements HasValueChangeHand
 
     /**
      * Sets the check box label text.<p>
-     * 
-     * @param text the new label text 
+     *
+     * @param text the new label text
      */
     public void setText(String text) {
 
@@ -154,8 +152,8 @@ public class CmsTriStateCheckBox extends Composite implements HasValueChangeHand
 
     /**
      * Gets the image class to use for the check box.<p>
-     * 
-     * @return the image class 
+     *
+     * @return the image class
      */
     private String getImageClass() {
 
@@ -173,9 +171,9 @@ public class CmsTriStateCheckBox extends Composite implements HasValueChangeHand
 
     /**
      * Gets the state which the check box would change to if cilcked on in a given state.<p>
-     * 
-     * @param state the original state 
-     * @return the next state 
+     *
+     * @param state the original state
+     * @return the next state
      */
     private State getNextState(State state) {
 

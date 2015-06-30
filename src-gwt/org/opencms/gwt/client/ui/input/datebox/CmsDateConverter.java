@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
  * This class is an Helper with mostly static methods that convert a given date object
- * or that convert a given String.<p> 
+ * or that convert a given String.<p>
  */
 public final class CmsDateConverter {
 
@@ -76,12 +76,12 @@ public final class CmsDateConverter {
 
     /**
      * Cuts the suffix (am or pm) from a given time String.<p>
-     * 
-     * If the given String has less than 5 characters an dosen't 
+     *
+     * If the given String has less than 5 characters an dosen't
      * contains an am or pm in it the original String is returned.<p>
-     * 
+     *
      * @param time the time String to cut the suffix from
-     * 
+     *
      * @return the time String without the suffix or the original String if the format of the String is incorrect
      */
     public static String cutSuffix(String time) {
@@ -99,9 +99,9 @@ public final class CmsDateConverter {
 
     /**
      * Formats the provided date to a date only representation.<p>
-     * 
+     *
      * @param date the date to format
-     * 
+     *
      * @return the formatted date as a string
      */
     public static String dateToString(final Date date) {
@@ -117,14 +117,14 @@ public final class CmsDateConverter {
 
     /**
      * Merges a given Date object with a given time String.<p>
-     * 
+     *
      * Returns a <code>null</code> if the given time format coudn't be parsed.<p>
-     * 
+     *
      * The expected time String should include the am pm information if the time format is in 12 hour presentation.<p>
-     * 
+     *
      * @param date the given Date object which time has to be set
      * @param time the given time String which should be inserted into the Date Object
-     * 
+     *
      * @return the merged date Object
      */
     @SuppressWarnings("deprecation")
@@ -145,9 +145,9 @@ public final class CmsDateConverter {
 
     /**
      * Returns the short time format of a given date as String.<p>
-     * 
+     *
      * @param date the date to get the short time format from
-     * 
+     *
      * @return the short time format of a given date
      */
     public static String getTime(Date date) {
@@ -156,9 +156,9 @@ public final class CmsDateConverter {
     }
 
     /**
-     * Returns <code>true</code> if the current date format is in the 12 hour 
+     * Returns <code>true</code> if the current date format is in the 12 hour
      * representation mode <code>false</code> otherwise.<p>
-     * 
+     *
      * @return <code>true</code> if an am or a pm is in a new Date object <code>false</code> otherwise
      */
     public static boolean is12HourPresentation() {
@@ -168,9 +168,9 @@ public final class CmsDateConverter {
 
     /**
      * Returns <code>true</code> if an am is in the given date object <code>false</code> otherwise.<p>
-     * 
+     *
      * @param date the date to check
-     * 
+     *
      * @return <code>true</code> if an am is in the given Date object <code>false</code> otherwise
      */
     public static boolean isAm(Date date) {
@@ -181,15 +181,15 @@ public final class CmsDateConverter {
 
     /**
      * Parses the provided String as a date.<p>
-     * 
+     *
      * First try to parse the String with the given time format.<p>
-     * 
+     *
      * If that fails try to parse the date with the browser settings.<p>
-     * 
+     *
      * @param dateText the string representing a date
-     * 
+     *
      * @return the date created, or null if there was a parse error
-     * 
+     *
      * @throws Exception in case the text can not be parsed to a date
      */
     public static Date toDate(final String dateText) throws Exception {
@@ -206,9 +206,9 @@ public final class CmsDateConverter {
 
     /**
      * Formats the provided date as only a date format (dd/mm/yyyy). Note, a null date is a possible input.
-     * 
+     *
      * @param date the date to format
-     * 
+     *
      * @return the formatted date as a string
      */
     public static String toDateString(final Date date) {
@@ -224,15 +224,15 @@ public final class CmsDateConverter {
 
     /**
      * Parses the provided String as a date.<p>
-     * 
+     *
      * First try to parse the String with the given time format.<p>
-     * 
+     *
      * If that fails try to parse the date with the browser settings.<p>
-     * 
+     *
      * @param dateText the string representing a date
-     * 
+     *
      * @return the date created, or null if there was a parse error
-     * 
+     *
      * @throws Exception in case the text can not be parsed to a date
      */
     public static Date toDayDate(final String dateText) throws Exception {
@@ -246,9 +246,9 @@ public final class CmsDateConverter {
 
     /**
      * Formats the provided date. Note, a null date is a possible input.
-     * 
+     *
      * @param date the date to format
-     * 
+     *
      * @return the formatted date as a string
      */
     public static String toString(final Date date) {
@@ -264,12 +264,12 @@ public final class CmsDateConverter {
 
     /**
      * Validates a time String if it matches one of the two regular expressions.<p>
-     * 
-     * Returns <code>true</code> if the given date matches to one of the regular 
-     * expressions, <code>false</code> otherwise.<p> 
-     * 
+     *
+     * Returns <code>true</code> if the given date matches to one of the regular
+     * expressions, <code>false</code> otherwise.<p>
+     *
      * @param date the date String to check
-     * 
+     *
      * @return <code>true</code> if the given time matches to one of the regular expressions, <code>false</code> otherwise
      */
     public static boolean validateDate(Date date) {
@@ -281,12 +281,12 @@ public final class CmsDateConverter {
 
     /**
      * Validates a time String if it matches the regular expressions.<p>
-     * 
-     * Returns <code>true</code> if the given time matches the regular 
-     * expressions, <code>false</code> otherwise.<p> 
-     * 
+     *
+     * Returns <code>true</code> if the given time matches the regular
+     * expressions, <code>false</code> otherwise.<p>
+     *
      * @param time the time String to check
-     * 
+     *
      * @return <code>true</code> if the given time matches the regular expressions, <code>false</code> otherwise
      */
     public static native boolean validateTime(String time) /*-{

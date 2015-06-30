@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -82,15 +82,15 @@ public class CmsDefaultResourceStatusProvider {
 
     /**
      * Gets the relation targets for a resource.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param source the structure id of the resource for which we want the relation targets 
-     * @param additionalIds the structure ids of additional resources to include with the relation targets 
+     *
+     * @param cms the current CMS context
+     * @param source the structure id of the resource for which we want the relation targets
+     * @param additionalIds the structure ids of additional resources to include with the relation targets
      * @param cancelIfChanged if this is true, this method will stop immediately if it finds a changed resource among the relation targets
-     * 
-     * @return a bean containing a list of relation targets 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return a bean containing a list of relation targets
+     *
+     * @throws CmsException if something goes wrong
      */
     public static CmsRelationTargetListBean getContainerpageRelationTargets(
         CmsObject cms,
@@ -121,7 +121,7 @@ public class CmsDefaultResourceStatusProvider {
                 CmsResource target = relation.getTarget(cms, CmsResourceFilter.ALL);
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(target);
                 if (isContainerPage && (type instanceof CmsResourceTypeJsp)) {
-                    // ignore formatters for container pages, as the normal user probably doesn't want to deal with them  
+                    // ignore formatters for container pages, as the normal user probably doesn't want to deal with them
                     continue;
                 }
                 result.add(target);
@@ -137,15 +137,15 @@ public class CmsDefaultResourceStatusProvider {
 
     /**
      * Collects all the data to display in the resource status dialog.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param structureId the structure id of the resource for which we want the information
-     * @param contentLocale the content locale 
-     * @param includeTargets true if relation targets should be included 
+     * @param contentLocale the content locale
+     * @param includeTargets true if relation targets should be included
      * @param additionalStructureIds structure ids of additional resources to include with the relation targets
-     *  
-     * @return the resource status information 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the resource status information
+     * @throws CmsException if something goes wrong
      */
     public CmsResourceStatusBean getResourceStatus(
         CmsObject cms,
@@ -189,13 +189,15 @@ public class CmsDefaultResourceStatusProvider {
         CmsUser lockOwner = null;
         if (!lock.isUnlocked()) {
             lockOwner = cms.readUser(lock.getUserId());
-            result.setLockState(org.opencms.workplace.list.Messages.get().getBundle(locale).key(
-                org.opencms.workplace.list.Messages.GUI_EXPLORER_LIST_ACTION_LOCK_NAME_2,
-                lockOwner.getName(),
-                lastProject));
+            result.setLockState(
+                org.opencms.workplace.list.Messages.get().getBundle(locale).key(
+                    org.opencms.workplace.list.Messages.GUI_EXPLORER_LIST_ACTION_LOCK_NAME_2,
+                    lockOwner.getName(),
+                    lastProject));
         } else {
-            result.setLockState(org.opencms.workplace.list.Messages.get().getBundle(locale).key(
-                org.opencms.workplace.list.Messages.GUI_EXPLORER_LIST_ACTION_UNLOCK_NAME_0));
+            result.setLockState(
+                org.opencms.workplace.list.Messages.get().getBundle(locale).key(
+                    org.opencms.workplace.list.Messages.GUI_EXPLORER_LIST_ACTION_UNLOCK_NAME_0));
         }
 
         CmsProperty navText = CmsProperty.get(CmsPropertyDefinition.PROPERTY_NAVTEXT, properties);
@@ -229,21 +231,23 @@ public class CmsDefaultResourceStatusProvider {
             result.setLocales(localeStrings);
         }
 
-        List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.relationsToStructureId(resource.getStructureId()));
+        List<CmsRelation> relations = cms.readRelations(
+            CmsRelationFilter.relationsToStructureId(resource.getStructureId()));
         Map<CmsUUID, CmsResource> relationSources = new HashMap<CmsUUID, CmsResource>();
 
         if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
             // People may link to the folder of a container page instead of the page itself
             try {
                 CmsResource parent = cms.readParentFolder(resource.getStructureId());
-                List<CmsRelation> parentRelations = cms.readRelations(CmsRelationFilter.relationsToStructureId(parent.getStructureId()));
+                List<CmsRelation> parentRelations = cms.readRelations(
+                    CmsRelationFilter.relationsToStructureId(parent.getStructureId()));
                 relations.addAll(parentRelations);
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
 
-        // find all distinct relation sources 
+        // find all distinct relation sources
         for (CmsRelation relation : relations) {
             try {
                 CmsResource currentSource = relation.getSource(cms, CmsResourceFilter.ALL);
@@ -281,15 +285,15 @@ public class CmsDefaultResourceStatusProvider {
 
     /**
      * Gets the list of relation targets for a resource.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param locale the locale 
-     * @param resource the resource for which we want the relation targets 
+     *
+     * @param cms the current CMS context
+     * @param locale the locale
+     * @param resource the resource for which we want the relation targets
      * @param additionalStructureIds structure ids of additional resources to include with the relation target
-     *  
+     *
      * @return the list of relation beans for the relation targets
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected List<CmsResourceStatusRelationBean> getTargets(
         CmsObject cms,
@@ -310,7 +314,11 @@ public class CmsDefaultResourceStatusProvider {
                     target,
                     resource.getRootPath());
                 if (permissionInfo.hasViewPermission()) {
-                    CmsResourceStatusRelationBean relationBean = createRelationBean(cms, locale, target, permissionInfo);
+                    CmsResourceStatusRelationBean relationBean = createRelationBean(
+                        cms,
+                        locale,
+                        target,
+                        permissionInfo);
                     result.add(relationBean);
                 }
             } catch (CmsException e) {
@@ -321,17 +329,17 @@ public class CmsDefaultResourceStatusProvider {
 
     }
 
-    /** 
-     * Creates a bean for a single resource which is part of a relation list.<p> 
-     * 
+    /**
+     * Creates a bean for a single resource which is part of a relation list.<p>
+     *
      * @param cms the current CMS context
-     * @param locale the locale 
-     * @param relationResource the resource 
+     * @param locale the locale
+     * @param relationResource the resource
      * @param permissionInfo the permission info
-     * 
+     *
      * @return the status bean for the resource
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     CmsResourceStatusRelationBean createRelationBean(
         CmsObject cms,
@@ -374,10 +382,10 @@ public class CmsDefaultResourceStatusProvider {
 
     /**
      * Determines the arrangement of tabs to display, together with their labels.<p>
-     * 
+     *
      * @param cms the current CMS context
-     * @param res the resource for which the dialog should be displayed 
-     * @return the tab configuration for the dialog 
+     * @param res the resource for which the dialog should be displayed
+     * @return the tab configuration for the dialog
      */
     private LinkedHashMap<CmsResourceStatusTabId, String> getTabClientData(CmsObject cms, CmsResource res) {
 
@@ -392,9 +400,9 @@ public class CmsDefaultResourceStatusProvider {
 
     /**
      * Determines the arrangement of tabs to display, together with their labels.<p>
-     * 
-     * @param res the resource for which the dialog should be displayed 
-     * @return the tab configuration for the dialog 
+     *
+     * @param res the resource for which the dialog should be displayed
+     * @return the tab configuration for the dialog
      */
     private Map<CmsResourceStatusTabId, CmsMessageContainer> getTabData(CmsResource res) {
 

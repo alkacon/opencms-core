@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,16 +31,16 @@ import org.opencms.workplace.CmsWorkplace;
 
 /**
  * Contains the settings to handle HTTP basic authentication.<p>
- * 
+ *
  * These settings control whether a browser-based pop-up dialog should be used for
  * authentication, or of the user should be redirected to an OpenCms URI for a
  * form-based authentication.<p>
- * 
+ *
  * Since the URI for the form-based authentication is a system wide setting, users
  * are able to specify different authentication forms in a property "login-form" on
  * resources that require authentication.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsHttpAuthenticationSettings {
 
@@ -76,7 +76,7 @@ public class CmsHttpAuthenticationSettings {
 
     /**
      * Returns the browser based authentication mechanism or <code>null</code> if unused.
-     * 
+     *
      * @return "BASIC" in case of browser based basic authentication, "FORM" in case of form based authentication or the alternative mechanism or <code>null</code> if unused.
      */
     public String getBrowserBasedAuthenticationMechanism() {
@@ -94,7 +94,7 @@ public class CmsHttpAuthenticationSettings {
 
     /**
      * Returns the browser based authentication text for the configuration.<p>
-     * 
+     *
      * @return the browser based authentication text for the configuration
      */
     public String getConfigBrowserBasedAuthentication() {

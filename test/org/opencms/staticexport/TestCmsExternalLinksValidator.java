@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,15 +39,15 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/** 
- * 
+/**
+ *
  * @since 7.0.4
  */
 public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsExternalLinksValidator(String arg0) {
@@ -57,7 +57,7 @@ public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -86,11 +86,11 @@ public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
     }
 
     /**
-     * This test can go wrong if the external sites in the WWW not exists anymore or 
+     * This test can go wrong if the external sites in the WWW not exists anymore or
      * no connect to the WWW exists.<p>
-     * 
+     *
      * Please remove sites, which not exists anymore.<p>
-     * 
+     *
      * @throws Exception if test fails
      */
     public void testExternalLinksOutside() throws Exception {

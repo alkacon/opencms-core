@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,7 +48,7 @@ public class TestCmsXmlEntityResolver extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsXmlEntityResolver(String arg0) {
@@ -58,7 +58,7 @@ public class TestCmsXmlEntityResolver extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -89,12 +89,12 @@ public class TestCmsXmlEntityResolver extends OpenCmsTestCase {
     }
 
     /**
-     * Tests the "wrong version of nested subschema still cached after change in VFS" issue.<p> 
-     * 
+     * Tests the "wrong version of nested subschema still cached after change in VFS" issue.<p>
+     *
      * An issue was discovered in the conext of auto correction of XML content:
-     * Cached content definition objects where not removed from the cache if 
-     * a nested subschema was changed.<p> 
-     * 
+     * Cached content definition objects where not removed from the cache if
+     * a nested subschema was changed.<p>
+     *
      * @throws Exception if the test fails
      */
     public void testRemoveNestedSubschemaFromCacheIssue() throws Exception {
@@ -102,7 +102,7 @@ public class TestCmsXmlEntityResolver extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing the \"wrong version of nested subschema still cached after change in VFS\" issue");
 
-        // this test replaces the predefined article schema with an "articlelist" 
+        // this test replaces the predefined article schema with an "articlelist"
         // schema that contains the original article as nested subschema
         // this is require so that the original resource type for the article can be used
         String nestedSchemaUri = "/xmlcontent/subarticle.xsd";
@@ -112,7 +112,7 @@ public class TestCmsXmlEntityResolver extends OpenCmsTestCase {
         // copy the original article XML schema
         cms.copyResource(schemaUri, nestedSchemaUri);
 
-        // overwrite the schema with the new version read from the RFS      
+        // overwrite the schema with the new version read from the RFS
         String rfsname = "org/opencms/xml/xmlcontent-definition-1.xsd";
         String content = CmsFileUtil.readFile(rfsname, CmsEncoder.ENCODING_ISO_8859_1);
         // write the updated XML schema to the VFS
@@ -147,7 +147,7 @@ public class TestCmsXmlEntityResolver extends OpenCmsTestCase {
         }
         assertNotNull("Validation of XML did not fail even though nested subschema was changed", ex);
 
-        // now set the "auto correct" runtime property and write the XML (which will auto correct it)        
+        // now set the "auto correct" runtime property and write the XML (which will auto correct it)
         cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
         xmlContentFile2 = cms.writeFile(xmlContentFile2);
         xmlContent2 = CmsXmlContentFactory.unmarshal(cms, xmlContentFile2);

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -73,7 +73,7 @@ public class CmsUgcEditService extends CmsGwtService implements I_CmsUgcEditServ
     @Override
     public void checkPermissions(CmsObject cms) {
 
-        // don't do permission checks, since this service should be available to "Guest" users from the frontend 
+        // don't do permission checks, since this service should be available to "Guest" users from the frontend
     }
 
     /**
@@ -147,7 +147,7 @@ public class CmsUgcEditService extends CmsGwtService implements I_CmsUgcEditServ
                     result = Collections.emptyMap();
                 }
             } else {
-                // invalid session 
+                // invalid session
 
             }
         } catch (Exception e) {
@@ -191,7 +191,7 @@ public class CmsUgcEditService extends CmsGwtService implements I_CmsUgcEditServ
             return result;
         } catch (Exception e) {
             error(e);
-            return null; // will never be reached 
+            return null; // will never be reached
 
         }
     }
@@ -209,7 +209,7 @@ public class CmsUgcEditService extends CmsGwtService implements I_CmsUgcEditServ
                 CmsXmlContentErrorHandler errorHandler = session.validateContent(contentValues);
                 result = errorHandler.getErrors(session.getMessageLocale());
             } else {
-                // invalid session 
+                // invalid session
 
             }
         } catch (Exception e) {
@@ -220,7 +220,7 @@ public class CmsUgcEditService extends CmsGwtService implements I_CmsUgcEditServ
 
     /**
      * Handles all multipart requests.<p>
-     * 
+     *
      * @param request the request
      * @param response the response
      */
@@ -254,10 +254,10 @@ public class CmsUgcEditService extends CmsGwtService implements I_CmsUgcEditServ
 
     /**
      * Gets the form session  with the given id.<p>
-     * 
-     * @param sessionId the session id 
-     * 
-     * @return the form session 
+     *
+     * @param sessionId the session id
+     *
+     * @return the form session
      */
     private CmsUgcSession getFormSession(CmsUUID sessionId) {
 
@@ -266,12 +266,12 @@ public class CmsUgcEditService extends CmsGwtService implements I_CmsUgcEditServ
 
     /**
      * Reads the form content information.<p>
-     * 
+     *
      * @param session the editing session
      * @param resource the edited resource
-     * 
+     *
      * @return the form content
-     * 
+     *
      * @throws CmsException if reading the info fails
      */
     private CmsUgcContent readContent(CmsUgcSession session, CmsResource resource) throws CmsException {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,10 +47,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 
 /**
- * Convenience class to access the localized messages of this OpenCms package.<p> 
- * 
+ * Convenience class to access the localized messages of this OpenCms package.<p>
+ *
  * Intended only for test cases.<p>
- * 
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBundle {
@@ -140,11 +140,11 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
 
     /**
      * Imports a message from another bundle.<p>
-     * 
-     * @param key a key of the form classname#MESSAGE_FIELD_NAME 
+     *
+     * @param key a key of the form classname#MESSAGE_FIELD_NAME
      * @param locale the locale for which to import the message
-     *  
-     * @return the imported message string 
+     *
+     * @return the imported message string
      */
     public String importMessage(String key, Locale locale) {
 

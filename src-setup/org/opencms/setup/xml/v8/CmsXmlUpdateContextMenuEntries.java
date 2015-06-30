@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import org.dom4j.Element;
 
 /**
  * XML updater class for adding context menu rules specific to ADE.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
@@ -61,7 +61,7 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
 
         /**
          * Creates a new update action instance.<p>
-         * 
+         *
          * @param entryList the list of entries to update
          */
         public GwtContextMenuUpdateAction(GwtEntryList entryList) {
@@ -90,9 +90,8 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
                     return false;
                 }
                 for (GwtMenuEntry menuEntry : m_entryList.getEntries()) {
-                    Element entryElement = (Element)(menuElement.selectSingleNode("entry[@name='"
-                        + menuEntry.getName()
-                        + "']"));
+                    Element entryElement = (Element)(menuElement.selectSingleNode(
+                        "entry[@name='" + menuEntry.getName() + "']"));
                     if (entryElement == null) {
                         menuElement.addElement("entry").addAttribute("key", menuEntry.getKey()).addAttribute(
                             "name",
@@ -115,13 +114,13 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
 
         /**
          * Gets the xpath for the update action.<p>
-         * 
-         * @return the xpath for the update action 
+         *
+         * @return the xpath for the update action
          */
         public String getXpath() {
 
             String keyName = "gwtcontextmenuupdate_" + m_entryList.getTypeName();
-            // use a dummy xpath condition to make the xpaths unique 
+            // use a dummy xpath condition to make the xpaths unique
             return "/opencms/workplace/explorertypes/explorertype[@name='"
                 + m_entryList.getTypeName()
                 + "']['"
@@ -133,7 +132,7 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
 
     }
 
-    /** 
+    /**
      * We use this enum to define the GWT context menu entries.<p>
      */
     enum GwtMenuEntry {
@@ -162,8 +161,7 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
 
         /** Properties. */
         PROPERTIES("GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0",
-        "org.opencms.gwt.client.ui.contextmenu.CmsEditProperties", "containerpage-no-different-site"),
-        /** Rename. */
+        "org.opencms.gwt.client.ui.contextmenu.CmsEditProperties", "containerpage-no-different-site"), /** Rename. */
         RENAME("GUI_EXPLORER_CONTEXT_RENAME_0", "org.opencms.gwt.client.ui.contextmenu.CmsRename",
         "containerpage-no-different-site"),
 
@@ -172,8 +170,8 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
         "containerpage-no-different-site"),
 
         /** Show workplace. */
-        SHOWWORKPLACE("GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0",
-        "org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace", "editprovider"),
+        SHOWWORKPLACE("GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0", "org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace",
+        "editprovider"),
 
         /** Undo changes. */
         UNDOCHANGES("GUI_EXPLORER_CONTEXT_UNDOCHANGES_0", "org.opencms.gwt.client.ui.contextmenu.CmsRestore",
@@ -189,10 +187,10 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
         private String m_rule;
 
         /** Enum constructor.
-         * 
+         *
          * @param key the message key
-         * @param name the class name 
-         * @param rule the menu rule 
+         * @param name the class name
+         * @param rule the menu rule
          */
         private GwtMenuEntry(String key, String name, String rule) {
 
@@ -245,9 +243,9 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
 
         /**
          * Creates a new entry list.<p>
-         * 
-         * @param typeName the explorer type name 
-         * @param entries the entries to add 
+         *
+         * @param typeName the explorer type name
+         * @param entries the entries to add
          */
         public GwtEntryList(String typeName, GwtMenuEntry... entries) {
 
@@ -399,7 +397,8 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
                     try {
                         parent.elements().add(
                             0,
-                            createElementFromXml("<entry key=\"GUI_EXPLORER_CONTEXT_TOUCH_0\" uri=\"commons/touch.jsp\" rule=\"standard\"/>"));
+                            createElementFromXml(
+                                "<entry key=\"GUI_EXPLORER_CONTEXT_TOUCH_0\" uri=\"commons/touch.jsp\" rule=\"standard\"/>"));
                         parent.elements().add(1, createElementFromXml("<separator/>"));
                     } catch (DocumentException de) {
                         System.out.println("Failed to update context menu entry for type pointer!");
@@ -421,10 +420,10 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
 
     /**
      * Helper method for generating an xpath fragment "[@attr='value']".<p>
-     * 
-     * @param attr the attribute name 
-     * @param value the attribute value 
-     * @return the xpath fragment 
+     *
+     * @param attr the attribute name
+     * @param value the attribute value
+     * @return the xpath fragment
      */
     protected String xpathAttr(String attr, String value) {
 
@@ -433,10 +432,10 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
 
     /**
      * Returns the xpath for a specific explorer type.<p>
-     * 
-     * @param explorerType the explorer type 
-     * 
-     * @return the xpath for that explorer type 
+     *
+     * @param explorerType the explorer type
+     *
+     * @return the xpath for that explorer type
      */
     protected String xpathForType(String explorerType) {
 
@@ -455,8 +454,8 @@ public class CmsXmlUpdateContextMenuEntries extends A_CmsXmlWorkplace {
 
     /**
      * Returns the xpath for the explorertypes node.<p>
-     * 
-     * @return the xpath for the explorertypes node 
+     *
+     * @return the xpath for the explorertypes node
      */
     private String xpathForExplorerTypes() {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The sitemap entry editor class for the VFS mode.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
@@ -72,9 +72,9 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Creates a new sitemap entry editor instance for the VFS mode.<p>
-     * 
-     * @param propConfig the property configuration 
-     * @param handler the sitemap entry editor handler 
+     *
+     * @param propConfig the property configuration
+     * @param handler the sitemap entry editor handler
      */
     public CmsSimplePropertyEditor(Map<String, CmsXmlContentProperty> propConfig, I_CmsPropertyEditorHandler handler) {
 
@@ -119,7 +119,7 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
     @Override
     protected void addSpecialFields() {
 
-        // we don't want any special fields 
+        // we don't want any special fields
     }
 
     /**
@@ -134,11 +134,11 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Builds a single form field.<p>
-     * 
-     * @param ownProps the entry's own properties 
+     *
+     * @param ownProps the entry's own properties
      * @param propName the property name
-     * @param mode the mode which controls which kind of field will be built  
-     * @param id the id of the resource for which to build the field 
+     * @param mode the mode which controls which kind of field will be built
+     * @param id the id of the resource for which to build the field
      */
     private void buildField(
         Map<String, CmsClientProperty> ownProps,
@@ -212,12 +212,12 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Creates a string model which uses a field of a CmsClientProperty for storing its value.<p>
-     * 
-     * @param id the structure id 
-     * @param propName the property id  
+     *
+     * @param id the structure id
+     * @param propName the property id
      * @param isStructure if true, the structure value field should be used, else the resource value field
-     * 
-     *   
+     *
+     *
      * @return the new model object
      */
     private I_CmsStringModel createStringModel(final CmsUUID id, final String propName, final boolean isStructure) {
@@ -282,10 +282,10 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Gets a pair of strings containing the default value to display for a given property and its source.<p>
-     * 
-     * @param prop the property 
-     * @param mode the mode 
-     * 
+     *
+     * @param prop the property
+     * @param mode the mode
+     *
      * @return a pair of the form (defaultValue, origin)
      */
     private CmsPair<String, String> getDefaultValueToDisplay(CmsClientProperty prop, Mode mode) {
@@ -306,10 +306,10 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Creates a string model for a given property path value, and returns the same model if the same path value is passed in.<p>
-     * 
+     *
      * @param pathValue the path value
-     *  
-     * @return the model for that path value 
+     *
+     * @return the model for that path value
      */
     private I_CmsStringModel getStringModel(CmsPathValue pathValue) {
 
@@ -328,7 +328,7 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
 
     /**
      * Moves the given property name to the top of the keys if present.<p>
-     * 
+     *
      * @param keys the list of keys
      * @param propertyName the property name to move
      */

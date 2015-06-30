@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  */
 public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
-    /** 
+    /**
      * Simple schema data container structure.<p>
      */
     class SchemaDef {
@@ -70,7 +70,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
         /**
          * Creates the schema data container structure.<p>
-         * 
+         *
          * @param id the schema id to use in the OpenCms schema cache
          * @param file the name of the schema file in in the RFS
          */
@@ -82,7 +82,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
         /**
          * Returns the name of the schema file in in the RFS.
-         * 
+         *
          * @return the name of the schema file in in the RFS
          */
         public String getFile() {
@@ -92,7 +92,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
         /**
          * Returns the schema id to use in the OpenCms schema cache.
-         * 
+         *
          * @return the schema id to use in the OpenCms schema cache
          */
         public String getId() {
@@ -106,7 +106,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsXmlContentSchemaModifications(String arg0) {
@@ -116,7 +116,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -156,7 +156,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
     /**
      * Test adding new nodes to the XML schema.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testAddSchemaNodes() throws Exception {
@@ -174,7 +174,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
     /**
      * Combined modification test for simple (non-nested) XML schema.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testCombinedChangeSchemaNodes() throws Exception {
@@ -209,7 +209,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
     /**
      * Tests if changes in the XML schema structure maintains the order of an existing xsd:choice list.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testMaintainOrderInChoiceAfterSchemaChange() throws Exception {
@@ -235,7 +235,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
     /**
      * Combined modification test for a nested XML schema.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testNestedChangeSchemaNodes() throws Exception {
@@ -244,9 +244,15 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(getCmsObject());
 
-        cacheSchema(resolver, "http://www.opencms.org/test3.xsd", "org/opencms/xml/content/xmlcontent-definition-3.xsd");
+        cacheSchema(
+            resolver,
+            "http://www.opencms.org/test3.xsd",
+            "org/opencms/xml/content/xmlcontent-definition-3.xsd");
 
-        cacheSchema(resolver, "http://www.opencms.org/test4.xsd", "org/opencms/xml/content/xmlcontent-definition-4.xsd");
+        cacheSchema(
+            resolver,
+            "http://www.opencms.org/test4.xsd",
+            "org/opencms/xml/content/xmlcontent-definition-4.xsd");
 
         runTestWithChangedSchema(
             "http://www.opencms.org/test3.xsd",
@@ -267,7 +273,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
     /**
      * Test re-arranging nodes in the XML schema.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testReArrangeSchemaNodes() throws Exception {
@@ -285,7 +291,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
     /**
      * Test removing nodes from the XML schema.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testRemoveSchemaNodes() throws Exception {
@@ -303,7 +309,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
     /**
      * Demo test for using the XML content correcting API.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testUsageDemo() throws Exception {
@@ -311,7 +317,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
 
-        // setup steps for demo test 1:        
+        // setup steps for demo test 1:
         // filenames to use
         String changedSchema = "org/opencms/xml/content/xmlcontent-definition-1.mod4.xsd";
         String originalFile = "org/opencms/xml/content/xmlcontent-1.xml";
@@ -345,7 +351,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
         // enable "auto correction mode" - this is required or the XML structure will not be fully corrected
         xmlcontent.setAutoCorrectionEnabled(true);
-        // now correct the XML        
+        // now correct the XML
         xmlcontent.correctXmlStructure(cms);
 
         // output the XML content (modified version)
@@ -355,7 +361,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         xmlcontent.validateXmlStructure(resolver);
         // demo test 1 is finished
 
-        // setup steps for demo test 2: 
+        // setup steps for demo test 2:
 
         // write the content to the VFS
         cms.createResource(
@@ -363,7 +369,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
             OpenCms.getResourceManager().getResourceType("xmlcontent"),
             xmlcontent.toString().getBytes(xmlcontent.getEncoding()),
             Collections.<CmsProperty> emptyList());
-        // change the XML schema definition for the XML content 
+        // change the XML schema definition for the XML content
         // it's important that the schema is changed _before_ the content is unmarshaled
         // in a "real world" use case this should be no problem as the schema will have been changed in another request
         changedSchema = "org/opencms/xml/content/xmlcontent-definition-1.mod5.xsd";
@@ -378,7 +384,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         CmsFile file = cms.readFile(filename);
 
         // this is not normally required, but illustrates the differences in the API behaviour
-        // trying to write the file now (with the changed schema but XML still using the old schema) is not possible 
+        // trying to write the file now (with the changed schema but XML still using the old schema) is not possible
         // this is because of the build-in validation while writing
         ex = null;
         try {
@@ -402,7 +408,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
     /**
      * Demo test for using the XML content correcting API.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testVfsFile() throws Exception {
@@ -435,7 +441,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
         // enable "auto correction mode" - this is required or the XML structure will not be fully corrected
         xmlcontent.setAutoCorrectionEnabled(true);
-        // now correct the XML        
+        // now correct the XML
         xmlcontent.correctXmlStructure(cms);
 
         // output the XML content (modified version)
@@ -457,7 +463,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         CmsFile file = cms.readFile(filename);
 
         // this is not normally required, but illustrates the differences in the API behaviour
-        // trying to write the file now (with the changed schema but XML still using the old schema) is not possible 
+        // trying to write the file now (with the changed schema but XML still using the old schema) is not possible
         // this is because of the build-in validation while writing
         try {
             cms.writeFile(file);
@@ -478,7 +484,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
     /**
      * Test for using the XSD translation.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testXsdTranslation() throws Exception {
@@ -527,11 +533,11 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
     /**
      * Compares a given XML content with the contents of a file in the RFS and asserts the XML is identical.<p>
-     * 
+     *
      * @param xmlcontent the XML content to compare
      * @param filename the RFS name of the file to compare the XML content with
      * @param resolver the XML entitiy resolver to use
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     private void assertXmlContent(CmsXmlContent xmlcontent, String filename, CmsXmlEntityResolver resolver)
@@ -545,12 +551,12 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
     }
 
     /**
-     * Updates the OpenCms XML entity resolver cache with a changed XML schema id.<p> 
-     * 
+     * Updates the OpenCms XML entity resolver cache with a changed XML schema id.<p>
+     *
      * @param resolver the OpenCms XML entity resolver to use
      * @param id the XML schema id to update in the resolver
      * @param filename the name of the file in the RFS where to read the new schema content from
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     private void cacheSchema(CmsXmlEntityResolver resolver, String id, String filename) throws Exception {
@@ -564,16 +570,16 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
     }
 
     /**
-     * Reads an XML content with the original schema, then changes the schema and corrects the XML content 
+     * Reads an XML content with the original schema, then changes the schema and corrects the XML content
      * with the new schema.<p>
-     * 
+     *
      * @param schemaId the XML schema id for the schema cache
      * @param filename the filename to write the XML content to in the OpenCms VFS
      * @param originalSchema the location of the original schema in the RFS
      * @param originalFile the location of the original XML file in the RFS
      * @param changedSchema the location of the changed schema in the RFS
      * @param changedFile the location of the changed XML file in the RFS (for comparison)
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     private void runTestWithChangedSchema(
@@ -594,15 +600,15 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
     }
 
     /**
-     * Reads an XML content with a list of original schemas, then changes the schemas and corrects the XML content 
+     * Reads an XML content with a list of original schemas, then changes the schemas and corrects the XML content
      * with the new schemas.<p>
-     * 
+     *
      * @param filename the filename to write the XML content to in the OpenCms VFS
      * @param originalSchemas the list of the original schemas (id, name in RFS)
      * @param originalFile the location of the original XML file in the RFS
      * @param changedSchemas the list of the changed schemas (id, name in RFS)
      * @param changedFile the location of the changed XML file in the RFS (for comparison)
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     private void runTestWithChangedSchemas(
@@ -645,7 +651,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         // enable the XML auto correction mode on save
         cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
 
-        // write the file, it should not be changed 
+        // write the file, it should not be changed
         cms.writeFile(file);
         assertXmlContent(xmlcontentRead, originalFile, resolver);
 
@@ -654,7 +660,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
             cacheSchema(resolver, schema.getId(), rfsPrefix + schema.getFile());
         }
 
-        // validate the general XML structure of the modified content 
+        // validate the general XML structure of the modified content
         CmsXmlUtils.validateXmlStructure(CmsFileUtil.readFile(changedFile), resolver);
 
         // write the file again, it should be changed according to the changed schema

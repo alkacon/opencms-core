@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import com.google.gwt.resources.client.CssResource.Import;
 
 /**
  * Layout bundle.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsInputLayoutBundle extends ClientBundle {
@@ -45,28 +45,28 @@ public interface I_CmsInputLayoutBundle extends ClientBundle {
 
     /**
      * Image bundle accessor.<p>
-     * 
-     * @return an image bundle 
+     *
+     * @return an image bundle
      */
     I_CmsBackgroundImageBundle backgrounds();
 
     /**
      * Image bundle accessor.<p>
-     * 
-     * @return an image bundle 
+     *
+     * @return an image bundle
      */
     I_CmsImageBundle baseImages();
 
     /**
      * The CSS constants bundle.<p>
-     * 
-     * @return a bundle of CSS constants 
+     *
+     * @return a bundle of CSS constants
      */
     I_CmsConstantsBundle constants();
 
     /**
      * Accessor for css resource.<p>
-     *  
+     *
      * @return the css resource
      */
     @Source("input.css")
@@ -75,7 +75,7 @@ public interface I_CmsInputLayoutBundle extends ClientBundle {
 
     /**
      * Returns the image bundle for the input package.<p>
-     * 
+     *
      * @return an image bundle
      */
     I_CmsInputImageBundle inputImages();

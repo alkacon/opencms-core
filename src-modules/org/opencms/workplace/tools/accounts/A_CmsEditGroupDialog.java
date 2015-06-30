@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,8 +56,8 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Skeleton dialog to create a new group or edit an existing group in the administration view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
@@ -87,7 +87,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public A_CmsEditGroupDialog(CmsJspActionElement jsp) {
@@ -147,18 +147,14 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * Returns the description of the parent ou.<p>
-     * 
+     *
      * @return the description of the parent ou
      */
     public String getAssignedOu() {
 
         try {
             return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getDescription(
-                getLocale())
-                + " ("
-                + CmsOrganizationalUnit.SEPARATOR
-                + getParamOufqn()
-                + ")";
+                getLocale()) + " (" + CmsOrganizationalUnit.SEPARATOR + getParamOufqn() + ")";
         } catch (CmsException e) {
             return null;
         }
@@ -166,7 +162,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * Returns the localized description of a group.<p>
-     * 
+     *
      * @return the localized description of a group
      */
     public String getDescription() {
@@ -176,7 +172,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * Returns the simple name of the group object.<p>
-     * 
+     *
      * @return the simple name of the group object
      */
     public String getName() {
@@ -186,7 +182,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * Returns the user id parameter value.<p>
-     * 
+     *
      * @return the user id parameter value
      */
     public String getParamGroupid() {
@@ -196,7 +192,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * Returns the organizational unit parameter value.<p>
-     * 
+     *
      * @return the organizational unit parameter value
      */
     public String getParamOufqn() {
@@ -216,7 +212,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * The method is just needed for displaying reasons.<p>
-     * 
+     *
      * @param assignedOu nothing to do with this parameter
      */
     public void setAssignedOu(String assignedOu) {
@@ -227,7 +223,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * Sets the description for a group.<p>
-     * 
+     *
      * @param description the description for a group
      */
     public void setDescription(String description) {
@@ -237,7 +233,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * Sets the name of the group object.<p>
-     * 
+     *
      * @param name the name of the group object
      */
     public void setName(String name) {
@@ -247,7 +243,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * Sets the user id parameter value.<p>
-     * 
+     *
      * @param userId the user id parameter value
      */
     public void setParamGroupid(String userId) {
@@ -257,7 +253,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * Sets the organizational unit parameter value.<p>
-     * 
+     *
      * @param ouFqn the organizational unit parameter value
      */
     public void setParamOufqn(String ouFqn) {
@@ -290,9 +286,9 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -346,15 +342,15 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the dialog class name of the list to refresh.<p> 
-     * 
+     * Returns the dialog class name of the list to refresh.<p>
+     *
      * @return the list dialog class name
      */
     protected abstract String getListClass();
 
     /**
      * Returns the root path for the list tool.<p>
-     * 
+     *
      * @return the root path
      */
     protected abstract String getListRootPath();
@@ -370,7 +366,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * Initializes the group object to work with depending on the dialog state and request parameters.<p>
-     * 
+     *
      * Two initializations of the group object on first dialog call are possible:
      * <ul>
      * <li>edit an existing group</li>
@@ -388,7 +384,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
                 // edit an existing user, get the user object from db
                 m_group = getCms().readGroup(new CmsUUID(getParamGroupid()));
             } else {
-                // this is not the initial call, get the user object from session            
+                // this is not the initial call, get the user object from session
                 o = getDialogObject();
                 m_group = (CmsGroup)o;
                 // test
@@ -431,11 +427,11 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * Tests if the given group is editable or not.<p>
-     * 
+     *
      * Not editable means that no property can be changed.<p>
-     * 
-     * @param group the group to test 
-     * 
+     *
+     * @param group the group to test
+     *
      * @return the editable flag
      */
     protected abstract boolean isEditable(CmsGroup group);
@@ -455,7 +451,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
     /**
      * Checks if the new Group dialog has to be displayed.<p>
-     * 
+     *
      * @return <code>true</code> if the new Group dialog has to be displayed
      */
     private boolean isNewGroup() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import javax.persistence.Query;
 
 /**
  * A query parameter of type 'int'.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsQueryIntParameter implements I_CmsQueryParameter {
@@ -40,10 +40,10 @@ public class CmsQueryIntParameter implements I_CmsQueryParameter {
     /** The value of the parameter. */
     private int m_param;
 
-    /** 
+    /**
      * Creates a new parameter value.<p>
-     * 
-     * @param param the value to use for this parameter 
+     *
+     * @param param the value to use for this parameter
      */
     public CmsQueryIntParameter(int param) {
 

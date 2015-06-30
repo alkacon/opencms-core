@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,7 +39,7 @@ import java.util.Map;
 
 /**
  * This class creates the table CMS_CONTENTS and fills it with data from the tables CMS_BACKUP_CONTENTS and CMS_ONLINE_CONTENTS.<p>
- * 
+ *
  * @since 7.0.0
  */
 public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
@@ -76,7 +76,7 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the query properties cannot be read
      */
     public CmsUpdateDBContentTables()
@@ -88,9 +88,9 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
 
     /**
      * Creates the CMS_CONTENTS table if it does not exist yet.<p>
-     *  
+     *
      * @param dbCon the db connection interface
-     * 
+     *
      * @throws SQLException if something goes wrong
      */
     protected void createContentsTable(CmsSetupDb dbCon) throws SQLException {
@@ -149,11 +149,11 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
 
     /**
      * Transfers the online content.<p>
-     * 
+     *
      * @param dbCon the db connection interface
      * @param pubTag the publish tag to use
-     * 
-     * @throws SQLException if something goes wrong 
+     *
+     * @throws SQLException if something goes wrong
      */
     protected void transferOnlineContents(CmsSetupDb dbCon, int pubTag) throws SQLException {
 
@@ -164,10 +164,10 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
 
     /**
      * After the transfer the tables CMS_ONLINE_CONTENTS and CMS_BACKUP contents are dropped as they are no longer needed.<p>
-     *  
+     *
      * @param dbCon the db connection interface
-     * 
-     * @throws SQLException if something goes wrong 
+     *
+     * @throws SQLException if something goes wrong
      */
     private void cleanUpContentsTables(CmsSetupDb dbCon) throws SQLException {
 

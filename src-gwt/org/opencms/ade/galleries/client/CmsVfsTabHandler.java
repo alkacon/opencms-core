@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Handler class for the VFS tree tab.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsVfsTabHandler extends A_CmsTabHandler {
@@ -61,7 +61,7 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
 
     /**
      * Creates a new VFS tab handler.<p>
-     * 
+     *
      * @param controller the gallery controller
      */
     public CmsVfsTabHandler(CmsGalleryController controller) {
@@ -81,10 +81,10 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
 
     /**
      * Gets the path which should be set as a value when a VFS entry is selected in the VFS tab.<p>
-     * 
-     * @param vfsEntry the VFS entry which has been selected 
-     * 
-     * @return the selection path for the given VFS entry 
+     *
+     * @param vfsEntry the VFS entry which has been selected
+     *
+     * @return the selection path for the given VFS entry
      */
     public String getSelectPath(CmsVfsEntryBean vfsEntry) {
 
@@ -98,8 +98,8 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
 
     /**
      * Gets the sort list for the tab.<p>
-     * 
-     * @return the sort list for the tab 
+     *
+     * @return the sort list for the tab
      */
     public LinkedHashMap<String, String> getSortList() {
 
@@ -116,9 +116,9 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
 
     /**
      * Gets the sub-folders of a given folder.<p>
-     * 
+     *
      * @param path the path of the folder whose subfolders should be retrieved
-     * @param callback the callback for processing the subfolders   
+     * @param callback the callback for processing the subfolders
      */
     public void getSubFolders(String path, AsyncCallback<List<CmsVfsEntryBean>> callback) {
 
@@ -127,7 +127,7 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
 
     /**
      * Returns if this tab should offer select resource buttons.<p>
-     * 
+     *
      * @return <code>true</code> if this tab should offer select resource buttons
      */
     public boolean hasSelectResource() {
@@ -137,8 +137,8 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
 
     /**
      * This method is called when the tree open state is changed.<p>
-     * 
-     * @param openItemIds the structure ids of open tree items 
+     *
+     * @param openItemIds the structure ids of open tree items
      */
     public void onChangeTreeState(Collection<CmsUUID> openItemIds) {
 
@@ -148,10 +148,10 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
 
     /**
      * This method is called when a folder is selected or deselected in the VFS tab.<p>
-     * 
-     * @param folder the folder which is selected or deselected 
-     * 
-     * @param selected true if the folder has been selected, false if it has been deselected 
+     *
+     * @param folder the folder which is selected or deselected
+     *
+     * @param selected true if the folder has been selected, false if it has been deselected
      */
     public void onSelectFolder(String folder, boolean selected) {
 
@@ -183,7 +183,7 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
 
                 public void onFailure(Throwable caught) {
 
-                    // will never be called 
+                    // will never be called
                 }
 
                 public void onSuccess(CmsVfsEntryBean result) {
@@ -236,8 +236,8 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
 
     /**
      * Sets the tab which this handler is bound to.<p>
-     * 
-     * @param tab the VFS tab 
+     *
+     * @param tab the VFS tab
      */
     public void setTab(CmsVfsTab tab) {
 
@@ -249,14 +249,16 @@ public class CmsVfsTabHandler extends A_CmsTabHandler {
      */
     protected void saveTreeState() {
 
-        m_controller.saveTreeState(I_CmsGalleryProviderConstants.TREE_VFS, m_siteRoot, new HashSet<CmsUUID>(
-            m_openItemIds));
+        m_controller.saveTreeState(
+            I_CmsGalleryProviderConstants.TREE_VFS,
+            m_siteRoot,
+            new HashSet<CmsUUID>(m_openItemIds));
     }
 
     /**
      * Sets the site root to use for loading/saving tree state.<p>
-     * 
-     * @param siteRoot the site root to set 
+     *
+     * @param siteRoot the site root to set
      */
     protected void setSiteRoot(String siteRoot) {
 

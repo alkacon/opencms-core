@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,9 +37,9 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 
 /**
  * Handles the common RPC services related to the gallery preview dialog.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.ade.galleries.CmsPreviewService
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewService
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsPreviewServiceAsync
@@ -48,7 +48,7 @@ public interface I_CmsPreviewServiceAsync {
 
     /**
      * Returns the image resource data to be displayed in the preview dialog.<p>
-     * 
+     *
      * @param resourcePath the resource path
      * @param locale the content locale
      * @param callback the call-back
@@ -57,16 +57,16 @@ public interface I_CmsPreviewServiceAsync {
 
     /**
      * Returns the data to be displayed in the preview dialog.<p>
-     * 
+     *
      * @param resourcePath the path to the selected resource
      * @param locale the content locale
-     * @param callback the call-back 
+     * @param callback the call-back
      */
     void getResourceInfo(String resourcePath, String locale, AsyncCallback<CmsResourceInfoBean> callback);
 
     /**
      * Returns the image resource data to be displayed in the preview dialog.<p>
-     * 
+     *
      * @param resourcePath the resource path
      * @param locale the content locale
      * @param callback the call-back
@@ -76,12 +76,12 @@ public interface I_CmsPreviewServiceAsync {
 
     /**
      * Saves the given properties to the resource and returns the data to be displayed in the preview dialog.<p>
-     * 
+     *
      * @param resourcePath the path to the selected resource
      * @param locale the content locale
      * @param properties a map with the key/value pairs of the properties to be updated
-     * 
-     * @param callback the call-back 
+     *
+     * @param callback the call-back
      */
     void updateImageProperties(
         String resourcePath,
@@ -91,12 +91,12 @@ public interface I_CmsPreviewServiceAsync {
 
     /**
      * Saves the given properties to the resource and returns the data to be displayed in the preview dialog.<p>
-     * 
+     *
      * @param resourcePath the path to the selected resource
      * @param locale the content locale
      * @param properties a map with the key/value pairs of the properties to be updated
-     * 
-     * @param callback the call-back 
+     *
+     * @param callback the call-back
      */
     void updateResourceProperties(
         String resourcePath,

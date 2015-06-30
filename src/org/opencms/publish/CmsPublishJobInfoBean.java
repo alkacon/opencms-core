@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import java.util.Locale;
 
 /**
  * Publish job information bean.<p>
- * 
+ *
  * @since 6.5.5
  */
 public final class CmsPublishJobInfoBean {
@@ -97,13 +97,13 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Constructor used to initialize a job info bean from the database.<p>
-     * 
+     *
      * @param historyId publish history id
      * @param projectId the id of the project
      * @param projectName the name of the project
-     * @param userId the id of the user 
+     * @param userId the id of the user
      * @param localeName the string representation of a locale
-     * @param flags flags of the publish job 
+     * @param flags flags of the publish job
      * @param resourceCount number of published resources
      * @param enqueueTime time when the job was enqueued
      * @param startTime time when the job was started
@@ -138,11 +138,11 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * The Default constructor.<p>
-     * 
+     *
      * @param cms the cms context to use for publishing
      * @param publishList the list of resources to publish
      * @param report the report to write to
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected CmsPublishJobInfoBean(CmsObject cms, CmsPublishList publishList, I_CmsReport report)
@@ -185,7 +185,7 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Returns the flags of this publish job.<p>
-     * 
+     *
      * @return the flags of this publish job
      */
     public int getFlags() {
@@ -195,7 +195,7 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Returns the locale for this publish job.<p>
-     * 
+     *
      * @return the locale for this publish job
      */
     public Locale getLocale() {
@@ -205,7 +205,7 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Returns the project id for this publish job.<p>
-     * 
+     *
      * @return the project id for this publish job
      */
     public CmsUUID getProjectId() {
@@ -215,7 +215,7 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Returns the originally stored project name.<p>
-     * 
+     *
      * @return the originally stored project name
      */
     public String getProjectName() {
@@ -225,7 +225,7 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Returns the publish history id.<p>
-     * 
+     *
      * @return the publish history id
      */
     public CmsUUID getPublishHistoryId() {
@@ -245,14 +245,14 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Returns the report for this publish job.<p>
-     * 
-     * This is not the original report, it is wrapper that 
+     *
+     * This is not the original report, it is wrapper that
      * also writes to a temporary file.<p>
-     * 
+     *
      * It will be <code>null</code> before starting and after finishing.<p>
-     * 
+     *
      * @return the report for this publish job
-     * 
+     *
      * @see CmsPublishJobEnqueued#getReport()
      */
     public I_CmsReport getPublishReport() {
@@ -270,7 +270,7 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Returns the report for this publish job.<p>
-     * 
+     *
      * @return the report for this publish job
      */
     public I_CmsReport getReport() {
@@ -280,7 +280,7 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Returns the number of resources in the publish list.<p>
-     * 
+     *
      * @return the number of resources in the publish list
      */
     public int getSize() {
@@ -300,7 +300,7 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Returns the UUID of the running publish thread.<p>
-     * 
+     *
      * @return the UUID of the running publish thread
      */
     public CmsUUID getThreadUUID() {
@@ -310,7 +310,7 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Returns the user for this publish job.<p>
-     * 
+     *
      * @return the user for this publish job
      */
     public CmsUUID getUserId() {
@@ -320,7 +320,7 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Removes the assigned publish report.<p>
-     * 
+     *
      * @return the removed report
      */
     public I_CmsReport removePublishReport() {
@@ -332,10 +332,10 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Revives this publish job.<p>
-     * 
+     *
      * @param adminCms an admin cms object
      * @param publishList a publish list
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void revive(CmsObject adminCms, CmsPublishList publishList) throws CmsException {
@@ -387,7 +387,7 @@ public final class CmsPublishJobInfoBean {
     }
 
     /**
-     * Signalizes that the publish job has been enqueued.<p> 
+     * Signalizes that the publish job has been enqueued.<p>
      * Actually sets the enqueue time only if it is not set already (re-enqueue during startup).<p>
      */
     protected void enqueue() {
@@ -398,7 +398,7 @@ public final class CmsPublishJobInfoBean {
     }
 
     /**
-     * Signalizes the end of the publish job.<p> 
+     * Signalizes the end of the publish job.<p>
      * Actually only sets the finish time and closes the publish report stream.<p>
      */
     protected void finish() {
@@ -439,7 +439,7 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Returns if the publish job is already finished.<p>
-     * 
+     *
      * @return <code>true</code> if the publish job is already finished
      */
     protected boolean isFinished() {
@@ -449,7 +449,7 @@ public final class CmsPublishJobInfoBean {
 
     /**
      * Returns if the publish job is already started.<p>
-     * 
+     *
      * @return <code>true</code> if the publish job is already started
      */
     protected boolean isStarted() {
@@ -458,9 +458,9 @@ public final class CmsPublishJobInfoBean {
     }
 
     /**
-     * Signalizes the start of the publish job.<p> 
+     * Signalizes the start of the publish job.<p>
      * Actually sets the starting time, writes the report header and sets the running thread uuid.<p>
-     * 
+     *
      * @param threadUUID the running thread uuid
      */
     protected void start(CmsUUID threadUUID) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,11 +35,11 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.apache.commons.logging.Log;
 
 /**
- * Visitor implementation that provides macro resolving for all visited values.<p> 
- * 
+ * Visitor implementation that provides macro resolving for all visited values.<p>
+ *
  * This class is used when a new XML content is generated using a default content as model file.<p>
- * 
- * @since 6.5.5 
+ *
+ * @since 6.5.5
  */
 public class CmsXmlContentMacroVisitor implements I_CmsXmlContentValueVisitor {
 
@@ -53,8 +53,8 @@ public class CmsXmlContentMacroVisitor implements I_CmsXmlContentValueVisitor {
     CmsMacroResolver m_resolver;
 
     /**
-     * Creates a new validation node visitor.<p> 
-     * 
+     * Creates a new validation node visitor.<p>
+     *
      * @param cms the initialized OpenCms user context (required for VFS access)
      * @param resolver the macro resolver to use for resolving macros
      */

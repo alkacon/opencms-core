@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,9 +46,9 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
 /**
- * This class contains the data for the publish resources which are displayed 
- * in the publish dialog.<p> 
- * 
+ * This class contains the data for the publish resources which are displayed
+ * in the publish dialog.<p>
+ *
  * @since 8.0.0
  */
 public class CmsPublishDataModel {
@@ -74,9 +74,9 @@ public class CmsPublishDataModel {
 
         /**
          * Applies a boolean test to the publish resource and returns the result.<p>
-         * 
-         * @param res the publish resource 
-         * @return the result 
+         *
+         * @param res the publish resource
+         * @return the result
          */
         boolean check(CmsPublishResource res);
 
@@ -108,9 +108,9 @@ public class CmsPublishDataModel {
 
     /**
      * Creates and initializes a new publish resource data model from a list of publish groups.<p>
-     *  
-     * @param publishGroups the original publish groups 
-     * @param handler the handler which should be notified of state changes 
+     *
+     * @param publishGroups the original publish groups
+     * @param handler the handler which should be notified of state changes
      */
     public CmsPublishDataModel(List<CmsPublishGroup> publishGroups, I_CmsPublishItemStatusUpdateHandler handler) {
 
@@ -139,9 +139,9 @@ public class CmsPublishDataModel {
 
     /**
      * Returns if the given publish resource has problems preventing it from being published.<p>
-     * 
+     *
      * @param publishResource the publish resource
-     * 
+     *
      * @return <code>true</code> if the publish resource has problems
      */
     public static boolean hasProblems(CmsPublishResource publishResource) {
@@ -151,8 +151,8 @@ public class CmsPublishDataModel {
 
     /**
      * Collects group selection states.<p>
-     * 
-     * @return the group selection states 
+     *
+     * @return the group selection states
      */
     public Map<Integer, CmsPublishItemStateSummary> computeGroupSelectionStates() {
 
@@ -167,7 +167,7 @@ public class CmsPublishDataModel {
                 CmsPublishItemStatus.State stateToAdd;
                 if (item.isDisabled()) {
                     // a disabled item should have no influence on the select/deselect all checkboxes,
-                    // just as an item which is marked to be removed 
+                    // just as an item which is marked to be removed
                     stateToAdd = CmsPublishItemStatus.State.remove;
                 } else {
                     stateToAdd = item.getState();
@@ -185,8 +185,8 @@ public class CmsPublishDataModel {
 
     /**
      * Counts the resources which have problems.<p>
-     * 
-     * @return the number of resources which have problems 
+     *
+     * @return the number of resources which have problems
      */
     public int countProblems() {
 
@@ -195,10 +195,10 @@ public class CmsPublishDataModel {
 
     /**
      * Counts the resources which pass a given check.<p>
-     * 
-     * @param check the check to apply 
-     * 
-     * @return the number of resources which passed the check 
+     *
+     * @param check the check to apply
+     *
+     * @return the number of resources which passed the check
      */
     public int countResources(I_CmsPublishResourceCheck check) {
 
@@ -211,11 +211,11 @@ public class CmsPublishDataModel {
 
     /**
      * Counts the resources of a group which pass a given check.<p>
-     * 
-     * @param check the check to apply 
-     * @param group the group of publish resources 
-     * 
-     * @return the number of resources in that group which passed the check 
+     *
+     * @param check the check to apply
+     * @param group the group of publish resources
+     *
+     * @return the number of resources in that group which passed the check
      */
     public int countResourcesInGroup(I_CmsPublishResourceCheck check, List<CmsPublishResource> group) {
 
@@ -231,20 +231,20 @@ public class CmsPublishDataModel {
 
     /**
      * Gets the list of publish groups.<p>
-     * 
-     * @return the list of publish groups 
+     *
+     * @return the list of publish groups
      */
     public List<CmsPublishGroup> getGroups() {
 
         return m_groups;
     }
 
-    /** 
+    /**
      * Gets the ids for a given publish group.<p>
-     * 
+     *
      * @param groupNum the index of the group
-     *  
-     * @return the UUIDs for that group 
+     *
+     * @return the UUIDs for that group
      */
     public List<CmsUUID> getIdsForGroup(int groupNum) {
 
@@ -253,7 +253,7 @@ public class CmsPublishDataModel {
 
     /**
      * Returns the id's of all already published resources.<p>
-     * 
+     *
      * @return the id's of the already published resources
      */
     public List<CmsUUID> getIdsOfAlreadyPublishedResources() {
@@ -278,10 +278,10 @@ public class CmsPublishDataModel {
         return alreadyPublished;
     }
 
-    /** 
+    /**
      * Returns the ids of publish resources which should be published.<p>
-     * 
-     * @return the ids of publish resources which should be published 
+     *
+     * @return the ids of publish resources which should be published
      */
     public Set<CmsUUID> getPublishIds() {
 
@@ -302,20 +302,20 @@ public class CmsPublishDataModel {
         return toPublish;
     }
 
-    /** 
+    /**
      * Returns the list of all publish resources.<p>
-     * 
-     * @return the list of all publish resources 
+     *
+     * @return the list of all publish resources
      */
     public Map<CmsUUID, CmsPublishResource> getPublishResources() {
 
         return m_publishResources;
     }
 
-    /** 
+    /**
      * Returns the map of publish resources by path.<p>
-     * 
-     * @return the map of publish resources by path 
+     *
+     * @return the map of publish resources by path
      */
     public Map<String, CmsPublishResource> getPublishResourcesByPath() {
 
@@ -324,8 +324,8 @@ public class CmsPublishDataModel {
 
     /**
      * Returns the ids of publish resources which should be removed.<p>
-     * 
-     * @return the ids of publish resources which should be removed 
+     *
+     * @return the ids of publish resources which should be removed
      */
     public List<CmsUUID> getRemoveIds() {
 
@@ -340,11 +340,11 @@ public class CmsPublishDataModel {
         return toRemove;
     }
 
-    /** 
+    /**
      * Returns the status for a given publish resource id.<p>
-     * 
-     * @param id the publish resource's structure id 
-     * @return the status for that publish resource 
+     *
+     * @param id the publish resource's structure id
+     * @return the status for that publish resource
      */
     public CmsPublishItemStatus getStatus(CmsUUID id) {
 
@@ -353,8 +353,8 @@ public class CmsPublishDataModel {
 
     /**
      * Checks if there is only a single group of resources.<p>
-     * 
-     * @return true if there is only a single group of resources 
+     *
+     * @return true if there is only a single group of resources
      */
     public boolean hasSingleGroup() {
 
@@ -363,7 +363,7 @@ public class CmsPublishDataModel {
 
     /**
      * Checks if there are any publish resources.<p>
-     * 
+     *
      * @return true if there are no publish resources at all
      */
     public boolean isEmpty() {
@@ -373,8 +373,8 @@ public class CmsPublishDataModel {
 
     /**
      * Sets the action which should be executed when the selection changes.<p>
-     * 
-     * @param action the action to run when the selection changes 
+     *
+     * @param action the action to run when the selection changes
      */
     public void setSelectionChangeAction(Runnable action) {
 
@@ -383,9 +383,9 @@ public class CmsPublishDataModel {
 
     /**
      * Sends a signal to a publish item status bean with the given id.<p>
-     * 
-     * @param signal the signal 
-     * @param id the structure id 
+     *
+     * @param signal the signal
+     * @param id the structure id
      */
     public void signal(Signal signal, CmsUUID id) {
 
@@ -395,8 +395,8 @@ public class CmsPublishDataModel {
 
     /**
      * Sends a signal to all publish item status beans.<p>
-     * 
-     * @param signal the signal 
+     *
+     * @param signal the signal
      */
     public void signalAll(Signal signal) {
 
@@ -408,9 +408,9 @@ public class CmsPublishDataModel {
 
     /**
      * Sends a signal to all publish items in a given group.<p>
-     * 
-     * @param signal the signal to send 
-     * @param groupNum the group index 
+     *
+     * @param signal the signal to send
+     * @param groupNum the group index
      */
     public void signalGroup(Signal signal, int groupNum) {
 

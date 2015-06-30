@@ -65,10 +65,8 @@ public class CmsPdfResourceHandler implements I_CmsResourceInit {
     public static final String IMAGE_MIMETYPECONFIG = "png:image/png|gif:image/gif|jpg:image/jpeg";
 
     /** Map of mime types for different file extensions. */
-    public static final Map<String, String> IMAGE_MIMETYPES = Collections.unmodifiableMap(CmsStringUtil.splitAsMap(
-        IMAGE_MIMETYPECONFIG,
-        "|",
-        ":"));
+    public static final Map<String, String> IMAGE_MIMETYPES = Collections.unmodifiableMap(
+        CmsStringUtil.splitAsMap(IMAGE_MIMETYPECONFIG, "|", ":"));
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPdfResourceHandler.class);
@@ -132,9 +130,11 @@ public class CmsPdfResourceHandler implements I_CmsResourceInit {
             } catch (Exception e) {
                 // don't just return null, because we want a useful error message to be displayed
                 LOG.error(e.getLocalizedMessage(), e);
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_RESOURCE_INIT_ABORTED_1,
-                    CmsPdfResourceHandler.class.getName()), e);
+                throw new CmsRuntimeException(
+                    Messages.get().container(
+                        Messages.ERR_RESOURCE_INIT_ABORTED_1,
+                        CmsPdfResourceHandler.class.getName()),
+                    e);
             }
         } else {
             return null;
@@ -187,10 +187,11 @@ public class CmsPdfResourceHandler implements I_CmsResourceInit {
             LOG.info("Converted XHTML to PDF, size=" + result.length);
             m_pdfCache.saveCacheFile(cacheName, result);
         } else {
-            LOG.info("Retrieved PDF data from cache for content "
-                + content.getRootPath()
-                + " and formatter "
-                + formatter.getRootPath());
+            LOG.info(
+                "Retrieved PDF data from cache for content "
+                    + content.getRootPath()
+                    + " and formatter "
+                    + formatter.getRootPath());
         }
         response.setContentType("application/pdf");
         response.getOutputStream().write(result);
@@ -210,11 +211,12 @@ public class CmsPdfResourceHandler implements I_CmsResourceInit {
 
         try {
             String xhtmlString = new String(xhtmlData, "UTF-8");
-            LOG.debug("(PDF generation) The formatter "
-                + formatter.getRootPath()
-                + " generated the following XHTML source from "
-                + content.getRootPath()
-                + ":");
+            LOG.debug(
+                "(PDF generation) The formatter "
+                    + formatter.getRootPath()
+                    + " generated the following XHTML source from "
+                    + content.getRootPath()
+                    + ":");
             LOG.debug(xhtmlString);
         } catch (Exception e) {
             LOG.debug(e.getLocalizedMessage(), e);
@@ -231,8 +233,11 @@ public class CmsPdfResourceHandler implements I_CmsResourceInit {
      *
      *  @throws Exception if something goes wrong
      */
-    private void handleThumbnailLink(CmsObject cms, HttpServletRequest request, HttpServletResponse response, String uri)
-    throws Exception {
+    private void handleThumbnailLink(
+        CmsObject cms,
+        HttpServletRequest request,
+        HttpServletResponse response,
+        String uri) throws Exception {
 
         String options = request.getParameter(CmsPdfThumbnailLink.PARAM_OPTIONS);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(options)) {
@@ -245,9 +250,9 @@ public class CmsPdfResourceHandler implements I_CmsResourceInit {
         // use a wrapped resource because we want the cache to store files with the correct (image file) extensions
         CmsWrappedResource wrapperWithImageExtension = new CmsWrappedResource(pdfFile);
         wrapperWithImageExtension.setRootPath(pdfFile.getRootPath() + "." + linkObj.getFormat());
-        String cacheName = m_thumbnailCache.getCacheName(wrapperWithImageExtension.getResource(), options
-            + ";"
-            + linkObj.getFormat());
+        String cacheName = m_thumbnailCache.getCacheName(
+            wrapperWithImageExtension.getResource(),
+            options + ";" + linkObj.getFormat());
         byte[] imageData = m_thumbnailCache.getCacheContent(cacheName);
         if (imageData == null) {
             imageData = thumbnailGenerator.generateThumbnail(

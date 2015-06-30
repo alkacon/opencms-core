@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import java.util.Map;
 
 /**
  * Provides the default upload dialog without multiple file selection.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsUploadDialogImpl extends A_CmsUploadDialog {
@@ -82,17 +82,18 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
         buffer.append("<p class=\"").append(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().dialogMessage()).append("\">");
         buffer.append("<b>" + Messages.get().key(Messages.GUI_UPLOAD_SUMMARY_FILES_0) + "</b> ");
-        buffer.append(Messages.get().key(
-            Messages.GUI_UPLOAD_SUMMARY_FILES_VALUE_2,
-            new Integer(getFilesToUpload().size()),
-            getFileText()));
+        buffer.append(
+            Messages.get().key(
+                Messages.GUI_UPLOAD_SUMMARY_FILES_VALUE_2,
+                new Integer(getFilesToUpload().size()),
+                getFileText()));
         buffer.append("</p>");
         setSummaryHTML(buffer.toString());
     }
 
     /**
      * Adds the given file input field to this dialog.<p>
-     * 
+     *
      * @param fileInput the file input field to add
      */
     @Override

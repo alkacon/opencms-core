@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,7 +65,7 @@ public class CmsType implements Serializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param id the type id/name
      */
     public CmsType(String id) {
@@ -87,7 +87,7 @@ public class CmsType implements Serializable {
 
     /**
      * Adds an attribute to the type.<p>
-     * 
+     *
      * @param attributeName the attribute name
      * @param attributeType the attribute type
      * @param minOccurrence the minimum occurrence of this attribute
@@ -103,9 +103,9 @@ public class CmsType implements Serializable {
 
     /**
      * Returns the maximum occurrence of the given attribute.<p>
-     * 
+     *
      * @param attributeName the attribute name
-     * 
+     *
      * @return the maximum occurrence
      */
     public int getAttributeMaxOccurrence(String attributeName) {
@@ -115,9 +115,9 @@ public class CmsType implements Serializable {
 
     /**
      * Returns the minimum occurrence of the given attribute.<p>
-     * 
+     *
      * @param attributeName the attribute name
-     * 
+     *
      * @return the minimum occurrence
      */
     public int getAttributeMinOccurrence(String attributeName) {
@@ -127,7 +127,7 @@ public class CmsType implements Serializable {
 
     /**
      * The names of the attributes of this type.<p>
-     * 
+     *
      * @return the attribute names
      */
     public List<String> getAttributeNames() {
@@ -137,9 +137,9 @@ public class CmsType implements Serializable {
 
     /**
      * Returns the type of the given attribute.<p>
-     * 
+     *
      * @param attributeName the attribute name
-     * 
+     *
      * @return the type of the given attribute
      */
     public CmsType getAttributeType(String attributeName) {
@@ -149,9 +149,9 @@ public class CmsType implements Serializable {
 
     /**
      * Returns the type name of the given attribute.<p>
-     * 
+     *
      * @param attributeName the attribute name
-     * 
+     *
      * @return the type name of the given attribute
      */
     public String getAttributeTypeName(String attributeName) {
@@ -162,7 +162,7 @@ public class CmsType implements Serializable {
 
     /**
      * Returns the maximum choice occurrence.<p>
-     * 
+     *
      * @return the maximum choice occurrence
      */
     public int getChoiceMaxOccurrence() {
@@ -172,7 +172,7 @@ public class CmsType implements Serializable {
 
     /**
      * Returns the name of the type.<p>
-     * 
+     *
      * @return the name of the type
      */
     public String getId() {
@@ -182,7 +182,7 @@ public class CmsType implements Serializable {
 
     /**
      * Returns if this is a choice type.<p>
-     * 
+     *
      * @return <code>true</code> if this is a choice type
      */
     public boolean isChoice() {
@@ -192,7 +192,7 @@ public class CmsType implements Serializable {
 
     /**
      * Returns if this is a simple type. Simple types have no attributes.<p>
-     * 
+     *
      * @return <code>true</code> if this is a simple type
      */
     public boolean isSimpleType() {
@@ -202,7 +202,7 @@ public class CmsType implements Serializable {
 
     /**
      * Sets the maximum choice occurrence.<p>
-     * 
+     *
      * @param choiceMaxOccurrence the maximum choice occurrence
      */
     public void setChoiceMaxOccurrence(int choiceMaxOccurrence) {

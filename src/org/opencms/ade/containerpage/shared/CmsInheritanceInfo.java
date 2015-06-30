@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A class whose instances are added to container element beans to provide information about container inheritance.<p>
- * 
+ *
  */
 public class CmsInheritanceInfo implements IsSerializable {
 
@@ -69,10 +69,10 @@ public class CmsInheritanceInfo implements IsSerializable {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param key the key identifying the container element 
-     * @param visibility the visibility of the container element 
-     * @param isNew if true, the element is new 
+     *
+     * @param key the key identifying the container element
+     * @param visibility the visibility of the container element
+     * @param isNew if true, the element is new
      */
     public CmsInheritanceInfo(String key, boolean visibility, boolean isNew) {
 
@@ -93,8 +93,8 @@ public class CmsInheritanceInfo implements IsSerializable {
 
     /**
      * Returns the key identifying the container element.<p>
-     * 
-     * @return the key 
+     *
+     * @return the key
      */
     public String getKey() {
 
@@ -103,8 +103,8 @@ public class CmsInheritanceInfo implements IsSerializable {
 
     /**
      * Gets the path from which this element was inherited.<p>
-     * 
-     * @return the path from which this element was inherited 
+     *
+     * @return the path from which this element was inherited
      */
     public String getPath() {
 
@@ -113,8 +113,8 @@ public class CmsInheritanceInfo implements IsSerializable {
 
     /**
      * Returns true if this container element is new.<p>
-     * 
-     * @return true if the container element is new 
+     *
+     * @return true if the container element is new
      */
     public boolean isNew() {
 
@@ -123,8 +123,8 @@ public class CmsInheritanceInfo implements IsSerializable {
 
     /**
      * Returns the parent configuration's visibility.<p>
-     * 
-     * @return the parent visibility 
+     *
+     * @return the parent visibility
      */
     public boolean isParentVisible() {
 
@@ -143,8 +143,8 @@ public class CmsInheritanceInfo implements IsSerializable {
 
     /**
      * Gets the container element's visibility.<p>
-     * 
-     * @return the container element's visibility 
+     *
+     * @return the container element's visibility
      */
     public boolean isVisible() {
 
@@ -163,8 +163,8 @@ public class CmsInheritanceInfo implements IsSerializable {
 
     /**
      * Sets the 'new' field.<p>
-     * 
-     * @param isNew the new value for the 'new' field 
+     *
+     * @param isNew the new value for the 'new' field
      */
     public void setIsNew(boolean isNew) {
 
@@ -173,8 +173,8 @@ public class CmsInheritanceInfo implements IsSerializable {
 
     /**
      * Sets the key identifying this container element.<p>
-     * 
-     * @param key the key identifying the container element 
+     *
+     * @param key the key identifying the container element
      */
     public void setKey(String key) {
 
@@ -183,8 +183,8 @@ public class CmsInheritanceInfo implements IsSerializable {
 
     /**
      * Sets the parent visibility.<p>
-     * 
-     * @param parentVisible the new value for the parent visibility 
+     *
+     * @param parentVisible the new value for the parent visibility
      */
     public void setParentVisible(boolean parentVisible) {
 
@@ -193,17 +193,17 @@ public class CmsInheritanceInfo implements IsSerializable {
 
     /**
      * Sets the path.<p>
-     * 
-     * @param path the new value for the path 
+     *
+     * @param path the new value for the path
      */
     public void setPath(String path) {
 
         m_path = path;
     }
 
-    /** 
+    /**
      * Sets the 'visibilityInherited' attribute.<p>
-     * 
+     *
      * @param visibilityInherited the new value of the 'visibilityInherited' attribute
      */
     public void setVisibilityInherited(boolean visibilityInherited) {
@@ -213,8 +213,8 @@ public class CmsInheritanceInfo implements IsSerializable {
 
     /**
      * Sets the new visibility.<p>
-     * 
-     * @param visibility the new value of the visibility 
+     *
+     * @param visibility the new value of the visibility
      */
     public void setVisible(boolean visibility) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,8 +36,8 @@ import java.io.Serializable;
  * <ul>
  *   <li>{@link org.opencms.db.CmsUserSettings.CmsSearchResultStyle}
  * </ul>
- * 
- * @since 6.5.5 
+ *
+ * @since 6.5.5
  */
 public abstract class A_CmsModeStringEnumeration implements Serializable {
 
@@ -49,7 +49,7 @@ public abstract class A_CmsModeStringEnumeration implements Serializable {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param mode the internal mode descriptor
      */
     protected A_CmsModeStringEnumeration(String mode) {

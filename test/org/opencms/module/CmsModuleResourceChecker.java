@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,8 +53,8 @@ public class CmsModuleResourceChecker {
     /**
      * Main method.<p>
      * @param args first argument should be the path of the modules folder
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public static void main(String[] args) throws Exception {
 
@@ -65,9 +65,9 @@ public class CmsModuleResourceChecker {
 
     /**
      * Checks all modules for missing manifest entries.<p>
-     * 
-     * @param modulesPath the path of the module folder 
-     * @throws Exception if something goes wrong 
+     *
+     * @param modulesPath the path of the module folder
+     * @throws Exception if something goes wrong
      */
     public void checkAllModules(String modulesPath) throws Exception {
 
@@ -81,9 +81,9 @@ public class CmsModuleResourceChecker {
 
     /**
      * Checks a single module for missing manifest entries.<p>
-     * 
-     * @param basePath the modules folder path 
-     * @param module the module name 
+     *
+     * @param basePath the modules folder path
+     * @param module the module name
      * @throws Exception
      */
     public void checkModule(String basePath, String module) throws Exception {
@@ -101,12 +101,12 @@ public class CmsModuleResourceChecker {
 
     /**
      * Finds the missing paths for a single module.<p>
-     * 
-     * @param manifest the path of the manifest 
-     * @param baseFolder the path of the module resources folder 
-     * @return the set of missing paths 
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @param manifest the path of the manifest
+     * @param baseFolder the path of the module resources folder
+     * @return the set of missing paths
+     *
+     * @throws Exception if something goes wrong
      */
     public Set<String> getMissingPaths(String manifest, final String baseFolder) throws Exception {
 

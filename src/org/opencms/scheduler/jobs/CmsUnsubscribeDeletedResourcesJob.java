@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,14 +36,14 @@ import java.util.Map;
 
 /**
  * A scheduled OpenCms job to unsubscribe deleted resources.<p>
- * 
+ *
  * Job parameters:<p>
  * <dl>
  * <dt><code>deleteddays={Number/Integer}</code></dt>
  * <dd>Amount of days a resource has to be deleted to be unsubscribed (defaults to 30).</dd>
  * </dl>
- * <p> 
- * 
+ * <p>
+ *
  * @since 8.0.0
  */
 public class CmsUnsubscribeDeletedResourcesJob implements I_CmsScheduledJob {

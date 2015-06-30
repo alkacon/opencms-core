@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,8 +45,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog to edit new or existing user in the administration view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsResourceInfoDialog extends CmsWidgetDialog {
 
@@ -64,7 +64,7 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsResourceInfoDialog(CmsJspActionElement jsp) {
@@ -74,7 +74,7 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -140,7 +140,7 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
     @Override
     protected String computeUpLevelLink() {
 
-        // if adminProject is set, go back to the project file list in the administration 
+        // if adminProject is set, go back to the project file list in the administration
         String adminProject = getJsp().getRequest().getParameter(CmsToolDialog.PARAM_ADMIN_PROJECT);
         if ((adminProject != null) && CmsUUID.isValidUUID(adminProject)) {
             String upLevelLink = OpenCms.getLinkManager().substituteLink(
@@ -156,9 +156,9 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */

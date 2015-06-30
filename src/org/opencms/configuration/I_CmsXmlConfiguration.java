@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import org.dom4j.Element;
 
 /**
  * Each configurable element in OpenCms must implement this interface.<p>
- * 
+ *
  * @since 6.0.0
  */
 public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandler {
@@ -130,14 +130,14 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
 
     /**
      * Digests an XML node and creates an instance of this configurable class.<p>
-     * 
+     *
      * @param digester the digester to use
      */
     void addXmlDigesterRules(Digester digester);
 
     /**
-     * Generates the XML element for this configurable class.<p> 
-     * 
+     * Generates the XML element for this configurable class.<p>
+     *
      * @param parent the parent element in the XML tree
      * @return the XML element for this configurable class
      */
@@ -146,7 +146,7 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
     /**
      * Returns the name of the DTD file for this XML configuration,
      * e.g. <code>opencms-configuration.dtd</code>.<p>
-     * 
+     *
      * @return the name of the DTD file for this XML configuration
      * @see #getDtdSystemLocation()
      * @see #getDtdUrlPrefix()
@@ -156,12 +156,12 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
     /**
      * Returns the internal system location of the DTD file for this XML configuration,
      * e.g. <code>org/opencms/configuration/</code>.<p>
-     * 
+     *
      * If this is not <code>null</code>, then the DTD is not read through the
-     * web URL, but an internal name resolution is added that resolves the 
-     * system id of the DTD to 
+     * web URL, but an internal name resolution is added that resolves the
+     * system id of the DTD to
      * <code>{@link #getDtdSystemLocation()} + {@link #getDtdUrlPrefix()}</code>.<p>
-     * 
+     *
      * @return the system location of the DTD file for this XML configuration
      * @see #getDtdUrlPrefix()
      * @see #getDtdFilename()
@@ -171,10 +171,10 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
     /**
      * Returns the external system id prefix of the DTD file for this XML configuration,
      * e.g. <code>http://www.opencms.org/dtd/6.0/</code>.<p>
-     * 
+     *
      * The full system id for the DTD is calculated like this:
      * <code>{@link #getDtdSystemLocation()} + {@link #getDtdUrlPrefix()}</code>.<p>
-     *  
+     *
      * @return the system id prefix of the DTD file for this XML configuration
      * @see #getDtdSystemLocation()
      * @see #getDtdFilename()
@@ -184,7 +184,7 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
     /**
      * Returns the name of the XML input file for this configuration,
      * e.g. <code>opencms.xml</code>.<p>
-     * 
+     *
      * @return the name of the XML input file for this configuration
      */
     String getXmlFileName();

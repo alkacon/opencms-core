@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,8 +46,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog to edit the synchronize settings of the OpenCms Workplace.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
 
@@ -62,7 +62,7 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSynchronizeSettingsDialog(CmsJspActionElement jsp) {
@@ -72,7 +72,7 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -107,9 +107,9 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -157,19 +157,21 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
         initSynchronizeSettingsObject();
         setKeyPrefix(KEY_PREFIX);
         addWidget(new CmsWidgetDialogParameter(m_synchronizeSettings, "enabled", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(
-            m_synchronizeSettings,
-            "destinationPathInRfs",
-            PAGES[0],
-            new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(
-            m_synchronizeSettings,
-            "sourceListInVfs",
-            "/",
-            PAGES[0],
-            new CmsVfsFileWidget(false, ""),
-            1,
-            CmsWidgetDialogParameter.MAX_OCCURENCES));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_synchronizeSettings,
+                "destinationPathInRfs",
+                PAGES[0],
+                new CmsInputWidget()));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_synchronizeSettings,
+                "sourceListInVfs",
+                "/",
+                PAGES[0],
+                new CmsVfsFileWidget(false, ""),
+                1,
+                CmsWidgetDialogParameter.MAX_OCCURENCES));
 
     }
 

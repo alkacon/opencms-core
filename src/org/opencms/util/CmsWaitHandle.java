@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,18 +33,18 @@ import org.apache.commons.logging.Log;
 
 /**
  * Low-level utility class used for waiting for an action performed by another thread.<p>
- * 
- * This is really a thin wrapper around the wait() and notifyAll() methods. 
+ *
+ * This is really a thin wrapper around the wait() and notifyAll() methods.
  */
 public class CmsWaitHandle {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWaitHandle.class);
 
-    /** 
+    /**
      * Waits for a maximum of waitTime, but returns if another thread calls release().<p>
-     * 
-     * @param waitTime the maximum wait time 
+     *
+     * @param waitTime the maximum wait time
      */
     public synchronized void enter(long waitTime) {
 

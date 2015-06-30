@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The widget to display the properties of the selected resource.<p>
- * 
+ *
  * @since 8.0.
  */
 public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChangeHandler<String> {
@@ -60,7 +60,7 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
 
     /**
      * The constructor.<p>
-     * 
+     *
      * @param dialogMode the dialog mode
      * @param height the properties tab height
      * @param width the properties tab width
@@ -71,14 +71,16 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
         super(dialogMode, height, width);
         m_handler = handler;
         m_propertiesPanel = new FlowPanel();
-        m_propertiesPanel.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertiesList());
-        m_propertiesPanel.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().clearFix());
+        m_propertiesPanel.addStyleName(
+            org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertiesList());
+        m_propertiesPanel.addStyleName(
+            org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.previewDialogCss().clearFix());
         m_main.insert(m_propertiesPanel, 0);
     }
 
     /**
      * The generic function to display the resource properties.<p>
-     * 
+     *
      * @param properties the properties values
      * @param noEditReason the reason why the properties are not editable
      */
@@ -125,8 +127,8 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
 
     /**
      * Will be triggered, when the save button is clicked.<p>
-     * 
-     * @param afterSaveCommand the command to execute after the properties have been saved 
+     *
+     * @param afterSaveCommand the command to execute after the properties have been saved
      */
     public void saveProperties(Command afterSaveCommand) {
 
@@ -142,7 +144,7 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
 
     /**
      * Updates the size of the dialog after the window was resized.<p>
-     * 
+     *
      * @param width the new width
      * @param height the new height
      */
@@ -164,11 +166,11 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
 
     /**
      * Calculates the width of the properties panel without border, margin and padding.<p>
-     * 
+     *
      * '- 13px:'  2px - border, 2px - outer margin, 2px - inner margin, 2px border, 5px padding
      * '/ 2': two colums
-     * '-18': some offset (The input field needs more place because of the border) 
-     * 
+     * '-18': some offset (The input field needs more place because of the border)
+     *
      * @param width the width of the preview dialog containing all decorations
      * @return the width of the properties panel
      */

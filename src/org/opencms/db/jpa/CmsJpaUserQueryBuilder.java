@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,18 +44,18 @@ import com.google.common.base.Joiner;
 
 /**
  * User query builder implementation for JPA.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsJpaUserQueryBuilder extends CmsUserQueryBuilder {
 
     /**
      * Creates a query for searching users.<p>
-     * 
-     * @param searchParams the user search criteria 
+     *
+     * @param searchParams the user search criteria
      * @param countOnly if true, the query will only count the total number of results instead of returning them
-     *  
-     * @return a pair consisting of the query string and its parameters 
+     *
+     * @return a pair consisting of the query string and its parameters
      */
     @Override
     public CmsPair<String, List<Object>> createUserQuery(CmsUserSearchParameters searchParams, boolean countOnly) {
@@ -93,10 +93,10 @@ public class CmsJpaUserQueryBuilder extends CmsUserQueryBuilder {
 
     /**
      * Adds a sort order to an SQL query.<p>
-     * 
-     * @param select the query 
-     * @param users the user table alias 
-     * @param searchParams the user search criteria 
+     *
+     * @param select the query
+     * @param users the user table alias
+     * @param searchParams the user search criteria
      */
     @Override
     protected void addSorting(CmsSelectQuery select, TableAlias users, CmsUserSearchParameters searchParams) {
@@ -233,10 +233,10 @@ public class CmsJpaUserQueryBuilder extends CmsUserQueryBuilder {
 
     /**
      * Creates the condition for matching a single flag.<p>
-     *  
-     * @param col the column name 
-     * @param flag the flag 
-     * @return the single flag condition 
+     *
+     * @param col the column name
+     * @param flag the flag
+     * @return the single flag condition
      */
     protected String createSingleFlagCondition(String col, int flag) {
 
@@ -283,15 +283,15 @@ public class CmsJpaUserQueryBuilder extends CmsUserQueryBuilder {
 
     /**
      * Helper method for creating a flag condition.<p>
-     * 
-     * @param col the column which contains the flags 
-     * @param flags the flags to match 
-     * 
-     * @return the flag condition 
+     *
+     * @param col the column which contains the flags
+     * @param flags the flags to match
+     *
+     * @return the flag condition
      */
     protected String internalCreateFlagCondition(String col, int flags) {
 
-        // No bitwise AND in JPQL, so we have to decompose the check into conditions for every single flag 
+        // No bitwise AND in JPQL, so we have to decompose the check into conditions for every single flag
         List<String> singleFlagConditions = new ArrayList<String>();
         for (Integer singleFlag : uncompressFlags(flags)) {
             singleFlagConditions.add(createSingleFlagCondition(col, singleFlag.intValue()));
@@ -329,16 +329,16 @@ public class CmsJpaUserQueryBuilder extends CmsUserQueryBuilder {
 
     /**
      * Uncompresses an integer used to store flags into its component flags.<p>
-     * 
+     *
      * @param flags the flags as an integer
-     * 
-     * @return a list of integers which contain a single flag each 
+     *
+     * @return a list of integers which contain a single flag each
      */
     protected List<Integer> uncompressFlags(int flags) {
 
         List<Integer> result = new ArrayList<Integer>();
 
-        for (int i = 0; i < 31; i++) { // only go up to 2^30 since 2^31 is an edge case, and not used anyway 
+        for (int i = 0; i < 31; i++) { // only go up to 2^30 since 2^31 is an edge case, and not used anyway
             int v = 1 << i;
             if ((flags & v) != 0) {
                 result.add(new Integer(v));

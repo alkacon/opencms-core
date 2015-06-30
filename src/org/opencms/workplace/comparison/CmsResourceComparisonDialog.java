@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -82,8 +82,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Helper class for managing three lists on the same dialog.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsResourceComparisonDialog extends CmsDialog {
 
@@ -100,7 +100,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         /**
          * Creates a new CmsXmlContentTextExtractor.<p>
-         * 
+         *
          * @param stringBuffer the StringBuffer to append the element text to
          */
         CmsXmlContentTextExtractor(StringBuffer stringBuffer) {
@@ -110,7 +110,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
         }
 
         /**
-         * 
+         *
          * @see org.opencms.xml.content.I_CmsXmlContentValueVisitor#visit(org.opencms.xml.types.I_CmsXmlContentValue)
          */
         public void visit(I_CmsXmlContentValue value) {
@@ -124,11 +124,13 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 }
                 m_buffer.append("\n\n[").append(value.getPath()).append("]\n\n");
                 try {
-                    I_CmsWidget widget = value.getDocument().getContentDefinition().getContentHandler().getWidget(value);
-                    m_buffer.append(widget.getWidgetStringValue(
-                        getCms(),
-                        new CmsResourceInfoDialog(getJsp()),
-                        (I_CmsWidgetParameter)value));
+                    I_CmsWidget widget = value.getDocument().getContentDefinition().getContentHandler().getWidget(
+                        value);
+                    m_buffer.append(
+                        widget.getWidgetStringValue(
+                            getCms(),
+                            new CmsResourceInfoDialog(getJsp()),
+                            (I_CmsWidgetParameter)value));
                 } catch (CmsXmlException e) {
                     LOG.error(e.getMessage(), e);
                 }
@@ -177,7 +179,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsResourceComparisonDialog(CmsJspActionElement jsp) {
@@ -187,7 +189,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -199,13 +201,13 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
     /**
      * Returns either the historical file or the offline file, depending on the version number.<p>
-     * 
+     *
      * @param cms the CmsObject to use
      * @param structureId the structure id of the file
      * @param version the historical version number
-     * 
+     *
      * @return either the historical file or the offline file, depending on the version number
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected static CmsFile readFile(CmsObject cms, CmsUUID structureId, String version) throws CmsException {
@@ -234,13 +236,13 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
     /**
      * Returns either the historical resource or the offline resource, depending on the version number.<p>
-     * 
+     *
      * @param cms the CmsObject to use
      * @param id the structure id of the resource
      * @param version the historical version number
-     * 
+     *
      * @return either the historical resource or the offline resource, depending on the version number
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected static CmsResource readResource(CmsObject cms, CmsUUID id, String version) throws CmsException {
@@ -264,7 +266,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
     /**
      * Display method for two list dialogs.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void displayDialog() throws Exception {
@@ -294,8 +296,14 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             CmsElementComparisonList contentDiff = new CmsElementComparisonList(getJsp());
 
             // get the content of the resource1 and resource2
-            byte[] content1 = readFile(getCms(), propertyDiff.getResource1().getStructureId(), getParamVersion1()).getContents();
-            byte[] content2 = readFile(getCms(), propertyDiff.getResource2().getStructureId(), getParamVersion2()).getContents();
+            byte[] content1 = readFile(
+                getCms(),
+                propertyDiff.getResource1().getStructureId(),
+                getParamVersion1()).getContents();
+            byte[] content2 = readFile(
+                getCms(),
+                propertyDiff.getResource2().getStructureId(),
+                getParamVersion2()).getContents();
 
             // display the content comparison only if both files has contents
             if ((content1.length > 0) && (content2.length > 0)) {
@@ -362,7 +370,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             pointers.displayDialog();
         } else if (propertyDiff.getResource1().isFile()) {
 
-            // display attributes and properties 
+            // display attributes and properties
             lists.add(propertyDiff);
             CmsMultiListDialog twoLists = new CmsMultiListDialog(lists);
             twoLists.displayDialog(true);
@@ -373,8 +381,14 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             String path1 = propertyDiff.getResource1().getRootPath();
             String path2 = propertyDiff.getResource2().getRootPath();
 
-            byte[] content1 = readFile(getCms(), propertyDiff.getResource1().getStructureId(), getParamVersion1()).getContents();
-            byte[] content2 = readFile(getCms(), propertyDiff.getResource2().getStructureId(), getParamVersion2()).getContents();
+            byte[] content1 = readFile(
+                getCms(),
+                propertyDiff.getResource1().getStructureId(),
+                getParamVersion1()).getContents();
+            byte[] content2 = readFile(
+                getCms(),
+                propertyDiff.getResource2().getStructureId(),
+                getParamVersion2()).getContents();
 
             String originalSource = null;
             String copySource = null;
@@ -400,7 +414,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                     originalSource = textExtractor.extractText(content1).getContent();
                     copySource = textExtractor.extractText(content2).getContent();
                 } catch (Exception e) {
-                    // something goes wrong on extracting content 
+                    // something goes wrong on extracting content
                     // set the content to null, so the content dialog will not be shown
                     originalSource = null;
                     copySource = null;
@@ -419,7 +433,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 m_differenceDialog.displayDialog();
             }
         } else {
-            // display attributes and properties 
+            // display attributes and properties
             lists.add(propertyDiff);
             CmsMultiListDialog twoLists = new CmsMultiListDialog(lists);
             twoLists.displayDialog(true);
@@ -443,7 +457,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
     /**
      * Converts an attribute list to a string.<p>
-     * 
+     *
      * @param attributes a list of compared attributes to be converted to a string
      * @return a string respresentation of the attribute list
      */
@@ -542,7 +556,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
     /**
      * Converts an attribute list to a string.<p>
-     * 
+     *
      * @param properties a list of compared properties to be converted to a string
      * @return a string respresentation of the attribute list
      */
@@ -688,9 +702,9 @@ public class CmsResourceComparisonDialog extends CmsDialog {
         }
     }
 
-    /** 
+    /**
      * Returns the content of all elements of an xml document appended.<p>
-     * 
+     *
      * @param xmlDoc the xml document to extract the elements from
      * @return the content of all elements of an xml document appended
      */
@@ -717,10 +731,11 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                     result.append("]\n\n");
                     try {
                         I_CmsWidget widget = value.getDocument().getHandler().getWidget(value);
-                        result.append(widget.getWidgetStringValue(
-                            getCms(),
-                            new CmsResourceInfoDialog(getJsp()),
-                            (I_CmsWidgetParameter)value));
+                        result.append(
+                            widget.getWidgetStringValue(
+                                getCms(),
+                                new CmsResourceInfoDialog(getJsp()),
+                                (I_CmsWidgetParameter)value));
                     } catch (CmsXmlException e) {
                         LOG.error(e.getMessage(), e);
                     }
@@ -737,10 +752,10 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
     /**
      * Extracts the content from the files according to the file type.<p>
-     * 
+     *
      * @param file1 the first file to compare
      * @param file2 the second file to compare
-     * 
+     *
      * @throws CmsException if something goes wrong
      * @throws UnsupportedEncodingException if the encoding of one file is not supported
      */
@@ -794,7 +809,8 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         } else {
             // compare whole plain text file
-            m_differenceDialog.setOriginalSource(new String(file1.getContents(), cms.getRequestContext().getEncoding()));
+            m_differenceDialog.setOriginalSource(
+                new String(file1.getContents(), cms.getRequestContext().getEncoding()));
             m_differenceDialog.setCopySource(new String(file2.getContents(), cms.getRequestContext().getEncoding()));
         }
     }

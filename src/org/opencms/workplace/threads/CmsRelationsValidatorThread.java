@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,8 +39,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * A report thread for the relations validator.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsRelationsValidatorThread extends A_CmsReportThread {
 
@@ -58,14 +58,16 @@ public class CmsRelationsValidatorThread extends A_CmsReportThread {
 
     /**
      * Creates a thread that validates the relations for all files of the current project.<p>
-     * 
+     *
      * @param cms the current OpenCms context object
      */
     public CmsRelationsValidatorThread(CmsObject cms) {
 
-        super(cms, Messages.get().getBundle().key(
-            Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1,
-            new Object[] {cms.getRequestContext().getCurrentProject().getName()}));
+        super(
+            cms,
+            Messages.get().getBundle().key(
+                Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1,
+                new Object[] {cms.getRequestContext().getCurrentProject().getName()}));
 
         m_publishList = null;
         m_savePublishList = false;
@@ -75,22 +77,24 @@ public class CmsRelationsValidatorThread extends A_CmsReportThread {
     }
 
     /**
-     * Creates a thread that validates the relations in the list of unpublished file(s) of the 
+     * Creates a thread that validates the relations in the list of unpublished file(s) of the
      * current (offline) project.<p>
-     * 
-     * The publish list *IS* saved in the current user's workplace settings for 
-     * further processing by other threads. The last thread processing this publish list *MUST* 
+     *
+     * The publish list *IS* saved in the current user's workplace settings for
+     * further processing by other threads. The last thread processing this publish list *MUST*
      * ensure that the publish list gets removed from the current user's workplace settings!<p>
-     * 
+     *
      * @param cms the current OpenCms context object
      * @param publishList the list of resources which will be directly published
      * @param settings the current user's workplace settings
      */
     public CmsRelationsValidatorThread(CmsObject cms, CmsPublishList publishList, CmsWorkplaceSettings settings) {
 
-        super(cms, Messages.get().getBundle().key(
-            Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1,
-            new Object[] {cms.getRequestContext().getCurrentProject().getName()}));
+        super(
+            cms,
+            Messages.get().getBundle().key(
+                Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1,
+                new Object[] {cms.getRequestContext().getCurrentProject().getName()}));
 
         m_publishList = publishList;
         if (m_publishList == null) {

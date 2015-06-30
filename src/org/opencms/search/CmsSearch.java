@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import org.apache.lucene.search.Sort;
 
 /**
  * Helper class to access the search facility within a jsp.<p>
- * 
+ *
  * Typically, the following fields are available for searching:
  * <ul>
  * <li>title - the title of a resource</li>
@@ -64,8 +64,8 @@ import org.apache.lucene.search.Sort;
  * <li>channel - the channel of a resource</li>
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSearch {
 
@@ -124,18 +124,18 @@ public class CmsSearch {
 
     /**
      * Adds an individual query for a search field.<p>
-     * 
-     * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])} 
+     *
+     * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])}
      * will be ignored and only the individual field search settings will be used.<p>
-     * 
+     *
      * When combining occurrences of SHOULD, MUST and MUST_NOT, keep the following in mind:
-     * All SHOULD clauses will be grouped and wrapped in one query, 
-     * all MUST and MUST_NOT clauses will be grouped in another query. 
+     * All SHOULD clauses will be grouped and wrapped in one query,
+     * all MUST and MUST_NOT clauses will be grouped in another query.
      * This means that at least one of the terms which are given as a SHOULD query must occur in the
      * search result.<p>
-     * 
+     *
      * @param fieldQuery the field query to use
-     * 
+     *
      * @since 8.0.2
      */
     public void addFieldQuery(CmsSearchFieldQuery fieldQuery) {
@@ -146,20 +146,20 @@ public class CmsSearch {
 
     /**
      * Adds an individual query for a search field.<p>
-     * 
-     * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])} 
+     *
+     * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])}
      * will be ignored and only the individual field search settings will be used.<p>
-     * 
+     *
      * When combining occurrences of SHOULD, MUST and MUST_NOT, keep the following in mind:
-     * All SHOULD clauses will be grouped and wrapped in one query, 
-     * all MUST and MUST_NOT clauses will be grouped in another query. 
+     * All SHOULD clauses will be grouped and wrapped in one query,
+     * all MUST and MUST_NOT clauses will be grouped in another query.
      * This means that at least one of the terms which are given as a SHOULD query must occur in the
      * search result.<p>
-     * 
+     *
      * @param fieldName the field name
      * @param searchQuery the search query
      * @param occur the occur parameter for the query in the field
-     * 
+     *
      * @since 7.5.1
      */
     public void addFieldQuery(String fieldName, String searchQuery, Occur occur) {
@@ -169,19 +169,19 @@ public class CmsSearch {
 
     /**
      * Adds an individual query for a search field that MUST occur.<p>
-     * 
-     * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])} 
+     *
+     * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])}
      * will be ignored and only the individual field search settings will be used.<p>
-     * 
+     *
      * When combining occurrences of SHOULD, MUST and MUST_NOT, keep the following in mind:
-     * All SHOULD clauses will be grouped and wrapped in one query, 
-     * all MUST and MUST_NOT clauses will be grouped in another query. 
+     * All SHOULD clauses will be grouped and wrapped in one query,
+     * all MUST and MUST_NOT clauses will be grouped in another query.
      * This means that at least one of the terms which are given as a SHOULD query must occur in the
      * search result.<p>
-     * 
+     *
      * @param fieldName the field name
      * @param searchQuery the search query
-     * 
+     *
      * @since 7.5.1
      */
     public void addFieldQueryMust(String fieldName, String searchQuery) {
@@ -191,19 +191,19 @@ public class CmsSearch {
 
     /**
      * Adds an individual query for a search field that MUST NOT occur.<p>
-     * 
-     * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])} 
+     *
+     * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])}
      * will be ignored and only the individual field search settings will be used.<p>
-     * 
+     *
      * When combining occurrences of SHOULD, MUST and MUST_NOT, keep the following in mind:
-     * All SHOULD clauses will be grouped and wrapped in one query, 
-     * all MUST and MUST_NOT clauses will be grouped in another query. 
+     * All SHOULD clauses will be grouped and wrapped in one query,
+     * all MUST and MUST_NOT clauses will be grouped in another query.
      * This means that at least one of the terms which are given as a SHOULD query must occur in the
      * search result.<p>
-     * 
+     *
      * @param fieldName the field name
      * @param searchQuery the search query
-     * 
+     *
      * @since 7.5.1
      */
     public void addFieldQueryMustNot(String fieldName, String searchQuery) {
@@ -213,19 +213,19 @@ public class CmsSearch {
 
     /**
      * Adds an individual query for a search field that SHOULD occur.<p>
-     * 
-     * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])} 
+     *
+     * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])}
      * will be ignored and only the individual field search settings will be used.<p>
-     * 
+     *
      * When combining occurrences of SHOULD, MUST and MUST_NOT, keep the following in mind:
-     * All SHOULD clauses will be grouped and wrapped in one query, 
-     * all MUST and MUST_NOT clauses will be grouped in another query. 
+     * All SHOULD clauses will be grouped and wrapped in one query,
+     * all MUST and MUST_NOT clauses will be grouped in another query.
      * This means that at least one of the terms which are given as a SHOULD query must occur in the
      * search result.<p>
-     * 
+     *
      * @param fieldName the field name
      * @param searchQuery the search query
-     * 
+     *
      * @since 7.5.1
      */
     public void addFieldQueryShould(String fieldName, String searchQuery) {
@@ -237,9 +237,9 @@ public class CmsSearch {
      * Returns <code>true</code> if a category overview should be shown as part of the result.<p>
      *
      * <b>Please note:</b> The calculation of the category count slows down the search time by an order
-     * of magnitude. Make sure that you only use this feature if it's really required! 
+     * of magnitude. Make sure that you only use this feature if it's really required!
      * Be especially careful if your search result list can become large (> 1000 documents), since in this case
-     * overall system performance will certainly be impacted considerably when calculating the categories.<p> 
+     * overall system performance will certainly be impacted considerably when calculating the categories.<p>
      *
      * @return <code>true</code> if a category overview should be shown as part of the result
      */
@@ -260,8 +260,8 @@ public class CmsSearch {
     }
 
     /**
-     * Returns the maximum number of pages which should be shown.<p> 
-     * 
+     * Returns the maximum number of pages which should be shown.<p>
+     *
      * @return the maximum number of pages which should be shown
      */
     public int getDisplayPages() {
@@ -271,7 +271,7 @@ public class CmsSearch {
 
     /**
      * Gets the current fields list.<p>
-     * 
+     *
      * @return the fields to search
      */
     public String getFields() {
@@ -290,7 +290,7 @@ public class CmsSearch {
 
     /**
      * Gets the name of the current search index.<p>
-     * 
+     *
      * @return the name of the index
      */
     public String getIndex() {
@@ -300,7 +300,7 @@ public class CmsSearch {
 
     /**
      * Gets the last exception after a search operation.<p>
-     * 
+     *
      * @return the exception occurred in a search operation or null
      */
     public Exception getLastException() {
@@ -310,7 +310,7 @@ public class CmsSearch {
 
     /**
      * Gets the number of matches displayed on each page.<p>
-     * 
+     *
      * @return matches per result page
      */
     public int getMatchesPerPage() {
@@ -360,7 +360,7 @@ public class CmsSearch {
 
     /**
      * Gets the URL for the link to the next result page.<p>
-     * 
+     *
      * @return the URL to the next result page
      */
     public String getNextUrl() {
@@ -370,10 +370,10 @@ public class CmsSearch {
 
     /**
      * Creates a sorted map of URLs to link to other search result pages.<p>
-     * 
-     * The key values are Integers representing the page number, the entry 
+     *
+     * The key values are Integers representing the page number, the entry
      * holds the corresponding link.<p>
-     *  
+     *
      * @return a map with String URLs
      */
     public Map<Integer, String> getPageLinks() {
@@ -385,7 +385,7 @@ public class CmsSearch {
         int startIndex, endIndex;
         String link = m_cms.getRequestContext().getUri() + m_parameters.toQueryString() + "&searchPage=";
         if (getDisplayPages() < 1) {
-            // number of displayed pages not limited, build a map with all available page links 
+            // number of displayed pages not limited, build a map with all available page links
             startIndex = 1;
             endIndex = m_pageCount;
         } else {
@@ -394,10 +394,10 @@ public class CmsSearch {
             int countBeforeCurrent = getDisplayPages() / 2;
             int countAfterCurrent;
             if ((currentPage - countBeforeCurrent) < 1) {
-                // set count before to number of available pages 
+                // set count before to number of available pages
                 countBeforeCurrent = currentPage - 1;
             }
-            // set count after to number of remaining pages (- 1 for current page) 
+            // set count after to number of remaining pages (- 1 for current page)
             countAfterCurrent = getDisplayPages() - countBeforeCurrent - 1;
             // calculate start and end index
             startIndex = currentPage - countBeforeCurrent;
@@ -438,15 +438,15 @@ public class CmsSearch {
 
     /**
      * Returns the parsed query.<p>
-     * 
-     * The parsed query is automatically set by the OpenCms search index when a query is created 
+     *
+     * The parsed query is automatically set by the OpenCms search index when a query is created
      * with either {@link #setQuery(String)} or {@link #addFieldQuery(CmsSearchFieldQuery)}.
-     * The Lucene query build from the parameters is stored here and can be later used 
+     * The Lucene query build from the parameters is stored here and can be later used
      * for paging through the results.<p>
-     * 
+     *
      * Please note that this returns only to the query part, not the filter part of the search.<p>
-     * 
-     * @return the parsed query 
+     *
+     * @return the parsed query
      */
     public String getParsedQuery() {
 
@@ -455,7 +455,7 @@ public class CmsSearch {
 
     /**
      * Gets the URL for the link to the previous result page.<p>
-     * 
+     *
      * @return the URL to the previous result page
      */
     public String getPreviousUrl() {
@@ -465,7 +465,7 @@ public class CmsSearch {
 
     /**
      * Gets the current search query.<p>
-     * 
+     *
      * @return the current query string or null if no query was set before
      */
     public String getQuery() {
@@ -475,7 +475,7 @@ public class CmsSearch {
 
     /**
      * Gets the minimum search query length.<p>
-     * 
+     *
      * @return the minimum search query length
      */
     public int getQueryLength() {
@@ -485,7 +485,7 @@ public class CmsSearch {
 
     /**
      * Gets the current result page.<p>
-     * 
+     *
      * @return the current result page
      */
     public int getSearchPage() {
@@ -495,7 +495,7 @@ public class CmsSearch {
 
     /**
      * Returns the search result for the current query, as a list of <code>{@link CmsSearchResult}</code> objects.<p>
-     * 
+     *
      * @return the search result (may be empty) or null if no index or query was set before
      */
     public List<CmsSearchResult> getSearchResult() {
@@ -505,7 +505,8 @@ public class CmsSearch {
             && (m_parameters.getIndex() != null)
             && (m_parameters.isIgnoreQuery()
                 || CmsStringUtil.isNotEmpty(m_parameters.getQuery())
-                || CmsStringUtil.isNotEmpty(m_parameters.getParsedQuery()) || (m_parameters.getFieldQueries() != null))) {
+                || CmsStringUtil.isNotEmpty(m_parameters.getParsedQuery())
+                || (m_parameters.getFieldQueries() != null))) {
 
             if (!m_parameters.isIgnoreQuery()
                 && CmsStringUtil.isEmpty(m_parameters.getParsedQuery())
@@ -517,9 +518,10 @@ public class CmsSearch {
                         for (String keyword : fq.getSearchTerms()) {
                             if (CmsStringUtil.isEmpty(keyword) || (keyword.trim().length() < getQueryLength())) {
 
-                                m_lastException = new CmsSearchException(Messages.get().container(
-                                    Messages.ERR_QUERY_TOO_SHORT_1,
-                                    new Integer(getQueryLength())));
+                                m_lastException = new CmsSearchException(
+                                    Messages.get().container(
+                                        Messages.ERR_QUERY_TOO_SHORT_1,
+                                        new Integer(getQueryLength())));
 
                                 return null;
                             }
@@ -528,9 +530,8 @@ public class CmsSearch {
 
                 } else if (m_parameters.getQuery().trim().length() < getQueryLength()) {
 
-                    m_lastException = new CmsSearchException(Messages.get().container(
-                        Messages.ERR_QUERY_TOO_SHORT_1,
-                        new Integer(getQueryLength())));
+                    m_lastException = new CmsSearchException(
+                        Messages.get().container(Messages.ERR_QUERY_TOO_SHORT_1, new Integer(getQueryLength())));
 
                     return null;
                 }
@@ -586,11 +587,11 @@ public class CmsSearch {
     }
 
     /**
-     * Returns a map of categories (Strings) for the last search result, mapped to the hit count (Integer) of 
-     * the documents in this category, or <code>null</code> if the categories have not been calculated.<p> 
+     * Returns a map of categories (Strings) for the last search result, mapped to the hit count (Integer) of
+     * the documents in this category, or <code>null</code> if the categories have not been calculated.<p>
      *
      * @return a map of categories for the last search result
-     * 
+     *
      * @see CmsSearch#getCalculateCategories()
      * @see CmsSearch#setCalculateCategories(boolean)
      */
@@ -601,7 +602,7 @@ public class CmsSearch {
 
     /**
      * Returns the total number of search results matching the query.<p>
-     * 
+     *
      * @return the total number of search results matching the query
      */
     public int getSearchResultCount() {
@@ -611,15 +612,15 @@ public class CmsSearch {
 
     /**
      * Returns the search roots.<p>
-     * 
+     *
      * Only resources that are sub-resources of one of the search roots
      * are included in the search result.<p>
-     * 
+     *
      * The search roots are used <i>in addition to</i> the current site root
      * of the user performing the search.<p>
-     * 
+     *
      * By default, the search roots contain only one entry with an empty string.<p>
-     * 
+     *
      * @return the search roots
      */
     public String[] getSearchRoots() {
@@ -640,7 +641,7 @@ public class CmsSearch {
 
     /**
      * Initializes the bean with the cms object.<p>
-     * 
+     *
      * @param cms the cms object
      */
     public void init(CmsObject cms) {
@@ -654,13 +655,13 @@ public class CmsSearch {
     }
 
     /**
-     * Sets the flag that controls calculation of result categories for the next search, 
+     * Sets the flag that controls calculation of result categories for the next search,
      * use this only if it's really required since the search can become very slow using this option.<p>
      *
      * <b>Please note:</b> The calculation of the category count slows down the search time by an order
-     * of magnitude. Make sure that you only use this feature if it's really required! 
+     * of magnitude. Make sure that you only use this feature if it's really required!
      * Be especially careful if your search result list can become large (> 1000 documents), since in this case
-     * overall system performance will certainly be impacted considerably when calculating the categories.<p> 
+     * overall system performance will certainly be impacted considerably when calculating the categories.<p>
      *
      * @param calculateCategories if <code>true</code>, the category count will be calculated for the next search
      */
@@ -688,7 +689,7 @@ public class CmsSearch {
                 for (int i = 0; i < categories.length; i++) {
                     cat = categories[i];
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cat)) {
-                        // all categories must internally be lower case, 
+                        // all categories must internally be lower case,
                         // since the index keywords are lower cased as well
                         cat = cat.trim().toLowerCase();
                         setCategories.add(cat);
@@ -702,9 +703,9 @@ public class CmsSearch {
 
     /**
      * Sets the maximum number of pages which should be shown.<p>
-     * 
-     * Enter an odd value to achieve a nice, "symmetric" output.<p> 
-     * 
+     *
+     * Enter an odd value to achieve a nice, "symmetric" output.<p>
+     *
      * @param value the maximum number of pages which should be shown
      */
     public void setDisplayPages(int value) {
@@ -721,7 +722,7 @@ public class CmsSearch {
      * Please note: A field will only be included in the excerpt if it has been configured as <code>excerpt="true"</code>
      * in <code>opencms-search.xml</code>. This method controls if so configured fields are used depending on the
      * fields searched, see {@link #setField(String[])}.<p>
-     * 
+     *
      * @param value if <code>true</code>, the excerpt is generated only from the fields actually searched in
      */
     public void setExcerptOnlySearchedFields(boolean value) {
@@ -732,13 +733,13 @@ public class CmsSearch {
 
     /**
      * Sets the fields to search.<p>
-     * 
-     * If the fields are set to <code>null</code>, 
+     *
+     * If the fields are set to <code>null</code>,
      * or not set at all, the default fields "content" and "meta" are used.<p>
-     * 
+     *
      * For a list of valid field names, see the Interface constants of
-     * <code>{@link org.opencms.search.documents.I_CmsDocumentFactory}</code>. 
-     * 
+     * <code>{@link org.opencms.search.documents.I_CmsDocumentFactory}</code>.
+     *
      * @param fields the fields to search
      */
     public void setField(String[] fields) {
@@ -749,9 +750,9 @@ public class CmsSearch {
 
     /**
      * Set the name of the index to search.<p>
-     * 
+     *
      * A former search result will be deleted.<p>
-     * 
+     *
      * @param indexName the name of the index
      */
     public void setIndex(String indexName) {
@@ -775,7 +776,7 @@ public class CmsSearch {
 
     /**
      * Sets the number of matches per page.<p>
-     * 
+     *
      * @param matches the number of matches per page
      */
     public void setMatchesPerPage(int matches) {
@@ -801,10 +802,8 @@ public class CmsSearch {
      */
     public void setMaxDateLastModified(String maxDateLastModified) {
 
-        m_parameters.setMaxDateLastModified(CmsStringUtil.getLongValue(
-            maxDateLastModified,
-            Long.MAX_VALUE,
-            "maxDateLastModified"));
+        m_parameters.setMaxDateLastModified(
+            CmsStringUtil.getLongValue(maxDateLastModified, Long.MAX_VALUE, "maxDateLastModified"));
     }
 
     /**
@@ -824,17 +823,15 @@ public class CmsSearch {
      */
     public void setMinDateLastModified(String minDateLastModified) {
 
-        m_parameters.setMinDateLastModified(CmsStringUtil.getLongValue(
-            minDateLastModified,
-            Long.MIN_VALUE,
-            "minDateLastModified"));
+        m_parameters.setMinDateLastModified(
+            CmsStringUtil.getLongValue(minDateLastModified, Long.MIN_VALUE, "minDateLastModified"));
     }
 
     /**
      * Set the parameters to use if a non null instance is provided. <p>
-     * 
-     * @param parameters the parameters to use for the search if a non null instance is provided 
-     * 
+     *
+     * @param parameters the parameters to use for the search if a non null instance is provided
+     *
      */
     public void setParameters(CmsSearchParameters parameters) {
 
@@ -845,15 +842,15 @@ public class CmsSearch {
 
     /**
      * Sets the parsed query, which will be parameter decoded first.<p>
-     * 
-     * The parsed query is automatically set by the OpenCms search index when a query is created 
+     *
+     * The parsed query is automatically set by the OpenCms search index when a query is created
      * with either {@link #setQuery(String)} or {@link #addFieldQuery(CmsSearchFieldQuery)}.
-     * The Lucene query build from the parameters is stored here and can be later used 
+     * The Lucene query build from the parameters is stored here and can be later used
      * for paging through the results.<p>
-     * 
+     *
      * Please note that this applies only to the query part, not the filter part of the search.<p>
-     * 
-     * @param parsedQuery the parsed query to set 
+     *
+     * @param parsedQuery the parsed query to set
      */
     public void setParsedQuery(String parsedQuery) {
 
@@ -867,10 +864,10 @@ public class CmsSearch {
 
     /**
      * Sets the search query.<p>
-     * 
-     * The syntax of the query depends on the search engine used. 
+     *
+     * The syntax of the query depends on the search engine used.
      * A former search result will be deleted.<p>
-     * 
+     *
      * @param query the search query (escaped format)
      */
     public void setQuery(String query) {
@@ -885,7 +882,7 @@ public class CmsSearch {
 
     /**
      * Sets the minimum length of the search query.<p>
-     * 
+     *
      * @param length the minimum search query length
      */
     public void setQueryLength(int length) {
@@ -921,13 +918,13 @@ public class CmsSearch {
     }
 
     /**
-     * Restrict the result of the next search to the results of the last search, 
+     * Restrict the result of the next search to the results of the last search,
      * restricted with the provided parameters.<p>
-     * 
-     * Use this for "seach in search result" functions.<p> 
-     * 
+     *
+     * Use this for "seach in search result" functions.<p>
+     *
      * @param restriction the restriction to use
-     * 
+     *
      * @see CmsSearchParameters#restrict(CmsSearchParameters)
      */
     public void setResultRestriction(CmsSearchParameters restriction) {
@@ -938,10 +935,10 @@ public class CmsSearch {
 
     /**
      * Sets the current result page.<p>
-     * 
-     * Works with jsp bean mechanism for request parameter "searchPage" 
+     *
+     * Works with jsp bean mechanism for request parameter "searchPage"
      * that is generated here for page links.<p>
-     * 
+     *
      * @param page the current result page
      */
     public void setSearchPage(int page) {
@@ -952,7 +949,7 @@ public class CmsSearch {
 
     /**
      * Convenience method to set exactly one search root.<p>
-     * 
+     *
      * @param searchRoot the search root to set
      *
      * @see #setSearchRoots(String[])
@@ -964,13 +961,13 @@ public class CmsSearch {
 
     /**
      * Sets the search root list.<p>
-     * 
+     *
      * Only resources that are sub-resources of one of the search roots
      * are included in the search result.<p>
-     * 
+     *
      * The search roots set here are used <i>in addition to</i> the current site root
      * of the user performing the search.<p>
-     * 
+     *
      * By default, the search roots contain only one entry with an empty string.<p>
      *
      * @param searchRoots the search roots to set
@@ -1003,7 +1000,7 @@ public class CmsSearch {
         m_categoriesFound = null;
         m_parameterRestriction = null;
         if (!m_parsedQuerySet) {
-            // don't reset parsed query if it was deliberately set, otherwise initializing search bean from JSP might fail 
+            // don't reset parsed query if it was deliberately set, otherwise initializing search bean from JSP might fail
             m_parameters.setParsedQuery(null);
         }
     }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,14 +49,14 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Creates the dialogs for showing and restoring deleted resources.<p> 
- * 
+ * Creates the dialogs for showing and restoring deleted resources.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/show-deleted.jsp
  * </ul>
  * <p>
- * 
+ *
  * @since 6.9.1
  */
 public class CmsDeletedResources extends CmsDialog {
@@ -75,7 +75,7 @@ public class CmsDeletedResources extends CmsDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDeletedResources(CmsJspActionElement jsp) {
@@ -85,7 +85,7 @@ public class CmsDeletedResources extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -97,7 +97,7 @@ public class CmsDeletedResources extends CmsDialog {
 
     /**
      * Returns the html code to include the needed js code.<p>
-     * 
+     *
      * @return html code
      */
     public String buildIncludeJs() {
@@ -125,7 +125,8 @@ public class CmsDeletedResources extends CmsDialog {
         html.append("\tvar ");
         html.append(CmsHtmlList.NO_SELECTION_HELP_VAR);
         html.append(" = '");
-        html.append(CmsStringUtil.escapeJavaScript(key(org.opencms.workplace.list.Messages.GUI_LIST_ACTION_NO_SELECTION_0)));
+        html.append(
+            CmsStringUtil.escapeJavaScript(key(org.opencms.workplace.list.Messages.GUI_LIST_ACTION_NO_SELECTION_0)));
         html.append("';\n");
 
         html.append("function doReportUpdate(msg, state) {\n");
@@ -192,7 +193,7 @@ public class CmsDeletedResources extends CmsDialog {
 
     /**
      * Override to display additional options in the dialog.<p>
-     * 
+     *
      * @return html code to display additional options
      */
     public String buildOptions() {
@@ -213,17 +214,19 @@ public class CmsDeletedResources extends CmsDialog {
 
     /**
      * Builds the html code for the report with the list of deleted resources.<p>
-     * 
+     *
      * @return html code for the report with the list of deleted resources
-     * 
+     *
      * @throws JspException if dialog actions fail
      * @throws IOException in case of errros forwarding to the required result page
      * @throws ServletException in case of errros forwarding to the required result page
      */
     public String buildReport() throws JspException, ServletException, IOException {
 
-        CmsDeletedResourcesList list = new CmsDeletedResourcesList(getJsp(), getParamResource(), Boolean.valueOf(
-            getParamReadtree()).booleanValue());
+        CmsDeletedResourcesList list = new CmsDeletedResourcesList(
+            getJsp(),
+            getParamResource(),
+            Boolean.valueOf(getParamReadtree()).booleanValue());
 
         list.actionDialog();
         list.getList().setBoxed(false);
@@ -237,7 +240,7 @@ public class CmsDeletedResources extends CmsDialog {
 
     /**
      * Builds the java script code to build the report.<p>
-     * 
+     *
      * @return html code with the java script to use ajax to create the report
      */
     public String buildReportRequest() {
@@ -260,24 +263,26 @@ public class CmsDeletedResources extends CmsDialog {
 
     /**
      * Builds the necessary button row.<p>
-     * 
-     * @return the button row 
+     *
+     * @return the button row
      */
     public String dialogButtons() {
 
-        return dialogButtonsOkCancel(" onclick=\"listMAction('"
-            + CmsDeletedResourcesList.LIST_ID
-            + "','"
-            + CmsDeletedResourcesList.LIST_MACTION_RESTORE
-            + "', '', noSelHelp);\"", null);
+        return dialogButtonsOkCancel(
+            " onclick=\"listMAction('"
+                + CmsDeletedResourcesList.LIST_ID
+                + "','"
+                + CmsDeletedResourcesList.LIST_MACTION_RESTORE
+                + "', '', noSelHelp);\"",
+            null);
     }
 
     /**
      * Executes the actions from the deleted resources list.<p>
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
-     * 
-     * @throws JspException if problems including sub-elements occur 
+     *
+     * @throws JspException if problems including sub-elements occur
      */
     public void executeListMultiActions() throws JspException {
 
@@ -296,9 +301,8 @@ public class CmsDeletedResources extends CmsDialog {
             }
 
             if (errors.length() > 0) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_RESTORE_SELECTED_RESOURCES_1,
-                    errors));
+                throw new CmsRuntimeException(
+                    Messages.get().container(Messages.ERR_RESTORE_SELECTED_RESOURCES_1, errors));
             } else {
                 actionCloseDialog();
             }
@@ -341,7 +345,7 @@ public class CmsDeletedResources extends CmsDialog {
 
     /**
      * Returns a list of resource ids of the current selected items.<p>
-     * 
+     *
      * @return a list of resource ids of the current selected items
      */
     public List<String> getSelectedItems() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,7 +48,7 @@ public class TestExportFile extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestExportFile(String arg0) {
@@ -58,7 +58,7 @@ public class TestExportFile extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -90,7 +90,7 @@ public class TestExportFile extends OpenCmsTestCase {
 
     /**
      * Tests the file export.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testStaticexportFile() throws Throwable {
@@ -109,7 +109,7 @@ public class TestExportFile extends OpenCmsTestCase {
         cms.unlockResource(resourcename);
 
         // read and check the content
-        this.assertContent(cms, resourcename, content.getBytes());
+        assertContent(cms, resourcename, content.getBytes());
 
         // now publish (and export) the resource
         OpenCms.getPublishManager().publishProject(cms);
@@ -117,8 +117,8 @@ public class TestExportFile extends OpenCmsTestCase {
 
         // now read the exported file in the file system and check its content
         String rootPath = cms.getRequestContext().addSiteRoot(resourcename);
-        String exportPath = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(rootPath)
-            + rootPath);
+        String exportPath = CmsFileUtil.normalizePath(
+            OpenCms.getStaticExportManager().getExportPath(rootPath) + rootPath);
         File f = new File(exportPath);
         assertTrue(f.exists());
 
@@ -128,6 +128,6 @@ public class TestExportFile extends OpenCmsTestCase {
         fileStream.read(exportContent);
         fileStream.close();
 
-        this.assertContent(cms, resourcename, exportContent);
+        assertContent(cms, resourcename, exportContent);
     }
 }

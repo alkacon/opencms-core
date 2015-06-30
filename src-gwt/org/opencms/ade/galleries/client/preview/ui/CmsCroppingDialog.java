@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Image cropping dialog.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsCroppingDialog extends Composite
@@ -129,7 +129,7 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param imagePath the image path
      */
     public CmsCroppingDialog(String imagePath) {
@@ -175,13 +175,19 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
                     m_widthDisplay.setText(String.valueOf(m_croppingParam.getTargetWidth()));
                 } else {
                     m_widthDisplay.setText(String.valueOf(m_croppingParam.getTargetWidth()));
-                    m_heightDisplay.setText(String.valueOf((int)Math.floor((1.00 * m_croppingParam.getTargetWidth() * m_croppingParam.getCropHeight())
-                        / m_croppingParam.getCropWidth())));
+                    m_heightDisplay.setText(
+                        String.valueOf(
+                            (int)Math.floor(
+                                (1.00 * m_croppingParam.getTargetWidth() * m_croppingParam.getCropHeight())
+                                    / m_croppingParam.getCropWidth())));
                 }
             } else if (m_croppingParam.getTargetHeight() > 0) {
                 m_heightDisplay.setText(String.valueOf(m_croppingParam.getTargetHeight()));
-                m_widthDisplay.setText(String.valueOf((int)Math.floor((1.00 * m_croppingParam.getTargetHeight() * m_croppingParam.getCropWidth())
-                    / m_croppingParam.getCropHeight())));
+                m_widthDisplay.setText(
+                    String.valueOf(
+                        (int)Math.floor(
+                            (1.00 * m_croppingParam.getTargetHeight() * m_croppingParam.getCropWidth())
+                                / m_croppingParam.getCropHeight())));
             } else {
                 m_heightDisplay.setText(String.valueOf(m_croppingParam.getCropHeight()));
                 m_widthDisplay.setText(String.valueOf(m_croppingParam.getCropWidth()));
@@ -189,12 +195,12 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
 
             String scale = "100%";
             if (m_croppingParam.getTargetHeight() > 0) {
-                scale = String.valueOf((int)Math.floor((100.00 * m_croppingParam.getCropHeight())
-                    / m_croppingParam.getTargetHeight()))
+                scale = String.valueOf(
+                    (int)Math.floor((100.00 * m_croppingParam.getCropHeight()) / m_croppingParam.getTargetHeight()))
                     + "%";
             } else if (m_croppingParam.getTargetWidth() > 0) {
-                scale = String.valueOf((int)Math.floor((100.00 * m_croppingParam.getCropWidth())
-                    / m_croppingParam.getTargetWidth()))
+                scale = String.valueOf(
+                    (int)Math.floor((100.00 * m_croppingParam.getCropWidth()) / m_croppingParam.getTargetWidth()))
                     + "%";
             }
             m_scaleDisplay.setText(scale);
@@ -210,7 +216,7 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
 
     /**
      * Shows the dialog.<p>
-     * 
+     *
      * @param targetParam the target cropping parameter, containing the target size restriction
      */
     public void show(CmsCroppingParamBean targetParam) {
@@ -243,7 +249,7 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
 
     /**
      * Handles the click event for cancel button. Hides the cropping dialog.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_cancelButton")
@@ -254,7 +260,7 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
 
     /**
      * Handles the click event for ok button. Sets the selected cropping parameters.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_okButton")
@@ -262,11 +268,15 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
 
         if (!((m_croppingParam.getTargetWidth() > 0) && (m_croppingParam.getTargetHeight() > 0))) {
             if (m_croppingParam.getTargetWidth() > 0) {
-                m_croppingParam.setTargetHeight((int)Math.floor((1.00 * m_croppingParam.getTargetWidth() * m_croppingParam.getCropHeight())
-                    / m_croppingParam.getCropWidth()));
+                m_croppingParam.setTargetHeight(
+                    (int)Math.floor(
+                        (1.00 * m_croppingParam.getTargetWidth() * m_croppingParam.getCropHeight())
+                            / m_croppingParam.getCropWidth()));
             } else if (m_croppingParam.getTargetHeight() > 0) {
-                m_croppingParam.setTargetWidth((int)Math.floor((1.00 * m_croppingParam.getTargetHeight() * m_croppingParam.getCropWidth())
-                    / m_croppingParam.getCropHeight()));
+                m_croppingParam.setTargetWidth(
+                    (int)Math.floor(
+                        (1.00 * m_croppingParam.getTargetHeight() * m_croppingParam.getCropWidth())
+                            / m_croppingParam.getCropHeight()));
             } else {
                 m_croppingParam.setTargetHeight(m_croppingParam.getCropHeight());
                 m_croppingParam.setTargetWidth(m_croppingParam.getCropWidth());
@@ -278,7 +288,7 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
 
     /**
      * Calculates the resulting cropping parameter from the supplied selection position.<p>
-     * 
+     *
      * @param position the selection position
      */
     private void calculateCropping(CmsPositionBean position) {
@@ -291,7 +301,7 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
 
     /**
      * Calculates the select area position for the current cropping parameter.<p>
-     * 
+     *
      * @return the select area position
      */
     private CmsPositionBean calculateSelectPosition() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,9 +52,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides a list dialog for resources.<p> 
- * 
- * @since 6.0.0 
+ * Provides a list dialog for resources.<p>
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
@@ -150,7 +150,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /**
      * Creates a new explorer list ordered and searchable by name.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -162,7 +162,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -209,7 +209,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /**
      * Returns the collector to use to display the resources.<p>
-     * 
+     *
      * @return the collector to use to display the resources
      */
     public abstract I_CmsListResourceCollector getCollector();
@@ -226,7 +226,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /**
      * Returns an appropiate initialized resource util object.<p>
-     * 
+     *
      * @return a resource util object
      */
     public CmsResourceUtil getResourceUtil() {
@@ -246,9 +246,9 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /**
      * Returns an appropiate initialized resource util object for the given item.<p>
-     * 
+     *
      * @param item the item representing the resource
-     * 
+     *
      * @return a resource util object
      */
     public CmsResourceUtil getResourceUtil(CmsListItem item) {
@@ -340,10 +340,10 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         super.fillList();
     }
 
-    /** 
+    /**
      * Gets a map of additional request parameters which should be passed to the explorer.<p>
-     * 
-     * @return the map of additional parameters to pass to the explorer 
+     *
+     * @return the map of additional parameters to pass to the explorer
      */
     protected Map<String, String[]> getAdditionalParametersForExplorerForward() {
 
@@ -368,13 +368,15 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
         if (getSettings().getExplorerMode() != null) {
             CmsListColumnDefinition nameCol = getList().getMetadata().getColumnDefinition(LIST_COLUMN_NAME);
-            if (!(getSettings().getExplorerMode().equals(CmsExplorer.VIEW_GALLERY) || getSettings().getExplorerMode().equals(
-                CmsExplorer.VIEW_LIST))) {
-                nameCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-                    org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
+            if (!(getSettings().getExplorerMode().equals(CmsExplorer.VIEW_GALLERY)
+                || getSettings().getExplorerMode().equals(CmsExplorer.VIEW_LIST))) {
+                nameCol.setName(
+                    org.opencms.workplace.explorer.Messages.get().container(
+                        org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
             } else {
-                nameCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-                    org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0));
+                nameCol.setName(
+                    org.opencms.workplace.explorer.Messages.get().container(
+                        org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0));
             }
         }
         return getCollector().getListItems(null);
@@ -382,7 +384,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /**
      * Returns the list state for initializing the collector.<p>
-     * 
+     *
      * @return the list state
      */
     protected CmsListState getListStateForCollector() {
@@ -392,7 +394,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
             lstate = getListState();
         }
         switch (getAction()) {
-        //////////////////// ACTION: default actions
+            //////////////////// ACTION: default actions
             case ACTION_LIST_SEARCH:
                 if (getParamSearchFilter() == null) {
                     setParamSearchFilter("");
@@ -419,7 +421,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /**
      * Returns the project to use as reference.<p>
-     * 
+     *
      * @return the project to use as reference
      */
     protected CmsProject getProject() {
@@ -458,13 +460,13 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /**
      * Returns the visibility flag for a given column.<p>
-     * 
+     *
      * The default behavior is to show the same columns as the explorer view,
      * but this can be overwritten.<p>
-     * 
-     * @param colFlag some {@link CmsUserSettings#FILELIST_TITLE} like value 
+     *
+     * @param colFlag some {@link CmsUserSettings#FILELIST_TITLE} like value
      *              identifying the column to get the visibility flag for
-     *  
+     *
      * @return the visibility flag for the given column
      */
     protected boolean isColumnVisible(int colFlag) {
@@ -478,7 +480,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /**
      * Adds the standard explorer view columns to the list.<p>
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
     @Override
@@ -530,7 +532,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         lockIconCol.addDirectAction(resourceLockIconAction);
         metadata.addColumn(lockIconCol);
 
-        // position 3: project state icon, resource is inside or outside current project        
+        // position 3: project state icon, resource is inside or outside current project
         CmsListColumnDefinition projStateIconCol = new CmsListColumnDefinition(LIST_COLUMN_PROJSTATEICON);
         projStateIconCol.setName(Messages.get().container(Messages.GUI_EXPLORER_LIST_COLS_PROJSTATE_0));
         projStateIconCol.setWidth("20");
@@ -543,8 +545,9 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
         // position 4: name
         CmsListColumnDefinition nameCol = new CmsListExplorerColumn(LIST_COLUMN_NAME);
-        nameCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0));
+        nameCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0));
 
         // add resource open action
         CmsListDefaultAction resourceOpenDefAction = new CmsListOpenResourceAction(
@@ -557,98 +560,114 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
         // position 4: root path for printing
         CmsListColumnDefinition rootPathCol = new CmsListExplorerColumn(LIST_COLUMN_ROOT_PATH);
-        rootPathCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
+        rootPathCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
         rootPathCol.setVisible(false);
         rootPathCol.setPrintable(true);
         metadata.addColumn(rootPathCol);
 
         // position 5: title
         CmsListColumnDefinition titleCol = new CmsListExplorerColumn(LIST_COLUMN_TITLE);
-        titleCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_TITLE_0));
+        titleCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_TITLE_0));
         metadata.addColumn(titleCol);
 
         // position 6: resource type
         CmsListColumnDefinition typeCol = new CmsListExplorerColumn(LIST_COLUMN_TYPE);
-        typeCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_TYPE_0));
+        typeCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_TYPE_0));
         metadata.addColumn(typeCol);
 
         // position 7: size
         CmsListColumnDefinition sizeCol = new CmsListExplorerColumn(LIST_COLUMN_SIZE);
-        sizeCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_SIZE_0));
+        sizeCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_SIZE_0));
         metadata.addColumn(sizeCol);
 
         // position 8: permissions
         CmsListColumnDefinition permissionsCol = new CmsListExplorerColumn(LIST_COLUMN_PERMISSIONS);
-        permissionsCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_PERMISSIONS_0));
+        permissionsCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_PERMISSIONS_0));
         metadata.addColumn(permissionsCol);
 
         // position 9: date of last modification
         CmsListColumnDefinition dateLastModCol = new CmsListExplorerColumn(LIST_COLUMN_DATELASTMOD);
-        dateLastModCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_DATELASTMODIFIED_0));
+        dateLastModCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_DATELASTMODIFIED_0));
         dateLastModCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
         metadata.addColumn(dateLastModCol);
 
         // position 10: user who last modified the resource
         CmsListColumnDefinition userLastModCol = new CmsListExplorerColumn(LIST_COLUMN_USERLASTMOD);
-        userLastModCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_USERLASTMODIFIED_0));
+        userLastModCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_USERLASTMODIFIED_0));
         metadata.addColumn(userLastModCol);
 
         // position 11: date of creation
         CmsListColumnDefinition dateCreateCol = new CmsListExplorerColumn(LIST_COLUMN_DATECREATE);
-        dateCreateCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_DATECREATED_0));
+        dateCreateCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_DATECREATED_0));
         dateCreateCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
         metadata.addColumn(dateCreateCol);
 
         // position 12: user who created the resource
         CmsListColumnDefinition userCreateCol = new CmsListExplorerColumn(LIST_COLUMN_USERCREATE);
-        userCreateCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_USERCREATED_0));
+        userCreateCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_USERCREATED_0));
         metadata.addColumn(userCreateCol);
 
         // position 13: date of release
         CmsListColumnDefinition dateReleaseCol = new CmsListExplorerColumn(LIST_COLUMN_DATEREL);
-        dateReleaseCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_DATERELEASED_0));
-        dateReleaseCol.setFormatter(new CmsListDateMacroFormatter(
-            Messages.get().container(Messages.GUI_LIST_DATE_FORMAT_1),
-            new CmsMessageContainer(null, CmsTouch.DEFAULT_DATE_STRING),
-            CmsResource.DATE_RELEASED_DEFAULT));
+        dateReleaseCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_DATERELEASED_0));
+        dateReleaseCol.setFormatter(
+            new CmsListDateMacroFormatter(
+                Messages.get().container(Messages.GUI_LIST_DATE_FORMAT_1),
+                new CmsMessageContainer(null, CmsTouch.DEFAULT_DATE_STRING),
+                CmsResource.DATE_RELEASED_DEFAULT));
         metadata.addColumn(dateReleaseCol);
 
         // position 14: date of expiration
         CmsListColumnDefinition dateExpirationCol = new CmsListExplorerColumn(LIST_COLUMN_DATEEXP);
-        dateExpirationCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_DATEEXPIRED_0));
-        dateExpirationCol.setFormatter(new CmsListDateMacroFormatter(
-            Messages.get().container(Messages.GUI_LIST_DATE_FORMAT_1),
-            new CmsMessageContainer(null, CmsTouch.DEFAULT_DATE_STRING),
-            CmsResource.DATE_EXPIRED_DEFAULT));
+        dateExpirationCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_DATEEXPIRED_0));
+        dateExpirationCol.setFormatter(
+            new CmsListDateMacroFormatter(
+                Messages.get().container(Messages.GUI_LIST_DATE_FORMAT_1),
+                new CmsMessageContainer(null, CmsTouch.DEFAULT_DATE_STRING),
+                CmsResource.DATE_EXPIRED_DEFAULT));
         metadata.addColumn(dateExpirationCol);
 
         // position 15: state (changed, unchanged, new, deleted)
         CmsListColumnDefinition stateCol = new CmsListExplorerColumn(LIST_COLUMN_STATE);
-        stateCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_STATE_0));
+        stateCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_STATE_0));
         metadata.addColumn(stateCol);
 
         // position 16: locked by
         CmsListColumnDefinition lockedByCol = new CmsListExplorerColumn(LIST_COLUMN_LOCKEDBY);
-        lockedByCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_LOCKEDBY_0));
+        lockedByCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_LOCKEDBY_0));
         metadata.addColumn(lockedByCol);
 
         // position 17: site
         CmsListColumnDefinition siteCol = new CmsListExplorerColumn(LIST_COLUMN_SITE);
-        siteCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_LABEL_SITE_0));
+        siteCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_LABEL_SITE_0));
         metadata.addColumn(siteCol);
     }
 
@@ -685,7 +704,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /**
      * Sets the given column visibility flag from the given preferences.<p>
-     * 
+     *
      * @param colFlag the flag that identifies the column to set the flag for
      * @param prefs the user preferences
      */
@@ -717,7 +736,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /**
      * Returns the show explorer flag.<p>
-     * 
+     *
      * @return the show explorer flag
      */
     private boolean getShowExplorer() {
@@ -738,7 +757,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /**
      * Sets the show explorer flag.<p>
-     * 
+     *
      * @param showExplorer the show explorer flag
      */
     @SuppressWarnings({"rawtypes", "unchecked"})

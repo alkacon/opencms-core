@@ -8,7 +8,7 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,8 +52,8 @@ import org.dom4j.Node;
 
 /**
  * Adds new context menu item nodes.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsXmlAddContextMenuItems extends A_CmsXmlWorkplace {
 
@@ -85,7 +85,7 @@ public class CmsXmlAddContextMenuItems extends A_CmsXmlWorkplace {
                     xpath + "/@" + I_CmsXmlConfiguration.A_KEY,
                     org.opencms.workplace.commons.Messages.GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0);
                 CmsSetupXmlHelper.setValue(document, xpath + "/@" + CmsWorkplaceConfiguration.A_RULE, "nondeleted");
-                // insert separator 
+                // insert separator
                 CmsSetupXmlHelper.setValue(document, xpath, null, CmsWorkplaceConfiguration.N_SEPARATOR);
             } else if (xpath.indexOf("publishscheduledresource") > 0) {
                 // insert after /opencms/workplace/explorertypes/explorertype[@name='${etype}']/editoptions/contextmenu/entry[@uri='commons/publishresource.jsp']
@@ -208,10 +208,10 @@ public class CmsXmlAddContextMenuItems extends A_CmsXmlWorkplace {
 
     /**
      * Checks whether the explorer type referenced by an xpath exists in the document.<p>
-     * 
-     * @param doc the document  
-     * @param xpath the xpath, potentially referencing an explorertype 
-     * @return true if the xpath references no explorertype, or the referenced explorertype is contained in the document 
+     *
+     * @param doc the document
+     * @param xpath the xpath, potentially referencing an explorertype
+     * @return true if the xpath references no explorertype, or the referenced explorertype is contained in the document
      */
     protected boolean checkExplorerType(Document doc, String xpath) {
 
@@ -226,15 +226,16 @@ public class CmsXmlAddContextMenuItems extends A_CmsXmlWorkplace {
 
     /**
      * Checks whether a given explorertype exists in the document.<p>
-     * 
-     * @param doc the XML document 
+     *
+     * @param doc the XML document
      * @param explorertype the explorertype to check
-     *  
-     * @return true if the explorertype exists 
+     *
+     * @return true if the explorertype exists
      */
     protected boolean existsExplorerType(Document doc, String explorertype) {
 
-        Node etype = doc.selectSingleNode("/opencms/workplace/explorertypes/explorertype[@name='" + explorertype + "']");
+        Node etype = doc.selectSingleNode(
+            "/opencms/workplace/explorertypes/explorertype[@name='" + explorertype + "']");
         return etype != null;
     }
 
@@ -246,6 +247,7 @@ public class CmsXmlAddContextMenuItems extends A_CmsXmlWorkplace {
 
         // /opencms/workplace/explorertypes
         return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
-            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
+            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(
+                CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
     }
 }

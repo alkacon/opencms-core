@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A bean which represents either the source or the target of a broken link.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsBrokenLinkBean implements IsSerializable {
@@ -63,9 +63,9 @@ public class CmsBrokenLinkBean implements IsSerializable {
 
     /**
      * Constructor without a type parameter.<p>
-     * @param structureId the structure id 
-     * @param title the title 
-     * @param subtitle the subtitle 
+     * @param structureId the structure id
+     * @param title the title
+     * @param subtitle the subtitle
      */
     public CmsBrokenLinkBean(CmsUUID structureId, String title, String subtitle) {
 
@@ -75,11 +75,11 @@ public class CmsBrokenLinkBean implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
-     * @param structureId the structure id 
-     * @param title the title 
+     *
+     * @param structureId the structure id
+     * @param title the title
      * @param subtitle the subtitle
-     * @param type the resource type  
+     * @param type the resource type
      */
     public CmsBrokenLinkBean(CmsUUID structureId, String title, String subtitle, String type) {
 
@@ -99,10 +99,10 @@ public class CmsBrokenLinkBean implements IsSerializable {
 
     /**
      * Adds a child bean to this bean.<p>
-     * 
+     *
      * The child usually represents a link target.<p>
-     * 
-     * @param bean the bean to add as a sub-bean 
+     *
+     * @param bean the bean to add as a sub-bean
      */
     public void addChild(CmsBrokenLinkBean bean) {
 
@@ -111,7 +111,7 @@ public class CmsBrokenLinkBean implements IsSerializable {
 
     /**
      * Adds optional page information to the broken link bean.<p>
-     * 
+     *
      * @param name the info name
      * @param value the info
      */
@@ -131,8 +131,8 @@ public class CmsBrokenLinkBean implements IsSerializable {
 
     /**
      * Returns the child beans of this bean.<p>
-     * 
-     * @return the list of child beans 
+     *
+     * @return the list of child beans
      */
     public List<CmsBrokenLinkBean> getChildren() {
 
@@ -141,7 +141,7 @@ public class CmsBrokenLinkBean implements IsSerializable {
 
     /**
      * Returns the additional link info.<p>
-     * 
+     *
      * @return the broken link info
      */
     public Map<String, String> getInfo() {
@@ -151,8 +151,8 @@ public class CmsBrokenLinkBean implements IsSerializable {
 
     /**
      * Returns the sub-title of the bean.<p>
-     * 
-     * @return the sub-title 
+     *
+     * @return the sub-title
      */
     public String getSubTitle() {
 
@@ -162,7 +162,7 @@ public class CmsBrokenLinkBean implements IsSerializable {
 
     /**
      * Returns the title of the bean.<p>
-     * 
+     *
      * @return the title of the bean
      */
     public String getTitle() {
@@ -172,8 +172,8 @@ public class CmsBrokenLinkBean implements IsSerializable {
 
     /**
      * Returns the resource type.<p>
-     * 
-     * @return the resource type 
+     *
+     * @return the resource type
      */
     public String getType() {
 

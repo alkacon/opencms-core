@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Runtime data bean for prefetching.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPostUploadDialogBean implements IsSerializable {
@@ -44,27 +44,27 @@ public class CmsPostUploadDialogBean implements IsSerializable {
     /** Name of the used js variable. */
     public static final String DICT_NAME = "postupload_dialog";
 
-    /** 
+    /**
      * A map of the resources for which the properties should be edited, with the structure ids as keys and the resource
-     * paths as values. 
+     * paths as values.
      */
     private Map<CmsUUID, String> m_resources = new HashMap<CmsUUID, String>();
 
     /** Flag which controls whether the property configurations should be used. */
     private boolean m_useConfiguration;
 
-    /** 
+    /**
      * Default constructor for serialization.<p>
      */
     public CmsPostUploadDialogBean() {
 
-        // default constructor for serialization 
+        // default constructor for serialization
     }
 
     /**
      * Creates a new instance.<p>
-     *  
-     * @param resources the map of resources for which the properties should be uploaded 
+     *
+     * @param resources the map of resources for which the properties should be uploaded
      */
     public CmsPostUploadDialogBean(Map<CmsUUID, String> resources) {
 
@@ -73,7 +73,7 @@ public class CmsPostUploadDialogBean implements IsSerializable {
 
     /**
      * Returns the list of resource paths.<p>
-     * 
+     *
      * @return the list of resource paths
      */
     public Map<CmsUUID, String> getResources() {
@@ -83,8 +83,8 @@ public class CmsPostUploadDialogBean implements IsSerializable {
 
     /**
      * Returns true if the property configurations should be used.<p>
-     * 
-     * @return true if the property configurations should be used 
+     *
+     * @return true if the property configurations should be used
      */
     public boolean isUsePropertyConfiguration() {
 
@@ -93,9 +93,9 @@ public class CmsPostUploadDialogBean implements IsSerializable {
     }
 
     /**
-     * Sets the map of resources for which the properties should be uploaded.<p> 
-     * 
-     * @param resources the map of resources for which the properties should be uploaded 
+     * Sets the map of resources for which the properties should be uploaded.<p>
+     *
+     * @param resources the map of resources for which the properties should be uploaded
      */
     public void setResources(Map<CmsUUID, String> resources) {
 
@@ -104,8 +104,8 @@ public class CmsPostUploadDialogBean implements IsSerializable {
 
     /**
      * Enables/disables use of the property configuration.<p>
-     * 
-     * @param useConfiguration true if the property configuration should be used 
+     *
+     * @param useConfiguration true if the property configuration should be used
      */
     public void setUsePropertyConfiguration(boolean useConfiguration) {
 

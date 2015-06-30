@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,9 +37,9 @@ public class CmsElementComparison extends CmsAttributeComparison implements Comp
     /** The element locale.<p> */
     private Locale m_locale;
 
-    /** 
-     * Creates a new element comparison.<p> 
-     * 
+    /**
+     * Creates a new element comparison.<p>
+     *
      * @param locale the locale of the comparison
      * @param name the name of the element
      */
@@ -68,7 +68,7 @@ public class CmsElementComparison extends CmsAttributeComparison implements Comp
     }
 
     /**
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -95,7 +95,7 @@ public class CmsElementComparison extends CmsAttributeComparison implements Comp
     }
 
     /**
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override

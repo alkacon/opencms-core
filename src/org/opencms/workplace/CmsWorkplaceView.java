@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,8 +29,8 @@ package org.opencms.workplace;
 
 /**
  * Contains the data of a single workplace view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsWorkplaceView implements Comparable<CmsWorkplaceView> {
 
@@ -45,10 +45,10 @@ public class CmsWorkplaceView implements Comparable<CmsWorkplaceView> {
 
     /**
      * Creates a new workplace view.<p>
-     * 
-     * @param key the localization key for the display name of the view 
+     *
+     * @param key the localization key for the display name of the view
      * @param uri of the view page in the OpenCms VFS
-     * @param order the sort order of the view 
+     * @param order the sort order of the view
      */
     public CmsWorkplaceView(String key, String uri, Float order) {
 
@@ -85,7 +85,7 @@ public class CmsWorkplaceView implements Comparable<CmsWorkplaceView> {
 
     /**
      * Returns the localization key for the display name of this view .<p>
-     * 
+     *
      * @return the localization key
      */
     public String getKey() {
@@ -95,7 +95,7 @@ public class CmsWorkplaceView implements Comparable<CmsWorkplaceView> {
 
     /**
      * Returns the sort order of this view.<p>
-     * 
+     *
      * @return the sort order of this view
      */
     public Float getOrder() {
@@ -105,7 +105,7 @@ public class CmsWorkplaceView implements Comparable<CmsWorkplaceView> {
 
     /**
      * Returns the OpenCms VFS uri of this view.<p>
-     * 
+     *
      * @return the uri
      */
     public String getUri() {

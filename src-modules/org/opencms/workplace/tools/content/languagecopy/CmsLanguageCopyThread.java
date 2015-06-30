@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Copies language nodes in XML contents.<p>
- * 
+ *
  * @since 7.5.1
  */
 public class CmsLanguageCopyThread extends A_CmsReportThread {
@@ -75,7 +75,7 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
 
     /**
      * Copies language nodes in XML contents.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param copyResources the resources to copy
      * @param delete the delete flag
@@ -99,7 +99,7 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
         Locale locale = cms.getRequestContext().getLocale();
         report.addReport(new CmsHtmlReport(locale, cms.getRequestContext().getSiteRoot()));
         report.addReport(new CmsLogReport(locale, CmsLanguageCopyThread.class));
-        this.m_report = report;
+        m_report = report;
     }
 
     /**
@@ -108,7 +108,7 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
     @Override
     public String getReportUpdate() {
 
-        return this.getReport().getReportUpdate();
+        return getReport().getReportUpdate();
     }
 
     /**
@@ -117,10 +117,10 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
     @Override
     public void run() {
 
-        CmsMultiplexReport report = (CmsMultiplexReport)this.getReport();
-        int totalFiles = this.m_copyresources.length;
-        Locale sourceLocale = CmsLocaleManager.getLocale(this.m_sourceLanguage);
-        Locale targetLocale = CmsLocaleManager.getLocale(this.m_targetLanguage);
+        CmsMultiplexReport report = (CmsMultiplexReport)getReport();
+        int totalFiles = m_copyresources.length;
+        Locale sourceLocale = CmsLocaleManager.getLocale(m_sourceLanguage);
+        Locale targetLocale = CmsLocaleManager.getLocale(m_targetLanguage);
         report.println(
             Messages.get().container(
                 Messages.GUI_REPORT_LANGUAGEC0PY_START_3,
@@ -170,16 +170,16 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
      */
     private void copyLanguageNodes() {
 
-        CmsObject cms = this.getCms();
-        CmsMultiplexReport report = (CmsMultiplexReport)this.getReport();
+        CmsObject cms = getCms();
+        CmsMultiplexReport report = (CmsMultiplexReport)getReport();
         CmsFile file;
         CmsXmlContent content;
-        int totalFiles = this.m_copyresources.length;
+        int totalFiles = m_copyresources.length;
         int processedFiles = 0;
-        Locale sourceLocale = CmsLocaleManager.getLocale(this.m_sourceLanguage);
-        Locale targetLocale = CmsLocaleManager.getLocale(this.m_targetLanguage);
+        Locale sourceLocale = CmsLocaleManager.getLocale(m_sourceLanguage);
+        Locale targetLocale = CmsLocaleManager.getLocale(m_targetLanguage);
 
-        for (int i = 0; i < this.m_copyresources.length; i++) {
+        for (int i = 0; i < m_copyresources.length; i++) {
             processedFiles++;
             report.print(
                 org.opencms.report.Messages.get().container(
@@ -187,13 +187,12 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
                     new Object[] {String.valueOf(processedFiles), String.valueOf(totalFiles)}),
                 I_CmsReport.FORMAT_NOTE);
 
-            report.print(Messages.get().container(
-                Messages.RPT_LOCALIZATION_BYPASS_1,
-                new Object[] {this.m_copyresources[i]}));
+            report.print(
+                Messages.get().container(Messages.RPT_LOCALIZATION_BYPASS_1, new Object[] {m_copyresources[i]}));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             try {
-                file = cms.readFile(this.m_copyresources[i]);
+                file = cms.readFile(m_copyresources[i]);
                 content = CmsXmlContentFactory.unmarshal(cms, file);
 
                 if (!content.hasLocale(sourceLocale)) {
@@ -204,7 +203,7 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
                         I_CmsReport.FORMAT_WARNING);
                     CmsMessageContainer container = Messages.get().container(
                         Messages.GUI_REPORT_LANGUAGEC0PY_WARN_SOURCELOCALE_MISSING_2,
-                        new Object[] {this.m_copyresources[i], sourceLocale});
+                        new Object[] {m_copyresources[i], sourceLocale});
                     report.addWarning(container);
                 } else if (content.hasLocale(targetLocale)) {
                     report.println(
@@ -214,7 +213,7 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
                         I_CmsReport.FORMAT_WARNING);
                     CmsMessageContainer container = Messages.get().container(
                         Messages.GUI_REPORT_LANGUAGEC0PY_WARN_TARGETLOCALE_EXISTS_2,
-                        new Object[] {this.m_copyresources[i], targetLocale});
+                        new Object[] {m_copyresources[i], targetLocale});
                     report.addWarning(container);
                 } else {
                     content.copyLocale(sourceLocale, targetLocale);
@@ -224,19 +223,19 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
                     file.setContents(content.marshal());
                     CmsLock lock = cms.getLock(file);
                     if (lock.isInherited()) {
-                        this.unlockInherited(file.getRootPath());
-                        cms.lockResource(this.m_copyresources[i]);
+                        unlockInherited(file.getRootPath());
+                        cms.lockResource(m_copyresources[i]);
                     } else {
                         if (lock.isNullLock()) {
-                            cms.lockResource(this.m_copyresources[i]);
+                            cms.lockResource(m_copyresources[i]);
                         } else {
                             if (!lock.isLockableBy(cms.getRequestContext().getCurrentUser())) {
-                                cms.changeLock(this.m_copyresources[i]);
+                                cms.changeLock(m_copyresources[i]);
                             }
                         }
                     }
                     cms.writeFile(file);
-                    cms.unlockResource(this.m_copyresources[i]);
+                    cms.unlockResource(m_copyresources[i]);
                     report.println(
                         org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                         I_CmsReport.FORMAT_OK);
@@ -245,7 +244,7 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
             } catch (Throwable f) {
                 CmsMessageContainer error = Messages.get().container(
                     Messages.GUI_REPORT_LANGUAGEC0PY_ERROR_2,
-                    new String[] {this.m_copyresources[i], CmsException.getStackTraceAsString(f)});
+                    new String[] {m_copyresources[i], CmsException.getStackTraceAsString(f)});
 
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
@@ -259,10 +258,10 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
 
     /**
      * Returns the lock of a possible locked parent folder of a resource, system locks are ignored.<p>
-     * 
+     *
      * @param absoluteResourceName the name of the resource
-     * 
-     * @return the lock of a parent folder, or {@link CmsLock#getNullLock()} 
+     *
+     * @return the lock of a parent folder, or {@link CmsLock#getNullLock()}
      *            if no parent folders are locked by a non system lock
      */
     private CmsLock getParentFolderLock(final String absoluteResourceName) {
@@ -286,9 +285,9 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
 
     /**
      * Returns the inherited lock of a resource.<p>
-     * 
+     *
      * @param absoluteResourcename the absolute path of the resource
-     * 
+     *
      * @return the inherited lock or the null lock
      */
     private CmsLock getParentLock(final String absoluteResourcename) {
@@ -301,11 +300,11 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
     }
 
     /**
-     * Recursively steps up to the resource that is the originator of the given 
+     * Recursively steps up to the resource that is the originator of the given
      * resource which has an inherited lock.<p>
-     * 
+     *
      * @param absoluteResourcename the absolute resource with the inherited lock
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private void unlockInherited(final String absoluteResourcename) throws CmsException {

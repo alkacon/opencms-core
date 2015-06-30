@@ -13,20 +13,21 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.setup.xml.v7;
-import org.opencms.configuration.CmsConfigurationManager;
+
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.setup.xml.A_CmsSetupXmlUpdate;
@@ -38,11 +39,10 @@ import java.util.List;
 import org.dom4j.Document;
 import org.dom4j.Node;
 
-
 /**
  * Adds the new content notification node.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsXmlAddMultiContextMenu extends A_CmsSetupXmlUpdate {
 
@@ -76,23 +76,29 @@ public class CmsXmlAddMultiContextMenu extends A_CmsSetupXmlUpdate {
             if (xpath.equals(getXPathsToUpdate().get(0))) {
                 setEntry(document, xpath, "explorer.context.lock", "commons/lock.jsp", "", "10");
                 setEntry(document, xpath, "explorer.context.unlock", "commons/unlock.jsp", "", "20");
-                CmsSetupXmlHelper.setValue(document, xpath
-                    + "/"
-                    + CmsWorkplaceConfiguration.N_SEPARATOR
-                    + "[@"
-                    + I_CmsXmlConfiguration.A_ORDER
-                    + "='30']"
-                    + "/@"
-                    + I_CmsXmlConfiguration.A_ORDER, "30");
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath
+                        + "/"
+                        + CmsWorkplaceConfiguration.N_SEPARATOR
+                        + "[@"
+                        + I_CmsXmlConfiguration.A_ORDER
+                        + "='30']"
+                        + "/@"
+                        + I_CmsXmlConfiguration.A_ORDER,
+                    "30");
                 setEntry(document, xpath, "explorer.context.publish", "commons/publishresource.jsp", "", "40");
-                CmsSetupXmlHelper.setValue(document, xpath
-                    + "/"
-                    + CmsWorkplaceConfiguration.N_SEPARATOR
-                    + "[@"
-                    + I_CmsXmlConfiguration.A_ORDER
-                    + "='50']"
-                    + "/@"
-                    + I_CmsXmlConfiguration.A_ORDER, "50");
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath
+                        + "/"
+                        + CmsWorkplaceConfiguration.N_SEPARATOR
+                        + "[@"
+                        + I_CmsXmlConfiguration.A_ORDER
+                        + "='50']"
+                        + "/@"
+                        + I_CmsXmlConfiguration.A_ORDER,
+                    "50");
                 setEntry(document, xpath, "explorer.context.copy", "commons/copy.jsp", "", "60");
                 setEntry(document, xpath, "explorer.context.move.multi", "commons/move.jsp", "", "70");
                 setEntry(document, xpath, "explorer.context.delete", "commons/delete.jsp", "", "80");
@@ -140,7 +146,7 @@ public class CmsXmlAddMultiContextMenu extends A_CmsSetupXmlUpdate {
 
     /**
      * Creates a new entry node.<p>
-     * 
+     *
      * @param document the xml document to change
      * @param xpath the base xpath
      * @param key the localization key name

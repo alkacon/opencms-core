@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,10 +45,10 @@ import com.google.gwt.user.client.ui.Composite;
 
 /**
  * Provides a standard HTML form checkbox widget, for use on a widget dialog.<p>
- * 
- * 
+ *
+ *
  * @since 8.5.0
- * 
+ *
  * */
 public class CmsMultiCheckboxWidget extends Composite implements I_CmsEditWidget {
 
@@ -61,9 +61,9 @@ public class CmsMultiCheckboxWidget extends Composite implements I_CmsEditWidget
 
     /**
      * Constructs an OptionalTextBox with the given caption on the check.<p>
-     * 
+     *
      * @param config configuration string
-     * 
+     *
      */
     public CmsMultiCheckboxWidget(String config) {
 
@@ -114,7 +114,7 @@ public class CmsMultiCheckboxWidget extends Composite implements I_CmsEditWidget
     }
 
     /**
-    
+
 
     /**
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
@@ -199,7 +199,7 @@ public class CmsMultiCheckboxWidget extends Composite implements I_CmsEditWidget
 
     /**
      * Helper class for parsing the configuration in to a list of Radiobuttons. <p>
-     * 
+     *
      * @param config the configuration string
      * @return Map of option and value of the checkbox
      * */

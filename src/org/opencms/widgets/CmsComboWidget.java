@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,17 +37,17 @@ import java.util.List;
 
 /**
  * Provides a HTML text input field with optional values to select in a combo box, for use on a widget dialog.<p>
- * 
- * Please see the documentation of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> for a description 
+ *
+ * Please see the documentation of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> for a description
  * about the configuration String syntax for the select options.<p>
- * 
+ *
  * The combo widget does use the following select options:<ul>
  * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#getValue()}</code> for the texts to be displayed in the combo selector
  * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#isDefault()}</code> to fill the input with a preselected text
  * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#getHelp()}</code> to display an (optional) help text for the combo option
  * </ul>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsComboWidget extends A_CmsSelectWidget {
 
@@ -62,11 +62,11 @@ public class CmsComboWidget extends A_CmsSelectWidget {
 
     /**
      * Creates a combo widget with the select options specified in the given configuration List.<p>
-     * 
+     *
      * The list elements must be of type <code>{@link CmsSelectWidgetOption}</code>.<p>
-     * 
+     *
      * @param configuration the configuration (possible options) for the select widget
-     * 
+     *
      * @see CmsSelectWidgetOption
      */
     public CmsComboWidget(List<CmsSelectWidgetOption> configuration) {
@@ -76,7 +76,7 @@ public class CmsComboWidget extends A_CmsSelectWidget {
 
     /**
      * Creates a combo widget with the specified combo options.<p>
-     * 
+     *
      * @param configuration the configuration (possible options) for the combo box
      */
     public CmsComboWidget(String configuration) {
@@ -121,7 +121,8 @@ public class CmsComboWidget extends A_CmsSelectWidget {
                     // create help text mousevent attributes
                     // can't use method in CmsEncoder because we need to keep < > for HTML in help text
                     String locValue = CmsStringUtil.substitute(option.getHelp(), "\"", "&quot;");
-                    result.append(getJsHelpMouseHandler(widgetDialog, itemId, CmsStringUtil.escapeJavaScript(locValue)));
+                    result.append(
+                        getJsHelpMouseHandler(widgetDialog, itemId, CmsStringUtil.escapeJavaScript(locValue)));
                 }
                 result.append(">");
                 result.append(option.getValue());
@@ -140,7 +141,8 @@ public class CmsComboWidget extends A_CmsSelectWidget {
                     CmsSelectWidgetOption option = i.next();
                     if (option.getHelp() != null) {
                         // help text is optional
-                        String itemId = new StringBuffer(64).append("ci").append(id).append('.').append(count).toString();
+                        String itemId = new StringBuffer(64).append("ci").append(id).append('.').append(
+                            count).toString();
                         result.append("<div class=\"help\" id=\"help");
                         result.append(itemId);
                         result.append("\"");
@@ -202,7 +204,7 @@ public class CmsComboWidget extends A_CmsSelectWidget {
         parseSelectOptions(cms, widgetDialog, param);
         String selected = getSelectedValue(cms, param);
         if (selected != null) {
-            // append the selection 
+            // append the selection
             result.append(" value=\"");
             result.append(CmsEncoder.escapeXml(selected));
             result.append("\"");

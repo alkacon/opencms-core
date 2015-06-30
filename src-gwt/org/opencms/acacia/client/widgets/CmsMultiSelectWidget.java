@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,9 +52,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Provides a widget for a standard HTML form for a group of radio buttons.<p>
- * 
+ *
  * Regarding widget configuration, see <code>{@link org.opencms.acacia.client.widgets.CmsSelectConfigurationParser}</code>.<p>
- * 
+ *
  * */
 public class CmsMultiSelectWidget extends Composite implements I_CmsEditWidget {
 
@@ -181,7 +181,7 @@ public class CmsMultiSelectWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Represents a value change event.<p>
-     * 
+     *
      */
     public void fireChangeEvent() {
 
@@ -308,7 +308,7 @@ public class CmsMultiSelectWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Sets the checkboxes enabled or disabled.<p>
-     * 
+     *
      * @param value if it should be enabled or disabled
      */
     protected void setAllCheckboxEnabled(boolean value) {
@@ -339,7 +339,7 @@ public class CmsMultiSelectWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Generate a string with all selected checkboxes separated with ','.
-     * 
+     *
      * @return a string with all selected checkboxes
      * */
     private String generateValue() {

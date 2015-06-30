@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,9 +48,9 @@ import java.util.Set;
 import org.apache.commons.collections.Factory;
 
 /**
- * The default class used for generating file names either for the <code>urlName</code> mapping 
+ * The default class used for generating file names either for the <code>urlName</code> mapping
  * or when using a "new" operation in the context of the direct edit interface.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
@@ -68,7 +68,7 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
         /**
          * Create a new number factory.<p>
-         * 
+         *
          * @param digits the number of digits to use
          */
         public CmsNumberFactory(int digits) {
@@ -79,7 +79,7 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
         /**
          * Create the number based on the number of digits set.<p>
-         * 
+         *
          * @see org.apache.commons.collections.Factory#create()
          */
         public Object create() {
@@ -90,7 +90,7 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
         /**
          * Sets the number to create to the given value.<p>
-         * 
+         *
          * @param number the number to set
          */
         public void setNumber(int number) {
@@ -104,16 +104,18 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
     /**
      * Checks the given pattern for the number macro.<p>
-     * 
+     *
      * @param pattern the pattern to check
-     * 
+     *
      * @return <code>true</code> if the pattern contains the macro
      */
     public static boolean hasNumberMacro(String pattern) {
 
         // check both macro variants
-        return hasNumberMacro(pattern, "" + I_CmsMacroResolver.MACRO_DELIMITER + I_CmsMacroResolver.MACRO_START, ""
-            + I_CmsMacroResolver.MACRO_END)
+        return hasNumberMacro(
+            pattern,
+            "" + I_CmsMacroResolver.MACRO_DELIMITER + I_CmsMacroResolver.MACRO_START,
+            "" + I_CmsMacroResolver.MACRO_END)
             || hasNumberMacro(
                 pattern,
                 "" + I_CmsMacroResolver.MACRO_DELIMITER_OLD + I_CmsMacroResolver.MACRO_START_OLD,
@@ -122,10 +124,10 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
     /**
      * Removes the file extension if it only consists of letters.<p>
-     * 
+     *
      * @param path the path from which to remove the file extension
-     *  
-     * @return the path without the file extension 
+     *
+     * @return the path without the file extension
      */
     public static String removeExtension(String path) {
 
@@ -134,11 +136,11 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
     /**
      * Checks the given pattern for the number macro.<p>
-     * 
+     *
      * @param pattern the pattern to check
      * @param macroStart the macro start string
      * @param macroEnd the macro end string
-     * 
+     *
      * @return <code>true</code> if the pattern contains the macro
      */
     private static boolean hasNumberMacro(String pattern, String macroStart, String macroEnd) {
@@ -156,20 +158,20 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
     /**
      * Returns a new resource name based on the provided OpenCms user context and name pattern.<p>
-     * 
+     *
      * The pattern in this default implementation must be a path which may contain the macro <code>%(number)</code>.
      * This will be replaced by the first "n" digit sequence for which the resulting file name is not already
      * used. For example the pattern <code>"/file_%(number).xml"</code> would result in something like <code>"/file_00003.xml"</code>.<p>
-     * 
+     *
      * Alternatively, the macro can have the form <code>%(number:n)</code> with <code>n = {1...9}</code>, for example <code>%(number:6)</code>.
      * In this case the default digits will be ignored and instead the digits provided as "n" will be used.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param namePattern the  pattern to be used when generating the new resource name
-     * @param defaultDigits the default number of digits to use for numbering the created file names 
-     * 
+     * @param defaultDigits the default number of digits to use for numbering the created file names
+     *
      * @return a new resource name based on the provided OpenCms user context and name pattern
-     * 
+     *
      * @throws CmsException in case something goes wrong
      */
     public String getNewFileName(CmsObject cms, String namePattern, int defaultDigits) throws CmsException {
@@ -196,7 +198,7 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
         Iterator<String> nameIterator = getUrlNameSequence(baseName);
         String result = nameIterator.next();
-        // use CmsResourceFilter.ALL because we also want to skip over deleted resources 
+        // use CmsResourceFilter.ALL because we also want to skip over deleted resources
         while (cms.existsResource(CmsStringUtil.joinPaths(parentFolder, result), CmsResourceFilter.ALL)) {
             result = nameIterator.next();
         }
@@ -204,9 +206,9 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
     }
 
     /**
-     * This default implementation will just generate a 5 digit sequence that is appended to the resource name in case 
+     * This default implementation will just generate a 5 digit sequence that is appended to the resource name in case
      * of a collision of names.<p>
-     * 
+     *
      * @see org.opencms.loader.I_CmsFileNameGenerator#getUrlNameSequence(java.lang.String)
      */
     public Iterator<String> getUrlNameSequence(String baseName) {
@@ -219,19 +221,18 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
     /**
      * Internal method for file name generation, decoupled for testing.<p>
-     * 
+     *
      * @param fileNames the list of file names already existing in the folder
      * @param checkPattern the pattern to be used when generating the new resource name
-     * @param defaultDigits the default number of digits to use for numbering the created file names 
-     * 
+     * @param defaultDigits the default number of digits to use for numbering the created file names
+     *
      * @return a new resource name based on the provided OpenCms user context and name pattern
      */
     protected String getNewFileNameFromList(List<String> fileNames, String checkPattern, int defaultDigits) {
 
         if (!hasNumberMacro(checkPattern)) {
-            throw new IllegalArgumentException(Messages.get().getBundle().key(
-                Messages.ERR_FILE_NAME_PATTERN_WITHOUT_NUMBER_MACRO_1,
-                checkPattern));
+            throw new IllegalArgumentException(
+                Messages.get().getBundle().key(Messages.ERR_FILE_NAME_PATTERN_WITHOUT_NUMBER_MACRO_1, checkPattern));
         }
 
         String checkFileName, checkTempFileName;
@@ -274,9 +275,8 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
             checkFileName = resolver.resolveMacros(checkPattern);
             if (checked.contains(checkFileName)) {
                 // the file name has been checked before, abort the search
-                throw new RuntimeException(Messages.get().getBundle().key(
-                    Messages.ERR_NO_FILE_NAME_AVAILABLE_FOR_PATTERN_1,
-                    checkPattern));
+                throw new RuntimeException(
+                    Messages.get().getBundle().key(Messages.ERR_NO_FILE_NAME_AVAILABLE_FOR_PATTERN_1, checkPattern));
             }
             checked.add(checkFileName);
             // get name of the resolved temp file

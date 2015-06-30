@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,13 +40,13 @@ public interface I_CmsPublishRelatedResourceProvider {
 
     /**
      * Gets the set of additional related resources.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param res the resource for which the related resources should be returned 
-     * 
+     *
+     * @param cms the current CMS context
+     * @param res the resource for which the related resources should be returned
+     *
      * @return the set of related resources
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     Set<CmsResource> getAdditionalRelatedResources(CmsObject cms, CmsResource res) throws CmsException;
 

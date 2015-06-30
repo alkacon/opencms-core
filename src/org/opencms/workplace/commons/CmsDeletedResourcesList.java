@@ -281,11 +281,13 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
                         getCms().readResource(getCms().getRequestContext().removeSiteRoot(resourcePath));
                         break;
                     } catch (CmsException e) {
-                        LOG.info("deleted resource list: could not read resource "
-                            + getCms().getRequestContext().removeSiteRoot(resourcePath)
-                            + " ["
-                            + resourcePath
-                            + "] ", e);
+                        LOG.info(
+                            "deleted resource list: could not read resource "
+                                + getCms().getRequestContext().removeSiteRoot(resourcePath)
+                                + " ["
+                                + resourcePath
+                                + "] ",
+                            e);
                         resourcePath = CmsResource.getParentFolder(resourcePath);
                     }
                 }
@@ -297,24 +299,27 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
                     }
                     orgResourcePath = orgResourcePath.substring(resourceName.length());
                 } catch (Exception e) {
-                    LOG.error("Path inconsistency in deleted resource list: data='"
-                        + data
-                        + "' resourcePath='"
-                        + resourcePath
-                        + "' resourceName='"
-                        + resourceName
-                        + "' siteRoot='"
-                        + getCms().getRequestContext().getSiteRoot()
-                        + "' ", e);
+                    LOG.error(
+                        "Path inconsistency in deleted resource list: data='"
+                            + data
+                            + "' resourcePath='"
+                            + resourcePath
+                            + "' resourceName='"
+                            + resourceName
+                            + "' siteRoot='"
+                            + getCms().getRequestContext().getSiteRoot()
+                            + "' ",
+                        e);
                     resourcePath = "";
                 }
 
                 StringBuffer ret = new StringBuffer();
                 ret.append(resourcePath);
                 ret.append("<span style=\"color:#0000aa;\">");
-                ret.append(orgResourcePath.startsWith(resourcePath)
-                ? orgResourcePath.substring(resourcePath.length())
-                : orgResourcePath);
+                ret.append(
+                    orgResourcePath.startsWith(resourcePath)
+                    ? orgResourcePath.substring(resourcePath.length())
+                    : orgResourcePath);
                 ret.append("</span>");
 
                 return ret.toString();
@@ -363,10 +368,11 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
 
         // add restore multi action
         CmsListMultiAction restoreMultiAction = new CmsListMultiAction(LIST_MACTION_RESTORE);
-        restoreMultiAction.setName(Messages.get().container(Messages.GUI_DELETED_RESOURCES_LIST_MACTION_RESTORE_NAME_0));
+        restoreMultiAction.setName(
+            Messages.get().container(Messages.GUI_DELETED_RESOURCES_LIST_MACTION_RESTORE_NAME_0));
         restoreMultiAction.setIconPath(ICON_MULTI_RESTORE);
-        restoreMultiAction.setHelpText(Messages.get().container(
-            Messages.GUI_DELETED_RESOURCES_LIST_MACTION_RESTORE_HELP_0));
+        restoreMultiAction.setHelpText(
+            Messages.get().container(Messages.GUI_DELETED_RESOURCES_LIST_MACTION_RESTORE_HELP_0));
         restoreMultiAction.setVisible(false);
         metadata.addMultiAction(restoreMultiAction);
     }

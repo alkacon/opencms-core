@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,8 +48,8 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.db.update6to7.CmsUpda
 
     /**
      * Default constructor.<p>
-     * 
-     * @throws IOException if the default sql queries property file could not be read 
+     *
+     * @throws IOException if the default sql queries property file could not be read
      */
     public CmsUpdateDBCmsUsers()
     throws IOException {
@@ -60,9 +60,9 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.db.update6to7.CmsUpda
 
     /**
      * Creates the CMS_USERDATA table if it does not exist yet.<p>
-     *  
+     *
      * @param dbCon the db connection interface
-     * 
+     *
      * @throws SQLException if something goes wrong
      */
     @Override

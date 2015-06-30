@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,11 +38,11 @@ import org.apache.commons.logging.Log;
 
 /**
  * A bean which can either represent a folder or a relative folder name, but not both at the same time.<p>
- * 
+ *
  * @author Georg Westenberger
- * 
+ *
  * @version $Revision: 1.0$
- * 
+ *
  * @since 8.0.0
  */
 public class CmsFolderOrName {
@@ -61,8 +61,8 @@ public class CmsFolderOrName {
 
     /**
      * Creates an instance based on an existing folder.<p>
-     * 
-     * @param folder the folder 
+     *
+     * @param folder the folder
      */
     public CmsFolderOrName(CmsResource folder) {
 
@@ -71,9 +71,9 @@ public class CmsFolderOrName {
 
     /**
      * Creates an instance based on a relative folder name.<p>
-     * 
-     * @param basePath the base path which the folder name is relative to 
-     * @param name the relative folder name 
+     *
+     * @param basePath the base path which the folder name is relative to
+     * @param name the relative folder name
      */
     public CmsFolderOrName(String basePath, String name) {
 
@@ -84,18 +84,18 @@ public class CmsFolderOrName {
 
     /**
      * Gets the base path.<p>
-     * 
-     * @return the base path 
+     *
+     * @return the base path
      */
     public String getBasePath() {
 
         return m_basePath;
     }
 
-    /** 
+    /**
      * Gets the folder.<p>
-     * 
-     * @return the folder 
+     *
+     * @return the folder
      */
     public CmsResource getFolder() {
 
@@ -104,7 +104,7 @@ public class CmsFolderOrName {
 
     /**
      * Gets the relative folder name if available, else null.<p>
-     * 
+     *
      * @return the relative folder name null
      */
     public String getFolderName() {
@@ -114,9 +114,9 @@ public class CmsFolderOrName {
 
     /**
      * Computes the folder root path.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @return the folder root path 
+     *
+     * @param cms the CMS context to use
+     * @return the folder root path
      */
     public String getFolderPath(CmsObject cms) {
 
@@ -143,8 +143,8 @@ public class CmsFolderOrName {
 
     /**
      * Returns true if the current instance was created with a folder structure id parameter.<p>
-     * 
-     * @return true if this instance was created with a folder structure id parameter  
+     *
+     * @return true if this instance was created with a folder structure id parameter
      */
     public boolean isFolder() {
 
@@ -153,8 +153,8 @@ public class CmsFolderOrName {
 
     /**
      * Returns true if this instance was created with a folder name parameter.<p>
-     * 
-     * @return true if this instance was created with a folder name parameter 
+     *
+     * @return true if this instance was created with a folder name parameter
      */
     public boolean isName() {
 

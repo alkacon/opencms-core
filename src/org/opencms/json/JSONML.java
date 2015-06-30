@@ -19,29 +19,29 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * This file is based on:
  * org.json.JSONML
  * from the JSON in Java implementation.
- * 
+ *
  * Copyright (c) 2002 JSON.org
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * The Software shall be used for Good, not Evil.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -58,7 +58,7 @@ import java.util.Iterator;
 /**
  * This provides static methods to convert an XML text into a JSONObject,
  * and to convert a JSONObject into an XML text using the JsonML transform.<p>
- * 
+ *
  */
 public final class JSONML {
 
@@ -73,14 +73,14 @@ public final class JSONML {
     /**
      * Convert a well-formed (but not necessarily valid) XML string into a
      * JSONArray using the JsonML transform.<p>
-     * 
+     *
      * Each XML tag is represented as
      * a JSONArray in which the first element is the tag name. If the tag has
      * attributes, then the second element will be JSONObject containing the
      * name/value pairs. If the tag contains children, then strings and
      * JSONArrays will represent the child tags.
      * Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code> are ignored.<p>
-     * 
+     *
      * @param string the source string
      * @return a JSONArray containing the structured data from the XML string.
      * @throws JSONException if something goes wrong
@@ -93,14 +93,14 @@ public final class JSONML {
     /**
      * Convert a well-formed (but not necessarily valid) XML string into a
      * JSONArray using the JsonML transform.<p>
-     * 
+     *
      * Each XML tag is represented as
      * a JSONArray in which the first element is the tag name. If the tag has
      * attributes, then the second element will be JSONObject containing the
      * name/value pairs. If the tag contains children, then strings and
      * JSONArrays will represent the child content and tags.
      * Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code> are ignored.<p>
-     * 
+     *
      * @param x an XMLTokener
      * @return a JSONArray containing the structured data from the XML string
      * @throws JSONException if something goes wrong
@@ -112,7 +112,7 @@ public final class JSONML {
 
     /**
      * Reverse the JSONML transformation, making an XML text from a JSONArray.<p>
-     * 
+     *
      * @param ja a JSONArray
      * @return an XML string
      * @throws JSONException if something goes wrong
@@ -126,7 +126,7 @@ public final class JSONML {
 
     /**
      * Parse XML values and store them in a JSONArray.<p>
-     * 
+     *
      * @param x       the XMLTokener containing the source string
      * @param ja      the JSONArray that is containing the current tag or null
      *     if we are at the outermost level
@@ -280,7 +280,7 @@ public final class JSONML {
 
     /**
      * Reverse the JSONML transformation, making an XML text from a JSONArray.<p>
-     * 
+     *
      * @param ja a JSONArray
      * @param b a string buffer in which to build the text
      * @throws JSONException if something goes wrong

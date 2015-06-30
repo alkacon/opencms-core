@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -94,12 +94,12 @@ public class CmsNewsletter implements I_CmsNewsletter {
 
     /**
      * Returns the e-mail for the newsletter.<p>
-     * 
+     *
      * @param recipient the recipient to whom the newsletter is sent
      * @param cms the CmsObject
-     * 
+     *
      * @return the e-mail for the newsletter
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public Email getEmail(CmsObject cms, I_CmsNewsletterRecipient recipient) throws CmsException {
@@ -171,10 +171,10 @@ public class CmsNewsletter implements I_CmsNewsletter {
 
     /**
      * Replaces the macros in the given message.<p>
-     * 
+     *
      * @param msg the message in which the macros are replaced
      * @param recipient the recipient in the message
-     * 
+     *
      * @return the message with the macros replaced
      */
     private String replaceMacros(String msg, I_CmsNewsletterRecipient recipient) {

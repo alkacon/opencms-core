@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * Dialog to select a resource model for a new resource.<p>
- * 
+ *
  * @since 8.0.3
  */
 public class CmsModelSelectDialog extends A_CmsListItemSelectDialog<CmsModelResourceInfo> {
@@ -45,10 +45,10 @@ public class CmsModelSelectDialog extends A_CmsListItemSelectDialog<CmsModelReso
     /**
      * Constructor.<p>
      *
-     * @param selectHandler the handler object for handling model selection 
+     * @param selectHandler the handler object for handling model selection
      * @param modelResources the available resource models
-     * @param title the title for the model selection dialog 
-     * @param message the message to display in the model selection dialog 
+     * @param title the title for the model selection dialog
+     * @param message the message to display in the model selection dialog
      */
     public CmsModelSelectDialog(
         I_CmsModelSelectHandler selectHandler,

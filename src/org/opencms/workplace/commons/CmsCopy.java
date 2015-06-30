@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,15 +56,15 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the copy resources dialog.<p> 
- * 
+ * Provides methods for the copy resources dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/copy.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsCopy extends CmsMultiDialog {
 
@@ -97,7 +97,7 @@ public class CmsCopy extends CmsMultiDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsCopy(CmsJspActionElement jsp) {
@@ -107,7 +107,7 @@ public class CmsCopy extends CmsMultiDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -119,7 +119,7 @@ public class CmsCopy extends CmsMultiDialog {
 
     /**
      * Performs the copy action, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionCopy() throws JspException {
@@ -153,9 +153,8 @@ public class CmsCopy extends CmsMultiDialog {
                 }
                 if (!resource.isFolder()) {
                     // no folder selected for multi operation, throw exception
-                    throw new CmsVfsException(Messages.get().container(
-                        Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1,
-                        target));
+                    throw new CmsVfsException(
+                        Messages.get().container(Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1, target));
                 }
             }
             if (performDialogOperation()) {
@@ -200,9 +199,10 @@ public class CmsCopy extends CmsMultiDialog {
                 }
                 if (resource.getTypeId() == targetType) {
                     // file type of target is the same as source, show confirmation dialog
-                    setParamMessage(CmsStringUtil.escapeHtml(key(Messages.GUI_COPY_CONFIRM_OVERWRITE_2, new Object[] {
-                        getParamResource(),
-                        getParamTarget()})));
+                    setParamMessage(
+                        CmsStringUtil.escapeHtml(key(
+                            Messages.GUI_COPY_CONFIRM_OVERWRITE_2,
+                            new Object[] {getParamResource(), getParamTarget()})));
                     getJsp().include(FILE_DIALOG_SCREEN_CONFIRM);
                 } else {
                     // file type is different, create error message
@@ -217,7 +217,7 @@ public class CmsCopy extends CmsMultiDialog {
 
     /**
      * Builds the input radio buttons to select between preserving links or creating new resources when copying.<p>
-     * 
+     *
      * @return the HTML code for the radio buttons
      */
     public String buildRadioCopyMode() {
@@ -302,7 +302,7 @@ public class CmsCopy extends CmsMultiDialog {
 
     /**
      * Returns the value of the copymode parameter.<p>
-     * 
+     *
      * @return the value of the copymode parameter
      */
     public String getParamCopymode() {
@@ -312,7 +312,7 @@ public class CmsCopy extends CmsMultiDialog {
 
     /**
      * Returns the value of the keeprights parameter.<p>
-     * 
+     *
      * @return the value of the keeprights parameter
      */
     public String getParamKeeprights() {
@@ -322,7 +322,7 @@ public class CmsCopy extends CmsMultiDialog {
 
     /**
      * Returns the value of the overwrite parameter.<p>
-     * 
+     *
      * @return the value of the overwrite parameter
      */
     public String getParamOverwrite() {
@@ -331,12 +331,12 @@ public class CmsCopy extends CmsMultiDialog {
     }
 
     /**
-     * Returns the value of the target parameter, 
+     * Returns the value of the target parameter,
      * or null if this parameter was not provided.<p>
-     * 
-     * The target parameter selects the target name 
+     *
+     * The target parameter selects the target name
      * of the operation.<p>
-     * 
+     *
      * @return the value of the target parameter
      */
     public String getParamTarget() {
@@ -346,7 +346,7 @@ public class CmsCopy extends CmsMultiDialog {
 
     /**
      * Sets the value of the copymode parameter.<p>
-     * 
+     *
      * @param value the value of the copymode parameter
      */
     public void setParamCopymode(String value) {
@@ -356,7 +356,7 @@ public class CmsCopy extends CmsMultiDialog {
 
     /**
      * Sets the value of the "keeprights" parameter.<p>
-     * 
+     *
      * @param value the value of the "keeprights" parameter
      */
     public void setParamKeeprights(String value) {
@@ -366,7 +366,7 @@ public class CmsCopy extends CmsMultiDialog {
 
     /**
      * Sets the value of the overwrite parameter.<p>
-     * 
+     *
      * @param paramOverwrite the value of the overwrite parameter
      */
     public void setParamOverwrite(String paramOverwrite) {
@@ -376,7 +376,7 @@ public class CmsCopy extends CmsMultiDialog {
 
     /**
      * Sets the value of the target parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamTarget(String value) {
@@ -393,7 +393,7 @@ public class CmsCopy extends CmsMultiDialog {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
-        // check the required permissions to copy the resource       
+        // check the required permissions to copy the resource
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
@@ -401,7 +401,7 @@ public class CmsCopy extends CmsMultiDialog {
 
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_COPY);
         } else if (DIALOG_CONFIRMED.equals(getParamAction())) {
@@ -419,7 +419,7 @@ public class CmsCopy extends CmsMultiDialog {
 
     /**
      * Performs the resource copying.<p>
-     * 
+     *
      * @return true, if the resource was copied, otherwise false
      * @throws CmsException if copying is not successful
      */
@@ -499,13 +499,13 @@ public class CmsCopy extends CmsMultiDialog {
 
     /**
      * Performs the copy operation for a single VFS resource.<p>
-     * 
+     *
      * @param source the source VFS path
      * @param target the target VFS path
      * @param sitePrefix the site prefix
      * @param copyMode the copy mode for siblings
      * @param overwrite the overwrite flag
-     * 
+     *
      * @throws CmsException if copying the resource fails
      */
     protected void performSingleCopyOperation(
@@ -546,7 +546,7 @@ public class CmsCopy extends CmsMultiDialog {
             checkLock(finalTarget);
             getCms().deleteResource(finalTarget, CmsResource.DELETE_PRESERVE_SIBLINGS);
         }
-        // copy the resource       
+        // copy the resource
         getCms().copyResource(sitePrefix + source, finalTarget, copyMode);
     }
 }

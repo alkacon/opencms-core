@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,9 +36,9 @@ import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 /**
- * This data access object represents a history project resource entry 
+ * This data access object represents a history project resource entry
  * inside the table "cms_history_projectresources".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -47,7 +47,7 @@ import javax.persistence.Table;
 public class CmsDAOHistoryProjectResources {
 
     /**
-     * This class implements the primary key for a history project 
+     * This class implements the primary key for a history project
      * resource entry in the table "cms_history_projectresources".<p>
      */
     public static class CmsDAOHistoryProjectResourcesPK implements Serializable {
@@ -65,7 +65,7 @@ public class CmsDAOHistoryProjectResources {
 
             /**
              * The constructor for this tokenizer.<p>
-             * 
+             *
              * @param str the String to tokenize.<p>
              */
             public Tokenizer(String str) {
@@ -75,7 +75,7 @@ public class CmsDAOHistoryProjectResources {
 
             /**
              * Returns the next token.<p>
-             * 
+             *
              * @return the next token
              */
             public String nextToken() {
@@ -115,7 +115,7 @@ public class CmsDAOHistoryProjectResources {
 
         /**
          * A public constructor to generate a primary key from a given String.<p>
-         * 
+         *
          * @param str the String to generate the id from
          */
         public CmsDAOHistoryProjectResourcesPK(String str) {
@@ -146,9 +146,11 @@ public class CmsDAOHistoryProjectResources {
             }
 
             CmsDAOHistoryProjectResourcesPK other = (CmsDAOHistoryProjectResourcesPK)obj;
-            return (((m_projectId == null) && (other.m_projectId == null)) || ((m_projectId != null) && m_projectId.equals(other.m_projectId)))
+            return (((m_projectId == null) && (other.m_projectId == null))
+                || ((m_projectId != null) && m_projectId.equals(other.m_projectId)))
                 && (m_publishTag == other.m_publishTag)
-                && (((m_resourcePath == null) && (other.m_resourcePath == null)) || ((m_resourcePath != null) && m_resourcePath.equals(other.m_resourcePath)));
+                && (((m_resourcePath == null) && (other.m_resourcePath == null))
+                    || ((m_resourcePath != null) && m_resourcePath.equals(other.m_resourcePath)));
         }
 
         /**
@@ -188,9 +190,9 @@ public class CmsDAOHistoryProjectResources {
         public int hashCode() {
 
             int rs = 17;
-            rs = rs * 37 + ((m_projectId == null) ? 0 : m_projectId.hashCode());
-            rs = rs * 37 + m_publishTag;
-            rs = rs * 37 + ((m_resourcePath == null) ? 0 : m_resourcePath.hashCode());
+            rs = (rs * 37) + ((m_projectId == null) ? 0 : m_projectId.hashCode());
+            rs = (rs * 37) + m_publishTag;
+            rs = (rs * 37) + ((m_resourcePath == null) ? 0 : m_resourcePath.hashCode());
             return rs;
         }
 
@@ -235,7 +237,7 @@ public class CmsDAOHistoryProjectResources {
 
         /**
          * Parses the publish tag from and the resource id from a given String.<p>
-         *  
+         *
          * @param str the String to parse
          */
         private void fromString(String str) {
@@ -283,7 +285,7 @@ public class CmsDAOHistoryProjectResources {
 
     /**
      * A public constructor for generating a new history project resource object with an unique id.<p>
-     *  
+     *
      * @param projectId the project id
      * @param publishTag the publish tag
      * @param resourcePath the resource path

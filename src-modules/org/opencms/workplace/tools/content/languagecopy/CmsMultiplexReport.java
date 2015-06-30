@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import java.util.List;
 
 /**
  * Report proxy that multiplexes to all contained <code>{@link I_CmsReport}</code> instances.<p>
- * 
+ *
  * @since 7.5.1
  */
 public class CmsMultiplexReport extends A_CmsReport {
@@ -54,12 +54,12 @@ public class CmsMultiplexReport extends A_CmsReport {
 
     /**
      * Adds the given report to become a proxy delegate of this multiplexer.<p>
-     * 
+     *
      * @param report the report to be on the recipient list.
      */
     public void addReport(final A_CmsReport report) {
 
-        this.m_delegates.add(report);
+        m_delegates.add(report);
     }
 
     /**
@@ -78,15 +78,15 @@ public class CmsMultiplexReport extends A_CmsReport {
      * This searches for the first instance of a link in the internal delegate list and
      * returns the value of it's invocation.
      * <p>
-     * 
+     *
      * If no such report is found an empty String will be returned.
      * <p>
-     * 
+     *
      * @see org.opencms.report.I_CmsReport#getReportUpdate()
      */
     public String getReportUpdate() {
 
-        for (I_CmsReport report : this.m_delegates) {
+        for (I_CmsReport report : m_delegates) {
             if (report.getClass().getName().toLowerCase().contains("html")) {
                 return report.getReportUpdate();
             }
@@ -100,7 +100,7 @@ public class CmsMultiplexReport extends A_CmsReport {
     @Override
     public void print(final CmsMessageContainer container) {
 
-        for (I_CmsReport report : this.m_delegates) {
+        for (I_CmsReport report : m_delegates) {
             report.print(container);
         }
     }
@@ -111,7 +111,7 @@ public class CmsMultiplexReport extends A_CmsReport {
     @Override
     public void print(final CmsMessageContainer container, final int format) {
 
-        for (I_CmsReport report : this.m_delegates) {
+        for (I_CmsReport report : m_delegates) {
             report.print(container, format);
         }
 
@@ -122,7 +122,7 @@ public class CmsMultiplexReport extends A_CmsReport {
      */
     public void println() {
 
-        for (I_CmsReport report : this.m_delegates) {
+        for (I_CmsReport report : m_delegates) {
             report.println();
         }
     }
@@ -133,7 +133,7 @@ public class CmsMultiplexReport extends A_CmsReport {
     @Override
     public void println(final CmsMessageContainer container) {
 
-        for (I_CmsReport report : this.m_delegates) {
+        for (I_CmsReport report : m_delegates) {
             report.println(container);
         }
     }
@@ -144,7 +144,7 @@ public class CmsMultiplexReport extends A_CmsReport {
     @Override
     public void println(final CmsMessageContainer container, final int format) {
 
-        for (I_CmsReport report : this.m_delegates) {
+        for (I_CmsReport report : m_delegates) {
             report.println(container, format);
         }
     }
@@ -163,7 +163,7 @@ public class CmsMultiplexReport extends A_CmsReport {
     @Override
     public void printMessageWithParam(final CmsMessageContainer container, final Object param) {
 
-        for (I_CmsReport report : this.m_delegates) {
+        for (I_CmsReport report : m_delegates) {
             report.printMessageWithParam(container, param);
         }
     }
@@ -172,9 +172,13 @@ public class CmsMultiplexReport extends A_CmsReport {
      * @see I_CmsReport#printMessageWithParam(int, int, CmsMessageContainer, Object)
      */
     @Override
-    public void printMessageWithParam(final int m, final int n, final CmsMessageContainer container, final Object param) {
+    public void printMessageWithParam(
+        final int m,
+        final int n,
+        final CmsMessageContainer container,
+        final Object param) {
 
-        for (I_CmsReport report : this.m_delegates) {
+        for (I_CmsReport report : m_delegates) {
             report.printMessageWithParam(m, n, container, param);
         }
     }
@@ -185,7 +189,7 @@ public class CmsMultiplexReport extends A_CmsReport {
     @Override
     public void resetRuntime() {
 
-        for (I_CmsReport report : this.m_delegates) {
+        for (I_CmsReport report : m_delegates) {
             report.resetRuntime();
         }
     }

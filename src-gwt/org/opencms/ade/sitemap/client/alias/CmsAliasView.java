@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -162,8 +162,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * Creates new view instance.<p>
-     * 
-     * @param controller the controller for the view 
+     *
+     * @param controller the controller for the view
      */
     @SuppressWarnings("unchecked")
     public CmsAliasView(CmsAliasTableController controller) {
@@ -201,7 +201,7 @@ public class CmsAliasView extends Composite {
         setWidth("1150px"); //$NON-NLS-1$
     }
 
-    /** 
+    /**
      * Clears the input fields used to add new aliases.<p>
      */
     public void clearNew() {
@@ -240,8 +240,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * Gets the buttons which should be displayed in the button bar of the popup containing this view.<p>
-     * 
-     * @return the buttons for the popup button bar 
+     *
+     * @return the buttons for the popup button bar
      */
     public List<CmsPushButton> getButtonBar() {
 
@@ -255,8 +255,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * Gets the list of rows used by the data provider.<p>
-     * 
-     * @return the list of rows used by the data provider 
+     *
+     * @return the list of rows used by the data provider
      */
     public List<CmsAliasTableRow> getLiveData() {
 
@@ -265,8 +265,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * Gets the rewrite alias data.<p>
-     * 
-     * @return the rewrite alias list 
+     *
+     * @return the rewrite alias list
      */
     public List<CmsRewriteAliasTableRow> getRewriteData() {
 
@@ -275,18 +275,18 @@ public class CmsAliasView extends Composite {
 
     /**
      * Gets the rewrite alias cell table.<p>
-     * 
-     * @return the rewrite alias cell table 
+     *
+     * @return the rewrite alias cell table
      */
     public CmsRewriteAliasTable getRewriteTable() {
 
         return m_rewriteTable;
     }
 
-    /** 
+    /**
      * Gets the cell table used to edit the alias data.<p>
-     * 
-     * @return the alias cell table 
+     *
+     * @return the alias cell table
      */
     public CmsAliasCellTable getTable() {
 
@@ -295,9 +295,9 @@ public class CmsAliasView extends Composite {
 
     /**
      * Replaces the contents of the live data row list with another list of rows.<p>
-     * 
+     *
      * @param data the new list of rows to be placed into the live data list
-     * @param rewriteData the list of rewrite alias data  
+     * @param rewriteData the list of rewrite alias data
      */
     public void setData(List<CmsAliasTableRow> data, List<CmsRewriteAliasTableRow> rewriteData) {
 
@@ -309,8 +309,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * Enables or disables the delete button.<p>
-     * 
-     * @param enabled if true, the delete button will be enabled, else disabled 
+     *
+     * @param enabled if true, the delete button will be enabled, else disabled
      */
     public void setDeleteButtonEnabled(boolean enabled) {
 
@@ -319,8 +319,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * Sets the validation error message for the alias path text box.<p>
-     * 
-     * @param error the validation error message 
+     *
+     * @param error the validation error message
      */
     public void setNewAliasPathError(String error) {
 
@@ -330,8 +330,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * Sets the validation error message for the resource path text box.<p>
-     * 
-     * @param error the validation error message 
+     *
+     * @param error the validation error message
      */
     public void setNewAliasResourceError(String error) {
 
@@ -340,8 +340,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * Sets the popup used to display this widget.<p>
-     * 
-     * @param popup the popup instance 
+     *
+     * @param popup the popup instance
      */
     public void setPopup(CmsPopup popup) {
 
@@ -350,8 +350,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * Enables or disables the delete button for rewrite aliases.<p>
-     * 
-     * @param enabled true if the delete button should be enabled 
+     *
+     * @param enabled true if the delete button should be enabled
      */
     public void setRewriteDeleteButtonEnabled(boolean enabled) {
 
@@ -360,15 +360,15 @@ public class CmsAliasView extends Composite {
 
     /**
      * Enables or disables the save button.<p>
-     * 
-     * @param enabled true if the save button should be enabled, false if it should be disabled 
+     *
+     * @param enabled true if the save button should be enabled, false if it should be disabled
      */
     public void setSaveButtonEnabled(boolean enabled) {
 
         m_saveButton.setEnabled(enabled);
     }
 
-    /** 
+    /**
      * Ensures that rows with errors will be placed at the top of the table.<p>
      */
     public void sortByErrors() {
@@ -382,8 +382,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * Updates the view after the rewrite aliases have been validated.<p>
-     * 
-     * @param result the result of the rewrite alias validation 
+     *
+     * @param result the result of the rewrite alias validation
      */
     public void update(CmsRewriteAliasValidationReply result) {
 
@@ -397,11 +397,11 @@ public class CmsAliasView extends Composite {
 
     /**
      * Updates the table data with a new list of rows.<p>
-     * 
+     *
      * Rows in the table for which a row with the same key is also contained in the 'data' parameter
      * will be updated, the other rows from the 'data' list will be added.<p>
-     * 
-     * @param data the list of rows to update 
+     *
+     * @param data the list of rows to update
      */
     public void update(List<CmsAliasTableRow> data) {
 
@@ -425,8 +425,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * The event handler for the button to delete rewrite aliases.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_rewriteDeleteButton")
     protected void onClickDeleteRewrite(ClickEvent e) {
@@ -437,8 +437,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * The click handler for the 'Cancel' button.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_cancelButton")
     void onClickCancel(ClickEvent e) {
@@ -448,8 +448,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * The click handler for the 'Delete' button.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_deleteButton")
     void onClickDelete(ClickEvent e) {
@@ -460,8 +460,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * The click handler for the 'Download' button.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_downloadButton")
     void onClickDownload(ClickEvent e) {
@@ -471,8 +471,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * The click handler for the 'New' button.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_newButton")
     void onClickNew(ClickEvent e) {
@@ -484,8 +484,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * The event handler for the button for adding new rewrite aliases.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_newRewriteButton")
     void onClickNewRewrite(ClickEvent e) {
@@ -498,8 +498,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * The click handler for the 'Save' button.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_saveButton")
     void onClickSave(ClickEvent e) {
@@ -509,8 +509,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * The click handler for the upload button.<p>
-     * 
-     * @param e the click handler for the upload button 
+     *
+     * @param e the click handler for the upload button
      */
     @UiHandler("m_uploadButton")
     void onClickUpload(ClickEvent e) {
@@ -522,8 +522,8 @@ public class CmsAliasView extends Composite {
 
     /**
      * Styles a button for adding new aliases.<p>
-     * 
-     * @param newButton the button to style 
+     *
+     * @param newButton the button to style
      */
     private void setNewButtonStyle(CmsPushButton newButton) {
 

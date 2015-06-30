@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,23 +58,23 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.common.SolrInputDocument;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.common.SolrInputDocument;
-
 /**
  * Tests the Solr field mapping.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestSolrFieldConfiguration(String arg0) {
@@ -84,7 +84,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -124,9 +124,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
     /**
      * Tests the Solr field configuration that can be done in the XSD of an XML content.<p>
-     * 
+     *
      * '@see /sites/default/xmlcontent/article.xsd'
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testAppinfoSolrField() throws Throwable {
@@ -138,19 +138,19 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         CmsSolrResultList results = index.search(getCmsObject(), squery);
 
         /////////////////
-        // RESULT TEST // 
+        // RESULT TEST //
         /////////////////
 
         // Test the result count
         AllTests.printResults(getCmsObject(), results, false);
         assertEquals(1, results.size());
 
-        // Test if the result contains the expected resource 
+        // Test if the result contains the expected resource
         CmsSearchResource res = results.get(0);
         assertEquals("/sites/default/xmlcontent/article_0001.html", res.getRootPath());
 
         ////////////////
-        // FIELD TEST // 
+        // FIELD TEST //
         ////////////////
 
         // Test multiple language field
@@ -194,7 +194,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         assertTrue(1.0F == boost);
 
         //////////////////
-        // MAPPING TEST // 
+        // MAPPING TEST //
         //////////////////
 
         fieldValue = res.getField("Description_de");
@@ -243,7 +243,8 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
         // test multi nested elements
         List<String> teaser = res.getMultivaluedField("mteaser");
-        assertTrue(teaser.contains("This is the sample article number 2. This is just a demo teaser. (>>SearchEgg2<<)"));
+        assertTrue(
+            teaser.contains("This is the sample article number 2. This is just a demo teaser. (>>SearchEgg2<<)"));
         assertTrue(teaser.contains("This is teaser 2 in sample article 2."));
         squery = new CmsSolrQuery(
             null,
@@ -270,7 +271,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
     /**
      * Tests the locales stored in the index.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testContentLocalesField() throws Throwable {
@@ -336,7 +337,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
     }
 
     /**
-     * 
+     *
      * @throws Throwable
      */
     public void testDependencies() throws Throwable {
@@ -443,15 +444,19 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
         List<CmsProperty> props = new ArrayList<CmsProperty>();
         props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, "de", "de"));
-        CmsResource master = importTestResource(cms, "org/opencms/search/solr/lang-detect-doc.pdf", folderName
-            + "lang-detect-doc.pdf", CmsResourceTypeBinary.getStaticTypeId(), props);
+        CmsResource master = importTestResource(
+            cms,
+            "org/opencms/search/solr/lang-detect-doc.pdf",
+            folderName + "lang-detect-doc.pdf",
+            CmsResourceTypeBinary.getStaticTypeId(),
+            props);
 
         // publish the project and update the search index
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
         // index.setLanguageDetection(true);
-        // is the default configured in opencms-search.xml 
+        // is the default configured in opencms-search.xml
         CmsSolrQuery query = new CmsSolrQuery(cms, null);
         query.setText("Language Detection Document");
         // even if the property is set to German this document should be detected as English
@@ -468,8 +473,12 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         // This is the OpenCms default behavior: property wins!
         index.setLanguageDetection(false);
         props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, "de", "de"));
-        CmsResource master2 = importTestResource(cms, "org/opencms/search/solr/lang-detect-doc.pdf", folderName
-            + "lang-detect-doc2.pdf", CmsResourceTypeBinary.getStaticTypeId(), props);
+        CmsResource master2 = importTestResource(
+            cms,
+            "org/opencms/search/solr/lang-detect-doc.pdf",
+            folderName + "lang-detect-doc2.pdf",
+            CmsResourceTypeBinary.getStaticTypeId(),
+            props);
         // publish the project and update the search index
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
@@ -485,7 +494,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
     }
 
     /**
-     * 
+     *
      * @throws Throwable
      */
     public void testLocaleDependenciesField() throws Throwable {
@@ -548,7 +557,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
     /**
      * Tests if the field configuration in the 'opencms-search.xml' can also be used for Solr.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testLuceneMigration() throws Throwable {
@@ -574,7 +583,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
     /**
      * Tests the access of Offline indexes.<p>
-     * 
+     *
      * @throws Throwable if sth. goes wrong
      */
     public void testOfflineIndexAccess() throws Throwable {

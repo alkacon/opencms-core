@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog to edit new or existing organizational unit in the administration view.<p>
- * 
+ *
  * @since 6.5.6
  */
 public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
@@ -68,7 +68,7 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public A_CmsOrgUnitDialog(CmsJspActionElement jsp) {
@@ -78,7 +78,7 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -90,7 +90,7 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
 
     /**
      * Returns the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @return the organizational unit fqn parameter value
      */
     public String getParamOufqn() {
@@ -100,7 +100,7 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
 
     /**
      * Sets the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @param ouFqn the organizational unit fqn parameter value
      */
     public void setParamOufqn(String ouFqn) {
@@ -113,7 +113,7 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
 
     /**
      * Sets the resources for the given orgUnitBean.<p>
-     * 
+     *
      * @param orgUnitBean the <code>CmsOrgUnitBean</code> object
      * @param resources the list of resources
      */
@@ -129,7 +129,7 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
     @Override
@@ -169,21 +169,23 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
                     m_orgUnitBean.setNologin(orgunit.hasFlagHideLogin());
                     m_orgUnitBean.setWebusers(orgunit.hasFlagWebuser());
                     if (orgunit.getParentFqn() != null) {
-                        m_orgUnitBean.setParentOuDesc(OpenCms.getOrgUnitManager().readOrganizationalUnit(
-                            getCms(),
-                            orgunit.getParentFqn()).getDescription(getLocale())
-                            + " ("
-                            + CmsOrganizationalUnit.SEPARATOR
-                            + orgunit.getParentFqn()
-                            + ")");
+                        m_orgUnitBean.setParentOuDesc(
+                            OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                                getCms(),
+                                orgunit.getParentFqn()).getDescription(getLocale())
+                                + " ("
+                                + CmsOrganizationalUnit.SEPARATOR
+                                + orgunit.getParentFqn()
+                                + ")");
                     }
                 } else {
                     m_orgUnitBean.setParentOu(orgunit.getName());
-                    m_orgUnitBean.setParentOuDesc(orgunit.getDescription(getLocale())
-                        + " ("
-                        + CmsOrganizationalUnit.SEPARATOR
-                        + orgunit.getName()
-                        + ")");
+                    m_orgUnitBean.setParentOuDesc(
+                        orgunit.getDescription(getLocale())
+                            + " ("
+                            + CmsOrganizationalUnit.SEPARATOR
+                            + orgunit.getName()
+                            + ")");
                 }
                 List<CmsResource> resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
                     getCms(),
@@ -217,7 +219,7 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
 
     /**
      * Checks if the new organizational unit dialog has to be displayed.<p>
-     * 
+     *
      * @return <code>true</code> if the new organizational unit dialog has to be displayed
      */
     protected boolean isNewOrgUnit() {

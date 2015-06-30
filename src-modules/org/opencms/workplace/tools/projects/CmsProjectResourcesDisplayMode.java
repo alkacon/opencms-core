@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import java.util.List;
 /**
  * Wrapper class for
  * the different types of project files view.<p>
- * 
+ *
  * The possibles values are:<br>
  * <ul>
  *   <li>{@link #ALL_CHANGES}</li>
@@ -47,7 +47,7 @@ import java.util.List;
  *   <li>{@link #MODIFIED_FILES}</li>
  * </ul>
  * <p>
- * 
+ *
  * @since 6.0.0
  */
 public final class CmsProjectResourcesDisplayMode implements Serializable {
@@ -82,7 +82,7 @@ public final class CmsProjectResourcesDisplayMode implements Serializable {
 
     /**
      * Private constructor.<p>
-     * 
+     *
      * @param mode the view mode
      */
     private CmsProjectResourcesDisplayMode(String mode) {
@@ -94,10 +94,10 @@ public final class CmsProjectResourcesDisplayMode implements Serializable {
      * Parses an string into an element of this enumeration.<p>
      *
      * @param value the mode to parse
-     * 
+     *
      * @return the enumeration element
-     * 
-     * @throws CmsIllegalArgumentException if the given value could not be matched against a 
+     *
+     * @throws CmsIllegalArgumentException if the given value could not be matched against a
      *         <code>CmsListColumnAlignEnum</code> type.
      */
     public static CmsProjectResourcesDisplayMode valueOf(String value) throws CmsIllegalArgumentException {
@@ -109,15 +109,16 @@ public final class CmsProjectResourcesDisplayMode implements Serializable {
                 return target;
             }
         }
-        throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
-            org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
-            value,
-            CmsProjectResourcesDisplayMode.class.getName()));
+        throw new CmsIllegalArgumentException(
+            org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
+                value,
+                CmsProjectResourcesDisplayMode.class.getName()));
     }
 
     /**
      * Returns the mode string.<p>
-     * 
+     *
      * @return the mode string
      */
     public String getMode() {
@@ -128,6 +129,7 @@ public final class CmsProjectResourcesDisplayMode implements Serializable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_mode;

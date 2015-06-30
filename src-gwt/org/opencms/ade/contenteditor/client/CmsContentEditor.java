@@ -135,7 +135,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param entity the entity to observe
          * @param changeScopes the value scopes to watch for changes
          */
@@ -518,9 +518,9 @@ public final class CmsContentEditor extends CmsEditorBase {
 
         if (m_saveButton != null) {
             if (m_saveButton.isEnabled()) {
-                CmsConfirmDialog dialog = new CmsConfirmDialog(org.opencms.gwt.client.Messages.get().key(
-                    org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TITLE_0), Messages.get().key(
-                    Messages.GUI_CONFIRM_LEAVING_EDITOR_0));
+                CmsConfirmDialog dialog = new CmsConfirmDialog(
+                    org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TITLE_0),
+                    Messages.get().key(Messages.GUI_CONFIRM_LEAVING_EDITOR_0));
                 dialog.setHandler(new I_CmsConfirmDialogHandler() {
 
                     public void onClose() {
@@ -578,12 +578,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                     result.getExternalWidgetConfigurations(),
                     new Command() {
 
-                        public void execute() {
+                    public void execute() {
 
-                            stop(false);
-                            callback.execute(result);
-                        }
-                    });
+                        stop(false);
+                        callback.execute(result);
+                    }
+                });
             }
         };
         action.execute();
@@ -591,7 +591,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /**
      * Loads the content definition for the given entity and executes the callback on success.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param newLink the new link
      * @param modelFileId  the model file id
@@ -635,12 +635,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                         result.getExternalWidgetConfigurations(),
                         new Command() {
 
-                            public void execute() {
+                        public void execute() {
 
-                                stop(false);
-                                callback.execute(result);
-                            }
-                        });
+                            stop(false);
+                            callback.execute(result);
+                        }
+                    });
                 }
             }
         };
@@ -676,12 +676,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                     result.getExternalWidgetConfigurations(),
                     new Command() {
 
-                        public void execute() {
+                    public void execute() {
 
-                            stop(false);
-                            callback.execute(result);
-                        }
-                    });
+                        stop(false);
+                        callback.execute(result);
+                    }
+                });
             }
         };
         action.execute();
@@ -747,7 +747,11 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     public void openInlineEditor(
 
-    final CmsEditorContext context, CmsUUID elementId, String locale, final I_CmsInlineFormParent panel, Command onClose) {
+        final CmsEditorContext context,
+        CmsUUID elementId,
+        String locale,
+        final I_CmsInlineFormParent panel,
+        Command onClose) {
 
         String entityId = CmsContentDefinition.uuidToEntityId(elementId, locale);
         m_locale = locale;
@@ -1036,7 +1040,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /**
      * Calls the editor change handlers.<p>
-     * 
+     *
      * @param changedScopes the changed content value scopes
      */
     void callEditorChangeHanlders(final Set<String> changedScopes) {
@@ -1085,9 +1089,9 @@ public final class CmsContentEditor extends CmsEditorBase {
     void confirmCancel() {
 
         if (m_saveButton.isEnabled()) {
-            CmsConfirmDialog dialog = new CmsConfirmDialog(org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TITLE_0), org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TEXT_0));
+            CmsConfirmDialog dialog = new CmsConfirmDialog(
+                org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TITLE_0),
+                org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_DIALOG_RESET_TEXT_0));
             dialog.setHandler(new I_CmsConfirmDialogHandler() {
 
                 public void onClose() {
@@ -1340,7 +1344,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /**
      * Initializes the editor change handler.<p>
-     * 
+     *
      * @param changeScopes the scopes to watch for changes
      */
     void initEditorChangeHandlers(Collection<String> changeScopes) {
@@ -1652,14 +1656,14 @@ public final class CmsContentEditor extends CmsEditorBase {
                         contentDefinition.getExternalWidgetConfigurations(),
                         new Command() {
 
-                            public void execute() {
+                        public void execute() {
 
-                                setContentDefinition(contentDefinition);
-                                renderFormContent();
-                                setChanged();
-                                CmsNotification.get().removeMessage(message);
-                            }
-                        });
+                            setContentDefinition(contentDefinition);
+                            renderFormContent();
+                            setChanged();
+                            CmsNotification.get().removeMessage(message);
+                        }
+                    });
                 }
             });
         } else {
@@ -1729,7 +1733,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /**
      * Updates the editor values.<p>
-     * 
+     *
      * @param previous the previous entity state
      * @param updated the updated entity state
      */
@@ -1760,7 +1764,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /**
      * Changes a simple type entity value.<p>
-     * 
+     *
      * @param attributeName the attribute name
      * @param index the value index
      * @param value the value
@@ -1832,10 +1836,10 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /**
      * Returns the attribute handler for the given attribute.<p>
-     * 
+     *
      * @param attributeName the attribute name
      * @param parentPathElements the parent path elements
-     * 
+     *
      * @return the attribute handler
      */
     private CmsAttributeHandler getAttributeHandler(String attributeName, List<String> parentPathElements) {
@@ -1988,7 +1992,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
                             public void run() {
 
-                                // ignore 
+                                // ignore
                             }
 
                         }, null);
@@ -2128,8 +2132,9 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     private void showLockedResourceMessage() {
 
-        CmsErrorDialog dialog = new CmsErrorDialog(Messages.get().key(
-            Messages.ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0), null);
+        CmsErrorDialog dialog = new CmsErrorDialog(
+            Messages.get().key(Messages.ERR_RESOURCE_ALREADY_LOCKED_BY_OTHER_USER_0),
+            null);
         dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
 
             public void onClose(CloseEvent<PopupPanel> event) {
@@ -2142,7 +2147,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /**
      * Updates the editor values according to the given entity.<p>
-     * 
+     *
      * @param previous the previous entity state
      * @param updated the updated entity state
      * @param target the target entity
@@ -2180,7 +2185,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                         }
                     } else {
                         if (targetAttribute.getValueCount() == previousAttribute.getValueCount()) {
-                            // only act, if the value count has not been altered while executing the server request 
+                            // only act, if the value count has not been altered while executing the server request
                             if (updatedAttribute.getValueCount() > previousAttribute.getValueCount()) {
                                 // new values have been added
                                 for (int i = 0; i < updatedAttribute.getValueCount(); i++) {
@@ -2218,14 +2223,15 @@ public final class CmsContentEditor extends CmsEditorBase {
                     }
                 } else {
                     if (targetAttribute.getValueCount() == previousAttribute.getValueCount()) {
-                        // only act, if the value count has not been altered while executing the server request 
+                        // only act, if the value count has not been altered while executing the server request
                         if (updatedAttribute.getValueCount() > previousAttribute.getValueCount()) {
                             // new values have been added
                             for (int i = 0; i < updatedAttribute.getValueCount(); i++) {
                                 if (i >= previousAttribute.getSimpleValues().size()) {
-                                    handler.addNewAttributeValue(m_entityBackend.registerEntity(
-                                        updatedAttribute.getComplexValues().get(i),
-                                        true));
+                                    handler.addNewAttributeValue(
+                                        m_entityBackend.registerEntity(
+                                            updatedAttribute.getComplexValues().get(i),
+                                            true));
                                 } else {
                                     List<String> childPathElements = new ArrayList<String>(parentPathElements);
                                     childPathElements.add(attributeName + "[" + i + "]");
@@ -2268,9 +2274,8 @@ public final class CmsContentEditor extends CmsEditorBase {
                     if (updatedAttribute.isSimpleValue()) {
                         handler.addNewAttributeValue(updatedAttribute.getSimpleValues().get(i));
                     } else {
-                        handler.addNewAttributeValue(m_entityBackend.registerEntity(
-                            updatedAttribute.getComplexValues().get(i),
-                            true));
+                        handler.addNewAttributeValue(
+                            m_entityBackend.registerEntity(updatedAttribute.getComplexValues().get(i), true));
                     }
                 }
             }

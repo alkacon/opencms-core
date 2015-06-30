@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,13 +47,13 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provider for the OpenCms default graphical "direct edit" buttons.<p>
- * 
- * Since OpenCms version 6.2.3, 
+ *
+ * Since OpenCms version 6.2.3,
  * this provider is configured as the standard direct edit provider in a common OpenCms installation.<p>
- * 
+ *
  * This provider DOES NOT support {@link CmsDirectEditMode#MANUAL} mode.<p>
- * 
- * @since 6.2.3 
+ *
+ * @since 6.2.3
  */
 public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
 
@@ -68,7 +68,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
 
     /**
      * Returns the end HTML for a disabled direct edit button.<p>
-     * 
+     *
      * @return the end HTML for a disabled direct edit button
      */
     public String endDirectEditDisabled() {
@@ -78,7 +78,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
 
     /**
      * Returns the end HTML for an enabled direct edit button.<p>
-     * 
+     *
      * @return the end HTML for an enabled direct edit button
      */
     public String endDirectEditEnabled() {
@@ -88,9 +88,9 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
 
     /**
      * Returns the direct edit include HTML to insert in the page beginning.<p> t
-     * 
+     *
      * @param params the parameters for the direct edit includes
-     *  
+     *
      * @return the direct edit include HTML to insert in the page beginning
      */
     public String getDirectEditIncludes(CmsDirectEditParams params) {
@@ -163,7 +163,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
     public boolean insertDirectEditStart(PageContext context, CmsDirectEditParams params) throws JspException {
 
         String content;
-        // check the direct edit permissions of the current user          
+        // check the direct edit permissions of the current user
         CmsDirectEditResourceInfo resourceInfo = getResourceInfo(params.getResourceName());
         // check the permission mode
         m_lastPermissionMode = resourceInfo.getPermissions().getPermission();
@@ -183,7 +183,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
 
     /**
      * Returns <code>false</code> because the default provider does not support manual button placement.<p>
-     * 
+     *
      * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#isManual(org.opencms.workplace.editors.directedit.CmsDirectEditMode)
      */
     @Override
@@ -204,10 +204,10 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
 
     /**
      * Returns the start HTML for a disabled direct edit button.<p>
-     * 
+     *
      * @param params the direct edit parameters
      * @param resourceInfo contains information about the resource to edit
-     * 
+     *
      * @return the start HTML for a disabled direct edit button
      */
     public String startDirectEditDisabled(CmsDirectEditParams params, CmsDirectEditResourceInfo resourceInfo) {
@@ -238,14 +238,14 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
         if (m_editButtonStyle == 1) {
             result.append("<span class=\"ocms_combobutton\" style=\"background-image: url(\'").append(
                 CmsWorkplace.getSkinUri()).append("buttons/directedit_in.png\');\">&nbsp;").append(
-                m_messages.key(Messages.GUI_EDITOR_FRONTEND_BUTTON_LOCKED_0)).append("</span>");
+                    m_messages.key(Messages.GUI_EDITOR_FRONTEND_BUTTON_LOCKED_0)).append("</span>");
         } else if (m_editButtonStyle == 2) {
             result.append("<span class=\"ocms_combobutton\" style=\"padding-left: 4px;\">").append(
                 m_messages.key(Messages.GUI_EDITOR_FRONTEND_BUTTON_LOCKED_0)).append("</span>");
         } else {
             result.append("<img border=\"0\" src=\"").append(CmsWorkplace.getSkinUri()).append(
                 "buttons/directedit_in.png\" title=\"").append(
-                m_messages.key(Messages.GUI_EDITOR_FRONTEND_BUTTON_LOCKED_0)).append("\" alt=\"\"/>");
+                    m_messages.key(Messages.GUI_EDITOR_FRONTEND_BUTTON_LOCKED_0)).append("\" alt=\"\"/>");
         }
         result.append("</span></td>\n");
         result.append("</tr></table>\n");
@@ -261,7 +261,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
      *
      * @param params the direct edit parameters
      * @param resourceInfo contains information about the resource to edit
-     * 
+     *
      * @return the start HTML for an enabled direct edit button
      */
     public String startDirectEditEnabled(CmsDirectEditParams params, CmsDirectEditResourceInfo resourceInfo) {
@@ -309,60 +309,62 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
         result.append(" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" id=\"table_").append(editId).append(
             "\"><tr>\n");
         if (params.getButtonSelection().isShowEdit()) {
-            result.append("<td class=\"ocms_de\"><a href=\"#\" onclick=\"javascript:submitOcms(\'").append(editId).append(
-                "\', \'").append(CmsDirectEditButtonSelection.VALUE_EDIT).append(
-                "\');\" class=\"ocms_button\"><span class=\"ocms_over\" onmouseover=\"className=\'ocms_over\'\" onmouseout=\"className=\'ocms_over\'\" onmousedown=\"className=\'ocms_push\'\" onmouseup=\"className=\'ocms_over\'\">");
+            result.append("<td class=\"ocms_de\"><a href=\"#\" onclick=\"javascript:submitOcms(\'").append(
+                editId).append("\', \'").append(CmsDirectEditButtonSelection.VALUE_EDIT).append(
+                    "\');\" class=\"ocms_button\"><span class=\"ocms_over\" onmouseover=\"className=\'ocms_over\'\" onmouseout=\"className=\'ocms_over\'\" onmousedown=\"className=\'ocms_push\'\" onmouseup=\"className=\'ocms_over\'\">");
             if (m_editButtonStyle == 1) {
                 result.append("<span id=\"bt_").append(editId).append(
-                    "\" class=\"ocms_combobutton\" style=\"background-image: url(\'").append(CmsWorkplace.getSkinUri()).append(
-                    "buttons/directedit_cl.png\');\">&nbsp;").append(
-                    m_messages.key(Messages.GUI_EDITOR_FRONTEND_BUTTON_EDIT_0)).append("</span>");
+                    "\" class=\"ocms_combobutton\" style=\"background-image: url(\'").append(
+                        CmsWorkplace.getSkinUri()).append("buttons/directedit_cl.png\');\">&nbsp;").append(
+                            m_messages.key(Messages.GUI_EDITOR_FRONTEND_BUTTON_EDIT_0)).append("</span>");
             } else if (m_editButtonStyle == 2) {
                 result.append("<span class=\"ocms_combobutton\" style=\"padding-left: 4px;\">").append(
                     m_messages.key(Messages.GUI_EDITOR_FRONTEND_BUTTON_EDIT_0)).append("</span>");
             } else {
                 result.append("<span id=\"bt_").append(editId).append(
                     "\" class=\"ocms_combobutton\" style=\"padding-left: 15px; padding-right: 1px; background-image: url(\'").append(
-                    CmsWorkplace.getSkinUri()).append(
-                    "buttons/directedit_cl.png\'); background-position: 0px 0px;\" title=\"").append(
-                    m_messages.key(Messages.GUI_EDITOR_FRONTEND_BUTTON_EDIT_0)).append("\">&nbsp;</span>");
+                        CmsWorkplace.getSkinUri()).append(
+                            "buttons/directedit_cl.png\'); background-position: 0px 0px;\" title=\"").append(
+                                m_messages.key(Messages.GUI_EDITOR_FRONTEND_BUTTON_EDIT_0)).append("\">&nbsp;</span>");
             }
             result.append("</span></a></td>\n");
         }
         if (params.getButtonSelection().isShowDelete()) {
-            result.append("<td class=\"ocms_de\"><a href=\"#\" onclick=\"javascript:submitOcms(\'").append(editId).append(
-                "\', \'").append(CmsDirectEditButtonSelection.VALUE_DELETE).append(
-                "\');\" class=\"ocms_button\"><span class=\"ocms_over\" onmouseover=\"className=\'ocms_over\'\" onmouseout=\"className=\'ocms_over\'\" onmousedown=\"className=\'ocms_push\'\" onmouseup=\"className=\'ocms_over\'\">");
+            result.append("<td class=\"ocms_de\"><a href=\"#\" onclick=\"javascript:submitOcms(\'").append(
+                editId).append("\', \'").append(CmsDirectEditButtonSelection.VALUE_DELETE).append(
+                    "\');\" class=\"ocms_button\"><span class=\"ocms_over\" onmouseover=\"className=\'ocms_over\'\" onmouseout=\"className=\'ocms_over\'\" onmousedown=\"className=\'ocms_push\'\" onmouseup=\"className=\'ocms_over\'\">");
             if (m_editButtonStyle == 1) {
                 result.append("<span id=\"del_").append(editId).append(
-                    "\" class=\"ocms_combobutton\" style=\"background-image: url(\'").append(CmsWorkplace.getSkinUri()).append(
-                    "buttons/deletecontent.png\');\">&nbsp;").append(m_messages.key(Messages.GUI_BUTTON_DELETE_0)).append(
-                    "</span>");
+                    "\" class=\"ocms_combobutton\" style=\"background-image: url(\'").append(
+                        CmsWorkplace.getSkinUri()).append("buttons/deletecontent.png\');\">&nbsp;").append(
+                            m_messages.key(Messages.GUI_BUTTON_DELETE_0)).append("</span>");
             } else if (m_editButtonStyle == 2) {
                 result.append("<span class=\"ocms_combobutton\" style=\"padding-left: 4px;\">").append(
                     m_messages.key(Messages.GUI_BUTTON_DELETE_0)).append("</span>");
             } else {
                 result.append("<img border=\"0\" src=\"").append(CmsWorkplace.getSkinUri()).append(
                     "buttons/deletecontent.png\" title=\"").append(m_messages.key(Messages.GUI_BUTTON_DELETE_0)).append(
-                    "\" alt=\"\"/>");
+                        "\" alt=\"\"/>");
             }
             result.append("</span></a></td>\n");
         }
         if (params.getButtonSelection().isShowNew()) {
-            result.append("<td class=\"ocms_de\"><a href=\"#\" onclick=\"javascript:submitOcms(\'").append(editId).append(
-                "\', \'").append(CmsDirectEditButtonSelection.VALUE_NEW).append("\', \'").append(editNewLink).append(
-                "\');\" class=\"ocms_button\"><span class=\"ocms_over\" onmouseover=\"className=\'ocms_over\'\" onmouseout=\"className=\'ocms_over\'\" onmousedown=\"className=\'ocms_push\'\" onmouseup=\"className=\'ocms_over\'\">");
+            result.append("<td class=\"ocms_de\"><a href=\"#\" onclick=\"javascript:submitOcms(\'").append(
+                editId).append("\', \'").append(CmsDirectEditButtonSelection.VALUE_NEW).append("\', \'").append(
+                    editNewLink).append(
+                        "\');\" class=\"ocms_button\"><span class=\"ocms_over\" onmouseover=\"className=\'ocms_over\'\" onmouseout=\"className=\'ocms_over\'\" onmousedown=\"className=\'ocms_push\'\" onmouseup=\"className=\'ocms_over\'\">");
             if (m_editButtonStyle == 1) {
                 result.append("<span id=\"new_").append(editId).append(
-                    "\" class=\"ocms_combobutton\" style=\"background-image: url(\'").append(CmsWorkplace.getSkinUri()).append(
-                    "buttons/new.png\');\">&nbsp;").append(m_messages.key(Messages.GUI_BUTTON_NEW_0)).append("</span>");
+                    "\" class=\"ocms_combobutton\" style=\"background-image: url(\'").append(
+                        CmsWorkplace.getSkinUri()).append("buttons/new.png\');\">&nbsp;").append(
+                            m_messages.key(Messages.GUI_BUTTON_NEW_0)).append("</span>");
             } else if (m_editButtonStyle == 2) {
                 result.append("<span class=\"ocms_combobutton\" style=\"padding-left: 4px;\">").append(
                     m_messages.key(Messages.GUI_BUTTON_NEW_0)).append("</span>");
             } else {
                 result.append("<img border=\"0\" src=\"").append(CmsWorkplace.getSkinUri()).append(
                     "buttons/new.png\" title=\"").append(m_messages.key(Messages.GUI_BUTTON_NEW_0)).append(
-                    "\" alt=\"\"/>");
+                        "\" alt=\"\"/>");
             }
             result.append("</span></a></td>");
         }
@@ -374,11 +376,11 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
 
     /**
      * Helper method to convert the content of a resource to a string.<p>
-     * 
-     * @param file the file 
-     * @return the file content as a string 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param file the file
+     * @return the file content as a string
+     *
+     * @throws CmsException if something goes wrong
      */
     protected String getContentAsString(CmsFile file) throws CmsException {
 
@@ -392,10 +394,10 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
 
     /**
      * Prepares the macro resolver which is used to process the included text file.<p>
-     * 
+     *
      * @param params the direct edit parameters
-     *  
-     * @return the macro resolver 
+     *
+     * @return the macro resolver
      */
     protected CmsMacroResolver prepareMacroResolverForIncludes(CmsDirectEditParams params) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import org.opencms.util.CmsStringUtil;
 
 /**
  * A bean which represents a value together with a path which indicates from where the value has been read.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPathValue {
@@ -43,9 +43,9 @@ public class CmsPathValue {
     private final String m_value;
 
     /**
-     * Creates a new instance.<p> 
-     * @param value the value 
-     * @param path the path 
+     * Creates a new instance.<p>
+     * @param value the value
+     * @param path the path
      */
     public CmsPathValue(String value, String path) {
 
@@ -54,9 +54,9 @@ public class CmsPathValue {
     }
 
     /**
-     * Gets the path.<p> 
-     * 
-     * @return the path 
+     * Gets the path.<p>
+     *
+     * @return the path
      */
     public String getPath() {
 
@@ -65,8 +65,8 @@ public class CmsPathValue {
 
     /**
      * Gets the value.<p>
-     * 
-     * @return the value 
+     *
+     * @return the value
      */
     public String getValue() {
 
@@ -75,10 +75,10 @@ public class CmsPathValue {
 
     /**
      * Creates a new path value with the same value as this one, but with a prefix prepended to the path.<p>
-     * 
+     *
      * @param pathPart the path part which should be prepended to the path
-     *  
-     * @return the new path value 
+     *
+     * @return the new path value
      */
     public CmsPathValue prepend(String pathPart) {
 

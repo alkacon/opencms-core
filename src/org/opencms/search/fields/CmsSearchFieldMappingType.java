@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,11 +32,11 @@ import org.opencms.util.CmsStringUtil;
 
 /**
  * Describes a possible mapping type for a piece of content used in building a search index.<p>
- * 
+ *
  * The mapping type is responsible to select which content from the OpenCms resource is used for
  * a field.<p>
- * 
- * @since 7.0.0 
+ *
+ * @since 7.0.0
  */
 public final class CmsSearchFieldMappingType extends A_CmsModeIntEnumeration {
 
@@ -81,7 +81,7 @@ public final class CmsSearchFieldMappingType extends A_CmsModeIntEnumeration {
 
     /**
      * Hides the public constructor.<p>
-     * 
+     *
      * @param mode the mode constant to use
      */
     private CmsSearchFieldMappingType(int mode) {
@@ -91,10 +91,10 @@ public final class CmsSearchFieldMappingType extends A_CmsModeIntEnumeration {
 
     /**
      * Returns the matching field mapping type, or <code>null</code> if the given value is
-     * not a valid mapping type name.<p> 
-     * 
+     * not a valid mapping type name.<p>
+     *
      * @param value the name of the mapping type
-     * 
+     *
      * @return the matching field mapping type
      */
     public static CmsSearchFieldMappingType valueOf(String value) {

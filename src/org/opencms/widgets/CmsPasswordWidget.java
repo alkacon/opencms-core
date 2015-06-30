@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,8 +39,8 @@ import java.util.Locale;
 
 /**
  * Provides a standard HTML form password widget, for use on a widget dialog.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsPasswordWidget extends A_CmsWidget implements I_CmsADEWidget {
 
@@ -55,7 +55,7 @@ public class CmsPasswordWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Creates a new password widget with the given configuration.<p>
-     * 
+     *
      * @param configuration the configuration to use
      */
     public CmsPasswordWidget(String configuration) {

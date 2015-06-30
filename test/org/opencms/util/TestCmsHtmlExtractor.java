@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,9 +36,9 @@ import org.htmlparser.Parser;
 import org.htmlparser.filters.NodeClassFilter;
 import org.htmlparser.nodes.TextNode;
 
-/** 
+/**
  * Test case for <code>{@link org.opencms.util.CmsHtmlExtractor}</code>.<p>
- * 
+ *
  * @since 6.2.0
  */
 public class TestCmsHtmlExtractor extends OpenCmsTestCase {
@@ -58,11 +58,11 @@ public class TestCmsHtmlExtractor extends OpenCmsTestCase {
 
     /**
      * Extracts plain text from a String that contains HTML.<p>
-     * 
+     *
      * @param content the HTML content to extract the text from
-     * 
+     *
      * @return the extracted plain text
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public static String extractFromHtml2(String content) throws Exception {
@@ -81,7 +81,7 @@ public class TestCmsHtmlExtractor extends OpenCmsTestCase {
 
     /**
      * Tests the HTML extractor.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testHtmlExtractor() throws Exception {
@@ -100,7 +100,7 @@ public class TestCmsHtmlExtractor extends OpenCmsTestCase {
 
     /**
      * Tests the HTML extractor with an empty input String.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testHtmlExtractorWithEmptyInput() throws Exception {
@@ -121,11 +121,11 @@ public class TestCmsHtmlExtractor extends OpenCmsTestCase {
 
     /**
      * Extracts plain text from a String that contains HTML.<p>
-     * 
+     *
      * @param content the HTML content to extract the text from
-     * 
+     *
      * @return the extracted plain text
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     private String extractFromHtml(String content) throws Exception {

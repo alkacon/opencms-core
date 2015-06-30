@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,12 +33,12 @@ import java.util.Locale;
 
 /**
  * Comparator for case insensitive column sorting with string localization.<p>
- * 
- * If both list items column values are Strings then a localized collector is used for sorting; 
+ *
+ * If both list items column values are Strings then a localized collector is used for sorting;
  * if not, the <code>{@link Comparable}</code> interface is used.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.workplace.list.CmsListColumnDefinition
  */
 public class CmsListItemCaseInsensitiveComparator implements I_CmsListItemComparator {

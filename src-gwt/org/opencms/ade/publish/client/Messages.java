@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import org.opencms.gwt.client.util.CmsMessages;
 
 /**
  * This class contains the message keys for the client side of the publish module.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class Messages {
@@ -167,7 +167,7 @@ public final class Messages {
 
     /**
      * Returns an instance of this localized message accessor.<p>
-     * 
+     *
      * @return an instance of this localized message accessor
      */
     public static CmsMessages get() {
@@ -180,7 +180,7 @@ public final class Messages {
 
     /**
      * Returns the bundle name for this OpenCms package.<p>
-     * 
+     *
      * @return the bundle name for this OpenCms package
      */
     public String getBundleName() {

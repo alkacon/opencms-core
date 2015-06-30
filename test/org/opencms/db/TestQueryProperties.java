@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,12 +42,12 @@ import junit.framework.TestSuite;
  * Unit tests that checks the "query.properties" files used by the various drivers for correct
  * format.
  * <p>
- * 
+ *
  * This is no code functionality test but a configuration validation that was inspired by a 1 hour
  * debug session caused by a query.properties file with a trailing tab after the "escape linebreak"
  * backslash.
  * <p>
- * 
+ *
  * Currently the following checks are made:
  * <ul>
  * <li> <b>Invalid linebreak escape</b><br>
@@ -68,7 +68,7 @@ public class TestQueryProperties extends OpenCmsTestCase {
     /**
      * Default JUnit constructor.
      * <p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestQueryProperties(String arg0) {
@@ -79,7 +79,7 @@ public class TestQueryProperties extends OpenCmsTestCase {
     /**
      * Test suite for this test class.
      * <p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -98,7 +98,7 @@ public class TestQueryProperties extends OpenCmsTestCase {
 
     /**
      * Test the generic query.properties file within the workspace for format errors.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testQueryPropertiesGeneric() throws Exception {
@@ -110,7 +110,7 @@ public class TestQueryProperties extends OpenCmsTestCase {
 
     /**
      * Test the mssql query.properties file within the workspace for format errors.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testQueryPropertiesMssql() throws Exception {
@@ -121,7 +121,7 @@ public class TestQueryProperties extends OpenCmsTestCase {
 
     /**
      * Test the mysql query.properties file within the workspace for format errors.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testQueryPropertiesMysql() throws Exception {
@@ -132,7 +132,7 @@ public class TestQueryProperties extends OpenCmsTestCase {
 
     /**
      * Test the oracle query.properties file within the workspace for format errors.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testQueryPropertiesOracle() throws Exception {
@@ -143,7 +143,7 @@ public class TestQueryProperties extends OpenCmsTestCase {
 
     /**
      * Test the postgresql query.properties file within the workspace for format errors.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testQueryPropertiesPostgresql() throws Exception {
@@ -154,9 +154,9 @@ public class TestQueryProperties extends OpenCmsTestCase {
 
     /**
      * Parses the key value pair string.<p>
-     * 
+     *
      * @param keyValue the key value pair string
-     * 
+     *
      * @throws ParseException if the key value pair string doesn't match the pattern 'key =value'
      */
     private void parseKeyValue(String keyValue) throws ParseException {
@@ -169,16 +169,17 @@ public class TestQueryProperties extends OpenCmsTestCase {
 
     /**
      * Implementation of the checks to perform.<p>
-     * 
+     *
      * @param fileName the property file name
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     private void parseQueryProperties(String fileName) throws Exception {
 
-        LineNumberReader reader = new LineNumberReader(new InputStreamReader(
-            TestQueryProperties.class.getClassLoader().getResourceAsStream(fileName),
-            Charset.forName("ISO-8859-1")));
+        LineNumberReader reader = new LineNumberReader(
+            new InputStreamReader(
+                TestQueryProperties.class.getClassLoader().getResourceAsStream(fileName),
+                Charset.forName("ISO-8859-1")));
         String read;
         int len;
         int count = 0;
@@ -198,12 +199,9 @@ public class TestQueryProperties extends OpenCmsTestCase {
                         try {
                             parseKeyValue(prefix);
                         } catch (ParseException pe) {
-                            throw new ParseException("Bad format in file "
-                                + fileName
-                                + ", line "
-                                + count
-                                + ": "
-                                + pe.getMessage(), count);
+                            throw new ParseException(
+                                "Bad format in file " + fileName + ", line " + count + ": " + pe.getMessage(),
+                                count);
                         }
                     } else {
                         // valid comment - only line
@@ -217,11 +215,13 @@ public class TestQueryProperties extends OpenCmsTestCase {
             // check 2: invalid attempt to escape a line break, something follows
             if (lastEscape != -1) {
                 if (lastEscape != (len - 1)) {
-                    throw new ParseException("Bad format in file "
-                        + fileName
-                        + ", line "
-                        + count
-                        + ": Line termination escape '\\' is followed by further characters.", count);
+                    throw new ParseException(
+                        "Bad format in file "
+                            + fileName
+                            + ", line "
+                            + count
+                            + ": Line termination escape '\\' is followed by further characters.",
+                        count);
                 }
             }
             // further checks if desired

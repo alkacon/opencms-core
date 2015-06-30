@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,10 +51,10 @@ public class CmsAliasInitialFetchResult implements IsSerializable {
 
     /**
      * Gets the alias lock owner.<p>
-     * 
+     *
      * This will return null if the current user is the lock owner.<p>
-     * 
-     * @return the alias lock owner 
+     *
+     * @return the alias lock owner
      */
     public String getAliasTableLockOwner() {
 
@@ -63,8 +63,8 @@ public class CmsAliasInitialFetchResult implements IsSerializable {
 
     /**
      * Gets the alias download URL.<p>
-     * 
-     * @return the alias download URL 
+     *
+     * @return the alias download URL
      */
     public String getDownloadUrl() {
 
@@ -73,8 +73,8 @@ public class CmsAliasInitialFetchResult implements IsSerializable {
 
     /**
      * Gets the list of rewrite aliases.<p>
-     * 
-     * @return the list of rewrite aliases 
+     *
+     * @return the list of rewrite aliases
      */
     public List<CmsRewriteAliasTableRow> getRewriteAliases() {
 
@@ -83,8 +83,8 @@ public class CmsAliasInitialFetchResult implements IsSerializable {
 
     /**
      * Gets the alias table rows.<p>
-     * 
-     * @return the alias table rows 
+     *
+     * @return the alias table rows
      */
     public List<CmsAliasTableRow> getRows() {
 
@@ -93,8 +93,8 @@ public class CmsAliasInitialFetchResult implements IsSerializable {
 
     /**
      * Sets the alias lock owner name.<p>
-     * 
-     * @param name the alias lock owner name 
+     *
+     * @param name the alias lock owner name
      */
     public void setAliasLockOwner(String name) {
 
@@ -103,8 +103,8 @@ public class CmsAliasInitialFetchResult implements IsSerializable {
 
     /**
      * Sets the download URL for aliases.<p>
-     * 
-     * @param downloadUrl the download URL for aliases 
+     *
+     * @param downloadUrl the download URL for aliases
      */
     public void setDownloadUrl(String downloadUrl) {
 
@@ -114,8 +114,8 @@ public class CmsAliasInitialFetchResult implements IsSerializable {
 
     /**
      * Sets the initial list of rewrite aliases.<p>
-     * 
-     * @param rows the list of rewrite aliases 
+     *
+     * @param rows the list of rewrite aliases
      */
     public void setRewriteRows(List<CmsRewriteAliasTableRow> rows) {
 
@@ -124,8 +124,8 @@ public class CmsAliasInitialFetchResult implements IsSerializable {
 
     /**
      * Sets the alias table rows.<p>
-     * 
-     * @param rows the alias table rows 
+     *
+     * @param rows the alias table rows
      */
     public void setRows(List<CmsAliasTableRow> rows) {
 

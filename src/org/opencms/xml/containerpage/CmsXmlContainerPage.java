@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -72,11 +72,11 @@ import org.xml.sax.EntityResolver;
 
 /**
  * Implementation of a object used to access and manage the xml data of a container page.<p>
- * 
- * In addition to the XML content interface. It also provides access to more comfortable beans. 
- * 
+ *
+ * In addition to the XML content interface. It also provides access to more comfortable beans.
+ *
  * @since 7.5.2
- * 
+ *
  * @see #getContainerPage(CmsObject)
  */
 public class CmsXmlContainerPage extends CmsXmlContent {
@@ -85,26 +85,16 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     public enum XmlNode {
 
         /** Container attribute node name. */
-        Attribute,
-        /** Main node name. */
-        Containers,
-        /** The create new element node name. */
-        CreateNew,
-        /** Container elements node name. */
-        Elements,
-        /** Element formatter node name. */
-        Formatter,
-        /** Container attribute key node name. */
-        Key,
-        /** Container name node name. */
-        Name,
-        /** Parent element instance id node name. */
-        ParentInstanceId,
-        /** Container type node name. */
-        Type,
-        /** Element URI node name. */
-        Uri,
-        /** Container attribute value node name. */
+        Attribute, /** Main node name. */
+        Containers, /** The create new element node name. */
+        CreateNew, /** Container elements node name. */
+        Elements, /** Element formatter node name. */
+        Formatter, /** Container attribute key node name. */
+        Key, /** Container name node name. */
+        Name, /** Parent element instance id node name. */
+        ParentInstanceId, /** Container type node name. */
+        Type, /** Element URI node name. */
+        Uri, /** Container attribute value node name. */
         Value;
     }
 
@@ -124,10 +114,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
     /**
      * Creates a new container page based on the provided XML document.<p>
-     * 
+     *
      * The given encoding is used when marshalling the XML again later.<p>
-     * 
-     * @param cms the cms context, if <code>null</code> no link validation is performed 
+     *
+     * @param cms the cms context, if <code>null</code> no link validation is performed
      * @param document the document to create the container page from
      * @param encoding the encoding of the container page
      * @param resolver the XML entity resolver to use
@@ -144,14 +134,14 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
     /**
      * Create a new container page based on the given default content,
-     * that will have all language nodes of the default content and ensures the presence of the given locale.<p> 
-     * 
+     * that will have all language nodes of the default content and ensures the presence of the given locale.<p>
+     *
      * The given encoding is used when marshalling the XML again later.<p>
-     * 
+     *
      * @param cms the current users OpenCms content
      * @param locale the locale to generate the default content for
      * @param modelUri the absolute path to the container page file acting as model
-     * 
+     *
      * @throws CmsException in case the model file is not found or not valid
      */
     protected CmsXmlContainerPage(CmsObject cms, Locale locale, String modelUri)
@@ -184,10 +174,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
     /**
      * Create a new container page based on the given content definition,
-     * that will have one language node for the given locale all initialized with default values.<p> 
-     * 
+     * that will have one language node for the given locale all initialized with default values.<p>
+     *
      * The given encoding is used when marshalling the XML again later.<p>
-     * 
+     *
      * @param cms the current users OpenCms content
      * @param locale the locale to generate the default content for
      * @param encoding the encoding to use when marshalling the container page later
@@ -209,15 +199,15 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
     /**
      * Saves a container page bean to the in-memory XML structure and returns the changed content.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param cntPage the container page bean 
-     * @return the new content for the container page 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param cntPage the container page bean
+     * @return the new content for the container page
+     * @throws CmsException if something goes wrong
      */
     public byte[] createContainerPageXml(CmsObject cms, CmsContainerPageBean cntPage) throws CmsException {
 
-        // make sure all links are validated 
+        // make sure all links are validated
         writeContainerPage(cms, cntPage);
         checkLinkConcistency(cms);
         return marshal();
@@ -226,16 +216,16 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
     /**
      * Gets the container page content as a bean.<p>
-     * 
-     * @param cms the current CMS context 
-     * @return the bean containing the container page data 
+     *
+     * @param cms the current CMS context
+     * @return the bean containing the container page data
      */
     public CmsContainerPageBean getContainerPage(CmsObject cms) {
 
         Locale masterLocale = CmsLocaleManager.MASTER_LOCALE;
         Locale localeToLoad = null;
         // always use master locale if possible, otherwise use the first locale.
-        // this is important for 'legacy' container pages which were created before container pages became locale independent 
+        // this is important for 'legacy' container pages which were created before container pages became locale independent
         if (m_cntPages.containsKey(masterLocale)) {
             localeToLoad = masterLocale;
         } else if (!m_cntPages.isEmpty()) {
@@ -259,10 +249,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
     /**
      * Saves given container page in the current locale, and not only in memory but also to VFS.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param cntPage the container page to save
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void save(CmsObject cms, CmsContainerPageBean cntPage) throws CmsException {
@@ -278,18 +268,18 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
     /**
      * Saves a container page in in-memory XML structure.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param cntPage the container page bean to save
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void writeContainerPage(CmsObject cms, CmsContainerPageBean cntPage) throws CmsException {
 
         // keep unused containers
         CmsContainerPageBean savePage = addUnusedContainers(cms, cntPage);
 
-        // Replace existing locales with master locale 
+        // Replace existing locales with master locale
         for (Locale locale : getLocales()) {
             removeLocale(locale);
         }
@@ -304,10 +294,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
     /**
      * Merges the containers of the current document that are not used in the given container page with it.<p>
-     * 
+     *
      * @param cms the current CMS context
      * @param cntPage the container page to merge
-     * 
+     *
      * @return a new container page with the additional unused containers
      */
     protected CmsContainerPageBean addUnusedContainers(CmsObject cms, CmsContainerPageBean cntPage) {
@@ -319,7 +309,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             containers.add(currentContainers.get(cntName));
         }
 
-        // now get the unused containers 
+        // now get the unused containers
         CmsContainerPageBean currentContainerPage = getContainerPage(cms);
         if (currentContainerPage != null) {
             for (String cntName : currentContainerPage.getNames()) {
@@ -359,7 +349,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
     /**
      * Checks the link consistency for a given locale and reinitializes the document afterwards.<p>
-     * 
+     *
      * @param cms the cms context
      */
     protected void checkLinkConcistency(CmsObject cms) {
@@ -377,13 +367,13 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
     /**
      * Fills a {@link CmsXmlVfsFileValue} with the resource identified by the given id.<p>
-     * 
+     *
      * @param cms the current CMS context
      * @param element the XML element to fill
      * @param resourceId the ID identifying the resource to use
-     * 
-     * @return the resource 
-     * 
+     *
+     * @return the resource
+     *
      * @throws CmsException if the resource can not be read
      */
     protected CmsResource fillResource(CmsObject cms, Element element, CmsUUID resourceId) throws CmsException {
@@ -415,17 +405,20 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         clearBookmarks();
 
         // initialize the bookmarks
-        for (Iterator<Element> itCntPages = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement()); itCntPages.hasNext();) {
+        for (Iterator<Element> itCntPages = CmsXmlGenericWrapper.elementIterator(
+            m_document.getRootElement()); itCntPages.hasNext();) {
             Element cntPage = itCntPages.next();
 
             try {
-                Locale locale = CmsLocaleManager.getLocale(cntPage.attribute(
-                    CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
+                Locale locale = CmsLocaleManager.getLocale(
+                    cntPage.attribute(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
 
                 addLocale(locale);
 
                 List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
-                for (Iterator<Element> itCnts = CmsXmlGenericWrapper.elementIterator(cntPage, XmlNode.Containers.name()); itCnts.hasNext();) {
+                for (Iterator<Element> itCnts = CmsXmlGenericWrapper.elementIterator(
+                    cntPage,
+                    XmlNode.Containers.name()); itCnts.hasNext();) {
                     Element container = itCnts.next();
 
                     // container itself
@@ -474,7 +467,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         CmsUUID elementId = null;
                         if (uriLink == null) {
                             // this can happen when adding the elements node to the xml content
-                            // it is not dangerous since the link has to be set before saving 
+                            // it is not dangerous since the link has to be set before saving
                         } else {
                             elementId = new CmsLink(uriLink).getStructureId();
                         }
@@ -489,7 +482,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         CmsUUID formatterId = null;
                         if (formatterLink == null) {
                             // this can happen when adding the elements node to the xml content
-                            // it is not dangerous since the link has to be set before saving 
+                            // it is not dangerous since the link has to be set before saving
                         } else {
                             formatterId = new CmsLink(formatterLink).getStructureId();
                         }
@@ -526,11 +519,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
     /**
      * Adds the given container page to the given element.<p>
-     * 
+     *
      * @param cms the current CMS object
      * @param parent the element to add it
      * @param cntPage the container page to add
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected void saveContainerPage(CmsObject cms, Element parent, CmsContainerPageBean cntPage) throws CmsException {

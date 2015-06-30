@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,8 +40,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * A default editor CSS handler to obtain the CSS style sheet path from the template property value of the template itself.<p>
- * 
- * @since 6.9.2 
+ *
+ * @since 6.9.2
  */
 public class CmsEditorCssHandlerDefault implements I_CmsEditorCssHandler {
 
@@ -76,11 +76,11 @@ public class CmsEditorCssHandlerDefault implements I_CmsEditorCssHandler {
 
     /**
      * Finds the style sheet by reading the template property of the template for a given path.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param editedResourcePath the resource path 
-     * 
-     * @return the CSS uri from the template for the given path 
+     *
+     * @param cms the current CMS context
+     * @param editedResourcePath the resource path
+     *
+     * @return the CSS uri from the template for the given path
      */
     private String internalGetUriStyleSheet(CmsObject cms, String editedResourcePath) {
 
@@ -92,8 +92,10 @@ public class CmsEditorCssHandlerDefault implements I_CmsEditorCssHandler {
             // determine the path of the template
             String templatePath = "";
             try {
-                templatePath = cms.readPropertyObject(editedResourcePath, CmsPropertyDefinition.PROPERTY_TEMPLATE, true).getValue(
-                    "");
+                templatePath = cms.readPropertyObject(
+                    editedResourcePath,
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                    true).getValue("");
                 if (CmsTemplateContextManager.isProvider(templatePath)) {
                     I_CmsTemplateContextProvider provider = OpenCms.getTemplateContextManager().getTemplateContextProvider(
                         templatePath);

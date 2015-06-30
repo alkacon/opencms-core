@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -75,11 +75,11 @@ public enum CmsGallerySearchScope {
 
     /**
      * Creates a new search scope choice.<p>
-     * 
-     * @param siteParam true if the current site should be searched 
-     * @param subSiteParam true if the current subsite should be searched 
-     * @param sharedParam true if the shared folder should be searched 
-     * @param key the localization key for the choice 
+     *
+     * @param siteParam true if the current site should be searched
+     * @param subSiteParam true if the current subsite should be searched
+     * @param sharedParam true if the shared folder should be searched
+     * @param key the localization key for the choice
      */
     CmsGallerySearchScope(boolean siteParam, boolean subSiteParam, boolean sharedParam, String key) {
 
@@ -91,8 +91,8 @@ public enum CmsGallerySearchScope {
 
     /**
      * Returns the localization key for the choice.<p>
-     * 
-     * @return the localization key for the choice 
+     *
+     * @return the localization key for the choice
      */
     public String getKey() {
 
@@ -101,7 +101,7 @@ public enum CmsGallerySearchScope {
 
     /**
      * Returns if this search scope includes the shared folder.<p>
-     * 
+     *
      * @return <code>true</code> if this search scope includes the shared folder
      */
     public boolean isIncludeShared() {
@@ -111,7 +111,7 @@ public enum CmsGallerySearchScope {
 
     /**
      * Returns if this search scope includes the site folder.<p>
-     * 
+     *
      * @return <code>true</code> if this search scope includes the site folder
      */
     public boolean isIncludeSite() {
@@ -121,7 +121,7 @@ public enum CmsGallerySearchScope {
 
     /**
      * Returns if this search scope includes the sub site folder.<p>
-     * 
+     *
      * @return <code>true</code> if this search scope includes the sub site folder
      */
     public boolean isIncludeSubSite() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,7 +59,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestPublishIssues(String arg0) {
@@ -69,7 +69,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -114,12 +114,12 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
     /**
      * Tests publish scenario "publish all Siblings".<p>
-     * 
+     *
      * This scenario is described as follows:
-     * If a direct publish is made, and the option "publish all siblings" is selected, 
-     * a file that contains siblings will be added multiple times to the publish list, 
+     * If a direct publish is made, and the option "publish all siblings" is selected,
+     * a file that contains siblings will be added multiple times to the publish list,
      * causing a primary key collision in the publish history table.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testDirectPublishWithSiblings() throws Throwable {
@@ -148,7 +148,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
     /**
      * Tests multiple creation of a project with the same name.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testMultipleProjectCreation() throws Exception {
@@ -166,7 +166,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
             // ok
         }
 
-        // create the project     
+        // create the project
         cms.createProject(
             projectName,
             "Test project",
@@ -213,13 +213,13 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
     /**
      * Tries to create very many projects with the same name.<p>
-     * 
-     * This displays an issue in the OpenCms v6 project driver, where a project is created with 
-     * a UNIQUE INDEX based on the given name and the current system time. In rare instances the 
+     *
+     * This displays an issue in the OpenCms v6 project driver, where a project is created with
+     * a UNIQUE INDEX based on the given name and the current system time. In rare instances the
      * system time may be identical and an error occurs.<p>
-     * 
+     *
      * The issue was found in the MySQL project driver, but others DBs may be affected as well.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testMultipleProjectCreationGalore() throws Exception {
@@ -238,7 +238,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
     /**
      * Tests publishing a deleted folder containing a file that was changed in other project.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishFolderWithChangedFileFromOtherProject() throws Throwable {
@@ -288,7 +288,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
     /**
      * Tests publishing a deleted folder containing a file that was deleted in other project.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishFolderWithDeletedFileFromOtherProject() throws Throwable {
@@ -338,7 +338,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
     /**
      * Tests publishing a deleted folder containing a file that was new created in other project.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishFolderWithNewFileFromOtherProject() throws Throwable {
@@ -386,7 +386,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
     /**
      * Tests publish scenario "A".<p>
-     * 
+     *
      * This scenario is described as follows:
      * We have users "test1" and "test2".
      * We have two projects, "project1" and "project2".
@@ -395,15 +395,15 @@ public class TestPublishIssues extends OpenCmsTestCase {
      * User "test2" edits the file "/folder1/subfolder11/index.html".
      * After this, user "test1" locks the folder "/folder1" in "project1", and unlocks it again.
      * User "test2" logs in and now publishes "project2".<p>
-     * 
-     * Wanted result: the changed resource "/folder1/subfolder11/index.html" is published 
-     * with "project2".<p> 
-     * 
+     *
+     * Wanted result: the changed resource "/folder1/subfolder11/index.html" is published
+     * with "project2".<p>
+     *
      * The test illustrates a change in the logic from OpenCms 5 to OpenCms 6:
      * In OpenCms 5, locking a file caused it to switch to the current users project.
      * In OpenCms 6, this is no longer true, at last not if you just lock a parent folder.
-     * So in OpenCms 5, this test would fail, since the resource would be in "project1", not "project2".<p> 
-     * 
+     * So in OpenCms 5, this test would fail, since the resource would be in "project1", not "project2".<p>
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishScenarioA() throws Throwable {
@@ -418,7 +418,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         // we use the default "Offline" project as "project1"
         CmsProject project1 = cms.readProject("Offline");
 
-        // create "project2" as Admin user       
+        // create "project2" as Admin user
         cms.createProject(
             "project2",
             "Test project 2 for scenario A",
@@ -470,7 +470,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         CmsPublishList publishList = OpenCms.getPublishManager().getPublishList(cms);
         assertEquals(1, publishList.getFileList().size());
 
-        // project should have no locked resources 
+        // project should have no locked resources
         int resourceProjectCount = cms.countLockedResources(project2.getUuid());
         assertEquals(0, resourceProjectCount);
 
@@ -478,23 +478,23 @@ public class TestPublishIssues extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // ensure the file was published - state must be "unchanged" 
+        // ensure the file was published - state must be "unchanged"
         assertState(cms, resource1, CmsResource.STATE_UNCHANGED);
     }
 
     /**
      * Tests publish scenario "B".<p>
-     * 
+     *
      * This scenario is described as follows:
      * We have users "test1" and "test2" and projects "projectA" and "projectB".
      * Both projects contain all resources.
      * We have two folders "/foldera/" and "/folderb/".
-     * There is a resource "test.txt" that has a sibling in both folders. 
+     * There is a resource "test.txt" that has a sibling in both folders.
      * User "test1" locks folder "/foldera/" and user "test2" locks folder "/folderb".
      * Now both users try to edit the sibling of "test.txt" in their folder.<p>
-     * 
+     *
      * TODO: How are concurrent file modifications avoided on the sibling?
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishScenarioB() throws Throwable {
@@ -531,9 +531,9 @@ public class TestPublishIssues extends OpenCmsTestCase {
         assertState(cms, resourceB, CmsResource.STATE_UNCHANGED);
 
         // we use the default "Offline" project as "projectA"
-        //        CmsProject projectA = cms.readProject("Offline");        
+        //        CmsProject projectA = cms.readProject("Offline");
 
-        // create "projectB" as Admin user       
+        // create "projectB" as Admin user
         cms.createProject(
             "projectB",
             "Test project 2 for scenario B",
@@ -549,16 +549,16 @@ public class TestPublishIssues extends OpenCmsTestCase {
         assertEquals(1, resources.size());
         assertEquals("/sites/default/", (String)resources.get(0));
 
-        // TODO: The wanted behaviour in this case must be defined!        
+        // TODO: The wanted behaviour in this case must be defined!
     }
 
     /**
      * Tests publish scenario "C".<p>
-     * 
+     *
      * This scenario is described as follows:
-     * Direct publishing of folders containing subfolders skips all changed subfolders e.g. direct publish of /folder1/ 
+     * Direct publishing of folders containing subfolders skips all changed subfolders e.g. direct publish of /folder1/
      * publishes /folder1/ and /folder1/index.html/, but not /folder1/subfolder11/.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishScenarioC() throws Throwable {
@@ -601,16 +601,16 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
     /**
      * Tests publish scenario "D".<p>
-     * 
+     *
      * This scenario is described as follows:
-     * 
+     *
      * Direct publishing of folders containing subfolders skips all (sibling)
-     * resources in subfolders. 
-     * 
-     * e.g. direct publish of /folder2/folder1/ 
-     * publishes /folder2/folder1/ and /folder2/folder1/index.html/, 
+     * resources in subfolders.
+     *
+     * e.g. direct publish of /folder2/folder1/
+     * publishes /folder2/folder1/ and /folder2/folder1/index.html/,
      * but not /folder2/folder1/subfolder11/index.html.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishScenarioD() throws Throwable {
@@ -638,12 +638,12 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
     /**
      * Tests publish scenario "E".<p>
-     * 
+     *
      * This scenario is described as follows:
-     * 
-     * Deletion of folders containing shared locked siblings, 
+     *
+     * Deletion of folders containing shared locked siblings,
      * after copying a folder creating siblings into a new folder and publishing. <p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishScenarioE() throws Throwable {
@@ -651,7 +651,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing publish scenario E");
 
-        // change to the offline project 
+        // change to the offline project
         CmsProject project = cms.readProject("Offline");
         cms.getRequestContext().setCurrentProject(project);
 
@@ -666,7 +666,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishResource(cms, "/test");
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // lock sibling 
+        // lock sibling
         cms.lockResource("/folder1/subfolder12/subsubfolder121/image1.gif");
         CmsUser user = cms.getRequestContext().getCurrentUser();
 
@@ -690,15 +690,15 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
     /**
      * Tests publish scenario "F".<p>
-     * 
+     *
      * This scenario is described as follows:
-     * 
+     *
      * We have 2 siblings: sibA.txt and sibB.txt
      * We set a shared property and we publish
      * just one sibling let's say sibA.txt.
-     * 
+     *
      * After publishing both siblings should be unchanged
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishScenarioF() throws Throwable {
@@ -737,15 +737,15 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
     /**
      * Tests publish scenario "G".<p>
-     * 
+     *
      * This scenario is described as follows:
-     * 
+     *
      * We have 2 siblings: sib1.txt and sib2.txt
      * We do a content modification and we publish
      * just one sibling let's say sib1.txt.
-     * 
+     *
      * After publishing both siblings should be unchanged
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishScenarioG() throws Throwable {
@@ -785,16 +785,16 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
     /**
      * Tests publish scenario "H".<p>
-     * 
+     *
      * This scenario is described as follows:
-     * 
+     *
      * We have 2 unchanged siblings: sibX.txt and sibY.txt
-     * Now we set a different individual property on each sibling 
+     * Now we set a different individual property on each sibling
      * and we publish just one sibling let's say sibX.txt.
-     * 
+     *
      * After publishing only sibX.txt should be unchanged
      * and sibY.txt should still be changed
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishScenarioH() throws Throwable {

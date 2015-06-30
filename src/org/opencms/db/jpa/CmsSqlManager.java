@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,8 +58,8 @@ import org.apache.commons.pool.impl.StackObjectPool;
 
 /**
  * JPA database server implementation of the SQL manager interface.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
@@ -78,33 +78,33 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     /** The initial number of connections that are created when the pool is started. */
     public static final String KEY_INITIAL_SIZE = "initialSize";
 
-    /** 
-     * The maximum number of active connections that can be allocated from 
-     * this pool at the same time, or negative for no limit. 
+    /**
+     * The maximum number of active connections that can be allocated from
+     * this pool at the same time, or negative for no limit.
      */
     public static final String KEY_MAX_ACTIVE = "maxActive";
 
-    /** 
-     * The maximum number of connections that can remain idle in the pool, 
-     * without extra ones being released, or negative for no limit. 
+    /**
+     * The maximum number of connections that can remain idle in the pool,
+     * without extra ones being released, or negative for no limit.
      */
     public static final String KEY_MAX_IDLE = "maxIdle";
 
-    /** 
-     * The maximum number of milliseconds that the pool will wait (when there are no available connections) 
-     * for a connection to be returned before throwing an exception, or <= 0 to wait indefinitely. 
+    /**
+     * The maximum number of milliseconds that the pool will wait (when there are no available connections)
+     * for a connection to be returned before throwing an exception, or <= 0 to wait indefinitely.
      */
     public static final String KEY_MAX_WAIT = "maxWait";
 
-    /**  
-     * The minimum amount of time an object may sit idle in the pool 
-     * before it is eligable for eviction by the idle object evictor (if any). 
+    /**
+     * The minimum amount of time an object may sit idle in the pool
+     * before it is eligable for eviction by the idle object evictor (if any).
      */
     public static final String KEY_MIN_EVICTABLE_IDLE_TIME = "minEvictableIdleTimeMillis";
 
-    /** 
-     * The minimum number of active connections that can remain idle in the pool, 
-     * without extra ones being created, or 0 to create none. 
+    /**
+     * The minimum number of active connections that can remain idle in the pool,
+     * without extra ones being created, or 0 to create none.
      */
     public static final String KEY_MIN_IDLE = "minIdle";
 
@@ -185,8 +185,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * The constructor.<p>
-     * 
-     * @throws CmsDbException if the manager is not initialized yet 
+     *
+     * @throws CmsDbException if the manager is not initialized yet
      */
     public CmsSqlManager()
     throws CmsDbException {
@@ -203,7 +203,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     /**
      * Create EntityManager instance for given unit name. If factory
      * for this unit is not already created it creates one.<p>
-     * 
+     *
      * @param unitName - the unit name in the persistence.xml file
      * @return EntityManager instance for given unit name
      */
@@ -248,7 +248,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Creates EntityManager from OpenCms's factory.<p>
-     * 
+     *
      * @return EntityManager created from OpenCms's factory
      */
     public static EntityManager getEntityManager() {
@@ -268,9 +268,9 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Returns EntityManagerFactory for given unit name. If the factory does not already exists it creates one.<p>
-     * 
+     *
      * @param unitName - the unit name in the persistence.xml file
-     * 
+     *
      * @return EntityManagerFactory for given unit name
      */
     public static EntityManagerFactory getFactory(String unitName) {
@@ -285,9 +285,9 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Creates a new instance of a SQL manager.<p>
-     * 
+     *
      * @param classname the classname of the SQL manager
-     * 
+     *
      * @return a new instance of the SQL manager
      */
     public static CmsSqlManager getInstance(String classname) {
@@ -311,7 +311,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Initialize the static part of the class.<p>
-     * 
+     *
      * @param config the combined configuration of "opencms.properties" and the "persistence.xml"
      */
     public static void init(CmsParameterConfiguration config) {
@@ -327,18 +327,20 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
             m_factoryTable.put(JPA_PERSISTENCE_UNIT, m_persistenceFactory);
             CmsPoolEntityManagerFactory entityMan = new CmsPoolEntityManagerFactory(m_persistenceFactory);
-            int entityManagerPoolSize = config.getInteger(CmsDbPool.KEY_DATABASE_POOL
-                + "."
-                + CmsDbPool.OPENCMS_DEFAULT_POOL_NAME
-                + "."
-                + CmsDbPool.KEY_ENTITY_MANAGER_POOL_SIZE, DEFAULT_ENTITY_MANAGER_POOL_SIZE);
+            int entityManagerPoolSize = config.getInteger(
+                CmsDbPool.KEY_DATABASE_POOL
+                    + "."
+                    + CmsDbPool.OPENCMS_DEFAULT_POOL_NAME
+                    + "."
+                    + CmsDbPool.KEY_ENTITY_MANAGER_POOL_SIZE,
+                DEFAULT_ENTITY_MANAGER_POOL_SIZE);
             m_openCmsEmPool = new StackObjectPool(entityMan, entityManagerPoolSize, 0);
         }
     }
 
     /**
      * Returns EntityManager instance from OpenCms, back to pool.<p>
-     * 
+     *
      * @param em - instance which returns back to pool of OpenCmsJPAPool persistence context.
      */
     public static void returnEntityManager(EntityManager em) {
@@ -355,11 +357,11 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Builds the connection property value for JPA.<p>
-     * 
+     *
      * @param config the opencms properties
      * @param key the pool name
-     * 
-     * @return the connection properties value 
+     *
+     * @return the connection properties value
      */
     private static String buildConnectionPropertiesValue(CmsParameterConfiguration config, String key) {
 
@@ -368,34 +370,33 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
         // read the values of the pool configuration specified by the given key
         String jdbcDriver = config.get(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_JDBC_DRIVER);
         String jdbcUrl = config.get(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_JDBC_URL);
-        String jdbcUrlParams = config.get(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_JDBC_URL_PARAMS);
+        String jdbcUrlParams = config.get(
+            CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_JDBC_URL_PARAMS);
         int maxActive = config.getInteger(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_MAX_ACTIVE, 10);
         int maxWait = config.getInteger(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_MAX_WAIT, 2000);
         int maxIdle = config.getInteger(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_MAX_IDLE, 5);
-        int minEvictableIdleTime = config.getInteger(CmsDbPool.KEY_DATABASE_POOL
-            + '.'
-            + key
-            + '.'
-            + CmsDbPool.KEY_MIN_EVICTABLE_IDLE_TIME, 1800000);
+        int minEvictableIdleTime = config.getInteger(
+            CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_MIN_EVICTABLE_IDLE_TIME,
+            1800000);
         int minIdle = config.getInteger(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_MIN_IDLE, 0);
-        int numTestsPerEvictionRun = config.getInteger(CmsDbPool.KEY_DATABASE_POOL
-            + '.'
-            + key
-            + '.'
-            + CmsDbPool.KEY_NUM_TESTS_PER_EVICTION_RUN, 3);
-        int timeBetweenEvictionRuns = config.getInteger(CmsDbPool.KEY_DATABASE_POOL
-            + '.'
-            + key
-            + '.'
-            + CmsDbPool.KEY_TIME_BETWEEN_EVICTION_RUNS, 3600000);
+        int numTestsPerEvictionRun = config.getInteger(
+            CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_NUM_TESTS_PER_EVICTION_RUN,
+            3);
+        int timeBetweenEvictionRuns = config.getInteger(
+            CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_TIME_BETWEEN_EVICTION_RUNS,
+            3600000);
 
         String username = config.getString(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_USERNAME, "");
         String password = config.getString(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_PASSWORD, "");
 
         boolean testOnBorrow = Boolean.valueOf(
-            config.getString(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_TEST_ON_BORROW, "false").trim()).booleanValue();
+            config.getString(
+                CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_TEST_ON_BORROW,
+                "false").trim()).booleanValue();
         boolean testWhileIdle = Boolean.valueOf(
-            config.getString(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_TEST_WHILE_IDLE, "false").trim()).booleanValue();
+            config.getString(
+                CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_TEST_WHILE_IDLE,
+                "false").trim()).booleanValue();
 
         String testQuery = config.get(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + CmsDbPool.KEY_TEST_QUERY);
         if ("".equals(testQuery)) {
@@ -404,11 +405,9 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
         int initialSize = config.getInteger(CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + KEY_INITIAL_SIZE, 20);
 
-        boolean poolPreparedStatements = config.getBoolean(CmsDbPool.KEY_DATABASE_POOL
-            + '.'
-            + key
-            + '.'
-            + KEY_PREP_STATEMENTS, true);
+        boolean poolPreparedStatements = config.getBoolean(
+            CmsDbPool.KEY_DATABASE_POOL + '.' + key + '.' + KEY_PREP_STATEMENTS,
+            true);
 
         propValue.append(KEY_DRIVER_CLASS_NAME);
         propValue.append("=");
@@ -497,9 +496,9 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     }
 
     /**
-     * Replaces the project search pattern in JPQL queries by the pattern _ONLINE_ or _OFFLINE_ depending on the 
-     * specified project ID.<p> 
-     * 
+     * Replaces the project search pattern in JPQL queries by the pattern _ONLINE_ or _OFFLINE_ depending on the
+     * specified project ID.<p>
+     *
      * @param projectId the ID of the current project
      * @param query the JPQL query
      * @return String the JPQL query with the table key search pattern replaced
@@ -537,12 +536,12 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     /**
      * Returns a Query for a EntityManagerContext specified by the key of a SQL query
      * and the project-ID.<p>
-     * 
+     *
      * @param dbc the the db context
      * @param projectId the ID of the specified CmsProject
      * @param queryKey the key of the SQL query
-     * 
-     * @return Query a new Query containing the pre-compiled SQL statement  
+     *
+     * @return Query a new Query containing the pre-compiled SQL statement
      */
     public Query createNativeQuery(CmsDbContext dbc, CmsUUID projectId, String queryKey) {
 
@@ -556,12 +555,12 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     /**
      * Returns a Query for a JDBC connection specified by the key of a JPQL query
      * and the CmsProject.<p>
-     * 
+     *
      * @param dbc the db context
      * @param project the specified CmsProject
      * @param queryKey the key of the JPQL query
-     * 
-     * @return Query a new Query containing the pre-compiled JPQL statement  
+     *
+     * @return Query a new Query containing the pre-compiled JPQL statement
      */
     public Query createQuery(CmsDbContext dbc, CmsProject project, String queryKey) {
 
@@ -571,13 +570,13 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     /**
      * Returns a Query for a EntityManagerContext specified by the key of a JPQL query
      * and the project-ID.<p>
-     * 
+     *
      * @param dbc the dbc context
      * @param projectId the ID of the specified CmsProject
      * @param queryKey the key of the JPQL query
-     * 
-     * @return Query a new Query containing the pre-compiled JPQL statement  
-     * 
+     *
+     * @return Query a new Query containing the pre-compiled JPQL statement
+     *
      */
     public Query createQuery(CmsDbContext dbc, CmsUUID projectId, String queryKey) {
 
@@ -589,10 +588,10 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Returns a Query for a EntityManagerContext specified by the key of a JPQL query.<p>
-     * 
+     *
      * @param dbc the db context
      * @param queryKey the key of the JPQL query
-     * @return Query a new Query containing the pre-compiled JPQL statement 
+     * @return Query a new Query containing the pre-compiled JPQL statement
      */
     public Query createQuery(CmsDbContext dbc, String queryKey) {
 
@@ -604,10 +603,10 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Returns a Query for a JDBC connection specified by the JPQL query.<p>
-     * 
-     * @param dbc the db context object 
+     *
+     * @param dbc the db context object
      * @param query the JPQL query
-     * @return Query a new Query containing the pre-compiled JPQL statement  
+     * @return Query a new Query containing the pre-compiled JPQL statement
      */
     public Query createQueryFromJPQL(CmsDbContext dbc, String query) {
 
@@ -618,12 +617,12 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Returns a Query for a JDBC connection specified by the JPQL query.<p>
-     * 
-     * @param dbc the db context object 
+     *
+     * @param dbc the db context object
      * @param query the JPQL query
      * @param params the parameters to insert into the query
-     *  
-     * @return Query a new Query containing the pre-compiled JPQL statement  
+     *
+     * @return Query a new Query containing the pre-compiled JPQL statement
      */
     public Query createQueryWithParametersFromJPQL(CmsDbContext dbc, String query, List<Object> params) {
 
@@ -647,13 +646,13 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Finds an object in the db and returns it.<p>
-     * 
+     *
      * @param <T> the class to be returned
      * @param dbc the current dbc
-     * @param cls the class information of the object to be returned 
+     * @param cls the class information of the object to be returned
      * @param o the object to search for
-     * 
-     * @return returns the found object 
+     *
+     * @return returns the found object
      */
     public <T> T find(org.opencms.db.CmsDbContext dbc, Class<T> cls, Object o) {
 
@@ -663,9 +662,9 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Returns the entity manager from the current dbc.<p>
-     * 
+     *
      * @param dbc the current dbc
-     * 
+     *
      * @return the according entity manager
      */
     public EntityManager getEntityManager(org.opencms.db.CmsDbContext dbc) {
@@ -676,7 +675,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Persists an object.<p>
-     * 
+     *
      * @param dbc the current dbc
      * @param o the object to persist
      */
@@ -688,7 +687,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Searches for the JPQL query with the specified key and CmsProject.<p>
-     * 
+     *
      * @param project the specified CmsProject
      * @param queryKey the key of the JPQL query
      * @return the the JPQL or JPQL query in this property list with the specified key
@@ -700,11 +699,11 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Searches for the JPQL query with the specified key and project-ID.<p>
-     * 
-     * For projectIds &ne; 0, the pattern {@link #QUERY_PROJECT_SEARCH_PATTERN} in table names of queries is 
-     * replaced with "Online" or "Offline" to choose the right database 
+     *
+     * For projectIds &ne; 0, the pattern {@link #QUERY_PROJECT_SEARCH_PATTERN} in table names of queries is
+     * replaced with "Online" or "Offline" to choose the right database
      * tables for JPQL queries that are project dependent!
-     * 
+     *
      * @param projectId the ID of the specified CmsProject
      * @param queryKey the key of the JPQL query
      * @return the the JPQL query in this property list with the specified key
@@ -743,7 +742,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
             query = CmsStringUtil.substitute(query, "\n", " ");
 
             if ((projectId != null) && !projectId.isNullUUID()) {
-                // a project ID = 0 is an internal indicator that a project-independent 
+                // a project ID = 0 is an internal indicator that a project-independent
                 // query was requested - further regex operations are not required then
                 query = CmsSqlManager.replaceProjectPattern(projectId, query);
             }
@@ -756,7 +755,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Searches for the JPQL query with the specified key.<p>
-     * 
+     *
      * @param queryKey the JPQL query key
      * @return the the JPQL query in this property list with the specified key
      */
@@ -773,7 +772,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Removes an object from the db.<p>
-     * 
+     *
      * @param dbc the current dbc
      * @param o the object to remove
      */
@@ -785,7 +784,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Replaces null or empty Strings with a String with one space character <code>" "</code>.<p>
-     * 
+     *
      * @param value the string to validate
      * @return the validate string or a String with one space character if the validated string is null or empty
      */
@@ -800,7 +799,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Loads a Java properties hash containing JPQL queries.<p>
-     * 
+     *
      * @param propertyFilename the package/filename of the properties hash
      */
     protected void loadQueryProperties(String propertyFilename) {
@@ -862,9 +861,9 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Set numbers for parameters of giving JPQL query.<p>
-     * 
+     *
      * @param query - the query
-     * 
+     *
      * @return query with numbered parameter's placeholders
      */
     private String prepareQueryParameters(String query) {
@@ -874,10 +873,10 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
 
     /**
      * Set numbers for parameters of giving JPQL query.<p>
-     * 
+     *
      * @param query - the query
-     * @param cache if true, the query will be cached 
-     * 
+     * @param cache if true, the query will be cached
+     *
      * @return query with numbered parameter's placeholders
      */
     private String prepareQueryParameters(String query, boolean cache) {

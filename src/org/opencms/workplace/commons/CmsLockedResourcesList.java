@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,8 +53,8 @@ import java.util.Map;
 
 /**
  * Explorer dialog for the project files view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
 
@@ -81,7 +81,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param lockedResources the list of locked resources (as root paths)
      * @param relativeTo the current folder
@@ -233,8 +233,9 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
         }
 
         CmsListColumnDefinition relatedCol = new CmsListExplorerColumn(LIST_COLUMN_IS_RELATED);
-        relatedCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
+        relatedCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
         relatedCol.setVisible(false);
         relatedCol.setPrintable(false);
         metadata.addColumn(relatedCol);
@@ -253,7 +254,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
 
             /**
              * Default constructor.<p>
-             * 
+             *
              * @param id the action id
              */
             public DetailsJsAction(String id) {
@@ -297,17 +298,18 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
 
             /**
              * Returns an ajax request call code.<p>
-             * 
+             *
              * @param wp the workplace context
              * @param showOwnLocks if to show or hide the own locked resources
-             * 
+             *
              * @return html code
              */
             protected String getRequestLink(CmsWorkplace wp, boolean showOwnLocks) {
 
                 Map<String, String> params = ((CmsLockedResourcesList)wp).getLockParams();
                 StringBuffer html = new StringBuffer(128);
-                html.append("javascript:{ajaxReportContent = ''; document.getElementById('ajaxreport').innerHTML = ajaxWaitMessage; makeRequest('");
+                html.append(
+                    "javascript:{ajaxReportContent = ''; document.getElementById('ajaxreport').innerHTML = ajaxWaitMessage; makeRequest('");
                 html.append(wp.getJsp().link("/system/workplace/commons/report-locks.jsp"));
                 html.append("', '");
                 boolean needsAmpersand = false;

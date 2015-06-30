@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -71,8 +71,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * List for resources that can be published.<p>
- * 
- * @since 6.5.5 
+ *
+ * @since 6.5.5
  */
 public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
 
@@ -105,7 +105,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param relativeTo the 'relative to' path, this only affects the generation of the path for the resource
      * @param publishRelated indicates if the related resources should be included
@@ -201,8 +201,8 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
 
                     item.set(
                         LIST_COLUMN_IS_RELATED,
-                        Boolean.valueOf(!getSettings().getPublishList().getAllResources().contains(
-                            resUtil.getResource())));
+                        Boolean.valueOf(
+                            !getSettings().getPublishList().getAllResources().contains(resUtil.getResource())));
                 }
             };
         }
@@ -251,14 +251,16 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
             count++;
             if (thread != null) {
                 if (thread.isInterrupted()) {
-                    throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
-                        org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
+                    throw new CmsIllegalStateException(
+                        org.opencms.workplace.commons.Messages.get().container(
+                            org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
                 }
                 thread.setProgress(((count * 10) / resourceNames.size()) + progressOffset);
-                thread.setDescription(org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
-                    org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP3_2,
-                    new Integer(count),
-                    new Integer(resourceNames.size())));
+                thread.setDescription(
+                    org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
+                        org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP3_2,
+                        new Integer(count),
+                        new Integer(resourceNames.size())));
             }
 
             CmsListItem item = itResourceNames.next();
@@ -306,9 +308,9 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                                         siteName = "/";
                                     }
                                     relationName = CmsStringUtil.formatResourceName(relationName, 50);
-                                    relationName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {
-                                        siteName,
-                                        relationName});
+                                    relationName = key(
+                                        Messages.GUI_DELETE_SITE_RELATION_2,
+                                        new Object[] {siteName, relationName});
                                 }
                                 if (!cms.getLock(target).isLockableBy(cms.getRequestContext().getCurrentUser())) {
                                     // mark not lockable resources
@@ -353,9 +355,9 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                                             siteName = "/";
                                         }
                                         relationName = CmsStringUtil.formatResourceName(relationName, 50);
-                                        relationName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {
-                                            siteName,
-                                            relationName});
+                                        relationName = key(
+                                            Messages.GUI_DELETE_SITE_RELATION_2,
+                                            new Object[] {siteName, relationName});
                                     }
                                     // mark as reverse reference
                                     relationName = relationName + "$";
@@ -451,8 +453,9 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
         }
 
         CmsListColumnDefinition relatedCol = new CmsListExplorerColumn(LIST_COLUMN_IS_RELATED);
-        relatedCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-            org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
+        relatedCol.setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
         relatedCol.setVisible(false);
         relatedCol.setPrintable(false);
         metadata.addColumn(relatedCol);
@@ -471,7 +474,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
 
             /**
              * Default constructor.<p>
-             * 
+             *
              * @param id the action id
              */
             public DetailsJsAction(String id) {
@@ -592,23 +595,25 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                         // resource is not lockable, and will not be published
                         resName = resName.substring(0, resName.length() - 1);
                         html.append("<font color='red' />");
-                        html.append(Messages.get().getBundle(locale).key(
-                            Messages.GUI_PUBLISH_DETAIL_RELATED_LOCKED_RESOURCE_0));
+                        html.append(
+                            Messages.get().getBundle(locale).key(
+                                Messages.GUI_PUBLISH_DETAIL_RELATED_LOCKED_RESOURCE_0));
                         html.append("</font/>");
                     } else if (resName.endsWith("!")) {
                         // resource will be published
                         resName = resName.substring(0, resName.length() - 1);
-                        html.append(Messages.get().getBundle(locale).key(Messages.GUI_PUBLISH_DETAIL_RELATED_RESOURCE_0));
+                        html.append(
+                            Messages.get().getBundle(locale).key(Messages.GUI_PUBLISH_DETAIL_RELATED_RESOURCE_0));
                     } else if (resName.endsWith("$")) {
                         // reverse reference
                         resName = resName.substring(0, resName.length() - 1);
-                        html.append(Messages.get().getBundle(locale).key(
-                            Messages.GUI_PUBLISH_DETAIL_REVERSE_REFERENCE_0));
+                        html.append(
+                            Messages.get().getBundle(locale).key(Messages.GUI_PUBLISH_DETAIL_REVERSE_REFERENCE_0));
                     } else {
                         // resource will not be published
                         html.append("<font color='red' />");
-                        html.append(Messages.get().getBundle(locale).key(
-                            Messages.GUI_PUBLISH_DETAIL_RELATED_RESOURCE_NO_0));
+                        html.append(
+                            Messages.get().getBundle(locale).key(Messages.GUI_PUBLISH_DETAIL_RELATED_RESOURCE_NO_0));
                         html.append("</font/>");
                     }
                     html.append("&nbsp;:&nbsp;\n");
@@ -627,14 +632,14 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
             }
 
         });
-        relationsDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_SHOW_NAME_0));
-        relationsDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_SHOW_HELP_0));
-        relationsDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_HIDE_NAME_0));
-        relationsDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_HIDE_HELP_0));
+        relationsDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_SHOW_NAME_0));
+        relationsDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_SHOW_HELP_0));
+        relationsDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_HIDE_NAME_0));
+        relationsDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_PUBLISH_RELATED_RESOURCES_DETAIL_HIDE_HELP_0));
 
         // add resources info item detail to meta data
         metadata.addItemDetails(relationsDetails);

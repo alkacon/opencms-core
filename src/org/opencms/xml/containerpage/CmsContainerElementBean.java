@@ -185,7 +185,9 @@ public class CmsContainerElementBean implements Cloneable {
      *
      * @return the element bean
      */
-    public static CmsContainerElementBean cloneWithSettings(CmsContainerElementBean source, Map<String, String> settings) {
+    public static CmsContainerElementBean cloneWithSettings(
+        CmsContainerElementBean source,
+        Map<String, String> settings) {
 
         CmsContainerElementBean result = new CmsContainerElementBean(
             source.m_elementId,
@@ -367,7 +369,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns the element instance id.<p>
-     * 
+     *
      * @return the element instance id
      */
     public String getInstanceId() {
@@ -460,7 +462,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Initializes the element settings.<p>
-     * 
+     *
      * @param cms the CMS context
      * @param formatterBean the formatter configuration bean
      */
@@ -506,8 +508,8 @@ public class CmsContainerElementBean implements Cloneable {
         if (m_resource == null) {
             initResource(cms);
         }
-        return CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(OpenCms.getResourceManager().getResourceType(
-            m_resource).getTypeName());
+        return CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(
+            OpenCms.getResourceManager().getResourceType(m_resource).getTypeName());
     }
 
     /**
@@ -524,7 +526,8 @@ public class CmsContainerElementBean implements Cloneable {
         if (m_resource == null) {
             initResource(cms);
         }
-        return OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME).getTypeId() == m_resource.getTypeId();
+        return OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME).getTypeId() == m_resource.getTypeId();
     }
 
     /**
@@ -585,8 +588,8 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Sets a historical file.<p>
-     * 
-     * @param file the historical file 
+     *
+     * @param file the historical file
      */
     public void setHistoryFile(CmsFile file) {
 

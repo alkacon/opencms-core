@@ -52,12 +52,12 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
     /**
      * Returns true if the user driver has been instantiated.<p>
-     * 
+     *
      * We use this to check whether the used database is MSSQL.
-     * 
-     * TODO: Make lazy user lists work with MSSQL, too. 
-     *  
-     * @return true if the user driver has been instantiated 
+     *
+     * TODO: Make lazy user lists work with MSSQL, too.
+     *
+     * @return true if the user driver has been instantiated
      */
     public static boolean isInstantiated() {
 

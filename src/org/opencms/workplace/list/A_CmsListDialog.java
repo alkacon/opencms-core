@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,9 +54,9 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides a dialog with a list widget.<p> 
- * 
- * @since 6.0.0 
+ * Provides a dialog with a list widget.<p>
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsListDialog extends CmsDialog {
 
@@ -197,7 +197,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -218,14 +218,14 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
      * @param sortedColId the a priory sorted column
      * @param sortOrder the order of the sorted column
      * @param searchableColId the column to search into
-     * @param lazy if this parameter is true, the list should load only load the list items of the current page, if possible 
+     * @param lazy if this parameter is true, the list should load only load the list items of the current page, if possible
      */
     protected A_CmsListDialog(
         CmsJspActionElement jsp,
@@ -253,7 +253,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         m_searchColId = searchableColId;
         // try to read the list from the session
         listRecovery(listId);
-        // initialization 
+        // initialization
         if (getList() == null) {
             // create the list
             setList(new CmsHtmlList(listId, listName, getMetadata(this.getClass().getName(), listId)));
@@ -279,10 +279,10 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /**
      * Returns the list object for the given list dialog, or <code>null</code>
      * if no list object has been set.<p>
-     * 
+     *
      * @param listDialog the list dialog class
      * @param settings the wp settings for accessing the session
-     * 
+     *
      * @return the list object for this list dialog, or <code>null</code>
      */
     public static CmsHtmlList getListObject(Class<?> listDialog, CmsWorkplaceSettings settings) {
@@ -292,10 +292,10 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Returns the (internal use only) map of list objects.<p>
-     * 
-     * @param settings the wp settings for accessing the session 
-     * 
-     * @return the (internal use only) map of list objects 
+     *
+     * @param settings the wp settings for accessing the session
+     *
+     * @return the (internal use only) map of list objects
      */
     private static Map<String, CmsHtmlList> getListObjectMap(CmsWorkplaceSettings settings) {
 
@@ -310,7 +310,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Performs the dialog actions depending on the initialized action.<p>
-     * 
+     *
      * @throws JspException if dialog actions fail
      * @throws IOException in case of errors forwarding to the required result page
      * @throws ServletException in case of errors forwarding to the required result page
@@ -327,13 +327,14 @@ public abstract class A_CmsListDialog extends CmsDialog {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_START_ACTION_LIST_2,
-                getListId(),
-                new Integer(getAction())));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_START_ACTION_LIST_2,
+                    getListId(),
+                    new Integer(getAction())));
         }
         switch (getAction()) {
-        //////////////////// ACTION: default actions
+            //////////////////// ACTION: default actions
             case ACTION_LIST_SEARCH:
             case ACTION_LIST_SORT:
             case ACTION_LIST_SELECT_PAGE:
@@ -363,17 +364,15 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 setParamAction(DIALOG_INITIAL);
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_END_ACTION_LIST_2,
-                getListId(),
-                new Integer(getAction())));
+            LOG.debug(
+                Messages.get().getBundle().key(Messages.LOG_END_ACTION_LIST_2, getListId(), new Integer(getAction())));
         }
         refreshList();
     }
 
     /**
      * Generates the dialog starting html code.<p>
-     * 
+     *
      * @return html code
      */
     public String defaultActionHtml() {
@@ -393,7 +392,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
-     * 
+     *
      * @throws JspException if dialog actions fail
      * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
      * @throws ServletException in case of errors forwarding to the required result page
@@ -405,10 +404,10 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form if needed.<p>
-     * 
-     * @param writeLater if <code>true</code> no output is written, 
+     *
+     * @param writeLater if <code>true</code> no output is written,
      *                   you have to call manually the <code>{@link #defaultActionHtml()}</code> method.
-     * 
+     *
      * @throws JspException if dialog actions fail
      * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
      * @throws ServletException in case of errors forwarding to the required result page
@@ -446,11 +445,11 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * This method should handle the default list independent actions,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     * 
+     * by comparing <code>{@link #getParamListAction()}</code> with the id
+     * of the action to execute.<p>
+     *
      * if you want to handle additional independent actions, override this method,
-     * handling your actions and FINALLY calling <code>super.executeListIndepActions();</code>.<p> 
+     * handling your actions and FINALLY calling <code>super.executeListIndepActions();</code>.<p>
      */
     public void executeListIndepActions() {
 
@@ -465,8 +464,8 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * This method should handle every defined list multi action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
+     * by comparing <code>{@link #getParamListAction()}</code> with the id
+     * of the action to execute.<p>
      *
      * @throws IOException in case of errors when including a required sub-element
      * @throws ServletException in case of errors when including a required sub-element
@@ -476,9 +475,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * This method should handle every defined list single action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     * 
+     * by comparing <code>{@link #getParamListAction()}</code> with the id
+     * of the action to execute.<p>
+     *
      * @throws IOException in case of errors when including a required sub-element
      * @throws ServletException in case of errors when including a required sub-element
      * @throws CmsRuntimeException to signal that an action is not supported
@@ -510,9 +509,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Returns the list metadata object for the given dialog.<p>
-     * 
+     *
      * @param listDialogName the dialog class name
-     * 
+     *
      * @return the list metadata object
      */
     public CmsListMetadata getMetadata(String listDialogName) {
@@ -582,7 +581,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Returns the current selected item.<p>
-     * 
+     *
      * @return the current selected item
      */
     public CmsListItem getSelectedItem() {
@@ -601,12 +600,15 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Returns a list of current selected items.<p>
-     * 
+     *
      * @return a list of current selected items
      */
     public List<CmsListItem> getSelectedItems() {
 
-        Iterator<String> it = CmsStringUtil.splitAsList(getParamSelItems(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
+        Iterator<String> it = CmsStringUtil.splitAsList(
+            getParamSelItems(),
+            CmsHtmlList.ITEM_SEPARATOR,
+            true).iterator();
         List<CmsListItem> items = new ArrayList<CmsListItem>();
         while (it.hasNext()) {
             String id = it.next();
@@ -619,10 +621,10 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * Returns the activation flag.<p>
      *
      * Useful for dialogs with several lists.<p>
-     * 
-     * Is <code></code> if the original <code>formname</code> parameter 
+     *
+     * Is <code></code> if the original <code>formname</code> parameter
      * is equals to <code>${listId}-form</code>.<p>
-     * 
+     *
      * @return the activation flag
      */
     public boolean isActive() {
@@ -655,7 +657,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Removes the list from the workplace settings.<p>
-     * 
+     *
      * Next time the list is displayed the list will be reloaded.<p>
      */
     public void removeList() {
@@ -675,8 +677,8 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Stores the given object as "list object" for the given list dialog in the current users session.<p> 
-     * 
+     * Stores the given object as "list object" for the given list dialog in the current users session.<p>
+     *
      * @param listDialog the list dialog class
      * @param listObject the list to store
      */
@@ -755,7 +757,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Writes the dialog html code, only if the <code>{@link #ACTION_DEFAULT}</code> is set.<p>
-     * 
+     *
      * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
      */
     public void writeDialog() throws IOException {
@@ -775,7 +777,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Can be overwritten to add some code after the list.<p>
-     * 
+     *
      * @return custom html code
      */
     protected String customHtmlEnd() {
@@ -785,7 +787,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Can be overwritten to add some code before the list.<p>
-     * 
+     *
      * @return custom html code
      */
     protected String customHtmlStart() {
@@ -795,7 +797,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Returns the html code for the default action content.<p>
-     * 
+     *
      * @return html code
      */
     protected String defaultActionHtmlContent() {
@@ -826,7 +828,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Generates the dialog ending html code.<p>
-     * 
+     *
      * @return html code
      */
     protected String defaultActionHtmlEnd() {
@@ -840,7 +842,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Generates the dialog starting html code.<p>
-     * 
+     *
      * @return html code
      */
     protected String defaultActionHtmlStart() {
@@ -864,7 +866,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Select a page, given the action is set to <code>LIST_SELECT_PAGE</code> and 
+     * Select a page, given the action is set to <code>LIST_SELECT_PAGE</code> and
      * the page to go to is set in the <code>PARAM_PAGE</code> parameter.<p>
      */
     protected void executeSelectPage() {
@@ -884,11 +886,11 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Lazy initialization for detail data.<p>
-     * 
+     *
      * Should fill the given detail column for every list item in <code>{@link CmsHtmlList#getContent()}</code>
-     * 
+     *
      * Should not throw any kind of exception.<p>
-     * 
+     *
      * @param detailId the id of the detail to initialize
      */
     protected abstract void fillDetails(String detailId);
@@ -906,25 +908,24 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 initializeDetail(itDetails.next().getId());
             }
         } catch (Exception e) {
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_LIST_FILL_1,
-                getList().getName().key(getLocale()),
-                null), e);
+            throw new CmsRuntimeException(
+                Messages.get().container(Messages.ERR_LIST_FILL_1, getList().getName().key(getLocale()), null),
+                e);
         }
     }
 
     /**
      * Should generate a list with the list items to be displayed.<p>
-     * 
+     *
      * @return a list of <code>{@link CmsListItem}</code>s
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected abstract List<CmsListItem> getListItems() throws CmsException;
 
     /**
      * Returns the current list state.<p>
-     * 
+     *
      * @return the current list state
      */
     protected CmsListState getListState() {
@@ -937,12 +938,12 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Should generate the metadata definition for the list, and return the 
+     * Should generate the metadata definition for the list, and return the
      * corresponding <code>{@link CmsListMetadata}</code> object.<p>
-     * 
+     *
      * @param listDialogName the name of the class generating the list
      * @param listId the id of the list
-     * 
+     *
      * @return The metadata for the given list
      */
     protected synchronized CmsListMetadata getMetadata(String listDialogName, String listId) {
@@ -972,8 +973,8 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Gets the list metadata cache.<p>
-     * 
-     * @return the list metadata cache 
+     *
+     * @return the list metadata cache
      */
     protected Map<String, CmsListMetadata> getMetadataCache() {
 
@@ -986,7 +987,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Lazy details initialization.<p>
-     * 
+     *
      * @param detailId the id of the detail column
      */
     protected void initializeDetail(String detailId) {
@@ -999,14 +1000,13 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 // if the detail column has not been previously initialized
                 if (getList().getAllContent().get(0).get(detailId) == null) {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_START_DETAILS_LIST_2,
-                            getListId(),
-                            detailId));
+                        LOG.debug(
+                            Messages.get().getBundle().key(Messages.LOG_START_DETAILS_LIST_2, getListId(), detailId));
                     }
                     fillDetails(detailId);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_DETAILS_LIST_2, getListId(), detailId));
+                        LOG.debug(
+                            Messages.get().getBundle().key(Messages.LOG_END_DETAILS_LIST_2, getListId(), detailId));
                     }
                 }
             }
@@ -1020,7 +1020,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (LIST_SEARCH.equals(getParamAction())) {
             setAction(ACTION_LIST_SEARCH);
         } else if (LIST_SORT.equals(getParamAction())) {
@@ -1052,9 +1052,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Recover the last list instance that is read from the request attributes.<p>
-     * 
+     *
      * This is required for keep the whole list in memory while you browse a page.<p>
-     * 
+     *
      * @param listId the id of the expected list
      */
     protected synchronized void listRecovery(String listId) {
@@ -1076,36 +1076,36 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Should create the columns and add them to the given list metadata object.<p>
-     * 
-     * This method will be just executed once, the first time the constructor is called.<p> 
-     * 
+     *
+     * This method will be just executed once, the first time the constructor is called.<p>
+     *
      * @param metadata the list metadata
      */
     protected abstract void setColumns(CmsListMetadata metadata);
 
     /**
      * Should add the independent actions to the given list metadata object.<p>
-     * 
-     * This method will be just executed once, the first time the constructor is called.<p> 
-     * 
+     *
+     * This method will be just executed once, the first time the constructor is called.<p>
+     *
      * @param metadata the list metadata
      */
     protected abstract void setIndependentActions(CmsListMetadata metadata);
 
     /**
      * Should add the multi actions to the given list metadata object.<p>
-     * 
-     * This method will be just executed once, the first time the constructor is called.<p> 
-     * 
+     *
+     * This method will be just executed once, the first time the constructor is called.<p>
+     *
      * @param metadata the list metadata
      */
     protected abstract void setMultiActions(CmsListMetadata metadata);
 
     /**
      * Creates the default search action.<p>
-     * 
+     *
      * Can be overridden for more sophisticated search.<p>
-     * 
+     *
      * @param metadata the metadata of the list to do searchable
      * @param columnId the if of the column to search into
      */
@@ -1125,24 +1125,25 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /**
      * A convenient method to throw a list unsupported
      * action runtime exception.<p>
-     * 
-     * Should be triggered if your list implementation does not 
+     *
+     * Should be triggered if your list implementation does not
      * support the <code>{@link #getParamListAction()}</code>
      * action.<p>
-     * 
+     *
      * @throws CmsRuntimeException always to signal that this operation is not supported
      */
     protected void throwListUnsupportedActionException() throws CmsRuntimeException {
 
-        throw new CmsRuntimeException(Messages.get().container(
-            Messages.ERR_LIST_UNSUPPORTED_ACTION_2,
-            getList().getName().key(getLocale()),
-            getParamListAction()));
+        throw new CmsRuntimeException(
+            Messages.get().container(
+                Messages.ERR_LIST_UNSUPPORTED_ACTION_2,
+                getList().getName().key(getLocale()),
+                getParamListAction()));
     }
 
     /**
      * Should be overridden for parameter validation.<p>
-     * 
+     *
      * @throws Exception if the parameters are not valid
      */
     protected void validateParamaters() throws Exception {

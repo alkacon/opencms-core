@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,8 +52,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Dialog to edit an email to send in the administration view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSendEmailDialog extends A_CmsMessageDialog {
 
@@ -68,7 +68,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSendEmailDialog(CmsJspActionElement jsp) {
@@ -78,7 +78,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -97,8 +97,9 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
         List<Throwable> errors = new ArrayList<Throwable>();
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_msgInfo.getTo())) {
-            setCommitErrors(Collections.singletonList((Throwable)new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_NO_SELECTED_USER_WITH_EMAIL_0))));
+            setCommitErrors(
+                Collections.singletonList((Throwable)new CmsIllegalStateException(
+                    Messages.get().container(Messages.ERR_NO_SELECTED_USER_WITH_EMAIL_0))));
             return;
         }
         try {
@@ -115,7 +116,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
 
     /**
      * Returns a warning if users have been excluded.<p>
-     * 
+     *
      * @return a warning
      */
     public String getExcludedUsers() {
@@ -125,7 +126,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
 
     /**
      * Sets the warning message if users have been excluded.<p>
-     * 
+     *
      * @param excludedUsers the warning message
      */
     public void setExcludedUsers(String excludedUsers) {
@@ -146,7 +147,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
         result.append(createWidgetErrorHeader());
 
         int n = 4;
-        getToNames(); // need it to fill the exclude users property 
+        getToNames(); // need it to fill the exclude users property
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getExcludedUsers())) {
             n++;
         }
@@ -191,7 +192,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
 
     /**
      * Returns a semicolon separated list of user names.<p>
-     * 
+     *
      * @return a semicolon separated list of user names
      */
     @Override
@@ -233,8 +234,9 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
             setExcludedUsers(text.toString());
         }
         if (users.isEmpty()) {
-            setCommitErrors(Collections.singletonList((Throwable)new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_NO_SELECTED_USER_WITH_EMAIL_0))));
+            setCommitErrors(
+                Collections.singletonList((Throwable)new CmsIllegalStateException(
+                    Messages.get().container(Messages.ERR_NO_SELECTED_USER_WITH_EMAIL_0))));
             return "";
         }
         StringBuffer result = new StringBuffer(256);
@@ -250,7 +252,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
 
     /**
      * Returns a semicolon separated list of email addresses.<p>
-     * 
+     *
      * @return a semicolon separated list of email addresses
      */
     private String getEmailAddresses() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,17 +35,17 @@ import java.io.IOException;
 
 /**
  * Implements a name based RFS file based disk cache, that handles parameter based versions of VFS files.<p>
- * 
- * This RFS cache operates on file names, plus a hash code calculated from 
- * {@link org.opencms.file.CmsResource#getDateLastModified()}, {@link org.opencms.file.CmsResource#getDateCreated()} 
- * and {@link org.opencms.file.CmsResource#getLength()}. Optional parameters can be appended to this name, 
- * which will be added as a second hash code. This way a file can have multiple versions based on different parameters.<p> 
- * 
- * This cache is usable for resources from the online AND the offline project at the same time, 
+ *
+ * This RFS cache operates on file names, plus a hash code calculated from
+ * {@link org.opencms.file.CmsResource#getDateLastModified()}, {@link org.opencms.file.CmsResource#getDateCreated()}
+ * and {@link org.opencms.file.CmsResource#getLength()}. Optional parameters can be appended to this name,
+ * which will be added as a second hash code. This way a file can have multiple versions based on different parameters.<p>
+ *
+ * This cache is usable for resources from the online AND the offline project at the same time,
  * because any change to a resource will result in a changed hash code. This means a resource changed in the offline
- * project will have a new hash code compared to the online project. If the resource is identical in the online and 
+ * project will have a new hash code compared to the online project. If the resource is identical in the online and
  * the offline project, the generated hash codes will be the same.<p>
- * 
+ *
  * @since 6.2.0
  */
 public class CmsVfsNameBasedDiskCache {
@@ -55,23 +55,23 @@ public class CmsVfsNameBasedDiskCache {
 
     /**
      * Creates a new disk cache.<p>
-     * 
+     *
      * @param basepath the base path for the cache in the RFS
      * @param foldername the folder name for this cache, to be used a sub-folder for the base folder
      */
     public CmsVfsNameBasedDiskCache(String basepath, String foldername) {
 
-        // normalize the given folder name 
+        // normalize the given folder name
         m_rfsRepository = CmsFileUtil.normalizePath(basepath + foldername + File.separatorChar);
     }
 
     /**
      * Returns the content of the requested file in the disk cache, or <code>null</code> if the
      * file is not found in the cache, or is found but outdated.<p>
-     * 
-     * @param rfsName the file RFS name to look up in the cache 
-     * 
-     * @return the content of the requested file in the disk cache, or <code>null</code> 
+     *
+     * @param rfsName the file RFS name to look up in the cache
+     *
+     * @return the content of the requested file in the disk cache, or <code>null</code>
      */
     public byte[] getCacheContent(String rfsName) {
 
@@ -92,16 +92,16 @@ public class CmsVfsNameBasedDiskCache {
     }
 
     /**
-     * Returns the RFS name to use for caching the given VFS resource with parameters in the disk cache.<p>  
-     * 
+     * Returns the RFS name to use for caching the given VFS resource with parameters in the disk cache.<p>
+     *
      * @param resource the VFS resource to generate the cache name for
      * @param parameters the parameters of the request to the VFS resource
-     * 
-     * @return the RFS name to use for caching the given VFS resource with parameters 
+     *
+     * @return the RFS name to use for caching the given VFS resource with parameters
      */
     public String getCacheName(CmsResource resource, String parameters) {
 
-        // calculate the base cache path for the resource        
+        // calculate the base cache path for the resource
         String rfsName = m_rfsRepository + resource.getRootPath();
         String extension = CmsFileUtil.getExtension(rfsName);
 
@@ -109,7 +109,7 @@ public class CmsVfsNameBasedDiskCache {
         StringBuffer buf = new StringBuffer(rfsName.length() + 24);
         buf.append(rfsName.substring(0, rfsName.length() - extension.length()));
 
-        // calculate a hash code that contains the resource DateLastModified, DateCreated and Length    
+        // calculate a hash code that contains the resource DateLastModified, DateCreated and Length
         StringBuffer ext = new StringBuffer(48);
         ext.append(resource.getDateLastModified());
         ext.append(';');
@@ -118,7 +118,7 @@ public class CmsVfsNameBasedDiskCache {
             ext.append(';');
             ext.append(resource.getLength());
         }
-        // append hash code to the result buffer 
+        // append hash code to the result buffer
         buf.append('_');
         buf.append(ext.toString().hashCode());
 
@@ -135,7 +135,7 @@ public class CmsVfsNameBasedDiskCache {
 
     /**
      * Returns the absolute path of the cache repository in the RFS.<p>
-     * 
+     *
      * @return the absolute path of the cache repository in the RFS
      */
     public String getRepositoryPath() {
@@ -144,11 +144,11 @@ public class CmsVfsNameBasedDiskCache {
     }
 
     /**
-     * Saves the given file content in the disk cache.<p> 
-     * 
+     * Saves the given file content in the disk cache.<p>
+     *
      * @param rfsName the RFS name of the file to save the content in
      * @param content the content of the file to save
-     * 
+     *
      * @throws IOException in case of disk access errors
      */
     public void saveCacheFile(String rfsName, byte[] content) throws IOException {

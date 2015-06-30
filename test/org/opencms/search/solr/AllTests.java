@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,17 +44,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 /**
  * Main test suite for the package <code>{@link org.opencms.search.solr}</code>.<p>
- * 
+ *
  * @since 8.5.0
  */
 public final class AllTests {
@@ -78,10 +78,10 @@ public final class AllTests {
 
     /**
      * Returns the search resource from the result by the given path.<p>
-     * 
+     *
      * @param results the results
      * @param path signals if to print the counts only
-     * 
+     *
      * @return the search resource or null
      */
     public static CmsSearchResource getByPath(CmsSolrResultList results, String path) {
@@ -96,7 +96,7 @@ public final class AllTests {
 
     /**
      * Prints the results.<p>
-     * 
+     *
      * @param cms the current cms
      * @param results the results
      * @param countOnly signals if to print the counts only
@@ -113,7 +113,7 @@ public final class AllTests {
 
     /**
      * Returns the JUnit test suite for this package.<p>
-     * 
+     *
      * @return the JUnit test suite for this package
      */
     public static Test suite() {
@@ -131,7 +131,7 @@ public final class AllTests {
 
     /**
      * Prints a Solr query response.<p>
-     * 
+     *
      * @param results the query result
      */
     private static void printResultCount(CmsSolrResultList results) {
@@ -146,7 +146,7 @@ public final class AllTests {
 
     /**
      * Prints a Solr query response.<p>
-     * 
+     *
      * @param qr the query response
      */
     @SuppressWarnings("unused")
@@ -186,7 +186,7 @@ public final class AllTests {
 
     /**
      * Prints the result.<p>
-     * 
+     *
      * @param results the results to print
      * @param cms the cms object
      */
@@ -200,9 +200,8 @@ public final class AllTests {
             CmsSearchResource res = i.next();
             String path = res.getRootPath();
             colPath = Math.max(colPath, path.length() + 3);
-            String title = res.getField(CmsSearchField.FIELD_TITLE
-                + "_"
-                + cms.getRequestContext().getLocale().toString());
+            String title = res.getField(
+                CmsSearchField.FIELD_TITLE + "_" + cms.getRequestContext().getLocale().toString());
             if (title == null) {
                 title = "";
             } else {
@@ -214,9 +213,8 @@ public final class AllTests {
         for (CmsSearchResource res : results) {
             System.out.print(CmsStringUtil.padRight("" + ++count, 4));
             System.out.print(CmsStringUtil.padRight(res.getRootPath(), colPath));
-            String title = res.getField(CmsSearchField.FIELD_TITLE
-                + "_"
-                + cms.getRequestContext().getLocale().toString());
+            String title = res.getField(
+                CmsSearchField.FIELD_TITLE + "_" + cms.getRequestContext().getLocale().toString());
             if (title == null) {
                 title = "";
             } else {
@@ -228,9 +226,10 @@ public final class AllTests {
                 type = "";
             }
             System.out.print(CmsStringUtil.padRight(type, 10));
-            System.out.print(CmsStringUtil.padRight(
-                "" + CmsDateUtil.getDateTime(new Date(res.getDateLastModified()), DateFormat.SHORT, Locale.GERMAN),
-                17));
+            System.out.print(
+                CmsStringUtil.padRight(
+                    "" + CmsDateUtil.getDateTime(new Date(res.getDateLastModified()), DateFormat.SHORT, Locale.GERMAN),
+                    17));
 
             System.out.println("score: " + res.getScore(results.getMaxScore().floatValue()));
         }

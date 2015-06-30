@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,9 +47,9 @@ public class CmsRenameInfoBean implements IsSerializable {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param sitePath the site path of the resource 
-     * @param structureId the structure id of the resource 
+     *
+     * @param sitePath the site path of the resource
+     * @param structureId the structure id of the resource
      * @param listInfo the list info bean for the resource
      */
     public CmsRenameInfoBean(String sitePath, CmsUUID structureId, CmsListInfoBean listInfo) {
@@ -69,8 +69,8 @@ public class CmsRenameInfoBean implements IsSerializable {
 
     /**
      * Gets the list info bean for the resource.<p>
-     * 
-     * @return the list info bean 
+     *
+     * @return the list info bean
      */
     public CmsListInfoBean getListInfo() {
 
@@ -79,8 +79,8 @@ public class CmsRenameInfoBean implements IsSerializable {
 
     /**
      * Gets the site path of the resource.<p>
-     * 
-     * @return the site path 
+     *
+     * @return the site path
      */
     public String getSitePath() {
 
@@ -89,8 +89,8 @@ public class CmsRenameInfoBean implements IsSerializable {
 
     /**
      * Gets the structure id of the resource.<p>
-     * 
-     * @return the structure id 
+     *
+     * @return the structure id
      */
     public CmsUUID getStructureId() {
 

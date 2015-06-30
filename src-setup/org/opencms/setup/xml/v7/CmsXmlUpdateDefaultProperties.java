@@ -16,10 +16,10 @@
  *
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
- * 
+ *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ import org.dom4j.Node;
 
 /**
  * Update the default properties, from 6.2.3 to 7.0.x.<p>
- * 
+ *
  * @since 6.9.2
  */
 public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
@@ -71,7 +71,7 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
 
         /**
          * The constructor.<p>
-         * 
+         *
          * @param first the first member
          * @param second the second member
          */
@@ -164,7 +164,7 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
 
     /**
      * Returns a list of keys for creating the new nodes.<p>
-     * 
+     *
      * @return a list of pairs (resource type, property name)
      */
     protected List<Pair> getKeys() {

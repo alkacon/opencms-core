@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,23 +39,25 @@ public class CmsCopyModelPageDialog extends A_CmsNewModelPageDialog {
     /** The callbackr. */
     private AsyncCallback<String> m_callback;
 
-    /** 
+    /**
      * Constructor.<p>
-     * 
-     * @param infoBean the list info bean to display in the dialog 
-     * @param callback the callback to call with the title entered by the user 
+     *
+     * @param infoBean the list info bean to display in the dialog
+     * @param callback the callback to call with the title entered by the user
      */
     public CmsCopyModelPageDialog(CmsListInfoBean infoBean, AsyncCallback<String> callback) {
 
-        super(org.opencms.ade.sitemap.client.Messages.get().key(
-            org.opencms.ade.sitemap.client.Messages.GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0), infoBean);
+        super(
+            org.opencms.ade.sitemap.client.Messages.get().key(
+                org.opencms.ade.sitemap.client.Messages.GUI_COPY_MODEL_PAGE_DIALOG_TITLE_0),
+            infoBean);
         m_callback = callback;
     }
 
     /**
      * Gets the description from the description text box.<p>
-     * 
-     * @return the description 
+     *
+     * @return the description
      */
     public String getDescription() {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,16 +40,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * A <code>CmsWidgetDialog</code> that starts a (confirmed) rebuild dialog for 
+ * A <code>CmsWidgetDialog</code> that starts a (confirmed) rebuild dialog for
  * a search index.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsRebuildSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
 
@@ -61,7 +61,7 @@ public class CmsRebuildSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -82,7 +82,7 @@ public class CmsRebuildSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         List<Throwable> errors = new ArrayList<Throwable>();
 
         try {
-            // forward to the rebuild report page 
+            // forward to the rebuild report page
             Map<String, String[]> params = new HashMap<String, String[]>();
             // rebuild report built for several indexes (comma-separated value string)
             params.put(CmsRebuildReport.PARAM_INDEXES, new String[] {getSearchIndexIndex().getName()});
@@ -98,9 +98,9 @@ public class CmsRebuildSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -126,7 +126,7 @@ public class CmsRebuildSearchIndexDialog extends A_CmsEditSearchIndexDialog {
 
         result.append(createWidgetTableEnd());
 
-        // See CmsWidgetDialog.dialogButtonsCustom(): if no widgets are defined that are non-display-only widgets, 
+        // See CmsWidgetDialog.dialogButtonsCustom(): if no widgets are defined that are non-display-only widgets,
         // no dialog buttons (Ok, Cancel) will be visible....
         result.append(dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[2]));
         return result.toString();

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import java.util.Date;
 
 /**
  * Provides filters for getting resources visited by a user in a specified time range.<p>
- * 
+ *
  * @since 8.0
  */
 public class CmsVisitedByFilter {
@@ -58,7 +58,7 @@ public class CmsVisitedByFilter {
 
     /**
      * Constructor, without parameters.<p>
-     * 
+     *
      * It is required to set the user manually if using this constructor.<p>
      */
     public CmsVisitedByFilter() {
@@ -69,7 +69,7 @@ public class CmsVisitedByFilter {
 
     /**
      * Constructor, setting the user to the current user from the context.<p>
-     * 
+     *
      * @param cms the current users context
      */
     public CmsVisitedByFilter(CmsObject cms) {
@@ -95,7 +95,7 @@ public class CmsVisitedByFilter {
 
     /**
      * Returns the date specifying the start point in time from which a resource was visited.<p>
-     * 
+     *
      * @return the date specifying the start point in time from which a resource was visited
      */
     public long getFromDate() {
@@ -105,7 +105,7 @@ public class CmsVisitedByFilter {
 
     /**
      * Returns the parent root path to read visited resources from.<p>
-     * 
+     *
      * @return the parent root path to read visited resources from
      */
     public String getParentPath() {
@@ -115,7 +115,7 @@ public class CmsVisitedByFilter {
 
     /**
      * Returns the date specifying the end point in time to which a resource was visited.<p>
-     * 
+     *
      * @return the date specifying the end point in time to which a resource was visited
      */
     public long getToDate() {
@@ -125,7 +125,7 @@ public class CmsVisitedByFilter {
 
     /**
      * Returns the user to check the visited resources for.<p>
-     * 
+     *
      * @return the user to check the visited resources for
      */
     public CmsUser getUser() {
@@ -135,7 +135,7 @@ public class CmsVisitedByFilter {
 
     /**
      * Returns if subfolders should be included to search for visited resources.<p>
-     * 
+     *
      * @return <code>true</code> if subfolders should be included to search for visited resources, otherwise <code>false</code>
      */
     public boolean isIncludeSubFolders() {
@@ -145,7 +145,7 @@ public class CmsVisitedByFilter {
 
     /**
      * Sets the date specifying the start point in time from which a resource was visited.<p>
-     * 
+     *
      * @param fromDate the date specifying the start point in time from which a resource was visited
      */
     public void setFromDate(long fromDate) {
@@ -155,7 +155,7 @@ public class CmsVisitedByFilter {
 
     /**
      * Returns if subfolders should be included to search for visited resources.<p>
-     * 
+     *
      * @param includeSubFolders the flag to determine if subfolders should be included
      */
     public void setIncludeSubfolders(boolean includeSubFolders) {
@@ -165,9 +165,9 @@ public class CmsVisitedByFilter {
 
     /**
      * Sets the parent path to read visited resources from.<p>
-     * 
+     *
      * This has to be the root path of the parent resource, not the site path.<p>
-     * 
+     *
      * @param parentPath the parent path to read visited resources from
      */
     public void setParentPath(String parentPath) {
@@ -177,7 +177,7 @@ public class CmsVisitedByFilter {
 
     /**
      * Sets the parent path to read visited resources from using the given resource as parent.<p>
-     * 
+     *
      * @param parentResource the resource to use as parent resource
      */
     public void setParentResource(CmsResource parentResource) {
@@ -191,7 +191,7 @@ public class CmsVisitedByFilter {
 
     /**
      * Sets the date specifying the end point in time to which a resource was visited.<p>
-     * 
+     *
      * @param toDate the date specifying the end point in time to which a resource was visited
      */
     public void setToDate(long toDate) {
@@ -201,7 +201,7 @@ public class CmsVisitedByFilter {
 
     /**
      * Sets the user to check the visited resources for.<p>
-     * 
+     *
      * @param user the user to check the visited resources for
      */
     public void setUser(CmsUser user) {
@@ -211,7 +211,7 @@ public class CmsVisitedByFilter {
 
     /**
      * Sets the start and end point in time in which a resource was visited.<p>
-     * 
+     *
      * @param fromDate the date specifying the start point in time from which a resource was visited
      * @param toDate the date specifying the end point in time to which a resource was visited
      */
@@ -223,7 +223,7 @@ public class CmsVisitedByFilter {
 
     /**
      * Returns a user readable representation of the filter.<p>
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override

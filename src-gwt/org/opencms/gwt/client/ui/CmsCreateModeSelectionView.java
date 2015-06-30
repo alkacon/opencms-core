@@ -46,7 +46,8 @@ public class CmsCreateModeSelectionView extends Composite {
     }
 
     /** UiBinder instance. */
-    private static I_CmsCreateModeSelectionViewUiBinder uiBinder = GWT.create(I_CmsCreateModeSelectionViewUiBinder.class);
+    private static I_CmsCreateModeSelectionViewUiBinder uiBinder = GWT.create(
+        I_CmsCreateModeSelectionViewUiBinder.class);
 
     /** UiBinder widget. */
     @UiField

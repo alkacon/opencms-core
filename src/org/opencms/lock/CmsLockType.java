@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,13 +31,13 @@ import org.opencms.util.A_CmsModeIntEnumeration;
 
 /**
  * Indicates the different possible lock types.<p>
- * 
+ *
  * @since 7.0.0
  */
 public final class CmsLockType extends A_CmsModeIntEnumeration {
 
-    /** 
-     * A lock that allows the user to edit the resource's structure record, 
+    /**
+     * A lock that allows the user to edit the resource's structure record,
      * it's resource record, and its content record.<p>
      *
      * This lock is assigned to files that are locked via the context menu.
@@ -51,28 +51,28 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
     public static final CmsLockType PUBLISH = new CmsLockType(7);
 
     /**
-     * A lock that allows the user to edit the resource's structure record only, 
+     * A lock that allows the user to edit the resource's structure record only,
      * but not it's resource record nor content record.<p>
-     * 
+     *
      * This lock is assigned to files if a sibling of the resource record has
-     * already an exclusive lock. 
+     * already an exclusive lock.
      */
     public static final CmsLockType SHARED_EXCLUSIVE = new CmsLockType(2);
 
     /**
-     * A lock that allows the user to edit the resource's structure record only, 
+     * A lock that allows the user to edit the resource's structure record only,
      * but not it's resource record nor content record.<p>
-     * 
+     *
      * This lock is assigned to resources that already have a shared exclusive lock,
      * and then inherit a lock because one of it's parent folders gets locked.
      */
     public static final CmsLockType SHARED_INHERITED = new CmsLockType(1);
 
-    /** 
-     * A temporary exclusive lock that allows the user to edit the resource's structure record, 
+    /**
+     * A temporary exclusive lock that allows the user to edit the resource's structure record,
      * it's resource record, and its content record.<p>
-     * 
-     * This lock is identical to the {@link #EXCLUSIVE} lock, but it is automatically removed after 
+     *
+     * This lock is identical to the {@link #EXCLUSIVE} lock, but it is automatically removed after
      * a user is logged out.<p>
      */
     public static final CmsLockType TEMPORARY = new CmsLockType(6);
@@ -88,7 +88,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
 
     /**
      * Creates a new lock type with the given name.<p>
-     * 
+     *
      * @param type the type id to use
      */
     private CmsLockType(int type) {
@@ -98,11 +98,11 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
 
     /**
      * Returns the lock type for the given type value.<p>
-     * 
+     *
      * This is used only for serialization and should not be accessed for other purposes.<p>
-     *  
+     *
      * @param type the type value to get the lock type for
-     * 
+     *
      * @return the lock type for the given type value
      */
     public static CmsLockType valueOf(int type) {
@@ -129,7 +129,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
 
     /**
      * Returns <code>true</code> if this is an directly inherited lock.<p>
-     * 
+     *
      * @return <code>true</code> if this is an directly inherited lock
      */
     public boolean isDirectlyInherited() {
@@ -139,7 +139,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
 
     /**
      * Returns <code>true</code> if this is an exclusive (or temporary exclusive) lock.<p>
-     * 
+     *
      * @return <code>true</code> if this is an exclusive (or temporary exclusive) lock
      */
     public boolean isExclusive() {
@@ -149,7 +149,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
 
     /**
      * Returns <code>true</code> if this is an inherited lock, which may either be directly or shared inherited.<p>
-     * 
+     *
      * @return <code>true</code> if this is an inherited lock, which may either be directly or shared inherited
      */
     public boolean isInherited() {
@@ -159,7 +159,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
 
     /**
      * Returns <code>true</code> if this is a persistent lock that should be saved when the systems shuts down.<p>
-     * 
+     *
      * @return <code>true</code> if this is a persistent lock that should be saved when the systems shuts down
      */
     public boolean isPersistent() {
@@ -169,7 +169,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
 
     /**
      * Returns <code>true</code> if this is a publish lock.<p>
-     * 
+     *
      * @return <code>true</code> if this is a publish lock
      */
     public boolean isPublish() {
@@ -179,7 +179,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
 
     /**
      * Returns <code>true</code> if this is a shared lock.<p>
-     * 
+     *
      * @return <code>true</code> if this is a shared lock
      */
     public boolean isShared() {
@@ -189,7 +189,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
 
     /**
      * Returns <code>true</code> if this is an shared exclusive lock.<p>
-     * 
+     *
      * @return <code>true</code> if this is an shared exclusive lock
      */
     public boolean isSharedExclusive() {
@@ -199,7 +199,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
 
     /**
      * Returns <code>true</code> if this is an shared inherited lock.<p>
-     * 
+     *
      * @return <code>true</code> if this is an shared inherited lock
      */
     public boolean isSharedInherited() {
@@ -209,7 +209,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
 
     /**
      * Returns <code>true</code> if this is a system (2nd level) lock.<p>
-     * 
+     *
      * @return <code>true</code> if this is a system (2nd level) lock
      */
     public boolean isSystem() {
@@ -219,7 +219,7 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
 
     /**
      * Returns <code>true</code> if this is a temporary lock.<p>
-     * 
+     *
      * @return <code>true</code> if this is a temporary lock
      */
     public boolean isTemporary() {
@@ -229,10 +229,10 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
 
     /**
      * Returns <code>true</code> if this lock is in fact unlocked.<p>
-     * 
+     *
      * Only if this is <code>true</code>, the result lock is equal to the <code>NULL</code> lock,
      * which can be obtained by {@link CmsLock#getNullLock()}.<p>
-     * 
+     *
      * @return <code>true</code> if this lock is in fact unlocked
      */
     public boolean isUnlocked() {

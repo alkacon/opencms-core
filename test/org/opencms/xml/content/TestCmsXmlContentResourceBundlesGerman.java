@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,14 +42,14 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/** 
+/**
  * Test cases for resource bundles in schemas with a different configured default locale.<p>
  */
 public class TestCmsXmlContentResourceBundlesGerman extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsXmlContentResourceBundlesGerman(String arg0) {
@@ -59,7 +59,7 @@ public class TestCmsXmlContentResourceBundlesGerman extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -92,9 +92,9 @@ public class TestCmsXmlContentResourceBundlesGerman extends OpenCmsTestCase {
         return wrapper;
     }
 
-    /** 
+    /**
      * Tests whether the bundle messages are correct.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testReadBundleMessages() throws Exception {
@@ -109,7 +109,10 @@ public class TestCmsXmlContentResourceBundlesGerman extends OpenCmsTestCase {
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-1_localized2.xsd",
             CmsEncoder.ENCODING_UTF_8);
-        definition = CmsXmlContentDefinition.unmarshal(content, TestCmsXmlContentWithVfs.SCHEMA_SYSTEM_ID_1L1, resolver);
+        definition = CmsXmlContentDefinition.unmarshal(
+            content,
+            TestCmsXmlContentWithVfs.SCHEMA_SYSTEM_ID_1L1,
+            resolver);
 
         contentHandler = definition.getContentHandler();
         assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());

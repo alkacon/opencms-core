@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -69,9 +69,9 @@ import com.google.gwt.user.client.ui.TextArea;
 
 /**
  * Basic text area widget for forms.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsTextArea extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers, HasFocusHandlers,
@@ -249,7 +249,7 @@ I_HasResizeOnShow {
 
     /**
      * Returns the text contained in the text area.<p>
-     * 
+     *
      * @return the text in the text area
      */
     public String getText() {
@@ -259,7 +259,7 @@ I_HasResizeOnShow {
 
     /**
      * Returns the textarea of this widget.<p>
-     * 
+     *
      * @return the textarea
      */
     public TextArea getTextArea() {
@@ -269,7 +269,7 @@ I_HasResizeOnShow {
 
     /**
      * Returns the text area container of this widget.<p>
-     * 
+     *
      * @return the text area container
      */
     public CmsScrollPanel getTextAreaContainer() {
@@ -343,8 +343,8 @@ I_HasResizeOnShow {
 
     /**
      * Sets the value of the widget.<p>
-     * 
-     * @param value the new value 
+     *
+     * @param value the new value
      */
     public void setFormValue(Object value) {
 
@@ -368,9 +368,9 @@ I_HasResizeOnShow {
 
     /**
      * Sets the name of the input field.<p>
-     * 
+     *
      * @param name of the input field
-     * 
+     *
      * */
     public void setName(String name) {
 
@@ -380,7 +380,7 @@ I_HasResizeOnShow {
 
     /**
      * Sets the height of this textarea.<p>
-     * 
+     *
      * @param rows the value of rows should be shown
      */
     public void setRows(int rows) {
@@ -395,7 +395,7 @@ I_HasResizeOnShow {
 
     /**
      * Sets the height of this textarea. Especial for the image Gallery.<p>
-     * 
+     *
      * @param rows the value of rows should be shown
      */
     public void setRowsGallery(int rows) {
@@ -410,7 +410,7 @@ I_HasResizeOnShow {
 
     /**
      * Sets the text in the text area.<p>
-     * 
+     *
      * @param text the new text
      */
     public void setText(String text) {
@@ -418,9 +418,9 @@ I_HasResizeOnShow {
         m_textArea.setText(text);
     }
 
-    /** 
+    /**
      * Helper method for firing a 'value changed' event.<p>
-     * 
+     *
      * @param force if <true, some additional information will be added to the event to ask event handlers to not perform any validation directly
      */
     protected void fireValueChangedEvent(boolean force) {
@@ -467,7 +467,7 @@ I_HasResizeOnShow {
     }
 
     /**
-     * Shows the fade panel if the text area content exceeds the visible area.<p> 
+     * Shows the fade panel if the text area content exceeds the visible area.<p>
      */
     protected void showFadePanelIfNeeded() {
 

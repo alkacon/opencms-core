@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,7 +39,7 @@ import org.dom4j.Document;
 
 /**
  * Changes the default upload applet to the GWT based upload widget.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlChangeDefaultUpload extends A_CmsXmlWorkplace {
@@ -58,16 +58,17 @@ public class CmsXmlChangeDefaultUpload extends A_CmsXmlWorkplace {
     @Override
     protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
-        if (document.selectSingleNode("/"
-            + CmsConfigurationManager.N_ROOT
-            + "/"
-            + CmsWorkplaceConfiguration.N_WORKPLACE
-            + "/"
-            + CmsWorkplaceConfiguration.N_DEFAULTPREFERENCES
-            + "/"
-            + CmsWorkplaceConfiguration.N_WORKPLACEPREFERENCES
-            + "/"
-            + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS) != null) {
+        if (document.selectSingleNode(
+            "/"
+                + CmsConfigurationManager.N_ROOT
+                + "/"
+                + CmsWorkplaceConfiguration.N_WORKPLACE
+                + "/"
+                + CmsWorkplaceConfiguration.N_DEFAULTPREFERENCES
+                + "/"
+                + CmsWorkplaceConfiguration.N_WORKPLACEPREFERENCES
+                + "/"
+                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS) != null) {
             CmsSetupXmlHelper.setValue(document, xpath, "gwt");
             return true;
         }
@@ -80,17 +81,18 @@ public class CmsXmlChangeDefaultUpload extends A_CmsXmlWorkplace {
     @Override
     protected List<String> getXPathsToUpdate() {
 
-        return Collections.singletonList(CmsConfigurationManager.N_ROOT
-            + "/"
-            + CmsWorkplaceConfiguration.N_WORKPLACE
-            + "/"
-            + CmsWorkplaceConfiguration.N_DEFAULTPREFERENCES
-            + "/"
-            + CmsWorkplaceConfiguration.N_WORKPLACEPREFERENCES
-            + "/"
-            + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
-            + "/"
-            + CmsWorkplaceConfiguration.N_UPLOADAPPLET);
+        return Collections.singletonList(
+            CmsConfigurationManager.N_ROOT
+                + "/"
+                + CmsWorkplaceConfiguration.N_WORKPLACE
+                + "/"
+                + CmsWorkplaceConfiguration.N_DEFAULTPREFERENCES
+                + "/"
+                + CmsWorkplaceConfiguration.N_WORKPLACEPREFERENCES
+                + "/"
+                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                + "/"
+                + CmsWorkplaceConfiguration.N_UPLOADAPPLET);
     }
 
 }

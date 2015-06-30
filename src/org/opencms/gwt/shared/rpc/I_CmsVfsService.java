@@ -63,12 +63,12 @@ public interface I_CmsVfsService extends RemoteService {
 
     /**
      * Creates a new external link resource.<p>
-     * 
+     *
      * @param title the title
      * @param link the link
      * @param resourceName the name of the link resource to create
      * @param parentFolderPath the parent folder site path
-     * 
+     *
      * @throws CmsRpcException if something goes wrong
      */
     void createNewExternalLink(String title, String link, String resourceName, String parentFolderPath)
@@ -291,11 +291,11 @@ public interface I_CmsVfsService extends RemoteService {
 
     /**
      * Gets the resource history for a given structure id.<p>
-     * 
-     * @param structureId the structure id of a resource 
+     *
+     * @param structureId the structure id of a resource
      * @return the history for the given resource
-     *  
-     * @throws CmsRpcException if something goes wrong 
+     *
+     * @throws CmsRpcException if something goes wrong
      */
     CmsHistoryResourceCollection getResourceHistory(CmsUUID structureId) throws CmsRpcException;
 
@@ -349,11 +349,11 @@ public interface I_CmsVfsService extends RemoteService {
 
     /**
      * Loads the external link info.<p>
-     * 
+     *
      * @param structureId the external link structure id
-     * 
+     *
      * @return the external link info
-     * 
+     *
      * @throws CmsRpcException if something goes wrong
      */
     CmsExternalLinkInfoBean loadLinkInfo(CmsUUID structureId) throws CmsRpcException;
@@ -412,12 +412,12 @@ public interface I_CmsVfsService extends RemoteService {
 
     /**
      * Saves the external link.<p>
-     * 
+     *
      * @param structureId the link structure id
      * @param title the link title
      * @param link the link
      * @param fileName the file name
-     * 
+     *
      * @throws CmsRpcException if something goes wrong
      */
     void saveExternalLink(CmsUUID structureId, String title, String link, String fileName) throws CmsRpcException;
@@ -454,10 +454,10 @@ public interface I_CmsVfsService extends RemoteService {
 
     /**
      * Undeletes a resource.<p>
-     * 
-     * @param structureId the structure id of the resource to undelete 
-     * 
-     * @throws CmsRpcException if something goes wrong 
+     *
+     * @param structureId the structure id of the resource to undelete
+     *
+     * @throws CmsRpcException if something goes wrong
      */
     void undelete(CmsUUID structureId) throws CmsRpcException;
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,9 +52,9 @@ import javax.swing.border.Border;
 /**
  * This is a highly configurable Swing GUI dialog for selection.
  * <p>
- * 
+ *
  * @since 6.0.0
- * 
+ *
  * @see CmsAntTaskSelectionPrompt
  */
 public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener {
@@ -110,7 +110,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
     /**
      * Default Constructor.
      * <p>
-     * 
+     *
      * @param promptTask the <code>{@link CmsAntTaskSelectionPrompt}</code> object.
      *            <p>
      */
@@ -125,6 +125,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
 
         addWindowListener(new WindowAdapter() {
 
+            @Override
             public void windowClosed(WindowEvent e) {
 
                 m_aborted = true;
@@ -151,20 +152,21 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
         }
 
         m_view.setBorder(m_border);
-        m_selections = new JToggleButton[m_promptTask.getAllValues().split(CmsAntTaskSelectionPrompt.LIST_SEPARATOR).length];
+        m_selections = new JToggleButton[m_promptTask.getAllValues().split(
+            CmsAntTaskSelectionPrompt.LIST_SEPARATOR).length];
 
         // layout of selection elements
         int elements = m_selections.length;
 
-        GridLayout layout = new GridLayout(elements / m_promptTask.getColumns() + 1, m_promptTask.getColumns());
+        GridLayout layout = new GridLayout((elements / m_promptTask.getColumns()) + 1, m_promptTask.getColumns());
         layout.setHgap(20);
         m_content.setLayout(layout);
 
         for (int i = 0; i < m_selections.length; i++) {
             if (m_promptTask.isSingleSelection()) {
-                m_selections[i] = new JRadioButton(m_allList[i].trim(), firstPositionOfItemInArray(
-                    m_defList,
-                    m_allList[i]) != -1);
+                m_selections[i] = new JRadioButton(
+                    m_allList[i].trim(),
+                    firstPositionOfItemInArray(m_defList, m_allList[i]) != -1);
             } else {
                 m_selections[i] = new JCheckBox(
                     m_allList[i].trim(),
@@ -180,11 +182,8 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
         }
         getContentPane().add(m_view, BorderLayout.CENTER);
 
-        m_buttons.setBorder(BorderFactory.createEmptyBorder(
-            C_BORDER_SIZE,
-            C_BORDER_SIZE,
-            C_BORDER_SIZE / 2,
-            C_BORDER_SIZE));
+        m_buttons.setBorder(
+            BorderFactory.createEmptyBorder(C_BORDER_SIZE, C_BORDER_SIZE, C_BORDER_SIZE / 2, C_BORDER_SIZE));
         m_ok.addActionListener(this);
         m_buttons.add(m_ok);
         m_cancel.addActionListener(this);
@@ -216,7 +215,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
     /**
      * Returns <code>null</code> if the dialog was canceled, or a list of selected items if not.
      * <p>
-     * 
+     *
      * @return the user selection
      */
     public String getSelection() {
@@ -241,7 +240,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
     /**
      * Centers the dialog on the screen.
      * <p>
-     * 
+     *
      * If the size of the dialog exceeds that of the screen, then the size of the dialog is reset to
      * the size of the screen.
      * <p>
@@ -261,8 +260,8 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
         if (window.width > screen.width) {
             window.width = screen.width;
         }
-        int xCoord = (screen.width / 2 - window.width / 2);
-        int yCoord = (screen.height / 2 - window.height / 2);
+        int xCoord = ((screen.width / 2) - (window.width / 2));
+        int yCoord = ((screen.height / 2) - (window.height / 2));
         setLocation(xCoord, yCoord);
         setSize(width, height);
     }
@@ -271,10 +270,10 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
      * Looks for the position of a string in an array of string, performing triming and taking into
      * account the null cases.
      * <p>
-     * 
+     *
      * @param array the string array to search in
      * @param item the item to search for
-     * 
+     *
      * @return the position of the item in the array or -1 if not found
      */
     private int firstPositionOfItemInArray(String[] array, String item) {
@@ -297,7 +296,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
      * Returns the array of items selected by default, if no one is given all items will be
      * considered.
      * <p>
-     * 
+     *
      * @return the array of items selected by default
      */
     private String[] getDefaultList() {

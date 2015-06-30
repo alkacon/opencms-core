@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,8 +63,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides a list for the global publish queue.<p> 
- * 
+ * Provides a list for the global publish queue.<p>
+ *
  * @since 6.5.5
  */
 public class CmsPublishQueueList extends A_CmsListDialog {
@@ -131,7 +131,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsPublishQueueList(CmsJspActionElement jsp) {
@@ -141,7 +141,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -153,7 +153,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
 
     /**
      * Protected constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the specialized list
      */
@@ -171,6 +171,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -179,6 +180,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_ACTION_NUMBER)
@@ -216,6 +218,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "&nbsp;<br>";
@@ -224,6 +227,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -232,10 +236,9 @@ public class CmsPublishQueueList extends A_CmsListDialog {
         while (itPublishJobs.hasNext()) {
             CmsListItem item = (CmsListItem)itPublishJobs.next();
             int state = ((Integer)item.get(LIST_COLUMN_STATE)).intValue();
-            boolean enabled = ((state == STATE_PROCEED) && (OpenCms.getRoleManager().hasRole(
-                getCms(),
-                CmsRole.ROOT_ADMIN) || getCms().getRequestContext().getCurrentUser().getName().equals(
-                item.get(LIST_COLUMN_USER))));
+            boolean enabled = ((state == STATE_PROCEED)
+                && (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ROOT_ADMIN)
+                    || getCms().getRequestContext().getCurrentUser().getName().equals(item.get(LIST_COLUMN_USER))));
             enabled = enabled
                 || (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ROOT_ADMIN) || (state == STATE_OWN));
             if (!enabled) {
@@ -244,7 +247,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             CmsUUID publishHistoryId = new CmsUUID(item.getId());
             CmsPublishJobBase publishJob = OpenCms.getPublishManager().getJobByPublishHistoryId(publishHistoryId);
             StringBuffer html = new StringBuffer(32);
-            if (publishJob != null && detailId.equals(LIST_DETAIL_RESOURCES)) {
+            if ((publishJob != null) && detailId.equals(LIST_DETAIL_RESOURCES)) {
                 // resources
                 CmsPublishList publishList;
                 if (publishJob instanceof CmsPublishJobEnqueued) {
@@ -274,6 +277,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List ret = new ArrayList();
@@ -321,6 +325,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for state display
@@ -336,15 +341,18 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
              */
+            @Override
             public boolean isEnabled() {
 
-                return (OpenCms.getRoleManager().hasRole(getWp().getCms(), CmsRole.ROOT_ADMIN) || getWp().getCms().getRequestContext().getCurrentUser().getName().equals(
-                    getItem().get(LIST_COLUMN_USER)));
+                return (OpenCms.getRoleManager().hasRole(getWp().getCms(), CmsRole.ROOT_ADMIN)
+                    || getWp().getCms().getRequestContext().getCurrentUser().getName().equals(
+                        getItem().get(LIST_COLUMN_USER)));
             }
 
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 int state = ((Integer)getItem().get(LIST_COLUMN_STATE)).intValue();
@@ -362,6 +370,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
              */
+            @Override
             public boolean isEnabled() {
 
                 int state = ((Integer)getItem().get(LIST_COLUMN_STATE)).intValue();
@@ -371,6 +380,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 int state = ((Integer)getItem().get(LIST_COLUMN_STATE)).intValue();
@@ -409,7 +419,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
 
             /**
              * Default constructor.<p>
-             * 
+             *
              * @param id the action id
              */
             CmsPublishQueueViewLiveReportAction(String id) {
@@ -422,6 +432,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
              */
+            @Override
             public CmsMessageContainer getHelpText() {
 
                 if (isEnabled()) {
@@ -434,13 +445,14 @@ public class CmsPublishQueueList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
              */
+            @Override
             public boolean isEnabled() {
 
                 int state = ((Integer)getItem().get(LIST_COLUMN_STATE)).intValue();
-                return ((state == STATE_PROCEED) && (OpenCms.getRoleManager().hasRole(
-                    getWp().getCms(),
-                    CmsRole.ROOT_ADMIN) || getWp().getCms().getRequestContext().getCurrentUser().getName().equals(
-                    getItem().get(LIST_COLUMN_USER))));
+                return ((state == STATE_PROCEED)
+                    && (OpenCms.getRoleManager().hasRole(getWp().getCms(), CmsRole.ROOT_ADMIN)
+                        || getWp().getCms().getRequestContext().getCurrentUser().getName().equals(
+                            getItem().get(LIST_COLUMN_USER))));
             }
         }
 
@@ -461,9 +473,10 @@ public class CmsPublishQueueList extends A_CmsListDialog {
         CmsListColumnDefinition startCol = new CmsListColumnDefinition(LIST_COLUMN_STARTTIME);
         startCol.setName(Messages.get().container(Messages.GUI_PUBLISHQUEUE_COLS_INQUEUETIME_0));
         startCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        startCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
-            Messages.GUI_LIST_DATE_FORMAT_WITH_SECONDS_1), Messages.get().container(
-            org.opencms.workplace.list.Messages.GUI_LIST_DATE_FORMAT_NEVER_0)));
+        startCol.setFormatter(
+            new CmsListDateMacroFormatter(
+                Messages.get().container(Messages.GUI_LIST_DATE_FORMAT_WITH_SECONDS_1),
+                Messages.get().container(org.opencms.workplace.list.Messages.GUI_LIST_DATE_FORMAT_NEVER_0)));
         startCol.setWidth("30%");
         // add view action
         startCol.addDefaultAction(new CmsPublishQueueViewLiveReportAction(LIST_ACTION_STARTTIME));
@@ -491,22 +504,24 @@ public class CmsPublishQueueList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // create resources list item detail 
+        // create resources list item detail
         CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_DETAIL_RESOURCES);
         resourcesDetails.setAtColumn(LIST_COLUMN_NUMBER);
         resourcesDetails.setVisible(false);
-        resourcesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_PUBLISHQUEUE_DETAIL_LABEL_RESOURCES_0)));
-        resourcesDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_PUBLISHQUEUE_DETAIL_SHOW_RESOURCES_NAME_0));
-        resourcesDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_PUBLISHQUEUE_DETAIL_SHOW_RESOURCES_HELP_0));
-        resourcesDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_PUBLISHQUEUE_DETAIL_HIDE_RESOURCES_NAME_0));
-        resourcesDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_PUBLISHQUEUE_DETAIL_HIDE_RESOURCES_HELP_0));
+        resourcesDetails.setFormatter(
+            new CmsListItemDetailsFormatter(
+                Messages.get().container(Messages.GUI_PUBLISHQUEUE_DETAIL_LABEL_RESOURCES_0)));
+        resourcesDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_PUBLISHQUEUE_DETAIL_SHOW_RESOURCES_NAME_0));
+        resourcesDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_PUBLISHQUEUE_DETAIL_SHOW_RESOURCES_HELP_0));
+        resourcesDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_PUBLISHQUEUE_DETAIL_HIDE_RESOURCES_NAME_0));
+        resourcesDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_PUBLISHQUEUE_DETAIL_HIDE_RESOURCES_HELP_0));
 
         // add author info item detail to meta data
         metadata.addItemDetails(resourcesDetails);
@@ -515,6 +530,7 @@ public class CmsPublishQueueList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         //noop

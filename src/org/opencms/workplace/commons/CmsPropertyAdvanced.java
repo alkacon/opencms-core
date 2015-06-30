@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -72,15 +72,15 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the properties dialog.<p> 
- * 
+ * Provides methods for the properties dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/property_advanced.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHandler, I_CmsPostUploadDialogHandler {
 
@@ -218,7 +218,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Default constructor needed for dialog handler implementation.<p>
-     * 
+     *
      * Do not use this constructor on JSP pages.<p>
      */
     public CmsPropertyAdvanced() {
@@ -228,7 +228,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsPropertyAdvanced(CmsJspActionElement jsp) {
@@ -238,7 +238,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -251,7 +251,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     /**
      * Transforms a list of CmsProperty objects with structure and resource values into a map with
      * CmsProperty object values keyed by property keys.<p>
-     * 
+     *
      * @param list a list of CmsProperty objects
      * @return a map with CmsPropery object values keyed by property keys
      */
@@ -288,14 +288,14 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Used to close the current JSP dialog.<p>
-     * 
+     *
      * This method overwrites the close dialog method in the super class,
      * because in case a new folder is created, after this dialog a new xml page might be created.<p>
-     *  
+     *
      * It tries to include the URI stored in the workplace settings.
-     * This URI is determined by the frame name, which has to be set 
+     * This URI is determined by the frame name, which has to be set
      * in the framename parameter.<p>
-     * 
+     *
      * @throws JspException if including an element fails
      */
     @Override
@@ -320,13 +320,11 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 sendForward(splitter.getPrefix(), params);
                 return;
             } catch (IOException e) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_REDIRECT_INDEXPAGE_DIALOG_1,
-                    PATH_DIALOGS + newUri));
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.ERR_REDIRECT_INDEXPAGE_DIALOG_1, PATH_DIALOGS + newUri));
             } catch (ServletException e) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_REDIRECT_INDEXPAGE_DIALOG_1,
-                    PATH_DIALOGS + newUri));
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.ERR_REDIRECT_INDEXPAGE_DIALOG_1, PATH_DIALOGS + newUri));
             }
         } else if ((getAction() == ACTION_SAVE_EDIT) && MODE_WIZARD.equals(getParamDialogmode())) {
             // set request attribute to reload the folder tree after creating a folder in wizard mode
@@ -357,7 +355,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Performs the define property action, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionDefine() throws JspException {
@@ -378,9 +376,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Deletes the current resource if the dialog is in wizard mode.<p>
-     * 
+     *
      * If the dialog is not in wizard mode, the resource is not deleted.<p>
-     * 
+     *
      * @throws JspException if including the error page fails
      */
     public void actionDeleteResource() throws JspException {
@@ -398,7 +396,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Performs the edit properties action, will be called by the JSP page.<p>
-     * 
+     *
      * @param request the HttpServletRequest
      * @throws JspException if problems including sub-elements occur
      */
@@ -437,7 +435,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Creates the HTML String for the active properties overview of the current resource.<p>
-     * 
+     *
      * @return the HTML output String for active properties of the resource
      */
     public String buildActivePropertiesList() {
@@ -470,10 +468,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Creates the HTML String for the edit properties form.<p>
-     * 
+     *
      * The values of the form are set delayed, have a look at the
      * JavaDoc of buildSetFormValues() for a detailed description.<p>
-     * 
+     *
      * @return the HTML output String for the edit properties form
      */
     public String buildEditForm() {
@@ -503,7 +501,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             result.append("\t<td class=\"textbold\">");
             result.append(key(Messages.GUI_PROPERTY_VALUE_0));
             result.append("</td>\n");
-            // build column for checkbox 
+            // build column for checkbox
             result.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">");
             result.append("&nbsp;");
             result.append("</td>\n");
@@ -527,14 +525,14 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Builds the JavaScript to set the property form values delayed.<p>
-     * 
+     *
      * The values of the properties are not inserted directly in the &lt;input&gt; tag,
      * because there is a display issue when the property values are very long.
      * This method creates JavaScript to set the property input field values delayed.
-     * On the JSP, the code which is created from this method has to be executed delayed after 
+     * On the JSP, the code which is created from this method has to be executed delayed after
      * the creation of the html form, e.g. in the &lt;body&gt; tag with the attribute
      * onload="window.setTimeout('doSet()',50);".<p>
-     * 
+     *
      * @return the JavaScript to set the property form values delayed
      */
     public String buildSetFormValues() {
@@ -569,7 +567,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Builds a button row with an "Ok", a "Cancel" and a "Define" button.<p>
-     * 
+     *
      * @return the button row
      */
     public String dialogButtonsOkCancelDefine() {
@@ -580,10 +578,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 // in wizard mode, display finish button instead of ok button
                 okButton = BUTTON_FINISH;
             }
-            return dialogButtons(new int[] {okButton, BUTTON_CANCEL, BUTTON_DEFINE}, new String[] {
-                null,
-                null,
-                "onclick=\"definePropertyForm();\""});
+            return dialogButtons(
+                new int[] {okButton, BUTTON_CANCEL, BUTTON_DEFINE},
+                new String[] {null, null, "onclick=\"definePropertyForm();\""});
         } else {
             return dialogButtons(new int[] {BUTTON_CLOSE}, new String[] {null});
 
@@ -637,12 +634,12 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     }
 
     /**
-     * Returns the value of the dialogmode parameter, 
+     * Returns the value of the dialogmode parameter,
      * or null if this parameter was not provided.<p>
-     * 
+     *
      * The dialogmode parameter stores the different modes of the property dialog,
      * e.g. for displaying other buttons in the new resource wizard.<p>
-     * 
+     *
      * @return the value of the usetempfileproject parameter
      */
     public String getParamDialogmode() {
@@ -661,12 +658,12 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     }
 
     /**
-     * Returns the value of the new property parameter, 
+     * Returns the value of the new property parameter,
      * or null if this parameter was not provided.<p>
-     * 
-     * The new property parameter stores the name of the 
+     *
+     * The new property parameter stores the name of the
      * new defined property.<p>
-     * 
+     *
      * @return the value of the new property parameter
      */
     public String getParamNewproperty() {
@@ -675,12 +672,12 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     }
 
     /**
-     * Returns the value of the usetempfileproject parameter, 
+     * Returns the value of the usetempfileproject parameter,
      * or null if this parameter was not provided.<p>
-     * 
-     * The usetempfileproject parameter stores if the file resides 
+     *
+     * The usetempfileproject parameter stores if the file resides
      * in the temp file project.<p>
-     * 
+     *
      * @return the value of the usetempfileproject parameter
      */
     public String getParamUsetempfileproject() {
@@ -762,7 +759,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Sets the value of the dialogmode parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamDialogmode(String value) {
@@ -782,7 +779,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Sets the value of the new property parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamNewproperty(String value) {
@@ -792,7 +789,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Sets the value of the usetempfileproject parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamUsetempfileproject(String value) {
@@ -830,7 +827,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Returns a map with CmsProperty object values keyed by property keys.<p>
-     * 
+     *
      * @return a map with CmsProperty object values
      */
     protected Map<String, CmsProperty> getActiveProperties() {
@@ -838,9 +835,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         // get all used properties for the resource
         if (m_activeProperties == null) {
             try {
-                m_activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(
-                    getParamResource(),
-                    false));
+                m_activeProperties = CmsPropertyAdvanced.getPropertyMap(
+                    getCms().readPropertyObjects(getParamResource(), false));
             } catch (CmsException e) {
                 // create an empty list
                 if (LOG.isInfoEnabled()) {
@@ -854,7 +850,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Returns the explorer type settings of the resource type, considering eventual references to another type.<p>
-     * 
+     *
      * @param resTypeName the resource type name
      * @return the explorer type settings of the resource type
      */
@@ -900,7 +896,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         boolean isPopup = Boolean.valueOf(getParamIsPopup()).booleanValue();
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_SHOW_DEFINE.equals(getParamAction())) {
             setAction(ACTION_SHOW_DEFINE);
             setParamTitle(key(Messages.GUI_PROPERTY_NEW_DEF_1, new Object[] {CmsResource.getName(getParamResource())}));
@@ -919,14 +915,14 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 setAction(ACTION_CANCEL);
             }
         } else {
-            // set the default action: show edit form  
+            // set the default action: show edit form
             setAction(ACTION_DEFAULT);
             if (!isEditable()) {
-                setParamTitle(key(Messages.GUI_PROPERTIES_OF_1, new Object[] {CmsResource.getName(getParamResource())}));
+                setParamTitle(
+                    key(Messages.GUI_PROPERTIES_OF_1, new Object[] {CmsResource.getName(getParamResource())}));
             } else {
-                setParamTitle(key(
-                    Messages.GUI_PROPERTIES_EDIT_1,
-                    new Object[] {CmsResource.getName(getParamResource())}));
+                setParamTitle(
+                    key(Messages.GUI_PROPERTIES_EDIT_1, new Object[] {CmsResource.getName(getParamResource())}));
             }
             // check if the user switched a tab
             m_tabSwitched = false;
@@ -938,7 +934,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Returns whether the properties are editable or not depending on the lock state of the resource and the current project.<p>
-     * 
+     *
      * @return true if properties are editable, otherwise false
      */
     protected boolean isEditable() {
@@ -1005,7 +1001,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                         try {
                             List<String> lockedResources = getCms().getLockedResources(
                                 resourceName,
-                                CmsLockFilter.FILTER_ALL.filterNotOwnedByUserId(getCms().getRequestContext().getCurrentUser().getId()));
+                                CmsLockFilter.FILTER_ALL.filterNotOwnedByUserId(
+                                    getCms().getRequestContext().getCurrentUser().getId()));
                             if (!lockedResources.isEmpty()) {
                                 m_isEditable = Boolean.FALSE;
                                 return m_isEditable.booleanValue();
@@ -1029,14 +1026,14 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Builds the html for a single property entry row.<p>
-     * 
+     *
      * The output depends on the currently active tab (shared or individual properties)
      * and on the present values of the current property.<p>
-     * 
+     *
      * The values of the property are not inserted directly in the &lt;input&gt; tag,
      * because there is a display issue when the property values are very long.
      * Have a look at buildSetFormValues() for a detailed description.<p>
-     * 
+     *
      * @param propName the name of the property
      * @param propValue the displayed value of the property
      * @param valueStructure the structure value of the property
@@ -1117,7 +1114,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         result.append(CmsEncoder.escapeXml(valueResource));
         result.append("\"></td>\n");
         result.append("\t<td class=\"propertydialog-checkboxcell\">");
-        // show checkbox always 
+        // show checkbox always
         String prefix = PREFIX_RESOURCE;
         if (structurePanelName.equals(activeTab)) {
             prefix = PREFIX_STRUCTURE;
@@ -1148,7 +1145,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Creates a list of String arrays containing the property names and values.<p>
-     * 
+     *
      * The list items consist of the following Strings:
      * <ol>
      * <li>The name of the property</li>
@@ -1156,7 +1153,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      * <li>The value of the structure</li>
      * <li>The value of the resource</li>
      * </ol>
-     * 
+     *
      * @return the list of property values in display order
      */
     private List<String[]> getPropertyValues() {
@@ -1220,7 +1217,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                         }
                     }
                 } else {
-                    // initial call of edit form, get property values from database 
+                    // initial call of edit form, get property values from database
                     CmsProperty currentProperty = activeProperties.get(propName);
                     if (currentProperty == null) {
                         currentProperty = new CmsProperty();
@@ -1260,7 +1257,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Performs the definition of a new property.<p>
-     * 
+     *
      * @return true, if the new property was created, otherwise false
      * @throws CmsException if creation is not successful
      */
@@ -1287,7 +1284,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
     /**
      * Performs the editing of the resources properties.<p>
-     * 
+     *
      * @param request the HttpServletRequest
      * @return true, if the properties were successfully changed, otherwise false
      * @throws CmsException if editing is not successful

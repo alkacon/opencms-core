@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * The editor manager stores information about all available configured editors in OpenCms.<p>
- * 
+ *
  * This class provides methods and constants to select the right editor according to:
  * <ul>
  * <li>the user preferences</li>
@@ -64,8 +64,8 @@ import org.apache.commons.logging.Log;
  * <li>the editor rankings</li>
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsWorkplaceEditorManager {
 
@@ -86,7 +86,7 @@ public class CmsWorkplaceEditorManager {
 
     /**
      * Creates a new editor manager.<p>
-     * 
+     *
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      */
     public CmsWorkplaceEditorManager(CmsObject cms) {
@@ -125,8 +125,10 @@ public class CmsWorkplaceEditorManager {
             }
             // get the file contents
             byte[] xmlData = configFile.getContents();
-            CmsWorkplaceEditorConfiguration editorConfig = new CmsWorkplaceEditorConfiguration(xmlData, folderName
-                + EDITOR_FILENAME, currentFolder.getName());
+            CmsWorkplaceEditorConfiguration editorConfig = new CmsWorkplaceEditorConfiguration(
+                xmlData,
+                folderName + EDITOR_FILENAME,
+                currentFolder.getName());
             if (editorConfig.isValidConfiguration()) {
                 m_editorConfigurations.add(editorConfig);
             }
@@ -136,13 +138,13 @@ public class CmsWorkplaceEditorManager {
 
     /**
      * Checks whether GWT widgets are available for all fields of a content.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param resource the resource to check 
-     * 
+     *
+     * @param cms the current CMS context
+     * @param resource the resource to check
+     *
      * @return false if for some fields the new Acacia widgets are not available
-     *   
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public static boolean checkAcaciaEditorAvailable(CmsObject cms, CmsResource resource) throws CmsException {
 
@@ -166,10 +168,10 @@ public class CmsWorkplaceEditorManager {
 
     /**
      * Returns a map of configurable editors for the workplace preferences dialog.<p>
-     * 
+     *
      * This map has the resource type name as key, the value is a sorted map with
      * the ranking as key and a CmsWorkplaceEditorConfiguration object as value.<p>
-     * 
+     *
      * @return configurable editors for the workplace preferences dialog
      */
     public Map<String, SortedMap<Float, CmsWorkplaceEditorConfiguration>> getConfigurableEditors() {
@@ -211,10 +213,10 @@ public class CmsWorkplaceEditorManager {
 
     /**
      * Gets the editor configuration with the given name.<p>
-     * 
+     *
      * @param name the name of the editor configuration
-     *  
-     * @return the editor configuration 
+     *
+     * @return the editor configuration
      */
     public CmsWorkplaceEditorConfiguration getEditorConfiguration(String name) {
 
@@ -228,7 +230,7 @@ public class CmsWorkplaceEditorManager {
 
     /**
      * Returns the editor URI for the current resource type.<p>
-     * 
+     *
      * @param context the request context
      * @param userAgent the user agent String that identifies the browser
      * @return a valid editor URI for the resource type or null, if no editor matches
@@ -266,7 +268,7 @@ public class CmsWorkplaceEditorManager {
 
         // step 3: check if one of the editors matches the current users browser
         while (filteredEditors.size() > 0) {
-            // check editor configuration with highest ranking 
+            // check editor configuration with highest ranking
             Float key = filteredEditors.lastKey();
             CmsWorkplaceEditorConfiguration conf = filteredEditors.get(key);
             if (conf.isWidgetEditor() && conf.matchesBrowser(userAgent)) {
@@ -275,13 +277,13 @@ public class CmsWorkplaceEditorManager {
             filteredEditors.remove(key);
         }
 
-        // no valid editor found 
+        // no valid editor found
         return null;
     }
 
     /**
      * Returns the default editor URI for the current resource type.<p>
-     * 
+     *
      * @param context the request context
      * @param resourceType the current resource type
      * @param userAgent the user agent String that identifies the browser
@@ -310,7 +312,7 @@ public class CmsWorkplaceEditorManager {
 
     /**
      * Returns the editor configuration objects.<p>
-     * 
+     *
      * @return the editor configuration objects
      */
     protected List<CmsWorkplaceEditorConfiguration> getEditorConfigurations() {
@@ -320,7 +322,7 @@ public class CmsWorkplaceEditorManager {
 
     /**
      * Returns the editor URI for the current resource type.<p>
-     * 
+     *
      * @param context the request context
      * @param resourceType the current resource type
      * @param userAgent the user agent String that identifies the browser
@@ -358,7 +360,7 @@ public class CmsWorkplaceEditorManager {
 
         // step 3: check if one of the editors matches the current users browser
         while (filteredEditors.size() > 0) {
-            // check editor configuration with highest ranking 
+            // check editor configuration with highest ranking
             Float key = filteredEditors.lastKey();
             CmsWorkplaceEditorConfiguration conf = filteredEditors.get(key);
             if (conf.matchesBrowser(userAgent)) {
@@ -367,14 +369,14 @@ public class CmsWorkplaceEditorManager {
             filteredEditors.remove(key);
         }
 
-        // no valid editor found 
+        // no valid editor found
         return null;
     }
 
     /**
      * Filters the matching editors for the given resource type from the list of all available editors.<p>
-     * 
-     * @param resourceType the resource type to filter 
+     *
+     * @param resourceType the resource type to filter
      * @return a map of filtered editor configurations sorted asceding by the ranking for the current resource type, with the (Float) ranking as key
      */
     private SortedMap<Float, CmsWorkplaceEditorConfiguration> filterEditorsForResourceType(String resourceType) {
@@ -395,7 +397,7 @@ public class CmsWorkplaceEditorManager {
 
     /**
      * Filters the preferred editor from the list of all available editors.<p>
-     * 
+     *
      * @param preferredEditor the preferred editor identification String
      * @return the preferred editor configuration object or null, if none is found
      */

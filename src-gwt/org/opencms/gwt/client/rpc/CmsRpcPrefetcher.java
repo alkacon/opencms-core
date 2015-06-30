@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import com.google.gwt.user.client.rpc.SerializationStreamFactory;
 
 /**
  * Utility class for deserializing prefetched RPC data.<p>
- * 
+ *
  * @since 8.0
  */
 public final class CmsRpcPrefetcher {
@@ -47,13 +47,13 @@ public final class CmsRpcPrefetcher {
 
     /**
      * Deserializes the prefetched RPC data with the given dictionary name.<p>
-     * 
+     *
      * @param asyncService the RPC service instance
      * @param dictionaryName the global variable name
-     * 
+     *
      * @return the prefetched RPC data
-     * 
-     * @throws SerializationException if the deserialization fails 
+     *
+     * @throws SerializationException if the deserialization fails
      */
     public static Object getSerializedObjectFromDictionary(Object asyncService, String dictionaryName)
     throws SerializationException {
@@ -63,13 +63,13 @@ public final class CmsRpcPrefetcher {
 
     /**
      * Deserializes the prefetched RPC data.<p>
-     * 
+     *
      * @param asyncService the RPC service instance
      * @param serializedData the serialized object data
-     * 
+     *
      * @return the prefetched RPC data
-     * 
-     * @throws SerializationException if the deserialization fails 
+     *
+     * @throws SerializationException if the deserialization fails
      */
     public static Object getSerializedObjectFromString(Object asyncService, String serializedData)
     throws SerializationException {
@@ -80,19 +80,19 @@ public final class CmsRpcPrefetcher {
 
     /**
      * Retrieves the given global variable as a string.<p>
-     * 
+     *
      * @param name the name of the variable to retrieve
-     * 
+     *
      * @return the variable's value
      */
     private static native String getString(String name) /*-{
-        var metas = $wnd.document.getElementsByTagName('META');
-        var i;
-        for (i = 0; i < metas.length; i++) {
-            if (metas[i].getAttribute('NAME') == name) {
-                break;
-            }
-        }
-        return metas[i].getAttribute("CONTENT");
-    }-*/;
+                                                        var metas = $wnd.document.getElementsByTagName('META');
+                                                        var i;
+                                                        for (i = 0; i < metas.length; i++) {
+                                                        if (metas[i].getAttribute('NAME') == name) {
+                                                        break;
+                                                        }
+                                                        }
+                                                        return metas[i].getAttribute("CONTENT");
+                                                        }-*/;
 }

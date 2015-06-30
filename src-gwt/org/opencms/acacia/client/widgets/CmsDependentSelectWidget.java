@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,12 +50,12 @@ import com.google.gwt.user.client.ui.Composite;
 
 /**
  * Select widget which uses other values from the content as select options.<p>
- * 
+ *
  * This works as follows: The widget is given a configuration consisting of three pipe-separated OpenCms content value paths.
  * The first path is used to select a set of nested content values. The second and third paths are relative to the first path
- * and are used to select a select option and a select option display text from the nested contents matching the first path. 
+ * and are used to select a select option and a select option display text from the nested contents matching the first path.
  * Note that if you omit indexes on a component of the first path, all indexes will be matched.
- * 
+ *
  * The widget attaches event listeners to the editor so it can dynamically update the list of select options when the content changes.
  */
 public class CmsDependentSelectWidget extends Composite implements I_CmsEditWidget {
@@ -80,8 +80,8 @@ public class CmsDependentSelectWidget extends Composite implements I_CmsEditWidg
 
     /**
      * Creates a new widget instance.<p>
-     *  
-     * @param configuration the widget configuration 
+     *
+     * @param configuration the widget configuration
      */
     public CmsDependentSelectWidget(String configuration) {
 
@@ -253,8 +253,8 @@ public class CmsDependentSelectWidget extends Composite implements I_CmsEditWidg
 
     /**
      * Updates the select options from the given entity.<p>
-     * 
-     * @param entity a top-level content entity 
+     *
+     * @param entity a top-level content entity
      */
     public void update(CmsEntity entity) {
 
@@ -277,7 +277,7 @@ public class CmsDependentSelectWidget extends Composite implements I_CmsEditWidg
 
     /**
      * Replaces the select options with the given options.<p>
-     * 
+     *
      * @param options the map of select options (keys are option values, values are option descriptions)
      */
     private void replaceOptions(LinkedHashMap<String, String> options) {
@@ -298,11 +298,11 @@ public class CmsDependentSelectWidget extends Composite implements I_CmsEditWidg
         m_selectBox.setFormValueAsString(oldValue);
     }
 
-    /** 
+    /**
      * Splits a path into components.<p>
-     * 
-     * @param path the path to split 
-     * @return the path components 
+     *
+     * @param path the path to split
+     * @return the path components
      */
     private String[] splitPath(String path) {
 

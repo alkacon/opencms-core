@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,14 +35,14 @@ import java.io.OutputStream;
 import javax.activation.DataSource;
 
 /**
- * 
+ *
  * DataSource implementation that may be filled with content from an {@link java.io.InputStream}.
  * <p>
  * It's intended use is for creation of mail attachments from strings without having to create RFS
  * or VFS resources. Note that this data source will only support read operations and operations
  * related to writing will throw an {@link java.lang.UnsupportedOperationException}.
  * <p>
- * 
+ *
  * @since 6.1.7
  */
 public class CmsInputStreamDataSource implements DataSource {
@@ -71,16 +71,16 @@ public class CmsInputStreamDataSource implements DataSource {
      * about the ecoding. Note that some textual documents like xml have their own encoding
      * directive contained and the charset given here (for the mail part header) should not be
      * different from the contained one.
-     * 
-     * 
+     *
+     *
      * @param in the underlying source of data.
-     * 
+     *
      * @param contentType the correct MIME type of the data along with the charset in the form of a
      *            string (see comment above).
-     * 
+     *
      * @param name the name that describes the data in the underyling input stream. E.g. the name of
      *            a file that the input stream reads from.
-     * 
+     *
      */
     public CmsInputStreamDataSource(InputStream in, String contentType, String name) {
 
@@ -99,13 +99,13 @@ public class CmsInputStreamDataSource implements DataSource {
 
     /**
      * Retunrs the underlying input stream of this data source.
-     * 
+     *
      * @return the underlying input stream of this data source.
-     * 
+     *
      * @throws IOException if the constructor-given input stream is not "resettable" ({@link InputStream#reset()}).
-     * 
+     *
      * @see javax.activation.DataSource#getInputStream()
-     * 
+     *
      */
     public InputStream getInputStream() throws IOException {
 
@@ -124,10 +124,10 @@ public class CmsInputStreamDataSource implements DataSource {
     /**
      * Don't use this method, VFS resources can't be written using this datasource class.
      * <p>
-     * 
+     *
      * This method will just return a new <code>{@link ByteArrayOutputStream}</code>.
      * <p>
-     * 
+     *
      * @see javax.activation.DataSource#getOutputStream()
      */
     public OutputStream getOutputStream() {
