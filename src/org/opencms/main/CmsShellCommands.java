@@ -339,7 +339,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-
+    
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -470,8 +470,9 @@ class CmsShellCommands implements I_CmsShellCommands {
                 + "_"
                 + OpenCms.getModuleManager().getModule(moduleName).getVersion().toString());
 
-        String[] resources = new String[module.getResources().size()];
-        System.arraycopy(module.getResources().toArray(), 0, resources, 0, resources.length);
+        List<String> moduleResources = CmsModule.calculateModuleResourceNames(m_cms, module);
+        String[] resources = new String[moduleResources.size()];
+        System.arraycopy(moduleResources.toArray(), 0, resources, 0, resources.length);
 
         // generate a module export handler
         CmsModuleImportExportHandler moduleExportHandler = new CmsModuleImportExportHandler();

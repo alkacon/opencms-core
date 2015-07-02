@@ -35,6 +35,7 @@
 	dependencies?,
 	exportpoints?,
 	resources?,
+	excluderesources?,
 	parameters?,
 	resourcetypes?,
 	explorertypes?
@@ -157,6 +158,20 @@
 <!ELEMENT resources (resource*)>
 <!ELEMENT resource EMPTY>
 <!ATTLIST resource uri CDATA #REQUIRED>
+
+<!--
+# The (optional) resources that should be excluded by the module.
+# Excluding resources can be used to exclude specific files or subfolders from the module
+# resources.
+# Any VFS resource configured here with it's uri is considered to be not part of the module,
+# even if it would be part of it concerning the resources nodes.
+# If a folder name is given all resources in the folder are also excluded.
+# If a module is exported, only resources that belong to the module resources and NOT to the
+# excluded resources are exported together with the module,
+# the same goes for importing.
+# If a module is deleted, the excluded resources will remain.
+-->	
+<!ELEMENT excluderesources (resource*)>
 
 <!--
 # The (optional) module parameters.

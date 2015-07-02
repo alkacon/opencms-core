@@ -127,6 +127,7 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
             null,
             null,
             null,
+            null,
             null);
 
         OpenCms.getModuleManager().addModule(cms, module1);
@@ -169,6 +170,7 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
             System.currentTimeMillis(),
             null,
             0L,
+            null,
             null,
             null,
             null,
@@ -245,6 +247,7 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
             null,
             null,
             resources,
+            null,
             null);
 
         OpenCms.getModuleManager().addModule(cms, module1);
@@ -306,6 +309,7 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
             null,
             null,
             resources,
+            null,
             null);
 
         OpenCms.getModuleManager().addModule(cms, module1);

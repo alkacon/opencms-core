@@ -43,12 +43,14 @@ import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsShell;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlErrorHandler;
 import org.opencms.xml.CmsXmlException;
@@ -109,6 +111,64 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         super();
         m_description = org.opencms.importexport.Messages.get().getBundle().key(
             org.opencms.importexport.Messages.GUI_CMSIMPORTHANDLER_DEFAULT_DESC_0);
+    }
+
+    /**
+     * Gets the module export handler containing all resources used in the module export.<p>
+     * @param cms the {@link CmsObject} used by to set up the handler. The object's site root might be adjusted to the import site of the module.
+     * @param module The module to export
+     * @param handlerDescription A description of the export handler, shown when the export thread using the handler runs.
+     * @return CmsModuleImportExportHandler with all module resources
+     */
+    public static CmsModuleImportExportHandler getExportHandler(
+        CmsObject cms,
+        final CmsModule module,
+        final String handlerDescription) {
+
+        // check if all resources are valid
+        List<String> resListCopy = new ArrayList<String>();
+
+        String moduleName = module.getName();
+
+        try {
+            cms = OpenCms.initCmsObject(cms);
+            String importSite = module.getImportSite();
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(importSite)) {
+                cms.getRequestContext().setSiteRoot(importSite);
+            }
+        } catch (CmsException e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        try {
+            resListCopy = CmsModule.calculateModuleResourceNames(cms, module);
+        } catch (CmsException e) {
+            // some resource did not exist / could not be read
+            if (LOG.isInfoEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(Messages.ERR_READ_MODULE_RESOURCES_1, module.getName()), e);
+            }
+        }
+        resListCopy = CmsFileUtil.removeRedundancies(resListCopy);
+        String[] resources = new String[resListCopy.size()];
+
+        for (int i = 0; i < resListCopy.size(); i++) {
+            resources[i] = resListCopy.get(i);
+        }
+
+        String filename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            OpenCms.getSystemInfo().getPackagesRfsPath()
+                + CmsSystemInfo.FOLDER_MODULES
+                + moduleName
+                + "_"
+                + module.getVersion().toString());
+
+        CmsModuleImportExportHandler moduleExportHandler = new CmsModuleImportExportHandler();
+        moduleExportHandler.setFileName(filename);
+        moduleExportHandler.setModuleName(moduleName.replace('\\', '/'));
+        moduleExportHandler.setAdditionalResources(resources);
+        moduleExportHandler.setDescription(handlerDescription);
+
+        return moduleExportHandler;
     }
 
     /**

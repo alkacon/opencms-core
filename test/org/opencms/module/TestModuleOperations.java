@@ -172,6 +172,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
             module.getDependencies(),
             module.getExportPoints(),
             module.getResources(),
+            module.getExcludeResources(),
             module.getParameters());
 
         // update the module
@@ -250,6 +251,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
             System.currentTimeMillis(),
             null,
             0L,
+            null,
             null,
             null,
             null,
@@ -478,6 +480,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
             System.currentTimeMillis(),
             null,
             0L,
+            null,
             null,
             null,
             null,
@@ -819,6 +822,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
             System.currentTimeMillis(),
             null,
             0L,
+            null,
             null,
             null,
             null,

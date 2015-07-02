@@ -29,7 +29,10 @@ package org.opencms.module;
 
 import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -158,6 +161,11 @@ public class CmsModule implements Comparable<CmsModule> {
     /** List of VFS resources that belong to this module. */
     private List<String> m_resources;
 
+    /** List of VFS resources that do not belong to this module.
+     *  In particular used for files / folders in folders that belong to the module.
+     */
+    private List<String> m_excluderesources;
+
     /** The list of additional resource types. */
     private List<I_CmsResourceType> m_resourceTypes;
 
@@ -174,6 +182,7 @@ public class CmsModule implements Comparable<CmsModule> {
 
         m_version = new CmsModuleVersion(CmsModuleVersion.DEFAULT_VERSION);
         m_resources = Collections.emptyList();
+        m_excluderesources = Collections.emptyList();
         m_exportPoints = Collections.emptyList();
         m_dependencies = Collections.emptyList();
     }
@@ -197,6 +206,7 @@ public class CmsModule implements Comparable<CmsModule> {
      * @param dependencies a list of dependencies of this module
      * @param exportPoints a list of export point added by this module
      * @param resources a list of VFS resources that belong to this module
+     * @param excluderesources a list of VFS resources that are exclude from the module's resources
      * @param parameters the parameters for this module
      */
     public CmsModule(
@@ -216,6 +226,7 @@ public class CmsModule implements Comparable<CmsModule> {
         List<CmsModuleDependency> dependencies,
         List<CmsExportPoint> exportPoints,
         List<String> resources,
+        List<String> excluderesources,
         Map<String, String> parameters) {
 
         super();
@@ -263,6 +274,11 @@ public class CmsModule implements Comparable<CmsModule> {
         } else {
             m_resources = Collections.unmodifiableList(resources);
         }
+        if (excluderesources == null) {
+            m_excluderesources = Collections.emptyList();
+        } else {
+            m_excluderesources = Collections.unmodifiableList(excluderesources);
+        }
         if (parameters == null) {
             m_parameters = new TreeMap<String, String>();
         } else {
@@ -279,6 +295,149 @@ public class CmsModule implements Comparable<CmsModule> {
         }
         m_resourceTypes = Collections.emptyList();
         m_explorerTypeSettings = Collections.emptyList();
+    }
+
+    /** Determines the resources that are:
+     * <ul>
+     *  <li>accessible with the provided {@link CmsObject},</li>
+     *  <li>part of the <code>moduleResources</code> (or in a folder of these resources) and</li>
+     *  <li><em>not</em> contained in <code>excludedResources</code> (or a folder of these resources).</li>
+     * </ul>
+     * and adds the to <code>result</code>
+     *
+     * @param result the resource list, that gets extended by the calculated resources.
+     * @param cms the {@link CmsObject} used to read resources.
+     * @param moduleResources the resources to include.
+     * @param excludeResources the site paths of the resources to exclude.
+     * @throws CmsException thrown if reading resources fails.
+     */
+    public static void addCalculatedModuleResources(
+        List<CmsResource> result,
+        final CmsObject cms,
+        final List<CmsResource> moduleResources,
+        final List<String> excludeResources) throws CmsException {
+
+        for (CmsResource resource : moduleResources) {
+
+            String sitePath = cms.getSitePath(resource);
+
+            List<String> excludedSubResources = getExcludedForResource(sitePath, excludeResources);
+
+            // check if resources have to be excluded
+            if (excludedSubResources.isEmpty()) {
+                // no resource has to be excluded - add the whole resource
+                // (that is, also all resources in the folder, if the resource is a folder)
+                result.add(resource);
+            } else {
+                // cannot add the complete resource (i.e., including the whole sub-tree)
+                if (sitePath.equals(excludedSubResources.get(0))) {
+                    // the resource itself is excluded -> do not add it and check the next resource
+                    continue;
+                }
+                // try to include sub-resources.
+                List<CmsResource> subResources = cms.readResources(sitePath, CmsResourceFilter.ALL, false);
+                addCalculatedModuleResources(result, cms, subResources, excludedSubResources);
+            }
+        }
+
+    }
+
+    /** Calculates the resources belonging to the module, taking excluded resources and readability of resources into account,
+     *  and returns site paths of the module resources.<p>
+     *  For more details of the returned resource, see {@link #calculateModuleResources(CmsObject, CmsModule)}.
+     *
+     * @param cms the {@link CmsObject} used to read the resources.
+     * @param module the module, for which the resources should be calculated
+     * @return the calculated module resources
+     * @throws CmsException thrown if reading resources fails.
+     */
+    public static List<String> calculateModuleResourceNames(final CmsObject cms, final CmsModule module)
+    throws CmsException {
+
+        // calculate the module resources
+        List<CmsResource> moduleResources = calculateModuleResources(cms, module);
+
+        // get the site paths
+        List<String> moduleResouceNames = new ArrayList<String>(moduleResources.size());
+        for (CmsResource resource : moduleResources) {
+            moduleResouceNames.add(cms.getSitePath(resource));
+        }
+        return moduleResouceNames;
+    }
+
+    /** Calculates and returns the resources belonging to the module, taking excluded resources and readability of resources into account.
+     * The list of returned resources contains:
+     * <ul>
+     *  <li>Only resources that are readable (present at the system and accessible with the provided {@link CmsObject}</li>
+     *  <li>Only the resource for a folder, if <em>all</em> resources in the folder belong to the module.</li>
+     *  <li>Only resources that are specified as module resources and <em>not</em> excluded by the module's exclude resources.</li>
+     * </ul>
+     *
+     * @param cms the {@link CmsObject} used to read the resources.
+     * @param module the module, for which the resources should be calculated
+     * @return the calculated module resources
+     * @throws CmsException thrown if reading resources fails.
+     */
+    public static List<CmsResource> calculateModuleResources(final CmsObject cms, final CmsModule module)
+    throws CmsException {
+
+        List<CmsResource> result = null;
+        List<String> excluded = CmsFileUtil.removeRedundancies(module.getExcludeResources());
+        excluded = removeNonAccessible(cms, excluded);
+        List<String> resourceSitePaths = CmsFileUtil.removeRedundancies(module.getResources());
+        resourceSitePaths = removeNonAccessible(cms, resourceSitePaths);
+
+        List<CmsResource> moduleResources = new ArrayList<CmsResource>(resourceSitePaths.size());
+        for (String resourceSitePath : resourceSitePaths) {
+            // assumes resources are accessible - already checked above
+            CmsResource resource = cms.readResource(resourceSitePath);
+            moduleResources.add(resource);
+        }
+
+        if (excluded.isEmpty()) {
+            result = moduleResources;
+        } else {
+            result = new ArrayList<CmsResource>();
+
+            addCalculatedModuleResources(result, cms, moduleResources, excluded);
+
+        }
+        return result;
+
+    }
+
+    /** Returns only the resource names starting with the provided <code>sitePath</code>.
+     *
+     * @param sitePath the site relative path, all paths should start with.
+     * @param excluded the paths to filter.
+     * @return the paths from <code>excluded</code>, that start with <code>sitePath</code>.
+     */
+    private static List<String> getExcludedForResource(final String sitePath, final List<String> excluded) {
+
+        List<String> result = new ArrayList<String>();
+        for (String exclude : excluded) {
+            if (exclude.startsWith(sitePath)) {
+                result.add(exclude);
+            }
+        }
+        return result;
+    }
+
+    /** Removes the resources not accessible with the provided {@link CmsObject}.
+     *
+     * @param cms the {@link CmsObject} used to read the resources.
+     * @param sitePaths site relative paths of the resources that should be checked for accessibility.
+     * @return site paths of the accessible resources.
+     */
+    private static List<String> removeNonAccessible(CmsObject cms, List<String> sitePaths) {
+
+        List<String> result = new ArrayList<String>(sitePaths.size());
+        for (String sitePath : sitePaths) {
+            if (cms.existsResource(sitePath, CmsResourceFilter.ALL)) {
+                result.add(sitePath);
+            }
+        }
+        return result;
     }
 
     /**
@@ -344,6 +503,7 @@ public class CmsModule implements Comparable<CmsModule> {
             m_dependencies,
             m_exportPoints,
             m_resources,
+            m_excluderesources,
             m_parameters);
         // and set its frozen state to false
         result.m_frozen = false;
@@ -384,6 +544,7 @@ public class CmsModule implements Comparable<CmsModule> {
         result.setCreateFormattersFolder(m_createFormattersFolder);
 
         result.setResources(new ArrayList<String>(m_resources));
+        result.setExcludeResources(new ArrayList<String>(m_excluderesources));
 
         return result;
     }
@@ -518,6 +679,18 @@ public class CmsModule implements Comparable<CmsModule> {
     public String getDescription() {
 
         return m_description;
+    }
+
+    /**
+     * Returns the list of VFS resources that do not belong to this module.<p>
+     * In particular, files / folders that would be included otherwise,
+     * considering the module resources.<p>
+     *
+     * @return the list of VFS resources that do not belong to this module
+     */
+    public List<String> getExcludeResources() {
+
+        return m_excluderesources;
     }
 
     /**
@@ -1004,6 +1177,21 @@ public class CmsModule implements Comparable<CmsModule> {
     }
 
     /**
+     * Sets the resources excluded from this module.<p>
+     *
+     *
+     * <i>Please note:</i>It's not possible to set the module resources once the module
+     * configuration has been frozen.<p>
+     *
+     * @param value the resources to exclude from the module
+     */
+    public void setExcludeResources(List<String> value) {
+
+        checkFrozen();
+        m_excluderesources = value;
+    }
+
+    /**
      * Sets the additional explorer types that belong to this module.<p>
      *
      * @param explorerTypeSettings the explorer type settings.
@@ -1182,6 +1370,7 @@ public class CmsModule implements Comparable<CmsModule> {
 
         m_frozen = true;
         m_resources = Collections.unmodifiableList(m_resources);
+        m_excluderesources = Collections.unmodifiableList(m_excluderesources);
     }
 
     /**

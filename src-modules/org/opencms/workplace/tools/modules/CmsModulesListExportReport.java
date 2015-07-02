@@ -27,22 +27,14 @@
 
 package org.opencms.workplace.tools.modules;
 
-import org.opencms.file.CmsObject;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.report.I_CmsReportThread;
-import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListReport;
 import org.opencms.workplace.threads.CmsExportThread;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -124,60 +116,14 @@ public class CmsModulesListExportReport extends A_CmsListReport {
 
         String moduleName = getParamModule();
 
-        // get all module resources
+        // get the module
         CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
-        List<String> resList = module.getResources();
 
-        // check if all resources are valid
-        List<String> resListCopy = new ArrayList<String>();
+        // create the handler description
+        String handlerDescription = Messages.get().getBundle(getLocale()).key(
+            Messages.GUI_MODULES_LIST_EXPORT_REPORT_HANDLER_NAME_1,
+            moduleName);
 
-        CmsObject resourceCheckCms = getCms();
-        try {
-            resourceCheckCms = OpenCms.initCmsObject(resourceCheckCms);
-            String importSite = module.getImportSite();
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(importSite)) {
-                resourceCheckCms.getRequestContext().setSiteRoot(importSite);
-            }
-        } catch (CmsException e) {
-            // should never happen
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        for (String res : resList) {
-            try {
-                if (res != null) {
-                    resourceCheckCms.readResource(res);
-                    resListCopy.add(res);
-                }
-            } catch (CmsException e) {
-                // resource did not exist / could not be read
-                if (LOG.isInfoEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(Messages.ERR_READ_RESOURCE_1, res), e);
-                }
-            }
-        }
-        resListCopy = CmsFileUtil.removeRedundancies(resListCopy);
-        String[] resources = new String[resListCopy.size()];
-
-        for (int i = 0; i < resListCopy.size(); i++) {
-            resources[i] = resListCopy.get(i);
-        }
-
-        String filename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-            OpenCms.getSystemInfo().getPackagesRfsPath()
-                + CmsSystemInfo.FOLDER_MODULES
-                + moduleName
-                + "_"
-                + module.getVersion().toString());
-
-        CmsModuleImportExportHandler moduleExportHandler = new CmsModuleImportExportHandler();
-        moduleExportHandler.setFileName(filename);
-        moduleExportHandler.setModuleName(moduleName.replace('\\', '/'));
-        moduleExportHandler.setAdditionalResources(resources);
-        moduleExportHandler.setDescription(
-            Messages.get().getBundle(getLocale()).key(
-                Messages.GUI_MODULES_LIST_EXPORT_REPORT_HANDLER_NAME_1,
-                moduleExportHandler.getModuleName()));
-
-        return moduleExportHandler;
+        return CmsModuleImportExportHandler.getExportHandler(getCms(), module, handlerDescription);
     }
 }

@@ -116,6 +116,9 @@ public class CmsModuleXmlHandler {
     /** The node name for the resources node. */
     public static final String N_RESOURCES = "resources";
 
+    /** The node name for the resources node. */
+    public static final String N_EXCLUDERESOURCES = "excluderesources";
+
     /** The node name for the user installed node. */
     public static final String N_USERINSTALLED = "userinstalled";
 
@@ -149,6 +152,9 @@ public class CmsModuleXmlHandler {
     /** The list of resources for a module. */
     private List<String> m_resources;
 
+    /** The list of resources excluded for a module. */
+    private List<String> m_excluderesources;
+
     /** The list of additional resource types. */
     private List<I_CmsResourceType> m_resourceTypes;
 
@@ -160,6 +166,7 @@ public class CmsModuleXmlHandler {
         m_exportPoints = new ArrayList<CmsExportPoint>();
         m_dependencies = new ArrayList<CmsModuleDependency>();
         m_resources = new ArrayList<String>();
+        m_excluderesources = new ArrayList<String>();
         m_parameters = new HashMap<String, String>();
         m_resourceTypes = new ArrayList<I_CmsResourceType>();
         m_explorerTypeSettings = new ArrayList<CmsExplorerTypeSettings>();
@@ -225,6 +232,16 @@ public class CmsModuleXmlHandler {
             1);
         digester.addCallParam(
             "*/" + N_MODULE + "/" + N_RESOURCES + "/" + I_CmsXmlConfiguration.N_RESOURCE,
+            0,
+            I_CmsXmlConfiguration.A_URI);
+
+        // add rules for the module exclude resources
+        digester.addCallMethod(
+            "*/" + N_MODULE + "/" + N_EXCLUDERESOURCES + "/" + I_CmsXmlConfiguration.N_RESOURCE,
+            "addExcludeResource",
+            1);
+        digester.addCallParam(
+            "*/" + N_MODULE + "/" + N_EXCLUDERESOURCES + "/" + I_CmsXmlConfiguration.N_RESOURCE,
             0,
             I_CmsXmlConfiguration.A_URI);
 
@@ -348,6 +365,12 @@ public class CmsModuleXmlHandler {
                 I_CmsXmlConfiguration.A_URI,
                 resource);
         }
+        Element excludeResourcesElement = moduleElement.addElement(N_EXCLUDERESOURCES);
+        for (String resource : module.getExcludeResources()) {
+            excludeResourcesElement.addElement(I_CmsXmlConfiguration.N_RESOURCE).addAttribute(
+                I_CmsXmlConfiguration.A_URI,
+                resource);
+        }
         Element parametersElement = moduleElement.addElement(N_PARAMETERS);
         SortedMap<String, String> parameters = module.getParameters();
         if (parameters != null) {
@@ -467,6 +490,19 @@ public class CmsModuleXmlHandler {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MOD_DEPENDENCY_2, name, version));
         }
+    }
+
+    /**
+     * Adds a resource to the list module resources.<p>
+     *
+     * @param resource a resources uri in the OpenCms VFS
+     */
+    public void addExcludeResource(String resource) {
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MOD_EXCLUDERESOURCE_1, resource));
+        }
+        m_excluderesources.add(resource);
     }
 
     /**
@@ -637,6 +673,7 @@ public class CmsModuleXmlHandler {
             m_dependencies,
             m_exportPoints,
             m_resources,
+            m_excluderesources,
             m_parameters);
 
         // store module name in the additional resource types

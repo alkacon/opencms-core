@@ -34,7 +34,6 @@ import org.opencms.report.A_CmsReportThread;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 
@@ -86,19 +85,6 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_REPLACE_THREAD_CONSTRUCTED_0));
         }
         m_phase = 0;
-    }
-
-    /**
-     * Collects all resource names belonging to a module in a Vector.<p>
-     *
-     * @param moduleName the name of the module
-     *
-     * @return Vector with path Strings of resources
-     */
-    public static Vector<String> getModuleResources(String moduleName) {
-
-        Vector<String> resNames = new Vector<String>(OpenCms.getModuleManager().getModule(moduleName).getResources());
-        return resNames;
     }
 
     /**

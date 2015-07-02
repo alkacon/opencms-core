@@ -110,6 +110,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SAX_MODULE_IMPORT_1 = "ERR_SAX_MODULE_IMPORT_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_MODULE_RESOURCES_1 = "ERR_READ_MODULE_RESOURCES_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_MODULE_PROJECT_DESC_1 = "GUI_DELETE_MODULE_PROJECT_DESC_1";
 
     /** Message constant for key in the resource bundle. */
@@ -153,6 +156,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_EXPORT_POINT_2 = "LOG_ADD_EXPORT_POINT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ADD_MOD_EXCLUDERESOURCE_1 = "LOG_ADD_MOD_EXCLUDERESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_MOD_DEPENDENCY_2 = "LOG_ADD_MOD_DEPENDENCY_2";

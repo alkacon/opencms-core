@@ -395,6 +395,45 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
     /**
      * Adjusts the paths of the module resources from the source path to the target path.<p>
      *
+     * @param targetResources the paths to adjust
+     * @param sourceModuleName the source module name
+     * @param targetModuleName the target module name
+     * @param sourcePathPart the path part of the source module
+     * @param targetPathPart the path part of the target module
+     * @param iconPaths the path where resource type icons are located
+     * @return the adjusted paths
+     */
+    private List<String> adjustModuleResourcePaths(
+        List<String> targetResources,
+        String sourceModuleName,
+        String targetModuleName,
+        String sourcePathPart,
+        String targetPathPart,
+        Map<String, String> iconPaths) {
+
+        List<String> newTargetResources = new ArrayList<String>();
+        for (String modRes : targetResources) {
+            String nIcon = iconPaths.get(modRes.substring(modRes.lastIndexOf('/') + 1));
+            if (nIcon != null) {
+                // the referenced resource is an resource type icon, add the new icon path
+                newTargetResources.add(ICON_PATH + nIcon);
+            } else if (modRes.contains(sourceModuleName)) {
+                // there is the name in it
+                newTargetResources.add(modRes.replaceAll(sourceModuleName, targetModuleName));
+            } else if (modRes.contains(sourcePathPart)) {
+                // there is a path in it
+                newTargetResources.add(modRes.replaceAll(sourcePathPart, targetPathPart));
+            } else {
+                // there is whether the path nor the name in it
+                newTargetResources.add(modRes);
+            }
+        }
+        return newTargetResources;
+    }
+
+    /**
+     * Adjusts the paths of the module resources from the source path to the target path.<p>
+     *
      * @param sourceModule the source module
      * @param targetModule the target module
      * @param sourcePathPart the path part of the source module
@@ -408,25 +447,23 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
         String targetPathPart,
         Map<String, String> iconPaths) {
 
-        List<String> newTargetResources = new ArrayList<String>();
-        List<String> targetResources = targetModule.getResources();
-        for (String modRes : targetResources) {
-            String nIcon = iconPaths.get(modRes.substring(modRes.lastIndexOf('/') + 1));
-            if (nIcon != null) {
-                // the referenced resource is an resource type icon, add the new icon path
-                newTargetResources.add(ICON_PATH + nIcon);
-            } else if (modRes.contains(sourceModule.getName())) {
-                // there is the name in it
-                newTargetResources.add(modRes.replaceAll(sourceModule.getName(), targetModule.getName()));
-            } else if (modRes.contains(sourcePathPart)) {
-                // there is a path in it
-                newTargetResources.add(modRes.replaceAll(sourcePathPart, targetPathPart));
-            } else {
-                // there is whether the path nor the name in it
-                newTargetResources.add(modRes);
-            }
-        }
+        List<String> newTargetResources = adjustModuleResourcePaths(
+            targetModule.getResources(),
+            sourceModule.getName(),
+            targetModule.getName(),
+            sourcePathPart,
+            targetPathPart,
+            iconPaths);
         targetModule.setResources(newTargetResources);
+
+        List<String> newTargetExcludeResources = adjustModuleResourcePaths(
+            targetModule.getExcludeResources(),
+            sourceModule.getName(),
+            targetModule.getName(),
+            sourcePathPart,
+            targetPathPart,
+            iconPaths);
+        targetModule.setExcludeResources(newTargetExcludeResources);
     }
 
     /**
@@ -598,7 +635,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Clones/copies the resource types.<p>
-
+    
      * @param sourceModule the source module
      * @param targetModule the target module
      * @param sourcePathPart the source path part
@@ -917,7 +954,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
      *
      * @throws CmsException in case writing the file fails
      * @throws UnsupportedEncodingException in case of the wrong encoding
-
+    
      */
     private void replaceModuleName() throws CmsException, UnsupportedEncodingException {
 
@@ -996,7 +1033,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
      *
      * @throws CmsException if something goes wrong
      * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding
-
+    
      */
     private void replacesMessages(Map<String, String> descKeys, List<CmsResource> resources)
     throws CmsException, UnsupportedEncodingException {

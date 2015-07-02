@@ -71,9 +71,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CLONEMODULE_MODULE_ALREADY_EXISTS_1 = "ERR_CLONEMODULE_MODULE_ALREADY_EXISTS_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_RESOURCE_1 = "ERR_READ_RESOURCE_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_TYPE_ALREADY_EXISTS_1 = "ERR_RESOURCE_TYPE_ALREADY_EXISTS_1";
 
     /** Message constant for key in the resource bundle. */

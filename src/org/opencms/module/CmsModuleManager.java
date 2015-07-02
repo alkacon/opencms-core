@@ -34,8 +34,6 @@ import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.lock.CmsLock;
@@ -602,20 +600,19 @@ public class CmsModuleManager {
             cms.getRequestContext().setCurrentProject(deleteProject);
 
             // copy the module resources to the project
-            List<String> projectFiles = module.getResources();
-            for (int i = 0; i < projectFiles.size(); i++) {
-                String resourceName = projectFiles.get(i);
-                if (cms.existsResource(resourceName, CmsResourceFilter.ALL)) {
-                    try {
-                        cms.copyResourceToProject(resourceName);
-                    } catch (CmsException e) {
-                        // may happen if the resource has already been deleted
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug(
-                                Messages.get().getBundle().key(Messages.LOG_MOVE_RESOURCE_FAILED_1, resourceName));
-                        }
-                        report.println(e.getMessageContainer(), I_CmsReport.FORMAT_WARNING);
+            List<CmsResource> moduleResources = CmsModule.calculateModuleResources(cms, module);
+            for (CmsResource resource : moduleResources) {
+                try {
+                    cms.copyResourceToProject(resource);
+                } catch (CmsException e) {
+                    // may happen if the resource has already been deleted
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_MOVE_RESOURCE_FAILED_1,
+                                cms.getSitePath(resource)));
                     }
+                    report.println(e.getMessageContainer(), I_CmsReport.FORMAT_WARNING);
                 }
             }
 
@@ -627,46 +624,37 @@ public class CmsModuleManager {
                 I_CmsReport.FORMAT_HEADLINE);
 
             // move through all module resources and delete them
-            for (int i = 0; i < module.getResources().size(); i++) {
-                String currentResource = null;
+            for (CmsResource resource : moduleResources) {
+                String sitePath = cms.getSitePath(resource);
                 try {
-                    currentResource = module.getResources().get(i);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_RESOURCE_1, currentResource));
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_RESOURCE_1, sitePath));
                     }
-                    CmsResource resource = null;
-                    try {
-                        resource = cms.readResource(currentResource, CmsResourceFilter.ALL);
-                    } catch (CmsVfsResourceNotFoundException e) {
-                        // ignore
+                    CmsLock lock = cms.getLock(resource);
+                    if (lock.isUnlocked()) {
+                        // lock the resource
+                        cms.lockResource(resource);
+                    } else if (lock.isLockableBy(cms.getRequestContext().getCurrentUser())) {
+                        // steal the resource
+                        cms.changeLock(resource);
                     }
-                    if (resource != null) {
-                        CmsLock lock = cms.getLock(currentResource);
-                        if (lock.isUnlocked()) {
-                            // lock the resource
-                            cms.lockResource(currentResource);
-                        } else if (lock.isLockableBy(cms.getRequestContext().getCurrentUser())) {
-                            // steal the resource
-                            cms.changeLock(currentResource);
-                        }
-                        if (!resource.getState().isDeleted()) {
-                            // delete the resource
-                            cms.deleteResource(currentResource, CmsResource.DELETE_PRESERVE_SIBLINGS);
-                        }
-                        // update the report
-                        report.print(Messages.get().container(Messages.RPT_DELETE_0), I_CmsReport.FORMAT_NOTE);
-                        report.println(
-                            org.opencms.report.Messages.get().container(
-                                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                                currentResource));
-                        if (!resource.getState().isNew()) {
-                            // unlock the resource (so it gets deleted with next publish)
-                            cms.unlockResource(currentResource);
-                        }
+                    if (!resource.getState().isDeleted()) {
+                        // delete the resource
+                        cms.deleteResource(sitePath, CmsResource.DELETE_PRESERVE_SIBLINGS);
+                    }
+                    // update the report
+                    report.print(Messages.get().container(Messages.RPT_DELETE_0), I_CmsReport.FORMAT_NOTE);
+                    report.println(
+                        org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            sitePath));
+                    if (!resource.getState().isNew()) {
+                        // unlock the resource (so it gets deleted with next publish)
+                        cms.unlockResource(resource);
                     }
                 } catch (CmsException e) {
                     // ignore the exception and delete the next resource
-                    LOG.error(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_EXC_1, currentResource), e);
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_EXC_1, sitePath), e);
                     report.println(e.getMessageContainer(), I_CmsReport.FORMAT_WARNING);
                 }
             }

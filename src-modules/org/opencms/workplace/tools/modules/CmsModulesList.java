@@ -108,6 +108,9 @@ public class CmsModulesList extends A_CmsListDialog {
     public static final String LIST_DETAIL_DEPENDENCIES = "dd";
 
     /** List detail  resources info. */
+    public static final String LIST_DETAIL_EXCLUDERESOURCES = "excluderesourcestinfo";
+
+    /** List detail  resources info. */
     public static final String LIST_DETAIL_RESOURCES = "resourcestinfo";
 
     /** List detail restypes info. */
@@ -239,6 +242,14 @@ public class CmsModulesList extends A_CmsListDialog {
             } else if (detailId.equals(LIST_DETAIL_RESOURCES)) {
                 //resources
                 Iterator j = module.getResources().iterator();
+                while (j.hasNext()) {
+                    String resource = (String)j.next();
+                    html.append(resource);
+                    html.append("<br>");
+                }
+            } else if (detailId.equals(LIST_DETAIL_EXCLUDERESOURCES)) {
+                //exclude resources
+                Iterator j = module.getExcludeResources().iterator();
                 while (j.hasNext()) {
                     String resource = (String)j.next();
                     html.append(resource);

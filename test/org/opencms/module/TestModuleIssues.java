@@ -184,6 +184,7 @@ public class TestModuleIssues extends OpenCmsTestCase {
             null,
             null,
             resources,
+            null,
             null);
         OpenCms.getModuleManager().addModule(cms, module);
 

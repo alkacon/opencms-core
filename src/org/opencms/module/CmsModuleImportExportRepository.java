@@ -147,7 +147,8 @@ public class CmsModuleImportExportRepository {
                 LOG.info("Module export is needed for " + module.getName());
                 moduleFile.delete();
                 CmsModuleImportExportHandler handler = new CmsModuleImportExportHandler();
-                handler.setAdditionalResources(module.getResources().toArray(new String[] {}));
+                List<String> moduleResources = CmsModule.calculateModuleResourceNames(m_adminCms, module);
+                handler.setAdditionalResources(moduleResources.toArray(new String[] {}));
                 // the import/export handler adds the zip extension if it is not there, so we append it here
                 String tempFileName = RandomStringUtils.randomAlphanumeric(8) + ".zip";
                 String tempFilePath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(

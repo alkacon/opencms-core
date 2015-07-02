@@ -106,6 +106,14 @@ public class CmsModulesEditResources extends CmsModulesEditBase {
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
+
+        if (dialog.equals(PAGES[0])) {
+            result.append(dialogBlockStart(key("label.excluderesource")));
+            result.append(createWidgetTableStart());
+            result.append(createDialogRowsHtml(1, 1));
+            result.append(createWidgetTableEnd());
+            result.append(dialogBlockEnd());
+        }
         // close table
         result.append(createWidgetTableEnd());
 
@@ -121,5 +129,6 @@ public class CmsModulesEditResources extends CmsModulesEditBase {
         super.defineWidgets();
 
         addWidget(new CmsWidgetDialogParameter(m_module, "resources", PAGES[0], new CmsVfsFileWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_module, "excludeResources", PAGES[0], new CmsVfsFileWidget()));
     }
 }
