@@ -25,7 +25,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps;
+package org.opencms.ui.components;
+
+import org.opencms.ui.apps.I_CmsAppUIContext;
 
 import com.vaadin.server.Resource;
 import com.vaadin.server.Responsive;

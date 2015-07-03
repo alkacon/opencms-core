@@ -25,11 +25,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps;
+package org.opencms.ui.components;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.apps.CmsAppVisibilityStatus;
+import org.opencms.ui.apps.CmsHomeView;
+import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Locale;

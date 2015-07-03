@@ -30,6 +30,7 @@ package org.opencms.ui.apps;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.components.CmsToolBar;
 
 import java.util.List;
 import java.util.Locale;
