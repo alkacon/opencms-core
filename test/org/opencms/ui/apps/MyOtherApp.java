@@ -44,6 +44,11 @@ public class MyOtherApp implements I_CmsWorkplaceAppConfiguration {
             super("MyOtherApp");
         }
 
+        public void initUI(I_CmsAppUIContext context) {
+
+            context.setAppContent(this);
+        }
+
         public void onStateChange(String state) {
 
             // TODO Auto-generated method stub

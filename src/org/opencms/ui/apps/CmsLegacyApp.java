@@ -63,6 +63,16 @@ public class CmsLegacyApp extends BrowserFrame implements I_CmsWorkplaceApp {
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
+     */
+    public void initUI(I_CmsAppUIContext context) {
+
+        context.setAppContent(this);
+
+        // TODO: add site and project select to toolbar
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceApp#onStateChange(java.lang.String)
      */
     public void onStateChange(String state) {

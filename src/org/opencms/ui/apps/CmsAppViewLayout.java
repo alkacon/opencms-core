@@ -27,23 +27,19 @@
 
 package org.opencms.ui.apps;
 
+import com.vaadin.server.Resource;
 import com.vaadin.server.Responsive;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.declarative.Design;
 
 /**
  * The layout used within the app view.<p>
  */
-public class CmsAppViewLayout extends CssLayout {
+public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
 
     /** The serial version id. */
     private static final long serialVersionUID = -290796815149968830L;
-
-    /** The toolbar. */
-    private CmsToolBar m_toolbar;
 
     /** The app area. */
     private CssLayout m_appArea;
@@ -51,11 +47,8 @@ public class CmsAppViewLayout extends CssLayout {
     /** The menu area. */
     private CssLayout m_menuArea;
 
-    /** The menu title. */
-    private CssLayout m_menuTitle;
-
-    /** The app title. */
-    private CssLayout m_appTitle;
+    /** The toolbar. */
+    private CmsToolBar m_toolbar;
 
     /**
      * Constructor.<p>
@@ -69,24 +62,56 @@ public class CmsAppViewLayout extends CssLayout {
     }
 
     /**
-     * Returns the app area component.<p>
-     *
-     * @return the app area component
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#addToolbarButton(com.vaadin.ui.Component)
      */
-    public ComponentContainer getAppContainer() {
+    public void addToolbarButton(Component button) {
 
-        return m_appArea;
+        m_toolbar.addButtonRight(button);
     }
 
     /**
-     * Sets the app title.<p>
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#clearToolbarButtons()
+     */
+    public void clearToolbarButtons() {
+
+        m_toolbar.clearButtonsRight();
+    }
+
+    /**
+     * Sets the app content component.<p>
      *
-     * @param title the title
+     * @param appContent the app content
+     */
+    public void setAppContent(Component appContent) {
+
+        m_appArea.removeAllComponents();
+        if (appContent != null) {
+            m_appArea.addComponent(appContent);
+        }
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#setAppIcon(com.vaadin.server.Resource)
+     */
+    public void setAppIcon(Resource icon) {
+
+        m_toolbar.setAppIcon(icon);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#setAppInfo(com.vaadin.ui.Component)
+     */
+    public void setAppInfo(Component appInfo) {
+
+        m_toolbar.setAppInfo(appInfo);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#setAppTitle(java.lang.String)
      */
     public void setAppTitle(String title) {
 
-        m_appTitle.removeAllComponents();
-        m_appTitle.addComponent(new Label(title));
+        m_toolbar.setAppTitle(title);
     }
 
     /**
@@ -94,19 +119,11 @@ public class CmsAppViewLayout extends CssLayout {
      *
      * @param menu the menu
      */
-    public void setMenu(Component menu) {
+    public void setMenuContent(Component menu) {
 
-        m_menuArea.addComponent(menu);
-    }
-
-    /**
-     * Sets the menu title.<p>
-     *
-     * @param title the title
-     */
-    public void setMenuTitle(String title) {
-
-        m_menuTitle.removeAllComponents();
-        m_menuTitle.addComponent(new Label(title));
+        m_menuArea.removeAllComponents();
+        if (menu != null) {
+            m_menuArea.addComponent(menu);
+        }
     }
 }

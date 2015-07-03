@@ -74,9 +74,9 @@ public class MyTestApp extends VerticalLayout implements I_CmsWorkplaceApp {
         alpha, beta, gamma
     }
 
-    TabSheet tabs;
-
     static List<FontAwesome> ICONS = Collections.unmodifiableList(Arrays.asList(FontAwesome.values()));
+
+    TabSheet tabs;
 
     public MyTestApp() {
 
@@ -138,6 +138,11 @@ public class MyTestApp extends VerticalLayout implements I_CmsWorkplaceApp {
         });
 
         return ts;
+    }
+
+    public void initUI(I_CmsAppUIContext context) {
+
+        context.setAppContent(this);
     }
 
     public void onStateChange(String state) {

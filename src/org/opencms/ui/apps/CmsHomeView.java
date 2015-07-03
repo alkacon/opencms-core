@@ -90,7 +90,7 @@ public class CmsHomeView extends CssLayout implements View, I_CmsAppButtonProvid
         });
         Resource icon = appConfig.getIcon();
         button.setIcon(icon, appConfig.getName(locale));
-        button.addStyleName("large");
+        button.addStyleName("app");
         button.addStyleName("borderless");
         button.addStyleName("icon-align-top");
         String helpText = appConfig.getHelpText(locale);

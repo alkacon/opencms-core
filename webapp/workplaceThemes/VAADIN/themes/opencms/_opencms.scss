@@ -2,7 +2,8 @@
   @include valo;
   
   $toolbar-padding: 20px;
-  $toolbar-height: 60px;
+  $toolbar-height: 105px;
+  $app-icon-size: 32px;
 
   .opencms-responsive{
   	display: block;
@@ -12,11 +13,11 @@
   .opencms-responsive[width-range~="1241px-"]{
   	/* big screen styles */
   	
-  	.opencms-app-menu{
+  	.opencms-app-menu, .opencms-toolbar-app-indicator{
   		width: 400px;
   	}
   	
-  	.opencms-app-content{
+  	.opencms-app-content, .opencms-toolbar-app-info{
   		margin-left: 400px;
   	}
   	
@@ -33,11 +34,11 @@
   
   .opencms-responsive[width-range~="0-983px"]{
   	/* small screen styles */
-  	.opencms-app-menu{
+  	.opencms-app-menu, .opencms-toolbar-app-indicator{
   		width: 240px;
   	}
   	
-  	.opencms-app-content{
+  	.opencms-app-content, .opencms-toolbar-app-info{
   		margin-left: 240px;
   	}
   	
@@ -51,11 +52,11 @@
   .opencms-responsive[width-range~="984px-1240px"]{
   	/* medium screen styles */
   	
-  	.opencms-app-menu{
+  	.opencms-app-menu, .opencms-toolbar-app-indicator{
   		width: 240px;
   	}
   	
-  	.opencms-app-content{
+  	.opencms-app-content, .opencms-toolbar-app-info{
   		margin-left: 240px;
   	}
   	
@@ -90,6 +91,44 @@
   		}
   	}
   }
+  
+  .opencms-toolbar-info{
+  	display: block;
+  	width: 100%;
+  	
+  	.opencms-toolbar-app-indicator{
+  		float:left;
+  		background: $blue-light;
+  		color: $valo-font-color($blue-light);
+  		border-right: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
+  	}
+  	
+  	.opencms-toolbar-app-indicator, .opencms-toolbar-app-info{
+  		height: 45px;
+  		padding: 10px $toolbar-padding;
+  		display: block;
+  		border-bottom: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
+  		border-top: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
+  	}
+  	
+  	.opencms-toolbar-app-info{
+  		padding: 0 !important;
+  	
+	  	.v-panel-captionwrap{
+	  		float: left;
+	  		margin: -6px 10px !important;
+	  		display: block;
+	  		width: $app-icon-size;
+	  		font-size: $app-icon-size;
+	  	}
+	  	
+	  	.v-panel-content-opencms-toolbar-app-info{
+	  		margin-left: 50px;
+    		position: relative;
+    		width: auto;
+	  	}
+	}
+  }
 
   .opencms-app-content{
   	display: block;
@@ -105,11 +144,6 @@
   		background: $blue-light;
   		color: $valo-font-color($blue-light);
   	}
-  	
-  	.opencms-app-content-container{
-  		width:100%;
-  	}
-  	
   }
   	
   .opencms-app-menu{
@@ -150,18 +184,24 @@
   	.opencms-toolbar-logo{
   		margin: 5px auto;
   	}  
+  	
+  	.opencms-toolbar-items-left, .opencms-toolbar-items-right{
+  		margin: 5px 0;
+  	}
   
   	.opencms-toolbar-items-left{
   		float: left;
   		text-align: left;
-  		margin: 10px 0;
   	}
   
   	.opencms-toolbar-items-right{
   		float: right;
   		text-align: right;
-  		margin: 10px 0;
   	}
+  }
+  
+  .v-popupview.v-popupview-opencms-navigator-dropdown{
+  	color: inherit;
   }
   
   .v-popupview-popup-opencms-navigator-dropdown{
@@ -175,6 +215,32 @@
   	max-width: 400px;
   }
   
+  .v-button.v-button-toolbar{
+  	font-size: $app-icon-size;
+    height: 50px;
+    padding: 0 10px;
+  }
+  
+  .v-button.v-button-app{
+   	font-size: $v-font-size--small;
+  	
+  	span.v-button-caption{
+  		width: 140px;
+  		text-overflow: ellipsis;
+  		overflow: hidden;
+  		display: inline-block;
+  		margin: 0;
+  	}
+  	
+  	.v-icon{
+  		font-size: $app-icon-size;
+  	}
+  	
+  	img.v-icon{
+  		width:	$app-icon-size;
+  		height: $app-icon-size;
+  	} 
+  }
   
   
   /* login form styles */

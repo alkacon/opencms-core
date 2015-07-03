@@ -27,23 +27,59 @@
 
 package org.opencms.ui.apps;
 
+import com.vaadin.server.Resource;
+import com.vaadin.ui.Component;
+
 /**
- * Common interface for all workplace apps.<p>
+ * The app ui context. Allows OpenCms workplace apps access to the surrounding UI.<p>
  */
-public interface I_CmsWorkplaceApp {
+public interface I_CmsAppUIContext {
 
     /**
-     * Within this method the app UI should be initialized.<p>
-     * Use the context to add the app's components to the UI.<p>
+     * Adds a toolbar button.<p>
      *
-     * @param context the UI context
+     * @param button the button to add
      */
-    public void initUI(I_CmsAppUIContext context);
+    void addToolbarButton(Component button);
 
     /**
-     * Called on navigation events.<p>
-     *
-     * @param state the app state to show
+     * Removes the app's toolbar buttons.<p>
      */
-    public void onStateChange(String state);
+    void clearToolbarButtons();
+
+    /**
+     * Sets the app content component.<p>
+     *
+     * @param appContent the app content
+     */
+    void setAppContent(Component appContent);
+
+    /**
+     * Sets the app icon.<p>
+     *
+     * @param icon the icon resource
+     */
+    void setAppIcon(Resource icon);
+
+    /**
+     * Sets the app info component.<p>
+     *
+     * @param appInfo the app info
+     */
+    void setAppInfo(Component appInfo);
+
+    /**
+     * Sets the app title.<p>
+     *
+     * @param title the app title
+     */
+    void setAppTitle(String title);
+
+    /**
+     * Sets the side bar menu component.<p>
+     *
+     * @param menuContent the menu component
+     */
+    void setMenuContent(Component menuContent);
+
 }

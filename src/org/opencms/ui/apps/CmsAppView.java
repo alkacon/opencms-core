@@ -80,10 +80,9 @@ public class CmsAppView implements View, I_CmsComponentFactory {
         if (m_app == null) {
             m_app = m_appConfig.getAppInstance();
             CmsAppViewLayout layout = new CmsAppViewLayout();
-            layout.setMenuTitle("Menu title");
-            layout.setMenu(createMenu());
             layout.setAppTitle(m_appConfig.getName(UI.getCurrent().getLocale()));
-            layout.getAppContainer().addComponent(m_app);
+            layout.setAppIcon(m_appConfig.getIcon());
+            m_app.initUI(layout);
             return layout;
         }
         return null;

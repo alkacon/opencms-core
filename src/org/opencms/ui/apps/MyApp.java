@@ -46,6 +46,11 @@ public class MyApp implements I_CmsWorkplaceAppConfiguration {
 
         }
 
+        public void initUI(I_CmsAppUIContext context) {
+
+            context.setAppContent(this);
+        }
+
         public void onStateChange(String state) {
 
             // TODO Auto-generated method stub
@@ -63,11 +68,6 @@ public class MyApp implements I_CmsWorkplaceAppConfiguration {
         return new MyAppComponent();
     }
 
-    public String getId() {
-
-        return "myapp";
-    }
-
     public String getHelpText(Locale locale) {
 
         return "The quick brown fox jumps over the lazy dog.";
@@ -76,6 +76,11 @@ public class MyApp implements I_CmsWorkplaceAppConfiguration {
     public Resource getIcon() {
 
         return FontAwesome.USER;
+    }
+
+    public String getId() {
+
+        return "myapp";
     }
 
     public String getName(Locale locale) {
