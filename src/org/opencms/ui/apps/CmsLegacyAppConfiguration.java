@@ -111,7 +111,7 @@ public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration
      */
     public int getOrder() {
 
-        return 0;
+        return 10;
     }
 
     /**

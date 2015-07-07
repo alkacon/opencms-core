@@ -31,12 +31,17 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
-import org.opencms.ui.apps.CmsHomeView;
+import org.opencms.ui.apps.CmsDefaultAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.workplace.CmsWorkplace;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 
+import com.google.common.collect.ComparisonChain;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
@@ -85,7 +90,7 @@ public class CmsToolBar extends CssLayout {
 
         Design.read("ToolBar.html", this);
         m_logo.setSource(new ExternalResource(CmsWorkplace.getResourceUri("commons/login_logo.png")));
-        m_itemsLeft.addComponent(createButton(FontAwesome.TASKS));
+        m_itemsLeft.addComponent(createButton(FontAwesome.CLOCK_O));
         m_itemsRight.addComponent(createButton(FontAwesome.BARS));
         m_itemsRight.addComponent(createDropDown());
         m_itemsRight.addComponent(createButton(FontAwesome.USER));
@@ -194,10 +199,25 @@ public class CmsToolBar extends CssLayout {
         layout.addStyleName("wrapping");
         //    layout.setSpacing(true);
         layout.setMargin(true);
-        for (I_CmsWorkplaceAppConfiguration appConfig : OpenCms.getWorkplaceAppManager().getWorkplaceApps()) {
+        List<I_CmsWorkplaceAppConfiguration> configs = new ArrayList<I_CmsWorkplaceAppConfiguration>(
+            OpenCms.getWorkplaceAppManager().getWorkplaceApps());
+
+        Collections.sort(configs, new Comparator<I_CmsWorkplaceAppConfiguration>() {
+
+            public int compare(I_CmsWorkplaceAppConfiguration cat1, I_CmsWorkplaceAppConfiguration cat2) {
+
+                return ComparisonChain.start().compare(cat1.getOrder(), cat2.getOrder()).result();
+            }
+        });
+
+        for (I_CmsWorkplaceAppConfiguration appConfig : configs) {
             CmsAppVisibilityStatus status = appConfig.getVisibility(cms);
             if (status.isVisible()) {
-                layout.addComponent(CmsHomeView.createAppIconWidget(appConfig, locale));
+                layout.addComponent(CmsDefaultAppButtonProvider.createAppIconWidget(appConfig, locale));
+                // show only the top 10
+                if (layout.getComponentCount() > 10) {
+                    break;
+                }
             }
         }
         String html = "<div tabindex=\"0\" role=\"button\" class=\"v-button v-widget borderless v-button-borderless toolbar v-button-toolbar\"><span class=\"v-button-wrap\">"

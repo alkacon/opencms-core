@@ -44,7 +44,7 @@ public class CmsFileExplorerConfiguration implements I_CmsWorkplaceAppConfigurat
      */
     public String getAppCategory() {
 
-        return "test";
+        return "Main";
     }
 
     /**
@@ -92,7 +92,7 @@ public class CmsFileExplorerConfiguration implements I_CmsWorkplaceAppConfigurat
      */
     public int getOrder() {
 
-        return 0;
+        return 3;
     }
 
     /**

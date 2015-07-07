@@ -30,30 +30,21 @@ package org.opencms.ui.apps;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.components.CmsToolBar;
 
 import java.util.List;
 import java.util.Locale;
 
 import com.google.common.collect.Lists;
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.Resource;
-import com.vaadin.server.Responsive;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.UI;
 
-public class CmsHomeView extends CssLayout implements View, I_CmsAppButtonProvider {
+/**
+ * Displays all available app.<p>
+ */
+public class CmsAppHierachy implements I_CmsWorkplaceApp {
 
-    public CmsHomeView() {
-
-        Responsive.makeResponsive(this);
-        addStyleName("opencms-responsive");
-        addComponent(new CmsToolBar());
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
+     */
+    public void initUI(I_CmsAppUIContext context) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
@@ -72,39 +63,18 @@ public class CmsHomeView extends CssLayout implements View, I_CmsAppButtonProvid
             hierarchyBuilder.addCategory(category);
         }
 
-        CmsAppHierarchyPanel hierarchyPanel = new CmsAppHierarchyPanel(this);
+        CmsAppHierarchyPanel hierarchyPanel = new CmsAppHierarchyPanel(new CmsDefaultAppButtonProvider());
         hierarchyPanel.fill(hierarchyBuilder.buildHierarchy(), locale);
-        addComponent(hierarchyPanel);
-        setWidth("100%");
+
+        context.setAppContent(hierarchyPanel);
     }
 
-    public static Component createAppIconWidget(final I_CmsWorkplaceAppConfiguration appConfig, Locale locale) {
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceApp#onStateChange(java.lang.String)
+     */
+    public void onStateChange(String state) {
 
-        Button button = new Button(appConfig.getName(locale));
-        button.addClickListener(new ClickListener() {
-
-            public void buttonClick(ClickEvent event) {
-
-                CmsAppWorkplaceUi ui = (CmsAppWorkplaceUi)A_CmsUI.get();
-                ui.showApp(appConfig);
-            }
-        });
-        Resource icon = appConfig.getIcon();
-        button.setIcon(icon, appConfig.getName(locale));
-        button.addStyleName("app");
-        button.addStyleName("borderless");
-        button.addStyleName("icon-align-top");
-        String helpText = appConfig.getHelpText(locale);
-        button.setDescription(helpText);
-        return button;
+        // nothing to do
     }
 
-    public Component createAppButton(I_CmsWorkplaceAppConfiguration appConfig) {
-
-        return createAppIconWidget(appConfig, UI.getCurrent().getLocale());
-    }
-
-    public void enter(ViewChangeEvent event) {
-
-    }
 }

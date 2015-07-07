@@ -126,7 +126,7 @@ public class CmsWorkplaceAppManager {
             m_appCategories = Lists.newArrayList();
         }
         m_appCategories.clear();
-        CmsAppCategory c1 = new CmsAppCategory("test", null, 0, 0, null);
+        CmsAppCategory c1 = new CmsAppCategory("Main", null, 0, 0, null);
         m_appCategories.addAll(Arrays.asList(c1, new CmsAppCategory("Legacy", null, 1, 0, null)));
         addAppConfigurations(loadDefaultApps());
         addAppConfigurations(loadAppsUsingServiceLoader());
@@ -138,7 +138,8 @@ public class CmsWorkplaceAppManager {
         return Arrays.<I_CmsWorkplaceAppConfiguration> asList(
             new MyApp(),
             new MyTestAppConfig(),
-            new CmsFileExplorerConfiguration());
+            new CmsFileExplorerConfiguration(),
+            new CmsAppHierachyConfiguration());
     }
 
     private Collection<I_CmsWorkplaceAppConfiguration> loadLegacyApps() {

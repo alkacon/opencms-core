@@ -33,17 +33,12 @@ import org.opencms.ui.I_CmsComponentFactory;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 import org.opencms.ui.components.CmsScrollPositionCss;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.NavigationStateManager;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
 import com.vaadin.navigator.ViewProvider;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Component;
 
@@ -81,44 +76,15 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
     }
 
     /**
-     * Returns the menu items.<p>
-     *
-     * @return the menu items
-     */
-    public List<I_CmsMenuItem> getMenuItems() {
-
-        List<I_CmsMenuItem> items = new ArrayList<I_CmsMenuItem>();
-        items.add(new A_CmsMenuItem("", FontAwesome.HOME) {
-
-            @Override
-            public void executeAction() {
-
-                CmsAppWorkplaceUi ui = (CmsAppWorkplaceUi)A_CmsUI.get();
-                ui.showHome();
-            }
-
-            @Override
-            protected String getLabel(Locale locale) {
-
-                return "Home";
-            }
-        });
-        return items;
-    }
-
-    /**
      * @see com.vaadin.navigator.ViewProvider#getView(java.lang.String)
      */
     public View getView(String viewName) {
 
-        if (viewName.startsWith(VIEW_HOME)) {
-            return new CmsHomeView();
-        } else {
-            I_CmsWorkplaceAppConfiguration appConfig = OpenCms.getWorkplaceAppManager().getAppConfiguration(viewName);
-            if (appConfig != null) {
-                return new CmsAppView(appConfig);
-            }
+        I_CmsWorkplaceAppConfiguration appConfig = OpenCms.getWorkplaceAppManager().getAppConfiguration(viewName);
+        if (appConfig != null) {
+            return new CmsAppView(appConfig);
         }
+
         return null;
     }
 
@@ -146,7 +112,7 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
      */
     public void showHome() {
 
-        getNavigator().navigateTo("home");
+        getNavigator().navigateTo("apphierachy");
     }
 
     /**

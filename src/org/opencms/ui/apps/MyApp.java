@@ -60,7 +60,7 @@ public class MyApp implements I_CmsWorkplaceAppConfiguration {
 
     public String getAppCategory() {
 
-        return "test";
+        return "Main";
     }
 
     public I_CmsWorkplaceApp getAppInstance() {
@@ -70,12 +70,12 @@ public class MyApp implements I_CmsWorkplaceAppConfiguration {
 
     public String getHelpText(Locale locale) {
 
-        return "The quick brown fox jumps over the lazy dog.";
+        return "The sitemap editor";
     }
 
     public Resource getIcon() {
 
-        return FontAwesome.USER;
+        return FontAwesome.SITEMAP;
     }
 
     public String getId() {
@@ -85,13 +85,13 @@ public class MyApp implements I_CmsWorkplaceAppConfiguration {
 
     public String getName(Locale locale) {
 
-        return "myapp";
+        return "Sitemap";
     }
 
     public int getOrder() {
 
         // TODO Auto-generated method stub
-        return 0;
+        return 2;
     }
 
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {

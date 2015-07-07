@@ -35,54 +35,72 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 
 /**
- * My test app.<p>
+ * The app hierachy configuration.<p>
  */
-public class MyTestAppConfig implements I_CmsWorkplaceAppConfiguration {
+public class CmsAppHierachyConfiguration implements I_CmsWorkplaceAppConfiguration {
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
+     */
     public String getAppCategory() {
 
         return "Main";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppInstance()
+     */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new MyTestApp();
+        return new CmsAppHierachy();
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getHelpText(java.util.Locale)
+     */
     public String getHelpText(Locale locale) {
 
-        // TODO Auto-generated method stub
-        return "The page editor";
+        return "Displays all available apps";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getIcon()
+     */
     public Resource getIcon() {
 
-        // TODO Auto-generated method stub
-        return FontAwesome.DOT_CIRCLE_O;
+        return FontAwesome.QRCODE;
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getId()
+     */
     public String getId() {
 
-        // TODO Auto-generated method stub
-        return "mytestapp";
+        return "apphierachy";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getName(java.util.Locale)
+     */
     public String getName(Locale locale) {
 
-        // TODO Auto-generated method stub
-        return "Page editor";
+        return "App overview";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getOrder()
+     */
     public int getOrder() {
 
-        // TODO Auto-generated method stub
-        return 1;
+        return 4;
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
+     */
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        // TODO Auto-generated method stub
-        return new CmsAppVisibilityStatus(true, true, getHelpText(null));
+        return new CmsAppVisibilityStatus(true, true, null);
     }
 
 }

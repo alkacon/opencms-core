@@ -35,7 +35,6 @@ import org.opencms.ui.components.CmsAppViewLayout;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.UI;
 
 /**
@@ -99,27 +98,5 @@ public class CmsAppView implements View, I_CmsComponentFactory {
             newState = newState.substring(1);
         }
         m_app.onStateChange(newState);
-    }
-
-    /**
-     * Creates the menu component.<p>
-     *
-     * @return the menu
-     */
-    protected Component createMenu() {
-
-        CssLayout menu = new CssLayout();
-
-        CssLayout menuItemsLayout = new CssLayout();
-        menuItemsLayout.setPrimaryStyleName("valo-menuitems");
-        menu.addComponent(menuItemsLayout);
-        CmsAppWorkplaceUi ui = (CmsAppWorkplaceUi)A_CmsUI.get();
-        for (I_CmsMenuItem item : ui.getMenuItems()) {
-            Component button = item.getItemComponent(getWorkplaceUi().getLocale());
-            button.setPrimaryStyleName("valo-menu-item");
-            menuItemsLayout.addComponent(button);
-        }
-
-        return menu;
     }
 }

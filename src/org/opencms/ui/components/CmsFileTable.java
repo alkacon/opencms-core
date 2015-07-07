@@ -78,6 +78,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_container.addContainerProperty("resourceType", String.class, null);
         m_fileTable = new Table();
         m_fileTable.addStyleName("borderless");
+        m_fileTable.setSizeFull();
         //     show row header w/ icon
         m_fileTable.setRowHeaderMode(RowHeaderMode.ICON_ONLY);
         setCompositionRoot(m_fileTable);
@@ -87,6 +88,11 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_fileTable.setColumnCollapsed("typeIcon", true);
         m_fileTable.setSelectable(true);
         m_fileTable.setMultiSelect(true);
+
+        m_fileTable.setColumnHeader("typeIcon", "");
+        m_fileTable.setColumnHeader("resourceName", "Name");
+        m_fileTable.setColumnHeader("title", "Title");
+        m_fileTable.setColumnHeader("resourceType", "Resource type");
     }
 
     /**
