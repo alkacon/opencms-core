@@ -29,6 +29,7 @@ package org.opencms.file;
 
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsResourceState;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
@@ -390,6 +391,67 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
 
     /** The version number of this resource. */
     private int m_version;
+
+    /**
+     * Creates a new CmsRecource object.<p>
+     *
+     * @param structureId the id of this resources structure record
+     * @param resourceId the id of this resources resource record
+     * @param rootPath the root path to the resource
+     * @param type the type of this resource
+     * @param flags the flags of this resource
+     * @param projectId the project id this resource was last modified in
+     * @param state the state of this resource
+     * @param dateCreated the creation date of this resource
+     * @param userCreated the id of the user who created this resource
+     * @param dateLastModified the date of the last modification of this resource
+     * @param userLastModified the id of the user who did the last modification of this resource
+     * @param dateReleased the release date of this resource
+     * @param dateExpired the expiration date of this resource
+     * @param linkCount the count of all siblings of this resource
+     * @param size the size of the file content of this resource
+     * @param dateContent the date of the last modification of the content of this resource
+     * @param version the version number of this resource
+     */
+    public CmsResource(
+        CmsUUID structureId,
+        CmsUUID resourceId,
+        String rootPath,
+        I_CmsResourceType type,
+        int flags,
+        CmsUUID projectId,
+        CmsResourceState state,
+        long dateCreated,
+        CmsUUID userCreated,
+        long dateLastModified,
+        CmsUUID userLastModified,
+        long dateReleased,
+        long dateExpired,
+        int linkCount,
+        int size,
+        long dateContent,
+        int version) {
+
+        this(
+            structureId,
+            resourceId,
+            rootPath,
+            type.getTypeId(),
+            type.isFolder(),
+            flags,
+            projectId,
+            state,
+            dateCreated,
+            userCreated,
+            dateLastModified,
+            userLastModified,
+            dateReleased,
+            dateExpired,
+            linkCount,
+            size,
+            dateContent,
+            version);
+    }
 
     /**
      * Creates a new CmsRecource object.<p>
