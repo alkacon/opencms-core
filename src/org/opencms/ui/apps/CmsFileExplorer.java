@@ -25,25 +25,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.ui;
+package org.opencms.ui.apps;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-import org.opencms.ui.A_CmsCustomComponent;
+import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.components.CmsFileTable;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.CollapseEvent;
@@ -52,31 +51,34 @@ import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
 
 /**
- * File browser component containing both a VFS folder tree and a list of files in a table.<p>
+ * The file explorer app.<p>
  */
-public class CmsFileBrowser extends A_CmsCustomComponent {
+public class CmsFileExplorer implements I_CmsWorkplaceApp {
 
+    /** The files and folder resource filter. */
     private static final CmsResourceFilter FILES_N_FOLDERS = CmsResourceFilter.ONLY_VISIBLE;
 
+    /** The folders resource filter. */
     private static final CmsResourceFilter FOLDERS = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder();
 
     /** The table containing the contents of the current folder. */
-    private CmsFileTable m_fileTable = new CmsFileTable();
+    private CmsFileTable m_fileTable;
 
     /** The folder tree. */
     private Tree m_fileTree;
 
-    public CmsFileBrowser() {
-
-        HorizontalSplitPanel main = new HorizontalSplitPanel();
-
+    /**
+     * Constructor.<p>
+     */
+    public CmsFileExplorer() {
+        m_fileTable = new CmsFileTable();
+        m_fileTable.setSizeFull();
         m_fileTree = new Tree();
+        m_fileTree.setSizeFull();
         m_fileTree.setItemCaptionPropertyId("resourceName");
-        main.setFirstComponent(m_fileTree);
-        m_fileTree.setHeight(100, Unit.PERCENTAGE);
-        m_fileTree.setWidth(100, Unit.PERCENTAGE);
-        populateFolderTree();
         m_fileTree.addExpandListener(new ExpandListener() {
+
+            private static final long serialVersionUID = 1L;
 
             public void nodeExpand(ExpandEvent event) {
 
@@ -84,6 +86,8 @@ public class CmsFileBrowser extends A_CmsCustomComponent {
             }
         });
         m_fileTree.addCollapseListener(new CollapseListener() {
+
+            private static final long serialVersionUID = 1L;
 
             public void nodeCollapse(CollapseEvent event) {
 
@@ -93,52 +97,63 @@ public class CmsFileBrowser extends A_CmsCustomComponent {
 
         m_fileTree.addItemClickListener(new ItemClickListener() {
 
+            private static final long serialVersionUID = 1L;
+
             public void itemClick(ItemClickEvent event) {
 
                 readFolder((CmsUUID)event.getItemId());
             }
         });
-
-        main.setSecondComponent(m_fileTable);
-        m_fileTable.setHeight(100, Unit.PERCENTAGE);
-        m_fileTable.setWidth(100, Unit.PERCENTAGE);
-
-        populateFileTable("/");
-        main.setSplitPosition(25, Unit.PERCENTAGE);
-        setCompositionRoot(main);
-        setHeight(100, Unit.PERCENTAGE);
-        setWidth(100, Unit.PERCENTAGE);
     }
 
     /**
-     * Filles the file table with the resources from the given path.<p>
+     * @see org.opencms.ui.apps.I_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
+     */
+    public void initUI(I_CmsAppUIContext context) {
+
+        context.setMenuContent(m_fileTree);
+        context.setAppContent(m_fileTable);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceApp#onStateChange(java.lang.String)
+     */
+    public void onStateChange(String state) {
+
+        // TODO: evaluate state
+        populateFolderTree();
+    }
+
+    /**
+     * Fills the file table with the resources from the given path.<p>
      *
      * @param sitePath a folder site path
      */
     public void populateFileTable(String sitePath) {
 
+        CmsObject cms = A_CmsUI.getCmsObject();
         try {
-            List<CmsResource> folderResources = getCmsObject().readResources(sitePath, FILES_N_FOLDERS, false);
-            m_fileTable.fillTable(getCmsObject(), folderResources);
+            List<CmsResource> folderResources = cms.readResources(sitePath, FILES_N_FOLDERS, false);
+            m_fileTable.fillTable(cms, folderResources);
         } catch (CmsException e) {
             Notification.show(e.getMessage());
         }
     }
 
     /**
-     * Popuplates the folder tree.<p>
+     * Populates the folder tree.<p>
      */
     public void populateFolderTree() {
 
         HierarchicalContainer container = new HierarchicalContainer();
         container.addContainerProperty("resourceName", String.class, null);
-
+        CmsObject cms = A_CmsUI.getCmsObject();
         try {
-            CmsResource siteRoot = getCmsObject().readResource("/", FOLDERS);
+            CmsResource siteRoot = cms.readResource("/", FOLDERS);
             Item rootItem = container.addItem(siteRoot.getStructureId());
             // use the root path as name for site root folder
             rootItem.getItemProperty("resourceName").setValue(siteRoot.getRootPath());
-            List<CmsResource> folderResources = getCmsObject().readResources("/", FOLDERS, false);
+            List<CmsResource> folderResources = cms.readResources("/", FOLDERS, false);
             for (CmsResource resource : folderResources) {
                 Item resourceItem = container.addItem(resource.getStructureId());
                 resourceItem.getItemProperty("resourceName").setValue(resource.getName());
@@ -153,45 +168,55 @@ public class CmsFileBrowser extends A_CmsCustomComponent {
 
     }
 
-    protected void clearTreeLevel(CmsUUID parentIt) {
+    /**
+     * Clears the given tree level.<p>
+     *
+     * @param parentId the parent id
+     */
+    protected void clearTreeLevel(CmsUUID parentId) {
 
         HierarchicalContainer container = (HierarchicalContainer)m_fileTree.getContainerDataSource();
         // create a new list to avoid concurrent modifications
-        Collection<?> children = container.getChildren(parentIt);
+        Collection<?> children = container.getChildren(parentId);
         // may be null when monkey clicking
         if (children != null) {
-            List<Object> childIds = new ArrayList<Object>(container.getChildren(parentIt));
+            List<Object> childIds = new ArrayList<Object>(container.getChildren(parentId));
             for (Object childId : childIds) {
                 container.removeItemRecursively(childId);
             }
         }
     }
 
+    /**
+     * Reads the given folder.<p>
+     *
+     * @param folderId the folder id
+     */
     protected void readFolder(CmsUUID folderId) {
 
+        CmsObject cms = A_CmsUI.getCmsObject();
         try {
-            CmsResource folder = getCmsObject().readResource(folderId, FOLDERS);
-            List<CmsResource> folderResources = getCmsObject().readResources(
-                getCmsObject().getSitePath(folder),
-                FILES_N_FOLDERS,
-                false);
-            m_fileTable.getContainer().removeAllItems();
-            m_fileTable.fillTable(getCmsObject(), folderResources);
+            CmsResource folder = cms.readResource(folderId, FOLDERS);
+            List<CmsResource> folderResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
+            m_fileTable.fillTable(cms, folderResources);
         } catch (CmsException e) {
             Notification.show(e.getMessage());
             e.printStackTrace();
         }
     }
 
+    /**
+     * Reads the given tree level.<p>
+     *
+     * @param parentId the parent id
+     */
     protected void readTreeLevel(CmsUUID parentId) {
 
+        CmsObject cms = A_CmsUI.getCmsObject();
         HierarchicalContainer container = (HierarchicalContainer)m_fileTree.getContainerDataSource();
         try {
-            CmsResource parent = getCmsObject().readResource(parentId, FOLDERS);
-            List<CmsResource> folderResources = getCmsObject().readResources(
-                getCmsObject().getSitePath(parent),
-                FOLDERS,
-                false);
+            CmsResource parent = cms.readResource(parentId, FOLDERS);
+            List<CmsResource> folderResources = cms.readResources(cms.getSitePath(parent), FOLDERS, false);
             for (CmsResource resource : folderResources) {
                 Item resourceItem = container.getItem(resource.getStructureId());
                 if (resourceItem == null) {
@@ -204,11 +229,6 @@ public class CmsFileBrowser extends A_CmsCustomComponent {
             // TODO: Auto-generated catch block
             e.printStackTrace();
         }
-    }
-
-    private Locale getWorkplaceLocale() {
-
-        return OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
     }
 
 }

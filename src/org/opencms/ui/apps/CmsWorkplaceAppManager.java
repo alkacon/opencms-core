@@ -135,7 +135,10 @@ public class CmsWorkplaceAppManager {
 
     protected Collection<I_CmsWorkplaceAppConfiguration> loadDefaultApps() {
 
-        return Arrays.<I_CmsWorkplaceAppConfiguration> asList(new MyApp(), new MyTestAppConfig());
+        return Arrays.<I_CmsWorkplaceAppConfiguration> asList(
+            new MyApp(),
+            new MyTestAppConfig(),
+            new CmsFileExplorerConfiguration());
     }
 
     private Collection<I_CmsWorkplaceAppConfiguration> loadLegacyApps() {

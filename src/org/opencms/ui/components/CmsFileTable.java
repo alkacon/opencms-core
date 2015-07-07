@@ -25,64 +25,45 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.ui;
+package org.opencms.ui.components;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsCustomComponent;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsMultiDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-
-import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
-import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.RowHeaderMode;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.Window;
 
 /**
  * Table for displaying resources.<p>
  */
 public class CmsFileTable extends A_CmsCustomComponent {
 
-    /** The window opened by a context menu action. */
-    private Window m_contextMenuWindow;
-
-    /** The log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFileTable.class);
+    /** The serial version id. */
+    private static final long serialVersionUID = 5460048685141699277L;
 
     /** The table used to display the resource data. */
-    Table m_fileTable;
+    private Table m_fileTable;
 
     /** The resource data container. */
     private IndexedContainer m_container;
-
-    /** The close function name. */
-    public final String CLOSE_FUNCTION = "handleCloseContextMenuWindow" + System.identityHashCode(this);
 
     /**
      * Default constructor.<p>
@@ -96,6 +77,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_container.addContainerProperty("title", String.class, null);
         m_container.addContainerProperty("resourceType", String.class, null);
         m_fileTable = new Table();
+        m_fileTable.addStyleName("borderless");
         //     show row header w/ icon
         m_fileTable.setRowHeaderMode(RowHeaderMode.ICON_ONLY);
         setCompositionRoot(m_fileTable);
@@ -103,8 +85,6 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_fileTable.setItemIconPropertyId("typeIcon");
         m_fileTable.setColumnCollapsingAllowed(true);
         m_fileTable.setColumnCollapsed("typeIcon", true);
-        m_fileTable.setWidth("100%");
-        m_fileTable.setHeight("100%");
         m_fileTable.setSelectable(true);
         m_fileTable.setMultiSelect(true);
     }
@@ -118,6 +98,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
     public void fillTable(CmsObject cms, List<CmsResource> resources) {
 
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        m_container.removeAllItems();
         for (CmsResource resource : resources) {
             try {
                 Item resourceItem = m_container.addItem(resource.getStructureId());
@@ -139,85 +120,14 @@ public class CmsFileTable extends A_CmsCustomComponent {
         }
     }
 
-    public Container getContainer() {
-
-        return m_container;
-    }
-
     /**
      * Gets the selected structure ids.<p>
      *
      * @return the set of selected structure ids
      */
+    @SuppressWarnings("unchecked")
     public Set<CmsUUID> getSelectedIds() {
 
         return (Set<CmsUUID>)m_fileTable.getValue();
-    }
-
-    public void refresh() {
-
-        Notification.show("File table refresh not implemented yet!");
-    }
-
-    /**
-     * Executes a context menu action.<p>
-     *
-     * @param entry the context menu entry for which the action should be executed
-     * @param selected the list of selected resource structure ids
-     */
-    protected void executeMenuAction(CmsContextMenuEntryBean entry, List<CmsUUID> selected) {
-
-        String jsp = entry.getJspPath();
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(jsp)) {
-            final Window window = new Window(entry.getLabel());
-            m_contextMenuWindow = window;
-            CmsUUID selectedId = selected.iterator().next();
-            try {
-                CmsObject cms = getCmsObject();
-                String closelink = "/system/workplace/commons/execute_parent_js.jsp";
-                closelink += "?callback=" + CLOSE_FUNCTION;
-                closelink = OpenCms.getLinkManager().substituteLink(cms, closelink);
-                closelink = URLEncoder.encode(closelink, "UTF-8");
-                String paramResourceOrList;
-                if (selected.size() == 1) {
-                    CmsResource resource = cms.readResource(selectedId);
-                    String sitePath = cms.getSitePath(resource);
-                    paramResourceOrList = "resource=" + sitePath;
-                } else {
-                    List<String> paths = new ArrayList<String>();
-                    for (CmsUUID uuid : selected) {
-                        CmsResource resource = cms.readResource(uuid);
-                        paths.add(cms.getSitePath(resource));
-                    }
-                    paramResourceOrList = "resourcelist="
-                        + CmsStringUtil.listAsString(paths, CmsMultiDialog.DELIMITER_RESOURCES);
-                }
-                String link = jsp + "?" + paramResourceOrList + "&closelink=" + closelink;
-                ExternalResource linkRes = new ExternalResource(link);
-                BrowserFrame iframe = new BrowserFrame("", linkRes);
-                iframe.setWidth("1000px");
-                iframe.setHeight("768px");
-                window.setContent(iframe);
-                UI.getCurrent().addWindow(window);
-
-            } catch (CmsException e) {
-                Notification.show(e.getLocalizedMessage());
-            } catch (UnsupportedEncodingException e) {
-                // TODO: Auto-generated catch block
-                e.printStackTrace();
-            }
-        } else {
-            Notification.show("???");
-        }
-
-    }
-
-    /**
-     * Gets the window which was opened from the context menu.<p>
-     * @return
-     */
-    protected Window getContextMenuWindow() {
-
-        return m_contextMenuWindow;
     }
 }
