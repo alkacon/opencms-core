@@ -95,6 +95,9 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
     /** The "type" attribute. */
     String A_TYPE = "type";
 
+    /** The "mode" attribute. */
+    String A_MODE = "mode";
+
     /** The "uri" attribute. */
     String A_URI = "uri";
 

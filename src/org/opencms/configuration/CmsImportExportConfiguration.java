@@ -30,6 +30,7 @@ package org.opencms.configuration;
 import org.opencms.db.CmsUserExportSettings;
 import org.opencms.importexport.CmsExtendedHtmlImportDefault;
 import org.opencms.importexport.CmsImportExportManager;
+import org.opencms.importexport.CmsImportExportManager.TimestampMode;
 import org.opencms.importexport.I_CmsImport;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsLog;
@@ -45,6 +46,7 @@ import org.opencms.util.CmsStringUtil;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.digester.Digester;
@@ -135,6 +137,18 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name of the import sub-configuration. */
     public static final String N_IMPORT = "import";
+
+    /** The node name of the export sub-configuration. */
+    public static final String N_EXPORT = "export";
+
+    /** The node name of the defaultexporttimestamps sub-configuration. */
+    public static final String N_EXPORT_DEFAULTTIMESTAMPMODES = "defaulttimestampmodes";
+
+    /** The node name of the timestamp sub-configuration. */
+    public static final String N_EXPORT_TIMESTAMPMODE = "timestampmode";
+
+    /** The node name of the resourcetype sub-configuration. */
+    public static final String N_EXPORT_RESOURCETYPENAME = "resourcetypename";
 
     /** The main configuration node name. */
     public static final String N_IMPORTEXPORT = "importexport";
@@ -372,6 +386,58 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_IMPORTEXPORT + "/" + N_IMPORT + "/" + N_IGNOREDPROPERTIES + "/" + N_PROPERTY,
             0,
             A_NAME);
+
+        // add rules for export settings
+        digester.addCallMethod(
+            "*/"
+                + N_IMPORTEXPORT
+                + "/"
+                + N_EXPORT
+                + "/"
+                + N_EXPORT_DEFAULTTIMESTAMPMODES
+                + "/"
+                + N_EXPORT_TIMESTAMPMODE,
+            "addDefaultTimestampMode",
+            1);
+
+        digester.addCallParam(
+            "*/"
+                + N_IMPORTEXPORT
+                + "/"
+                + N_EXPORT
+                + "/"
+                + N_EXPORT_DEFAULTTIMESTAMPMODES
+                + "/"
+                + N_EXPORT_TIMESTAMPMODE,
+            0,
+            A_MODE);
+
+        digester.addCallMethod(
+            "*/"
+                + N_IMPORTEXPORT
+                + "/"
+                + N_EXPORT
+                + "/"
+                + N_EXPORT_DEFAULTTIMESTAMPMODES
+                + "/"
+                + N_EXPORT_TIMESTAMPMODE
+                + "/"
+                + N_EXPORT_RESOURCETYPENAME,
+            "addResourceTypeForDefaultTimestampMode",
+            1);
+
+        digester.addCallParam(
+            "*/"
+                + N_IMPORTEXPORT
+                + "/"
+                + N_EXPORT
+                + "/"
+                + N_EXPORT_DEFAULTTIMESTAMPMODES
+                + "/"
+                + N_EXPORT_TIMESTAMPMODE
+                + "/"
+                + N_EXPORT_RESOURCETYPENAME,
+            0);
 
         // creation of the static export manager
         digester.addObjectCreate("*/" + N_STATICEXPORT, CmsStaticExportManager.class);
@@ -716,6 +782,27 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             propertiesElement.addElement(N_PROPERTY).addAttribute(A_NAME, property);
         }
 
+        // <export> node
+        Element exportElement = importexportElement.addElement(N_EXPORT);
+        Map<TimestampMode, List<String>> defaultTimestampModes = m_importExportManager.getDefaultTimestampModes();
+        if (!defaultTimestampModes.isEmpty()) {
+
+            // <defaulttimestampmodes>
+            Element defaultTimestampModesElement = exportElement.addElement(N_EXPORT_DEFAULTTIMESTAMPMODES);
+            for (TimestampMode mode : defaultTimestampModes.keySet()) {
+
+                // <timestampmode>
+                Element timestampModeElement = defaultTimestampModesElement.addElement(N_EXPORT_TIMESTAMPMODE);
+                timestampModeElement.addAttribute(A_MODE, mode.toString().toLowerCase());
+                for (String resourcetypeName : defaultTimestampModes.get(mode)) {
+
+                    // <resourcetypename>
+                    Element resourcetypeElement = timestampModeElement.addElement(N_EXPORT_RESOURCETYPENAME);
+                    resourcetypeElement.addText(resourcetypeName);
+                }
+            }
+        }
+
         // <staticexport> node
         Element staticexportElement = parent.addElement(N_STATICEXPORT);
         staticexportElement.addAttribute(A_ENABLED, m_staticExportManager.getExportEnabled());
@@ -846,11 +933,11 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
                     modifiedElement.addElement(N_STATICEXPORT_REGEX).addText(regex.pattern());
                 }
                 // <export-resources> node and <uri> subnodes
-                Element exportElement = exportRuleElement.addElement(N_STATICEXPORT_EXPORT);
+                Element exportResourcesElement = exportRuleElement.addElement(N_STATICEXPORT_EXPORT);
                 Iterator<String> itExps = rule.getExportResourcePatterns().iterator();
                 while (itExps.hasNext()) {
                     String uri = itExps.next();
-                    exportElement.addElement(N_STATICEXPORT_URI).addText(uri);
+                    exportResourcesElement.addElement(N_STATICEXPORT_URI).addText(uri);
                 }
             }
         }

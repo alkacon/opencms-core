@@ -1,0 +1,144 @@
+<!--
+# PLEASE NOTE - PLEASE NOTE - PLEASE NOTE - PLEASE NOTE
+# 
+# The following nodes describe the import version 7.
+#
+# The import file will only be validated if the xml validation import parameter is set as
+# well as the xml validation export parameter is set when the data was exported. 
+-->
+
+<!ELEMENT export (info, accounts?, files?, projects?)>
+
+<!ELEMENT info (creator, 
+				opencms_version, 
+				createdate, 
+				infoproject, 
+				export_version)>
+				
+<!ELEMENT creator (#PCDATA)>
+<!ELEMENT opencms_version (#PCDATA)>
+<!ELEMENT createdate (#PCDATA)>
+<!ELEMENT infoproject (#PCDATA)>
+<!ELEMENT export_version (#PCDATA)>
+
+<!--
+# PLEASE NOTE - PLEASE NOTE - PLEASE NOTE - PLEASE NOTE
+# 
+# The following nodes describe the resources import version 7.
+-->
+
+<!ELEMENT files (file+)>
+<!ELEMENT file (source?, 
+				destination, 
+				type, 
+				uuidstructure, 
+				uuidresource?, 
+				datelastmodified, 
+				userlastmodified, 
+				datecreated, 
+				usercreated, 
+				datereleased?,
+				dateexpired?,
+				flags, 
+				properties, 
+				relations, 
+				accesscontrol)>
+
+<!ELEMENT source (#PCDATA)>
+<!ELEMENT destination (#PCDATA)>
+<!ELEMENT type (#PCDATA)>
+<!ELEMENT uuidstructure (#PCDATA)>
+<!ELEMENT uuidresource (#PCDATA)>
+<!ELEMENT datelastmodified (#PCDATA)>
+<!ELEMENT userlastmodified (#PCDATA)>
+<!ELEMENT datecreated (#PCDATA)>
+<!ELEMENT usercreated (#PCDATA)>
+<!ELEMENT datereleased (#PCDATA)>
+<!ELEMENT dateexpired (#PCDATA)>
+<!ELEMENT flags (#PCDATA)>
+
+<!ELEMENT properties (property*)>
+<!ELEMENT property (name, value)>
+<!ATTLIST property type (individual|shared) "individual">
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT value (#PCDATA)>
+
+<!ELEMENT relations (relation*)>
+<!ELEMENT relation (id, path, type)>
+<!ELEMENT id (#PCDATA)>
+<!ELEMENT path (#PCDATA)>
+
+<!ELEMENT accesscontrol (accessentry*)>
+<!ELEMENT accessentry (uuidprincipal, flags, permissionset)>
+<!ELEMENT uuidprincipal (#PCDATA)>
+<!ELEMENT permissionset (allowed, denied)>
+<!ELEMENT allowed (#PCDATA)>
+<!ELEMENT denied (#PCDATA)>
+
+<!--
+# PLEASE NOTE - PLEASE NOTE - PLEASE NOTE - PLEASE NOTE
+# 
+# The following nodes describe the accounts import version 7.
+-->
+
+<!ELEMENT accounts (orgunits?)>
+<!ELEMENT orgunits (orgunit*)>
+<!ELEMENT orgunit (name, 
+				   description, 
+				   flags,
+				   resources,
+				   groups,
+				   users)>
+
+<!ELEMENT description (#PCDATA)>
+
+<!ELEMENT resources (resource+)>
+<!ELEMENT resource (#PCDATA)>
+
+<!ELEMENT groups (group*)>
+<!ELEMENT group (name, description, flags, parentgroup?)>
+<!ELEMENT parentgroup (#PCDATA)>
+
+<!ELEMENT users (user*)>
+<!ELEMENT user (name, 
+                password, 
+                firstname, 
+                lastname, 
+                email, 
+                flags, 
+                datecreated, 
+                userinfo, 
+                userroles, 
+                usergroups)>
+<!ELEMENT password (#PCDATA)>
+<!ELEMENT firstname (#PCDATA)>
+<!ELEMENT lastname (#PCDATA)>
+<!ELEMENT email (#PCDATA)>
+
+<!ELEMENT userinfo (entry*)>
+<!ELEMENT entry (#PCDATA)>
+<!ATTLIST entry name CDATA #REQUIRED>
+<!ATTLIST entry type CDATA #REQUIRED>
+
+<!ELEMENT userroles (userrole*)>
+<!ELEMENT userrole (#PCDATA)>
+
+<!ELEMENT usergroups (usergroup*)>
+<!ELEMENT usergroup (#PCDATA)>
+
+
+<!--
+# PLEASE NOTE - PLEASE NOTE - PLEASE NOTE - PLEASE NOTE
+# 
+# The following nodes describe the projects import version 7.
+-->
+
+<!ELEMENT projects (project+)>
+<!ELEMENT project (name, 
+				description, 
+				usersgroup, 
+				managersgroup, 
+				resources)>
+
+<!ELEMENT managersgroup (#PCDATA)>
+<!ELEMENT usersgroup (#PCDATA)>

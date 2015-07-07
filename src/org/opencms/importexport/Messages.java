@@ -131,6 +131,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_IMPORTEXPORT_LINK_CONVERSION_FAILED_2 = "ERR_IMPORTEXPORT_LINK_CONVERSION_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMPORTEXPORT_EXPORT_INVALID_TIMESTAMPMODE_2 = "ERR_IMPORTEXPORT_EXPORT_INVALID_TIMESTAMPMODE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMPORTEXPORT_EXPORT_MISSING_TIMESTAMPMODE_1 = "ERR_IMPORTEXPORT_EXPORT_MISSING_TIMESTAMPMODE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_NOT_FOUND_ELEM_XMLTEMPLATE_0 = "ERR_NOT_FOUND_ELEM_XMLTEMPLATE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -202,6 +208,8 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IMPORTEXPORT_ERROR_READING_MANIFEST_1 = "LOG_IMPORTEXPORT_ERROR_READING_MANIFEST_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IMPORTEXPORT_EXPORT_SETTIMESTAMPMODE_2 = "LOG_IMPORTEXPORT_EXPORT_SETTIMESTAMPMODE_2";
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1 = "LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1";
 

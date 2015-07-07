@@ -63,6 +63,40 @@ import org.dom4j.io.SAXReader;
  */
 public class CmsImportExportManager {
 
+    /** Time modes to specify how time stamps should be handled. */
+    public static enum TimestampMode {
+        /** Use the time of import for the timestamp. */
+        IMPORTTIME, /** Use the timestamp of the imported file. */
+        FILETIME, /** The timestamp is explicitly given. */
+        VFSTIME;
+
+        /** Returns the default timestamp mode.
+         * @return the default timestamp mode
+         */
+        public static TimestampMode getDefaultTimeStampMode() {
+
+            return VFSTIME;
+        }
+
+        /** More robust version of {@link java.lang.Enum#valueOf(java.lang.Class, String)} that is case insensitive
+         * and defaults for all "unreadable" arguments to the default timestamp mode.
+         * @param value the TimeMode value as String
+         * @return <code>value</code> as TimeMode object, or the default time mode, if <code>value</code> can't be converted to a TimeMode object.
+         */
+        public static TimestampMode getEnum(String value) {
+
+            if (null == value) {
+                return getDefaultTimeStampMode();
+            } else {
+                try {
+                    return TimestampMode.valueOf(value.toUpperCase());
+                } catch (@SuppressWarnings("unused") IllegalArgumentException e) {
+                    return getDefaultTimeStampMode();
+                }
+            }
+        }
+    }
+
     /** Tag in the {@link #EXPORT_MANIFEST} for the "userinfo/entry@name" attribute, contains the additional user info entry name.
      * @deprecated Use the appropriate tag from latest import class instead*/
     @Deprecated
@@ -77,7 +111,7 @@ public class CmsImportExportManager {
     public static final String EXPORT_MANIFEST = "manifest.xml";
 
     /** The current version of the OpenCms export (appears in the {@link #EXPORT_MANIFEST} header). */
-    public static final String EXPORT_VERSION = "" + CmsImportVersion7.IMPORT_VERSION7;
+    public static final String EXPORT_VERSION = "" + CmsImportVersion10.IMPORT_VERSION10;
 
     /**
      * The name of the XML manifest file used for the description of exported OpenCms VFS properties and attributes.<p>
@@ -358,6 +392,9 @@ public class CmsImportExportManager {
     /** Tag in the {@link #EXPORT_MANIFEST} for the "export_version" node, appears in the manifest info header. */
     public static final String N_VERSION = "export_version";
 
+    /** Property to specify the export time written for a resource's date last modified. */
+    public static final String PROP_EXPORT_TIMESTAMP = "export.timestamp";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsImportExportManager.class);
 
@@ -370,8 +407,14 @@ public class CmsImportExportManager {
     /** List of property keys that should be removed from imported resources. */
     private List<String> m_ignoredProperties;
 
+    /** Map from resource types to default timestamp modes. */
+    private Map<String, TimestampMode> m_defaultTimestampModes;
+
     /** List of immutable resources that should remain unchanged when resources are imported. */
     private List<String> m_immutableResources;
+
+    /** List of resourcetypes. Only used as helper for initializing the default timestamp modes. */
+    private List<String> m_resourcetypes;
 
     /** The initialized import/export handlers. */
     private List<I_CmsImportExportHandler> m_importExportHandlers;
@@ -411,6 +454,45 @@ public class CmsImportExportManager {
         m_importUserTranslations = new HashMap<String, String>();
         m_overwriteCollidingResources = true;
         m_importVersionClasses = new ArrayList<I_CmsImport>();
+        m_defaultTimestampModes = new HashMap<String, TimestampMode>();
+        m_resourcetypes = new ArrayList<String>();
+    }
+
+    /** Adds the provided default timestamp mode for the resourcetypes in list {@link #m_resourcetypes}.
+     * The method is called by the digester.
+     * @param timestampMode the timestamp mode to add as default.
+     */
+    public void addDefaultTimestampMode(String timestampMode) {
+
+        if (null != timestampMode) {
+            try {
+                TimestampMode mode = TimestampMode.valueOf(timestampMode.toUpperCase());
+                for (String resourcetype : m_resourcetypes) {
+                    m_defaultTimestampModes.put(resourcetype, mode);
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_IMPORTEXPORT_EXPORT_SETTIMESTAMPMODE_2,
+                                timestampMode,
+                                resourcetype));
+                    }
+                }
+            } catch (IllegalArgumentException e) {
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_IMPORTEXPORT_EXPORT_INVALID_TIMESTAMPMODE_2,
+                        timestampMode,
+                        m_resourcetypes.toString()),
+                    e);
+            }
+        } else {
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.ERR_IMPORTEXPORT_EXPORT_MISSING_TIMESTAMPMODE_1,
+                    m_resourcetypes.toString()));
+        }
+        m_resourcetypes.clear();
     }
 
     /**
@@ -501,6 +583,17 @@ public class CmsImportExportManager {
         m_importVersionClasses.add(importVersionClass);
     }
 
+    /** Adds a resourcetype name to the list of resourcetypes that obtain a default timestamp mode in {@link #addDefaultTimestampMode(String)}.
+     * The method is called only by the digester.
+     *
+     * @param resourcetypeName name of the resourcetype
+     */
+    public void addResourceTypeForDefaultTimestampMode(String resourcetypeName) {
+
+        m_resourcetypes.add(resourcetypeName);
+
+    }
+
     /**
      * Checks if imported pages should be converted into XML pages.<p>
      *
@@ -530,6 +623,34 @@ public class CmsImportExportManager {
 
         OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
         handler.exportData(cms, report);
+    }
+
+    /** Returns the default timestamp mode for the resourcetype - or <code>null</code> if no default mode is set.
+     * @param resourcetypeName name of the resourcetype to get the timestamp mode for
+     * @return if set, the default timestamp mode for the resourcetype, otherwise <code>null</code>
+     */
+    public TimestampMode getDefaultTimestampMode(String resourcetypeName) {
+
+        return m_defaultTimestampModes.get(resourcetypeName);
+    }
+
+    /** Returns the map from resourcetype names to default timestamp modes.
+     * @return the map from resourcetype names to default timestamp modes.
+     */
+    public Map<TimestampMode, List<String>> getDefaultTimestampModes() {
+
+        Map<TimestampMode, List<String>> result = new HashMap<TimestampMode, List<String>>();
+        for (String resourcetype : m_defaultTimestampModes.keySet()) {
+            TimestampMode mode = m_defaultTimestampModes.get(resourcetype);
+            if (result.containsKey(mode)) {
+                result.get(mode).add(resourcetype);
+            } else {
+                List<String> list = new ArrayList<String>();
+                list.add(resourcetype);
+                result.put(mode, list);
+            }
+        }
+        return result;
     }
 
     /**
@@ -614,7 +735,7 @@ public class CmsImportExportManager {
                 if (stream != null) {
                     stream.close();
                 }
-            } catch (Exception e) {
+            } catch (@SuppressWarnings("unused") Exception e) {
                 // noop
             }
             helper.closeFile();

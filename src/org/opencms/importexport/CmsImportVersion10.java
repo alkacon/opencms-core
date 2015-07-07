@@ -44,6 +44,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.importexport.CmsImportExportManager.TimestampMode;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -62,6 +63,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -97,9 +99,7 @@ import com.google.common.collect.ComparisonChain;
  *
  * @since 7.0.4
  */
-
-@Deprecated
-public class CmsImportVersion7 implements I_CmsImport {
+public class CmsImportVersion10 implements I_CmsImport {
 
     /** Tag for the "userinfo / entry name" attribute, contains the additional user info entry name. */
     public static final String A_NAME = "name";
@@ -108,13 +108,13 @@ public class CmsImportVersion7 implements I_CmsImport {
     public static final String A_TYPE = "type";
 
     /** The name of the DTD for this import version. */
-    public static final String DTD_FILENAME = "opencms-import7.dtd";
+    public static final String DTD_FILENAME = "opencms-import10.dtd";
 
     /** The location of the OpenCms configuration DTD if the default prefix is the system ID. */
     public static final String DTD_LOCATION = "org/opencms/importexport/";
 
     /** The version number of this import implementation.<p> */
-    public static final int IMPORT_VERSION7 = 7;
+    public static final int IMPORT_VERSION10 = 10;
 
     /** Tag for the "allowed" node, to identify allowed user permissions. */
     public static final String N_ACCESSCONTROL_ALLOWEDPERMISSIONS = "allowed";
@@ -279,7 +279,7 @@ public class CmsImportVersion7 implements I_CmsImport {
     public static final String PROPERTY_ATTRIB_TYPE_SHARED = "shared";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsImportVersion7.class);
+    private static final Log LOG = CmsLog.getLog(CmsImportVersion10.class);
 
     /** The ACE flags value. */
     private int m_aceFlags;
@@ -473,7 +473,7 @@ public class CmsImportVersion7 implements I_CmsImport {
     /**
      * Public constructor.<p>
      */
-    public CmsImportVersion7() {
+    public CmsImportVersion10() {
 
         // empty
     }
@@ -528,7 +528,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      *
      * @param source the path in the zip file
      *
-     * @param resourceId
+     * @param resourceId the resource id
      */
     public void addContentFile(String source, String resourceId) {
 
@@ -536,7 +536,7 @@ public class CmsImportVersion7 implements I_CmsImport {
             try {
                 m_helper.getFileBytes(source);
                 m_contentFiles.add(new CmsUUID(resourceId));
-            } catch (CmsImportExportException e) {
+            } catch (@SuppressWarnings("unused") CmsImportExportException e) {
                 LOG.info("File not found in import: " + source);
             }
         }
@@ -1294,7 +1294,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      */
     public int getVersion() {
 
-        return IMPORT_VERSION7;
+        return IMPORT_VERSION10;
     }
 
     /**
@@ -1315,7 +1315,7 @@ public class CmsImportVersion7 implements I_CmsImport {
         // if the resource was imported add the access control entries if available
         try {
             getCms().importAccessControlEntries(m_resource, m_aces);
-        } catch (CmsException exc) {
+        } catch (@SuppressWarnings("unused") CmsException exc) {
             getReport().println(
                 Messages.get().container(Messages.RPT_IMPORT_ACL_DATA_FAILED_0),
                 I_CmsReport.FORMAT_WARNING);
@@ -1369,7 +1369,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                 if (stream != null) {
                     stream.close();
                 }
-            } catch (Exception e) {
+            } catch (@SuppressWarnings("unused") Exception e) {
                 // noop
             }
             m_helper.closeFile();
@@ -1415,7 +1415,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                 getCms().readGroup(groupName);
                 // the group already exists and will not be created
                 getReport().println(Messages.get().container(Messages.RPT_NOT_CREATED_0), I_CmsReport.FORMAT_OK);
-            } catch (CmsDbEntryNotFoundException e) {
+            } catch (@SuppressWarnings("unused") CmsDbEntryNotFoundException e) {
                 // ok, let's create it
                 // first check the parent group
                 CmsUUID parentGroupId = null;
@@ -1423,7 +1423,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                     try {
                         // parent group exists
                         parentGroupId = getCms().readGroup(m_groupParent).getId();
-                    } catch (CmsDbEntryNotFoundException exc) {
+                    } catch (@SuppressWarnings("unused") CmsDbEntryNotFoundException exc) {
                         // parent group does not exist, remember to set the parent group later
                         List<String> childs = m_groupParents.get(m_groupParent);
                         if (childs == null) {
@@ -1503,7 +1503,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                 getReport().println(Messages.get().container(Messages.RPT_NOT_CREATED_0), I_CmsReport.FORMAT_OK);
                 m_orgUnitResources.remove(m_orgUnitName);
                 return;
-            } catch (CmsDataAccessException e) {
+            } catch (@SuppressWarnings("unused") CmsDataAccessException e) {
                 // ok, continue creating the ou
             }
 
@@ -1523,7 +1523,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                         try {
                             resources.add(getCms().readResource(resName, CmsResourceFilter.ALL));
                             itResNames.remove();
-                        } catch (CmsVfsResourceNotFoundException e) {
+                        } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
                             // resource does not exist yet, skip it for now
                             remove = false;
                         }
@@ -1612,7 +1612,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                 // the project already exists and will not be created
                 getReport().println(Messages.get().container(Messages.RPT_NOT_CREATED_0), I_CmsReport.FORMAT_OK);
                 return;
-            } catch (CmsDataAccessException e) {
+            } catch (@SuppressWarnings("unused") CmsDataAccessException e) {
                 // ok, continue creating the project
             }
 
@@ -1636,7 +1636,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                         String resName = itResNames.next();
                         try {
                             getCms().copyResourceToProject(resName);
-                        } catch (CmsVfsResourceNotFoundException e) {
+                        } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
                             // resource does not exist, skip
                         }
                     }
@@ -1818,13 +1818,21 @@ public class CmsImportVersion7 implements I_CmsImport {
                     resourceIdWasNull = true;
                 }
 
+                // read date last modified from the resource, default to currentTime for folders
+                if (m_dateLastModified == -1) {
+                    if (null != m_source) {
+                        m_dateLastModified = m_helper.getFileModification(m_source);
+                    } else {
+                        m_dateLastModified = System.currentTimeMillis();
+                    }
+                }
+
                 // create a new CmsResource
                 CmsResource resource = new CmsResource(
                     m_structureId,
                     m_resourceId,
                     translatedName,
-                    m_type.getTypeId(),
-                    m_type.isFolder(),
+                    m_type,
                     m_flags,
                     getCms().getRequestContext().getCurrentProject().getUuid(),
                     CmsResource.STATE_NEW,
@@ -1996,7 +2004,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                 getReport().println(Messages.get().container(Messages.RPT_NOT_CREATED_0), I_CmsReport.FORMAT_OK);
                 m_user = null;
                 return;
-            } catch (CmsDbEntryNotFoundException e) {
+            } catch (@SuppressWarnings("unused") CmsDbEntryNotFoundException e) {
                 // user does not exist
             }
 
@@ -2067,7 +2075,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                 // set the user group
                 getCms().addUserToGroup(m_user.getName(), groupName);
                 return;
-            } catch (CmsDbEntryNotFoundException e) {
+            } catch (@SuppressWarnings("unused") CmsDbEntryNotFoundException e) {
                 // organizational unit does not exist
             }
             // remember the user and group for later
@@ -2136,7 +2144,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                 // set the user role
                 OpenCms.getRoleManager().addUserToRole(getCms(), role, m_user.getName());
                 return;
-            } catch (CmsDbEntryNotFoundException e) {
+            } catch (@SuppressWarnings("unused") CmsDbEntryNotFoundException e) {
                 // organizational unit does not exist
             }
             // remember the user and role for later
@@ -2180,6 +2188,7 @@ public class CmsImportVersion7 implements I_CmsImport {
     /**
      * @see org.opencms.importexport.I_CmsImport#matches(org.opencms.importexport.CmsImportParameters)
      */
+    @SuppressWarnings("resource") //stream is closed always in finally block - don't know why the compiler complains
     public boolean matches(CmsImportParameters parameters) throws CmsImportExportException {
 
         m_fileCounter = 1;
@@ -2223,7 +2232,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                 if (stream != null) {
                     stream.close();
                 }
-            } catch (Exception e) {
+            } catch (@SuppressWarnings("unused") Exception e) {
                 // noop
             }
             m_helper.closeFile();
@@ -2401,7 +2410,19 @@ public class CmsImportVersion7 implements I_CmsImport {
 
         try {
             if (dateLastModified != null) {
-                m_dateLastModified = convertTimestamp(dateLastModified);
+                TimestampMode timeMode = TimestampMode.getEnum(CmsMacroResolver.stripMacro(dateLastModified));
+                switch (timeMode) {
+                    case FILETIME:
+                        m_dateLastModified = -1; //Can't get the information right now, must set it afterward.
+                        break;
+                    case IMPORTTIME:
+                        m_dateLastModified = System.currentTimeMillis();
+                        break;
+                    case VFSTIME:
+                    default:
+                        m_dateLastModified = convertTimestamp(dateLastModified);
+                        break;
+                }
             } else {
                 m_dateLastModified = System.currentTimeMillis();
             }
@@ -2792,17 +2813,14 @@ public class CmsImportVersion7 implements I_CmsImport {
         try {
             try {
                 m_type = OpenCms.getResourceManager().getResourceType(typeName);
-            } catch (CmsLoaderException e) {
+            } catch (@SuppressWarnings("unused") CmsLoaderException e) {
                 // TODO: what happens if the resource type is a specialized folder and is not configured??
-                int plainId;
                 try {
-                    plainId = OpenCms.getResourceManager().getResourceType(
-                        CmsResourceTypePlain.getStaticTypeName()).getTypeId();
-                } catch (CmsLoaderException e1) {
+                    m_type = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName());
+                } catch (@SuppressWarnings("unused") CmsLoaderException e1) {
                     // this should really never happen
-                    plainId = CmsResourceTypePlain.getStaticTypeId();
+                    m_type = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName());
                 }
-                m_type = OpenCms.getResourceManager().getResourceType(plainId);
             }
             if (m_type.isFolder()) {
                 // ensure folders end with a "/"
@@ -2839,7 +2857,7 @@ public class CmsImportVersion7 implements I_CmsImport {
             String userCreatedName = OpenCms.getImportExportManager().translateUser(userCreated);
             try {
                 m_userCreated = getCms().readUser(userCreatedName).getId();
-            } catch (CmsDbEntryNotFoundException e) {
+            } catch (@SuppressWarnings("unused") CmsDbEntryNotFoundException e) {
                 m_userCreated = getCms().getRequestContext().getCurrentUser().getId();
             }
         } catch (Throwable e) {
@@ -2919,7 +2937,7 @@ public class CmsImportVersion7 implements I_CmsImport {
             String userLastModifiedName = OpenCms.getImportExportManager().translateUser(userLastModified);
             try {
                 m_userLastModified = getCms().readUser(userLastModifiedName).getId();
-            } catch (CmsDbEntryNotFoundException e) {
+            } catch (@SuppressWarnings("unused") CmsDbEntryNotFoundException e) {
                 m_userLastModified = getCms().getRequestContext().getCurrentUser().getId();
             }
         } catch (Throwable e) {
@@ -3193,11 +3211,11 @@ public class CmsImportVersion7 implements I_CmsImport {
         // if it successes, its an old style long value
         try {
             value = Long.parseLong(timestamp);
-        } catch (NumberFormatException e) {
+        } catch (@SuppressWarnings("unused") NumberFormatException e) {
             // the time stamp was in in a user-readable string format, create the long value form it
             try {
                 value = CmsDateUtil.parseHeaderDate(timestamp);
-            } catch (ParseException pe) {
+            } catch (@SuppressWarnings("unused") ParseException pe) {
                 value = System.currentTimeMillis();
             }
         }
@@ -3208,9 +3226,9 @@ public class CmsImportVersion7 implements I_CmsImport {
      * This method goes through the manifest, records all files from the manifest for which the content also
      * exists in the zip file, and stores their resource ids in m_contentFiles.<p>
      *
-     * @throws CmsImportExportException
-     * @throws IOException
-     * @throws SAXException
+     * @throws CmsImportExportException thrown when the manifest.xml can't be opened as stream.
+     * @throws IOException thrown if the manifest.xml stream causes problems during parsing and/or closing.
+     * @throws SAXException thrown if parsing the manifest.xml fails
      */
     protected void findContentFiles() throws CmsImportExportException, IOException, SAXException {
 
@@ -3294,7 +3312,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * the relation corresponding to that link to be present for some functionality (e.g. the page_title macro in gallery name
      * mappings), so we need to parse the links for A first to create the relation before B is processed.
      *
-     * @parameter parseables the list of parseable resources which should be sorted in place
+     * @param parseables the list of parseable resources which should be sorted in place
      *
      */
     protected void sortParseableResources(List<CmsResource> parseables) {

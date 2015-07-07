@@ -45,8 +45,9 @@
 			</principaltranslations>
         	<ignoredproperties>
         		<property name="module"/>
-        	</ignoredproperties>     			
+        	</ignoredproperties>			
 		</import>
+		<export/>
 	</importexport>      
 	<staticexport enabled="true">
 		<staticexporthandler>org.opencms.staticexport.CmsOnDemandStaticExportHandler</staticexporthandler>

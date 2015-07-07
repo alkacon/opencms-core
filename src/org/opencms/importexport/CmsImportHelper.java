@@ -141,23 +141,14 @@ public class CmsImportHelper {
         try {
             // is this a zip-file?
             if (getZipFile() != null) {
-                // yes
-                ZipEntry entry = getZipFile().getEntry(filename);
-                // path to file might be relative, too
-                if ((entry == null) && filename.startsWith("/")) {
-                    entry = m_zipFile.getEntry(filename.substring(1));
-                }
-                if (entry == null) {
-                    throw new ZipException(
-                        Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1, filename));
-                }
 
+                ZipEntry entry = getZipEntry(filename);
                 InputStream stream = getZipFile().getInputStream(entry);
                 int size = new Long(entry.getSize()).intValue();
                 return CmsFileUtil.readFully(stream, size);
             } else {
                 // no - use directory
-                File file = new File(getFolder(), filename);
+                File file = getFile(filename);
                 return CmsFileUtil.readFile(file);
             }
         } catch (FileNotFoundException fnfe) {
@@ -166,6 +157,37 @@ public class CmsImportHelper {
                 LOG.error(msg.key(), fnfe);
             }
             throw new CmsImportExportException(msg, fnfe);
+        } catch (IOException ioe) {
+            CmsMessageContainer msg = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_READING_FILE_1,
+                filename);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(msg.key(), ioe);
+            }
+            throw new CmsImportExportException(msg, ioe);
+        }
+    }
+
+    public long getFileModification(String filename) throws CmsImportExportException {
+
+        long modificationTime = 0;
+
+        try {
+            // is this a zip-file?
+            if (getZipFile() != null) {
+                // yes
+                ZipEntry entry = getZipEntry(filename);
+                modificationTime = entry.getTime();
+            } else {
+                // no - use directory
+                File file = getFile(filename);
+                modificationTime = file.lastModified();
+            }
+            if (modificationTime < 0) {
+                return 0;
+            } else {
+                return modificationTime;
+            }
         } catch (IOException ioe) {
             CmsMessageContainer msg = Messages.get().container(
                 Messages.ERR_IMPORTEXPORT_ERROR_READING_FILE_1,
@@ -295,5 +317,34 @@ public class CmsImportHelper {
             m_zipFile = new ZipFile(m_params.getPath());
             m_folder = null;
         }
+    }
+
+    /** Returns the file for the provided filename.
+     * @param filename name of the file
+     * @return the file.
+     */
+    protected File getFile(String filename) {
+
+        return new File(getFolder(), filename);
+    }
+
+    /** Returns the zip entry for a file in the archive.
+     * @param filename the file name
+     * @return the zip entry for the file with the provided name
+     * @throws ZipException thrown if the file is not in the zip archive
+     */
+    protected ZipEntry getZipEntry(String filename) throws ZipException {
+
+        // yes
+        ZipEntry entry = getZipFile().getEntry(filename);
+        // path to file might be relative, too
+        if ((entry == null) && filename.startsWith("/")) {
+            entry = m_zipFile.getEntry(filename.substring(1));
+        }
+        if (entry == null) {
+            throw new ZipException(
+                Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1, filename));
+        }
+        return entry;
     }
 }

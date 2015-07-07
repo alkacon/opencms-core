@@ -41,6 +41,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.importexport.CmsImportExportManager.TimestampMode;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -56,6 +57,7 @@ import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsXmlSaxWriter;
@@ -175,7 +177,7 @@ public class CmsExport {
 
             // export account data only if selected
             if (m_parameters.isExportAccountData()) {
-                Element accountsElement = exportNode.addElement(CmsImportVersion7.N_ACCOUNTS);
+                Element accountsElement = exportNode.addElement(CmsImportVersion10.N_ACCOUNTS);
                 getSaxWriter().writeOpen(accountsElement);
 
                 exportOrgUnits(accountsElement);
@@ -191,7 +193,7 @@ public class CmsExport {
 
             // export project data only if selected
             if (m_parameters.isExportProjectData()) {
-                Element projectsElement = exportNode.addElement(CmsImportVersion7.N_PROJECTS);
+                Element projectsElement = exportNode.addElement(CmsImportVersion10.N_PROJECTS);
                 getSaxWriter().writeOpen(projectsElement);
 
                 exportProjects(projectsElement);
@@ -432,13 +434,13 @@ public class CmsExport {
         boolean shared) {
 
         if (propertyValue != null) {
-            Element propertyElement = propertiesElement.addElement(CmsImportVersion7.N_PROPERTY);
+            Element propertyElement = propertiesElement.addElement(CmsImportVersion10.N_PROPERTY);
             if (shared) {
                 // add "type" attribute to the property node in case of a shared/resource property value
-                propertyElement.addAttribute(CmsImportVersion7.A_TYPE, CmsImportVersion7.PROPERTY_ATTRIB_TYPE_SHARED);
+                propertyElement.addAttribute(CmsImportVersion10.A_TYPE, CmsImportVersion10.PROPERTY_ATTRIB_TYPE_SHARED);
             }
-            propertyElement.addElement(CmsImportVersion7.N_NAME).addText(propertyName);
-            propertyElement.addElement(CmsImportVersion7.N_VALUE).addCDATA(propertyValue);
+            propertyElement.addElement(CmsImportVersion10.N_NAME).addText(propertyName);
+            propertyElement.addElement(CmsImportVersion10.N_VALUE).addCDATA(propertyValue);
         }
     }
 
@@ -453,11 +455,11 @@ public class CmsExport {
     protected void addRelationNode(Element relationsElement, String structureId, String sitePath, String relationType) {
 
         if ((structureId != null) && (sitePath != null) && (relationType != null)) {
-            Element relationElement = relationsElement.addElement(CmsImportVersion7.N_RELATION);
+            Element relationElement = relationsElement.addElement(CmsImportVersion10.N_RELATION);
 
-            relationElement.addElement(CmsImportVersion7.N_ID).addText(structureId);
-            relationElement.addElement(CmsImportVersion7.N_PATH).addText(sitePath);
-            relationElement.addElement(CmsImportVersion7.N_TYPE).addText(relationType);
+            relationElement.addElement(CmsImportVersion10.N_ID).addText(structureId);
+            relationElement.addElement(CmsImportVersion10.N_PATH).addText(sitePath);
+            relationElement.addElement(CmsImportVersion10.N_TYPE).addText(relationType);
         }
     }
 
@@ -483,11 +485,11 @@ public class CmsExport {
             }
 
             // define the file node
-            Element fileElement = m_resourceNode.addElement(CmsImportVersion7.N_FILE);
+            Element fileElement = m_resourceNode.addElement(CmsImportVersion10.N_FILE);
 
             if (resource.isFile()) {
                 if (source) {
-                    fileElement.addElement(CmsImportVersion7.N_SOURCE).addText(fileName);
+                    fileElement.addElement(CmsImportVersion10.N_SOURCE).addText(fileName);
                 }
             } else {
                 m_exportCount++;
@@ -518,57 +520,57 @@ public class CmsExport {
             }
 
             // <destination>
-            fileElement.addElement(CmsImportVersion7.N_DESTINATION).addText(fileName);
+            fileElement.addElement(CmsImportVersion10.N_DESTINATION).addText(fileName);
             // <type>
-            fileElement.addElement(CmsImportVersion7.N_TYPE).addText(
+            fileElement.addElement(CmsImportVersion10.N_TYPE).addText(
                 OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName());
 
             //  <uuidstructure>
-            fileElement.addElement(CmsImportVersion7.N_UUIDSTRUCTURE).addText(resource.getStructureId().toString());
+            fileElement.addElement(CmsImportVersion10.N_UUIDSTRUCTURE).addText(resource.getStructureId().toString());
             if (resource.isFile()) {
                 //  <uuidresource>
-                fileElement.addElement(CmsImportVersion7.N_UUIDRESOURCE).addText(resource.getResourceId().toString());
+                fileElement.addElement(CmsImportVersion10.N_UUIDRESOURCE).addText(resource.getResourceId().toString());
             }
 
             // <datelastmodified>
-            fileElement.addElement(CmsImportVersion7.N_DATELASTMODIFIED).addText(
-                CmsDateUtil.getHeaderDate(resource.getDateLastModified()));
+            fileElement.addElement(CmsImportVersion10.N_DATELASTMODIFIED).addText(
+                getDateLastModifiedForExport(resource));
             // <userlastmodified>
             String userNameLastModified = null;
             try {
                 userNameLastModified = getCms().readUser(resource.getUserLastModified()).getName();
-            } catch (CmsException e) {
+            } catch (@SuppressWarnings("unused") CmsException e) {
                 userNameLastModified = OpenCms.getDefaultUsers().getUserAdmin();
             }
-            fileElement.addElement(CmsImportVersion7.N_USERLASTMODIFIED).addText(userNameLastModified);
+            fileElement.addElement(CmsImportVersion10.N_USERLASTMODIFIED).addText(userNameLastModified);
             // <datecreated>
-            fileElement.addElement(CmsImportVersion7.N_DATECREATED).addText(
+            fileElement.addElement(CmsImportVersion10.N_DATECREATED).addText(
                 CmsDateUtil.getHeaderDate(resource.getDateCreated()));
             // <usercreated>
             String userNameCreated = null;
             try {
                 userNameCreated = getCms().readUser(resource.getUserCreated()).getName();
-            } catch (CmsException e) {
+            } catch (@SuppressWarnings("unused") CmsException e) {
                 userNameCreated = OpenCms.getDefaultUsers().getUserAdmin();
             }
-            fileElement.addElement(CmsImportVersion7.N_USERCREATED).addText(userNameCreated);
+            fileElement.addElement(CmsImportVersion10.N_USERCREATED).addText(userNameCreated);
             // <release>
             if (resource.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
-                fileElement.addElement(CmsImportVersion7.N_DATERELEASED).addText(
+                fileElement.addElement(CmsImportVersion10.N_DATERELEASED).addText(
                     CmsDateUtil.getHeaderDate(resource.getDateReleased()));
             }
             // <expire>
             if (resource.getDateExpired() != CmsResource.DATE_EXPIRED_DEFAULT) {
-                fileElement.addElement(CmsImportVersion7.N_DATEEXPIRED).addText(
+                fileElement.addElement(CmsImportVersion10.N_DATEEXPIRED).addText(
                     CmsDateUtil.getHeaderDate(resource.getDateExpired()));
             }
             // <flags>
             int resFlags = resource.getFlags();
             resFlags &= ~CmsResource.FLAG_LABELED;
-            fileElement.addElement(CmsImportVersion7.N_FLAGS).addText(Integer.toString(resFlags));
+            fileElement.addElement(CmsImportVersion10.N_FLAGS).addText(Integer.toString(resFlags));
 
             // write the properties to the manifest
-            Element propertiesElement = fileElement.addElement(CmsImportVersion7.N_PROPERTIES);
+            Element propertiesElement = fileElement.addElement(CmsImportVersion10.N_PROPERTIES);
             List<CmsProperty> properties = getCms().readPropertyObjects(getCms().getSitePath(resource), false);
             // sort the properties for a well defined output order
             Collections.sort(properties);
@@ -585,7 +587,7 @@ public class CmsExport {
             List<CmsRelation> relations = getCms().getRelationsForResource(
                 resource,
                 CmsRelationFilter.TARGETS.filterNotDefinedInContent());
-            Element relationsElement = fileElement.addElement(CmsImportVersion7.N_RELATIONS);
+            Element relationsElement = fileElement.addElement(CmsImportVersion10.N_RELATIONS);
             // iterate over the relations
             for (CmsRelation relation : relations) {
                 // relation may be broken already:
@@ -608,7 +610,7 @@ public class CmsExport {
             }
 
             // append the nodes for access control entries
-            Element acl = fileElement.addElement(CmsImportVersion7.N_ACCESSCONTROL_ENTRIES);
+            Element acl = fileElement.addElement(CmsImportVersion10.N_ACCESSCONTROL_ENTRIES);
 
             // read the access control entries
             List<CmsAccessControlEntry> fileAcEntries = getCms().getAccessControlEntries(
@@ -619,7 +621,7 @@ public class CmsExport {
             // create xml elements for each access control entry
             while (i.hasNext()) {
                 CmsAccessControlEntry ace = i.next();
-                Element a = acl.addElement(CmsImportVersion7.N_ACCESSCONTROL_ENTRY);
+                Element a = acl.addElement(CmsImportVersion10.N_ACCESSCONTROL_ENTRY);
 
                 // now check if the principal is a group or a user
                 int flags = ace.getFlags();
@@ -633,14 +635,14 @@ public class CmsExport {
                     // the principal is a group
                     try {
                         acePrincipalName = getCms().readGroup(acePrincipal).getPrefixedName();
-                    } catch (CmsException e) {
+                    } catch (@SuppressWarnings("unused") CmsException e) {
                         // the group for this permissions does not exist anymore, so simply skip it
                     }
                 } else if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_USER) > 0) {
                     // the principal is a user
                     try {
                         acePrincipalName = getCms().readUser(acePrincipal).getPrefixedName();
-                    } catch (CmsException e) {
+                    } catch (@SuppressWarnings("unused") CmsException e) {
                         // the user for this permissions does not exist anymore, so simply skip it
                     }
                 } else {
@@ -650,13 +652,13 @@ public class CmsExport {
 
                 // only add the permission if a principal was set
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(acePrincipalName)) {
-                    a.addElement(CmsImportVersion7.N_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
-                    a.addElement(CmsImportVersion7.N_FLAGS).addText(Integer.toString(flags));
+                    a.addElement(CmsImportVersion10.N_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
+                    a.addElement(CmsImportVersion10.N_FLAGS).addText(Integer.toString(flags));
 
-                    Element b = a.addElement(CmsImportVersion7.N_ACCESSCONTROL_PERMISSIONSET);
-                    b.addElement(CmsImportVersion7.N_ACCESSCONTROL_ALLOWEDPERMISSIONS).addText(
+                    Element b = a.addElement(CmsImportVersion10.N_ACCESSCONTROL_PERMISSIONSET);
+                    b.addElement(CmsImportVersion10.N_ACCESSCONTROL_ALLOWEDPERMISSIONS).addText(
                         Integer.toString(ace.getAllowedPermissions()));
-                    b.addElement(CmsImportVersion7.N_ACCESSCONTROL_DENIEDPERMISSIONS).addText(
+                    b.addElement(CmsImportVersion10.N_ACCESSCONTROL_DENIEDPERMISSIONS).addText(
                         Integer.toString(ace.getDeniedPermissions()));
                 }
             }
@@ -801,7 +803,7 @@ public class CmsExport {
                         // check if this is a system-folder and if it should be included.
                         String export = getCms().getSitePath(folder);
                         if (checkExportResource(export)) {
-                            appendResourceToManifest(folder, false);
+                            appendResourceToManifest(folder, true);
                         }
                     }
                 }
@@ -882,11 +884,11 @@ public class CmsExport {
                 parentgroup = getCms().getParent(group.getName()).getName();
             }
 
-            Element e = parent.addElement(CmsImportVersion7.N_GROUP);
-            e.addElement(CmsImportVersion7.N_NAME).addText(group.getSimpleName());
-            e.addElement(CmsImportVersion7.N_DESCRIPTION).addCDATA(group.getDescription());
-            e.addElement(CmsImportVersion7.N_FLAGS).addText(Integer.toString(group.getFlags()));
-            e.addElement(CmsImportVersion7.N_PARENTGROUP).addText(parentgroup);
+            Element e = parent.addElement(CmsImportVersion10.N_GROUP);
+            e.addElement(CmsImportVersion10.N_NAME).addText(group.getSimpleName());
+            e.addElement(CmsImportVersion10.N_DESCRIPTION).addCDATA(group.getDescription());
+            e.addElement(CmsImportVersion10.N_FLAGS).addText(Integer.toString(group.getFlags()));
+            e.addElement(CmsImportVersion10.N_PARENTGROUP).addText(parentgroup);
 
             // write the XML
             digestElement(parent, e);
@@ -957,39 +959,39 @@ public class CmsExport {
      */
     protected void exportOrgUnit(Element parent, CmsOrganizationalUnit orgunit) throws SAXException, CmsException {
 
-        Element orgunitElement = parent.addElement(CmsImportVersion7.N_ORGUNIT);
+        Element orgunitElement = parent.addElement(CmsImportVersion10.N_ORGUNIT);
         getSaxWriter().writeOpen(orgunitElement);
 
-        Element name = orgunitElement.addElement(CmsImportVersion7.N_NAME).addText(orgunit.getName());
+        Element name = orgunitElement.addElement(CmsImportVersion10.N_NAME).addText(orgunit.getName());
         digestElement(orgunitElement, name);
 
-        Element description = orgunitElement.addElement(CmsImportVersion7.N_DESCRIPTION).addCDATA(
+        Element description = orgunitElement.addElement(CmsImportVersion10.N_DESCRIPTION).addCDATA(
             orgunit.getDescription());
         digestElement(orgunitElement, description);
 
-        Element flags = orgunitElement.addElement(CmsImportVersion7.N_FLAGS).addText(
+        Element flags = orgunitElement.addElement(CmsImportVersion10.N_FLAGS).addText(
             Integer.toString(orgunit.getFlags()));
         digestElement(orgunitElement, flags);
 
-        Element resources = orgunitElement.addElement(CmsImportVersion7.N_RESOURCES);
+        Element resources = orgunitElement.addElement(CmsImportVersion10.N_RESOURCES);
         Iterator<CmsResource> it = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
             getCms(),
             orgunit.getName()).iterator();
         while (it.hasNext()) {
             CmsResource resource = it.next();
-            resources.addElement(CmsImportVersion7.N_RESOURCE).addText(resource.getRootPath());
+            resources.addElement(CmsImportVersion10.N_RESOURCE).addText(resource.getRootPath());
         }
         digestElement(orgunitElement, resources);
         getReport().println(
             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
             I_CmsReport.FORMAT_OK);
 
-        Element groupsElement = parent.addElement(CmsImportVersion7.N_GROUPS);
+        Element groupsElement = parent.addElement(CmsImportVersion10.N_GROUPS);
         getSaxWriter().writeOpen(groupsElement);
         exportGroups(groupsElement, orgunit);
         getSaxWriter().writeClose(groupsElement);
 
-        Element usersElement = parent.addElement(CmsImportVersion7.N_USERS);
+        Element usersElement = parent.addElement(CmsImportVersion10.N_USERS);
         getSaxWriter().writeOpen(usersElement);
         exportUsers(usersElement, orgunit);
         getSaxWriter().writeClose(usersElement);
@@ -1008,7 +1010,7 @@ public class CmsExport {
     protected void exportOrgUnits(Element parent) throws CmsImportExportException, SAXException {
 
         try {
-            Element orgunitsElement = parent.addElement(CmsImportVersion7.N_ORGUNITS);
+            Element orgunitsElement = parent.addElement(CmsImportVersion10.N_ORGUNITS);
             getSaxWriter().writeOpen(orgunitsElement);
 
             I_CmsReport report = getReport();
@@ -1089,18 +1091,18 @@ public class CmsExport {
             report.print(message, I_CmsReport.FORMAT_ERROR);
         }
 
-        Element e = parent.addElement(CmsImportVersion7.N_PROJECT);
-        e.addElement(CmsImportVersion7.N_NAME).addText(project.getSimpleName());
-        e.addElement(CmsImportVersion7.N_DESCRIPTION).addCDATA(project.getDescription());
-        e.addElement(CmsImportVersion7.N_USERSGROUP).addText(users);
-        e.addElement(CmsImportVersion7.N_MANAGERSGROUP).addText(managers);
+        Element e = parent.addElement(CmsImportVersion10.N_PROJECT);
+        e.addElement(CmsImportVersion10.N_NAME).addText(project.getSimpleName());
+        e.addElement(CmsImportVersion10.N_DESCRIPTION).addCDATA(project.getDescription());
+        e.addElement(CmsImportVersion10.N_USERSGROUP).addText(users);
+        e.addElement(CmsImportVersion10.N_MANAGERSGROUP).addText(managers);
 
-        Element resources = e.addElement(CmsImportVersion7.N_RESOURCES);
+        Element resources = e.addElement(CmsImportVersion10.N_RESOURCES);
         try {
             Iterator<String> it = getCms().readProjectResources(project).iterator();
             while (it.hasNext()) {
                 String resName = it.next();
-                resources.addElement(CmsImportVersion7.N_RESOURCE).addText(resName);
+                resources.addElement(CmsImportVersion10.N_RESOURCE).addText(resName);
             }
         } catch (CmsException exc) {
             CmsMessageContainer message = org.opencms.db.Messages.get().container(
@@ -1174,18 +1176,18 @@ public class CmsExport {
 
         try {
             // add user node to the manifest.xml
-            Element e = parent.addElement(CmsImportVersion7.N_USER);
-            e.addElement(CmsImportVersion7.N_NAME).addText(user.getSimpleName());
+            Element e = parent.addElement(CmsImportVersion10.N_USER);
+            e.addElement(CmsImportVersion10.N_NAME).addText(user.getSimpleName());
             // encode the password, using a base 64 decoder
             String passwd = new String(Base64.encodeBase64(user.getPassword().getBytes()));
-            e.addElement(CmsImportVersion7.N_PASSWORD).addCDATA(passwd);
-            e.addElement(CmsImportVersion7.N_FIRSTNAME).addText(user.getFirstname());
-            e.addElement(CmsImportVersion7.N_LASTNAME).addText(user.getLastname());
-            e.addElement(CmsImportVersion7.N_EMAIL).addText(user.getEmail());
-            e.addElement(CmsImportVersion7.N_FLAGS).addText(Integer.toString(user.getFlags()));
-            e.addElement(CmsImportVersion7.N_DATECREATED).addText(Long.toString(user.getDateCreated()));
+            e.addElement(CmsImportVersion10.N_PASSWORD).addCDATA(passwd);
+            e.addElement(CmsImportVersion10.N_FIRSTNAME).addText(user.getFirstname());
+            e.addElement(CmsImportVersion10.N_LASTNAME).addText(user.getLastname());
+            e.addElement(CmsImportVersion10.N_EMAIL).addText(user.getEmail());
+            e.addElement(CmsImportVersion10.N_FLAGS).addText(Integer.toString(user.getFlags()));
+            e.addElement(CmsImportVersion10.N_DATECREATED).addText(Long.toString(user.getDateCreated()));
 
-            Element userInfoNode = e.addElement(CmsImportVersion7.N_USERINFO);
+            Element userInfoNode = e.addElement(CmsImportVersion10.N_USERINFO);
             List<String> keys = new ArrayList<String>(user.getAdditionalInfo().keySet());
             Collections.sort(keys);
             Iterator<String> itInfoKeys = keys.iterator();
@@ -1198,9 +1200,9 @@ public class CmsExport {
                 if (value == null) {
                     continue;
                 }
-                Element entryNode = userInfoNode.addElement(CmsImportVersion7.N_USERINFO_ENTRY);
-                entryNode.addAttribute(CmsImportVersion7.A_NAME, key);
-                entryNode.addAttribute(CmsImportVersion7.A_TYPE, value.getClass().getName());
+                Element entryNode = userInfoNode.addElement(CmsImportVersion10.N_USERINFO_ENTRY);
+                entryNode.addAttribute(CmsImportVersion10.A_NAME, key);
+                entryNode.addAttribute(CmsImportVersion10.A_TYPE, value.getClass().getName());
                 try {
                     // serialize the user info and write it into a file
                     entryNode.addCDATA(CmsDataTypeUtil.dataExport(value));
@@ -1217,7 +1219,7 @@ public class CmsExport {
             }
 
             // append node for roles of user
-            Element userRoles = e.addElement(CmsImportVersion7.N_USERROLES);
+            Element userRoles = e.addElement(CmsImportVersion10.N_USERROLES);
             List<CmsRole> roles = OpenCms.getRoleManager().getRolesOfUser(
                 getCms(),
                 user.getName(),
@@ -1227,14 +1229,14 @@ public class CmsExport {
                 true);
             for (int i = 0; i < roles.size(); i++) {
                 String roleName = roles.get(i).getFqn();
-                userRoles.addElement(CmsImportVersion7.N_USERROLE).addText(roleName);
+                userRoles.addElement(CmsImportVersion10.N_USERROLE).addText(roleName);
             }
             // append the node for groups of user
-            Element userGroups = e.addElement(CmsImportVersion7.N_USERGROUPS);
+            Element userGroups = e.addElement(CmsImportVersion10.N_USERGROUPS);
             List<CmsGroup> groups = getCms().getGroupsOfUser(user.getName(), true, true);
             for (int i = 0; i < groups.size(); i++) {
                 String groupName = groups.get(i).getName();
-                userGroups.addElement(CmsImportVersion7.N_USERGROUP).addText(groupName);
+                userGroups.addElement(CmsImportVersion10.N_USERGROUP).addText(groupName);
             }
             // write the XML
             digestElement(parent, e);
@@ -1460,5 +1462,46 @@ public class CmsExport {
             resourceName = resourceName.substring(0, resourceName.length() - 1);
         }
         return resourceName;
+    }
+
+    /** Returns the manifest entry for the <code>&lt;datelastmodified&gt;</code> node of the resource.
+     * Depending on the export.timestamp property, the time stamp from the VFS (default) or
+     * special macros are used.
+     *
+     * @param resource the resource for which the manifest entry is generated
+     * @return the time stamp or macro to write as value for <code>&lt;datelastmodified&gt;</code>
+     */
+    private String getDateLastModifiedForExport(final CmsResource resource) {
+
+        TimestampMode timeMode = TimestampMode.VFSTIME;
+        String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
+        TimestampMode defaultModeForResourceType = OpenCms.getImportExportManager().getDefaultTimestampMode(typeName);
+        if (null == defaultModeForResourceType) {
+            try {
+                CmsProperty exporttimeProp = m_cms.readPropertyObject(
+                    resource,
+                    CmsImportExportManager.PROP_EXPORT_TIMESTAMP,
+                    true);
+                if (TimestampMode.FILETIME.equals(TimestampMode.getEnum(exporttimeProp.getValue()))) {
+                    timeMode = TimestampMode.FILETIME;
+                } else if (TimestampMode.IMPORTTIME.equals(TimestampMode.getEnum(exporttimeProp.getValue()))) {
+                    timeMode = TimestampMode.IMPORTTIME;
+                }
+            } catch (@SuppressWarnings("unused") CmsException e) {
+                // Do nothing, use default mode
+            }
+        } else {
+            timeMode = defaultModeForResourceType;
+        }
+        switch (timeMode) {
+            case FILETIME:
+                return CmsMacroResolver.formatMacro(CmsImportExportManager.TimestampMode.FILETIME.toString());
+            case IMPORTTIME:
+                return CmsMacroResolver.formatMacro(CmsImportExportManager.TimestampMode.IMPORTTIME.toString());
+            case VFSTIME:
+            default:
+                return CmsDateUtil.getHeaderDate(resource.getDateLastModified());
+        }
+
     }
 }

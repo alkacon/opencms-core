@@ -13,7 +13,8 @@
 -->
 <!ELEMENT importexport (
 	importexporthandlers, 
-	import )>
+	import,
+	export? )>
 
 <!--
 # List of import / export handlers.
@@ -102,6 +103,30 @@
 <!ELEMENT ignoredproperties (property*)>
 <!ELEMENT property EMPTY>
 <!ATTLIST property name CDATA #REQUIRED>
+
+<!-- 
+# <export> node options.
+# Options that influence how resources are exported, 
+# in particular which information are written to the manifest.xml.
+-->
+<!ELEMENT export (defaulttimestampmodes?)>
+
+<!--
+# Define default timestamp modes for resourcetypes. The default types are stronger than
+# the value of the property export.timestamp.
+# Example (set default timestamp mode for resourcetype "jsp" to "importtime" :
+# <defaulttimestampmodes>
+#	<timestampmode mode="importtime">
+#		<resourcetypename>jsp</resourcetypename>
+#	</timestampmode>
+# </defaulttimestampmodes>
+-->
+<!ELEMENT defaulttimestampmodes (timestampmode+)>
+
+<!ELEMENT timestampmode (resourcetypename+)>
+<!ATTLIST timestampmode mode (importtime|IMPORTTIME|filetime|FILETIME|vfstime|VFSTIME) #REQUIRED>
+
+<!ELEMENT resourcetypename (#PCDATA)>
 
 <!--
 # <staticexport> Configuration:
