@@ -31,6 +31,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsComponentFactory;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
+import org.opencms.ui.components.CmsScrollPositionCss;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,13 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
 
     /** The navigation state manager. */
     private NavigationStateManager m_navigationStateManager;
+
+    /**
+     * Constructor.<p>
+     */
+    public CmsAppWorkplaceUi() {
+        CmsScrollPositionCss.addTo(this, 150, 50, "opencms-scrolled");
+    }
 
     /**
      * Call to add a new browser history entry.<p>

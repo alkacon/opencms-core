@@ -63,6 +63,9 @@ public class CmsToolBar extends CssLayout {
     /** The app indicator. */
     private Label m_appIndicator;
 
+    /** The small app indicator label, visible only in the small toolbar variant. */
+    private Label m_appIndicatorSmall;
+
     /** The app info container. */
     private Panel m_appInfoContainer;
 
@@ -133,6 +136,7 @@ public class CmsToolBar extends CssLayout {
     public void setAppIcon(Resource icon) {
 
         m_appInfoContainer.setIcon(icon);
+        m_appIndicatorSmall.setIcon(icon);
     }
 
     /**
@@ -159,6 +163,7 @@ public class CmsToolBar extends CssLayout {
     public void setAppTitle(String appTitle) {
 
         m_appIndicator.setValue(appTitle);
+        m_appIndicatorSmall.setValue(appTitle);
     }
 
     /**
