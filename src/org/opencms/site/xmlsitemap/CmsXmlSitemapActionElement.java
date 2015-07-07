@@ -55,6 +55,9 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlSitemapActionElement.class);
 
+    /** Runtime property name for the default sitemap generator class. */
+    private static final String PARAM_DEFAULT_SITEMAP_GENERATOR = "sitemap.generator";
+
     /** The configuration bean. */
     protected CmsXmlSeoConfiguration m_configuration;
 
@@ -84,6 +87,9 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
      */
     public CmsXmlSitemapGenerator createSitemapGenerator(String className, String folderRootPath) throws CmsException {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(className)) {
+            className = (String)(OpenCms.getRuntimeProperty(PARAM_DEFAULT_SITEMAP_GENERATOR));
+        }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(className)) {
             className = CmsXmlSitemapGenerator.class.getName();
         }
