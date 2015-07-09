@@ -28,11 +28,14 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.CmsFileTable;
+import org.opencms.ui.components.CmsToolBar;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -43,12 +46,15 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.server.FontAwesome;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.CollapseEvent;
 import com.vaadin.ui.Tree.CollapseListener;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * The file explorer app.<p>
@@ -66,6 +72,15 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
 
     /** The folder tree. */
     private Tree m_fileTree;
+
+    /** The info component. */
+    private VerticalLayout m_info;
+
+    /** The info title. */
+    private Label m_infoTitle;
+
+    /** The info path. */
+    private Label m_infoPath;
 
     /**
      * Constructor.<p>
@@ -104,6 +119,16 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
                 readFolder((CmsUUID)event.getItemId());
             }
         });
+
+        m_info = new VerticalLayout();
+        m_info.setMargin(false);
+        m_info.setSizeFull();
+        m_infoTitle = new Label();
+        m_infoTitle.addStyleName("h4");
+        m_info.addComponent(m_infoTitle);
+        m_infoPath = new Label();
+        m_infoPath.addStyleName("tiny");
+        m_info.addComponent(m_infoPath);
     }
 
     /**
@@ -113,6 +138,10 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
 
         context.setMenuContent(m_fileTree);
         context.setAppContent(m_fileTable);
+        context.setAppInfo(m_info);
+        context.addToolbarButton(CmsToolBar.createButton(FontAwesome.MAGIC));
+        context.addToolbarButton(CmsToolBar.createButton(FontAwesome.ARROW_UP));
+        context.addToolbarButton(CmsToolBar.createButton(FontAwesome.UPLOAD));
     }
 
     /**
@@ -197,6 +226,10 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
             CmsResource folder = cms.readResource(folderId, FOLDERS);
+            CmsProperty titleProp = cms.readPropertyObject(folder, CmsPropertyDefinition.PROPERTY_TITLE, false);
+            String title = titleProp.isNullProperty() ? "" : titleProp.getValue();
+            m_infoTitle.setValue(title);
+            m_infoPath.setValue(cms.getSitePath(folder));
             List<CmsResource> folderResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
             m_fileTable.fillTable(cms, folderResources);
         } catch (CmsException e) {

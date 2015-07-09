@@ -28,19 +28,22 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
+import org.opencms.ui.FontOpenCms;
 
 import java.util.Locale;
 
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 
-public class MyApp implements I_CmsWorkplaceAppConfiguration {
+/**
+ * The page editor app configuration.<p>
+ */
+public class CmsPageEditorConfiguration implements I_CmsWorkplaceAppConfiguration {
 
-    public static class MyAppComponent extends CustomComponent implements I_CmsWorkplaceApp {
+    public static class DummyApp extends CustomComponent implements I_CmsWorkplaceApp {
 
-        public MyAppComponent() {
+        public DummyApp() {
 
             setCompositionRoot(new Label("Hello world"));
 
@@ -58,42 +61,73 @@ public class MyApp implements I_CmsWorkplaceAppConfiguration {
         }
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
+     */
     public String getAppCategory() {
 
         return "Main";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppInstance()
+     */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new MyAppComponent();
+        return new DummyApp();
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
+     */
+    public String getButtonStyle() {
+
+        return I_CmsAppButtonProvider.BUTTON_STYLE_BLUE;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getHelpText(java.util.Locale)
+     */
     public String getHelpText(Locale locale) {
 
-        return "The sitemap editor";
+        return "The page editor";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getIcon()
+     */
     public Resource getIcon() {
 
-        return FontAwesome.SITEMAP;
+        return FontOpenCms.EDIT_POINT;
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getId()
+     */
     public String getId() {
 
-        return "myapp";
+        return "pageeditor";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getName(java.util.Locale)
+     */
     public String getName(Locale locale) {
 
-        return "Sitemap";
+        return "Page editor";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getOrder()
+     */
     public int getOrder() {
 
-        // TODO Auto-generated method stub
-        return 2;
+        return 1;
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
+     */
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
         return new CmsAppVisibilityStatus(true, true, null);

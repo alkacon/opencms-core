@@ -69,6 +69,7 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
         button.addStyleName("app");
         button.addStyleName("borderless");
         button.addStyleName("icon-align-top");
+        button.addStyleName(appConfig.getButtonStyle());
         String helpText = appConfig.getHelpText(locale);
         button.setDescription(helpText);
         return button;

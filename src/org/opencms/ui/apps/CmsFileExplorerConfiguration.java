@@ -56,6 +56,14 @@ public class CmsFileExplorerConfiguration implements I_CmsWorkplaceAppConfigurat
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
+     */
+    public String getButtonStyle() {
+
+        return I_CmsAppButtonProvider.BUTTON_STYLE_RED;
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getHelpText(java.util.Locale)
      */
     public String getHelpText(Locale locale) {

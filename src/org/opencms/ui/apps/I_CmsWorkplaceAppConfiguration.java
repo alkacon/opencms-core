@@ -53,6 +53,13 @@ public interface I_CmsWorkplaceAppConfiguration {
     I_CmsWorkplaceApp getAppInstance();
 
     /**
+     * Returns the button style.<p>
+     *
+     * @return the button style
+     */
+    String getButtonStyle();
+
+    /**
      * Gets the help text for the app in the given locale.<p>
      *
      * @param locale the locale to use

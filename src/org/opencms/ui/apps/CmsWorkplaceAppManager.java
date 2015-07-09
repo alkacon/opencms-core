@@ -136,10 +136,11 @@ public class CmsWorkplaceAppManager {
     protected Collection<I_CmsWorkplaceAppConfiguration> loadDefaultApps() {
 
         return Arrays.<I_CmsWorkplaceAppConfiguration> asList(
-            new MyApp(),
+            new CmsSitemapEditorConfiguration(),
             new MyTestAppConfig(),
+            new CmsPageEditorConfiguration(),
             new CmsFileExplorerConfiguration(),
-            new CmsAppHierachyConfiguration());
+            new CmsAppHierarchyConfiguration());
     }
 
     private Collection<I_CmsWorkplaceAppConfiguration> loadLegacyApps() {
@@ -148,6 +149,7 @@ public class CmsWorkplaceAppManager {
 
         List<CmsTool> tools = OpenCms.getWorkplaceManager().getToolManager().getToolHandlers();
         for (CmsTool tool : tools) {
+
             I_CmsToolHandler handler = tool.getHandler();
             String path = handler.getPath();
             // only collecting first path level tools

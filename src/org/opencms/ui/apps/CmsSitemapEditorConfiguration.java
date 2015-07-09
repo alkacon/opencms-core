@@ -28,20 +28,25 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
+import org.opencms.ui.FontOpenCms;
 
 import java.util.Locale;
 
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 
-public class MyOtherApp implements I_CmsWorkplaceAppConfiguration {
+/**
+ * The sitemap editor app configuration.<p>
+ */
+public class CmsSitemapEditorConfiguration implements I_CmsWorkplaceAppConfiguration {
 
-    public static class MyOtherAppComponent extends Label implements I_CmsWorkplaceApp {
+    public static class DummyApp extends CustomComponent implements I_CmsWorkplaceApp {
 
-        public MyOtherAppComponent() {
+        public DummyApp() {
 
-            super("MyOtherApp");
+            setCompositionRoot(new Label("Hello world"));
+
         }
 
         public void initUI(I_CmsAppUIContext context) {
@@ -56,58 +61,76 @@ public class MyOtherApp implements I_CmsWorkplaceAppConfiguration {
         }
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
+     */
     public String getAppCategory() {
 
-        // TODO Auto-generated method stub
-        return null;
+        return "Main";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppInstance()
+     */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new MyOtherAppComponent();
+        return new DummyApp();
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
+     */
     public String getButtonStyle() {
 
-        // TODO Auto-generated method stub
-        return CmsDefaultAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_CYAN;
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getHelpText(java.util.Locale)
+     */
     public String getHelpText(Locale locale) {
 
-        return null;
+        return "The sitemap editor";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getIcon()
+     */
     public Resource getIcon() {
 
-        return FontAwesome.AMBULANCE;
+        return FontOpenCms.SITEMAP;
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getId()
+     */
     public String getId() {
 
-        return "myotherapp";
+        return "myapp";
     }
 
-    public String getName() {
-
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getName(java.util.Locale)
+     */
     public String getName(Locale locale) {
 
-        return "myotherapp";
+        return "Sitemap editor";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getOrder()
+     */
     public int getOrder() {
 
-        // TODO Auto-generated method stub
-        return 0;
+        return 2;
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
+     */
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        return new CmsAppVisibilityStatus(true, true, "");
+        return new CmsAppVisibilityStatus(true, true, null);
     }
 
 }

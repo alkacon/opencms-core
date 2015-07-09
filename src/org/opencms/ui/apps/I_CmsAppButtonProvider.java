@@ -29,8 +29,36 @@ package org.opencms.ui.apps;
 
 import com.vaadin.ui.Component;
 
+/**
+ * Generates app launcher buttons.<p>
+ */
 public interface I_CmsAppButtonProvider {
 
+    /** Button color style. */
+    public static final String BUTTON_STYLE_CYAN = "color-cyan";
+
+    /** Button color style. */
+    public static final String BUTTON_STYLE_RED = "color-red";
+
+    /** Button color style. */
+    public static final String BUTTON_STYLE_BLUE = "color-blue";
+
+    /** Button color style. */
+    public static final String BUTTON_STYLE_ORANGE = "color-orange";
+
+    /** Button color style. */
+    public static final String BUTTON_STYLE_GRAY = "color-gray";
+
+    /** Button color style. */
+    public static final String BUTTON_STYLE_TRANSPARENT = "color-transparent";
+
+    /**
+     * Creates an app launcher button.<p>
+     *
+     * @param appConfig the app configuration
+     *
+     * @return the button component
+     */
     Component createAppButton(I_CmsWorkplaceAppConfiguration appConfig);
 
 }

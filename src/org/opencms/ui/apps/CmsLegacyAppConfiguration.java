@@ -73,6 +73,14 @@ public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
+     */
+    public String getButtonStyle() {
+
+        return CmsDefaultAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getHelpText(java.util.Locale)
      */
     public String getHelpText(Locale locale) {
@@ -111,7 +119,7 @@ public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration
      */
     public int getOrder() {
 
-        return 10;
+        return 10 + Math.round(m_toolHandler.getPosition());
     }
 
     /**

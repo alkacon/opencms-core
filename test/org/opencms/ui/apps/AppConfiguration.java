@@ -48,9 +48,10 @@ public class AppConfiguration implements I_CmsWorkplaceAppConfiguration {
         return null;
     }
 
-    public String getId() {
+    public String getButtonStyle() {
 
-        return "/";
+        // TODO Auto-generated method stub
+        return CmsDefaultAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
     }
 
     public String getHelpText(Locale locale) {
@@ -61,6 +62,11 @@ public class AppConfiguration implements I_CmsWorkplaceAppConfiguration {
     public Resource getIcon() {
 
         return FontAwesome.AMBULANCE;
+    }
+
+    public String getId() {
+
+        return "/";
     }
 
     public String getName(Locale locale) {
@@ -80,5 +86,4 @@ public class AppConfiguration implements I_CmsWorkplaceAppConfiguration {
         // TODO Auto-generated method stub
         return new CmsAppVisibilityStatus(false, false, "visible");
     }
-
 }

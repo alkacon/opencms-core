@@ -27,6 +27,8 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.ui.components.CmsToolBar;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +44,7 @@ import com.vaadin.server.UserError;
 import com.vaadin.shared.Position;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -56,6 +59,7 @@ import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
@@ -143,6 +147,18 @@ public class MyTestApp extends VerticalLayout implements I_CmsWorkplaceApp {
     public void initUI(I_CmsAppUIContext context) {
 
         context.setAppContent(this);
+        VerticalLayout info = new VerticalLayout();
+        info.setMargin(false);
+        info.setSizeFull();
+        Label infoTitle = new Label("This is a demo app");
+        infoTitle.addStyleName("h4");
+        info.addComponent(infoTitle);
+        Label infoPath = new Label("It displays common UI elements");
+        infoPath.addStyleName("tiny");
+        info.addComponent(infoPath);
+        context.setAppInfo(info);
+        context.addToolbarButton(CmsToolBar.createButton(FontAwesome.TIMES_CIRCLE));
+        context.setMenuContent(getAccordion());
     }
 
     public void onStateChange(String state) {
@@ -168,6 +184,48 @@ public class MyTestApp extends VerticalLayout implements I_CmsWorkplaceApp {
         row.addComponent(windows());
         row.addComponent(tooltips());
         return commonElements;
+    }
+
+    Accordion getAccordion() {
+
+        Accordion ac = new Accordion();
+        ac.addTab(new VerticalLayout() {
+
+            {
+                setMargin(true);
+                OptionGroup options = new OptionGroup("Choose one");
+                options.setMultiSelect(false);
+                options.addItem("Option One");
+                options.addItem("Option Two");
+                options.addItem("Option Three");
+                options.select("Option One");
+                addComponent(options);
+            }
+        }, "First Caption");
+        ac.addTab(new VerticalLayout() {
+
+            {
+                setMargin(true);
+                addComponent(new Label("Gallia est omnis divisa in partes tres, quarum."));
+            }
+        }, "Second Caption");
+        ac.addTab(new VerticalLayout() {
+
+            {
+                setMargin(true);
+                addComponent(new Label(
+                    "Nihil hic munitissimus habendi senatus locus, nihil horum? Sed haec quis possit intrepidus aestimare tellus."));
+            }
+        }, "Third Caption");
+        ac.addTab(new VerticalLayout() {
+
+            {
+                setMargin(true);
+                addComponent(new Label(
+                    "Inmensae subtilitatis, obscuris et malesuada fames. Quisque ut dolor gravida, placerat libero vel, euismod."));
+            }
+        }, "Custom Caption Style");
+        return ac;
     }
 
     MenuBar getToolBar() {

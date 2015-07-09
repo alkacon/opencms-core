@@ -30,6 +30,7 @@ package org.opencms.ui.components;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsDefaultAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
@@ -90,11 +91,25 @@ public class CmsToolBar extends CssLayout {
 
         Design.read("ToolBar.html", this);
         m_logo.setSource(new ExternalResource(CmsWorkplace.getResourceUri("commons/login_logo.png")));
-        m_itemsLeft.addComponent(createButton(FontAwesome.CLOCK_O));
-        m_itemsRight.addComponent(createButton(FontAwesome.BARS));
+        m_itemsRight.addComponent(createButton(FontOpenCms.CONTEXT_MENU));
         m_itemsRight.addComponent(createDropDown());
         m_itemsRight.addComponent(createButton(FontAwesome.USER));
 
+    }
+
+    /**
+     * Creates a properly styled toolbar button.<p>
+     *
+     * @param icon the button icon
+     *
+     * @return the button
+     */
+    public static Component createButton(Resource icon) {
+
+        Button button = new Button(icon);
+        button.addStyleName("borderless");
+        button.addStyleName("toolbar");
+        return button;
     }
 
     /**
@@ -172,21 +187,6 @@ public class CmsToolBar extends CssLayout {
     }
 
     /**
-     * Creates a properly styled toolbar button.<p>
-     *
-     * @param icon the button icon
-     *
-     * @return the button
-     */
-    private Component createButton(Resource icon) {
-
-        Button button = new Button(icon);
-        button.addStyleName("borderless");
-        button.addStyleName("toolbar");
-        return button;
-    }
-
-    /**
      * Creates the app select drop down.<p>
      *
      * @return the drop down component
@@ -215,13 +215,13 @@ public class CmsToolBar extends CssLayout {
             if (status.isVisible()) {
                 layout.addComponent(CmsDefaultAppButtonProvider.createAppIconWidget(appConfig, locale));
                 // show only the top 10
-                if (layout.getComponentCount() > 10) {
+                if (layout.getComponentCount() > 9) {
                     break;
                 }
             }
         }
         String html = "<div tabindex=\"0\" role=\"button\" class=\"v-button v-widget borderless v-button-borderless toolbar v-button-toolbar\"><span class=\"v-button-wrap\">"
-            + FontAwesome.TH.getHtml()
+            + FontAwesome.TH_LARGE.getHtml()
             + "</span></div>";
         PopupView pv = new PopupView(html, layout);
         pv.addStyleName("opencms-navigator-dropdown");

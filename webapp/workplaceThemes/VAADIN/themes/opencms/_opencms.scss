@@ -1,6 +1,7 @@
 @mixin opencms {
   @include valo;
   
+  
   $toolbar-padding: 20px;
   $toolbar-height: 105px;
   $app-icon-size: 32px;
@@ -131,7 +132,7 @@
   	
 	  	.v-panel-captionwrap{
 	  		float: left;
-	  		margin: -6px 10px !important;
+	  		margin: -4px 10px !important;
 	  		display: block;
 	  		width: $app-icon-size;
 	  		font-size: $app-icon-size;
@@ -142,6 +143,11 @@
     		position: relative;
     		width: auto;
     		height: 45px;
+    		font-size: $v-font-size--tiny;
+    		
+    		.v-label-h4 {
+    			margin: 3px 0 0;
+    		}
 	  	}
 	}
   }
@@ -150,15 +156,6 @@
   	display: block;
   	background: $v-background-color;
   	margin-top: $toolbar-height;
-  	
-  	.opencms-app-content-title{
-  		height: 45px;
-  		padding: 10px $toolbar-padding;
-  		display: block;
-  		border-bottom: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
-  		background: $blue-light;
-  		color: $valo-font-color($blue-light);
-  	}
   }
   
   .with-menu .opencms-app-menu{
@@ -170,20 +167,7 @@
   	margin: $toolbar-height 0 0 0;
   	border-right: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
   	display: none;
-  	padding: 10px 28px 10px 5px;
-  	
-  	.opencms-app-menu-title{
-  		height: 45px;
-  		padding: 10px $toolbar-padding;
-  		display: block;
-  		border-bottom: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
-  		background: $v-background-color;
-  	}
-  	.opencms-app-menu-container{
-  		padding: 10px;
-  		display: block;
-  		background: #ffffff;
-  	}
+  	padding: 15px;
   }
   
   .opencms-toolbar{
@@ -236,10 +220,11 @@
   			transition: opacity 0.4s;
   		
   			position: absolute;
-  			top: 3px;
+  			top: 4px;
   			left: 100%;
   			margin-left: 15px;
-  			font-size: $app-icon-size-small;
+  			font-size: $app-icon-size;
+  			line-height: 36px;
   		}
 	}
   	.opencms-toolbar-items-left, .opencms-toolbar-items-right{
@@ -281,10 +266,9 @@
   	}
   	
   	.v-button.v-button-toolbar{
-  		font-size: $app-icon-size-small;
-    	height: 36px;
-    	padding: 0 5px;
-    	transition-property: font-size height;
+  		height: 36px;
+    	line-height: 36px;
+    	transition-property: height line-height;
     	transition-duration: 0.4s;
     	transition-timing-function: ease-in-out;
   	}
@@ -292,6 +276,18 @@
   	
   }
   
+   .v-button.v-button-toolbar{
+  	font-size: $app-icon-size;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 10px;
+    transition-property: line-height height;
+    transition-duration: 0.4s;
+    transition-timing-function: ease-in-out;
+  }
+  
+  
+  /* Toolbar drop down */
   .v-popupview.v-popupview-opencms-navigator-dropdown{
   	color: inherit;
   }
@@ -306,16 +302,8 @@
   .v-popupview-popup-opencms-navigator-dropdown .popupContent{
   	max-width: 400px;
   }
-  
-  .v-button.v-button-toolbar{
-  	font-size: $app-icon-size;
-    height: 50px;
-    padding: 0 10px;
-    transition-property: font-size height;
-    transition-duration: 0.4s;
-    transition-timing-function: ease-in-out;
-  }
-  
+    
+  /* App buttons */
   .v-button.v-button-app{
    	font-size: $v-font-size--small;
   	
@@ -329,6 +317,8 @@
   	
   	.v-icon{
   		font-size: $app-icon-size;
+  		border-radius: 4px;
+  		width: 50px;
   	}
   	
   	img.v-icon{
@@ -336,7 +326,26 @@
   		height: $app-icon-size;
   	} 
   }
-  
+  .v-button.v-button-app.color-cyan .v-icon{
+  	background: $cyan;
+  	color: $white;
+  }
+  .v-button.v-button-app.color-red .v-icon{
+  	background: $red;
+  	color: $white;
+  }
+  .v-button.v-button-app.color-blue .v-icon{
+  	background: $blue;
+  	color: $white;
+  }
+  .v-button.v-button-app.color-orange .v-icon{
+  	background: $orange-dark;
+  	color: $white;
+  }
+  .v-button.v-button-app.color-gray .v-icon{
+  	background: $gray-dark;
+  	color: $white;
+  }
   
   /* login form styles */
   

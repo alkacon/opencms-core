@@ -30,11 +30,14 @@ package org.opencms.ui.apps;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.components.CmsToolBar;
 
 import java.util.List;
 import java.util.Locale;
 
 import com.google.common.collect.Lists;
+import com.vaadin.server.FontAwesome;
 
 /**
  * Displays all available app.<p>
@@ -67,6 +70,10 @@ public class CmsAppHierachy implements I_CmsWorkplaceApp {
         hierarchyPanel.fill(hierarchyBuilder.buildHierarchy(), locale);
 
         context.setAppContent(hierarchyPanel);
+
+        // some dummy buttons
+        context.addToolbarButton(CmsToolBar.createButton(FontOpenCms.PUBLISH));
+        context.addToolbarButton(CmsToolBar.createButton(FontAwesome.WRENCH));
     }
 
     /**

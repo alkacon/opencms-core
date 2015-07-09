@@ -35,16 +35,16 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 
 /**
- * The app hierachy configuration.<p>
+ * The app hierarchy configuration.<p>
  */
-public class CmsAppHierachyConfiguration implements I_CmsWorkplaceAppConfiguration {
+public class CmsAppHierarchyConfiguration implements I_CmsWorkplaceAppConfiguration {
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
      */
     public String getAppCategory() {
 
-        return "Main";
+        return "none";
     }
 
     /**
@@ -53,6 +53,14 @@ public class CmsAppHierachyConfiguration implements I_CmsWorkplaceAppConfigurati
     public I_CmsWorkplaceApp getAppInstance() {
 
         return new CmsAppHierachy();
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
+     */
+    public String getButtonStyle() {
+
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY;
     }
 
     /**
@@ -68,7 +76,7 @@ public class CmsAppHierachyConfiguration implements I_CmsWorkplaceAppConfigurati
      */
     public Resource getIcon() {
 
-        return FontAwesome.QRCODE;
+        return FontAwesome.ROCKET;
     }
 
     /**
@@ -84,7 +92,7 @@ public class CmsAppHierachyConfiguration implements I_CmsWorkplaceAppConfigurati
      */
     public String getName(Locale locale) {
 
-        return "App overview";
+        return "App launcher";
     }
 
     /**
@@ -92,7 +100,7 @@ public class CmsAppHierachyConfiguration implements I_CmsWorkplaceAppConfigurati
      */
     public int getOrder() {
 
-        return 4;
+        return 0;
     }
 
     /**
@@ -102,5 +110,4 @@ public class CmsAppHierachyConfiguration implements I_CmsWorkplaceAppConfigurati
 
         return new CmsAppVisibilityStatus(true, true, null);
     }
-
 }

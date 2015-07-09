@@ -49,16 +49,24 @@ public class MyTestAppConfig implements I_CmsWorkplaceAppConfiguration {
         return new MyTestApp();
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
+     */
+    public String getButtonStyle() {
+
+        return I_CmsAppButtonProvider.BUTTON_STYLE_ORANGE;
+    }
+
     public String getHelpText(Locale locale) {
 
         // TODO Auto-generated method stub
-        return "The page editor";
+        return "The demo app";
     }
 
     public Resource getIcon() {
 
         // TODO Auto-generated method stub
-        return FontAwesome.DOT_CIRCLE_O;
+        return FontAwesome.GEAR;
     }
 
     public String getId() {
@@ -70,13 +78,13 @@ public class MyTestAppConfig implements I_CmsWorkplaceAppConfiguration {
     public String getName(Locale locale) {
 
         // TODO Auto-generated method stub
-        return "Page editor";
+        return "Demo app";
     }
 
     public int getOrder() {
 
         // TODO Auto-generated method stub
-        return 1;
+        return 4;
     }
 
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
@@ -84,5 +92,4 @@ public class MyTestAppConfig implements I_CmsWorkplaceAppConfiguration {
         // TODO Auto-generated method stub
         return new CmsAppVisibilityStatus(true, true, getHelpText(null));
     }
-
 }
