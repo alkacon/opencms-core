@@ -153,17 +153,17 @@ public class CmsFileTable extends A_CmsCustomComponent {
         for (CmsResource resource : resources) {
             try {
                 Item resourceItem = m_container.addItem(resource.getStructureId());
-                resourceItem.getItemProperty("resourceName").setValue(resource.getName());
-                resourceItem.getItemProperty("title").setValue(
-                    cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue());
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-                resourceItem.getItemProperty("resourceType").setValue(
-                    CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
                 CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                     type.getTypeName());
                 resourceItem.getItemProperty("typeIcon").setValue(
                     new ExternalResource(
                         CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getIcon())));
+                resourceItem.getItemProperty("resourceName").setValue(resource.getName());
+                resourceItem.getItemProperty("title").setValue(
+                    cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue());
+                resourceItem.getItemProperty("resourceType").setValue(
+                    CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
             } catch (CmsException e) {
                 e.printStackTrace();
                 Notification.show(e.getMessage());
