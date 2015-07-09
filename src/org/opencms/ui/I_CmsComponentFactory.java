@@ -29,8 +29,16 @@ package org.opencms.ui;
 
 import com.vaadin.ui.Component;
 
+/**
+ * Factory to create components.<p>
+ */
 public interface I_CmsComponentFactory {
 
+    /**
+     * Generates a component.<p>
+     *
+     * @return the component
+     */
     Component createComponent();
 
 }

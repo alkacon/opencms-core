@@ -39,6 +39,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.vaadin.ui.Component;
@@ -51,6 +53,9 @@ import com.vaadin.ui.declarative.Design;
  */
 public final class CmsVaadinUtils {
 
+    /** The logger of this class. */
+    private static final Logger LOG = Logger.getLogger(CmsVaadinUtils.class);
+
     /**
      * Hidden default constructor for utility class.<p>
      */
@@ -58,6 +63,13 @@ public final class CmsVaadinUtils {
 
     }
 
+    /**
+     * Returns the path to the design template file of the given component.<p>
+     *
+     * @param component the component
+     *
+     * @return the path
+     */
     public static String getDefaultDesignPath(Component component) {
 
         String className = component.getClass().getName();
@@ -72,8 +84,8 @@ public final class CmsVaadinUtils {
      *
      * @param component the component for which to read the design
      * @param messages the message bundle to use for localization
+     * @param macros the macros to use on the HTML template
      */
-    @SuppressWarnings("resource")
     public static void readAndLocalizeDesign(Component component, CmsMessages messages, Map<String, String> macros) {
 
         String designPath = getDefaultDesignPath(component);
@@ -107,6 +119,14 @@ public final class CmsVaadinUtils {
         }
     }
 
+    /**
+     * Reads the given design and resolves the given macros and localizations.<p>
+     *
+     * @param component the component
+     * @param designPath the design path
+     * @param messages the messages
+     * @param macros the macros
+     */
     protected static void readAndLocalizeDesign(
         Component component,
         String designPath,
@@ -140,6 +160,12 @@ public final class CmsVaadinUtils {
             Design.read(new ByteArrayInputStream(resolvedDesign.getBytes(encoding)), component);
         } catch (IOException e) {
             throw new RuntimeException("Could not read design: " + designPath, e);
+        } finally {
+            try {
+                designStream.close();
+            } catch (IOException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
         }
     }
 
