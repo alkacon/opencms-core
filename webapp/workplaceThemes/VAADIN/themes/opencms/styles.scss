@@ -1,5 +1,9 @@
 @import "variables";
 @import "opencms";
+@import "opencmsfont";
+
+@include opencmsfont;
+
 .opencms {
    @include opencms;
 }
