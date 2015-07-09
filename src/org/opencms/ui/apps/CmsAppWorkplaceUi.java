@@ -86,11 +86,22 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
         String completeState = m_navigationStateManager.getState();
         String view = getViewName(completeState);
         String newCompleteState = view;
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(state)) {
             newCompleteState += NavigationState.PARAM_SEPARATOR + state;
         }
         m_navigationStateManager.setState(newCompleteState);
 
+    }
+
+    /**
+     * Returns the state parameter of the current app.<p>
+     * 
+     * @return the state parameter of the current app
+     */
+    public String getAppState() {
+
+        NavigationState state = new NavigationState(m_navigationStateManager.getState());
+        return state.getParams();
     }
 
     /**

@@ -39,6 +39,7 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -86,7 +87,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
                     I_CmsDialogContext context = createDialogContext();
                     CmsAvailabilityDialog availability = new CmsAvailabilityDialog(context);
                     m_savedExplorerState = CmsAppWorkplaceUi.get().getNavigator().getState();
-                    CmsAppWorkplaceUi.get().changeCurrentAppState("availability");
+                    CmsAppWorkplaceUi.get().changeCurrentAppState(
+                        CmsAppWorkplaceUi.get().getAppState() + "#availability");
                     m_appContext.setAppContent(availability);
                 }
             });
@@ -121,6 +123,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
     /** The UI context. */
     private I_CmsAppUIContext m_appContext;
 
+    /** The current app state. */
+    private String m_currentState;
+
     /**
      * Constructor.<p>
      */
@@ -129,7 +134,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
         m_fileTable.setSizeFull();
         m_fileTable.setMenuBuilder(new MenuBuilder() /**/);
         m_fileTree = new Tree();
-        m_fileTree.setSizeFull();
+        m_fileTree.setWidth("100%");
         m_fileTree.setItemCaptionPropertyId("resourceName");
         m_fileTree.addExpandListener(new ExpandListener() {
 
@@ -183,6 +188,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.MAGIC));
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.ARROW_UP));
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.UPLOAD));
+
+        populateFolderTree();
     }
 
     /**
@@ -190,8 +197,10 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
      */
     public void onStateChange(String state) {
 
-        // TODO: evaluate state
-        populateFolderTree();
+        if ((m_currentState == null) || !m_currentState.equals(state)) {
+            m_currentState = state;
+            openPath(state);
+        }
     }
 
     /**
@@ -319,6 +328,15 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
             m_infoPath.setValue(cms.getSitePath(folder));
             List<CmsResource> folderResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
             m_fileTable.fillTable(cms, folderResources);
+
+            String sitePath = folder.getRootPath().equals(cms.getRequestContext().getSiteRoot() + "/")
+            ? ""
+            : cms.getSitePath(folder);
+
+            if (!sitePath.equals(m_currentState)) {
+                m_currentState = sitePath;
+                CmsAppWorkplaceUi.get().changeCurrentAppState(m_currentState);
+            }
         } catch (CmsException e) {
             Notification.show(e.getMessage());
             e.printStackTrace();
@@ -349,6 +367,42 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
             // TODO: Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Opens the given site path.<p>
+     *
+     * @param path the path
+     */
+    private void openPath(String path) {
+
+        String[] pathItems = path.split("/");
+        HierarchicalContainer container = (HierarchicalContainer)m_fileTree.getContainerDataSource();
+        Collection<?> rootItems = container.rootItemIds();
+        if (rootItems.size() != 1) {
+            throw new RuntimeException("Illeagal state, folder tree has " + rootItems.size() + " children");
+        }
+        CmsUUID folderId = (CmsUUID)rootItems.iterator().next();
+        Collection<?> children = container.getChildren(folderId);
+        for (int i = 0; i < pathItems.length; i++) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(pathItems[i])) {
+                continue;
+            }
+            CmsUUID level = null;
+            for (Object id : children) {
+                if (container.getItem(id).getItemProperty("resourceName").getValue().equals(pathItems[i])) {
+                    level = (CmsUUID)id;
+                    m_fileTree.expandItem(level);
+                    break;
+                }
+            }
+            if ((level == null) || level.equals(folderId)) {
+                break;
+            }
+            folderId = level;
+            children = container.getChildren(folderId);
+        }
+        readFolder(folderId);
     }
 
 }

@@ -47,7 +47,7 @@ public class CmsWorkplaceAppManager {
 
     public static class NavigationState {
 
-        public static final String PARAM_SEPARATOR = "$";
+        public static final String PARAM_SEPARATOR = "/";
 
         private String m_viewName = "";
         private String m_params = "";
