@@ -58,6 +58,8 @@ import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Tree;
@@ -105,6 +107,12 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
     /** Saved explorer state used by dialogs after they have finished. */
     protected String m_savedExplorerState = "";
 
+    /** The UI context. */
+    private I_CmsAppUIContext m_appContext;
+
+    /** The current app state. */
+    private String m_currentState;
+
     /** The table containing the contents of the current folder. */
     private CmsFileTable m_fileTable;
 
@@ -114,17 +122,11 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
     /** The info component. */
     private VerticalLayout m_info;
 
-    /** The info title. */
-    private Label m_infoTitle;
-
     /** The info path. */
     private Label m_infoPath;
 
-    /** The UI context. */
-    private I_CmsAppUIContext m_appContext;
-
-    /** The current app state. */
-    private String m_currentState;
+    /** The info title. */
+    private Label m_infoTitle;
 
     /**
      * Constructor.<p>
@@ -182,8 +184,12 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
     public void initUI(I_CmsAppUIContext context) {
 
         m_appContext = context;
-        context.setMenuContent(m_fileTree);
-        context.setAppContent(m_fileTable);
+        HorizontalSplitPanel sp = new HorizontalSplitPanel();
+        sp.setSizeFull();
+        sp.setFirstComponent(m_fileTree);
+        sp.setSecondComponent(m_fileTable);
+        sp.setSplitPosition(400 - 1, Unit.PIXELS);
+        context.setAppContent(sp);
         context.setAppInfo(m_info);
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.MAGIC));
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.ARROW_UP));
