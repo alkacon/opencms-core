@@ -68,7 +68,7 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
      */
     public void addToolbarButton(Component button) {
 
-        m_toolbar.addButtonRight(button);
+        m_toolbar.addButtonLeft(button);
     }
 
     /**
@@ -76,7 +76,7 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
      */
     public void clearToolbarButtons() {
 
-        m_toolbar.clearButtonsRight();
+        m_toolbar.clearButtonsLeft();
     }
 
     /**
