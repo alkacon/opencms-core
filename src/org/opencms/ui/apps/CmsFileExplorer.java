@@ -137,7 +137,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
         m_fileTable.setMenuBuilder(new MenuBuilder() /**/);
         m_fileTree = new Tree();
         m_fileTree.setWidth("100%");
-        m_fileTree.setItemCaptionPropertyId("resourceName");
+        m_fileTree.setItemCaptionPropertyId(CmsFileTable.PROPERTY_RESOURCE_NAME);
         m_fileTree.addExpandListener(new ExpandListener() {
 
             private static final long serialVersionUID = 1L;
@@ -231,17 +231,17 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
     public void populateFolderTree() {
 
         HierarchicalContainer container = new HierarchicalContainer();
-        container.addContainerProperty("resourceName", String.class, null);
+        container.addContainerProperty(CmsFileTable.PROPERTY_RESOURCE_NAME, String.class, null);
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
             CmsResource siteRoot = cms.readResource("/", FOLDERS);
             Item rootItem = container.addItem(siteRoot.getStructureId());
             // use the root path as name for site root folder
-            rootItem.getItemProperty("resourceName").setValue(siteRoot.getRootPath());
+            rootItem.getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).setValue(siteRoot.getRootPath());
             List<CmsResource> folderResources = cms.readResources("/", FOLDERS, false);
             for (CmsResource resource : folderResources) {
                 Item resourceItem = container.addItem(resource.getStructureId());
-                resourceItem.getItemProperty("resourceName").setValue(resource.getName());
+                resourceItem.getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).setValue(resource.getName());
                 container.setParent(resource.getStructureId(), siteRoot.getStructureId());
             }
             m_fileTree.setContainerDataSource(container);
@@ -366,7 +366,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
                 if (resourceItem == null) {
                     resourceItem = container.addItem(resource.getStructureId());
                 }
-                resourceItem.getItemProperty("resourceName").setValue(resource.getName());
+                resourceItem.getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).setValue(resource.getName());
                 container.setParent(resource.getStructureId(), parentId);
             }
         } catch (CmsException e) {
@@ -396,7 +396,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
             }
             CmsUUID level = null;
             for (Object id : children) {
-                if (container.getItem(id).getItemProperty("resourceName").getValue().equals(pathItems[i])) {
+                if (container.getItem(id).getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).getValue().equals(
+                    pathItems[i])) {
                     level = (CmsUUID)id;
                     m_fileTree.expandItem(level);
                     break;
