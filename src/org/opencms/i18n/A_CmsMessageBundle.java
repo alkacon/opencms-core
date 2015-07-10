@@ -107,7 +107,8 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.xml.containerpage.Messages.get(),
             org.opencms.xml.content.Messages.get(),
             org.opencms.xml.page.Messages.get(),
-            org.opencms.xml.types.Messages.get()};
+            org.opencms.xml.types.Messages.get(),
+            org.opencms.ui.Messages.get()};
     }
 
     /**

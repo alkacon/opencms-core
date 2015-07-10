@@ -33,6 +33,8 @@ import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsResourceInfo;
@@ -42,6 +44,7 @@ import java.util.List;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -74,7 +77,10 @@ public class CmsAvailabilityDialog extends CssLayout {
 
         super();
         m_dialogContext = dialogContext;
-        CmsVaadinUtils.readAndLocalizeDesign(this, null, null);
+        CmsVaadinUtils.readAndLocalizeDesign(
+            this,
+            OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
+            null);
         List<CmsResource> resources = dialogContext.getResources();
         if (resources.size() == 1) {
             CmsResource onlyResource = resources.get(0);

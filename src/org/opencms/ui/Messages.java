@@ -25,21 +25,47 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.components;
+package org.opencms.ui;
 
-import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.Messages;
+import org.opencms.i18n.A_CmsMessageBundle;
+import org.opencms.i18n.I_CmsMessageBundle;
 
-import com.vaadin.shared.ui.datefield.Resolution;
-import com.vaadin.ui.PopupDateField;
+public class Messages extends A_CmsMessageBundle {
 
-public class CmsDateField extends PopupDateField {
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.ui.messages";
 
-    public CmsDateField() {
-        super();
-        setResolution(Resolution.MINUTE);
-        String parseError = Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_INVALID_DATE_FORMAT_0);
-        setParseErrorMessage(parseError);
+    public static final String GUI_INVALID_DATE_FORMAT_0 = "GUI_INVALID_DATE_FORMAT_0";
+
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
+    }
+
+    /**
+     * Returns an instance of this localized message accessor.<p>
+     *
+     * @return an instance of this localized message accessor
+     */
+    public static I_CmsMessageBundle get() {
+
+        return INSTANCE;
+    }
+
+    /**
+     * Returns the bundle name for this OpenCms package.<p>
+     *
+     * @return the bundle name for this OpenCms package
+     */
+    public String getBundleName() {
+
+        return BUNDLE_NAME;
     }
 
 }

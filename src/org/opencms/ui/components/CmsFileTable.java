@@ -209,8 +209,6 @@ public class CmsFileTable extends A_CmsCustomComponent {
 
             public void itemClick(ItemClickEvent event) {
 
-                System.out.println("hallo!");
-
                 if (event.getButton().equals(MouseButton.RIGHT)) {
                     Set<CmsUUID> selection = (Set<CmsUUID>)m_fileTable.getValue();
                     if (selection == null) {
