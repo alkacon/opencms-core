@@ -44,7 +44,6 @@ import java.util.List;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -81,6 +80,7 @@ public class CmsAvailabilityDialog extends CssLayout {
             this,
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
             null);
+
         List<CmsResource> resources = dialogContext.getResources();
         if (resources.size() == 1) {
             CmsResource onlyResource = resources.get(0);
@@ -112,13 +112,16 @@ public class CmsAvailabilityDialog extends CssLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                try {
-                    changeAvailability();
-                    m_dialogContext.onFinish(null);
-                } catch (Throwable t) {
-                    m_dialogContext.onError(t);
+                if (validate()) {
+                    try {
+                        changeAvailability();
+                        m_dialogContext.onFinish(null);
+                    } catch (Throwable t) {
+                        m_dialogContext.onError(t);
+                    }
                 }
             }
+
         });
 
         m_cancelButton.addClickListener(new ClickListener() {
@@ -197,5 +200,10 @@ public class CmsAvailabilityDialog extends CssLayout {
                 }
             }
         });
+    }
+
+    private boolean validate() {
+
+        return m_releasedField.isValid() && m_expiredField.isValid();
     }
 }
