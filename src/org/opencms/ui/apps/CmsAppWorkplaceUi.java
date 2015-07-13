@@ -41,6 +41,9 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
 import com.vaadin.navigator.ViewProvider;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Page;
+import com.vaadin.server.Page.BrowserWindowResizeEvent;
+import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Component;
 
@@ -50,11 +53,11 @@ import com.vaadin.ui.Component;
 @Theme("opencms")
 public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvider {
 
-    /** The serial version id. */
-    private static final long serialVersionUID = -5606711048683809028L;
-
     /** The home view path. */
     public static final String VIEW_HOME = "home";
+
+    /** The serial version id. */
+    private static final long serialVersionUID = -5606711048683809028L;
 
     /** The navigation state manager. */
     private NavigationStateManager m_navigationStateManager;
@@ -95,7 +98,7 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
 
     /**
      * Returns the state parameter of the current app.<p>
-     * 
+     *
      * @return the state parameter of the current app
      */
     public String getAppState() {
@@ -167,10 +170,20 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
     protected void init(VaadinRequest request) {
 
         OpenCms.getWorkplaceAppManager().loadApps();
+
         m_navigationStateManager = new Navigator.UriFragmentManager(getPage());
         Navigator navigator = new Navigator(this, m_navigationStateManager, this);
         navigator.addProvider(this);
         String fragment = getPage().getUriFragment();
+        Page.getCurrent().addBrowserWindowResizeListener(new BrowserWindowResizeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void browserWindowResized(BrowserWindowResizeEvent event) {
+
+                markAsDirtyRecursive();
+            }
+        });
 
         getPage().getStyles().add(new ExternalResource("/opencms/VAADIN/themes/contextmenu/contextmenu.css"));
 

@@ -42,6 +42,8 @@ import org.opencms.ui.components.CmsResourceInfo;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.AbstractComponentContainer;
@@ -114,6 +116,7 @@ public class CmsAvailabilityDialog extends CssLayout {
 
                 if (validate()) {
                     try {
+
                         changeAvailability();
                         m_dialogContext.onFinish(null);
                     } catch (Throwable t) {

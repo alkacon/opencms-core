@@ -27,10 +27,10 @@
 		  				<v-check-box _id="m_subresourceModificationField" caption="%(key.GUI_TOUCH_MODIFY_SUBRESOURCES_0)" />
 		  				
 		  			</v-form-layout>
-		  			<v-horizontal-layout spacing :right width="250px">
-		  				<v-button _id="m_okButton" :expand="1" size-full>%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
-		  				<v-button _id="m_cancelButton" :expand="1" size-full>%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
-		  			</v-horizontal-layout>
+		  			<o-cms-button-panel :right>
+		  				<v-button _id="m_okButton" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+		  				<v-button _id="m_cancelButton" >%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+		  			</o-cms-button-panel>
 		  		</v-vertical-layout>
 	  		</v-panel>
   		</v-vertical-layout>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="package-mapping" content="o:org.opencms.ui.components" />
+	</head>
+	<body>
+  		<v-css-layout size-full>
+  			<v-vertical-layout size-full>
+	  			<v-grid-layout _id="m_grid" spacing margin :center width="60%" height="100%">
+	  				<row>
+	  					<column><v-label width="32px" _id="m_icon" /></column>
+	  					<column expand="1"><v-label _id="m_errorMessage"   /></column>
+		 				<column><v-button _id="m_okButton" width="150px">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button></column>
+	  				</row>
+	  				<row expand="1">
+		  				<column colspan="3">
+		  					<v-panel _id="m_panel" scrollable="true"  caption="%(key.GUI_LABEL_STACKTRACE_0)" width="100%" height="100%">
+			  					<v-label _id="m_errorLabel" width="-1px" />
+			  				</v-panel>
+		  				</column>
+	  				</row>
+	  			</v-grid-layout>
+  			</v-vertical-layout>
+		</v-css-layout>
+	</body>
+</html>

@@ -36,6 +36,7 @@ import org.opencms.main.CmsException;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
@@ -306,7 +307,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
 
             public void onError(Throwable error) {
 
-                CmsAppWorkplaceUi.get().getNavigator().navigateTo(m_savedExplorerState);
+                CmsErrorDialog err = new CmsErrorDialog(error, this);
+                m_appContext.setAppContent(err);
             }
 
             public void onFinish(Object result) {
