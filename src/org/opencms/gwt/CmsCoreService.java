@@ -75,6 +75,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleManager;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -830,11 +831,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         if (CmsUUID.isValidUUID(returnCode)) {
             try {
-                CmsResource pageRes = cms.readResource(new CmsUUID(returnCode));
+                CmsResource pageRes = cms.readResource(new CmsUUID(returnCode), CmsResourceFilter.IGNORE_EXPIRATION);
                 return new CmsReturnLinkInfo(
-                    CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getOpenCmsContext(), cms.getSitePath(pageRes)),
+                    OpenCms.getLinkManager().substituteLink(cms, pageRes),
                     CmsReturnLinkInfo.Status.ok);
-            } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
+            } catch (CmsVfsResourceNotFoundException e) {
                 return new CmsReturnLinkInfo(null, CmsReturnLinkInfo.Status.notfound);
             }
         } else {
@@ -848,19 +849,19 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                         CmsUUID pageId = new CmsUUID(before);
                         CmsUUID detailId = new CmsUUID(after);
                         CmsResource pageRes = cms.readResource(pageId);
-                        String pagePath = CmsResource.getFolderPath(cms.getSitePath(pageRes));
+                        CmsResource folder = pageRes.isFolder()
+                        ? pageRes
+                        : cms.readParentFolder(pageRes.getStructureId());
+                        String pageLink = OpenCms.getLinkManager().substituteLink(cms, folder);
                         CmsResource detailRes = cms.readResource(detailId);
                         String detailName = cms.getDetailName(
                             detailRes,
                             cms.getRequestContext().getLocale(),
                             OpenCms.getLocaleManager().getDefaultLocales());
-                        String uri = CmsStringUtil.joinPaths(pagePath, detailName);
-                        return new CmsReturnLinkInfo(
-                            CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getOpenCmsContext(), uri),
-                            CmsReturnLinkInfo.Status.ok);
-                    } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
+                        String link = CmsFileUtil.removeTrailingSeparator(pageLink) + "/" + detailName;
+                        return new CmsReturnLinkInfo(link, CmsReturnLinkInfo.Status.ok);
+                    } catch (CmsVfsResourceNotFoundException e) {
                         return new CmsReturnLinkInfo(null, CmsReturnLinkInfo.Status.notfound);
-
                     }
                 }
             }
