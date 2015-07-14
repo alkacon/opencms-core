@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsCustomComponent;
 import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -53,6 +54,8 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.util.filter.Or;
+import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.server.ExternalResource;
@@ -67,64 +70,65 @@ import com.vaadin.ui.Table.RowHeaderMode;
  */
 public class CmsFileTable extends A_CmsCustomComponent {
 
-    /** The serial version id. */
-    private static final long serialVersionUID = 5460048685141699277L;
-
-    /** File table property name. */
-    public static final String PROPERTY_RESOURCE_NAME = "resourceName";
-
-    /** File table property name. */
-    public static final String PROPERTY_TYPE_ICON = "typeIcon";
-
-    /** File table property name. */
-    public static final String PROPERTY_TITLE = "title";
-
-    /** File table property name. */
-    public static final String PROPERTY_RESOURCE_TYPE = "resourceType";
-
-    /** File table property name. */
-    public static final String PROPERTY_NAVIGATION_TEXT = "navigationText";
-
-    /** File table property name. */
-    public static final String PROPERTY_SIZE = "size";
-
-    /** File table property name. */
-    public static final String PROPERTY_DATE_MODIFIED = "dateModified";
-
     /** File table property name. */
     public static final String PROPERTY_DATE_CREATED = "dateCreated";
-
-    /** File table property name. */
-    public static final String PROPERTY_DATE_RELEASED = "dateReleased";
 
     /** File table property name. */
     public static final String PROPERTY_DATE_EXPIRED = "dateExpired";
 
     /** File table property name. */
+    public static final String PROPERTY_DATE_MODIFIED = "dateModified";
+
+    /** File table property name. */
+    public static final String PROPERTY_DATE_RELEASED = "dateReleased";
+
+    /** File table property name. */
+    public static final String PROPERTY_NAVIGATION_TEXT = "navigationText";
+
+    /** File table property name. */
+    public static final String PROPERTY_PERMISSIONS = "permissions";
+
+    /** File table property name. */
+    public static final String PROPERTY_RESOURCE_NAME = "resourceName";
+
+    /** File table property name. */
+    public static final String PROPERTY_RESOURCE_TYPE = "resourceType";
+
+    /** File table property name. */
+    public static final String PROPERTY_SIZE = "size";
+
+    /** File table property name. */
     public static final String PROPERTY_STATE = "state";
+
+    /** File table property name. */
+    public static final String PROPERTY_TITLE = "title";
+
+    /** File table property name. */
+    public static final String PROPERTY_TYPE_ICON = "typeIcon";
 
     /** File table property name. */
     public static final String PROPERTY_USER_CREATED = "userCreated";
 
     /** File table property name. */
-    public static final String PROPERTY_USER_MODIFIED = "userModified";
-
-    /** File table property name. */
     public static final String PROPERTY_USER_LOCKED = "userLocked";
 
     /** File table property name. */
-    public static final String PROPERTY_PERMISSIONS = "permissions";
+    public static final String PROPERTY_USER_MODIFIED = "userModified";
 
-    private I_CmsContextMenuBuilder m_menuBuilder;
+    /** The serial version id. */
+    private static final long serialVersionUID = 5460048685141699277L;
 
-    private CmsMessages messages;
+    /** The resource data container. */
+    private IndexedContainer m_container;
 
     /** The table used to display the resource data. */
     private Table m_fileTable;
 
-    /** The resource data container. */
-    private IndexedContainer m_container;
     private ContextMenu m_menu;
+
+    private I_CmsContextMenuBuilder m_menuBuilder;
+
+    private CmsMessages messages;
 
     /**
      * Default constructor.<p>
@@ -235,7 +239,6 @@ public class CmsFileTable extends A_CmsCustomComponent {
         });
 
         m_menu.setAsTableContextMenu(m_fileTable);
-
     }
 
     /**
@@ -248,6 +251,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
 
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         m_container.removeAllItems();
+        m_container.removeAllContainerFilters();
         CmsResourceUtil resUtil = new CmsResourceUtil(cms);
         for (CmsResource resource : resources) {
             try {
@@ -282,6 +286,24 @@ public class CmsFileTable extends A_CmsCustomComponent {
                 e.printStackTrace();
                 Notification.show(e.getMessage());
             }
+        }
+    }
+
+    /**
+     * Filters the displayed resources.<p>
+     * Only resources where either the resource name, the title or the nav-text contains the given substring are shown.<p>
+     *
+     * @param search the search term
+     */
+    public void filterTable(String search) {
+
+        m_container.removeAllContainerFilters();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(search)) {
+            m_container.addContainerFilter(
+                new Or(
+                    new SimpleStringFilter(PROPERTY_RESOURCE_NAME, search, true, false),
+                    new SimpleStringFilter(PROPERTY_NAVIGATION_TEXT, search, true, false),
+                    new SimpleStringFilter(PROPERTY_TITLE, search, true, false)));
         }
     }
 

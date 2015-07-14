@@ -56,19 +56,23 @@ import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener;
 import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.CollapseEvent;
 import com.vaadin.ui.Tree.CollapseListener;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * The file explorer app.<p>
@@ -121,13 +125,16 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
     private Tree m_fileTree;
 
     /** The info component. */
-    private VerticalLayout m_info;
+    private AbsoluteLayout m_info;
 
     /** The info path. */
     private Label m_infoPath;
 
     /** The info title. */
     private Label m_infoTitle;
+
+    /** The search field. */
+    private TextField m_searchField;
 
     /**
      * Constructor.<p>
@@ -168,15 +175,33 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
             }
         });
 
-        m_info = new VerticalLayout();
-        m_info.setMargin(false);
+        m_info = new AbsoluteLayout();
         m_info.setSizeFull();
         m_infoTitle = new Label();
         m_infoTitle.addStyleName("h4");
-        m_info.addComponent(m_infoTitle);
+        m_info.addComponent(m_infoTitle, "top:3px; left:0px;");
         m_infoPath = new Label();
         m_infoPath.addStyleName("tiny");
-        m_info.addComponent(m_infoPath);
+        m_info.addComponent(m_infoPath, "bottom:3px; left:0px;");
+        m_searchField = new TextField();
+        m_searchField.setIcon(FontAwesome.SEARCH);
+        m_searchField.setInputPrompt("Search");
+        m_searchField.addStyleName("small");
+        m_searchField.addStyleName("inline-icon");
+        m_searchField.addTextChangeListener(new TextChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void textChange(TextChangeEvent event) {
+
+                filterTable(event.getText());
+
+            }
+        });
+        // requires a wrapper to work around issue with the inline icon positioning
+        CssLayout wrapper = new CssLayout();
+        wrapper.addComponent(m_searchField);
+        m_info.addComponent(wrapper, "top:6px; right:15px;");
     }
 
     /**
@@ -218,6 +243,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
     public void populateFileTable(String sitePath) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
+        m_searchField.clear();
         try {
             List<CmsResource> folderResources = cms.readResources(sitePath, FILES_N_FOLDERS, false);
             m_fileTable.fillTable(cms, folderResources);
@@ -328,14 +354,23 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
     protected void readFolder(CmsUUID folderId) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
+        m_searchField.clear();
         try {
             CmsResource folder = cms.readResource(folderId, FOLDERS);
             CmsProperty titleProp = cms.readPropertyObject(folder, CmsPropertyDefinition.PROPERTY_TITLE, false);
             String title = titleProp.isNullProperty() ? "" : titleProp.getValue();
             m_infoTitle.setValue(title);
             m_infoPath.setValue(cms.getSitePath(folder));
-            List<CmsResource> folderResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
-            m_fileTable.fillTable(cms, folderResources);
+            List<CmsResource> childResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
+            m_fileTable.fillTable(cms, childResources);
+            boolean hasFolderChild = false;
+            for (CmsResource child : childResources) {
+                if (child.isFolder()) {
+                    hasFolderChild = true;
+                    break;
+                }
+            }
+            ((HierarchicalContainer)m_fileTree.getContainerDataSource()).setChildrenAllowed(folderId, hasFolderChild);
 
             String sitePath = folder.getRootPath().equals(cms.getRequestContext().getSiteRoot() + "/")
             ? ""
@@ -363,6 +398,10 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
         try {
             CmsResource parent = cms.readResource(parentId, FOLDERS);
             List<CmsResource> folderResources = cms.readResources(cms.getSitePath(parent), FOLDERS, false);
+
+            // sets the parent to leaf mode, in case no child folders are present
+            container.setChildrenAllowed(parentId, !folderResources.isEmpty());
+
             for (CmsResource resource : folderResources) {
                 Item resourceItem = container.getItem(resource.getStructureId());
                 if (resourceItem == null) {
@@ -371,10 +410,21 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
                 resourceItem.getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).setValue(resource.getName());
                 container.setParent(resource.getStructureId(), parentId);
             }
+            m_fileTree.markAsDirtyRecursive();
         } catch (CmsException e) {
             // TODO: Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Filters the file table.<p>
+     *
+     * @param search the search term
+     */
+    void filterTable(String search) {
+
+        m_fileTable.filterTable(search);
     }
 
     /**
