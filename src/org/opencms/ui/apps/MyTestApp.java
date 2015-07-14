@@ -147,8 +147,7 @@ public class MyTestApp extends VerticalLayout implements I_CmsWorkplaceApp {
     public void initUI(I_CmsAppUIContext context) {
 
         context.setAppContent(this);
-        VerticalLayout info = new VerticalLayout();
-        info.setMargin(false);
+        CssLayout info = new CssLayout();
         info.setSizeFull();
         Label infoTitle = new Label("This is a demo app");
         infoTitle.addStyleName("h4");

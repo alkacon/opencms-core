@@ -46,22 +46,40 @@ import com.google.common.collect.ComparisonChain;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
-import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.declarative.Design;
 
 /**
  * The workplace toolbar.<p>
  */
-public class CmsToolBar extends CssLayout {
+public class CmsToolBar extends CustomLayout {
+
+    /** Template location name. */
+    private static final String LOCATION_APP_INDICATOR = "appIndicator";
+
+    /** Template location name. */
+    private static final String LOCATION_INDICATOR_SMALL = "indicatorSmall";
+
+    /** Template location name. */
+    private static final String LOCATION_INFO_CONTAINER = "infoContainer";
+
+    /** Template location name. */
+    private static final String LOCATION_INFO_ICON = "infoIcon";
+
+    /** Template location name. */
+    private static final String LOCATION_ITEMS_LEFT = "itemsLeft";
+
+    /** Template location name. */
+    private static final String LOCATION_ITEMS_RIGHT = "itemsRight";
+
+    /** Template location name. */
+    private static final String LOCATION_LOGO = "logo";
 
     /** The serial version id. */
     private static final long serialVersionUID = -4551194983054069395L;
@@ -72,8 +90,8 @@ public class CmsToolBar extends CssLayout {
     /** The small app indicator label, visible only in the small toolbar variant. */
     private Label m_appIndicatorSmall;
 
-    /** The app info container. */
-    private Panel m_appInfoContainer;
+    /** The app info icon. */
+    private Label m_infoIcon;
 
     /** Toolbar items left. */
     private HorizontalLayout m_itemsLeft;
@@ -89,7 +107,20 @@ public class CmsToolBar extends CssLayout {
      */
     public CmsToolBar() {
 
-        Design.read("ToolBar.html", this);
+        super("ToolBar");
+        m_itemsLeft = new HorizontalLayout();
+        addComponent(m_itemsLeft, LOCATION_ITEMS_LEFT);
+        m_itemsRight = new HorizontalLayout();
+        addComponent(m_itemsRight, LOCATION_ITEMS_RIGHT);
+        m_appIndicator = new Label();
+        addComponent(m_appIndicator, LOCATION_APP_INDICATOR);
+        m_appIndicatorSmall = new Label();
+        addComponent(m_appIndicatorSmall, LOCATION_INDICATOR_SMALL);
+        m_logo = new Image();
+        addComponent(m_logo, LOCATION_LOGO);
+        m_infoIcon = new Label();
+        addComponent(m_infoIcon, LOCATION_INFO_ICON);
+
         m_logo.setSource(new ExternalResource(CmsWorkplace.getResourceUri("commons/login_logo.png")));
         m_itemsRight.addComponent(createButton(FontOpenCms.CONTEXT_MENU));
         m_itemsRight.addComponent(createDropDown());
@@ -155,7 +186,7 @@ public class CmsToolBar extends CssLayout {
      */
     public void setAppIcon(Resource icon) {
 
-        m_appInfoContainer.setIcon(icon);
+        m_infoIcon.setIcon(icon);
         m_appIndicatorSmall.setIcon(icon);
     }
 
@@ -167,11 +198,9 @@ public class CmsToolBar extends CssLayout {
     public void setAppInfo(Component infoComponent) {
 
         if (infoComponent == null) {
-            if (m_appInfoContainer.getContent() != null) {
-                AbstractSingleComponentContainer.removeFromParent(m_appInfoContainer.getContent());
-            }
+            removeComponent(LOCATION_INFO_CONTAINER);
         } else {
-            m_appInfoContainer.setContent(infoComponent);
+            addComponent(infoComponent, LOCATION_INFO_CONTAINER);
         }
     }
 
