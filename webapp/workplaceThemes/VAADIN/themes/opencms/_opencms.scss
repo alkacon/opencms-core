@@ -12,6 +12,18 @@
   	background: #ffffff;
   }
   
+  .state-deleted, .v-table-row-state-deleted, .v-tree-node-caption-state-deleted{
+  	text-decoration: line-through;
+  }
+  
+  .state-changed, .v-table-row-state-changed, .v-tree-node-caption-state-changed{
+  	color: $red;
+  }
+  
+  .state-new, .v-table-row-state-new, .v-tree-node-caption-state-new{
+  	color: $blue;
+  }
+  
   .opencms-responsive[width-range~="1241px-"]{
   	/* big screen styles */
   	

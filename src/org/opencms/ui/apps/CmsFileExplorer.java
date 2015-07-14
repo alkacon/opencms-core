@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -73,6 +74,7 @@ import com.vaadin.ui.Tree.CollapseEvent;
 import com.vaadin.ui.Tree.CollapseListener;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
+import com.vaadin.ui.Tree.ItemStyleGenerator;
 
 /**
  * The file explorer app.<p>
@@ -175,6 +177,16 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
             }
         });
 
+        m_fileTree.setItemStyleGenerator(new ItemStyleGenerator() {
+
+            private static final long serialVersionUID = 1L;
+
+            public String getStyle(Tree source, Object itemId) {
+
+                return CmsFileTable.getStateStyle(source.getContainerDataSource().getItem(itemId));
+            }
+        });
+
         m_info = new AbsoluteLayout();
         m_info.setSizeFull();
         m_infoTitle = new Label();
@@ -259,17 +271,14 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
 
         HierarchicalContainer container = new HierarchicalContainer();
         container.addContainerProperty(CmsFileTable.PROPERTY_RESOURCE_NAME, String.class, null);
+        container.addContainerProperty(CmsFileTable.PROPERTY_STATE, CmsResourceState.class, null);
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
             CmsResource siteRoot = cms.readResource("/", FOLDERS);
-            Item rootItem = container.addItem(siteRoot.getStructureId());
-            // use the root path as name for site root folder
-            rootItem.getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).setValue(siteRoot.getRootPath());
+            addTreeItem(siteRoot, null, container);
             List<CmsResource> folderResources = cms.readResources("/", FOLDERS, false);
             for (CmsResource resource : folderResources) {
-                Item resourceItem = container.addItem(resource.getStructureId());
-                resourceItem.getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).setValue(resource.getName());
-                container.setParent(resource.getStructureId(), siteRoot.getStructureId());
+                addTreeItem(resource, siteRoot.getStructureId(), container);
             }
             m_fileTree.setContainerDataSource(container);
             m_fileTree.expandItem(siteRoot.getStructureId());
@@ -403,12 +412,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
             container.setChildrenAllowed(parentId, !folderResources.isEmpty());
 
             for (CmsResource resource : folderResources) {
-                Item resourceItem = container.getItem(resource.getStructureId());
-                if (resourceItem == null) {
-                    resourceItem = container.addItem(resource.getStructureId());
-                }
-                resourceItem.getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).setValue(resource.getName());
-                container.setParent(resource.getStructureId(), parentId);
+                addTreeItem(resource, parentId, container);
             }
             m_fileTree.markAsDirtyRecursive();
         } catch (CmsException e) {
@@ -425,6 +429,28 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
     void filterTable(String search) {
 
         m_fileTable.filterTable(search);
+    }
+
+    /**
+     * Adds an item to the folder tree.<p>
+     *
+     * @param resource the folder resource
+     * @param parentId the parent folder id
+     * @param container the data container
+     */
+    private void addTreeItem(CmsResource resource, CmsUUID parentId, HierarchicalContainer container) {
+
+        Item resourceItem = container.getItem(resource.getStructureId());
+        if (resourceItem == null) {
+            resourceItem = container.addItem(resource.getStructureId());
+        }
+        // use the root path as name in case of the root item
+        resourceItem.getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).setValue(
+            parentId == null ? resource.getRootPath() : resource.getName());
+        resourceItem.getItemProperty(CmsFileTable.PROPERTY_STATE).setValue(resource.getState());
+        if (parentId != null) {
+            container.setParent(resource.getStructureId(), parentId);
+        }
     }
 
     /**

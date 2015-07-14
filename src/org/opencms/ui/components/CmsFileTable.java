@@ -27,6 +27,7 @@
 
 package org.opencms.ui.components;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
@@ -98,6 +99,9 @@ public class CmsFileTable extends A_CmsCustomComponent {
     public static final String PROPERTY_SIZE = "size";
 
     /** File table property name. */
+    public static final String PROPERTY_STATE_NAME = "stateName";
+
+    /** File table property name. */
     public static final String PROPERTY_STATE = "state";
 
     /** File table property name. */
@@ -119,7 +123,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
     private static final long serialVersionUID = 5460048685141699277L;
 
     /** The resource data container. */
-    private IndexedContainer m_container;
+    IndexedContainer m_container;
 
     /** The table used to display the resource data. */
     private Table m_fileTable;
@@ -150,7 +154,8 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_container.addContainerProperty(PROPERTY_USER_CREATED, String.class, null);
         m_container.addContainerProperty(PROPERTY_DATE_RELEASED, String.class, "-");
         m_container.addContainerProperty(PROPERTY_DATE_EXPIRED, String.class, "-");
-        m_container.addContainerProperty(PROPERTY_STATE, String.class, null);
+        m_container.addContainerProperty(PROPERTY_STATE_NAME, String.class, null);
+        m_container.addContainerProperty(PROPERTY_STATE, CmsResourceState.class, null);
         m_container.addContainerProperty(PROPERTY_USER_LOCKED, String.class, null);
         m_fileTable = new Table();
         setCompositionRoot(m_fileTable);
@@ -176,7 +181,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
             PROPERTY_USER_CREATED,
             PROPERTY_DATE_RELEASED,
             PROPERTY_DATE_EXPIRED,
-            PROPERTY_STATE,
+            PROPERTY_STATE_NAME,
             PROPERTY_USER_LOCKED);
 
         messages = org.opencms.workplace.explorer.Messages.get().getBundle(CmsAppWorkplaceUi.get().getLocale());
@@ -206,7 +211,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_fileTable.setColumnCollapsed(PROPERTY_USER_MODIFIED, true);
         m_fileTable.setColumnCollapsed(PROPERTY_DATE_CREATED, true);
         m_fileTable.setColumnCollapsed(PROPERTY_USER_CREATED, true);
-        m_fileTable.setColumnCollapsed(PROPERTY_STATE, true);
+        m_fileTable.setColumnCollapsed(PROPERTY_STATE_NAME, true);
         m_fileTable.setColumnCollapsed(PROPERTY_USER_LOCKED, true);
 
         m_fileTable.addItemClickListener(new ItemClickListener() {
@@ -238,7 +243,42 @@ public class CmsFileTable extends A_CmsCustomComponent {
             }
         });
 
+        m_fileTable.setCellStyleGenerator(new Table.CellStyleGenerator() {
+
+            private static final long serialVersionUID = 1L;
+
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+
+                return getStateStyle(m_container.getItem(itemId));
+            }
+        });
+
         m_menu.setAsTableContextMenu(m_fileTable);
+    }
+
+    /**
+     * Returns the resource state specific style name.<p>
+     *
+     * @param resourceItem the resource item
+     *
+     * @return the style name
+     */
+    public static String getStateStyle(Item resourceItem) {
+
+        String result = "";
+        if (resourceItem != null) {
+            CmsResourceState state = (CmsResourceState)resourceItem.getItemProperty(PROPERTY_STATE).getValue();
+            if (state != null) {
+                if (state.isDeleted()) {
+                    result = "state-deleted";
+                } else if (state.isNew()) {
+                    result = "state-new";
+                } else if (state.isChanged()) {
+                    result = "state-changed";
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -280,7 +320,8 @@ public class CmsFileTable extends A_CmsCustomComponent {
                 resourceItem.getItemProperty(PROPERTY_USER_CREATED).setValue(resUtil.getUserCreated());
                 resourceItem.getItemProperty(PROPERTY_DATE_RELEASED).setValue(resUtil.getDateReleased());
                 resourceItem.getItemProperty(PROPERTY_DATE_EXPIRED).setValue(resUtil.getDateExpired());
-                resourceItem.getItemProperty(PROPERTY_STATE).setValue(resUtil.getStateName());
+                resourceItem.getItemProperty(PROPERTY_STATE_NAME).setValue(resUtil.getStateName());
+                resourceItem.getItemProperty(PROPERTY_STATE).setValue(resource.getState());
                 resourceItem.getItemProperty(PROPERTY_USER_LOCKED).setValue(resUtil.getLockedByName());
             } catch (CmsException e) {
                 e.printStackTrace();
