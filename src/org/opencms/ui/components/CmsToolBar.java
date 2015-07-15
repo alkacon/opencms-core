@@ -36,6 +36,7 @@ import org.opencms.ui.apps.CmsDefaultAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.workplace.CmsWorkplace;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -104,10 +105,14 @@ public class CmsToolBar extends CustomLayout {
 
     /**
      * Constructor.<p>
+     *
+     * @throws IOException in case the layout is not available
      */
-    public CmsToolBar() {
+    public CmsToolBar()
+    throws IOException {
 
-        super("ToolBar");
+        super(CmsToolBar.class.getClassLoader().getResourceAsStream("VAADIN/themes/opencms/layouts/ToolBar.html"));
+
         m_itemsLeft = new HorizontalLayout();
         addComponent(m_itemsLeft, LOCATION_ITEMS_LEFT);
         m_itemsRight = new HorizontalLayout();
