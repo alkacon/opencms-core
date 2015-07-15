@@ -181,6 +181,11 @@ task copyDeps(type: Copy) {
     into "${buildDir}/deps"
 }
 
+task copyCompileDeps(type: Copy) {
+	from configurations.compile
+	into "${buildDir}/deps"
+}
+
 task componentsJar(type: Jar) {
     from sourceSets.components.output
     baseName 'opencms-components'
