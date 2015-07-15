@@ -44,6 +44,8 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -101,6 +103,85 @@ public class CmsFileTable extends A_CmsCustomComponent {
         }
     }
 
+    /**
+     * Stores the file table state.<p>
+     */
+    public static class FileTableState implements Serializable {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /** The collapsed column ids. */
+        private List<String> m_collapsedColumns;
+
+        /** The sort order. */
+        private boolean m_sortAscending;
+
+        /** The sort column id. */
+        private String m_sortColumnId;
+
+        /**
+         * Returns the collapsed column ids.<p>
+         *
+         * @return the collapsed column ids
+         */
+        public List<String> getCollapsedColumns() {
+
+            return m_collapsedColumns;
+        }
+
+        /**
+         * Gets the sort column id.<p>
+         *
+         * @return the sort column id
+         */
+        public String getSortColumnId() {
+
+            return m_sortColumnId;
+        }
+
+        /**
+         * Returns the sort order.<p>
+         *
+         * @return the sort order
+         */
+        public boolean isSortAscending() {
+
+            return m_sortAscending;
+        }
+
+        /**
+         * Sets the collapsed columns.<p>
+         *
+         * @param collapsedColumns the collapsed columns
+         */
+        public void setCollapsedColumns(List<String> collapsedColumns) {
+
+            m_collapsedColumns = collapsedColumns;
+        }
+
+        /**
+         * Sets the sort order.<p>
+         *
+         * @param sortAscending the sort order
+         */
+        public void setSortAscending(boolean sortAscending) {
+
+            m_sortAscending = sortAscending;
+        }
+
+        /**
+         * Sets the sort column
+         *
+         * @param sortColumnId the sort column
+         */
+        public void setSortColumnId(String sortColumnId) {
+
+            m_sortColumnId = sortColumnId;
+        }
+
+    }
+
     /** File table property name. */
     public static final String PROPERTY_DATE_CREATED = "dateCreated";
 
@@ -112,6 +193,9 @@ public class CmsFileTable extends A_CmsCustomComponent {
 
     /** File table property name. */
     public static final String PROPERTY_DATE_RELEASED = "dateReleased";
+
+    /** File table property name. */
+    public static final String PROPERTY_IS_FOLDER = "isFolder";
 
     /** File table property name. */
     public static final String PROPERTY_NAVIGATION_TEXT = "navigationText";
@@ -126,16 +210,13 @@ public class CmsFileTable extends A_CmsCustomComponent {
     public static final String PROPERTY_RESOURCE_TYPE = "resourceType";
 
     /** File table property name. */
-    public static final String PROPERTY_IS_FOLDER = "isFolder";
-
-    /** File table property name. */
     public static final String PROPERTY_SIZE = "size";
 
     /** File table property name. */
-    public static final String PROPERTY_STATE_NAME = "stateName";
+    public static final String PROPERTY_STATE = "state";
 
     /** File table property name. */
-    public static final String PROPERTY_STATE = "state";
+    public static final String PROPERTY_STATE_NAME = "stateName";
 
     /** File table property name. */
     public static final String PROPERTY_TITLE = "title";
@@ -241,6 +322,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
 
         m_fileTable.setRowHeaderMode(RowHeaderMode.ICON_ONLY);
         m_fileTable.setItemIconPropertyId(PROPERTY_TYPE_ICON);
+        m_fileTable.setSortContainerPropertyId(PROPERTY_RESOURCE_NAME);
 
         m_fileTable.setColumnCollapsed(PROPERTY_NAVIGATION_TEXT, true);
         m_fileTable.setColumnCollapsed(PROPERTY_PERMISSIONS, true);
@@ -375,6 +457,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
                 Notification.show(e.getMessage());
             }
         }
+        m_fileTable.sort();
     }
 
     /**
@@ -406,6 +489,28 @@ public class CmsFileTable extends A_CmsCustomComponent {
         return (Set<CmsUUID>)m_fileTable.getValue();
     }
 
+    /**
+     * Returns the current table state.<p>
+     *
+     * @return the table state
+     */
+    public FileTableState getTableState() {
+
+        FileTableState fileTableState = new FileTableState();
+
+        fileTableState.setSortAscending(m_fileTable.isSortAscending());
+        fileTableState.setSortColumnId((String)m_fileTable.getSortContainerPropertyId());
+        List<String> collapsedCollumns = new ArrayList<String>();
+        Object[] visibleCols = m_fileTable.getVisibleColumns();
+        for (int i = 0; i < visibleCols.length; i++) {
+            if (m_fileTable.isColumnCollapsed(visibleCols[i])) {
+                collapsedCollumns.add((String)visibleCols[i]);
+            }
+        }
+        fileTableState.setCollapsedColumns(collapsedCollumns);
+        return fileTableState;
+    }
+
     public Set<CmsUUID> getValue() {
 
         return (Set<CmsUUID>)m_fileTable.getValue();
@@ -414,6 +519,23 @@ public class CmsFileTable extends A_CmsCustomComponent {
     public void setMenuBuilder(I_CmsContextMenuBuilder builder) {
 
         m_menuBuilder = builder;
+    }
+
+    /**
+     * Sets the table state.<p>
+     *
+     * @param state the table state
+     */
+    public void setTableState(FileTableState state) {
+
+        if (state != null) {
+            m_fileTable.setSortContainerPropertyId(state.getSortColumnId());
+            m_fileTable.setSortAscending(state.isSortAscending());
+            Object[] visibleCols = m_fileTable.getVisibleColumns();
+            for (int i = 0; i < visibleCols.length; i++) {
+                m_fileTable.setColumnCollapsed(visibleCols[i], state.getCollapsedColumns().contains(visibleCols[i]));
+            }
+        }
     }
 
     List<CmsResource> getSelectedItems() {

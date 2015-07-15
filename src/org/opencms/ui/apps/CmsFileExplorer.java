@@ -61,6 +61,7 @@ import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
@@ -76,11 +77,12 @@ import com.vaadin.ui.Tree.CollapseListener;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
 import com.vaadin.ui.Tree.ItemStyleGenerator;
+import com.vaadin.ui.UI;
 
 /**
  * The file explorer app.<p>
  */
-public class CmsFileExplorer implements I_CmsWorkplaceApp {
+public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener {
 
     /**
      * Context menu builder for explorer.<p>
@@ -105,6 +107,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
 
         }
     }
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /** The files and folder resource filter. */
     private static final CmsResourceFilter FILES_N_FOLDERS = CmsResourceFilter.ONLY_VISIBLE;
@@ -239,6 +244,24 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
     }
 
     /**
+     * @see com.vaadin.navigator.ViewChangeListener#afterViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+     */
+    public void afterViewChange(ViewChangeEvent event) {
+
+        // nothing to do
+
+    }
+
+    /**
+     * @see com.vaadin.navigator.ViewChangeListener#beforeViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+     */
+    public boolean beforeViewChange(ViewChangeEvent event) {
+
+        UI.getCurrent().getSession().setAttribute(CmsFileTable.FileTableState.class, m_fileTable.getTableState());
+        return true;
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
      */
     public void initUI(I_CmsAppUIContext context) {
@@ -247,6 +270,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
         HorizontalSplitPanel sp = new HorizontalSplitPanel();
         sp.setSizeFull();
         sp.setFirstComponent(m_fileTree);
+
+        m_fileTable.setTableState(UI.getCurrent().getSession().getAttribute(CmsFileTable.FileTableState.class));
         sp.setSecondComponent(m_fileTable);
         sp.setSplitPosition(400 - 1, Unit.PIXELS);
         context.setAppContent(sp);

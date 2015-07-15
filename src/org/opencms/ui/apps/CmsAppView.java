@@ -33,14 +33,14 @@ import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 import org.opencms.ui.components.CmsAppViewLayout;
 
 import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
 
 /**
  * Displays the selected app.<p>
  */
-public class CmsAppView implements View, I_CmsComponentFactory {
+public class CmsAppView implements View, ViewChangeListener, I_CmsComponentFactory {
 
     /** The serial version id. */
     private static final long serialVersionUID = -8128528863875050216L;
@@ -70,6 +70,27 @@ public class CmsAppView implements View, I_CmsComponentFactory {
 
         CmsAppWorkplaceUi ui = (CmsAppWorkplaceUi)A_CmsUI.get();
         return ui;
+    }
+
+    /**
+     * @see com.vaadin.navigator.ViewChangeListener#afterViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+     */
+    public void afterViewChange(ViewChangeEvent event) {
+
+        if (m_app instanceof ViewChangeListener) {
+            ((ViewChangeListener)m_app).afterViewChange(event);
+        }
+    }
+
+    /**
+     * @see com.vaadin.navigator.ViewChangeListener#beforeViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+     */
+    public boolean beforeViewChange(ViewChangeEvent event) {
+
+        if (m_app instanceof ViewChangeListener) {
+            return ((ViewChangeListener)m_app).beforeViewChange(event);
+        }
+        return true;
     }
 
     /**

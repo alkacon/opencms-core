@@ -38,6 +38,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.NavigationStateManager;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.navigator.ViewDisplay;
 import com.vaadin.navigator.ViewProvider;
 import com.vaadin.server.ExternalResource;
@@ -51,7 +52,7 @@ import com.vaadin.ui.Component;
  * The workplace ui.<p>
  */
 @Theme("opencms")
-public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvider {
+public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvider, ViewChangeListener {
 
     /** The home view path. */
     public static final String VIEW_HOME = "home";
@@ -61,6 +62,9 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
 
     /** The navigation state manager. */
     private NavigationStateManager m_navigationStateManager;
+
+    /** The current view in case it implements view change listener. */
+    private ViewChangeListener m_viewChangeListener;
 
     /**
      * Constructor.<p>
@@ -77,6 +81,27 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
     public static CmsAppWorkplaceUi get() {
 
         return (CmsAppWorkplaceUi)A_CmsUI.get();
+    }
+
+    /**
+     * @see com.vaadin.navigator.ViewChangeListener#afterViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+     */
+    public void afterViewChange(ViewChangeEvent event) {
+
+        if (m_viewChangeListener != null) {
+            m_viewChangeListener.afterViewChange(event);
+        }
+    }
+
+    /**
+     * @see com.vaadin.navigator.ViewChangeListener#beforeViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+     */
+    public boolean beforeViewChange(ViewChangeEvent event) {
+
+        if (m_viewChangeListener != null) {
+            return m_viewChangeListener.beforeViewChange(event);
+        }
+        return true;
     }
 
     /**
@@ -152,11 +177,16 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
      */
     public void showView(View view) {
 
+        // remove current component form the view change listeners
+        m_viewChangeListener = null;
         Component component = null;
         if (view instanceof I_CmsComponentFactory) {
             component = ((I_CmsComponentFactory)view).createComponent();
         } else if (view instanceof Component) {
             component = (Component)view;
+        }
+        if (view instanceof ViewChangeListener) {
+            m_viewChangeListener = (ViewChangeListener)view;
         }
         if (component != null) {
             setContent(component);
@@ -164,8 +194,8 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
     }
 
     /**
-     * @see com.vaadin.ui.UI#init(com.vaadin.server.VaadinRequest)
-     */
+    * @see com.vaadin.ui.UI#init(com.vaadin.server.VaadinRequest)
+    */
     @Override
     protected void init(VaadinRequest request) {
 
@@ -174,6 +204,7 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
         m_navigationStateManager = new Navigator.UriFragmentManager(getPage());
         Navigator navigator = new Navigator(this, m_navigationStateManager, this);
         navigator.addProvider(this);
+        setNavigator(navigator);
         String fragment = getPage().getUriFragment();
         Page.getCurrent().addBrowserWindowResizeListener(new BrowserWindowResizeListener() {
 
@@ -184,6 +215,8 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
                 markAsDirtyRecursive();
             }
         });
+
+        navigator.addViewChangeListener(this);
 
         getPage().getStyles().add(new ExternalResource("/opencms/VAADIN/themes/contextmenu/contextmenu.css"));
 
