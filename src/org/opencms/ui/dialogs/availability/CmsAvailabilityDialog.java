@@ -37,12 +37,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.components.CmsResourceInfo;
 
 import java.util.Date;
 import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -51,11 +48,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DateField;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.VerticalLayout;
 
 public class CmsAvailabilityDialog extends CssLayout {
@@ -67,8 +61,6 @@ public class CmsAvailabilityDialog extends CssLayout {
     private CheckBox m_resetExpired;
     private CheckBox m_subresourceModificationField;
     private Button m_okButton;
-
-    private ComponentContainer m_resourceInfoBox;
 
     private Button m_cancelButton;
 
@@ -95,11 +87,6 @@ public class CmsAvailabilityDialog extends CssLayout {
         }
         boolean hasFolders = false;
         for (CmsResource resource : resources) {
-            try {
-                addResourceInfo(resource);
-            } catch (CmsException e) {
-                Notification.show(e.getLocalizedMessage(), Type.ERROR_MESSAGE);
-            }
             if (resource.isFolder()) {
                 hasFolders = true;
             }
@@ -148,15 +135,6 @@ public class CmsAvailabilityDialog extends CssLayout {
             changeAvailability(resource, released, resetReleased, expired, resetExpired, modifySubresources);
         }
 
-    }
-
-    private void addResourceInfo(CmsResource resource) throws CmsException {
-
-        CmsResourceInfo resourceInfo = CmsResourceInfo.buildFromResource(
-            m_dialogContext.getCms(),
-            resource,
-            getLocale());
-        m_resourceInfoBox.addComponent(resourceInfo);
     }
 
     private void changeAvailability(

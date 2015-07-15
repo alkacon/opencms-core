@@ -39,16 +39,20 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.components.CmsContextMenuDialogPanel;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
+import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -66,6 +70,7 @@ import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
@@ -81,6 +86,7 @@ import com.vaadin.ui.Tree.CollapseListener;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
 import com.vaadin.ui.Tree.ItemStyleGenerator;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * The file explorer app.<p>
@@ -100,11 +106,42 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener {
                 public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
 
                     I_CmsDialogContext context = createDialogContext();
+                    List<CmsResource> resources = context.getResources();
+
                     CmsAvailabilityDialog availability = new CmsAvailabilityDialog(context);
+                    CmsContextMenuDialogPanel dialogPanel = new CmsContextMenuDialogPanel();
+                    try {
+                        if (resources.size() == 1) {
+                            CmsResourceUtil resUtil = new CmsResourceUtil(context.getCms(), resources.get(0));
+                            final CmsResourceUtil resUtil1 = resUtil;
+                            final Locale locale = Locale.ENGLISH;
+                            m_appContext.setAppIcon(new ExternalResource(resUtil1.getBigIconPath()));
+                            m_appContext.setAppInfo(new VerticalLayout() {
+
+                                {
+                                    addComponent(new Label(resUtil1.getGalleryTitle(locale)));
+                                    addComponent(new Label(resUtil1.getGalleryDescription(locale)));
+                                }
+                            });
+                        } else {
+                            for (CmsResource resource : resources) {
+                                CmsResourceUtil resUtil = new CmsResourceUtil(context.getCms(), resource);
+                                Locale locale = Locale.ENGLISH;
+                                dialogPanel.addResourceInfo(
+                                    new CmsResourceInfo(
+                                        resUtil.getGalleryTitle(locale),
+                                        resUtil.getGalleryDescription(locale),
+                                        resUtil.getBigIconPath()));
+                            }
+                        }
+                    } catch (Exception e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                    dialogPanel.setContent(availability);
                     m_savedExplorerState = CmsAppWorkplaceUi.get().getNavigator().getState();
                     CmsAppWorkplaceUi.get().changeCurrentAppState(
                         CmsAppWorkplaceUi.get().getAppState() + "#availability");
-                    m_appContext.setAppContent(availability);
+                    m_appContext.setAppContent(dialogPanel);
                 }
             });
 

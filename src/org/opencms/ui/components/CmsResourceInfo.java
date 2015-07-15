@@ -27,17 +27,7 @@
 
 package org.opencms.ui.components;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-import org.opencms.search.galleries.CmsGallerySearch;
-import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-
-import java.util.Locale;
 
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.CssLayout;
@@ -51,32 +41,15 @@ public class CmsResourceInfo extends CssLayout {
     private Label m_bottomText;
     private Image m_icon;
 
-    public CmsResourceInfo(String title, String path, String iconPath) {
+    public CmsResourceInfo(String top, String bottom, String iconPath) {
         super();
         CmsVaadinUtils.readAndLocalizeDesign(this, null, null);
-        m_topText.setValue(title);
+        m_topText.setValue(top);
         m_topText.addStyleName(ValoTheme.LABEL_BOLD);
         m_topText.addStyleName(ValoTheme.LABEL_TINY);
         m_bottomText.addStyleName(ValoTheme.LABEL_TINY);
-        m_bottomText.setValue(path);
+        m_bottomText.setValue(bottom);
         m_icon.setSource(new ExternalResource(iconPath));
-    }
-
-    public static CmsResourceInfo buildFromResource(CmsObject cms, CmsResource resource, Locale locale)
-    throws CmsException {
-
-        CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(cms, resource.getStructureId(), locale);
-        String title = searchResult.getTitle();
-        String path = searchResult.getPath();
-        String typeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
-        CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
-        String typeIcon = "";
-        if (explorerType != null) {
-            typeIcon = CmsWorkplace.getResourceUri(
-                CmsWorkplace.RES_PATH_FILETYPES + explorerType.getBigIconIfAvailable());
-        }
-        return new CmsResourceInfo(title, path, typeIcon);
-
     }
 
 }

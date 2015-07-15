@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="package-mapping" content="o:org.opencms.ui.components" />
+	</head>
+	<body>
+  		<v-css-layout size-full>
+  			<v-vertical-layout size-full>
+  				<v-vertical-layout width="70%" height="100%" :center margin spacing>
+  					<v-panel width="100%" _id="m_resourceInfoPanel" scrollable="true" caption="Resources" >
+  						<v-vertical-layout margin>
+	  						<o-cms-max-height max-height="200">
+	  							<v-vertical-layout _id="m_resourceInfos" />
+	  						</o-cms-max-height>
+  						</v-vertical-layout>
+  					</v-panel>
+  					<v-panel :expand="1" size-full>
+  						<v-vertical-layout _id="m_content" margin />
+  					</v-panel> 
+  				</v-vertical-layout>
+  			</v-vertical-layout>
+		</v-css-layout>
+	</body>
+</html>

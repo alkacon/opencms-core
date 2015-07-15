@@ -43,6 +43,8 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.galleries.CmsGallerySearch;
+import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
@@ -56,8 +58,11 @@ import org.opencms.workplace.commons.CmsTouch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Maps;
 
 /**
  * Provides {@link CmsResource} utility functions.<p>
@@ -223,6 +228,8 @@ public final class CmsResourceUtil {
     /** The current site mode. */
     private CmsResourceUtilSiteMode m_siteMode = SITE_MODE_CURRENT;
 
+    private Map<Locale, CmsGallerySearchResult> m_searchResultMap = Maps.newHashMap();
+
     /**
      * Creates a new {@link CmsResourceUtil} object.<p>
      *
@@ -267,6 +274,23 @@ public final class CmsResourceUtil {
     public int getAbbrevLength() {
 
         return m_abbrevLength;
+    }
+
+    /**
+     * Gets the full path for the big icon.<p>
+     * @return
+     */
+    public String getBigIconPath() {
+
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(m_resource);
+        CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+        String typeIcon = "";
+        if (explorerType != null) {
+            typeIcon = CmsWorkplace.getResourceUri(
+                CmsWorkplace.RES_PATH_FILETYPES + explorerType.getBigIconIfAvailable());
+        }
+        return typeIcon;
+
     }
 
     /**
@@ -324,6 +348,16 @@ public final class CmsResourceUtil {
             }
         }
         return path;
+    }
+
+    public String getGalleryDescription(Locale locale) {
+
+        return getSearchResult(locale).getDescription();
+    }
+
+    public String getGalleryTitle(Locale locale) {
+
+        return getSearchResult(locale).getTitle();
     }
 
     /**
@@ -859,6 +893,20 @@ public final class CmsResourceUtil {
     public String getResourceTypeName() {
 
         return getResourceType().getTypeName();
+    }
+
+    public CmsGallerySearchResult getSearchResult(Locale locale) {
+
+        if (!m_searchResultMap.containsKey(locale)) {
+            CmsGallerySearchResult sResult;
+            try {
+                sResult = CmsGallerySearch.searchById(m_cms, m_resource.getStructureId(), locale);
+                m_searchResultMap.put(locale, sResult);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return m_searchResultMap.get(locale);
     }
 
     /**

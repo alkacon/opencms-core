@@ -6,34 +6,27 @@
   </head>
   <body>
   	<v-css-layout>
- 		<v-vertical-layout>
-	  		<v-panel :middle :center width="800px">
-		  		<v-vertical-layout margin spacing>
-		  			<v-vertical-layout _id="m_resourceInfoBox">
-		  				
-		  			</v-vertical-layout>
-		  			<v-form-layout>
+  		<v-vertical-layout>
+	  			<v-form-layout>
 
-		  				<v-horizontal-layout caption="%(key.GUI_INPUT_DATERELEASED_0)" spacing>
-		  					<o-cms-date-field _id="m_releasedField" />
-		  					<v-check-box caption="%(key.GUI_DIALOG_BUTTON_RESET_0)" _id="m_resetReleased" :middle />
-		  				</v-horizontal-layout> 
+	  				<v-horizontal-layout caption="%(key.GUI_INPUT_DATERELEASED_0)" spacing>
+	 					<o-cms-date-field _id="m_releasedField" />
+	  					<v-check-box caption="%(key.GUI_DIALOG_BUTTON_RESET_0)" _id="m_resetReleased" :middle />
+	  				</v-horizontal-layout> 
 		  				
-		  				<v-horizontal-layout caption="%(key.GUI_INPUT_DATEEXPIRED_0)" spacing>
-		  					<o-cms-date-field _id="m_expiredField" />
-		  					<v-check-box caption="%(key.GUI_DIALOG_BUTTON_RESET_0)" _id="m_resetExpired" :middle />
-		  				</v-horizontal-layout>
+	  				<v-horizontal-layout caption="%(key.GUI_INPUT_DATEEXPIRED_0)" spacing>
+	  					<o-cms-date-field _id="m_expiredField" />
+	  					<v-check-box caption="%(key.GUI_DIALOG_BUTTON_RESET_0)" _id="m_resetExpired" :middle />
+	  				</v-horizontal-layout>
 		  				
-		  				<v-check-box _id="m_subresourceModificationField" caption="%(key.GUI_TOUCH_MODIFY_SUBRESOURCES_0)" />
+	  				<v-check-box _id="m_subresourceModificationField" caption="%(key.GUI_TOUCH_MODIFY_SUBRESOURCES_0)" />
 		  				
-		  			</v-form-layout>
-		  			<o-cms-button-panel :right>
-		  				<v-button _id="m_okButton" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
-		  				<v-button _id="m_cancelButton" >%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
-		  			</o-cms-button-panel>
-		  		</v-vertical-layout>
-	  		</v-panel>
-  		</v-vertical-layout>
+	  			</v-form-layout>
+	  			<o-cms-button-panel :right>
+	  				<v-button _id="m_okButton" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+	  				<v-button _id="m_cancelButton" >%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+	  			</o-cms-button-panel>
+	  		</v-vertical-layout>
     </v-css-layout>
   </body>
 </html>
