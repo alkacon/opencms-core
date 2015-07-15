@@ -54,6 +54,7 @@ import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.DefaultItemSorter;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
@@ -70,6 +71,35 @@ import com.vaadin.ui.Table.RowHeaderMode;
  * Table for displaying resources.<p>
  */
 public class CmsFileTable extends A_CmsCustomComponent {
+
+    /**
+     * Extends the default sorting to differentiate between files and folder when sorting by name.<p>
+     */
+    public static class FileSorter extends DefaultItemSorter {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * @see com.vaadin.data.util.DefaultItemSorter#compareProperty(java.lang.Object, boolean, com.vaadin.data.Item, com.vaadin.data.Item)
+         */
+        @Override
+        protected int compareProperty(Object propertyId, boolean sortDirection, Item item1, Item item2) {
+
+            if (PROPERTY_RESOURCE_NAME.equals(propertyId)) {
+                Boolean isFolder1 = (Boolean)item1.getItemProperty(PROPERTY_IS_FOLDER).getValue();
+                Boolean isFolder2 = (Boolean)item2.getItemProperty(PROPERTY_IS_FOLDER).getValue();
+                if (!isFolder1.equals(isFolder2)) {
+                    int result = isFolder1.booleanValue() ? -1 : 1;
+                    if (!sortDirection) {
+                        result = result * (-1);
+                    }
+                    return result;
+                }
+            }
+            return super.compareProperty(propertyId, sortDirection, item1, item2);
+        }
+    }
 
     /** File table property name. */
     public static final String PROPERTY_DATE_CREATED = "dateCreated";
@@ -94,6 +124,9 @@ public class CmsFileTable extends A_CmsCustomComponent {
 
     /** File table property name. */
     public static final String PROPERTY_RESOURCE_TYPE = "resourceType";
+
+    /** File table property name. */
+    public static final String PROPERTY_IS_FOLDER = "isFolder";
 
     /** File table property name. */
     public static final String PROPERTY_SIZE = "size";
@@ -132,6 +165,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
 
     private I_CmsContextMenuBuilder m_menuBuilder;
 
+    /** The messages. */
     private CmsMessages messages;
 
     /**
@@ -146,6 +180,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_container.addContainerProperty(PROPERTY_TITLE, String.class, null);
         m_container.addContainerProperty(PROPERTY_NAVIGATION_TEXT, String.class, null);
         m_container.addContainerProperty(PROPERTY_RESOURCE_TYPE, String.class, null);
+        m_container.addContainerProperty(PROPERTY_IS_FOLDER, Boolean.class, null);
         m_container.addContainerProperty(PROPERTY_SIZE, Integer.class, null);
         m_container.addContainerProperty(PROPERTY_PERMISSIONS, String.class, null);
         m_container.addContainerProperty(PROPERTY_DATE_MODIFIED, String.class, null);
@@ -157,6 +192,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_container.addContainerProperty(PROPERTY_STATE_NAME, String.class, null);
         m_container.addContainerProperty(PROPERTY_STATE, CmsResourceState.class, null);
         m_container.addContainerProperty(PROPERTY_USER_LOCKED, String.class, null);
+        m_container.setItemSorter(new FileSorter());
         m_fileTable = new Table();
         setCompositionRoot(m_fileTable);
         m_fileTable.addStyleName("borderless");
@@ -308,6 +344,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
                 resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(resUtil.getNavText());
                 resourceItem.getItemProperty(PROPERTY_RESOURCE_TYPE).setValue(
                     CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
+                resourceItem.getItemProperty(PROPERTY_IS_FOLDER).setValue(Boolean.valueOf(resource.isFolder()));
                 if (resource.isFile()) {
                     resourceItem.getItemProperty(PROPERTY_SIZE).setValue(Integer.valueOf(resource.getLength()));
                 }
