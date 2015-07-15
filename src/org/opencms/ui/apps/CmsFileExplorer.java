@@ -63,6 +63,7 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
@@ -138,6 +139,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
     /** The search field. */
     private TextField m_searchField;
 
+    /** The currently viewed folder. */
+    private CmsUUID m_currentFolder;
+
     /**
      * Constructor.<p>
      */
@@ -145,6 +149,24 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
         m_fileTable = new CmsFileTable();
         m_fileTable.setSizeFull();
         m_fileTable.setMenuBuilder(new MenuBuilder() /**/);
+        m_fileTable.addItemClickListener(new ItemClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void itemClick(ItemClickEvent event) {
+
+                if (event.getButton().equals(MouseButton.LEFT)
+                    && !CmsFileTable.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
+                    Boolean isFolder = (Boolean)event.getItem().getItemProperty(
+                        CmsFileTable.PROPERTY_IS_FOLDER).getValue();
+                    if ((isFolder != null) && isFolder.booleanValue()) {
+                        expandCurrentFolder();
+                        readFolder((CmsUUID)event.getItemId());
+                    }
+                }
+
+            }
+        });
         m_fileTree = new Tree();
         m_fileTree.setWidth("100%");
         m_fileTree.setItemCaptionPropertyId(CmsFileTable.PROPERTY_RESOURCE_NAME);
@@ -368,6 +390,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
             CmsResource folder = cms.readResource(folderId, FOLDERS);
             CmsProperty titleProp = cms.readPropertyObject(folder, CmsPropertyDefinition.PROPERTY_TITLE, false);
             String title = titleProp.isNullProperty() ? "" : titleProp.getValue();
+            m_currentFolder = folderId;
             m_infoTitle.setValue(title);
             m_infoPath.setValue(cms.getSitePath(folder));
             List<CmsResource> childResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
@@ -418,6 +441,17 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp {
         } catch (CmsException e) {
             // TODO: Auto-generated catch block
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Expands the currently viewed folder in the tree.<p>
+     */
+    void expandCurrentFolder() {
+
+        if (m_currentFolder != null) {
+            ((HierarchicalContainer)m_fileTree.getContainerDataSource()).setChildrenAllowed(m_currentFolder, true);
+            m_fileTree.expandItem(m_currentFolder);
         }
     }
 

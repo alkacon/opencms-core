@@ -318,6 +318,16 @@ public class CmsFileTable extends A_CmsCustomComponent {
     }
 
     /**
+     * Adds an item click listener to the table.<p>
+     *
+     * @param listener the listener
+     */
+    public void addItemClickListener(ItemClickListener listener) {
+
+        m_fileTable.addItemClickListener(listener);
+    }
+
+    /**
      * Fills the resource table.<p>
      *
      * @param cms the current CMS context
