@@ -31,6 +31,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsComponentFactory;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 import org.opencms.ui.components.CmsAppViewLayout;
+import org.opencms.ui.components.I_CmsWindowCloseListener;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -40,7 +41,7 @@ import com.vaadin.ui.UI;
 /**
  * Displays the selected app.<p>
  */
-public class CmsAppView implements View, ViewChangeListener, I_CmsComponentFactory {
+public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseListener, I_CmsComponentFactory {
 
     /** The serial version id. */
     private static final long serialVersionUID = -8128528863875050216L;
@@ -119,5 +120,15 @@ public class CmsAppView implements View, ViewChangeListener, I_CmsComponentFacto
             newState = newState.substring(1);
         }
         m_app.onStateChange(newState);
+    }
+
+    /**
+     * @see org.opencms.ui.components.I_CmsWindowCloseListener#onWindowClose()
+     */
+    public void onWindowClose() {
+
+        if (m_app instanceof I_CmsWindowCloseListener) {
+            ((I_CmsWindowCloseListener)m_app).onWindowClose();
+        }
     }
 }

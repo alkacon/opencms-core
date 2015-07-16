@@ -32,6 +32,8 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsComponentFactory;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 import org.opencms.ui.components.CmsScrollPositionCss;
+import org.opencms.ui.components.CmsWindowCloseExtension;
+import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.util.CmsStringUtil;
 
 import com.vaadin.annotations.Theme;
@@ -41,18 +43,19 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.navigator.ViewDisplay;
 import com.vaadin.navigator.ViewProvider;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
 import com.vaadin.server.Page.BrowserWindowResizeEvent;
 import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.UI;
 
 /**
  * The workplace ui.<p>
  */
 @Theme("opencms")
-public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvider, ViewChangeListener {
+public class CmsAppWorkplaceUi extends A_CmsUI
+implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListener {
 
     /** The home view path. */
     public static final String VIEW_HOME = "home";
@@ -60,11 +63,11 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
     /** The serial version id. */
     private static final long serialVersionUID = -5606711048683809028L;
 
+    /** The current view in case it implements view change listener. */
+    private View m_currentView;
+
     /** The navigation state manager. */
     private NavigationStateManager m_navigationStateManager;
-
-    /** The current view in case it implements view change listener. */
-    private ViewChangeListener m_viewChangeListener;
 
     /**
      * Constructor.<p>
@@ -88,8 +91,8 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
      */
     public void afterViewChange(ViewChangeEvent event) {
 
-        if (m_viewChangeListener != null) {
-            m_viewChangeListener.afterViewChange(event);
+        if ((m_currentView != null) && (m_currentView instanceof ViewChangeListener)) {
+            ((ViewChangeListener)m_currentView).afterViewChange(event);
         }
     }
 
@@ -98,8 +101,8 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
      */
     public boolean beforeViewChange(ViewChangeEvent event) {
 
-        if (m_viewChangeListener != null) {
-            return m_viewChangeListener.beforeViewChange(event);
+        if ((m_currentView != null) && (m_currentView instanceof ViewChangeListener)) {
+            return ((ViewChangeListener)m_currentView).beforeViewChange(event);
         }
         return true;
     }
@@ -155,6 +158,16 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
     }
 
     /**
+     * @see org.opencms.ui.components.I_CmsWindowCloseListener#onWindowClose()
+     */
+    public void onWindowClose() {
+
+        if ((m_currentView != null) && (m_currentView instanceof I_CmsWindowCloseListener)) {
+            ((I_CmsWindowCloseListener)m_currentView).onWindowClose();
+        }
+    }
+
+    /**
      * Navigates to the given app.<p>
      *
      * @param appConfig the app configuration
@@ -178,15 +191,12 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
     public void showView(View view) {
 
         // remove current component form the view change listeners
-        m_viewChangeListener = null;
+        m_currentView = view;
         Component component = null;
         if (view instanceof I_CmsComponentFactory) {
             component = ((I_CmsComponentFactory)view).createComponent();
         } else if (view instanceof Component) {
             component = (Component)view;
-        }
-        if (view instanceof ViewChangeListener) {
-            m_viewChangeListener = (ViewChangeListener)view;
         }
         if (component != null) {
             setContent(component);
@@ -213,10 +223,9 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
                 markAsDirtyRecursive();
             }
         });
-
+        CmsWindowCloseExtension windowClose = new CmsWindowCloseExtension(UI.getCurrent());
+        windowClose.addWindowCloseListener(this);
         navigator.addViewChangeListener(this);
-
-        getPage().getStyles().add(new ExternalResource("/opencms/VAADIN/themes/contextmenu/contextmenu.css"));
 
         if (fragment != null) {
             navigator.navigateTo(fragment);
