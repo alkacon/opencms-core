@@ -37,6 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsCustomComponent;
 import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
+import org.opencms.ui.apps.CmsFileExplorerSettings;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -44,7 +45,6 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -101,85 +101,6 @@ public class CmsFileTable extends A_CmsCustomComponent {
             }
             return super.compareProperty(propertyId, sortDirection, item1, item2);
         }
-    }
-
-    /**
-     * Stores the file table state.<p>
-     */
-    public static class FileTableState implements Serializable {
-
-        /** The serial version id. */
-        private static final long serialVersionUID = 1L;
-
-        /** The collapsed column ids. */
-        private List<String> m_collapsedColumns;
-
-        /** The sort order. */
-        private boolean m_sortAscending;
-
-        /** The sort column id. */
-        private String m_sortColumnId;
-
-        /**
-         * Returns the collapsed column ids.<p>
-         *
-         * @return the collapsed column ids
-         */
-        public List<String> getCollapsedColumns() {
-
-            return m_collapsedColumns;
-        }
-
-        /**
-         * Gets the sort column id.<p>
-         *
-         * @return the sort column id
-         */
-        public String getSortColumnId() {
-
-            return m_sortColumnId;
-        }
-
-        /**
-         * Returns the sort order.<p>
-         *
-         * @return the sort order
-         */
-        public boolean isSortAscending() {
-
-            return m_sortAscending;
-        }
-
-        /**
-         * Sets the collapsed columns.<p>
-         *
-         * @param collapsedColumns the collapsed columns
-         */
-        public void setCollapsedColumns(List<String> collapsedColumns) {
-
-            m_collapsedColumns = collapsedColumns;
-        }
-
-        /**
-         * Sets the sort order.<p>
-         *
-         * @param sortAscending the sort order
-         */
-        public void setSortAscending(boolean sortAscending) {
-
-            m_sortAscending = sortAscending;
-        }
-
-        /**
-         * Sets the sort column
-         *
-         * @param sortColumnId the sort column
-         */
-        public void setSortColumnId(String sortColumnId) {
-
-            m_sortColumnId = sortColumnId;
-        }
-
     }
 
     /** File table property name. */
@@ -494,9 +415,9 @@ public class CmsFileTable extends A_CmsCustomComponent {
      *
      * @return the table state
      */
-    public FileTableState getTableState() {
+    public CmsFileExplorerSettings getTableSettings() {
 
-        FileTableState fileTableState = new FileTableState();
+        CmsFileExplorerSettings fileTableState = new CmsFileExplorerSettings();
 
         fileTableState.setSortAscending(m_fileTable.isSortAscending());
         fileTableState.setSortColumnId((String)m_fileTable.getSortContainerPropertyId());
@@ -526,7 +447,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
      *
      * @param state the table state
      */
-    public void setTableState(FileTableState state) {
+    public void setTableState(CmsFileExplorerSettings state) {
 
         if (state != null) {
             m_fileTable.setSortContainerPropertyId(state.getSortColumnId());

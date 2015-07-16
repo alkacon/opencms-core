@@ -34,6 +34,8 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.I_CmsDialogContext;
@@ -48,6 +50,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 import org.vaadin.peter.contextmenu.ContextMenu;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
@@ -77,7 +81,6 @@ import com.vaadin.ui.Tree.CollapseListener;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
 import com.vaadin.ui.Tree.ItemStyleGenerator;
-import com.vaadin.ui.UI;
 
 /**
  * The file explorer app.<p>
@@ -116,6 +119,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener {
 
     /** The folders resource filter. */
     private static final CmsResourceFilter FOLDERS = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder();
+
+    /** The logger for this class. */
+    private static Log LOG = CmsLog.getLog(CmsFileExplorer.class.getName());
 
     /** Saved explorer state used by dialogs after they have finished. */
     protected String m_savedExplorerState = "";
@@ -257,7 +263,10 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener {
      */
     public boolean beforeViewChange(ViewChangeEvent event) {
 
-        UI.getCurrent().getSession().setAttribute(CmsFileTable.FileTableState.class, m_fileTable.getTableState());
+        OpenCms.getWorkplaceAppManager().storeAppSettings(
+            A_CmsUI.getCmsObject(),
+            CmsFileExplorerSettings.class,
+            m_fileTable.getTableSettings());
         return true;
     }
 
@@ -270,8 +279,17 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener {
         HorizontalSplitPanel sp = new HorizontalSplitPanel();
         sp.setSizeFull();
         sp.setFirstComponent(m_fileTree);
+        CmsFileExplorerSettings settings;
+        try {
+            settings = OpenCms.getWorkplaceAppManager().getAppSettings(
+                A_CmsUI.getCmsObject(),
+                CmsFileExplorerSettings.class);
 
-        m_fileTable.setTableState(UI.getCurrent().getSession().getAttribute(CmsFileTable.FileTableState.class));
+            m_fileTable.setTableState(settings);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         sp.setSecondComponent(m_fileTable);
         sp.setSplitPosition(400 - 1, Unit.PIXELS);
         context.setAppContent(sp);
@@ -464,8 +482,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener {
             }
             m_fileTree.markAsDirtyRecursive();
         } catch (CmsException e) {
-            // TODO: Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("Failed to read eplorer settings", e);
         }
     }
 
