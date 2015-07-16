@@ -44,11 +44,13 @@ import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.CmsToolBar;
+import org.opencms.ui.dialogs.CmsTouchDialog;
 import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -75,6 +77,7 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
@@ -94,62 +97,110 @@ import com.vaadin.ui.VerticalLayout;
 public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener {
 
     /**
+     * Context menu click handler which opens a custom dialog.<p>
+     */
+    protected class ContextMenuItemClickHandler implements ContextMenuItemClickListener {
+
+        /** The context menu dialog class. */
+        private Class<? extends Component> m_dialogClass;
+
+        /**
+         * Creates a new instance.<p>
+         *
+         * @param dialogClass the context menu dialog class
+         */
+        public ContextMenuItemClickHandler(Class<? extends Component> dialogClass) {
+            m_dialogClass = dialogClass;
+        }
+
+        /**
+         * @see org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener#contextMenuItemClicked(org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent)
+         */
+        @SuppressWarnings("synthetic-access")
+        public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+
+            I_CmsDialogContext context = createDialogContext();
+            List<CmsResource> resources = context.getResources();
+            Component dialog = instantiate(m_dialogClass, context);
+            CmsContextMenuDialogPanel dialogPanel = new CmsContextMenuDialogPanel();
+            try {
+                if (resources.size() == 1) {
+                    CmsResourceUtil resUtil = new CmsResourceUtil(context.getCms(), resources.get(0));
+                    final CmsResourceUtil resUtil1 = resUtil;
+                    final Locale locale = Locale.ENGLISH;
+                    m_appContext.setAppIcon(new ExternalResource(resUtil1.getBigIconPath()));
+                    m_appContext.setAppInfo(new VerticalLayout() {
+
+                        private static final long serialVersionUID = 1L;
+
+                        {
+                            addComponent(new Label(resUtil1.getGalleryTitle(locale)));
+                            addComponent(new Label(resUtil1.getGalleryDescription(locale)));
+                        }
+                    });
+                } else {
+                    for (CmsResource resource : resources) {
+                        CmsResourceUtil resUtil = new CmsResourceUtil(context.getCms(), resource);
+                        Locale locale = Locale.ENGLISH;
+                        dialogPanel.addResourceInfo(
+                            new CmsResourceInfo(
+                                resUtil.getGalleryTitle(locale),
+                                resUtil.getGalleryDescription(locale),
+                                resUtil.getBigIconPath()));
+                    }
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            dialogPanel.setContent(dialog);
+            m_savedExplorerState = CmsAppWorkplaceUi.get().getNavigator().getState();
+            CmsAppWorkplaceUi.get().changeCurrentAppState(CmsAppWorkplaceUi.get().getAppState() + "#dialog");
+            m_appContext.setAppContent(dialogPanel);
+        }
+
+        /**
+         * Creates a new instance of the given context menu dialog class.<p>
+         *
+         * @param actionClass the context menu dialog class
+         * @param context the dialog context to pass into the constructor of the context menu dialog
+         *
+         * @return the new context menu dialog instance
+         */
+        private Component instantiate(Class<? extends Component> actionClass, I_CmsDialogContext context) {
+
+            try {
+                Constructor<? extends Component> constructor = actionClass.getConstructor(I_CmsDialogContext.class);
+                return constructor.newInstance(context);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+    /**
      * Context menu builder for explorer.<p>
      */
     protected class MenuBuilder implements I_CmsContextMenuBuilder {
 
+        /**
+         * @see org.opencms.ui.I_CmsContextMenuBuilder#buildContextMenu(java.util.Set, org.vaadin.peter.contextmenu.ContextMenu)
+         */
         public void buildContextMenu(Set<CmsUUID> structureIds, ContextMenu menu) {
 
             ContextMenuItem availability = menu.addItem("Availability");
-            availability.addItemClickListener(new ContextMenuItemClickListener() {
-
-                public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-
-                    I_CmsDialogContext context = createDialogContext();
-                    List<CmsResource> resources = context.getResources();
-
-                    CmsAvailabilityDialog availability = new CmsAvailabilityDialog(context);
-                    CmsContextMenuDialogPanel dialogPanel = new CmsContextMenuDialogPanel();
-                    try {
-                        if (resources.size() == 1) {
-                            CmsResourceUtil resUtil = new CmsResourceUtil(context.getCms(), resources.get(0));
-                            final CmsResourceUtil resUtil1 = resUtil;
-                            final Locale locale = Locale.ENGLISH;
-                            m_appContext.setAppIcon(new ExternalResource(resUtil1.getBigIconPath()));
-                            m_appContext.setAppInfo(new VerticalLayout() {
-
-                                {
-                                    addComponent(new Label(resUtil1.getGalleryTitle(locale)));
-                                    addComponent(new Label(resUtil1.getGalleryDescription(locale)));
-                                }
-                            });
-                        } else {
-                            for (CmsResource resource : resources) {
-                                CmsResourceUtil resUtil = new CmsResourceUtil(context.getCms(), resource);
-                                Locale locale = Locale.ENGLISH;
-                                dialogPanel.addResourceInfo(
-                                    new CmsResourceInfo(
-                                        resUtil.getGalleryTitle(locale),
-                                        resUtil.getGalleryDescription(locale),
-                                        resUtil.getBigIconPath()));
-                            }
-                        }
-                    } catch (Exception e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                    dialogPanel.setContent(availability);
-                    m_savedExplorerState = CmsAppWorkplaceUi.get().getNavigator().getState();
-                    CmsAppWorkplaceUi.get().changeCurrentAppState(
-                        CmsAppWorkplaceUi.get().getAppState() + "#availability");
-                    m_appContext.setAppContent(dialogPanel);
-                }
-            });
-
+            availability.addItemClickListener(new ContextMenuItemClickHandler(CmsAvailabilityDialog.class));
+            ContextMenuItem touch = menu.addItem("Touch");
+            touch.addItemClickListener(new ContextMenuItemClickHandler(CmsTouchDialog.class));
         }
+
     }
 
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFileExplorer.class);
 
     /** The files and folder resource filter. */
     private static final CmsResourceFilter FILES_N_FOLDERS = CmsResourceFilter.ONLY_VISIBLE;
@@ -157,14 +208,11 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener {
     /** The folders resource filter. */
     private static final CmsResourceFilter FOLDERS = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder();
 
-    /** The logger for this class. */
-    private static Log LOG = CmsLog.getLog(CmsFileExplorer.class.getName());
-
     /** Saved explorer state used by dialogs after they have finished. */
     protected String m_savedExplorerState = "";
 
     /** The UI context. */
-    private I_CmsAppUIContext m_appContext;
+    protected I_CmsAppUIContext m_appContext;
 
     /** The current app state. */
     private String m_currentState;
