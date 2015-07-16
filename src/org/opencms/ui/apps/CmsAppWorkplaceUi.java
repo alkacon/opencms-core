@@ -199,8 +199,6 @@ public class CmsAppWorkplaceUi extends A_CmsUI implements ViewDisplay, ViewProvi
     @Override
     protected void init(VaadinRequest request) {
 
-        OpenCms.getWorkplaceAppManager().loadApps();
-
         m_navigationStateManager = new Navigator.UriFragmentManager(getPage());
         Navigator navigator = new Navigator(this, m_navigationStateManager, this);
         navigator.addProvider(this);

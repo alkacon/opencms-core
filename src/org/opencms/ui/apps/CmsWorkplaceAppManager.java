@@ -35,6 +35,7 @@ import org.opencms.workplace.tools.I_CmsToolHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,15 +44,30 @@ import java.util.ServiceLoader;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+/**
+ * The workplace app manager.<p>
+ */
 public class CmsWorkplaceAppManager {
 
+    /**
+     * Wrapper for the navigation state.<p>
+     */
     public static class NavigationState {
 
+        /** The parameter separator. */
         public static final String PARAM_SEPARATOR = "/";
 
-        private String m_viewName = "";
+        /** The state parameters. */
         private String m_params = "";
 
+        /** The view/app name. */
+        private String m_viewName = "";
+
+        /**
+         * Constructor.<p>
+         *
+         * @param stateString the state string to parse
+         */
         public NavigationState(String stateString) {
 
             if (stateString.startsWith("!")) {
@@ -69,11 +85,21 @@ public class CmsWorkplaceAppManager {
             }
         }
 
+        /**
+         * Returns the parameter part of the state.<p>
+         *
+         * @return the parameters
+         */
         String getParams() {
 
             return m_params;
         }
 
+        /**
+         * Returns the view name.<p>
+         *
+         * @return the view name
+         */
         String getViewName() {
 
             return m_viewName;
@@ -81,44 +107,47 @@ public class CmsWorkplaceAppManager {
         }
     }
 
-    private ServiceLoader<I_CmsWorkplaceAppConfiguration> m_appLoader;
-
-    private Map<String, I_CmsWorkplaceAppConfiguration> m_appsById = Maps.newHashMap();
+    /** The app categories. */
     private List<CmsAppCategory> m_appCategories = Lists.newArrayList();
 
-    public static List<I_CmsWorkplaceAppConfiguration> loadAppsUsingServiceLoader() {
+    /** The configured apps. */
+    private Map<String, I_CmsWorkplaceAppConfiguration> m_appsById = Maps.newHashMap();
 
-        List<I_CmsWorkplaceAppConfiguration> appConfigurations = new ArrayList<I_CmsWorkplaceAppConfiguration>();
-        Iterator<I_CmsWorkplaceAppConfiguration> configs = ServiceLoader.load(
-            I_CmsWorkplaceAppConfiguration.class).iterator();
-        while (configs.hasNext()) {
-            appConfigurations.add(configs.next());
-        }
-        return appConfigurations;
+    /**
+     * Returns the app configuration with the given id.<p>
+     *
+     * @param appId the app id
+     *
+     * @return the app configuration
+     */
+    public I_CmsWorkplaceAppConfiguration getAppConfiguration(String appId) {
+
+        return m_appsById.get(appId);
     }
 
-    public void addAppConfigurations(Collection<I_CmsWorkplaceAppConfiguration> appConfigs) {
-
-        for (I_CmsWorkplaceAppConfiguration appConfig : appConfigs) {
-            m_appsById.put(appConfig.getId(), appConfig);
-        }
-    }
-
-    public I_CmsWorkplaceAppConfiguration getAppConfiguration(String viewName) {
-
-        return m_appsById.get(viewName);
-    }
-
+    /**
+     * Returns the configured categories.<p>
+     *
+     * @return the app categories
+     */
     public List<CmsAppCategory> getCategories() {
 
-        return m_appCategories;
+        return Collections.unmodifiableList(m_appCategories);
     }
 
+    /**
+     * Returns all available workplace apps.<p>
+     *
+     * @return the available workpllace apps
+     */
     public Collection<I_CmsWorkplaceAppConfiguration> getWorkplaceApps() {
 
         return m_appsById.values();
     }
 
+    /**
+     * Loads the workplace apps.<p>
+     */
     public void loadApps() {
 
         m_appsById.clear();
@@ -133,7 +162,40 @@ public class CmsWorkplaceAppManager {
         addAppConfigurations(loadLegacyApps());
     }
 
-    protected Collection<I_CmsWorkplaceAppConfiguration> loadDefaultApps() {
+    /**
+     * Adds the given app configuration.<p>
+     *
+     * @param appConfigs the app configuration
+     */
+    private void addAppConfigurations(Collection<I_CmsWorkplaceAppConfiguration> appConfigs) {
+
+        for (I_CmsWorkplaceAppConfiguration appConfig : appConfigs) {
+            m_appsById.put(appConfig.getId(), appConfig);
+        }
+    }
+
+    /**
+     * Returns the configured apps using the service loader.<p>
+     *
+     * @return tthe configured apps
+     */
+    private List<I_CmsWorkplaceAppConfiguration> loadAppsUsingServiceLoader() {
+
+        List<I_CmsWorkplaceAppConfiguration> appConfigurations = new ArrayList<I_CmsWorkplaceAppConfiguration>();
+        Iterator<I_CmsWorkplaceAppConfiguration> configs = ServiceLoader.load(
+            I_CmsWorkplaceAppConfiguration.class).iterator();
+        while (configs.hasNext()) {
+            appConfigurations.add(configs.next());
+        }
+        return appConfigurations;
+    }
+
+    /**
+     * Loads the default apps.<p>
+     *
+     * @return the default apps
+     */
+    private Collection<I_CmsWorkplaceAppConfiguration> loadDefaultApps() {
 
         return Arrays.<I_CmsWorkplaceAppConfiguration> asList(
             new CmsSitemapEditorConfiguration(),
@@ -143,6 +205,11 @@ public class CmsWorkplaceAppManager {
             new CmsAppHierarchyConfiguration());
     }
 
+    /**
+     * Loads the legacy apps.<p>
+     *
+     * @return the legacy apps
+     */
     private Collection<I_CmsWorkplaceAppConfiguration> loadLegacyApps() {
 
         List<I_CmsWorkplaceAppConfiguration> configs = new ArrayList<I_CmsWorkplaceAppConfiguration>();
