@@ -27,7 +27,14 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.tools.CmsTool;
 import org.opencms.workplace.tools.CmsToolManager;
 import org.opencms.workplace.tools.I_CmsToolHandler;
@@ -40,6 +47,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+
+import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -107,6 +116,12 @@ public class CmsWorkplaceAppManager {
         }
     }
 
+    /** The workplace app settings additional info key. */
+    public static String WORKPLACE_APP_SETTINGS_KEY = "WORKPLACE_APP_SETTINGS";
+
+    /** The logger for this class. */
+    protected static Log LOG = CmsLog.getLog(CmsWorkplaceAppManager.class.getName());
+
     /** The app categories. */
     private List<CmsAppCategory> m_appCategories = Lists.newArrayList();
 
@@ -123,6 +138,38 @@ public class CmsWorkplaceAppManager {
     public I_CmsWorkplaceAppConfiguration getAppConfiguration(String appId) {
 
         return m_appsById.get(appId);
+    }
+
+    /**
+     * Returns the user app setting of the given type.<p>
+     *
+     * @param cms the cms context
+     * @param type the app setting type
+     *
+     * @return the app setting
+     *
+     * @throws InstantiationException in case instantiating the settings type fails
+     * @throws IllegalAccessException in case the settings default constructor is not accessible
+     */
+    public <T extends I_CmsAppSettings> T getAppSettings(CmsObject cms, Class<T> type)
+    throws InstantiationException, IllegalAccessException {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        String settingsString = (String)user.getAdditionalInfo(WORKPLACE_APP_SETTINGS_KEY);
+        T result = type.newInstance();
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(settingsString)) {
+            try {
+                JSONObject settings = new JSONObject(settingsString);
+                if (settings.has(type.getName())) {
+                    result.restoreSettings(settings.getString(type.getName()));
+                }
+            } catch (JSONException e) {
+                LOG.error("Failed to restore settings for type " + type.getName(), e);
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -160,6 +207,55 @@ public class CmsWorkplaceAppManager {
         addAppConfigurations(loadDefaultApps());
         addAppConfigurations(loadAppsUsingServiceLoader());
         addAppConfigurations(loadLegacyApps());
+    }
+
+    /**
+     * Stores the given app setting within the users additional info.<p>
+     *
+     * @param cms the cms context
+     * @param type the app setting type, used as the settings key
+     * @param appSettings the settings to store
+     */
+    public void storeAppSettings(CmsObject cms, Class<? extends I_CmsAppSettings> type, I_CmsAppSettings appSettings) {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        String settingsString = (String)user.getAdditionalInfo(WORKPLACE_APP_SETTINGS_KEY);
+        JSONObject settings;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(settingsString)) {
+            settings = new JSONObject();
+        } else {
+            try {
+                settings = new JSONObject(settingsString);
+            } catch (JSONException e) {
+                LOG.error("Failed to parse store workplace app settings. Discarding corrupted settings.", e);
+                settings = new JSONObject();
+            }
+        }
+        boolean changed = false;
+        try {
+            String state = appSettings.getSettingsString();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
+                if (settings.has(type.getName())) {
+                    settings.remove(type.getName());
+                    changed = true;
+                }
+            } else if (!settings.has(type.getName()) || !state.equals(settings.getString(type.getName()))) {
+                settings.put(type.getName(), state);
+                changed = true;
+            }
+
+        } catch (JSONException e) {
+            LOG.error("Failed to store workplace app settings for type " + type.getName(), e);
+        }
+        if (changed) {
+            settingsString = settings.toString();
+            user.setAdditionalInfo(WORKPLACE_APP_SETTINGS_KEY, settingsString);
+            try {
+                cms.writeUser(user);
+            } catch (CmsException e) {
+                LOG.error("Failed to store workplace app settings for type " + type.getName(), e);
+            }
+        }
     }
 
     /**
