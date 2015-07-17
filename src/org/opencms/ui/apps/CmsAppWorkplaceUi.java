@@ -180,7 +180,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      */
     public void showHome() {
 
-        getNavigator().navigateTo("apphierachy");
+        getNavigator().navigateTo(CmsAppHierarchyConfiguration.APP_ID);
     }
 
     /**

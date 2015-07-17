@@ -39,6 +39,9 @@ import com.vaadin.server.Resource;
  */
 public class CmsAppHierarchyConfiguration implements I_CmsWorkplaceAppConfiguration {
 
+    /** The app id. */
+    public static final String APP_ID = "apphierachy";
+
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
      */
@@ -84,7 +87,7 @@ public class CmsAppHierarchyConfiguration implements I_CmsWorkplaceAppConfigurat
      */
     public String getId() {
 
-        return "apphierachy";
+        return APP_ID;
     }
 
     /**
