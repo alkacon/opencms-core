@@ -86,10 +86,20 @@ public class CmsTouchDialog extends CssLayout {
      */
     public CmsTouchDialog(I_CmsDialogContext context) {
         m_context = context;
+        boolean hasFolders = false;
+
+        for (CmsResource resource : context.getResources()) {
+            if (resource.isFolder()) {
+                hasFolders = true;
+                break;
+            }
+        }
+
         CmsVaadinUtils.readAndLocalizeDesign(
             this,
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
             null);
+        m_modifySubresourcesField.setVisible(hasFolders);
 
         m_cancelButton.addClickListener(new ClickListener() {
 
