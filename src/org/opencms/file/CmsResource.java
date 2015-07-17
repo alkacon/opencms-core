@@ -184,6 +184,27 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
         }
 
         /**
+         * Gets the undo mode for the given parameters.<p>
+         *
+         * @param move flag for undoing move operations
+         * @param recursive flag for recursive undo
+         *
+         * @return the undo mode
+         */
+        public static CmsResourceUndoMode getUndoMode(boolean move, boolean recursive) {
+
+            if (move) {
+                return recursive
+                ? CmsResourceUndoMode.MODE_UNDO_MOVE_CONTENT_RECURSIVE
+                : CmsResourceUndoMode.MODE_UNDO_MOVE_CONTENT;
+            } else {
+                return recursive
+                ? CmsResourceUndoMode.MODE_UNDO_CONTENT_RECURSIVE
+                : CmsResourceUndoMode.MODE_UNDO_CONTENT;
+            }
+        }
+
+        /**
          * Returns the undo mode object from the old undo mode integer.<p>
          *
          * @param mode the old undo mode integer

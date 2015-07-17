@@ -46,6 +46,7 @@ import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.dialogs.CmsTouchDialog;
+import org.opencms.ui.dialogs.CmsUndoDialog;
 import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -140,7 +141,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                             addComponent(new Label(resUtil1.getGalleryDescription(locale)));
                         }
                     });
-                } else {
+                } else if (resources.size() > 1) {
                     for (CmsResource resource : resources) {
                         CmsResourceUtil resUtil = new CmsResourceUtil(context.getCms(), resource);
                         Locale locale = Locale.ENGLISH;
@@ -194,6 +195,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             availability.addItemClickListener(new ContextMenuItemClickHandler(CmsAvailabilityDialog.class));
             ContextMenuItem touch = menu.addItem("Touch");
             touch.addItemClickListener(new ContextMenuItemClickHandler(CmsTouchDialog.class));
+            ContextMenuItem undo = menu.addItem("Undo");
+            undo.addItemClickListener(new ContextMenuItemClickHandler(CmsUndoDialog.class));
+
         }
 
     }
