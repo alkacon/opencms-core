@@ -27,17 +27,33 @@
 
 package org.opencms.ui.apps;
 
+/**
+ * The app visibility status.<p>
+ */
 public class CmsAppVisibilityStatus {
 
+    /** The active and visible status. */
     public static final CmsAppVisibilityStatus ACTIVE = new CmsAppVisibilityStatus(true, true, null);
-    public static final CmsAppVisibilityStatus INVISIBLE = new CmsAppVisibilityStatus(false, true, null);
 
-    private boolean m_visible;
+    /** The invisible status. */
+    public static final CmsAppVisibilityStatus INVISIBLE = new CmsAppVisibilityStatus(false, false, null);
 
+    /** The active flac. */
     private boolean m_active;
 
+    /** The help text for visible but inactive apps. */
     private String m_helpText;
 
+    /** The visibility flac. */
+    private boolean m_visible;
+
+    /**
+     * Constructor.<p>
+     *
+     * @param visible if visible
+     * @param active if active
+     * @param helpText the help text for visible but inactive apps
+     */
     public CmsAppVisibilityStatus(boolean visible, boolean active, String helpText) {
 
         m_visible = visible;
@@ -45,16 +61,31 @@ public class CmsAppVisibilityStatus {
         m_helpText = helpText;
     }
 
+    /**
+     * Returns the help text for visible but inactive apps.<p>
+     *
+     * @return the help text for visible but inactive apps
+     */
     public String getHelpText() {
 
         return m_helpText;
     }
 
+    /**
+     * Returns if the app is active.<p>
+     *
+     * @return if active
+     */
     public boolean isActive() {
 
         return m_active;
     }
 
+    /**
+     * Returns if the app is visible.<p>
+     *
+     * @return if visible
+     */
     public boolean isVisible() {
 
         return m_visible;
