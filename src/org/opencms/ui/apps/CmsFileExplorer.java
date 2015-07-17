@@ -44,6 +44,7 @@ import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.CmsToolBar;
+import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.dialogs.CmsTouchDialog;
 import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
 import org.opencms.util.CmsStringUtil;
@@ -94,7 +95,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * The file explorer app.<p>
  */
-public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener {
+public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener {
 
     /**
      * Context menu click handler which opens a custom dialog.<p>
@@ -214,6 +215,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener {
     /** The UI context. */
     protected I_CmsAppUIContext m_appContext;
 
+    /** The currently viewed folder. */
+    private CmsUUID m_currentFolder;
+
     /** The current app state. */
     private String m_currentState;
 
@@ -234,9 +238,6 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener {
 
     /** The search field. */
     private TextField m_searchField;
-
-    /** The currently viewed folder. */
-    private CmsUUID m_currentFolder;
 
     /**
      * Constructor.<p>
@@ -372,8 +373,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener {
 
             m_fileTable.setTableState(settings);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("Error while reading file explorer settings from user.", e);
         }
         sp.setSecondComponent(m_fileTable);
         sp.setSplitPosition(400 - 1, Unit.PIXELS);
@@ -395,6 +395,17 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener {
             m_currentState = state;
             openPath(state);
         }
+    }
+
+    /**
+     * @see org.opencms.ui.components.I_CmsWindowCloseListener#onWindowClose()
+     */
+    public void onWindowClose() {
+
+        OpenCms.getWorkplaceAppManager().storeAppSettings(
+            A_CmsUI.getCmsObject(),
+            CmsFileExplorerSettings.class,
+            m_fileTable.getTableSettings());
     }
 
     /**
@@ -433,8 +444,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener {
             m_fileTree.setContainerDataSource(container);
             m_fileTree.expandItem(siteRoot.getStructureId());
         } catch (CmsException e) {
-            // TODO: Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("Error while populating file explorer tree", e);
         }
 
     }
