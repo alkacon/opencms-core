@@ -7,106 +7,106 @@
   $app-icon-size: 32px;
   $app-icon-size-small: 24px;
 
-  .opencms-responsive{
+  .o-responsive{
   	display: block;
   	background: #ffffff;
   }
   
-  .state-deleted, .v-table-row-state-deleted, .v-tree-node-caption-state-deleted{
+  .o-state-deleted, .v-table-row-o-state-deleted, .v-tree-node-caption-o-state-deleted{
   	text-decoration: line-through;
   }
   
-  .state-changed, .v-table-row-state-changed, .v-tree-node-caption-state-changed{
+  .o-state-changed, .v-table-row-o-state-changed, .v-tree-node-caption-o-state-changed{
   	color: $red;
   }
   
-  .state-new, .v-table-row-state-new, .v-tree-node-caption-state-new{
+  .o-state-new, .v-table-row-o-state-new, .v-tree-node-caption-o-state-new{
   	color: $blue;
   }
   
-  .opencms-responsive[width-range~="1241px-"]{
+  .o-responsive[width-range~="1241px-"]{
   	/* big screen styles */
   	
-  	.opencms-app-menu, .opencms-toolbar-app-indicator{
+  	.o-app-menu, .o-toolbar-app-indicator{
   		width: 400px;
   	}
   	
-  	.opencms-toolbar-app-info{
+  	.o-toolbar-app-info{
   		margin-left: 400px;
   	}
   	
-  	.opencms-app-content-container{
+  	.o-app-content-container{
   		max-width: 1200px;
   	}
   	
-  	.opencms-toolbar{
-  		.opencms-toolbar-items-left, .opencms-toolbar-items-right{
+  	.o-toolbar{
+  		.o-toolbar-items-left, .o-toolbar-items-right{
   			width: 500px;
   		}
   	}
   }
   
-  .with-menu.opencms-responsive[width-range~="1241px-"] .opencms-app-content{
+  .o-with-menu.o-responsive[width-range~="1241px-"] .o-app-content{
   	margin-left: 400px;
   }
   
-  .opencms-responsive[width-range~="0-983px"]{
+  .o-responsive[width-range~="0-983px"]{
   	/* small screen styles */
-  	.opencms-app-menu, .opencms-toolbar-app-indicator{
+  	.o-app-menu, .o-toolbar-app-indicator{
   		width: 240px;
   	}
   	
-  	.opencms-toolbar-app-info{
+  	.o-toolbar-app-info{
   		margin-left: 240px;
   	}
   	
-  	.opencms-toolbar{
-  		.opencms-toolbar-items-left, .opencms-toolbar-items-right{
+  	.o-toolbar{
+  		.o-toolbar-items-left, .o-toolbar-items-right{
   			width: 250px;
   		}
   	}
   }
   
-  .with-menu.opencms-responsive[width-range~="0-983px"] .opencms-app-content, 
-  .with-menu.opencms-responsive[width-range~="984px-1240px"] .opencms-app-content{
+  .o-with-menu.o-responsive[width-range~="0-983px"] .o-app-content, 
+  .o-with-menu.o-responsive[width-range~="984px-1240px"] .o-app-content{
   	margin-left: 240px;
   }
   
-  .opencms-responsive[width-range~="984px-1240px"]{
+  .o-responsive[width-range~="984px-1240px"]{
   	/* medium screen styles */
   	
-  	.opencms-app-menu, .opencms-toolbar-app-indicator{
+  	.o-app-menu, .o-toolbar-app-indicator{
   		width: 240px;
   	}
   	
-  	.with-menu .opencms-app-content, .opencms-toolbar-app-info{
+  	.o-with-menu .o-app-content, .o-toolbar-app-info{
   		margin-left: 240px;
   	}
   	
-  	.opencms-toolbar{
-  		.opencms-toolbar-items-left, .opencms-toolbar-items-right{
+  	.o-toolbar{
+  		.o-toolbar-items-left, .o-toolbar-items-right{
   			width: 350px;
   		}
   	}
   }
   
-  .opencms-iframe-content {
+  .o-iframe-content {
   
-  	.opencms-app-menu{
+  	.o-app-menu{
   		position: absolute;
   		top: 0;
   		left: 0;
   		bottom: 0;
   	}
   	
-  	.opencms-app-content{
+  	.o-app-content{
   		position: absolute;
   		top: 0;
   		left: 0;
   		bottom: 0;
   		right: 0;
   	
-  		.opencms-app-content-container{
+  		.o-app-content-container{
   			position: absolute;
   			top: 45px;
   			left: 0;
@@ -117,32 +117,36 @@
   
 
   
-  .opencms-toolbar-info{
+  .o-toolbar-info{
   	display: block;
   	width: 100%;
   	height: 45px;
   	
-  	.opencms-toolbar-app-indicator{
+  	.o-toolbar-app-indicator{
   		float:left;
-  		padding: 10px 28px;
   		background: $blue-light;
   		color: $white;
   		font-weight: bold;
   		border-right: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
+  		.v-label{
+  			padding: 10px 28px;
+  			display: block;
+  			width: auto;
+  		}
   	}
   	
-  	.opencms-toolbar-app-indicator, .opencms-toolbar-app-info{
+  	.o-toolbar-app-indicator, .o-toolbar-app-info{
   		display: block;
   		border-bottom: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
   		border-top: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
   	}
   	
-  	.opencms-toolbar-app-info{
+  	.o-toolbar-app-info{
   		padding: 0 !important;
   		overflow: hidden;
   		width: auto !important;
   	
-	  	.opencms-toolbar-app-info-icon{
+	  	.o-toolbar-app-info-icon{
 	  		float: left;
 	  		margin: -4px 0 0 8px;
 	  		display: block;
@@ -152,7 +156,7 @@
   			}
 	  	}
 	  	
-	  	.opencms-toolbar-app-info-container{
+	  	.o-toolbar-app-info-container{
 	  		margin-left: 50px;
     		position: relative;
     		width: auto;
@@ -165,17 +169,17 @@
 	}
   }
 
-  .opencms-app-content{
+  .o-app-content{
   	display: block;
   	background: $v-background-color;
   	margin-top: $toolbar-height;
   }
   
-  .with-menu .opencms-app-menu{
+  .o-with-menu .o-app-menu{
   	display: block;
   }
   	
-  .opencms-app-menu{
+  .o-app-menu{
   	float: left;
   	margin: $toolbar-height 0 0 0;
   	border-right: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
@@ -183,7 +187,7 @@
   	padding: 15px;
   }
   
-  .opencms-toolbar{
+  .o-toolbar{
   	position: fixed;
   	z-index: 2;
   	width: 100%;
@@ -195,19 +199,19 @@
   	text-align: center;
   	border-bottom: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
   	
-  	.opencms-toolbar-inner{
+  	.o-toolbar-inner{
   		margin: 0 $toolbar-padding;
   		min-width: 700px;
   		text-align: center;
   		display: block;
   	}
   	
-  	.opencms-toolbar-center{
+  	.o-toolbar-center{
   		display: inline-block;
   		width: auto;
   		position: relative;
   		
-  		.opencms-toolbar-logo{
+  		.o-toolbar-logo{
   			display: inline-block;
   			img{
   				margin: 5px auto;
@@ -216,7 +220,7 @@
   			}
   		}
   		
-  		.opencms-toolbar-app-indicator{
+  		.o-toolbar-app-indicator{
   			width: auto;
   			.v-label{
   				opacity: 0;
@@ -247,40 +251,40 @@
   		}  
   		
 	}
-  	.opencms-toolbar-items-left, .opencms-toolbar-items-right{
+  	.o-toolbar-items-left, .o-toolbar-items-right{
   		margin: 5px 0;
   	}
   
-  	.opencms-toolbar-items-left{
+  	.o-toolbar-items-left{
   		float: left;
   		text-align: left;
   	}
   
-  	.opencms-toolbar-items-right{
+  	.o-toolbar-items-right{
   		float: right;
   		text-align: right;
   	}
   }
   
-  .opencms-scrolled{
-  	.opencms-toolbar{
+  .o-scrolled{
+  	.o-toolbar{
   		height: 46px;
   		transition: height 0.4s ease-in-out;
   		
-  		.opencms-toolbar-center{
-  			.opencms-toolbar-logo img{
+  		.o-toolbar-center{
+  			.o-toolbar-logo img{
   				height: 36px;
   				transition: height 0.4s ease-in-out;
   			}
   			
-  			.opencms-toolbar-app-indicator div.v-label, .opencms-toolbar-app-indicator div.v-caption{
+  			.o-toolbar-app-indicator div.v-label, .o-toolbar-app-indicator div.v-caption{
   			opacity: 1;
   			transition: opacity 0.4s;
   			}
   		}
   	}
   	
-  	.v-button.v-button-toolbar{
+  	.v-button.v-button-o-toobar-button{
   		height: 36px;
     	line-height: 36px;
     	transition-property: height line-height;
@@ -291,7 +295,7 @@
   	
   }
   
-   .v-button.v-button-toolbar{
+   .v-button.v-button-o-toobar-button{
   	font-size: $app-icon-size;
     height: 50px;
     line-height: 50px;
@@ -303,23 +307,23 @@
   
   
   /* Toolbar drop down */
-  .v-popupview.v-popupview-opencms-navigator-dropdown{
+  .v-popupview.v-popupview-o-navigator-dropdown{
   	color: inherit;
   }
   
-  .v-popupview-popup-opencms-navigator-dropdown{
+  .v-popupview-popup-o-navigator-dropdown{
   	margin-top: 50px !important;
   	margin-left: -10px !important;
   	max-height: 80%;
     overflow: auto !important;
   }
   
-  .v-popupview-popup-opencms-navigator-dropdown .popupContent{
+  .v-popupview-popup-o-navigator-dropdown .popupContent{
   	max-width: 400px;
   }
     
   /* App buttons */
-  .v-button.v-button-app{
+  .v-button.v-button-o-app-button{
    	font-size: $v-font-size--small;
   	
   	span.v-button-caption{
@@ -341,23 +345,23 @@
   		height: $app-icon-size;
   	} 
   }
-  .v-button.v-button-app.color-cyan .v-icon{
+  .v-button.v-button-o-app-button.o-color-cyan .v-icon{
   	background: $cyan;
   	color: $white;
   }
-  .v-button.v-button-app.color-red .v-icon{
+  .v-button.v-button-o-app-button.o-color-red .v-icon{
   	background: $red;
   	color: $white;
   }
-  .v-button.v-button-app.color-blue .v-icon{
+  .v-button.v-button-o-app-button.o-color-blue .v-icon{
   	background: $blue;
   	color: $white;
   }
-  .v-button.v-button-app.color-orange .v-icon{
+  .v-button.v-button-o-app-button.o-color-orange .v-icon{
   	background: $orange-dark;
   	color: $white;
   }
-  .v-button.v-button-app.color-gray .v-icon{
+  .v-button.v-button-o-app-button.o-color-gray .v-icon{
   	background: $gray-dark;
   	color: $white;
   }

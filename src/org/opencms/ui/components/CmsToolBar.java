@@ -55,6 +55,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The workplace toolbar.<p>
@@ -143,8 +144,8 @@ public class CmsToolBar extends CustomLayout {
     public static Component createButton(Resource icon) {
 
         Button button = new Button(icon);
-        button.addStyleName("borderless");
-        button.addStyleName("toolbar");
+        button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        button.addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
         return button;
     }
 
@@ -230,7 +231,7 @@ public class CmsToolBar extends CustomLayout {
         CmsObject cms = A_CmsUI.getCmsObject();
         Locale locale = UI.getCurrent().getLocale();
         HorizontalLayout layout = new HorizontalLayout();
-        layout.addStyleName("wrapping");
+        layout.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
         //    layout.setSpacing(true);
         layout.setMargin(true);
         List<I_CmsWorkplaceAppConfiguration> configs = new ArrayList<I_CmsWorkplaceAppConfiguration>(
@@ -254,11 +255,15 @@ public class CmsToolBar extends CustomLayout {
                 }
             }
         }
-        String html = "<div tabindex=\"0\" role=\"button\" class=\"v-button v-widget borderless v-button-borderless toolbar v-button-toolbar\"><span class=\"v-button-wrap\">"
+        String html = "<div tabindex=\"0\" role=\"button\" class=\"v-button v-widget borderless v-button-borderless "
+            + OpenCmsTheme.TOOLBAR_BUTTON
+            + " v-button-"
+            + OpenCmsTheme.TOOLBAR_BUTTON
+            + "\"><span class=\"v-button-wrap\">"
             + FontAwesome.TH_LARGE.getHtml()
             + "</span></div>";
         PopupView pv = new PopupView(html, layout);
-        pv.addStyleName("opencms-navigator-dropdown");
+        pv.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
         pv.setHideOnMouseOut(false);
         return pv;
     }

@@ -28,6 +28,7 @@
 package org.opencms.ui.apps;
 
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
@@ -37,6 +38,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The default app button provider.<p>
@@ -66,9 +68,9 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
         });
         Resource icon = appConfig.getIcon();
         button.setIcon(icon, appConfig.getName(locale));
-        button.addStyleName("app");
-        button.addStyleName("borderless");
-        button.addStyleName("icon-align-top");
+        button.addStyleName(OpenCmsTheme.APP_BUTTON);
+        button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        button.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         button.addStyleName(appConfig.getButtonStyle());
         String helpText = appConfig.getHelpText(locale);
         button.setDescription(helpText);

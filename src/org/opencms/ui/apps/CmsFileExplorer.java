@@ -91,6 +91,7 @@ import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
 import com.vaadin.ui.Tree.ItemStyleGenerator;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The file explorer app.<p>
@@ -309,16 +310,16 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         m_info = new AbsoluteLayout();
         m_info.setSizeFull();
         m_infoTitle = new Label();
-        m_infoTitle.addStyleName("h4");
+        m_infoTitle.addStyleName(ValoTheme.LABEL_H4);
         m_info.addComponent(m_infoTitle, "top:3px; left:0px;");
         m_infoPath = new Label();
-        m_infoPath.addStyleName("tiny");
+        m_infoPath.addStyleName(ValoTheme.LABEL_TINY);
         m_info.addComponent(m_infoPath, "bottom:3px; left:0px;");
         m_searchField = new TextField();
         m_searchField.setIcon(FontAwesome.SEARCH);
         m_searchField.setInputPrompt("Search");
-        m_searchField.addStyleName("small");
-        m_searchField.addStyleName("inline-icon");
+        m_searchField.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+        m_searchField.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
         m_searchField.addTextChangeListener(new TextChangeListener() {
 
             private static final long serialVersionUID = 1L;

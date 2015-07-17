@@ -126,9 +126,9 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
         m_menuArea.removeAllComponents();
         if (menu != null) {
             m_menuArea.addComponent(menu);
-            addStyleName("with-menu");
+            addStyleName(OpenCmsTheme.WITH_MENU);
         } else {
-            removeStyleName("with-menu");
+            removeStyleName(OpenCmsTheme.WITH_MENU);
         }
     }
 }

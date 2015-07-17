@@ -34,6 +34,7 @@ import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 import org.opencms.ui.components.CmsScrollPositionCss;
 import org.opencms.ui.components.CmsWindowCloseExtension;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
 
 import com.vaadin.annotations.Theme;
@@ -57,9 +58,6 @@ import com.vaadin.ui.UI;
 public class CmsAppWorkplaceUi extends A_CmsUI
 implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListener {
 
-    /** The home view path. */
-    public static final String VIEW_HOME = "home";
-
     /** The serial version id. */
     private static final long serialVersionUID = -5606711048683809028L;
 
@@ -73,7 +71,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      * Constructor.<p>
      */
     public CmsAppWorkplaceUi() {
-        CmsScrollPositionCss.addTo(this, 150, 50, "opencms-scrolled");
+        CmsScrollPositionCss.addTo(this, 150, 50, OpenCmsTheme.SCROLLED);
     }
 
     /**

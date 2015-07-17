@@ -27,6 +27,8 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.ui.components.OpenCmsTheme;
+
 import com.vaadin.ui.Component;
 
 /**
@@ -35,22 +37,22 @@ import com.vaadin.ui.Component;
 public interface I_CmsAppButtonProvider {
 
     /** Button color style. */
-    public static final String BUTTON_STYLE_CYAN = "color-cyan";
+    public static final String BUTTON_STYLE_CYAN = OpenCmsTheme.COLOR_CYAN;
 
     /** Button color style. */
-    public static final String BUTTON_STYLE_RED = "color-red";
+    public static final String BUTTON_STYLE_RED = OpenCmsTheme.COLOR_RED;
 
     /** Button color style. */
-    public static final String BUTTON_STYLE_BLUE = "color-blue";
+    public static final String BUTTON_STYLE_BLUE = OpenCmsTheme.COLOR_BLUE;
 
     /** Button color style. */
-    public static final String BUTTON_STYLE_ORANGE = "color-orange";
+    public static final String BUTTON_STYLE_ORANGE = OpenCmsTheme.COLOR_ORANGE;
 
     /** Button color style. */
-    public static final String BUTTON_STYLE_GRAY = "color-gray";
+    public static final String BUTTON_STYLE_GRAY = OpenCmsTheme.COLOR_GRAY;
 
     /** Button color style. */
-    public static final String BUTTON_STYLE_TRANSPARENT = "color-transparent";
+    public static final String BUTTON_STYLE_TRANSPARENT = OpenCmsTheme.COLOR_TRANSPARENT;
 
     /**
      * Creates an app launcher button.<p>

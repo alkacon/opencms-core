@@ -27,15 +27,12 @@
 
 package org.opencms.ui.apps;
 
-import org.opencms.main.CmsLog;
-
 import java.util.Locale;
-
-import org.apache.commons.logging.Log;
 
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Widget used to displays a nested hierarchy of app categories and apps.<p>
@@ -48,9 +45,6 @@ public class CmsAppHierarchyPanel extends VerticalLayout {
     /** The panel to display the apps at this tree level. */
     private HorizontalLayout m_appPanel;
 
-    /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsAppHierarchyPanel.class);
-
     /** The object used to generate the buttons for the apps. */
     private I_CmsAppButtonProvider m_appButtonProvider;
 
@@ -62,7 +56,7 @@ public class CmsAppHierarchyPanel extends VerticalLayout {
     public CmsAppHierarchyPanel(I_CmsAppButtonProvider buttonProvider) {
 
         m_appPanel = new HorizontalLayout();
-        m_appPanel.addStyleName("wrapping");
+        m_appPanel.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
         m_appPanel.setSpacing(true);
         addComponent(m_appPanel);
         setMargin(true);

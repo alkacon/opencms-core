@@ -68,6 +68,7 @@ import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.RowHeaderMode;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Table for displaying resources.<p>
@@ -197,7 +198,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_container.setItemSorter(new FileSorter());
         m_fileTable = new Table();
         setCompositionRoot(m_fileTable);
-        m_fileTable.addStyleName("borderless");
+        m_fileTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
         m_fileTable.setSizeFull();
         m_fileTable.setColumnCollapsingAllowed(true);
         m_fileTable.setSelectable(true);
@@ -309,11 +310,11 @@ public class CmsFileTable extends A_CmsCustomComponent {
             CmsResourceState state = (CmsResourceState)resourceItem.getItemProperty(PROPERTY_STATE).getValue();
             if (state != null) {
                 if (state.isDeleted()) {
-                    result = "state-deleted";
+                    result = OpenCmsTheme.STATE_DELETED;
                 } else if (state.isNew()) {
-                    result = "state-new";
+                    result = OpenCmsTheme.STATE_NEW;
                 } else if (state.isChanged()) {
-                    result = "state-changed";
+                    result = OpenCmsTheme.STATE_CHANGED;
                 }
             }
         }
