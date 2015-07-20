@@ -45,6 +45,7 @@ import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
+import org.opencms.ui.dialogs.CmsSecureExportDialog;
 import org.opencms.ui.dialogs.CmsTouchDialog;
 import org.opencms.ui.dialogs.CmsUndoDialog;
 import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
@@ -197,16 +198,12 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             touch.addItemClickListener(new ContextMenuItemClickHandler(CmsTouchDialog.class));
             ContextMenuItem undo = menu.addItem("Undo");
             undo.addItemClickListener(new ContextMenuItemClickHandler(CmsUndoDialog.class));
+            ContextMenuItem secureExport = menu.addItem("Secure/Export");
+            secureExport.addItemClickListener(new ContextMenuItemClickHandler(CmsSecureExportDialog.class));
 
         }
 
     }
-
-    /** The serial version id. */
-    private static final long serialVersionUID = 1L;
-
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFileExplorer.class);
 
     /** The files and folder resource filter. */
     private static final CmsResourceFilter FILES_N_FOLDERS = CmsResourceFilter.ONLY_VISIBLE;
@@ -214,11 +211,17 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** The folders resource filter. */
     private static final CmsResourceFilter FOLDERS = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder();
 
-    /** Saved explorer state used by dialogs after they have finished. */
-    protected String m_savedExplorerState = "";
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFileExplorer.class);
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /** The UI context. */
     protected I_CmsAppUIContext m_appContext;
+
+    /** Saved explorer state used by dialogs after they have finished. */
+    protected String m_savedExplorerState = "";
 
     /** The currently viewed folder. */
     private CmsUUID m_currentFolder;

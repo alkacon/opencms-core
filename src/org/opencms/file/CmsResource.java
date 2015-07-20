@@ -1243,6 +1243,16 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
     }
 
     /**
+     * Sets or clears the internal flag.<p>
+     *
+     * @param internal true if the internal flag should be set, false if it should be cleared
+     */
+    public void setInternal(boolean internal) {
+
+        m_flags = (m_flags & ~FLAG_INTERNAL) | (internal ? FLAG_INTERNAL : 0);
+    }
+
+    /**
      * Sets the state of this resource.<p>
      *
      * @param state the state to set
