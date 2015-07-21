@@ -32,6 +32,8 @@ import org.opencms.test.OpenCmsTestCase;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Tests for the CmsEncoder.<p>
@@ -156,6 +158,16 @@ public class TestCmsEncoder extends OpenCmsTestCase {
         original = "%25 abc";
         encoded = CmsEncoder.encode(original);
         assertFalse("A encoded sequence \"%25\" must be transformed by a further encoding.", original.equals(encoded));
+    }
+
+    /**
+     * Tests encoding of string lists as request parameters using base64 encoding.<p>
+     */
+    public void testEncodeStringsAsParameter() {
+
+        List<String> strings = Arrays.asList("zzzzzz", "~~~~~~~", "cow", "shark", "cat", "dog");
+        String param = CmsEncoder.encodeStringsAsBase64Parameter(strings);
+        assertEquals(strings, CmsEncoder.decodeStringsFromBase64Parameter(param));
     }
 
     /**

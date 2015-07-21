@@ -27,6 +27,8 @@
 
 package org.opencms.i18n;
 
+import org.opencms.json.JSONArray;
+import org.opencms.json.JSONException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -38,11 +40,16 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Lists;
 
 /**
  * The OpenCms CmsEncoder class provides static methods to decode and encode data.<p>
@@ -62,6 +69,12 @@ import org.apache.commons.logging.Log;
  * @since 6.0.0
  */
 public final class CmsEncoder {
+
+    /** Characters used as replacements for non-alphanumeric Base64 characters when using Base64 for request parameters. */
+    public static final String BASE64_EXTRA_REPLACEMENTS = "-_.";
+
+    /** Non-alphanumeric characters used for Base64 encoding. */
+    public static final String BASE64_EXTRA = "+/=";
 
     /** Constant for the standard <code>ISO-8859-1</code> encoding. */
     public static final String ENCODING_ISO_8859_1 = "ISO-8859-1";
@@ -287,6 +300,32 @@ public final class CmsEncoder {
     }
 
     /**
+     * Decodes a parameter which has been encoded from a string list using encodeStringsAsBase64Parameter.<p>
+     *
+     * @param data the data to decode
+     * @return the list of strings
+     */
+    public static List<String> decodeStringsFromBase64Parameter(String data) {
+
+        data = StringUtils.replaceChars(data, BASE64_EXTRA_REPLACEMENTS, BASE64_EXTRA);
+        byte[] bytes = Base64.decodeBase64(data);
+        try {
+            JSONArray json = new JSONArray(new String(bytes, "UTF-8"));
+            List<String> result = Lists.newArrayList();
+            for (int i = 0; i < json.length(); i++) {
+                result.add(json.getString(i));
+            }
+            return result;
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JSONException e) {
+            throw new IllegalArgumentException("Decoding failed: " + data, e);
+        }
+        return null;
+    }
+
+    /**
      * Encodes a String using UTF-8 encoding, which is the standard for http data transmission
      * with GET ant POST requests.<p>
      *
@@ -434,6 +473,31 @@ public final class CmsEncoder {
         String result = CmsEncoder.encodeHtmlEntities(input, CmsEncoder.ENCODING_US_ASCII);
         result = CmsStringUtil.substitute(result, "+", PLUS_ENTITY);
         return CmsStringUtil.substitute(result, ENTITY_PREFIX, ENTITY_REPLACEMENT);
+    }
+
+    /**
+     * Encode a list of strings as base64 data to be used in a request parameter.<p>
+     *
+     * @param strings the strings to encode
+     * @return the resulting base64 data
+     */
+    public static String encodeStringsAsBase64Parameter(List<String> strings) {
+
+        JSONArray array = new JSONArray();
+        for (String string : strings) {
+            array.put(string);
+        }
+        byte[] bytes;
+        try {
+            bytes = array.toString().getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            // should never happen
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        String result = Base64.encodeBase64String(bytes);
+        result = StringUtils.replaceChars(result, BASE64_EXTRA, BASE64_EXTRA_REPLACEMENTS);
+        return result;
     }
 
     /**
@@ -754,4 +818,5 @@ public final class CmsEncoder {
         }
         return decode(preparedSource.toString(), encoding);
     }
+
 }
