@@ -32,6 +32,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinErrorHandler;
 import org.opencms.ui.login.CmsLoginController.CmsLoginTargetInfo;
 import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.util.CmsFileUtil;
@@ -48,6 +49,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -379,6 +381,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     protected void init(VaadinRequest request) {
 
         LoginParameters params = (LoginParameters)(request.getWrappedSession().getAttribute(INIT_DATA_SESSION_ATTR));
+        VaadinSession.getCurrent().setErrorHandler(new CmsVaadinErrorHandler());
         m_controller = new CmsLoginController(m_adminCms, params);
         m_controller.setUi(this);
         setLocale(params.getLocale());

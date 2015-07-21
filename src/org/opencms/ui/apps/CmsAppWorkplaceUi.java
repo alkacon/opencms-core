@@ -29,6 +29,7 @@ package org.opencms.ui.apps;
 
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinErrorHandler;
 import org.opencms.ui.I_CmsComponentFactory;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 import org.opencms.ui.components.CmsScrollPositionCss;
@@ -48,6 +49,7 @@ import com.vaadin.server.Page;
 import com.vaadin.server.Page.BrowserWindowResizeEvent;
 import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
 
@@ -207,6 +209,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     @Override
     protected void init(VaadinRequest request) {
 
+        VaadinSession.getCurrent().setErrorHandler(new CmsVaadinErrorHandler());
         m_navigationStateManager = new Navigator.UriFragmentManager(getPage());
         Navigator navigator = new Navigator(this, m_navigationStateManager, this);
         navigator.addProvider(this);
