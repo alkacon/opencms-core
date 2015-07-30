@@ -60,20 +60,14 @@ public class CmsLoginForm extends VerticalLayout {
     /** Version id. */
     private static final long serialVersionUID = 1L;
 
+    /** The login controller. */
+    protected CmsLoginController m_controller;
+
     /** The label showing the copyright information. */
     private Label m_copyright;
 
-    /** The security field, which allows the user to choose between a private or public PC. */
-    private OptionGroup m_securityField;
-
-    /** Widget for entering the user name.  */
-    private CmsLoginUserField m_userField;
-
-    /** Widget for entering the password. */
-    private CmsLoginPasswordField m_passwordField;
-
-    /** Widget for OU selection. */
-    private CmsLoginOuSelector m_ouSelect;
+    /** Button for opening the "forgot password" dialog. */
+    private Button m_forgotPasswordButton;
 
     /** Login button. */
     private Button m_loginButton;
@@ -81,8 +75,17 @@ public class CmsLoginForm extends VerticalLayout {
     /** OpenCms logo. */
     private Image m_logo;
 
-    /** The login controller. */
-    private CmsLoginController m_controller;
+    /** Widget for OU selection. */
+    private CmsLoginOuSelector m_ouSelect;
+
+    /** Widget for entering the password. */
+    private CmsLoginPasswordField m_passwordField;
+
+    /** The security field, which allows the user to choose between a private or public PC. */
+    private OptionGroup m_securityField;
+
+    /** Widget for entering the user name.  */
+    private CmsLoginUserField m_userField;
 
     /**
      * Creates a new instance.<p>
@@ -118,7 +121,6 @@ public class CmsLoginForm extends VerticalLayout {
         m_loginButton.setClickShortcut(KeyCode.ENTER);
         m_loginButton.addClickListener(new ClickListener() {
 
-            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
                 m_controller.onClickLogin();
@@ -131,6 +133,14 @@ public class CmsLoginForm extends VerticalLayout {
             public void attach(AttachEvent event) {
 
                 m_userField.focus();
+            }
+        });
+
+        m_forgotPasswordButton.addClickListener(new ClickListener() {
+
+            public void buttonClick(ClickEvent event) {
+
+                m_controller.onClickForgotPassword();
             }
         });
 

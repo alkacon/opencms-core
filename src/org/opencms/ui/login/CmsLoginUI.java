@@ -28,7 +28,10 @@
 package org.opencms.ui.login;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.A_CmsUI;
@@ -46,6 +49,8 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
@@ -166,7 +171,10 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     public static final String INIT_DATA_SESSION_ATTR = "CmsLoginUI_initData";
 
     /** The admin CMS context. */
-    private static CmsObject m_adminCms;
+    static CmsObject m_adminCms;
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLoginUI.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -350,6 +358,35 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     public void showAlreadyLoggedIn() {
 
         throw new UnsupportedOperationException("Not implemented yet, this shouldn't even be called.");
+    }
+
+    /**
+     * @see org.opencms.ui.login.I_CmsLoginUI#showForgotPasswordView(java.lang.String)
+     */
+    public void showForgotPasswordView(String authToken) {
+
+        try {
+            CmsTokenValidator validator = new CmsTokenValidator();
+            String validationResult = validator.validateToken(
+                A_CmsUI.getCmsObject(),
+                authToken,
+                OpenCms.getLoginManager().getTokenLifetime() * 1000);
+            if (validationResult == null) {
+                CmsUser user = validator.getUser();
+                CmsSetPasswordDialog dlg = new CmsSetPasswordDialog(m_adminCms, user, getLocale());
+                A_CmsUI.get().setContent(dlg);
+            } else {
+
+                A_CmsUI.get().setError("Invalid authorization token");
+                LOG.info("Invalid authorization token: " + authToken + " / " + validationResult);
+                // display 'invalid token'
+            }
+
+        } catch (CmsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
     /**

@@ -42,6 +42,7 @@ import java.nio.charset.CharsetEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -70,11 +71,11 @@ import com.google.common.collect.Lists;
  */
 public final class CmsEncoder {
 
-    /** Characters used as replacements for non-alphanumeric Base64 characters when using Base64 for request parameters. */
-    public static final String BASE64_EXTRA_REPLACEMENTS = "-_.";
-
     /** Non-alphanumeric characters used for Base64 encoding. */
     public static final String BASE64_EXTRA = "+/=";
+
+    /** Characters used as replacements for non-alphanumeric Base64 characters when using Base64 for request parameters. */
+    public static final String BASE64_EXTRA_REPLACEMENTS = "-_.";
 
     /** Constant for the standard <code>ISO-8859-1</code> encoding. */
     public static final String ENCODING_ISO_8859_1 = "ISO-8859-1";
@@ -103,6 +104,8 @@ public final class CmsEncoder {
 
     /** A cache for encoding name lookup. */
     private static Map<String, String> m_encodingCache = new HashMap<String, String>(16);
+
+    private static Random m_random = new Random();
 
     /** The plus entity. */
     private static final String PLUS_ENTITY = ENTITY_PREFIX + "043;";
@@ -308,7 +311,7 @@ public final class CmsEncoder {
     public static List<String> decodeStringsFromBase64Parameter(String data) {
 
         data = StringUtils.replaceChars(data, BASE64_EXTRA_REPLACEMENTS, BASE64_EXTRA);
-        byte[] bytes = Base64.decodeBase64(data);
+        byte[] bytes = deobfuscateBytes(Base64.decodeBase64(data));
         try {
             JSONArray json = new JSONArray(new String(bytes, "UTF-8"));
             List<String> result = Lists.newArrayList();
@@ -489,7 +492,8 @@ public final class CmsEncoder {
         }
         byte[] bytes;
         try {
-            bytes = array.toString().getBytes("UTF-8");
+            // use obfuscateBytes here to to make the output look more random
+            bytes = obfuscateBytes(array.toString().getBytes("UTF-8"));
         } catch (UnsupportedEncodingException e) {
             // should never happen
             e.printStackTrace();
@@ -817,6 +821,41 @@ public final class CmsEncoder {
             }
         }
         return decode(preparedSource.toString(), encoding);
+    }
+
+    /**
+     * Decrypts a byte array obfuscated with 'obfuscateBytes'.<p>
+     *
+     * @param source the source
+     * @return the resuvlt
+     */
+    private static byte[] deobfuscateBytes(byte[] source) {
+
+        byte[] result = new byte[source.length - 1];
+        System.arraycopy(source, 1, result, 0, source.length - 1);
+        for (int i = 0; i < result.length; i++) {
+            result[i] = (byte)(0xFF & (result[i] ^ source[0]));
+        }
+        return result;
+    }
+
+    /**
+     * Simple "obfuscation" for byte arrays using random numbers.<p>
+     *
+     * @param source the source array
+     * @return the result
+     */
+    private static byte[] obfuscateBytes(byte[] source) {
+
+        byte[] s = new byte[1];
+        m_random.nextBytes(s);
+        byte[] result = new byte[source.length + 1];
+        System.arraycopy(source, 0, result, 1, source.length);
+        result[0] = s[0];
+        for (int i = 1; i < result.length; i++) {
+            result[i] = (byte)(0xFF & (result[i] ^ s[0]));
+        }
+        return result;
     }
 
 }

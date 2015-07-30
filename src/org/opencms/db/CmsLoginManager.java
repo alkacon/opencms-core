@@ -133,6 +133,9 @@ public class CmsLoginManager {
         }
     }
 
+    /** Default token lifetime. */
+    public static final long DEFAULT_TOKEN_LIFETIME = 3600 * 24;
+
     /** Default lock time if treshold for bad login attempts is reached. */
     public static final int DISABLE_MINUTES_DEFAULT = 15;
 
@@ -160,6 +163,9 @@ public class CmsLoginManager {
     /** The storage for the bad login attempts. */
     protected Map<String, CmsUserData> m_storage;
 
+    /** The token lifetime. */
+    protected String m_tokenLifetimeStr;
+
     /** The login message, setting this may also disable logins for non-Admin users. */
     private CmsLoginMessage m_loginMessage;
 
@@ -169,8 +175,10 @@ public class CmsLoginManager {
      * @param disableMinutes the minutes to disable an account if the threshold is reached
      * @param maxBadAttempts the number of bad login attempts allowed before an account is temporarily disabled
      * @param enableSecurity flag to determine if the security option should be enabled on the login dialog
+     * @param tokenLifetime the lifetime of authorization tokens, i.e. the time for which they are valid
+     *
      */
-    public CmsLoginManager(int disableMinutes, int maxBadAttempts, boolean enableSecurity) {
+    public CmsLoginManager(int disableMinutes, int maxBadAttempts, boolean enableSecurity, String tokenLifetime) {
 
         m_maxBadAttempts = maxBadAttempts;
         if (m_maxBadAttempts >= 0) {
@@ -180,6 +188,7 @@ public class CmsLoginManager {
             m_storage = new Hashtable<String, CmsUserData>();
         }
         m_enableSecurity = enableSecurity;
+        m_tokenLifetimeStr = tokenLifetime;
     }
 
     /**
@@ -278,6 +287,30 @@ public class CmsLoginManager {
     public int getMaxBadAttempts() {
 
         return m_maxBadAttempts;
+    }
+
+    /**
+     * Gets the authorization token lifetime in seconds.<p>
+     *
+     * @return the authorization token lifetime in seconds
+     */
+    public long getTokenLifetime() {
+
+        try {
+            return Long.parseLong(m_tokenLifetimeStr);
+        } catch (NumberFormatException e) {
+            return DEFAULT_TOKEN_LIFETIME;
+        }
+    }
+
+    /**
+     * Gets the configured token lifetime as a string.<p>
+     *
+     * @return the configured token lifetime as a string
+     */
+    public String getTokenLifetimeStr() {
+
+        return m_tokenLifetimeStr;
     }
 
     /**

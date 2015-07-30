@@ -73,6 +73,9 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         /** The serial version id. */
         private static final long serialVersionUID = -2636377967076796207L;
 
+        /** The authorization token. */
+        private String m_authToken;
+
         /** The locale to use for display, this will not be the workplace locale, but the browser locale. */
         private Locale m_locale;
 
@@ -100,6 +103,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
          * @param requestedResource the requested resource
          * @param requestedWorkplaceApp the requested workplace app
          * @param locale the locale
+         * @param authToken the authorization token
          */
         public LoginParameters(
             String username,
@@ -107,7 +111,8 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             String oufqn,
             String requestedResource,
             String requestedWorkplaceApp,
-            Locale locale) {
+            Locale locale,
+            String authToken) {
 
             m_username = username;
             m_pcType = pcType;
@@ -115,6 +120,17 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             m_requestedResource = requestedResource;
             m_requestedWorkplaceApp = requestedWorkplaceApp;
             m_locale = locale;
+            m_authToken = authToken;
+        }
+
+        /**
+         * Gets the authorization token.<p>
+         *
+         * @return the authorization token
+         */
+        public String getAuthToken() {
+
+            return m_authToken;
         }
 
         /**
@@ -205,6 +221,9 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /** The parameter name for the "logout" action. */
     public static final String PARAM_ACTION_LOGOUT = "logout";
+
+    /** Parameter name for the authorization token. */
+    public static final String PARAM_AUTHTOKEN = "at";
 
     /** The html id for the login form. */
     public static final String PARAM_FORM = "ocLoginForm";
@@ -308,6 +327,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
      *
      * @param cms the cms context
      * @param request the request
+     * @param workplaceUiRequest true if this is called from a workplace UI request
      *
      * @return the login parameters
      */
@@ -315,6 +335,8 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         CmsObject cms,
         HttpServletRequest request,
         boolean workplaceUiRequest) {
+
+        String authToken = request.getParameter(PARAM_AUTHTOKEN);
 
         String actionLogout = CmsRequestUtil.getNotEmptyParameter(request, PARAM_ACTION_LOGOUT);
 
@@ -365,7 +387,14 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         }
         Locale locale = getLocaleForRequest(request);
 
-        return new LoginParameters(username, pcType, oufqn, requestedResource, requestedWorkplaceApp, locale);
+        return new LoginParameters(
+            username,
+            pcType,
+            oufqn,
+            requestedResource,
+            requestedWorkplaceApp,
+            locale,
+            authToken);
     }
 
     /**

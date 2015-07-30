@@ -11,7 +11,11 @@
 	    	<w-cms-login-password-field _id="m_passwordField" caption="%(key.GUI_LOGIN_PASSWORD_0)" />
 	    	<w-cms-login-ou-selector _id="m_ouSelect" caption="%(key.GUI_LOGIN_ORGUNIT_0)"/>
 	    	<v-option-group _id="m_securityField" caption="%(key.GUI_LOGIN_SECURITY_0)" visible="%(showSecure)" />
-  		    <v-button _id="m_loginButton">%(key.GUI_LOGIN_BUTTON_0)</v-button> 
+  		    <v-horizontal-layout spacing>
+  		    	<v-button _id="m_loginButton">%(key.GUI_LOGIN_BUTTON_0)</v-button>
+  		    	<v-button _id="m_forgotPasswordButton">Forgot password</v-button>
+  		    </v-horizontal-layout>
+  		     
 	    <v-form-layout>
 	    <v-label _id="m_copyright" />
     </v-vertical-layout>

@@ -31,7 +31,11 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsUIServlet;
 
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Abstract UI class providing access to the OpenCms context.<p>
@@ -59,5 +63,40 @@ public abstract class A_CmsUI extends UI {
     public static CmsObject getCmsObject() {
 
         return ((CmsUIServlet)VaadinServlet.getCurrent()).getCmsObject();
+    }
+
+    /**
+     * Centers a panel in the middle of the browser window and returns the vertical layout used for the panel contents.<p>
+     *
+     * @param width width of the panel
+     * @param height height of the panel
+     * @param caption the caption
+     * @return the layout used for panel contents
+     */
+    public VerticalLayout setCenterPanel(int width, int height, String caption) {
+
+        Panel panel = new Panel();
+        panel.setCaption(caption);
+        VerticalLayout layout = new VerticalLayout();
+        panel.setWidth("" + width + "px");
+        panel.setHeight("" + height + "px");
+        layout.setSizeFull();
+        VerticalLayout panelContent = new VerticalLayout();
+        panel.setContent(panelContent);
+        panelContent.setMargin(true);
+        layout.addComponent(panel);
+        layout.setComponentAlignment(panel, Alignment.MIDDLE_CENTER);
+        setContent(layout);
+        return panelContent;
+    }
+
+    /**
+     * Displays an error message in a centered box.<p>
+     *
+     * @param error the error message to display
+     */
+    public void setError(String error) {
+
+        setCenterPanel(400, 300, "Error").addComponent(new Label(error));
     }
 }

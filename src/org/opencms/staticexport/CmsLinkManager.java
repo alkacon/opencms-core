@@ -71,18 +71,6 @@ public class CmsLinkManager {
     private CmsExternalLinksValidationResult m_pointerLinkValidationResult;
 
     /**
-     * Static initializer for the base URL.<p>
-     */
-    static {
-        m_baseUrl = null;
-        try {
-            m_baseUrl = new URL("http://127.0.0.1");
-        } catch (MalformedURLException e) {
-            // this won't happen
-        }
-    }
-
-    /**
      * Public constructor.<p>
      *
      * @param linkSubstitutionHandler the link substitution handler to use
@@ -93,6 +81,18 @@ public class CmsLinkManager {
         if (m_linkSubstitutionHandler == null) {
             // just make very sure that this is not null
             m_linkSubstitutionHandler = new CmsDefaultLinkSubstitutionHandler();
+        }
+    }
+
+    /**
+     * Static initializer for the base URL.<p>
+     */
+    static {
+        m_baseUrl = null;
+        try {
+            m_baseUrl = new URL("http://127.0.0.1");
+        } catch (MalformedURLException e) {
+            // this won't happen
         }
     }
 
@@ -291,7 +291,7 @@ public class CmsLinkManager {
             try {
                 cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
                 result = substituteLinkForUnknownTarget(cms, resourceName, forceSecure);
-                result = appendServerPrefix(cms, result, resourceName);
+                result = appendServerPrefix(cms, result, resourceName, false);
             } finally {
                 cms.getRequestContext().setCurrentProject(currentProject);
             }
@@ -480,7 +480,25 @@ public class CmsLinkManager {
     public String getServerLink(CmsObject cms, String resourceName, boolean forceSecure) {
 
         String result = substituteLinkForUnknownTarget(cms, resourceName, forceSecure);
-        return appendServerPrefix(cms, result, resourceName);
+        return appendServerPrefix(cms, result, resourceName, false);
+    }
+
+    /**
+     * Returns the link for the given workplace resource.
+     *
+     * This should only be used for resources under /system or /shared.<p<
+     *
+     * @param cms the current OpenCms user context
+     * @param resourceName the resource to generate the online link for
+     * @param forceSecure forces the secure server prefix
+     *
+     * @return the link for the given resource
+     */
+    public String getWorkplaceLink(CmsObject cms, String resourceName, boolean forceSecure) {
+
+        String result = substituteLinkForUnknownTarget(cms, resourceName, forceSecure);
+        return appendServerPrefix(cms, result, resourceName, true);
+
     }
 
     /**
@@ -555,7 +573,7 @@ public class CmsLinkManager {
      *
      * @param cms the current OpenCms user context
      * @param link the link to process which is assumed to point to a VFS resource, with optional parameters
-
+    
      * @return a link <i>from</i> the URI stored in the provided OpenCms user context
      *      <i>to</i> the VFS resource indicated by the given <code>link</code> in the current site
      */
@@ -757,10 +775,15 @@ public class CmsLinkManager {
      * @param cms the current OpenCms user context
      * @param link the resource to generate the online link for
      * @param pathWithOptionalParameters the resource name
+     * @param workplaceLink if this is set, use the workplace server prefix even if we are in the Online project
      *
      * @return the link for the given resource in the current project, with full server prefix
      */
-    private String appendServerPrefix(CmsObject cms, String link, String pathWithOptionalParameters) {
+    private String appendServerPrefix(
+        CmsObject cms,
+        String link,
+        String pathWithOptionalParameters,
+        boolean workplaceLink) {
 
         int paramPos = pathWithOptionalParameters.indexOf("?");
         String resourceName = paramPos > -1
@@ -771,7 +794,7 @@ public class CmsLinkManager {
             // URI is absolute and contains no schema
             // this indicates source and target link are in the same site
             String serverPrefix;
-            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            if (cms.getRequestContext().getCurrentProject().isOnlineProject() && !workplaceLink) {
                 String overrideSiteRoot = (String)(cms.getRequestContext().getAttribute(
                     CmsDefaultLinkSubstitutionHandler.OVERRIDE_SITEROOT_PREFIX + link));
                 // on online project, get the real site name from the site manager

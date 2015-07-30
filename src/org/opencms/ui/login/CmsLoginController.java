@@ -61,14 +61,14 @@ public class CmsLoginController {
      */
     public static class CmsLoginTargetInfo {
 
-        /** The user. */
-        private String m_user;
-
         /** The password. */
         private String m_password;
 
         /** The login target. */
         private String m_target;
+
+        /** The user. */
+        private String m_user;
 
         /**
          * Creates a new instance.<p>
@@ -174,14 +174,14 @@ public class CmsLoginController {
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLoginController.class);
 
-    /** The UI instance. */
-    private I_CmsLoginUI m_ui;
+    /** The administrator CMS context. */
+    private CmsObject m_adminCms;
 
     /** The parameters collected when the login app was opened. */
     private LoginParameters m_params;
 
-    /** The administrator CMS context. */
-    private CmsObject m_adminCms;
+    /** The UI instance. */
+    private I_CmsLoginUI m_ui;
 
     /***
      * Creates a new instance.<p>
@@ -217,6 +217,15 @@ public class CmsLoginController {
     public boolean isShowSecure() {
 
         return OpenCms.getLoginManager().isEnableSecurity();
+    }
+
+    /**
+     * Called when the user clicks on the 'forgot password' button.<p>
+     */
+    public void onClickForgotPassword() {
+
+        A_CmsUI.get().setCenterPanel(600, 450, "Password change mail request").addComponent(
+            new CmsForgotPasswordDialog());
     }
 
     /**
@@ -290,12 +299,18 @@ public class CmsLoginController {
      */
     public void onInit() {
 
-        boolean loggedIn = !A_CmsUI.getCmsObject().getRequestContext().getCurrentUser().isGuestUser();
-        m_ui.setSelectableOrgUnits(CmsLoginHelper.getOrgUnitsForLoginDialog(A_CmsUI.getCmsObject(), null));
-        if (loggedIn) {
-            m_ui.showAlreadyLoggedIn();
+        String authToken = m_params.getAuthToken();
+        if (authToken != null) {
+            m_ui.showForgotPasswordView(authToken);
         } else {
-            m_ui.showLoginView(m_params.getOufqn());
+
+            boolean loggedIn = !A_CmsUI.getCmsObject().getRequestContext().getCurrentUser().isGuestUser();
+            m_ui.setSelectableOrgUnits(CmsLoginHelper.getOrgUnitsForLoginDialog(A_CmsUI.getCmsObject(), null));
+            if (loggedIn) {
+                m_ui.showAlreadyLoggedIn();
+            } else {
+                m_ui.showLoginView(m_params.getOufqn());
+            }
         }
 
     }

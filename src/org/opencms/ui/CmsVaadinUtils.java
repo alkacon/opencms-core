@@ -43,8 +43,16 @@ import org.apache.log4j.Logger;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HasComponents;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.declarative.Design;
 
 /**
@@ -93,6 +101,47 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Shows an alert box to the user with the given information, which will perform the given action after the user clicks on OK.<p>
+     *
+     * @param title the title
+     * @param message the message
+     *
+     * @param callback the callback to execute after clicking OK
+     */
+    public static void showAlert(String title, String message, final Runnable callback) {
+
+        final Window window = new Window();
+        window.setModal(true);
+        Panel panel = new Panel();
+        panel.setCaption(title);
+        panel.setWidth("500px");
+        VerticalLayout layout = new VerticalLayout();
+        layout.setMargin(true);
+        panel.setContent(layout);
+        layout.addComponent(new Label(message));
+        Button okButton = new Button();
+        okButton.addClickListener(new ClickListener() {
+
+            /** The serial version id. */
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                window.close();
+                callback.run();
+            }
+        });
+        layout.addComponent(okButton);
+        layout.setComponentAlignment(okButton, Alignment.BOTTOM_RIGHT);
+        okButton.setCaption("OK");
+        window.setContent(panel);
+        window.setClosable(false);
+        window.setResizable(false);
+        A_CmsUI.get().addWindow(window);
+
+    }
+
+    /**
      * Visits all descendants of a given component (including the component itself) and applies a predicate
      * to each.<p>
      *
@@ -121,14 +170,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-     *
-     * @param component the component
-     * @param designPath the design path
-     * @param messages the messages
-     * @param macros the macros
-     *
-     * Helper method for reading a Vaadin UI design file and using the OpenCms macro resolver for localization.<p>
-     *
+    
      * @param component the component whose design to read
      * @param designPath the path to the design file
      * @param messages the message bundle to use for localization in the design (may be null)

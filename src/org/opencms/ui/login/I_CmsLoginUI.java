@@ -92,6 +92,13 @@ public interface I_CmsLoginUI {
     void showAlreadyLoggedIn();
 
     /**
+     * Shows the 'forgot password view'.<p>
+     *
+     * @param authToken the authorization token given as a request parameter
+     */
+    void showForgotPasswordView(String authToken);
+
+    /**
      * Initializes the login view.<p>
      *
      * @param preselectedOu a potential preselected OU
