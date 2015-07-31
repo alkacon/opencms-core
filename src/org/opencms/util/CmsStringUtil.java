@@ -1270,7 +1270,7 @@ public final class CmsStringUtil {
 
         durationStr = durationStr.toLowerCase().trim();
         String[] units = {"d", "h", "m", "s", "ms"};
-        long[] multipliers = {24L * 60 * 60 * 1000, 60L * 60 * 1000, 60L * 1000, 1000, 1};
+        long[] multipliers = {24L * 60 * 60 * 1000, 60L * 60 * 1000, 60L * 1000, 1000L, 1L};
         String numberAndUnitStr = "([0-9]+)([a-z]+)";
         Pattern numberAndUnit = Pattern.compile(numberAndUnitStr);
         Matcher matcher = numberAndUnit.matcher(durationStr);

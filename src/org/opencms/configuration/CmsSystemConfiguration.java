@@ -337,6 +337,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the job parameters. */
     public static final String N_PARAMETERS = "parameters";
 
+    /** Node name for the password change interval. */
+    public static final String N_PASSWORD_CHANGE_INTERVAL = "passwordChangeInterval";
+
     /** The node name for the password encoding. */
     public static final String N_PASSWORDENCODING = "encoding";
 
@@ -535,11 +538,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** Node name for the credentials resolver setting. */
     private static final String N_CREDENTIALS_RESOLVER = "credentials-resolver";
 
-    /** Node name for the user session mode. */
-    private static final String N_USER_SESSION_MODE = "user-session-mode";
-
     /** Node name for the user max inactive time. */
     private static final String N_MAX_INACTIVE_TIME = "maxInactiveTime";
+
+    /** Node name for the user session mode. */
+    private static final String N_USER_SESSION_MODE = "user-session-mode";
 
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
@@ -915,12 +918,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, 0, A_CLASS);
 
         // add login manager creation rules
-        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 5);
+        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 6);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_DISABLEMINUTES, 0);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_MAXBADATTEMPTS, 1);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_ENABLESCURITY, 2);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_TOKEN_LIFETIME, 3);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_MAX_INACTIVE_TIME, 4);
+        digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_PASSWORD_CHANGE_INTERVAL, 5);
 
         // add login message creation rules
         digester.addObjectCreate("*/" + N_LOGINMESSAGE, CmsLoginMessage.class);
@@ -1347,6 +1351,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             if (m_loginManager.getMaxInactive() != null) {
                 managerElement.addElement(N_MAX_INACTIVE_TIME).addText(m_loginManager.getMaxInactive());
             }
+
+            if (m_loginManager.getPasswordChangeIntervalStr() != null) {
+                managerElement.addElement(N_PASSWORD_CHANGE_INTERVAL).addText(
+                    m_loginManager.getPasswordChangeIntervalStr());
+            }
+
         }
 
         // login message
@@ -1889,6 +1899,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 CmsLoginManager.MAX_BAD_ATTEMPTS_DEFAULT,
                 CmsLoginManager.ENABLE_SECURITY_DEFAULT,
                 "" + CmsLoginManager.DEFAULT_TOKEN_LIFETIME,
+                null,
                 null);
         }
         if (m_loginMessage != null) {
@@ -2394,13 +2405,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      * @param enableSecurityStr flag to determine if the security option should be enabled on the login dialog
      * @param tokenLifetime the token lifetime
      * @param maxInactive maximum time since last login before CmsLockInactiveAccountsJob locks an account
+     * @param passwordChangeInterval the password change interval
      */
     public void setLoginManager(
         String disableMinutesStr,
         String maxBadAttemptsStr,
         String enableSecurityStr,
         String tokenLifetime,
-        String maxInactive) {
+        String maxInactive,
+        String passwordChangeInterval) {
 
         int disableMinutes;
         try {
@@ -2420,7 +2433,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             maxBadAttempts,
             enableSecurity,
             tokenLifetime,
-            maxInactive);
+            maxInactive,
+            passwordChangeInterval);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(

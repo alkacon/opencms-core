@@ -140,9 +140,6 @@ public class CmsUserSettings {
         gwt
     }
 
-    /** Map used to store user-defined preferences. */
-    private Map<String, String> m_additionalPreferences = new LinkedHashMap<String, String>();
-
     /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_ADDRESS = "USER_ADDRESS";
 
@@ -166,6 +163,9 @@ public class CmsUserSettings {
 
     /** Key for additional info institution. */
     public static final String ADDITIONAL_INFO_INSTITUTION = "USER_INSTITUTION";
+
+    /** Key for last password change additional info. */
+    public static final String ADDITIONAL_INFO_LAST_PASSWORD_CHANGE = "LAST_PASSWORD_CHANGE";
 
     /** Key for additional info flags. */
     public static final String ADDITIONAL_INFO_PREFERENCES = "USER_PREFERENCES";
@@ -257,6 +257,9 @@ public class CmsUserSettings {
     /** Default workplace search index name. */
     private static final String SEARCH_INDEX_DEFAULT = "Offline project (VFS)";
 
+    /** Map used to store user-defined preferences. */
+    private Map<String, String> m_additionalPreferences = new LinkedHashMap<String, String>();
+
     /** The direct publish setting. */
     private boolean m_dialogDirectpublish;
 
@@ -293,11 +296,11 @@ public class CmsUserSettings {
     /** The explorer file entries setting. */
     private int m_explorerFileEntries;
 
-    /** The explorer setting. */
-    private int m_explorerSettings;
-
     /** The list of numbers in the preferences dialog, how much entries shown on a page. */
     private String m_explorerFileEntryOptions;
+
+    /** The explorer setting. */
+    private int m_explorerSettings;
 
     /** Flag to determine if all projects should be list. */
     private boolean m_listAllProjects;

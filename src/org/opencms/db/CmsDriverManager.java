@@ -183,8 +183,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
     }
 
-    /** Name of the configuration parameter to enable/disable logging to the CMS_LOG table. */
-    public static final String PARAM_LOG_TABLE_ENABLED = "log.table.enabled";
+    /** Attribute for signalling to the user driver that a specific OU should be initialized by fillDefaults. */
+    public static final String ATTR_INIT_OU = "INIT_OU";
 
     /** Attribute login. */
     public static final String ATTRIBUTE_LOGIN = "A_LOGIN";
@@ -246,6 +246,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** Key for indicating no changes. */
     public static final int NOTHING_CHANGED = 0;
+
+    /** Name of the configuration parameter to enable/disable logging to the CMS_LOG table. */
+    public static final String PARAM_LOG_TABLE_ENABLED = "log.table.enabled";
 
     /** Indicates to ignore the resource path when matching resources. */
     public static final String READ_IGNORE_PARENT = null;
@@ -321,9 +324,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** Constant mode parameter to read all files and folders in the {@link #readChangedResourcesInsideProject(CmsDbContext, CmsUUID, CmsReadChangedProjectResourceMode)}} method. */
     private static final CmsReadChangedProjectResourceMode RCPRM_FOLDERS_ONLY_MODE = new CmsReadChangedProjectResourceMode();
-
-    /** Attribute for signalling to the user driver that a specific OU should be initialized by fillDefaults. */
-    public static final String ATTR_INIT_OU = "INIT_OU";
 
     /** The list of initialized JDBC pools. */
     private List<PoolingDriver> m_connectionPools;
@@ -5533,6 +5533,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
             newUser.getName(),
             password);
         newUser.getAdditionalInfo().putAll(additionalInfosForRepositories);
+        String lastPasswordChange = (String)newUser.getAdditionalInfo(
+            CmsUserSettings.ADDITIONAL_INFO_LAST_PASSWORD_CHANGE);
+        if (lastPasswordChange == null) {
+            newUser.getAdditionalInfo().put(
+                CmsUserSettings.ADDITIONAL_INFO_LAST_PASSWORD_CHANGE,
+                "" + System.currentTimeMillis());
+        }
         getUserDriver(dbc).writeUser(dbc, newUser);
         // check if we need to update the password
         if (!OpenCms.getPasswordHandler().checkPassword(password, newUser.getPassword(), false)
@@ -8375,6 +8382,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
 
             getUserDriver(dbc).writePassword(dbc, username, oldPassword, newPassword);
+            user.getAdditionalInfo().put(
+                CmsUserSettings.ADDITIONAL_INFO_LAST_PASSWORD_CHANGE,
+                "" + System.currentTimeMillis());
+            getUserDriver(dbc).writeUser(dbc, user);
 
             if (!dbc.getProjectId().isNullUUID()) {
                 // user modified event is not needed
@@ -8878,9 +8889,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         validatePassword(newPassword);
 
         // read the user as a system user to verify that the specified old password is correct
-        getUserDriver(dbc).readUser(dbc, username);
+        CmsUser user = getUserDriver(dbc).readUser(dbc, username);
         // only continue if not found and read user from web might succeed
         getUserDriver(dbc).writePassword(dbc, username, null, newPassword);
+        user.getAdditionalInfo().put(
+            CmsUserSettings.ADDITIONAL_INFO_LAST_PASSWORD_CHANGE,
+            "" + System.currentTimeMillis());
+        getUserDriver(dbc).writeUser(dbc, user);
     }
 
     /**

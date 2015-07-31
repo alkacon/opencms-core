@@ -172,11 +172,11 @@ public class CmsLoginController {
         }
     }
 
-    /** The logger for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsLoginController.class);
-
     /** Additional info key to mark accounts as locked due to inactivity. */
     public static final String KEY_ACCOUNT_LOCKED = "accountLocked";
+
+    /** The logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLoginController.class);
 
     /** The administrator CMS context. */
     private CmsObject m_adminCms;
@@ -259,7 +259,6 @@ public class CmsLoginController {
         CmsUser userObj = null;
         try {
             userObj = currentCms.readUser(realUser);
-            currentCms.loginUser(realUser, password);
             if (OpenCms.getLoginManager().canLockBecauseOfInactivity(currentCms, userObj)) {
                 boolean locked = null != userObj.getAdditionalInfo().get(KEY_ACCOUNT_LOCKED);
                 if (locked) {
@@ -267,6 +266,11 @@ public class CmsLoginController {
                     return;
                 }
             }
+            if (OpenCms.getLoginManager().requiresPasswordChange(currentCms, userObj)) {
+                A_CmsUI.get().setContent(new CmsChangePasswordDialog(currentCms, userObj, A_CmsUI.get().getLocale()));
+                return;
+            }
+            currentCms.loginUser(realUser, password);
             OpenCms.getSessionManager().updateSessionInfo(
                 currentCms,
                 (HttpServletRequest)VaadinService.getCurrentRequest());

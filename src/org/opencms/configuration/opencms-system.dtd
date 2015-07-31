@@ -135,13 +135,14 @@
 # for a given number of minutes in case a certain treshold is reached.
 # Additionally, a login security option to choose the PC type (private or public) can be enabled.
 -->
-<!ELEMENT loginmanager (disableMinutes, maxBadAttempts, enableSecurity?, tokenLifetime?,maxInactiveTime?)>
+<!ELEMENT loginmanager (disableMinutes, maxBadAttempts, enableSecurity?, tokenLifetime?,maxInactiveTime?, passwordChangeInterval?)>
 
 <!ELEMENT maxBadAttempts (#PCDATA)>
 <!ELEMENT disableMinutes (#PCDATA)>
 <!ELEMENT enableSecurity (#PCDATA)>
 <!ELEMENT tokenLifetime (#PCDATA)> 
 <!ELEMENT maxInactiveTime (#PCDATA)>
+<!ELEMENT passwordChangeInterval (#PCDATA)>
 
 <!--
 # Login message:

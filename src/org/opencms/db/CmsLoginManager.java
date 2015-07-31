@@ -137,9 +137,6 @@ public class CmsLoginManager {
         }
     }
 
-    /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsLoginManager.class);
-
     /** Default token lifetime. */
     public static final long DEFAULT_TOKEN_LIFETIME = 3600 * 24;
 
@@ -154,6 +151,9 @@ public class CmsLoginManager {
 
     /** Default for bad login attempts. */
     public static final int MAX_BAD_ATTEMPTS_DEFAULT = 3;
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLoginManager.class);
 
     /** The milliseconds to disable an account if the threshold is reached. */
     protected int m_disableMillis;
@@ -179,6 +179,9 @@ public class CmsLoginManager {
     /** Max inactivity time. */
     private String m_maxInactive;
 
+    /** Password change interval. */
+    private String m_passwordChangeInterval;
+
     /**
      * Creates a new storage for invalid logins.<p>
      *
@@ -187,13 +190,15 @@ public class CmsLoginManager {
      * @param enableSecurity flag to determine if the security option should be enabled on the login dialog
      * @param tokenLifetime the lifetime of authorization tokens, i.e. the time for which they are valid
      * @param maxInactive maximum inactivity time
+     * @param passwordChangeInterval the password change interval
      */
     public CmsLoginManager(
         int disableMinutes,
         int maxBadAttempts,
         boolean enableSecurity,
         String tokenLifetime,
-        String maxInactive) {
+        String maxInactive,
+        String passwordChangeInterval) {
 
         m_maxBadAttempts = maxBadAttempts;
         if (m_maxBadAttempts >= 0) {
@@ -205,6 +210,7 @@ public class CmsLoginManager {
         m_enableSecurity = enableSecurity;
         m_tokenLifetimeStr = tokenLifetime;
         m_maxInactive = maxInactive;
+        m_passwordChangeInterval = passwordChangeInterval;
     }
 
     /**
@@ -353,6 +359,30 @@ public class CmsLoginManager {
     }
 
     /**
+     * Gets the password change interval.<p>
+     *
+     * @return the password change interval
+     */
+    public long getPasswordChangeInterval() {
+
+        if (m_passwordChangeInterval == null) {
+            return Long.MAX_VALUE;
+        } else {
+            return CmsStringUtil.parseDuration(m_passwordChangeInterval);
+        }
+    }
+
+    /**
+     * Gets the raw password change interval string.<p>
+     *
+     * @return the configured string for the password change interval
+     */
+    public String getPasswordChangeIntervalStr() {
+
+        return m_passwordChangeInterval;
+    }
+
+    /**
      * Gets the authorization token lifetime in milliseconds.<p>
      *
      * @return the authorization token lifetime in milliseconds
@@ -417,6 +447,34 @@ public class CmsLoginManager {
 
         OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
         m_loginMessage = null;
+    }
+
+    /**
+     * Checks if a user is required to change his password now.<p>
+     *
+     * @param cms the current CMS context
+     * @param user the user to check
+     *
+     * @return true if the user should be asked to change his password
+     */
+    public boolean requiresPasswordChange(CmsObject cms, CmsUser user) {
+
+        if (user.isManaged()
+            || OpenCms.getDefaultUsers().isDefaultUser(user.getName())
+            || OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ROOT_ADMIN)) {
+            return false;
+        }
+        String lastPasswordChangeStr = (String)user.getAdditionalInfo().get(
+            CmsUserSettings.ADDITIONAL_INFO_LAST_PASSWORD_CHANGE);
+        if (lastPasswordChangeStr == null) {
+            return false;
+        }
+        long lastPasswordChange = Long.valueOf(lastPasswordChangeStr).longValue();
+        if ((System.currentTimeMillis() - lastPasswordChange) > getPasswordChangeInterval()) {
+            return true;
+        }
+        return false;
+
     }
 
     /**
