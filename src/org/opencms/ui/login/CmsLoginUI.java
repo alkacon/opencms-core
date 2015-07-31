@@ -370,7 +370,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
             String validationResult = validator.validateToken(
                 A_CmsUI.getCmsObject(),
                 authToken,
-                OpenCms.getLoginManager().getTokenLifetime() * 1000);
+                OpenCms.getLoginManager().getTokenLifetime());
             if (validationResult == null) {
                 CmsUser user = validator.getUser();
                 CmsSetPasswordDialog dlg = new CmsSetPasswordDialog(m_adminCms, user, getLocale());

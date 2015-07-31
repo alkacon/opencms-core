@@ -112,9 +112,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The "maxvisited" attribute. */
     public static final String A_MAXVISITED = "maxvisited";
 
-    /** The "mode" attribute. */
-    public static final String A_MODE = "mode";
-
     /** The "offline" attribute. */
     public static final String A_OFFLINE = "offline";
 
@@ -541,6 +538,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** Node name for the user session mode. */
     private static final String N_USER_SESSION_MODE = "user-session-mode";
 
+    /** Node name for the user max inactive time. */
+    private static final String N_MAX_INACTIVE_TIME = "maxInactiveTime";
+
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
 
@@ -915,11 +915,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, 0, A_CLASS);
 
         // add login manager creation rules
-        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 3);
+        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 5);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_DISABLEMINUTES, 0);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_MAXBADATTEMPTS, 1);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_ENABLESCURITY, 2);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_TOKEN_LIFETIME, 3);
+        digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_MAX_INACTIVE_TIME, 4);
 
         // add login message creation rules
         digester.addObjectCreate("*/" + N_LOGINMESSAGE, CmsLoginMessage.class);
@@ -1342,6 +1343,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             String tokenLifetimeStr = m_loginManager.getTokenLifetimeStr();
             if (tokenLifetimeStr != null) {
                 managerElement.addElement(N_TOKEN_LIFETIME).addText(tokenLifetimeStr);
+            }
+            if (m_loginManager.getMaxInactive() != null) {
+                managerElement.addElement(N_MAX_INACTIVE_TIME).addText(m_loginManager.getMaxInactive());
             }
         }
 
@@ -1884,7 +1888,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 CmsLoginManager.DISABLE_MINUTES_DEFAULT,
                 CmsLoginManager.MAX_BAD_ATTEMPTS_DEFAULT,
                 CmsLoginManager.ENABLE_SECURITY_DEFAULT,
-                "" + CmsLoginManager.DEFAULT_TOKEN_LIFETIME);
+                "" + CmsLoginManager.DEFAULT_TOKEN_LIFETIME,
+                null);
         }
         if (m_loginMessage != null) {
             // null OpenCms object is ok during configuration
@@ -2388,12 +2393,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      * @param disableMinutesStr the time an account gets locked if to many bad logins are attempted
      * @param enableSecurityStr flag to determine if the security option should be enabled on the login dialog
      * @param tokenLifetime the token lifetime
+     * @param maxInactive maximum time since last login before CmsLockInactiveAccountsJob locks an account
      */
     public void setLoginManager(
         String disableMinutesStr,
         String maxBadAttemptsStr,
         String enableSecurityStr,
-        String tokenLifetime) {
+        String tokenLifetime,
+        String maxInactive) {
 
         int disableMinutes;
         try {
@@ -2408,7 +2415,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             maxBadAttempts = CmsLoginManager.MAX_BAD_ATTEMPTS_DEFAULT;
         }
         boolean enableSecurity = Boolean.valueOf(enableSecurityStr).booleanValue();
-        m_loginManager = new CmsLoginManager(disableMinutes, maxBadAttempts, enableSecurity, tokenLifetime);
+        m_loginManager = new CmsLoginManager(
+            disableMinutes,
+            maxBadAttempts,
+            enableSecurity,
+            tokenLifetime,
+            maxInactive);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(

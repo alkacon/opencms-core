@@ -29,6 +29,7 @@ package org.opencms.ui.login;
 
 import org.opencms.db.CmsLoginMessage;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspLoginBean;
@@ -174,6 +175,9 @@ public class CmsLoginController {
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLoginController.class);
 
+    /** Additional info key to mark accounts as locked due to inactivity. */
+    public static final String KEY_ACCOUNT_LOCKED = "accountLocked";
+
     /** The administrator CMS context. */
     private CmsObject m_adminCms;
 
@@ -252,9 +256,17 @@ public class CmsLoginController {
         String realUser = CmsStringUtil.joinPaths(ou, user);
         String pcType = m_ui.getPcType();
         CmsObject currentCms = A_CmsUI.getCmsObject();
+        CmsUser userObj = null;
         try {
-            currentCms.readUser(realUser);
+            userObj = currentCms.readUser(realUser);
             currentCms.loginUser(realUser, password);
+            if (OpenCms.getLoginManager().canLockBecauseOfInactivity(currentCms, userObj)) {
+                boolean locked = null != userObj.getAdditionalInfo().get(KEY_ACCOUNT_LOCKED);
+                if (locked) {
+                    A_CmsUI.get().setError(CmsInactiveUserMessages.getLockoutText(A_CmsUI.get().getLocale()));
+                    return;
+                }
+            }
             OpenCms.getSessionManager().updateSessionInfo(
                 currentCms,
                 (HttpServletRequest)VaadinService.getCurrentRequest());

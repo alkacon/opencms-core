@@ -29,18 +29,22 @@ package org.opencms.db;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAuthentificationException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsUserDisabledException;
 import org.opencms.security.Messages;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides functions used to check the validity of a user login.<p>
@@ -133,6 +137,9 @@ public class CmsLoginManager {
         }
     }
 
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLoginManager.class);
+
     /** Default token lifetime. */
     public static final long DEFAULT_TOKEN_LIFETIME = 3600 * 24;
 
@@ -169,6 +176,9 @@ public class CmsLoginManager {
     /** The login message, setting this may also disable logins for non-Admin users. */
     private CmsLoginMessage m_loginMessage;
 
+    /** Max inactivity time. */
+    private String m_maxInactive;
+
     /**
      * Creates a new storage for invalid logins.<p>
      *
@@ -176,9 +186,14 @@ public class CmsLoginManager {
      * @param maxBadAttempts the number of bad login attempts allowed before an account is temporarily disabled
      * @param enableSecurity flag to determine if the security option should be enabled on the login dialog
      * @param tokenLifetime the lifetime of authorization tokens, i.e. the time for which they are valid
-     *
+     * @param maxInactive maximum inactivity time
      */
-    public CmsLoginManager(int disableMinutes, int maxBadAttempts, boolean enableSecurity, String tokenLifetime) {
+    public CmsLoginManager(
+        int disableMinutes,
+        int maxBadAttempts,
+        boolean enableSecurity,
+        String tokenLifetime,
+        String maxInactive) {
 
         m_maxBadAttempts = maxBadAttempts;
         if (m_maxBadAttempts >= 0) {
@@ -189,6 +204,7 @@ public class CmsLoginManager {
         }
         m_enableSecurity = enableSecurity;
         m_tokenLifetimeStr = tokenLifetime;
+        m_maxInactive = maxInactive;
     }
 
     /**
@@ -206,6 +222,43 @@ public class CmsLoginManager {
         result.append(KEY_SEPARATOR);
         result.append(remoteAddress);
         return result.toString();
+    }
+
+    /**
+     * Checks whether a user account can be locked because of inactivity.
+     *
+     * @param cms the CMS context
+     * @param user the user to check
+     * @return true if the user may be locked after being inactive for too long
+     */
+    public boolean canLockBecauseOfInactivity(CmsObject cms, CmsUser user) {
+
+        return !user.isManaged()
+            && !OpenCms.getDefaultUsers().isDefaultUser(user.getName())
+            && !OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ROOT_ADMIN);
+    }
+
+    /**
+     * Checks whether the given user has been inactive for longer than the configured limit.<p>
+     *
+     * If no max inactivity time is configured, always returns false.
+     *
+     * @param user the user to check
+     * @return true if the user has been inactive for longer than the configured limit
+     */
+    public boolean checkInactive(CmsUser user) {
+
+        if (m_maxInactive == null) {
+            return false;
+        }
+
+        try {
+            long maxInactive = CmsStringUtil.parseDuration(m_maxInactive);
+            return (System.currentTimeMillis() - user.getLastlogin()) > maxInactive;
+        } catch (Exception e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return false;
+        }
     }
 
     /**
@@ -290,17 +343,26 @@ public class CmsLoginManager {
     }
 
     /**
-     * Gets the authorization token lifetime in seconds.<p>
+     * Gets the max inactivity time.<p>
      *
-     * @return the authorization token lifetime in seconds
+     * @return the max inactivity time
+     */
+    public String getMaxInactive() {
+
+        return m_maxInactive;
+    }
+
+    /**
+     * Gets the authorization token lifetime in milliseconds.<p>
+     *
+     * @return the authorization token lifetime in milliseconds
      */
     public long getTokenLifetime() {
 
-        try {
-            return Long.parseLong(m_tokenLifetimeStr);
-        } catch (NumberFormatException e) {
+        if (m_tokenLifetimeStr == null) {
             return DEFAULT_TOKEN_LIFETIME;
         }
+        return CmsStringUtil.parseDuration(m_tokenLifetimeStr);
     }
 
     /**
