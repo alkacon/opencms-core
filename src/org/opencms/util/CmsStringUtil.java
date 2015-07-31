@@ -221,7 +221,6 @@ public final class CmsStringUtil {
      *
      * @param filename the filename to be changed
      * @param suffix the new suffix of the file
-     *
      * @return the filename with the replaced suffix
      */
     public static String changeFileNameSuffixTo(String filename, String suffix) {
@@ -1256,6 +1255,42 @@ public final class CmsStringUtil {
     public static String padRight(String input, int size) {
 
         return (new PrintfFormat("%-" + size + "s")).sprintf(input);
+    }
+
+    /**
+     * Parses a duration and returns the corresponding number of milliseconds.
+     *
+     * Durations consist of a space-separated list of components of the form {number}{time unit},
+     * for example 1d 5m. The available units are d (days), h (hours), m (months), s (seconds), ms (milliseconds).<p>
+     *
+     * @param durationStr the duration string
+     * @return the corresponding number of milliseconds
+     */
+    public static final long parseDuration(String durationStr) {
+
+        durationStr = durationStr.toLowerCase().trim();
+        String[] units = {"d", "h", "m", "s", "ms"};
+        long[] multipliers = {24L * 60 * 60 * 1000, 60L * 60 * 1000, 60L * 1000, 1000, 1};
+        String numberAndUnitStr = "([0-9]+)([a-z]+)";
+        Pattern numberAndUnit = Pattern.compile(numberAndUnitStr);
+        Matcher matcher = numberAndUnit.matcher(durationStr);
+        long millis = 0;
+        while (matcher.find()) {
+            long number = Long.valueOf(matcher.group(1)).longValue();
+            String unit = matcher.group(2);
+            long multiplier = 0;
+            for (int j = 0; j < units.length; j++) {
+                if (unit.equals(units[j])) {
+                    multiplier = multipliers[j];
+                    break;
+                }
+            }
+            if (multiplier == 0) {
+                LOG.warn("parseDuration: Unknown unit " + unit);
+            }
+            millis += number * multiplier;
+        }
+        return millis;
     }
 
     /**

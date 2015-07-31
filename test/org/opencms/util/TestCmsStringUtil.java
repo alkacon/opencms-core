@@ -128,6 +128,22 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the parseDuration method.<p>
+     */
+    public void testDuration() {
+
+        long second = 1000;
+        long minute = 60 * second;
+        long hour = 60 * minute;
+        long day = 24 * hour;
+
+        assertEquals(day + (5 * minute), CmsStringUtil.parseDuration("   1d 5m  "));
+        assertEquals(hour + 5, CmsStringUtil.parseDuration("1h5ms"));
+        assertEquals(3 * hour, CmsStringUtil.parseDuration("4x3h5y"));
+        assertEquals((5 * second) + 16, CmsStringUtil.parseDuration("5s16ms"));
+    }
+
+    /**
      * Tests for the escape patterns.<p>
      */
     public void testEscapePattern() {
