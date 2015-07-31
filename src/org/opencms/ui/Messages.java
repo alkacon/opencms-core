@@ -36,6 +36,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHANGE_PASSWORD_BUTTON_0 = "GUI_CHANGE_PASSWORD_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CHANGE_PW_FIELD1_0 = "GUI_CHANGE_PW_FIELD1_0";
 
     /** Message constant for key in the resource bundle. */
