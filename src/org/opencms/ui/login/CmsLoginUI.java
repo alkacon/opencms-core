@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinErrorHandler;
+import org.opencms.ui.Messages;
 import org.opencms.ui.login.CmsLoginController.CmsLoginTargetInfo;
 import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.util.CmsFileUtil;
@@ -377,7 +378,8 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
                 A_CmsUI.get().setContent(dlg);
             } else {
 
-                A_CmsUI.get().setError("Invalid authorization token");
+                A_CmsUI.get().setError(
+                    Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_INVALID_TOKEN_0));
                 LOG.info("Invalid authorization token: " + authToken + " / " + validationResult);
                 // display 'invalid token'
             }

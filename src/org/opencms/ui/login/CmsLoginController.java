@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.Messages;
 import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsFrameset;
@@ -228,8 +229,11 @@ public class CmsLoginController {
      */
     public void onClickForgotPassword() {
 
-        A_CmsUI.get().setCenterPanel(600, 450, "Password change mail request").addComponent(
-            new CmsForgotPasswordDialog());
+        A_CmsUI.get().setCenterPanel(
+            600,
+            450,
+            Messages.get().getBundle(A_CmsUI.get().getLocale()).key(
+                Messages.GUI_PWCHANGE_REQUEST_DIALOG_HEADER_0)).addComponent(new CmsForgotPasswordDialog());
     }
 
     /**

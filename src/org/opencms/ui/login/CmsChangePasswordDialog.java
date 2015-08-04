@@ -117,7 +117,8 @@ public class CmsChangePasswordDialog extends VerticalLayout {
                 if (password1.equals(password2)) {
 
                     if (oldPassword.equals(password1)) {
-                        error = "The new password must be different from the current password";
+                        error = Messages.get().getBundle(A_CmsUI.get().getLocale()).key(
+                            Messages.GUI_PWCHANGE_DIFFERENT_PASSWORD_REQUIRED_0);
                     } else {
                         try {
                             m_cms.setPassword(m_user.getName(), oldPassword, password1);

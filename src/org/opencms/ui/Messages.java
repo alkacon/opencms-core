@@ -54,6 +54,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_PLEASE_ENTER_NEW_PASSWORD_0 = "GUI_PLEASE_ENTER_NEW_PASSWORD_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PWCHANGE_DIFFERENT_PASSWORD_REQUIRED_0 = "GUI_PWCHANGE_DIFFERENT_PASSWORD_REQUIRED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PWCHANGE_EMAIL_CAPTION_0 = "GUI_PWCHANGE_EMAIL_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -66,6 +69,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_PWCHANGE_INVALID_EMAIL_0 = "GUI_PWCHANGE_INVALID_EMAIL_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PWCHANGE_INVALID_TOKEN_0 = "GUI_PWCHANGE_INVALID_TOKEN_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PWCHANGE_MAIL_SEND_ERROR_0 = "GUI_PWCHANGE_MAIL_SEND_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
@@ -76,6 +82,9 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PWCHANGE_PASSWORD_MISMATCH_0 = "GUI_PWCHANGE_PASSWORD_MISMATCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PWCHANGE_REQUEST_DIALOG_HEADER_0 = "GUI_PWCHANGE_REQUEST_DIALOG_HEADER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PWCHANGE_SUCCESS_HEADER_0 = "GUI_PWCHANGE_SUCCESS_HEADER_0";

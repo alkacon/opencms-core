@@ -133,7 +133,9 @@ public final class CmsVaadinUtils {
         });
         layout.addComponent(okButton);
         layout.setComponentAlignment(okButton, Alignment.BOTTOM_RIGHT);
-        okButton.setCaption("OK");
+        okButton.setCaption(
+            org.opencms.workplace.Messages.get().getBundle(A_CmsUI.get().getLocale()).key(
+                org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_OK_0));
         window.setContent(panel);
         window.setClosable(false);
         window.setResizable(false);
