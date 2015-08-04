@@ -30,7 +30,6 @@ package org.opencms.ui.login;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -384,9 +383,8 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
                 // display 'invalid token'
             }
 
-        } catch (CmsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
 
     }
