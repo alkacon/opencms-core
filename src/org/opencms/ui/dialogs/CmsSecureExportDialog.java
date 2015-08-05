@@ -49,6 +49,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -69,32 +71,32 @@ public class CmsSecureExportDialog extends CssLayout {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** The Cancel button. */
+    protected Button m_cancelButton;
+
     /** The dialog context. */
     protected I_CmsDialogContext m_context;
 
-    /** The Cancel button. */
-    private Button m_cancelButton;
-
     /** Field for the export setting. */
-    private ComboBox m_exportField;
+    protected ComboBox m_exportField;
 
     /** Field for the export name. */
-    private TextField m_exportNameField;
+    protected TextField m_exportNameField;
 
     /** Field for the 'internal' option. */
-    private CheckBox m_internalField;
+    protected CheckBox m_internalField;
+
+    /** The OK  button. */
+    protected Button m_okButton;
+
+    /** The current resource. */
+    protected CmsResource m_resource;
+
+    /** Field for the secure setting. */
+    protected ComboBox m_secureField;
 
     /** The label to display the online link. */
     private Label m_linkField;
-
-    /** The OK  button. */
-    private Button m_okButton;
-
-    /** The current resource. */
-    private CmsResource m_resource;
-
-    /** Field for the secure setting. */
-    private ComboBox m_secureField;
 
     /**
      * Creates a new instance.<p>
@@ -120,6 +122,24 @@ public class CmsSecureExportDialog extends CssLayout {
         if ((site != null) && !site.hasSecureServer()) {
             m_secureField.setEnabled(false);
         }
+
+        m_internalField.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                Boolean valueObj = (Boolean)(event.getProperty().getValue());
+                if (valueObj.booleanValue()) {
+                    m_secureField.setEnabled(false);
+                    m_exportField.setEnabled(false);
+                } else {
+                    m_secureField.setEnabled(true);
+                    m_exportField.setEnabled(true);
+                }
+
+            }
+        });
 
         m_cancelButton.addClickListener(new ClickListener() {
 
