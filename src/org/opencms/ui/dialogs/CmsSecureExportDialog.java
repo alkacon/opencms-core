@@ -41,6 +41,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.workplace.CmsWorkplaceMessages;
 
 import java.util.Arrays;
 import java.util.List;
@@ -233,10 +234,10 @@ public class CmsSecureExportDialog extends CssLayout {
         combo.addItem("true");
         combo.addItem("false");
         combo.addItem("");
-        combo.setItemCaption("true", "True");
-        combo.setItemCaption("false", "False");
-        combo.setItemCaption("", "Not set");
-
+        CmsWorkplaceMessages wpMessages = OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale());
+        combo.setItemCaption("true", wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TRUE_0));
+        combo.setItemCaption("false", wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_FALSE_0));
+        combo.setItemCaption("", wpMessages.key(org.opencms.workplace.commons.Messages.GUI_SECURE_NOT_SET_0));
     }
 
     /**
