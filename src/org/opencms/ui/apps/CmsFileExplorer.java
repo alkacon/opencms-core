@@ -261,7 +261,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             public void itemClick(ItemClickEvent event) {
 
                 if (event.getButton().equals(MouseButton.LEFT)
-                    && !CmsFileTable.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
+                    && !CmsFileTable.PROPERTY_TYPE_ICON.equals(event.getPropertyId())
+                    && (event.getPropertyId() != null)) { // event.getPropertyId() is actually null when clicking on the icon. Not sure if this is a bug in the current Vaadin version or not.
                     Boolean isFolder = (Boolean)event.getItem().getItemProperty(
                         CmsFileTable.PROPERTY_IS_FOLDER).getValue();
                     if ((isFolder != null) && isFolder.booleanValue()) {
