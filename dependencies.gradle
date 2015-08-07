@@ -169,7 +169,6 @@ dependencies {
     distribution group: 'org.xhtmlrenderer', name: 'flying-saucer-core', version: '9.0.4'
     distribution group: 'org.xhtmlrenderer', name: 'flying-saucer-pdf', version: '9.0.4'
     distribution group: 'com.lowagie', name: 'itext', version: '2.1.7'
-    compile group: 'org.vaadin.addons', name: 'contextmenu', version: '4.5' 
     distribution group: 'org.vaadin.addons', name: 'contextmenu', version: '4.5'
     
     distribution files("lib/runtime/xhtml-dtds-1.0.jar")
