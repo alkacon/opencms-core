@@ -60,6 +60,9 @@ public class OpenCmsTheme {
     public static final String COLOR_TRANSPARENT = "o-color-transparent";
 
     /** CSS style name. */
+    public static final String INLINE_TEXTFIELD = "o-inline-textfield";
+
+    /** CSS style name. */
     public static final String NAVIGATOR_DROPDOWN = "o-navigator-dropdown";
 
     /** CSS style name. */

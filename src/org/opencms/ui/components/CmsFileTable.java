@@ -162,6 +162,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
             Field<?> result = null;
             if (itemId.equals(getEditItemId()) && isEditProperty((String)propertyId)) {
                 result = super.createField(container, itemId, propertyId, uiContext);
+                result.addStyleName(OpenCmsTheme.INLINE_TEXTFIELD);
                 result.addValidator(m_fileEditHandler);
                 if (result instanceof TextField) {
                     ((TextField)result).addShortcutListener(new ShortcutListener("Cancel edit", KeyCode.ESCAPE, null) {
@@ -604,6 +605,9 @@ public class CmsFileTable extends A_CmsCustomComponent {
      */
     void cancelEdit() {
 
+        if (m_editHandler != null) {
+            m_editHandler.cancel();
+        }
         clearEdit();
     }
 

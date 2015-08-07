@@ -380,6 +380,13 @@
   	display: none;  
   }
   
+  /* file explorer styles */
+  .v-table-cell-wrapper > .v-widget.o-inline-textfield{
+  	padding: 2px 4px;
+  	width: 100%;
+  	height: auto;
+  }
+  
   /* fixes tooltip issues */
   .v-tooltip {
   	z-index: 20001 !important;
