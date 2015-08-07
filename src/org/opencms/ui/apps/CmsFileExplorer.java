@@ -33,6 +33,9 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.lock.CmsLockActionRecord;
+import org.opencms.lock.CmsLockActionRecord.LockChange;
+import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -44,6 +47,7 @@ import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.CmsToolBar;
+import org.opencms.ui.components.I_CmsFilePropertyEditHandler;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.dialogs.CmsSecureExportDialog;
 import org.opencms.ui.dialogs.CmsTouchDialog;
@@ -69,6 +73,7 @@ import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener;
 
 import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
@@ -99,6 +104,106 @@ import com.vaadin.ui.themes.ValoTheme;
  * The file explorer app.<p>
  */
 public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener {
+
+    /**
+     * Handles inline editing within the file table.<p>
+     */
+    public class ContextMenuEditHandler implements ContextMenuItemClickListener, I_CmsFilePropertyEditHandler {
+
+        /** The edited content structure id. */
+        private CmsUUID m_editId;
+
+        /** The edited property. */
+        private String m_editProperty;
+
+        /** The lock action record. */
+        private CmsLockActionRecord m_lockActionRecord;
+
+        /**
+         * Constructor.<p>
+         *
+         * @param editId the content structure id
+         * @param editProperty the property to edit
+         */
+        public ContextMenuEditHandler(CmsUUID editId, String editProperty) {
+            m_editId = editId;
+            m_editProperty = editProperty;
+        }
+
+        /**
+         * Cancels the edit process. Unlocks the resource if required.<p>
+         *
+         * @see org.opencms.ui.components.I_CmsFilePropertyEditHandler#cancel()
+         */
+        public void cancel() {
+
+            if (m_lockActionRecord.getChange() == LockChange.locked) {
+                CmsObject cms = A_CmsUI.getCmsObject();
+                try {
+                    CmsResource res = cms.readResource(m_editId);
+                    cms.unlockResource(res);
+                } catch (CmsException e) {
+                    //TODO: show error dialog
+                }
+            }
+        }
+
+        /**
+         * @see org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener#contextMenuItemClicked(org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent)
+         */
+        public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+
+            CmsObject cms = A_CmsUI.getCmsObject();
+            try {
+                CmsResource res = cms.readResource(m_editId);
+                m_lockActionRecord = CmsLockUtil.ensureLock(cms, res);
+                m_fileTable.startEdit(m_editId, m_editProperty, this);
+            } catch (CmsException e) {
+                //TODO: show error dialog
+            }
+        }
+
+        /**
+         * @see org.opencms.ui.components.I_CmsFilePropertyEditHandler#save(java.lang.String)
+         */
+        public void save(String value) {
+
+            try {
+                CmsObject cms = A_CmsUI.getCmsObject();
+                CmsResource res = cms.readResource(m_editId);
+                try {
+                    if (CmsFileTable.PROPERTY_TITLE.equals(m_editProperty)
+                        || CmsFileTable.PROPERTY_NAVIGATION_TEXT.equals(m_editProperty)) {
+
+                        CmsProperty prop = new CmsProperty(m_editProperty, value, null);
+                        cms.writePropertyObject(cms.getSitePath(res), prop);
+                    } else if (CmsFileTable.PROPERTY_RESOURCE_NAME.equals(m_editProperty)) {
+                        String sourcePath = cms.getSitePath(res);
+                        cms.renameResource(
+                            sourcePath,
+                            CmsStringUtil.joinPaths(CmsResource.getParentFolder(sourcePath), value));
+                    }
+                } finally {
+                    if (m_lockActionRecord.getChange() == LockChange.locked) {
+                        cms.unlockResource(res);
+                    }
+
+                }
+            } catch (CmsException e) {
+                //TODO: show error dialog
+            }
+
+        }
+
+        /**
+         * @see org.opencms.ui.components.I_CmsFilePropertyEditHandler#validate(java.lang.String)
+         */
+        public void validate(String value) throws InvalidValueException {
+
+            // TODO validate file name
+
+        }
+    }
 
     /**
      * Context menu click handler which opens a custom dialog.<p>
@@ -200,7 +305,17 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             undo.addItemClickListener(new ContextMenuItemClickHandler(CmsUndoDialog.class));
             ContextMenuItem secureExport = menu.addItem("Secure/Export");
             secureExport.addItemClickListener(new ContextMenuItemClickHandler(CmsSecureExportDialog.class));
-
+            if (structureIds.size() == 1) {
+                CmsUUID editId = structureIds.iterator().next();
+                ContextMenuItem editTitle = menu.addItem("Edit title");
+                editTitle.addItemClickListener(new ContextMenuEditHandler(editId, CmsFileTable.PROPERTY_TITLE));
+                ContextMenuItem editNavText = menu.addItem("Edit navigation text");
+                editNavText.addItemClickListener(
+                    new ContextMenuEditHandler(editId, CmsFileTable.PROPERTY_NAVIGATION_TEXT));
+                ContextMenuItem editResourceName = menu.addItem("Rename");
+                editResourceName.addItemClickListener(
+                    new ContextMenuEditHandler(editId, CmsFileTable.PROPERTY_RESOURCE_NAME));
+            }
         }
 
     }
@@ -223,14 +338,14 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** Saved explorer state used by dialogs after they have finished. */
     protected String m_savedExplorerState = "";
 
+    /** The table containing the contents of the current folder. */
+    CmsFileTable m_fileTable;
+
     /** The currently viewed folder. */
     private CmsUUID m_currentFolder;
 
     /** The current app state. */
     private String m_currentState;
-
-    /** The table containing the contents of the current folder. */
-    private CmsFileTable m_fileTable;
 
     /** The folder tree. */
     private Tree m_fileTree;
@@ -262,7 +377,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
                 if (event.getButton().equals(MouseButton.LEFT)
                     && !CmsFileTable.PROPERTY_TYPE_ICON.equals(event.getPropertyId())
-                    && (event.getPropertyId() != null)) { // event.getPropertyId() is actually null when clicking on the icon. Not sure if this is a bug in the current Vaadin version or not.
+                    && (event.getPropertyId() != null) // event.getPropertyId() is actually null when clicking on the icon. Not sure if this is a bug in the current Vaadin version or not.
+                    && !m_fileTable.isEditProperty((String)event.getPropertyId())) {
                     Boolean isFolder = (Boolean)event.getItem().getItemProperty(
                         CmsFileTable.PROPERTY_IS_FOLDER).getValue();
                     if ((isFolder != null) && isFolder.booleanValue()) {
@@ -484,7 +600,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
      */
     protected I_CmsDialogContext createDialogContext() {
 
-        Set<CmsUUID> selected = m_fileTable.getValue();
+        Set<CmsUUID> selected = m_fileTable.getSelectedIds();
         final List<CmsResource> resources = Lists.newArrayList();
         for (CmsUUID id : selected) {
             try {

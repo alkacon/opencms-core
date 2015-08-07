@@ -29,12 +29,15 @@ package org.opencms.ui.components;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsCustomComponent;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsFileExplorerSettings;
@@ -52,28 +55,141 @@ import java.util.Set;
 
 import org.vaadin.peter.contextmenu.ContextMenu;
 
-import com.google.common.collect.Lists;
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.Validator;
 import com.vaadin.data.util.DefaultItemSorter;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
+import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.DefaultFieldFactory;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.RowHeaderMode;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Table for displaying resources.<p>
  */
 public class CmsFileTable extends A_CmsCustomComponent {
+
+    /**
+     * File item click listener.<p>
+     */
+    public class FileClickListener implements ItemClickListener {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = -4152640820975752518L;
+
+        /**
+         * @see com.vaadin.event.ItemClickEvent.ItemClickListener#itemClick(com.vaadin.event.ItemClickEvent)
+         */
+        public void itemClick(ItemClickEvent event) {
+
+            if (isEditing()) {
+                stopEdit();
+
+            } else if (event.getButton().equals(MouseButton.RIGHT)) {
+                @SuppressWarnings("unchecked")
+                Set<CmsUUID> selection = (Set<CmsUUID>)m_fileTable.getValue();
+                if (selection == null) {
+                    m_fileTable.select(event.getItemId());
+                } else if (!selection.contains(event.getItemId())) {
+                    m_fileTable.setValue(null);
+                    m_fileTable.select(event.getItemId());
+                }
+
+            }
+        }
+    }
+
+    /**
+     * File edit handler.<p>
+     */
+    public class FileEditHandler implements BlurListener, Validator {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = -2286815522247807054L;
+
+        /**
+         * @see com.vaadin.event.FieldEvents.BlurListener#blur(com.vaadin.event.FieldEvents.BlurEvent)
+         */
+        public void blur(BlurEvent event) {
+
+            stopEdit();
+        }
+
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            if (m_editHandler != null) {
+                m_editHandler.validate((String)value);
+            }
+        }
+    }
+
+    /**
+     * Field factory to enable inline editing of individual file properties.<p>
+     */
+    public class FileFieldFactory extends DefaultFieldFactory {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = 3079590603587933576L;
+
+        /**
+         * @see com.vaadin.ui.DefaultFieldFactory#createField(com.vaadin.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
+         */
+        @Override
+        public Field<?> createField(Container container, Object itemId, Object propertyId, Component uiContext) {
+
+            Field<?> result = null;
+            if (itemId.equals(getEditItemId()) && isEditProperty((String)propertyId)) {
+                result = super.createField(container, itemId, propertyId, uiContext);
+                result.addValidator(m_fileEditHandler);
+                if (result instanceof TextField) {
+                    ((TextField)result).addShortcutListener(new ShortcutListener("Cancel edit", KeyCode.ESCAPE, null) {
+
+                        private static final long serialVersionUID = 1L;
+
+                        @Override
+                        public void handleAction(Object sender, Object target) {
+
+                            cancelEdit();
+                        }
+                    });
+                    ((TextField)result).addShortcutListener(new ShortcutListener("Save", KeyCode.ENTER, null) {
+
+                        private static final long serialVersionUID = 1L;
+
+                        @Override
+                        public void handleAction(Object sender, Object target) {
+
+                            stopEdit();
+                        }
+                    });
+                    ((TextField)result).addBlurListener(m_fileEditHandler);
+                }
+                result.focus();
+            }
+            return result;
+        }
+    }
 
     /**
      * Extends the default sorting to differentiate between files and folder when sorting by name.<p>
@@ -120,7 +236,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
     public static final String PROPERTY_IS_FOLDER = "isFolder";
 
     /** File table property name. */
-    public static final String PROPERTY_NAVIGATION_TEXT = "navigationText";
+    public static final String PROPERTY_NAVIGATION_TEXT = CmsPropertyDefinition.PROPERTY_NAVTEXT;
 
     /** File table property name. */
     public static final String PROPERTY_PERMISSIONS = "permissions";
@@ -141,7 +257,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
     public static final String PROPERTY_STATE_NAME = "stateName";
 
     /** File table property name. */
-    public static final String PROPERTY_TITLE = "title";
+    public static final String PROPERTY_TITLE = CmsPropertyDefinition.PROPERTY_TITLE;
 
     /** File table property name. */
     public static final String PROPERTY_TYPE_ICON = "typeIcon";
@@ -158,18 +274,35 @@ public class CmsFileTable extends A_CmsCustomComponent {
     /** The serial version id. */
     private static final long serialVersionUID = 5460048685141699277L;
 
+    /** File edit event handler. */
+    FileEditHandler m_fileEditHandler = new FileEditHandler();
+
     /** The resource data container. */
     IndexedContainer m_container;
 
+    /** The edited item id. */
+    private CmsUUID m_editItemId;
+
+    /** The edited property id. */
+    private String m_editProperty;
+
     /** The table used to display the resource data. */
-    private Table m_fileTable;
+    Table m_fileTable;
 
-    private ContextMenu m_menu;
+    /** The context menu. */
+    ContextMenu m_menu;
 
-    private I_CmsContextMenuBuilder m_menuBuilder;
+    /** The context menu builder. */
+    I_CmsContextMenuBuilder m_menuBuilder;
 
     /** The messages. */
     private CmsMessages messages;
+
+    /** The current file property edit handler. */
+    I_CmsFilePropertyEditHandler m_editHandler;
+
+    /** The original edit value. */
+    private String m_originalEditValue;
 
     /**
      * Default constructor.<p>
@@ -196,6 +329,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_container.addContainerProperty(PROPERTY_STATE, CmsResourceState.class, null);
         m_container.addContainerProperty(PROPERTY_USER_LOCKED, String.class, null);
         m_container.setItemSorter(new FileSorter());
+
         m_fileTable = new Table();
         setCompositionRoot(m_fileTable);
         m_fileTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
@@ -203,6 +337,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_fileTable.setColumnCollapsingAllowed(true);
         m_fileTable.setSelectable(true);
         m_fileTable.setMultiSelect(true);
+        m_fileTable.setTableFieldFactory(new FileFieldFactory());
 
         m_fileTable.setContainerDataSource(m_container);
 
@@ -254,27 +389,15 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_fileTable.setColumnCollapsed(PROPERTY_STATE_NAME, true);
         m_fileTable.setColumnCollapsed(PROPERTY_USER_LOCKED, true);
 
-        m_fileTable.addItemClickListener(new ItemClickListener() {
-
-            public void itemClick(ItemClickEvent event) {
-
-                if (event.getButton().equals(MouseButton.RIGHT)) {
-                    Set<CmsUUID> selection = (Set<CmsUUID>)m_fileTable.getValue();
-                    if (selection == null) {
-                        m_fileTable.select(event.getItemId());
-                    } else if (!selection.contains(event.getItemId())) {
-                        m_fileTable.setValue(null);
-                        m_fileTable.select(event.getItemId());
-                    }
-
-                }
-            }
-        });
+        m_fileTable.addItemClickListener(new FileClickListener());
         m_menu = new ContextMenu();
         m_fileTable.addValueChangeListener(new ValueChangeListener() {
 
+            private static final long serialVersionUID = 1L;
+
             public void valueChange(ValueChangeEvent event) {
 
+                @SuppressWarnings("unchecked")
                 Set<CmsUUID> selectedIds = (Set<CmsUUID>)event.getProperty().getValue();
                 if ((selectedIds != null) && !selectedIds.isEmpty()) {
                     m_menu.removeAllItems();
@@ -342,38 +465,9 @@ public class CmsFileTable extends A_CmsCustomComponent {
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         m_container.removeAllItems();
         m_container.removeAllContainerFilters();
-        CmsResourceUtil resUtil = new CmsResourceUtil(cms);
         for (CmsResource resource : resources) {
             try {
-                resUtil.setResource(resource);
-                Item resourceItem = m_container.addItem(resource.getStructureId());
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                    type.getTypeName());
-                resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
-                    new ExternalResource(
-                        CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getIcon())));
-                resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME).setValue(resource.getName());
-                resourceItem.getItemProperty(PROPERTY_TITLE).setValue(resUtil.getTitle());
-                resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(resUtil.getNavText());
-                resourceItem.getItemProperty(PROPERTY_RESOURCE_TYPE).setValue(
-                    CmsWorkplaceMessages.getResourceTypeName(wpLocale, type.getTypeName()));
-                resourceItem.getItemProperty(PROPERTY_IS_FOLDER).setValue(Boolean.valueOf(resource.isFolder()));
-                if (resource.isFile()) {
-                    resourceItem.getItemProperty(PROPERTY_SIZE).setValue(Integer.valueOf(resource.getLength()));
-                }
-                resourceItem.getItemProperty(PROPERTY_PERMISSIONS).setValue(resUtil.getPermissionString());
-                resourceItem.getItemProperty(PROPERTY_DATE_MODIFIED).setValue(
-                    messages.getDateTime(resource.getDateLastModified()));
-                resourceItem.getItemProperty(PROPERTY_USER_MODIFIED).setValue(resUtil.getUserLastModified());
-                resourceItem.getItemProperty(PROPERTY_DATE_CREATED).setValue(
-                    messages.getDateTime(resource.getDateCreated()));
-                resourceItem.getItemProperty(PROPERTY_USER_CREATED).setValue(resUtil.getUserCreated());
-                resourceItem.getItemProperty(PROPERTY_DATE_RELEASED).setValue(resUtil.getDateReleased());
-                resourceItem.getItemProperty(PROPERTY_DATE_EXPIRED).setValue(resUtil.getDateExpired());
-                resourceItem.getItemProperty(PROPERTY_STATE_NAME).setValue(resUtil.getStateName());
-                resourceItem.getItemProperty(PROPERTY_STATE).setValue(resource.getState());
-                resourceItem.getItemProperty(PROPERTY_USER_LOCKED).setValue(resUtil.getLockedByName());
+                fillItem(cms, resource, wpLocale);
             } catch (CmsException e) {
                 e.printStackTrace();
                 Notification.show(e.getMessage());
@@ -383,11 +477,11 @@ public class CmsFileTable extends A_CmsCustomComponent {
     }
 
     /**
-     * Filters the displayed resources.<p>
-     * Only resources where either the resource name, the title or the nav-text contains the given substring are shown.<p>
-     *
-     * @param search the search term
-     */
+    * Filters the displayed resources.<p>
+    * Only resources where either the resource name, the title or the nav-text contains the given substring are shown.<p>
+    *
+    * @param search the search term
+    */
     public void filterTable(String search) {
 
         m_container.removeAllContainerFilters();
@@ -433,11 +527,32 @@ public class CmsFileTable extends A_CmsCustomComponent {
         return fileTableState;
     }
 
-    public Set<CmsUUID> getValue() {
+    /**
+     * Returns if a file property is being edited.<p>
+     * @return <code>true</code> if a file property is being edited
+     */
+    public boolean isEditing() {
 
-        return (Set<CmsUUID>)m_fileTable.getValue();
+        return m_editItemId != null;
     }
 
+    /**
+     * Returns if the given property is being edited.<p>
+     *
+     * @param propertyId the property id
+     *
+     * @return <code>true</code> if the given property is being edited
+     */
+    public boolean isEditProperty(String propertyId) {
+
+        return (m_editProperty != null) && m_editProperty.equals(propertyId);
+    }
+
+    /**
+     * Sets the menu builder.<p>
+     *
+     * @param builder the menu builder
+     */
     public void setMenuBuilder(I_CmsContextMenuBuilder builder) {
 
         m_menuBuilder = builder;
@@ -460,10 +575,139 @@ public class CmsFileTable extends A_CmsCustomComponent {
         }
     }
 
-    List<CmsResource> getSelectedItems() {
+    /**
+     * Starts inline editing of the given file property.<p>
+     *
+     * @param itemId the item resource structure id
+     * @param propertyId the property to edit
+     * @param editHandler the edit handler
+     */
+    public void startEdit(CmsUUID itemId, String propertyId, I_CmsFilePropertyEditHandler editHandler) {
 
-        List<CmsResource> result = Lists.newArrayList();
-        return result;
+        m_editItemId = itemId;
+        m_editProperty = propertyId;
+        m_originalEditValue = (String)m_container.getItem(m_editItemId).getItemProperty(m_editProperty).getValue();
+        m_editHandler = editHandler;
+        m_fileTable.setEditable(true);
 
     }
+
+    /**
+     * Cancels the current edit process.<p>
+     */
+    void cancelEdit() {
+
+        clearEdit();
+    }
+
+    /**
+     * Returns the edit item id.<p>
+     *
+     * @return the edit item id
+     */
+    CmsUUID getEditItemId() {
+
+        return m_editItemId;
+    }
+
+    /**
+     * Returns the edit property id.<p>
+     *
+     * @return the edit property id
+     */
+    String getEditProperty() {
+
+        return m_editProperty;
+    }
+
+    /**
+     * Stops the current edit process to save the changed property value.<p>
+     */
+    void stopEdit() {
+
+        if (m_editHandler != null) {
+            String value = (String)m_container.getItem(m_editItemId).getItemProperty(m_editProperty).getValue();
+            if (!value.equals(m_originalEditValue)) {
+                m_editHandler.validate(value);
+                m_editHandler.save(value);
+            }
+        }
+        clearEdit();
+    }
+
+    /**
+     * Clears the current edit process.<p>
+     */
+    private void clearEdit() {
+
+        m_fileTable.setEditable(false);
+        if (m_editItemId != null) {
+            updateItem(m_editItemId);
+        }
+        m_editItemId = null;
+        m_editProperty = null;
+        m_editHandler = null;
+
+    }
+
+    /**
+     * Fills the file item data.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource
+     * @param locale the workplace locale
+     *
+     * @throws CmsLoaderException in case type information is not available
+     */
+    private void fillItem(CmsObject cms, CmsResource resource, Locale locale) throws CmsLoaderException {
+
+        Item resourceItem = m_container.getItem(resource.getStructureId());
+        if (resourceItem == null) {
+            resourceItem = m_container.addItem(resource.getStructureId());
+        }
+        CmsResourceUtil resUtil = new CmsResourceUtil(cms);
+        resUtil.setResource(resource);
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+        resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
+            new ExternalResource(CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getIcon())));
+        resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME).setValue(resource.getName());
+        resourceItem.getItemProperty(PROPERTY_TITLE).setValue(resUtil.getTitle());
+        resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(resUtil.getNavText());
+        resourceItem.getItemProperty(PROPERTY_RESOURCE_TYPE).setValue(
+            CmsWorkplaceMessages.getResourceTypeName(locale, type.getTypeName()));
+        resourceItem.getItemProperty(PROPERTY_IS_FOLDER).setValue(Boolean.valueOf(resource.isFolder()));
+        if (resource.isFile()) {
+            resourceItem.getItemProperty(PROPERTY_SIZE).setValue(Integer.valueOf(resource.getLength()));
+        }
+        resourceItem.getItemProperty(PROPERTY_PERMISSIONS).setValue(resUtil.getPermissionString());
+        resourceItem.getItemProperty(PROPERTY_DATE_MODIFIED).setValue(
+            messages.getDateTime(resource.getDateLastModified()));
+        resourceItem.getItemProperty(PROPERTY_USER_MODIFIED).setValue(resUtil.getUserLastModified());
+        resourceItem.getItemProperty(PROPERTY_DATE_CREATED).setValue(messages.getDateTime(resource.getDateCreated()));
+        resourceItem.getItemProperty(PROPERTY_USER_CREATED).setValue(resUtil.getUserCreated());
+        resourceItem.getItemProperty(PROPERTY_DATE_RELEASED).setValue(resUtil.getDateReleased());
+        resourceItem.getItemProperty(PROPERTY_DATE_EXPIRED).setValue(resUtil.getDateExpired());
+        resourceItem.getItemProperty(PROPERTY_STATE_NAME).setValue(resUtil.getStateName());
+        resourceItem.getItemProperty(PROPERTY_STATE).setValue(resource.getState());
+        resourceItem.getItemProperty(PROPERTY_USER_LOCKED).setValue(resUtil.getLockedByName());
+    }
+
+    /**
+     * Updates the given item in the file table.<p>
+     *
+     * @param itemId the item id
+     */
+    private void updateItem(CmsUUID itemId) {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        try {
+            CmsResource resource = cms.readResource(itemId);
+            fillItem(cms, resource, OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+        } catch (CmsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
 }
