@@ -25,26 +25,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui;
-
-import org.opencms.file.CmsResource;
+package org.opencms.ui.contextmenu;
 
 import java.util.List;
 
-import org.vaadin.peter.contextmenu.ContextMenu;
-
 /**
- * Builds an explorer context menu based on the set of selected resources' IDs.<p>
+ * Interface for classes which provide context menu items.<p>
  */
-public interface I_CmsContextMenuBuilder {
+public interface I_CmsContextMenuItemProvider {
 
     /**
-     * Fills the given context menu with options appropriate for the selected resources.<p>
+     * Gets a list of available context menu items.<p>
      *
-     * @param selectedResources the selected resources
-     *
-     * @param menu the menu
+     * @return the available context menu items
      */
-    void buildContextMenu(List<CmsResource> selectedResources, ContextMenu menu);
-
+    List<I_CmsContextMenuItem> getMenuItems();
 }

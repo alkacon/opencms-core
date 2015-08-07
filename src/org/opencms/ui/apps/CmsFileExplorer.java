@@ -42,27 +42,21 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.components.CmsContextMenuDialogPanel;
-import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
-import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsFilePropertyEditHandler;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
-import org.opencms.ui.dialogs.CmsSecureExportDialog;
-import org.opencms.ui.dialogs.CmsTouchDialog;
-import org.opencms.ui.dialogs.CmsUndoDialog;
-import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
+import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
+import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
+import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsTreeNode;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.explorer.CmsResourceUtil;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -71,7 +65,6 @@ import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener;
 
-import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.HierarchicalContainer;
@@ -80,7 +73,6 @@ import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
@@ -88,7 +80,6 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
@@ -100,7 +91,6 @@ import com.vaadin.ui.Tree.CollapseListener;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
 import com.vaadin.ui.Tree.ItemStyleGenerator;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -209,107 +199,20 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     }
 
     /**
-     * Context menu click handler which opens a custom dialog.<p>
-     */
-    protected class ContextMenuItemClickHandler implements ContextMenuItemClickListener {
-
-        /** The context menu dialog class. */
-        private Class<? extends Component> m_dialogClass;
-
-        /**
-         * Creates a new instance.<p>
-         *
-         * @param dialogClass the context menu dialog class
-         */
-        public ContextMenuItemClickHandler(Class<? extends Component> dialogClass) {
-            m_dialogClass = dialogClass;
-        }
-
-        /**
-         * @see org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener#contextMenuItemClicked(org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent)
-         */
-        @SuppressWarnings("synthetic-access")
-        public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-
-            I_CmsDialogContext context = createDialogContext();
-            List<CmsResource> resources = context.getResources();
-            Component dialog = instantiate(m_dialogClass, context);
-            CmsContextMenuDialogPanel dialogPanel = new CmsContextMenuDialogPanel();
-            try {
-                if (resources.size() == 1) {
-                    CmsResourceUtil resUtil = new CmsResourceUtil(context.getCms(), resources.get(0));
-                    final CmsResourceUtil resUtil1 = resUtil;
-                    final Locale locale = Locale.ENGLISH;
-                    m_appContext.setAppIcon(new ExternalResource(resUtil1.getBigIconPath()));
-                    m_appContext.setAppInfo(new VerticalLayout() {
-
-                        private static final long serialVersionUID = 1L;
-
-                        {
-                            addComponent(new Label(resUtil1.getGalleryTitle(locale)));
-                            addComponent(new Label(resUtil1.getGalleryDescription(locale)));
-                        }
-                    });
-                } else if (resources.size() > 1) {
-                    for (CmsResource resource : resources) {
-                        CmsResourceUtil resUtil = new CmsResourceUtil(context.getCms(), resource);
-                        Locale locale = Locale.ENGLISH;
-                        dialogPanel.addResourceInfo(
-                            new CmsResourceInfo(
-                                resUtil.getGalleryTitle(locale),
-                                resUtil.getGalleryDescription(locale),
-                                resUtil.getBigIconPath()));
-                    }
-                }
-            } catch (Exception e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-            dialogPanel.setContent(dialog);
-            m_savedExplorerState = CmsAppWorkplaceUi.get().getNavigator().getState();
-            CmsAppWorkplaceUi.get().changeCurrentAppState(CmsAppWorkplaceUi.get().getAppState() + "#dialog");
-            m_appContext.setAppContent(dialogPanel);
-        }
-
-        /**
-         * Creates a new instance of the given context menu dialog class.<p>
-         *
-         * @param actionClass the context menu dialog class
-         * @param context the dialog context to pass into the constructor of the context menu dialog
-         *
-         * @return the new context menu dialog instance
-         */
-        private Component instantiate(Class<? extends Component> actionClass, I_CmsDialogContext context) {
-
-            try {
-                Constructor<? extends Component> constructor = actionClass.getConstructor(I_CmsDialogContext.class);
-                return constructor.newInstance(context);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-    }
-
-    /**
      * Context menu builder for explorer.<p>
      */
     protected class MenuBuilder implements I_CmsContextMenuBuilder {
 
-        /**
-         * @see org.opencms.ui.I_CmsContextMenuBuilder#buildContextMenu(java.util.Set, org.vaadin.peter.contextmenu.ContextMenu)
-         */
-        public void buildContextMenu(Set<CmsUUID> structureIds, ContextMenu menu) {
+        /** Tree builder used to build the tree of menu items. */
+        private CmsContextMenuTreeBuilder m_treeBuilder;
 
-            ContextMenuItem availability = menu.addItem("Availability");
-            availability.addItemClickListener(new ContextMenuItemClickHandler(CmsAvailabilityDialog.class));
-            ContextMenuItem touch = menu.addItem("Touch");
-            touch.addItemClickListener(new ContextMenuItemClickHandler(CmsTouchDialog.class));
-            ContextMenuItem undo = menu.addItem("Undo");
-            undo.addItemClickListener(new ContextMenuItemClickHandler(CmsUndoDialog.class));
-            ContextMenuItem secureExport = menu.addItem("Secure/Export");
-            secureExport.addItemClickListener(new ContextMenuItemClickHandler(CmsSecureExportDialog.class));
-            if (structureIds.size() == 1) {
-                CmsUUID editId = structureIds.iterator().next();
+        /**
+         * @see org.opencms.ui.I_CmsContextMenuBuilder#buildContextMenu(java.util.List, org.vaadin.peter.contextmenu.ContextMenu)
+         */
+        public void buildContextMenu(List<CmsResource> resources, ContextMenu menu) {
+
+            if (resources.size() == 1) {
+                CmsUUID editId = resources.iterator().next().getStructureId();
                 ContextMenuItem editTitle = menu.addItem("Edit title");
                 editTitle.addItemClickListener(new ContextMenuEditHandler(editId, CmsFileTable.PROPERTY_TITLE));
                 ContextMenuItem editNavText = menu.addItem("Edit navigation text");
@@ -319,6 +222,53 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 editResourceName.addItemClickListener(
                     new ContextMenuEditHandler(editId, CmsFileTable.PROPERTY_RESOURCE_NAME));
             }
+            CmsContextMenuTreeBuilder treeBuilder = new CmsContextMenuTreeBuilder(
+                A_CmsUI.getCmsObject(),
+                m_fileTable.getSelectedResources());
+            m_treeBuilder = treeBuilder;
+            CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildTree(m_menuItemProvider.getMenuItems());
+            for (CmsTreeNode<I_CmsContextMenuItem> node : tree.getChildren()) {
+                createItem(menu, node);
+            }
+
+        }
+
+        /**
+         * Creates a context menu item.<p>
+         *
+         * @param parent the parent (either the context menu itself, or a parent item)
+         * @param node the node which should be added as a context menu item
+         *
+         * @return the created item
+         */
+        private ContextMenuItem createItem(Object parent, CmsTreeNode<I_CmsContextMenuItem> node) {
+
+            final I_CmsContextMenuItem data = node.getData();
+            ContextMenuItem guiMenuItem = null;
+            Locale locale = A_CmsUI.get().getLocale();
+            if (parent instanceof ContextMenu) {
+                guiMenuItem = ((ContextMenu)parent).addItem(data.getTitle(locale));
+            } else {
+                guiMenuItem = ((ContextMenuItem)parent).addItem(data.getTitle(locale));
+            }
+            if (m_treeBuilder.getVisibility(data).isInActive()) {
+                guiMenuItem.setEnabled(false);
+            }
+            if (node.getChildren().size() > 0) {
+                for (CmsTreeNode<I_CmsContextMenuItem> childNode : node.getChildren()) {
+                    createItem(guiMenuItem, childNode);
+                }
+            } else {
+                guiMenuItem.addItemClickListener(new ContextMenuItemClickListener() {
+
+                    public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+
+                        data.executeAction(createDialogContext());
+                    }
+                });
+
+            }
+            return guiMenuItem;
         }
 
     }
@@ -337,6 +287,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
     /** The UI context. */
     protected I_CmsAppUIContext m_appContext;
+
+    /** The menu item provider. */
+    protected I_CmsContextMenuItemProvider m_menuItemProvider = CmsAppWorkplaceUi.get().getMenuItemProvider();
 
     /** Saved explorer state used by dialogs after they have finished. */
     protected String m_savedExplorerState = "";
@@ -374,7 +327,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     public CmsFileExplorer() {
         m_fileTable = new CmsFileTable();
         m_fileTable.setSizeFull();
-        m_fileTable.setMenuBuilder(new MenuBuilder() /**/);
+        m_fileTable.setMenuBuilder(new MenuBuilder());
         m_fileTable.addItemClickListener(new ItemClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -618,44 +571,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
      */
     protected I_CmsDialogContext createDialogContext() {
 
-        Set<CmsUUID> selected = m_fileTable.getSelectedIds();
-        final List<CmsResource> resources = Lists.newArrayList();
-        for (CmsUUID id : selected) {
-            try {
-                CmsResource res = A_CmsUI.getCmsObject().readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
-                resources.add(res);
-            } catch (CmsException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        }
-
-        return new I_CmsDialogContext() {
-
-            public CmsObject getCms() {
-
-                return A_CmsUI.getCmsObject();
-            }
-
-            public List<CmsResource> getResources() {
-
-                return resources;
-            }
-
-            public void onError(Throwable error) {
-
-                CmsErrorDialog err = new CmsErrorDialog(error, this);
-                m_appContext.setAppContent(err);
-            }
-
-            public void onFinish(Object result) {
-
-                CmsAppWorkplaceUi.get().getNavigator().navigateTo(m_savedExplorerState);
-            }
-
-        };
-
+        return new CmsExplorerDialogContext(m_appContext, m_fileTable.getSelectedResources());
     }
 
     /**

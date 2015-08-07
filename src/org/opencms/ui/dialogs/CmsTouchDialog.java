@@ -55,11 +55,17 @@ import com.vaadin.ui.CssLayout;
  */
 public class CmsTouchDialog extends CssLayout {
 
+    /** The log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsTouchDialog.class);
+
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /** The log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsTouchDialog.class);
+    /** The dialog context. */
+    protected I_CmsDialogContext m_context;
+
+    /** The Cancel button. */
+    private Button m_cancelButton;
 
     /** The date selection field. */
     private CmsDateField m_dateField;
@@ -67,17 +73,11 @@ public class CmsTouchDialog extends CssLayout {
     /** Check box to enable/disable modification of children. */
     private CheckBox m_modifySubresourcesField;
 
-    /** Checkbox to enable/disable rewriting of contents. */
-    private CheckBox m_rewriteContentField;
-
     /** The OK  button. */
     private Button m_okButton;
 
-    /** The Cancel button. */
-    private Button m_cancelButton;
-
-    /** The dialog context. */
-    protected I_CmsDialogContext m_context;
+    /** Checkbox to enable/disable rewriting of contents. */
+    private CheckBox m_rewriteContentField;
 
     /**
      * Creates a new instance.<p>
@@ -107,7 +107,7 @@ public class CmsTouchDialog extends CssLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                m_context.onFinish(null);
+                m_context.finish(null);
             }
 
         });
@@ -120,9 +120,9 @@ public class CmsTouchDialog extends CssLayout {
 
                 try {
                     touchFiles();
-                    m_context.onFinish(null);
+                    m_context.finish(null);
                 } catch (Exception e) {
-                    m_context.onError(e);
+                    m_context.error(e);
                 }
             }
         });

@@ -32,14 +32,21 @@ import org.opencms.file.CmsResource;
 
 import java.util.List;
 
+import com.vaadin.ui.Component;
+
+/**
+ * Context for dialogs opened from the context menu.<p>
+ */
 public interface I_CmsDialogContext {
 
-    public void onError(Throwable error);
+    public void error(Throwable error);
 
-    public void onFinish(Object result);
+    public void finish(Object result);
 
     CmsObject getCms();
 
     List<CmsResource> getResources();
+
+    void start(String title, Component dialog);
 
 }

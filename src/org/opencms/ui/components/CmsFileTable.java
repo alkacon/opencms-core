@@ -31,10 +31,12 @@ import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsCustomComponent;
 import org.opencms.ui.A_CmsUI;
@@ -53,8 +55,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 import org.vaadin.peter.contextmenu.ContextMenu;
 
+import com.google.common.collect.Lists;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -276,8 +281,14 @@ public class CmsFileTable extends A_CmsCustomComponent {
     /** File table property name. */
     public static final String PROPERTY_USER_MODIFIED = "userModified";
 
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFileTable.class);
+
     /** The serial version id. */
     private static final long serialVersionUID = 5460048685141699277L;
+
+    /** The selected resources. */
+    protected List<CmsResource> m_currentResources = Lists.newArrayList();
 
     /** The resource data container. */
     IndexedContainer m_container;
@@ -403,13 +414,27 @@ public class CmsFileTable extends A_CmsCustomComponent {
 
             private static final long serialVersionUID = 1L;
 
+            @SuppressWarnings("synthetic-access")
             public void valueChange(ValueChangeEvent event) {
 
                 @SuppressWarnings("unchecked")
                 Set<CmsUUID> selectedIds = (Set<CmsUUID>)event.getProperty().getValue();
-                if ((selectedIds != null) && !selectedIds.isEmpty()) {
+                List<CmsResource> selectedResources = Lists.newArrayList();
+                for (CmsUUID id : selectedIds) {
+                    try {
+                        A_CmsUI.get();
+                        CmsResource resource = A_CmsUI.getCmsObject().readResource(id, CmsResourceFilter.ALL);
+                        selectedResources.add(resource);
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+
+                }
+                m_currentResources = selectedResources;
+
+                if (!selectedIds.isEmpty()) {
                     m_menu.removeAllItems();
-                    m_menuBuilder.buildContextMenu(selectedIds, m_menu);
+                    m_menuBuilder.buildContextMenu(selectedResources, m_menu);
                 }
             }
         });
@@ -511,6 +536,16 @@ public class CmsFileTable extends A_CmsCustomComponent {
     public Set<CmsUUID> getSelectedIds() {
 
         return (Set<CmsUUID>)m_fileTable.getValue();
+    }
+
+    /**
+     * Gets the list of selected resources.<p>
+     *
+     * @return the list of selected resources
+     */
+    public List<CmsResource> getSelectedResources() {
+
+        return m_currentResources;
     }
 
     /**

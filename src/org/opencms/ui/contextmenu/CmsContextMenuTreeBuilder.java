@@ -1,0 +1,239 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.ui.contextmenu;
+
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsLog;
+import org.opencms.util.CmsTreeNode;
+import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
+/**
+ * Helper class for building context menus from the list of available context menu items.<p>
+ */
+public class CmsContextMenuTreeBuilder {
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsContextMenuTreeBuilder.class);
+
+    /** The current Cms context. */
+    private CmsObject m_cms;
+
+    /** The list of resources for which to build the context menu. */
+    private List<CmsResource> m_resources;
+
+    /** Cached visibilities for context menu entries. */
+    private IdentityHashMap<I_CmsContextMenuItem, CmsMenuItemVisibilityMode> m_visiblities = new IdentityHashMap<I_CmsContextMenuItem, CmsMenuItemVisibilityMode>();
+
+    /**
+     * Creates a new instance.<p>
+     *
+     * @param cms the CMS context
+     * @param resources the resources for which the context menu should be build
+     */
+    public CmsContextMenuTreeBuilder(CmsObject cms, List<CmsResource> resources) {
+        m_cms = cms;
+        m_resources = resources;
+    }
+
+    /**
+     * Builds the complete context menu from the given available items.<p>
+     *
+     * @param availableItems the available items
+     *
+     * @return the complete context menu
+     */
+    public CmsTreeNode<I_CmsContextMenuItem> buildAll(List<I_CmsContextMenuItem> availableItems) {
+
+        List<I_CmsContextMenuItem> visibleItems = filterVisible(availableItems, m_cms, m_resources);
+        CmsTreeNode<I_CmsContextMenuItem> result = buildTree(visibleItems);
+        removeEmptySubtrees(result);
+        return result;
+
+    }
+
+    /**
+     * Builds a tree from a list of available context menu items.<p>
+     *
+     * The root node of the returned tree has no useful data, its child nodes correspond to the top-level
+     * entries of the ccontext menu.
+     *
+     * @param items the available context menu items
+     * @return the context menu item tree
+     */
+    public CmsTreeNode<I_CmsContextMenuItem> buildTree(List<I_CmsContextMenuItem> items) {
+
+        items = Lists.newArrayList(items);
+
+        // First sort by priority and then use a map with the id as the key to store the items,
+        // eliminating items with the same id but a lower priority than another item
+
+        Collections.sort(items, new Comparator<I_CmsContextMenuItem>() {
+
+            public int compare(I_CmsContextMenuItem a, I_CmsContextMenuItem b) {
+
+                return Integer.compare(a.getPriority(), b.getPriority());
+            }
+        });
+        LinkedHashMap<String, I_CmsContextMenuItem> itemsById = Maps.newLinkedHashMap();
+        for (I_CmsContextMenuItem item : items) {
+            String id = item.getId();
+            I_CmsContextMenuItem prevItem = itemsById.get(id);
+            if (prevItem != null) {
+                LOG.info(
+                    "Discarding overridden context menu item " + prevItem + " because of higher priority item " + item);
+            }
+            itemsById.put(id, item);
+        }
+
+        // Now sort by order. Since all children of a node should be processed in one iteration of the following loop,
+        // this order also applies to the child order of each tree node built in the next step
+        List<I_CmsContextMenuItem> uniqueItems = Lists.newArrayList(itemsById.values());
+        Collections.sort(uniqueItems, new Comparator<I_CmsContextMenuItem>() {
+
+            public int compare(I_CmsContextMenuItem a, I_CmsContextMenuItem b) {
+
+                return Integer.compare(a.getOrder(), b.getOrder());
+            }
+        });
+        Set<String> processedIds = Sets.newHashSet();
+        boolean changed = true;
+        Map<String, CmsTreeNode<I_CmsContextMenuItem>> treesById = Maps.newHashMap();
+
+        // Create childless tree node for each item
+        for (I_CmsContextMenuItem item : itemsById.values()) {
+            CmsTreeNode<I_CmsContextMenuItem> node = new CmsTreeNode<I_CmsContextMenuItem>();
+            node.setData(item);
+            treesById.put(item.getId(), node);
+        }
+        CmsTreeNode<I_CmsContextMenuItem> root = new CmsTreeNode<I_CmsContextMenuItem>();
+
+        // Use null as the root node, which does not have any useful data
+        treesById.put(null, root);
+
+        // Iterate through list multiple times, each time only processing those items whose parents
+        // we have encountered in a previous iteration (actually, in the last iteration). We do this so that the resulting
+        // tree is actually a tree and contains no cycles, even if there is a reference cycle between the context menu items via their parent ids.
+        // (Items which form such a cycle will never be reached.)
+        while (changed) {
+            changed = false;
+            Iterator<I_CmsContextMenuItem> iterator = uniqueItems.iterator();
+            Set<String> currentLevel = Sets.newHashSet();
+            while (iterator.hasNext()) {
+                I_CmsContextMenuItem currentItem = iterator.next();
+                String parentId = currentItem.getParentId();
+                if ((parentId == null) || processedIds.contains(parentId)) {
+                    changed = true;
+                    iterator.remove();
+                    currentLevel.add(currentItem.getId());
+                    treesById.get(parentId).addChild(treesById.get(currentItem.getId()));
+                }
+            }
+            processedIds.addAll(currentLevel);
+        }
+        return root;
+    }
+
+    /**
+     * Filters out invisible context menu items from a given list.<p>
+     *
+     * @param items the items
+     * @param cms the CMS context to use
+     * @param resources the resources for which the context menu should be used
+     *
+     * @return the list of context menu items
+     */
+    public List<I_CmsContextMenuItem> filterVisible(
+        List<I_CmsContextMenuItem> items,
+        CmsObject cms,
+        List<CmsResource> resources) {
+
+        List<I_CmsContextMenuItem> result = Lists.newArrayList();
+        for (I_CmsContextMenuItem item : items) {
+            CmsMenuItemVisibilityMode visibility = getVisibility(item);
+            if (!visibility.isInVisible()) {
+                result.add(item);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Gets the visibility for a given item (cached, if possible).<p>
+     *
+     * @param item the item
+     * @return the visibility of that item
+     */
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsContextMenuItem item) {
+
+        CmsMenuItemVisibilityMode result = m_visiblities.get(item);
+        if (result == null) {
+            result = item.getVisibility(m_cms, m_resources);
+            m_visiblities.put(item, result);
+        }
+        return result;
+    }
+
+    /**
+     * Recursively remove subtrees (destructively!) which do not contain any 'leaf' context menu items.<p>
+     *
+     * @param root the root of the tree to process
+     */
+    public void removeEmptySubtrees(CmsTreeNode<I_CmsContextMenuItem> root) {
+
+        List<CmsTreeNode<I_CmsContextMenuItem>> children = root.getChildren();
+        if ((root.getData() != null) && root.getData().isLeafItem()) {
+            children.clear();
+        } else {
+            Iterator<CmsTreeNode<I_CmsContextMenuItem>> iter = children.iterator();
+            while (iter.hasNext()) {
+                CmsTreeNode<I_CmsContextMenuItem> node = iter.next();
+                removeEmptySubtrees(node);
+                if ((node.getData() != null) && !node.getData().isLeafItem() && (node.getChildren().size() == 0)) {
+                    iter.remove();
+                }
+            }
+        }
+    }
+
+}

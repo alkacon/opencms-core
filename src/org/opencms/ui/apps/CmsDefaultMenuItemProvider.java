@@ -25,26 +25,32 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui;
+package org.opencms.ui.apps;
 
-import org.opencms.file.CmsResource;
+import org.opencms.ui.contextmenu.CmsDialogContextMenuItem;
+import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
+import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
+import org.opencms.ui.dialogs.CmsSecureExportDialog;
+import org.opencms.ui.dialogs.CmsUndoDialog;
+import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
 
+import java.util.Arrays;
 import java.util.List;
 
-import org.vaadin.peter.contextmenu.ContextMenu;
-
 /**
- * Builds an explorer context menu based on the set of selected resources' IDs.<p>
+ * Default implementation of menu item provider.<p>
  */
-public interface I_CmsContextMenuBuilder {
+public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider {
 
     /**
-     * Fills the given context menu with options appropriate for the selected resources.<p>
-     *
-     * @param selectedResources the selected resources
-     *
-     * @param menu the menu
+     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider#getMenuItems()
      */
-    void buildContextMenu(List<CmsResource> selectedResources, ContextMenu menu);
+    public List<I_CmsContextMenuItem> getMenuItems() {
 
+        return Arrays.<I_CmsContextMenuItem> asList(
+            new CmsDialogContextMenuItem("availability", null, CmsAvailabilityDialog.class, "Availability", 0, 0),
+            new CmsDialogContextMenuItem("undo", null, CmsUndoDialog.class, "Undo", 0, 0),
+            new CmsDialogContextMenuItem("secureexport", null, CmsSecureExportDialog.class, "Secure/Export", 0, 0),
+            new CmsDialogContextMenuItem("touch", null, CmsAvailabilityDialog.class, "Touch", 0, 0));
+    }
 }

@@ -53,14 +53,17 @@ import com.vaadin.ui.CssLayout;
  */
 public class CmsUndoDialog extends CssLayout {
 
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
-
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUndoDialog.class);
 
-    /** The date selection field. */
-    private CheckBox m_undoMoveField;
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
+    /** The dialog context. */
+    protected I_CmsDialogContext m_context;
+
+    /** The Cancel button. */
+    private Button m_cancelButton;
 
     /** Check box to enable/disable modification of children. */
     private CheckBox m_modifySubresourcesField;
@@ -68,11 +71,8 @@ public class CmsUndoDialog extends CssLayout {
     /** The OK  button. */
     private Button m_okButton;
 
-    /** The Cancel button. */
-    private Button m_cancelButton;
-
-    /** The dialog context. */
-    protected I_CmsDialogContext m_context;
+    /** The date selection field. */
+    private CheckBox m_undoMoveField;
 
     /**
      * Creates a new instance.<p>
@@ -100,7 +100,7 @@ public class CmsUndoDialog extends CssLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                m_context.onFinish(null);
+                m_context.finish(null);
             }
 
         });
@@ -113,9 +113,9 @@ public class CmsUndoDialog extends CssLayout {
 
                 try {
                     undo();
-                    m_context.onFinish(null);
+                    m_context.finish(null);
                 } catch (Exception e) {
-                    m_context.onError(e);
+                    m_context.error(e);
                 }
             }
         });

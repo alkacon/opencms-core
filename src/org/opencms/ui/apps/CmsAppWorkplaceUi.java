@@ -36,6 +36,8 @@ import org.opencms.ui.components.CmsScrollPositionCss;
 import org.opencms.ui.components.CmsWindowCloseExtension;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
+import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.util.CmsStringUtil;
 
 import com.vaadin.annotations.Theme;
@@ -60,8 +62,17 @@ import com.vaadin.ui.UI;
 public class CmsAppWorkplaceUi extends A_CmsUI
 implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListener {
 
+    /** Menu item manager. */
+    private static CmsContextMenuItemProviderGroup m_workplaceMenuItemProvider;
+
     /** The serial version id. */
     private static final long serialVersionUID = -5606711048683809028L;
+
+    static {
+        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
+        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
+        m_workplaceMenuItemProvider.initialize();
+    }
 
     /** The current view in case it implements view change listener. */
     private View m_currentView;
@@ -133,6 +144,16 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
         NavigationState state = new NavigationState(m_navigationStateManager.getState());
         return state.getParams();
+    }
+
+    /**
+     * Gets the menu item provider for the workplace.<p>
+     *
+     * @return the menu item provider
+     */
+    public I_CmsContextMenuItemProvider getMenuItemProvider() {
+
+        return m_workplaceMenuItemProvider;
     }
 
     /**

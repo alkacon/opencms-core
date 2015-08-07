@@ -54,17 +54,17 @@ import com.vaadin.ui.VerticalLayout;
 
 public class CmsAvailabilityDialog extends CssLayout {
 
-    private DateField m_releasedField;
+    private Button m_cancelButton;
+    private I_CmsDialogContext m_dialogContext;
+
     private DateField m_expiredField;
+    private Button m_okButton;
+    private DateField m_releasedField;
+    private CheckBox m_resetExpired;
 
     private CheckBox m_resetReleased;
-    private CheckBox m_resetExpired;
+
     private CheckBox m_subresourceModificationField;
-    private Button m_okButton;
-
-    private Button m_cancelButton;
-
-    private I_CmsDialogContext m_dialogContext;
 
     public CmsAvailabilityDialog(I_CmsDialogContext dialogContext) {
 
@@ -105,9 +105,9 @@ public class CmsAvailabilityDialog extends CssLayout {
                     try {
 
                         changeAvailability();
-                        m_dialogContext.onFinish(null);
+                        m_dialogContext.finish(null);
                     } catch (Throwable t) {
-                        m_dialogContext.onError(t);
+                        m_dialogContext.error(t);
                     }
                 }
             }
@@ -118,7 +118,7 @@ public class CmsAvailabilityDialog extends CssLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                m_dialogContext.onFinish(null);
+                m_dialogContext.finish(null);
             }
         });
 

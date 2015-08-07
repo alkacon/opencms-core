@@ -147,7 +147,7 @@ public class CmsSecureExportDialog extends CssLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                m_context.onFinish(null);
+                m_context.finish(null);
             }
 
         });
@@ -160,9 +160,9 @@ public class CmsSecureExportDialog extends CssLayout {
 
                 try {
                     saveData();
-                    m_context.onFinish(null);
+                    m_context.finish(null);
                 } catch (Exception e) {
-                    m_context.onError(e);
+                    m_context.error(e);
                 }
             }
         });
@@ -188,7 +188,7 @@ public class CmsSecureExportDialog extends CssLayout {
             m_exportNameField.setValue(exportnameValue);
             m_internalField.setValue(Boolean.valueOf(m_resource.isInternal()));
         } catch (CmsException e) {
-            m_context.onError(e);
+            m_context.error(e);
 
         }
     }

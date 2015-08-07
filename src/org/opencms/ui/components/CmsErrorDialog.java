@@ -99,7 +99,7 @@ public class CmsErrorDialog extends CssLayout {
             @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
-                m_dialogContext.onFinish(null);
+                m_dialogContext.finish(null);
             }
         });
     }

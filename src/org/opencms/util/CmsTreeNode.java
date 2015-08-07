@@ -25,26 +25,64 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui;
-
-import org.opencms.file.CmsResource;
+package org.opencms.util;
 
 import java.util.List;
 
-import org.vaadin.peter.contextmenu.ContextMenu;
+import com.google.common.collect.Lists;
 
 /**
- * Builds an explorer context menu based on the set of selected resources' IDs.<p>
+ * Generic tree node which can contain an object of generic type T as data, and which has a mutable list
+ * of child nodes.
+ *
+ * @param <T> the type of data associated with the tree node
  */
-public interface I_CmsContextMenuBuilder {
+public class CmsTreeNode<T> {
+
+    /** The list of child nodes. */
+    private List<CmsTreeNode<T>> m_children = Lists.newArrayList();
+
+    /** The data associated with this node. */
+    private T m_data;
 
     /**
-     * Fills the given context menu with options appropriate for the selected resources.<p>
+     * Adds a child node.<p>
      *
-     * @param selectedResources the selected resources
-     *
-     * @param menu the menu
+     * @param cmsTreeNode the child node to add
      */
-    void buildContextMenu(List<CmsResource> selectedResources, ContextMenu menu);
+    public void addChild(CmsTreeNode<T> cmsTreeNode) {
+
+        m_children.add(cmsTreeNode);
+    }
+
+    /**
+     * Gets the (mutable) list of child nodes.<p>
+     *
+     * @return the list of child nodes
+     */
+    public List<CmsTreeNode<T>> getChildren() {
+
+        return m_children;
+    }
+
+    /**
+     * Gets the data associated with this node.<p>
+     *
+     * @return the data for this node
+     */
+    public T getData() {
+
+        return m_data;
+    }
+
+    /**
+     * Sets the data for this node.<p>
+     *
+     * @param data the data to set
+     */
+    public void setData(T data) {
+
+        m_data = data;
+    }
 
 }
