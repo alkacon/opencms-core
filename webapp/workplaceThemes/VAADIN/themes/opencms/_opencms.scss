@@ -516,5 +516,14 @@
   
   .ocms-button-panel .v-button {
   		min-width: 7em;  
-  } 
+  }
+  
+  @for $i from 1 through 40 {
+  	.o-max-height-#{$i*20} {
+		max-height: 0px + ($i*20);
+	    overflow-y: auto;
+	 }
+  }
+  
+   
 }

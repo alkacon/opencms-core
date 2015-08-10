@@ -40,7 +40,6 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
@@ -48,7 +47,7 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * Dialog used to display error stack traces in the workplace.<p>
  */
-public class CmsErrorDialog extends CssLayout {
+public class CmsErrorDialog extends GridLayout {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -61,9 +60,6 @@ public class CmsErrorDialog extends CssLayout {
 
     /** Error message label. */
     private Label m_errorMessage;
-
-    /** The grid. */
-    private GridLayout m_grid;
 
     /** Warning icon. */
     private Label m_icon;
@@ -89,7 +85,7 @@ public class CmsErrorDialog extends CssLayout {
         m_icon.addStyleName(ValoTheme.LABEL_HUGE);
         m_errorLabel.setContentMode(ContentMode.PREFORMATTED);
         m_errorLabel.setValue(ExceptionUtils.getFullStackTrace(t));
-        m_grid.setComponentAlignment(m_okButton, Alignment.MIDDLE_RIGHT);
+        setComponentAlignment(m_okButton, Alignment.MIDDLE_RIGHT);
         m_errorMessage.setValue(t.getLocalizedMessage());
         m_okButton.addClickListener(new ClickListener() {
 

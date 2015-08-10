@@ -43,6 +43,7 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
 
 /**
  * Dialog context for the explorer.<p>
@@ -58,8 +59,8 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
     /** List of selected resources. */
     private List<CmsResource> m_resources;
 
-    /** Saved explorer state,. */
-    private String m_savedExplorerState;
+    /** The window used to display the dialog. */
+    private Window m_window;
 
     /**
      * Creates a new instance.<p>
@@ -77,8 +78,13 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
      */
     public void error(Throwable error) {
 
+        if (m_window != null) {
+            m_window.close();
+        }
+        m_window = prepareWindow();
         CmsErrorDialog err = new CmsErrorDialog(error, this);
-        m_appContext.setAppContent(err);
+        m_window.setContent(err);
+        A_CmsUI.get().addWindow(m_window);
     }
 
     /**
@@ -86,7 +92,9 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
      */
     public void finish(Object result) {
 
-        CmsAppWorkplaceUi.get().getNavigator().navigateTo(m_savedExplorerState);
+        if (m_window != null) {
+            m_window.close();
+        }
     }
 
     /**
@@ -110,13 +118,13 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
      */
     public void start(String title, Component dialog) {
 
-        m_savedExplorerState = CmsAppWorkplaceUi.get().getNavigator().getState();
-        CmsAppWorkplaceUi.get().changeCurrentAppState(CmsAppWorkplaceUi.get().getAppState() + "#dialog");
         if (dialog != null) {
             CmsContextMenuDialogPanel panel = new CmsContextMenuDialogPanel();
             panel.setContent(dialog);
-            m_appContext.setAppContent(panel);
-
+            m_window = prepareWindow();
+            m_window.setCaption(title);
+            m_window.setContent(panel);
+            A_CmsUI.get().addWindow(m_window);
             try {
                 for (CmsResource resource : m_resources) {
                     CmsResourceUtil resUtil = new CmsResourceUtil(getCms(), resource);
@@ -133,6 +141,24 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
             }
 
         }
+    }
+
+    /**
+     * Initializes the dialog window.<p>
+     *
+     * @return the window to be used by dialogs
+     */
+    protected Window prepareWindow() {
+
+        Window window = new Window();
+        window.setModal(true);
+        window.setClosable(false);
+        window.setWidth("800px");
+        int height = Math.max(400, A_CmsUI.get().getPage().getBrowserWindowHeight() - 200);
+        window.setHeight(height + "px");
+        window.center();
+        return window;
+
     }
 
 }

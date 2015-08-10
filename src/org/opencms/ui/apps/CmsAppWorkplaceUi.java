@@ -54,6 +54,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 
 /**
  * The workplace ui.<p>
@@ -210,6 +211,10 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      * @see com.vaadin.navigator.ViewDisplay#showView(com.vaadin.navigator.View)
      */
     public void showView(View view) {
+
+        for (Window window : A_CmsUI.get().getWindows()) {
+            window.close();
+        }
 
         // remove current component form the view change listeners
         m_currentView = view;
