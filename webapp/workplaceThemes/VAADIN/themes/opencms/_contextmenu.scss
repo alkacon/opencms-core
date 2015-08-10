@@ -1,0 +1,55 @@
+@mixin contextmenu {
+	
+	@include valo;
+	
+	.v-context-menu-container{
+		@include valo-selection-overlay-style;
+	}
+	
+	.v-context-menu {
+		float: left;
+		
+		.v-context-menu-item-basic, .v-context-menu-item-basic-submenu {
+			float: left;
+			clear: left;
+		
+			@include valo-selection-item-style;
+		}
+	
+		.v-context-menu-item-basic-submenu {
+			background: transparent url(img/basic/arrow.png) no-repeat center right;
+		}
+	
+		.v-context-menu-item-basic:focus,
+		.v-context-menu-item-basic-submenu:focus,
+		.v-context-menu-item-basic-open {
+			@include valo-selection-item-selected-style;
+		}
+	
+		.v-context-menu-item-basic.v-context-menu-item-disabled {
+			opacity: 0.3;
+			filter: alpha(opacity = 30);
+			zoom: 1;
+		}
+	
+		.v-context-menu-item-basic-icon-container {
+			float: left;
+			width: 26px;
+			height: 26px;
+			margin-right: 5px;
+			text-align: center;
+			
+			.v-icon {
+				float: left;
+				width: 16px;
+				height: 16px;
+				padding: 5px;
+			}
+		}
+	
+		.v-context-menu-item-basic-text {
+			float: left;
+			padding: 0 20px 0 10px;
+		}
+	}
+}

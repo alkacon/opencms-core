@@ -1,12 +1,9 @@
 @import "variables";
 @import "opencms";
 @import "opencmsfont";
+@import "contextmenu";
 
 @include opencmsfont;
-
-/* styles for addons */ 
-@import "../../../VAADIN/themes/contextmenu/contextmenu.scss";
-
 
 .opencms {
    @include opencms;
