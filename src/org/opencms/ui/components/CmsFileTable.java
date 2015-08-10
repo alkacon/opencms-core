@@ -684,7 +684,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
-            new ExternalResource(CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getIcon())));
+            new ExternalResource(CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon())));
         resourceItem.getItemProperty(PROPERTY_LOCK).setValue(
             new Embedded("Lock", new ExternalResource(CmsWorkplace.getResourceUri(resUtil.getIconPathLock()))));
         resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME).setValue(resource.getName());
