@@ -641,6 +641,9 @@ public class CmsFileTable extends A_CmsCustomComponent {
             if (!value.equals(m_originalEditValue)) {
                 m_editHandler.validate(value);
                 m_editHandler.save(value);
+            } else {
+                // call cancel to ensure unlock
+                m_editHandler.cancel();
             }
         }
         clearEdit();
