@@ -85,6 +85,9 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
@@ -362,6 +365,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** The search field. */
     private TextField m_searchField;
 
+    /** The move up button. */
+    private Button m_upButton;
+
     /**
      * Constructor.<p>
      */
@@ -458,6 +464,18 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         CssLayout wrapper = new CssLayout();
         wrapper.addComponent(m_searchField);
         m_info.addComponent(wrapper, "top:6px; right:15px;");
+
+        // toolbar buttons
+        m_upButton = CmsToolBar.createButton(FontAwesome.ARROW_UP);
+        m_upButton.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                showParentFolder();
+            }
+        });
     }
 
     /**
@@ -505,7 +523,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         context.setAppContent(sp);
         context.setAppInfo(m_info);
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.MAGIC));
-        context.addToolbarButton(CmsToolBar.createButton(FontAwesome.ARROW_UP));
+        context.addToolbarButton(m_upButton);
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.UPLOAD));
 
         populateFolderTree();
@@ -666,7 +684,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 }
             }
             ((HierarchicalContainer)m_fileTree.getContainerDataSource()).setChildrenAllowed(folderId, hasFolderChild);
-
+            updateUpButtonStatus();
             String sitePath = folder.getRootPath().equals(cms.getRequestContext().getSiteRoot() + "/")
             ? ""
             : cms.getSitePath(folder);
@@ -728,6 +746,20 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     }
 
     /**
+     * Shows the parent folder, if available.<p>
+     */
+    void showParentFolder() {
+
+        CmsUUID parentId = (CmsUUID)((HierarchicalContainer)m_fileTree.getContainerDataSource()).getParent(
+            m_currentFolder);
+        if (parentId != null) {
+            readFolder(parentId);
+            m_fileTree.select(parentId);
+        }
+
+    }
+
+    /**
      * Adds an item to the folder tree.<p>
      *
      * @param resource the folder resource
@@ -784,6 +816,15 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             children = container.getChildren(folderId);
         }
         readFolder(folderId);
+    }
+
+    /**
+     * Updates the up button status.<p>
+     */
+    private void updateUpButtonStatus() {
+
+        m_upButton.setEnabled(
+            ((HierarchicalContainer)m_fileTree.getContainerDataSource()).getParent(m_currentFolder) != null);
     }
 
 }

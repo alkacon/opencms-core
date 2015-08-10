@@ -141,7 +141,7 @@ public class CmsToolBar extends CustomLayout {
      *
      * @return the button
      */
-    public static Component createButton(Resource icon) {
+    public static Button createButton(Resource icon) {
 
         Button button = new Button(icon);
         button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
