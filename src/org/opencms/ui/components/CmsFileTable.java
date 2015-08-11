@@ -34,7 +34,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -82,7 +81,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.RowHeaderMode;
 import com.vaadin.ui.TextField;
@@ -499,12 +497,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_container.removeAllItems();
         m_container.removeAllContainerFilters();
         for (CmsResource resource : resources) {
-            try {
-                fillItem(cms, resource, wpLocale);
-            } catch (CmsException e) {
-                e.printStackTrace();
-                Notification.show(e.getMessage());
-            }
+            fillItem(cms, resource, wpLocale);
         }
         m_fileTable.sort();
     }
@@ -705,10 +698,8 @@ public class CmsFileTable extends A_CmsCustomComponent {
      * @param cms the cms context
      * @param resource the resource
      * @param locale the workplace locale
-     *
-     * @throws CmsLoaderException in case type information is not available
      */
-    private void fillItem(CmsObject cms, CmsResource resource, Locale locale) throws CmsLoaderException {
+    private void fillItem(CmsObject cms, CmsResource resource, Locale locale) {
 
         Item resourceItem = m_container.getItem(resource.getStructureId());
         if (resourceItem == null) {
@@ -716,7 +707,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
         }
         CmsResourceUtil resUtil = new CmsResourceUtil(cms);
         resUtil.setResource(resource);
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
             new ExternalResource(CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon())));

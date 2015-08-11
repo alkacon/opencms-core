@@ -33,6 +33,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockUtil;
@@ -52,6 +53,8 @@ import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsTreeNode;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,7 +76,9 @@ import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Resource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.AbsoluteLayout;
@@ -318,6 +323,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** The search field. */
     private TextField m_searchField;
 
+    /** The folder tree data container. */
+    private HierarchicalContainer m_treeContainer;
+
     /** The move up button. */
     private Button m_upButton;
 
@@ -348,8 +356,14 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
             }
         });
+        m_treeContainer = new HierarchicalContainer();
+        m_treeContainer.addContainerProperty(CmsFileTable.PROPERTY_RESOURCE_NAME, String.class, null);
+        m_treeContainer.addContainerProperty(CmsFileTable.PROPERTY_STATE, CmsResourceState.class, null);
+        m_treeContainer.addContainerProperty(CmsFileTable.PROPERTY_TYPE_ICON, Resource.class, null);
         m_fileTree = new Tree();
         m_fileTree.setWidth("100%");
+        m_fileTree.setContainerDataSource(m_treeContainer);
+        m_fileTree.setItemIconPropertyId(CmsFileTable.PROPERTY_TYPE_ICON);
         m_fileTree.setItemCaptionPropertyId(CmsFileTable.PROPERTY_RESOURCE_NAME);
         m_fileTree.addExpandListener(new ExpandListener() {
 
@@ -526,18 +540,14 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
      */
     public void populateFolderTree() {
 
-        HierarchicalContainer container = new HierarchicalContainer();
-        container.addContainerProperty(CmsFileTable.PROPERTY_RESOURCE_NAME, String.class, null);
-        container.addContainerProperty(CmsFileTable.PROPERTY_STATE, CmsResourceState.class, null);
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
             CmsResource siteRoot = cms.readResource("/", FOLDERS);
-            addTreeItem(siteRoot, null, container);
+            addTreeItem(siteRoot, null, m_treeContainer);
             List<CmsResource> folderResources = cms.readResources("/", FOLDERS, false);
             for (CmsResource resource : folderResources) {
-                addTreeItem(resource, siteRoot.getStructureId(), container);
+                addTreeItem(resource, siteRoot.getStructureId(), m_treeContainer);
             }
-            m_fileTree.setContainerDataSource(container);
             m_fileTree.expandItem(siteRoot.getStructureId());
         } catch (CmsException e) {
             LOG.error("Error while populating file explorer tree", e);
@@ -692,6 +702,10 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         resourceItem.getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).setValue(
             parentId == null ? resource.getRootPath() : resource.getName());
         resourceItem.getItemProperty(CmsFileTable.PROPERTY_STATE).setValue(resource.getState());
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+        resourceItem.getItemProperty(CmsFileTable.PROPERTY_TYPE_ICON).setValue(
+            new ExternalResource(CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon())));
         if (parentId != null) {
             container.setParent(resource.getStructureId(), parentId);
         }
