@@ -34,10 +34,8 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinErrorHandler;
 import org.opencms.ui.I_CmsComponentFactory;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
-import org.opencms.ui.components.CmsScrollPositionCss;
 import org.opencms.ui.components.CmsWindowCloseExtension;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
-import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.util.CmsExpiringValue;
@@ -93,13 +91,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
     /** The navigation state manager. */
     private NavigationStateManager m_navigationStateManager;
-
-    /**
-     * Constructor.<p>
-     */
-    public CmsAppWorkplaceUi() {
-        CmsScrollPositionCss.addTo(this, 150, 50, OpenCmsTheme.SCROLLED);
-    }
 
     /**
      * Gets the current UI instance.<p>

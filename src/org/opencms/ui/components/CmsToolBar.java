@@ -66,9 +66,6 @@ public class CmsToolBar extends CustomLayout {
     private static final String LOCATION_APP_INDICATOR = "appIndicator";
 
     /** Template location name. */
-    private static final String LOCATION_INDICATOR_SMALL = "indicatorSmall";
-
-    /** Template location name. */
     private static final String LOCATION_INFO_CONTAINER = "infoContainer";
 
     /** Template location name. */
@@ -88,9 +85,6 @@ public class CmsToolBar extends CustomLayout {
 
     /** The app indicator. */
     private Label m_appIndicator;
-
-    /** The small app indicator label, visible only in the small toolbar variant. */
-    private Label m_appIndicatorSmall;
 
     /** The app info icon. */
     private Label m_infoIcon;
@@ -120,8 +114,6 @@ public class CmsToolBar extends CustomLayout {
         addComponent(m_itemsRight, LOCATION_ITEMS_RIGHT);
         m_appIndicator = new Label();
         addComponent(m_appIndicator, LOCATION_APP_INDICATOR);
-        m_appIndicatorSmall = new Label();
-        addComponent(m_appIndicatorSmall, LOCATION_INDICATOR_SMALL);
         m_logo = new Image();
         addComponent(m_logo, LOCATION_LOGO);
         m_infoIcon = new Label();
@@ -193,7 +185,6 @@ public class CmsToolBar extends CustomLayout {
     public void setAppIcon(Resource icon) {
 
         m_infoIcon.setIcon(icon);
-        m_appIndicatorSmall.setIcon(icon);
     }
 
     /**
@@ -218,7 +209,6 @@ public class CmsToolBar extends CustomLayout {
     public void setAppTitle(String appTitle) {
 
         m_appIndicator.setValue(appTitle);
-        m_appIndicatorSmall.setValue(appTitle);
     }
 
     /**

@@ -206,7 +206,6 @@
   	background: #ffffff;
   	overflow: hidden;
   	height: $toolbar-height;
-  	transition: height 0.4s ease-in-out;
   	text-align: center;
   	border-bottom: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
   	
@@ -227,41 +226,9 @@
   			img{
   				margin: 5px auto;
   				height: 50px;
-  				transition: height 0.4s ease-in-out;
   			}
   		}
-  		
-  		.o-toolbar-app-indicator{
-  			width: auto;
-  			.v-label{
-  				opacity: 0;
-  				transition: opacity 0.4s;
-  				
-  				border-radius: 2px;
-  				background: $blue-light;
-  				color: $white;
-  				position: absolute;
-  				top: 5px;
-  				right: 100%;
-  				margin-right: 15px;
-  				padding: 5px;
-  				display: block;
-  				text-align: center;
-  			}
-  			.v-caption{
-  				opacity: 0;
-  				transition: opacity 0.4s;
-  		
-  				position: absolute;
-  				top: 4px;
-  				left: 100%;
-  				margin-left: 15px;
-  				font-size: $app-icon-size;
-  				line-height: 36px;
-  			}
-  		}  
-  		
-	}
+  	}
   	.o-toolbar-items-left, .o-toolbar-items-right{
   		margin: 5px 0;
   	}
@@ -277,43 +244,11 @@
   	}
   }
   
-  .o-scrolled{
-  	.o-toolbar{
-  		height: 46px;
-  		transition: height 0.4s ease-in-out;
-  		
-  		.o-toolbar-center{
-  			.o-toolbar-logo img{
-  				height: 36px;
-  				transition: height 0.4s ease-in-out;
-  			}
-  			
-  			.o-toolbar-app-indicator div.v-label, .o-toolbar-app-indicator div.v-caption{
-  			opacity: 1;
-  			transition: opacity 0.4s;
-  			}
-  		}
-  	}
-  	
-  	.v-button.v-button-o-toobar-button{
-  		height: 36px;
-    	line-height: 36px;
-    	transition-property: height line-height;
-    	transition-duration: 0.4s;
-    	transition-timing-function: ease-in-out;
-  	}
-  	
-  	
-  }
-  
-   .v-button.v-button-o-toobar-button{
+  .v-button.v-button-o-toobar-button{
   	font-size: $app-icon-size;
     height: 50px;
     line-height: 50px;
     padding: 0 10px;
-    transition-property: line-height height;
-    transition-duration: 0.4s;
-    transition-timing-function: ease-in-out;
   }
   
   

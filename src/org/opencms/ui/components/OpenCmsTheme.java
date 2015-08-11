@@ -69,9 +69,6 @@ public class OpenCmsTheme {
     public static final String RESPONSIVE = "o-responsive";
 
     /** CSS style name. */
-    public static final String SCROLLED = "o-scrolled";
-
-    /** CSS style name. */
     public static final String STATE_CHANGED = "o-state-changed";
 
     /** CSS style name. */
