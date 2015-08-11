@@ -1,6 +1,17 @@
 @mixin opencms {
   @include valo;
   
+  /* Overrides to the valo theme */
+  div.v-tree-node-caption:after{
+  	border-radius: 0;
+  }
+  
+  div.v-table-header-wrap,
+  div.v-table-footer-wrap,
+  div.v-table-header-drag {
+  	@include valo-gradient(darken($v-background-color,4%));
+  }
+  
   
   $toolbar-padding: 20px;
   $toolbar-height: 105px;

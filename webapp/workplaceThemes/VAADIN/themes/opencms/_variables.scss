@@ -1,8 +1,4 @@
-$v-app-loading-text: "Default OpenCms";
-
-@import "../valo/valo";
-
-// Main colors
+/* Main colors  */
 
 $alkacon-red:       #b31b34;
 $alkacon-blue:      #144382; // for print this is #003082;
@@ -39,3 +35,15 @@ $brown:             mix($blue, $orange);
 $red-orange:        mix($red, $orange);
 $red-cyan:          mix($red, $cyan);
 $green:             mix($orange, $cyan);
+
+/* Valo variables - changes to the default valo variables */
+
+$v-app-background-color: $white;
+$v-focus-color: $blue;
+$v-selection-color: $blue-light;
+$v-font-size: 14px;
+$v-table-row-height: 32px;
+$v-tree-row-height: $v-table-row-height;
+$v-app-loading-text: "Default OpenCms";
+
+@import "../valo/valo";
