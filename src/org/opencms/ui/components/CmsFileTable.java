@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
@@ -56,7 +57,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import org.vaadin.peter.contextmenu.ContextMenu;
 import com.google.common.collect.Lists;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -640,6 +640,18 @@ public class CmsFileTable extends A_CmsCustomComponent {
     }
 
     /**
+     * Updates all items with ids from the given list.<p>
+     *
+     * @param ids the list of resource structure ids to update
+     */
+    public void update(List<CmsUUID> ids) {
+
+        for (CmsUUID id : ids) {
+            updateItem(id);
+        }
+    }
+
+    /**
      * Cancels the current edit process.<p>
      */
     void cancelEdit() {
@@ -737,11 +749,12 @@ public class CmsFileTable extends A_CmsCustomComponent {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
-            CmsResource resource = cms.readResource(itemId);
+            CmsResource resource = cms.readResource(itemId, CmsResourceFilter.ALL);
             fillItem(cms, resource, OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+        } catch (CmsVfsResourceNotFoundException e) {
+            m_container.removeItem(itemId);
         } catch (CmsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 

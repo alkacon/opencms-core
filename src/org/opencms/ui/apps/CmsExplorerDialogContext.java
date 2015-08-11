@@ -35,6 +35,7 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsContextMenuDialogPanel;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsResourceInfo;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.List;
@@ -42,6 +43,7 @@ import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
 
@@ -52,6 +54,9 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExplorerDialogContext.class);
+
+    /** The explorer instance. */
+    private CmsFileExplorer m_explorer;
 
     /** The explorer app context. */
     private I_CmsAppUIContext m_appContext;
@@ -66,11 +71,16 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
      * Creates a new instance.<p>
      *
      * @param appContext the app context
+     * @param explorer the explorer app instance
      * @param resources the list of selected resources
      */
-    public CmsExplorerDialogContext(I_CmsAppUIContext appContext, List<CmsResource> resources) {
+    public CmsExplorerDialogContext(
+        I_CmsAppUIContext appContext,
+        CmsFileExplorer explorer,
+        List<CmsResource> resources) {
         m_resources = resources;
         m_appContext = appContext;
+        m_explorer = explorer;
     }
 
     /**
@@ -88,13 +98,21 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
     }
 
     /**
-     * @see org.opencms.ui.I_CmsDialogContext#finish(java.lang.Object)
+     * @see org.opencms.ui.I_CmsDialogContext#finish(java.util.List)
      */
-    public void finish(Object result) {
+    public void finish(List<CmsUUID> ids) {
 
         if (m_window != null) {
             m_window.close();
         }
+        if (ids == null) {
+            ids = Lists.newArrayList();
+            for (CmsResource res : getResources()) {
+                ids.add(res.getStructureId());
+            }
+        }
+        m_explorer.update(ids);
+
     }
 
     /**

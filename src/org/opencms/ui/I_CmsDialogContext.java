@@ -29,6 +29,7 @@ package org.opencms.ui;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
@@ -39,14 +40,40 @@ import com.vaadin.ui.Component;
  */
 public interface I_CmsDialogContext {
 
+    /**
+     * Signals an error which occurred in the dialog.<p>
+     *
+     * @param error the error which occcurred
+     */
     public void error(Throwable error);
 
-    public void finish(Object result);
+    /**
+     * Signals that the dialog has finished.<p>
+     *
+     * @param result the list of structure ids of changed resources
+     */
+    public void finish(List<CmsUUID> result);
 
+    /**
+     * Gets the CMS context to be used for dialog operations.<p>
+     *
+     * @return the CMS context
+     */
     CmsObject getCms();
 
+    /**
+     * Gets the list of resources for which the dialog should be opened.<p>
+     *
+     * @return the list of resources
+     */
     List<CmsResource> getResources();
 
+    /**
+     * Called to start up the dialog with the given main widget and title string.<p>
+     *
+     * @param title the title to display
+     * @param dialog the dialog main widget
+     */
     void start(String title, Component dialog);
 
 }

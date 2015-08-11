@@ -33,6 +33,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
@@ -544,6 +545,54 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     }
 
     /**
+     * Updates the table entries with the given ids.<p>
+     *
+     * @param ids the ids of the table entries to update
+     */
+    public void update(List<CmsUUID> ids) {
+
+        m_fileTable.update(ids);
+        updateTree(ids);
+    }
+
+    /**
+     * Updates the tree items with the given ids.<p>
+     *
+     * @param ids the ids for which the tree should be updated
+     */
+    public void updateTree(List<CmsUUID> ids) {
+
+        HierarchicalContainer container = (HierarchicalContainer)m_fileTree.getContainerDataSource();
+        CmsObject cms = A_CmsUI.getCmsObject();
+
+        for (CmsUUID id : ids) {
+            try {
+                CmsResource resource = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+
+                CmsResource parent = cms.readParentFolder(id);
+                CmsUUID parentId = parent.getStructureId();
+                Item resourceItem = container.getItem(id);
+                if (resourceItem != null) {
+                    // use the root path as name in case of the root item
+                    resourceItem.getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).setValue(
+                        parentId == null ? resource.getRootPath() : resource.getName());
+                    resourceItem.getItemProperty(CmsFileTable.PROPERTY_STATE).setValue(resource.getState());
+                    if (parentId != null) {
+                        container.setParent(resource.getStructureId(), parentId);
+                    }
+                } else {
+                    addTreeItem(resource, parentId, container);
+                }
+            } catch (CmsVfsResourceNotFoundException e) {
+                container.removeItem(id);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
+    }
+
+    /**
      * Clears the given tree level.<p>
      *
      * @param parentId the parent id
@@ -569,7 +618,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
      */
     protected I_CmsDialogContext createDialogContext() {
 
-        return new CmsExplorerDialogContext(m_appContext, m_fileTable.getSelectedResources());
+        return new CmsExplorerDialogContext(m_appContext, this, m_fileTable.getSelectedResources());
     }
 
     /**
