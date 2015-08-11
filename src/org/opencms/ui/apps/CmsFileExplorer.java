@@ -275,7 +275,6 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             }
             return guiMenuItem;
         }
-
     }
 
     /** The files and folder resource filter. */
@@ -342,18 +341,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
             public void itemClick(ItemClickEvent event) {
 
-                if (event.getButton().equals(MouseButton.LEFT)
-                    && !CmsFileTable.PROPERTY_TYPE_ICON.equals(event.getPropertyId())
-                    && (event.getPropertyId() != null) // event.getPropertyId() is actually null when clicking on the icon. Not sure if this is a bug in the current Vaadin version or not.
-                    && !m_fileTable.isEditProperty((String)event.getPropertyId())) {
-                    Boolean isFolder = (Boolean)event.getItem().getItemProperty(
-                        CmsFileTable.PROPERTY_IS_FOLDER).getValue();
-                    if ((isFolder != null) && isFolder.booleanValue()) {
-                        expandCurrentFolder();
-                        readFolder((CmsUUID)event.getItemId());
-                    }
-                }
-
+                handleFileItemClick(event);
             }
         });
         m_treeContainer = new HierarchicalContainer();
@@ -669,6 +657,30 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     void filterTable(String search) {
 
         m_fileTable.filterTable(search);
+    }
+
+    /**
+     * Handles the file table item click.<p>
+     *
+     * @param event the click event
+     */
+    void handleFileItemClick(ItemClickEvent event) {
+
+        if (m_fileTable.isEditing()) {
+            m_fileTable.stopEdit();
+
+        } else if (event.getButton().equals(MouseButton.RIGHT)) {
+            m_fileTable.handleSelection((CmsUUID)event.getItemId());
+            m_fileTable.openContextMenu(event);
+        } else if ((event.getPropertyId() == null) || CmsFileTable.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
+            m_fileTable.openContextMenu(event);
+        } else {
+            Boolean isFolder = (Boolean)event.getItem().getItemProperty(CmsFileTable.PROPERTY_IS_FOLDER).getValue();
+            if ((isFolder != null) && isFolder.booleanValue()) {
+                expandCurrentFolder();
+                readFolder((CmsUUID)event.getItemId());
+            }
+        }
     }
 
     /**

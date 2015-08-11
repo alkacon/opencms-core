@@ -57,7 +57,6 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 import org.vaadin.peter.contextmenu.ContextMenu;
-
 import com.google.common.collect.Lists;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -76,7 +75,6 @@ import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Embedded;
@@ -90,36 +88,6 @@ import com.vaadin.ui.themes.ValoTheme;
  * Table for displaying resources.<p>
  */
 public class CmsFileTable extends A_CmsCustomComponent {
-
-    /**
-     * File item click listener.<p>
-     */
-    public class FileClickListener implements ItemClickListener {
-
-        /** The serial version id. */
-        private static final long serialVersionUID = -4152640820975752518L;
-
-        /**
-         * @see com.vaadin.event.ItemClickEvent.ItemClickListener#itemClick(com.vaadin.event.ItemClickEvent)
-         */
-        public void itemClick(ItemClickEvent event) {
-
-            if (isEditing()) {
-                stopEdit();
-
-            } else if (event.getButton().equals(MouseButton.RIGHT)) {
-                @SuppressWarnings("unchecked")
-                Set<CmsUUID> selection = (Set<CmsUUID>)m_fileTable.getValue();
-                if (selection == null) {
-                    m_fileTable.select(event.getItemId());
-                } else if (!selection.contains(event.getItemId())) {
-                    m_fileTable.setValue(null);
-                    m_fileTable.select(event.getItemId());
-                }
-
-            }
-        }
-    }
 
     /**
      * File edit handler.<p>
@@ -301,7 +269,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
     Table m_fileTable;
 
     /** The context menu. */
-    ContextMenu m_menu;
+    CmsContextMenu m_menu;
 
     /** The context menu builder. */
     I_CmsContextMenuBuilder m_menuBuilder;
@@ -406,8 +374,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_fileTable.setColumnCollapsed(PROPERTY_STATE_NAME, true);
         m_fileTable.setColumnCollapsed(PROPERTY_USER_LOCKED, true);
 
-        m_fileTable.addItemClickListener(new FileClickListener());
-        m_menu = new ContextMenu();
+        m_menu = new CmsContextMenu();
         m_fileTable.addValueChangeListener(new ValueChangeListener() {
 
             private static final long serialVersionUID = 1L;
@@ -564,6 +531,22 @@ public class CmsFileTable extends A_CmsCustomComponent {
     }
 
     /**
+     * Handles the item selection.<p>
+     *
+     * @param itemId the selected item id
+     */
+    public void handleSelection(CmsUUID itemId) {
+
+        Set<CmsUUID> selection = getSelectedIds();
+        if (selection == null) {
+            m_fileTable.select(itemId);
+        } else if (!selection.contains(itemId)) {
+            m_fileTable.setValue(null);
+            m_fileTable.select(itemId);
+        }
+    }
+
+    /**
      * Returns if a file property is being edited.<p>
      * @return <code>true</code> if a file property is being edited
      */
@@ -582,6 +565,16 @@ public class CmsFileTable extends A_CmsCustomComponent {
     public boolean isEditProperty(String propertyId) {
 
         return (m_editProperty != null) && m_editProperty.equals(propertyId);
+    }
+
+    /**
+     * Opens the context menu.<p>
+     *
+     * @param event the click event
+     */
+    public void openContextMenu(ItemClickEvent event) {
+
+        m_menu.openForTable(event, m_fileTable);
     }
 
     /**
@@ -629,6 +622,24 @@ public class CmsFileTable extends A_CmsCustomComponent {
     }
 
     /**
+     * Stops the current edit process to save the changed property value.<p>
+     */
+    public void stopEdit() {
+
+        if (m_editHandler != null) {
+            String value = (String)m_container.getItem(m_editItemId).getItemProperty(m_editProperty).getValue();
+            if (!value.equals(m_originalEditValue)) {
+                m_editHandler.validate(value);
+                m_editHandler.save(value);
+            } else {
+                // call cancel to ensure unlock
+                m_editHandler.cancel();
+            }
+        }
+        clearEdit();
+    }
+
+    /**
      * Cancels the current edit process.<p>
      */
     void cancelEdit() {
@@ -657,24 +668,6 @@ public class CmsFileTable extends A_CmsCustomComponent {
     String getEditProperty() {
 
         return m_editProperty;
-    }
-
-    /**
-     * Stops the current edit process to save the changed property value.<p>
-     */
-    void stopEdit() {
-
-        if (m_editHandler != null) {
-            String value = (String)m_container.getItem(m_editItemId).getItemProperty(m_editProperty).getValue();
-            if (!value.equals(m_originalEditValue)) {
-                m_editHandler.validate(value);
-                m_editHandler.save(value);
-            } else {
-                // call cancel to ensure unlock
-                m_editHandler.cancel();
-            }
-        }
-        clearEdit();
     }
 
     /**
