@@ -27,12 +27,10 @@
 
 package org.opencms.ui.contextmenu;
 
-import org.opencms.main.OpenCms;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.util.CmsMacroResolver;
 
 import java.lang.reflect.Constructor;
-import java.util.Locale;
 
 import com.vaadin.ui.Component;
 
@@ -70,7 +68,7 @@ public class CmsDialogContextMenuItem extends A_CmsContextMenuItem {
         try {
             Constructor<? extends Component> constructor = m_dialogClass.getConstructor(I_CmsDialogContext.class);
             Component component = constructor.newInstance(context);
-            context.start(getTitle(OpenCms.getWorkplaceManager().getWorkplaceLocale(context.getCms())), component);
+            context.start(CmsVaadinUtils.localizeString(getTitle()), component);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -101,11 +99,9 @@ public class CmsDialogContextMenuItem extends A_CmsContextMenuItem {
         return 0;
     }
 
-    public String getTitle(Locale locale) {
+    public String getTitle() {
 
-        CmsMacroResolver resolver = new CmsMacroResolver();
-        resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(locale));
-        return resolver.resolveMacros(m_title);
+        return m_title;
     }
 
     public boolean isLeafItem() {

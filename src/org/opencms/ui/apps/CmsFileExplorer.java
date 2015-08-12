@@ -42,6 +42,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsFileTable;
@@ -60,7 +61,6 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -236,7 +236,17 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             for (CmsTreeNode<I_CmsContextMenuItem> node : tree.getChildren()) {
                 createItem(menu, node);
             }
+        }
 
+        /**
+         * Gets the localized title for the context menu item by resolving any message key macros in the raw title using the current locale.<p>
+         *
+         * @param item the unlocalized title
+         * @return the localized title
+         */
+        String getTitle(I_CmsContextMenuItem item) {
+
+            return CmsVaadinUtils.localizeString(item.getTitle());
         }
 
         /**
@@ -251,11 +261,10 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
             final I_CmsContextMenuItem data = node.getData();
             ContextMenuItem guiMenuItem = null;
-            Locale locale = A_CmsUI.get().getLocale();
             if (parent instanceof ContextMenu) {
-                guiMenuItem = ((ContextMenu)parent).addItem(data.getTitle(locale));
+                guiMenuItem = ((ContextMenu)parent).addItem(getTitle(data));
             } else {
-                guiMenuItem = ((ContextMenuItem)parent).addItem(data.getTitle(locale));
+                guiMenuItem = ((ContextMenuItem)parent).addItem(getTitle(data));
             }
             if (m_treeBuilder.getVisibility(data).isInActive()) {
                 guiMenuItem.setEnabled(false);

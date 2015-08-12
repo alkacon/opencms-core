@@ -29,8 +29,10 @@ package org.opencms.ui;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.workplace.CmsWorkplaceMessages;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -83,6 +85,22 @@ public final class CmsVaadinUtils {
         String className = component.getClass().getName();
         String designPath = className.replace(".", "/") + ".html";
         return designPath;
+    }
+
+    /**
+     * Uses the currently set locale to resolve localization macros in the input string using workplace message bundles.<p>
+     *
+     * @param baseString the string to localize
+     *
+     * @return the localized string
+     */
+    public static String localizeString(String baseString) {
+
+        CmsWorkplaceMessages wpMessages = OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale());
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.setMessages(wpMessages);
+        String result = resolver.resolveMacros(baseString);
+        return result;
     }
 
     /**

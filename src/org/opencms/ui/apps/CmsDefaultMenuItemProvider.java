@@ -48,9 +48,33 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
     public List<I_CmsContextMenuItem> getMenuItems() {
 
         return Arrays.<I_CmsContextMenuItem> asList(
-            new CmsDialogContextMenuItem("availability", null, CmsAvailabilityDialog.class, "Availability", 0, 0),
-            new CmsDialogContextMenuItem("undo", null, CmsUndoDialog.class, "Undo", 0, 0),
-            new CmsDialogContextMenuItem("secureexport", null, CmsSecureExportDialog.class, "Secure/Export", 0, 0),
-            new CmsDialogContextMenuItem("touch", null, CmsAvailabilityDialog.class, "Touch", 0, 0));
+            new CmsDialogContextMenuItem(
+                "availability",
+                null,
+                CmsAvailabilityDialog.class,
+                "%(key.GUI_EXPLORER_CONTEXT_AVAILABILITY_0)",
+                0,
+                0),
+            new CmsDialogContextMenuItem(
+                "undo",
+                null,
+                CmsUndoDialog.class,
+                "%(key.GUI_EXPLORER_CONTEXT_UNDOCHANGES_0)",
+                0,
+                0),
+            new CmsDialogContextMenuItem(
+                "secureexport",
+                null,
+                CmsSecureExportDialog.class,
+                "%(key.GUI_EXPLORER_CONTEXT_SECURE_0)",
+                0,
+                0),
+            new CmsDialogContextMenuItem(
+                "touch",
+                null,
+                CmsAvailabilityDialog.class,
+                "%(key.GUI_EXPLORER_CONTEXT_TOUCH_0)",
+                0,
+                0));
     }
 }
