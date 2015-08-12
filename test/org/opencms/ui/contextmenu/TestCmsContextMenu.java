@@ -36,7 +36,6 @@ import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Tests context menu construction.<p>
@@ -153,7 +152,7 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
                 return priority;
             }
 
-            public String getTitle(Locale locale) {
+            public String getTitle() {
 
                 return id;
             }
