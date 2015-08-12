@@ -727,16 +727,20 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         if (m_fileTable.isEditing()) {
             m_fileTable.stopEdit();
 
-        } else if (event.getButton().equals(MouseButton.RIGHT)) {
-            m_fileTable.handleSelection((CmsUUID)event.getItemId());
-            m_fileTable.openContextMenu(event);
-        } else if ((event.getPropertyId() == null) || CmsFileTable.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
-            m_fileTable.openContextMenu(event);
-        } else {
-            Boolean isFolder = (Boolean)event.getItem().getItemProperty(CmsFileTable.PROPERTY_IS_FOLDER).getValue();
-            if ((isFolder != null) && isFolder.booleanValue()) {
-                expandCurrentFolder();
-                readFolder((CmsUUID)event.getItemId());
+        } else if (!event.isCtrlKey()) {
+            // don't interfere with multi-selection using control key
+            if (event.getButton().equals(MouseButton.RIGHT)) {
+                m_fileTable.handleSelection((CmsUUID)event.getItemId());
+                m_fileTable.openContextMenu(event);
+            } else
+                if ((event.getPropertyId() == null) || CmsFileTable.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
+                m_fileTable.openContextMenu(event);
+            } else {
+                Boolean isFolder = (Boolean)event.getItem().getItemProperty(CmsFileTable.PROPERTY_IS_FOLDER).getValue();
+                if ((isFolder != null) && isFolder.booleanValue()) {
+                    expandCurrentFolder();
+                    readFolder((CmsUUID)event.getItemId());
+                }
             }
         }
     }
