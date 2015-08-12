@@ -41,6 +41,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.workplace.CmsWorkplaceMessages;
 
 import java.util.Arrays;
@@ -56,14 +57,13 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 
 /**
  * Dialog used to change resource modification times.<p>
  */
-public class CmsSecureExportDialog extends CssLayout {
+public class CmsSecureExportDialog extends CmsBasicDialog {
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSecureExportDialog.class);

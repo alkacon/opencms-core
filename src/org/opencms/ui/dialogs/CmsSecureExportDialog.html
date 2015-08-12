@@ -5,8 +5,9 @@
   	  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
   </head>
   <body>
-  	<v-css-layout>
-  		<v-vertical-layout>
+
+  		<o-cms-basic-dialog>
+	  		<content>
 	  			<v-form-layout>
 	  				<v-label caption="Online link" _id="m_linkField"/>
 	  				<v-combo-box caption="%(key.GUI_SECURE_0)"  _id="m_secureField" />
@@ -14,11 +15,12 @@
 	  				<v-combo-box caption="%(key.GUI_SECURE_EXPORT_0)" _id="m_exportField" />
 	  				<v-text-field caption="%(key.GUI_SECURE_EXPORTNAME_0)" _id="m_exportNameField" />
 	  			</v-form-layout>
-	  			<o-cms-button-panel :right>
-	  				<v-button _id="m_okButton" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
-	  				<v-button _id="m_cancelButton" >%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
-	  			</o-cms-button-panel>
-	  		</v-vertical-layout>
-    </v-css-layout>
+		  	</content>
+		  	<buttons>
+				<v-button _id="m_okButton" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+				<v-button _id="m_cancelButton" >%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+		  	</buttons>
+  		</o-cms-basic-dialog>
+
   </body>
 </html>

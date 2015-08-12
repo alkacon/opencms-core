@@ -529,6 +529,11 @@
   		min-width: 7em;  
   }
   
+  .o-dialog-button-bar .v-button {
+  		min-width: 115px;
+  }
+  
+  
   @for $i from 1 through 40 {
   	.o-max-height-#{$i*20} {
 		max-height: 0px + ($i*20);

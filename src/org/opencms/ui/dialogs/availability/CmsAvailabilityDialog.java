@@ -37,6 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.components.CmsBasicDialog;
 
 import java.util.Date;
 import java.util.List;
@@ -48,11 +49,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.VerticalLayout;
 
-public class CmsAvailabilityDialog extends CssLayout {
+public class CmsAvailabilityDialog extends CmsBasicDialog {
 
     private Button m_cancelButton;
     private I_CmsDialogContext m_dialogContext;
@@ -71,7 +72,7 @@ public class CmsAvailabilityDialog extends CssLayout {
         super();
         m_dialogContext = dialogContext;
         CmsVaadinUtils.readAndLocalizeDesign(
-            this,
+            (Component)this,
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
             null);
 

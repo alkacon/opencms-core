@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.components.CmsBasicDialog;
 
 import org.apache.commons.logging.Log;
 
@@ -46,12 +47,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.CssLayout;
 
 /**
  * Dialog used to change resource modification times.<p>
  */
-public class CmsUndoDialog extends CssLayout {
+public class CmsUndoDialog extends CmsBasicDialog {
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUndoDialog.class);
