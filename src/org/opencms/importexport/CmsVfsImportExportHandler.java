@@ -30,6 +30,7 @@ package org.opencms.importexport;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.module.CmsModuleXmlHandler;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRoleViolationException;
@@ -109,7 +110,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
                 isIncludeUnchanged(),
                 getContentAge(),
                 isRecursive(),
-                isProjectOnly());
+                isProjectOnly(),
+                ExportMode.DEFAULT);
         }
 
         report.println(Messages.get().container(Messages.RPT_EXPORT_DB_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);

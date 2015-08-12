@@ -31,6 +31,7 @@ import org.opencms.importexport.CmsExport;
 import org.opencms.importexport.CmsExportParameters;
 import org.opencms.importexport.CmsImportParameters;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -142,7 +143,8 @@ public class TestUser extends OpenCmsTestCase {
                     false,
                     0,
                     false,
-                    false));
+                    false,
+                    ExportMode.DEFAULT));
 
             // delete
             cms.deleteUser("test");

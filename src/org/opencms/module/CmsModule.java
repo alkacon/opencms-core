@@ -65,6 +65,22 @@ import org.apache.commons.logging.Log;
  */
 public class CmsModule implements Comparable<CmsModule> {
 
+    /** The available module export modes. */
+    public enum ExportMode {
+        /** Default export mode. */
+        DEFAULT, /** Reduced export, that omits last modification information (dates and users). */
+        REDUCED;
+
+        /**
+         * @see java.lang.Enum#toString()
+         */
+        @Override
+        public String toString() {
+
+            return super.toString().toLowerCase();
+        }
+    }
+
     /** The default date for module created / installed if not provided. */
     public static final long DEFAULT_DATE = 0L;
 
@@ -158,6 +174,9 @@ public class CmsModule implements Comparable<CmsModule> {
     /** The additional configuration parameters of this module. */
     private SortedMap<String, String> m_parameters;
 
+    /** The export mode to use for the module. */
+    private ExportMode m_exportMode;
+
     /** List of VFS resources that belong to this module. */
     private List<String> m_resources;
 
@@ -185,6 +204,7 @@ public class CmsModule implements Comparable<CmsModule> {
         m_excluderesources = Collections.emptyList();
         m_exportPoints = Collections.emptyList();
         m_dependencies = Collections.emptyList();
+        m_exportMode = ExportMode.DEFAULT;
     }
 
     /**
@@ -196,6 +216,7 @@ public class CmsModule implements Comparable<CmsModule> {
      * @param actionClass the (optional) module class name
      * @param importScript the script to execute when the module is imported
      * @param importSite the site root into which this module should be imported
+     * @param exportMode the export mode that should be used for the module
      * @param description the description of this module
      * @param version the version of this module
      * @param authorName the name of the author of this module
@@ -216,6 +237,7 @@ public class CmsModule implements Comparable<CmsModule> {
         String actionClass,
         String importScript,
         String importSite,
+        ExportMode exportMode,
         String description,
         CmsModuleVersion version,
         String authorName,
@@ -234,6 +256,8 @@ public class CmsModule implements Comparable<CmsModule> {
         setNiceName(niceName);
         setActionClass(actionClass);
         setGroup(group);
+
+        m_exportMode = null == exportMode ? ExportMode.DEFAULT : exportMode;
 
         if (CmsStringUtil.isEmpty(description)) {
             m_description = "";
@@ -493,6 +517,7 @@ public class CmsModule implements Comparable<CmsModule> {
             m_actionClass,
             m_importScript,
             m_importSite,
+            m_exportMode,
             m_description,
             m_version,
             m_authorName,
@@ -701,6 +726,14 @@ public class CmsModule implements Comparable<CmsModule> {
     public List<CmsExplorerTypeSettings> getExplorerTypes() {
 
         return m_explorerTypeSettings;
+    }
+
+    /** Returns the export mode specified for the module.
+     * @return the module's export mode.
+     */
+    public ExportMode getExportMode() {
+
+        return m_exportMode;
     }
 
     /**
@@ -984,6 +1017,14 @@ public class CmsModule implements Comparable<CmsModule> {
             return false;
         }
         return true;
+    }
+
+    /** Checks, if the module should use the reduced export mode.
+     * @return if reduce export mode should be used <code>true</code>, otherwise <code>false</code>.
+     */
+    public boolean isReducedExportMode() {
+
+        return ExportMode.REDUCED.equals(m_exportMode);
     }
 
     /**
@@ -1301,6 +1342,14 @@ public class CmsModule implements Comparable<CmsModule> {
 
         checkFrozen();
         m_parameters = parameters;
+    }
+
+    /** Set/unset the reduced export mode.
+     * @param reducedExportMode if <code>true</code>, the export mode is set to {@link ExportMode#REDUCED}, otherwise to {@link ExportMode#DEFAULT}.
+     */
+    public void setReducedExportMode(boolean reducedExportMode) {
+
+        m_exportMode = reducedExportMode ? ExportMode.REDUCED : ExportMode.DEFAULT;
     }
 
     /**

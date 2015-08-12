@@ -28,6 +28,7 @@
 package org.opencms.importexport;
 
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Collections;
@@ -81,6 +82,9 @@ public class CmsExportParameters {
     /** If set, the manifest.xml file will be generated with dtd info. */
     private boolean m_xmlValidation;
 
+    /** The export mode that should be used for the export. */
+    private ExportMode m_exportMode;
+
     /**
      * Constructor.<p>
      */
@@ -103,6 +107,7 @@ public class CmsExportParameters {
      * @param contentAge export contents changed after this date/time
      * @param recursive recursive flag
      * @param inProject if only resources in the current project are exported
+     * @param exportMode the export mode to use
      */
     public CmsExportParameters(
         String exportFile,
@@ -115,7 +120,8 @@ public class CmsExportParameters {
         boolean includeUnchanged,
         long contentAge,
         boolean recursive,
-        boolean inProject) {
+        boolean inProject,
+        ExportMode exportMode) {
 
         setPath(exportFile);
         setResources(resourcesToExport);
@@ -129,6 +135,7 @@ public class CmsExportParameters {
         setExportProjectData(exportProjectData);
         setInProject(inProject);
         setExportAsFiles(false);
+        setExportMode(exportMode);
     }
 
     /**
@@ -139,6 +146,16 @@ public class CmsExportParameters {
     public long getContentAge() {
 
         return m_contentAge;
+    }
+
+    /**
+     * Returns the export mode that should be used.
+     *
+     * @return the export mode that should be used.
+     */
+    public ExportMode getExportMode() {
+
+        return m_exportMode;
     }
 
     /**
@@ -302,6 +319,16 @@ public class CmsExportParameters {
     public void setExportAsFiles(boolean exportAsFiles) {
 
         m_exportAsFiles = exportAsFiles;
+    }
+
+    /**
+     * Sets the export mode.
+     *
+     * @param exportMode the export mode to set
+     */
+    public void setExportMode(ExportMode exportMode) {
+
+        m_exportMode = null != exportMode ? exportMode : ExportMode.DEFAULT;
     }
 
     /**

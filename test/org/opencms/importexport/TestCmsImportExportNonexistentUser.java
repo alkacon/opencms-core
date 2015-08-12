@@ -32,6 +32,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsRole;
 import org.opencms.test.OpenCmsTestCase;
@@ -159,7 +160,8 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
 
             OpenCms.getImportExportManager().exportData(

@@ -34,6 +34,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.importexport.CmsImportParameters;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.test.OpenCmsTestCase;
@@ -174,6 +175,7 @@ public class TestModuleIssues extends OpenCmsTestCase {
             null,
             null,
             null,
+            ExportMode.DEFAULT,
             "test",
             new CmsModuleVersion("0.0.1"),
             "test",

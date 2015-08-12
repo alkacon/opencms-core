@@ -37,6 +37,7 @@ import org.opencms.importexport.CmsImportParameters;
 import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
@@ -498,7 +499,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
 
             OpenCms.getImportExportManager().exportData(
@@ -574,7 +576,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
 
             OpenCms.getImportExportManager().exportData(

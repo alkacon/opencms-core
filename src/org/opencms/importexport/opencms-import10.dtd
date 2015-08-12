@@ -1,7 +1,7 @@
 <!--
 # PLEASE NOTE - PLEASE NOTE - PLEASE NOTE - PLEASE NOTE
 # 
-# The following nodes describe the import version 7.
+# The following nodes describe the import version 10.
 #
 # The import file will only be validated if the xml validation import parameter is set as
 # well as the xml validation export parameter is set when the data was exported. 
@@ -10,8 +10,8 @@
 <!ELEMENT export (info, accounts?, files?, projects?)>
 
 <!ELEMENT info (creator, 
-				opencms_version, 
-				createdate, 
+				opencms_version?, 
+				createdate?, 
 				infoproject, 
 				export_version)>
 				
@@ -24,25 +24,25 @@
 <!--
 # PLEASE NOTE - PLEASE NOTE - PLEASE NOTE - PLEASE NOTE
 # 
-# The following nodes describe the resources import version 7.
+# The following nodes describe the resources import version 10.
 -->
 
 <!ELEMENT files (file+)>
 <!ELEMENT file (source?, 
 				destination, 
 				type, 
-				uuidstructure, 
+				uuidstructure?, 
 				uuidresource?, 
-				datelastmodified, 
-				userlastmodified, 
-				datecreated, 
-				usercreated, 
+				datelastmodified?, 
+				userlastmodified?, 
+				datecreated?, 
+				usercreated?, 
 				datereleased?,
 				dateexpired?,
-				flags, 
+				flags?, 
 				properties, 
-				relations, 
-				accesscontrol)>
+				relations?, 
+				accesscontrol?)>
 
 <!ELEMENT source (#PCDATA)>
 <!ELEMENT destination (#PCDATA)>
@@ -78,7 +78,7 @@
 <!--
 # PLEASE NOTE - PLEASE NOTE - PLEASE NOTE - PLEASE NOTE
 # 
-# The following nodes describe the accounts import version 7.
+# The following nodes describe the accounts import version 10.
 -->
 
 <!ELEMENT accounts (orgunits?)>
@@ -130,7 +130,7 @@
 <!--
 # PLEASE NOTE - PLEASE NOTE - PLEASE NOTE - PLEASE NOTE
 # 
-# The following nodes describe the projects import version 7.
+# The following nodes describe the projects import version 10.
 -->
 
 <!ELEMENT projects (project+)>

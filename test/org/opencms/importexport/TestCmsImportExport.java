@@ -43,6 +43,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
@@ -184,7 +185,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
@@ -295,7 +297,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
 
             OpenCms.getImportExportManager().exportData(
@@ -419,7 +422,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
@@ -542,7 +546,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             true,
             0,
             true,
-            false);
+            false,
+            ExportMode.DEFAULT);
         vfsExportHandler.setExportParams(params);
         OpenCms.getImportExportManager().exportData(
             cms,
@@ -630,7 +635,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
@@ -702,7 +708,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
@@ -787,7 +794,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
@@ -895,7 +903,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
@@ -984,7 +993,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
@@ -1074,7 +1084,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
@@ -1181,7 +1192,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
@@ -1294,7 +1306,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
@@ -1704,7 +1717,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
@@ -1815,7 +1829,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
@@ -1902,7 +1917,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             params.setXmlValidation(true);
             vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
@@ -1980,7 +1996,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 true,
                 0,
                 true,
-                false);
+                false,
+                ExportMode.DEFAULT);
             vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,

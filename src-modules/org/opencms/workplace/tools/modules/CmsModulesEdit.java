@@ -98,10 +98,15 @@ public class CmsModulesEdit extends CmsModulesEditBase {
             result.append(createDialogRowsHtml(8, 9));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
+            result.append(dialogBlockStart(key("label.moduleexportmode")));
+            result.append(createWidgetTableStart());
+            result.append(createDialogRowsHtml(10, 10));
+            result.append(createWidgetTableEnd());
+            result.append(dialogBlockEnd());
             if (CmsStringUtil.isEmpty(m_module.getName())) {
                 result.append(dialogBlockStart(key("label.modulefolder")));
                 result.append(createWidgetTableStart());
-                result.append(createDialogRowsHtml(10, 16));
+                result.append(createDialogRowsHtml(11, 17));
                 result.append(createWidgetTableEnd());
                 result.append(dialogBlockEnd());
             }
@@ -134,6 +139,7 @@ public class CmsModulesEdit extends CmsModulesEditBase {
         addWidget(new CmsWidgetDialogParameter(m_module, "importSite", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "authorName", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "authorEmail", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_module, "reducedExportMode", PAGES[0], new CmsCheckboxWidget()));
         // add the second page only when creating a new module
         if (CmsStringUtil.isEmpty(m_module.getName())) {
             addWidget(new CmsWidgetDialogParameter(m_module, "createModuleFolder", PAGES[0], new CmsCheckboxWidget()));

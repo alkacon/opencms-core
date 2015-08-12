@@ -297,7 +297,8 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             true,
             0,
             true,
-            false);
+            false,
+            module.getExportMode());
 
         // export the module using the standard export
         CmsObject exportCms = cms;

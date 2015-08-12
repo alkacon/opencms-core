@@ -25,6 +25,7 @@
 	class?, 
 	import-script?,
 	import-site?,
+	export-mode?,
 	description?,
 	version,
 	authorname?,
@@ -77,6 +78,19 @@
 # for modules which don't keep all their files under /system/ (e.g. content modules). 
 -->
 <!ELEMENT import-site (#PCDATA)>
+
+<!--
+# The optional export mode.
+# This specifies how the module is exported. If not specified, the default mode is used. 
+# Additionally the "reduced" mode is available. It does not export all meta-data. I.e., it omits 
+# information on users and last modified information.
+# This may help to reduce merge conflicts when you use a version control system for your modules
+# (e.g. git).
+-->
+<!ELEMENT export-mode EMPTY>
+<!ATTLIST export-mode
+ 	name (reduced|REDUCED|default|DEFAULT) #REQUIRED
+>
 
 <!--
 # The (optional) description of the module.

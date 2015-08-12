@@ -34,6 +34,7 @@ import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsLog;
+import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -131,6 +132,9 @@ public class CmsModuleXmlHandler {
     /** The node name for the import site. */
     private static final String N_IMPORT_SITE = "import-site";
 
+    /** The node name for the import site. */
+    private static final String N_EXPORT_MODE = "export-mode";
+
     /** The list of dependencies for a module. */
     private List<CmsModuleDependency> m_dependencies;
 
@@ -188,20 +192,21 @@ public class CmsModuleXmlHandler {
         // NOTE: If you change the order of parameters here or add new ones, you may
         // also need to change the corresponding parameter indexes in the method addXmlDigesterRulesForVersion5Modules.
 
-        digester.addCallMethod("*/" + N_MODULE, "createdModule", 13);
+        digester.addCallMethod("*/" + N_MODULE, "createdModule", 14);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NAME, 0);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NICENAME, 1);
         digester.addCallParam("*/" + N_MODULE + "/" + N_GROUP, 2);
         digester.addCallParam("*/" + N_MODULE + "/" + N_CLASS, 3);
         digester.addCallParam("*/" + N_MODULE + "/" + N_IMPORT_SCRIPT, 4);
         digester.addCallParam("*/" + N_MODULE + "/" + N_IMPORT_SITE, 5);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DESCRIPTION, 6);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_VERSION, 7);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHORNAME, 8);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHOREMAIL, 9);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 10);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 11);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 12);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_EXPORT_MODE, 6, I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DESCRIPTION, 7);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_VERSION, 8);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHORNAME, 9);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHOREMAIL, 10);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 11);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 12);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 13);
 
         // add rules for module dependencies
         digester.addCallMethod("*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY, "addDependency", 2);
@@ -312,6 +317,8 @@ public class CmsModuleXmlHandler {
             moduleElement.addElement(N_IMPORT_SITE).setText(importSite);
         }
 
+        moduleElement.addElement(N_EXPORT_MODE).addAttribute(A_NAME, module.getExportMode().toString());
+
         if (CmsStringUtil.isNotEmpty(module.getDescription())) {
             moduleElement.addElement(N_DESCRIPTION).addCDATA(module.getDescription());
         } else {
@@ -334,12 +341,12 @@ public class CmsModuleXmlHandler {
             moduleElement.addElement(N_DATECREATED);
         }
 
-        if (CmsStringUtil.isNotEmpty(module.getUserInstalled())) {
+        if (!module.isReducedExportMode() && CmsStringUtil.isNotEmpty(module.getUserInstalled())) {
             moduleElement.addElement(N_USERINSTALLED).setText(module.getUserInstalled());
         } else {
             moduleElement.addElement(N_USERINSTALLED);
         }
-        if (module.getDateInstalled() != CmsModule.DEFAULT_DATE) {
+        if (!module.isReducedExportMode() && (module.getDateInstalled() != CmsModule.DEFAULT_DATE)) {
             moduleElement.addElement(N_DATEINSTALLED).setText(CmsDateUtil.getHeaderDate(module.getDateInstalled()));
         } else {
             moduleElement.addElement(N_DATEINSTALLED);
@@ -455,9 +462,9 @@ public class CmsModuleXmlHandler {
         digester.addCallMethod("*/" + N_MODULE + "/author", "setOldModule");
 
         // base module information
-        digester.addCallParam("*/" + N_MODULE + "/author", 8);
-        digester.addCallParam("*/" + N_MODULE + "/email", 9);
-        digester.addCallParam("*/" + N_MODULE + "/creationdate", 10);
+        digester.addCallParam("*/" + N_MODULE + "/author", 9);
+        digester.addCallParam("*/" + N_MODULE + "/email", 10);
+        digester.addCallParam("*/" + N_MODULE + "/creationdate", 11);
 
         // dependencies
         digester.addCallParam("*/" + N_MODULE + "/dependencies/dependency/name", 0);
@@ -592,6 +599,7 @@ public class CmsModuleXmlHandler {
      * @param actionClass the (optional) module action class name
      * @param importScript the import script
      * @param importSite the import site root
+     * @param exportModeName the export mode name
      * @param description the description of this module
      * @param version the version of this module
      * @param authorName the name of the author of this module
@@ -607,6 +615,7 @@ public class CmsModuleXmlHandler {
         String actionClass,
         String importScript,
         String importSite,
+        String exportModeName,
         String description,
         String version,
         String authorName,
@@ -655,6 +664,16 @@ public class CmsModuleXmlHandler {
             m_resources.add(modulePath);
         }
 
+        ExportMode exportMode = ExportMode.DEFAULT;
+        try {
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(exportModeName)) {
+                exportMode = ExportMode.valueOf(exportModeName.toUpperCase());
+            }
+        } catch (@SuppressWarnings("unused") IllegalArgumentException e) {
+            // TODO: log entry? But shouldn't happen anyway because of DTD restrictions
+            //stay with default export mode
+        }
+
         // now create the module
         m_module = new CmsModule(
             moduleName,
@@ -663,6 +682,7 @@ public class CmsModuleXmlHandler {
             actionClass,
             importScript,
             importSite,
+            exportMode,
             description,
             moduleVersion,
             authorName,

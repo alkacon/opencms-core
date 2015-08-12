@@ -47,6 +47,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.I_CmsReport;
@@ -166,7 +167,7 @@ public class CmsExport {
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap<String, Object>(0)));
 
         try {
-            Element exportNode = openExportFile();
+            Element exportNode = openExportFile(parameters.getExportMode());
 
             if (m_parameters.getModuleInfo() != null) {
                 // add the module element
@@ -383,24 +384,38 @@ public class CmsExport {
                 m_superFolders = new ArrayList<String>();
             }
             List<String> superFolders = new ArrayList<String>();
+            String currentSubFolder = resourceName;
+            boolean isFolderResource = currentSubFolder.lastIndexOf("/") == (currentSubFolder.length() - 1);
 
             // Check, if the path is really a folder
-            if (resourceName.lastIndexOf("/") != (resourceName.length() - 1)) {
-                resourceName = resourceName.substring(0, resourceName.lastIndexOf("/") + 1);
+            if (!isFolderResource) {
+                currentSubFolder = currentSubFolder.substring(0, currentSubFolder.lastIndexOf("/") + 1);
             }
-            while (resourceName.length() > "/".length()) {
-                superFolders.add(resourceName);
-                resourceName = resourceName.substring(0, resourceName.length() - 1);
-                resourceName = resourceName.substring(0, resourceName.lastIndexOf("/") + 1);
+            while (currentSubFolder.length() > "/".length()) {
+                currentSubFolder = currentSubFolder.substring(0, currentSubFolder.length() - 1);
+                currentSubFolder = currentSubFolder.substring(0, currentSubFolder.lastIndexOf("/") + 1);
+                if (currentSubFolder.length() <= "/".length()) {
+                    break;
+                }
+                superFolders.add(currentSubFolder);
             }
             for (int i = superFolders.size() - 1; i >= 0; i--) {
                 String addFolder = superFolders.get(i);
                 if (!m_superFolders.contains(addFolder)) {
                     // This super folder was NOT added previously. Add it now!
                     CmsFolder folder = getCms().readFolder(addFolder, CmsResourceFilter.IGNORE_EXPIRATION);
-                    appendResourceToManifest(folder, false);
+                    appendResourceToManifest(folder, false, true);
                     // Remember that this folder was added
                     m_superFolders.add(addFolder);
+                }
+            }
+            if (isFolderResource) { // add the folder itself
+                if (!m_superFolders.contains(resourceName)) {
+                    // This super folder was NOT added previously. Add it now!
+                    CmsFolder folder = getCms().readFolder(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+                    appendResourceToManifest(folder, false);
+                    // Remember that this folder was added
+                    m_superFolders.add(resourceName);
                 }
             }
         } catch (CmsImportExportException e) {
@@ -463,16 +478,30 @@ public class CmsExport {
         }
     }
 
+    /** @see #appendResourceToManifest(CmsResource, boolean, boolean)
+     * @param resource @see #appendResourceToManifest(CmsResource, boolean, boolean)
+     * @param source @see #appendResourceToManifest(CmsResource, boolean, boolean)
+     * @throws CmsImportExportException @see #appendResourceToManifest(CmsResource, boolean, boolean)
+     * @throws SAXException @see #appendResourceToManifest(CmsResource, boolean, boolean)
+     */
+    protected void appendResourceToManifest(CmsResource resource, boolean source)
+    throws CmsImportExportException, SAXException {
+
+        appendResourceToManifest(resource, source, false);
+    }
+
     /**
      * Writes the data for a resource (like access-rights) to the <code>manifest.xml</code> file.<p>
      *
      * @param resource the resource to get the data from
      * @param source flag to show if the source information in the xml file must be written
+     * @param isSuperFolder flag to indicate that the resource is only a super folder of a module resource.
+     *  This will prevent exporting uuid and creation date in the reduced export mode.
      *
      * @throws CmsImportExportException if something goes wrong
      * @throws SAXException if something goes wrong processing the manifest.xml
      */
-    protected void appendResourceToManifest(CmsResource resource, boolean source)
+    protected void appendResourceToManifest(CmsResource resource, boolean source, boolean isSuperFolder)
     throws CmsImportExportException, SAXException {
 
         try {
@@ -519,148 +548,163 @@ public class CmsExport {
                 }
             }
 
+            boolean isReducedExportMode = m_parameters.getExportMode().equals(ExportMode.REDUCED);
             // <destination>
             fileElement.addElement(CmsImportVersion10.N_DESTINATION).addText(fileName);
             // <type>
             fileElement.addElement(CmsImportVersion10.N_TYPE).addText(
                 OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName());
 
-            //  <uuidstructure>
-            fileElement.addElement(CmsImportVersion10.N_UUIDSTRUCTURE).addText(resource.getStructureId().toString());
-            if (resource.isFile()) {
-                //  <uuidresource>
-                fileElement.addElement(CmsImportVersion10.N_UUIDRESOURCE).addText(resource.getResourceId().toString());
-            }
-
-            // <datelastmodified>
-            fileElement.addElement(CmsImportVersion10.N_DATELASTMODIFIED).addText(
-                getDateLastModifiedForExport(resource));
-            // <userlastmodified>
-            String userNameLastModified = null;
-            try {
-                userNameLastModified = getCms().readUser(resource.getUserLastModified()).getName();
-            } catch (@SuppressWarnings("unused") CmsException e) {
-                userNameLastModified = OpenCms.getDefaultUsers().getUserAdmin();
-            }
-            fileElement.addElement(CmsImportVersion10.N_USERLASTMODIFIED).addText(userNameLastModified);
-            // <datecreated>
-            fileElement.addElement(CmsImportVersion10.N_DATECREATED).addText(
-                CmsDateUtil.getHeaderDate(resource.getDateCreated()));
-            // <usercreated>
-            String userNameCreated = null;
-            try {
-                userNameCreated = getCms().readUser(resource.getUserCreated()).getName();
-            } catch (@SuppressWarnings("unused") CmsException e) {
-                userNameCreated = OpenCms.getDefaultUsers().getUserAdmin();
-            }
-            fileElement.addElement(CmsImportVersion10.N_USERCREATED).addText(userNameCreated);
-            // <release>
-            if (resource.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
-                fileElement.addElement(CmsImportVersion10.N_DATERELEASED).addText(
-                    CmsDateUtil.getHeaderDate(resource.getDateReleased()));
-            }
-            // <expire>
-            if (resource.getDateExpired() != CmsResource.DATE_EXPIRED_DEFAULT) {
-                fileElement.addElement(CmsImportVersion10.N_DATEEXPIRED).addText(
-                    CmsDateUtil.getHeaderDate(resource.getDateExpired()));
-            }
-            // <flags>
-            int resFlags = resource.getFlags();
-            resFlags &= ~CmsResource.FLAG_LABELED;
-            fileElement.addElement(CmsImportVersion10.N_FLAGS).addText(Integer.toString(resFlags));
-
-            // write the properties to the manifest
-            Element propertiesElement = fileElement.addElement(CmsImportVersion10.N_PROPERTIES);
-            List<CmsProperty> properties = getCms().readPropertyObjects(getCms().getSitePath(resource), false);
-            // sort the properties for a well defined output order
-            Collections.sort(properties);
-            for (int i = 0, n = properties.size(); i < n; i++) {
-                CmsProperty property = properties.get(i);
-                if (isIgnoredProperty(property)) {
-                    continue;
+            if (!(isReducedExportMode && isSuperFolder)) {
+                //  <uuidstructure>
+                fileElement.addElement(CmsImportVersion10.N_UUIDSTRUCTURE).addText(
+                    resource.getStructureId().toString());
+                if (resource.isFile()) {
+                    //  <uuidresource>
+                    fileElement.addElement(CmsImportVersion10.N_UUIDRESOURCE).addText(
+                        resource.getResourceId().toString());
                 }
-                addPropertyNode(propertiesElement, property.getName(), property.getStructureValue(), false);
-                addPropertyNode(propertiesElement, property.getName(), property.getResourceValue(), true);
             }
 
-            // Write the relations to the manifest
-            List<CmsRelation> relations = getCms().getRelationsForResource(
-                resource,
-                CmsRelationFilter.TARGETS.filterNotDefinedInContent());
-            Element relationsElement = fileElement.addElement(CmsImportVersion10.N_RELATIONS);
-            // iterate over the relations
-            for (CmsRelation relation : relations) {
-                // relation may be broken already:
+            if (!isReducedExportMode) {
+                // <datelastmodified>
+                fileElement.addElement(CmsImportVersion10.N_DATELASTMODIFIED).addText(
+                    getDateLastModifiedForExport(resource));
+                // <userlastmodified>
+                String userNameLastModified = null;
                 try {
-                    CmsResource target = relation.getTarget(getCms(), CmsResourceFilter.ALL);
-                    String structureId = target.getStructureId().toString();
-                    String sitePath = getCms().getSitePath(target);
-                    String relationType = relation.getType().getName();
-                    addRelationNode(relationsElement, structureId, sitePath, relationType);
-                } catch (CmsVfsResourceNotFoundException crnfe) {
-                    // skip this relation:
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(
-                            Messages.get().getBundle().key(
-                                Messages.LOG_IMPORTEXPORT_WARN_DELETED_RELATIONS_2,
-                                new String[] {relation.getTargetPath(), resource.getRootPath()}),
-                            crnfe);
-                    }
+                    userNameLastModified = getCms().readUser(resource.getUserLastModified()).getName();
+                } catch (@SuppressWarnings("unused") CmsException e) {
+                    userNameLastModified = OpenCms.getDefaultUsers().getUserAdmin();
                 }
+                fileElement.addElement(CmsImportVersion10.N_USERLASTMODIFIED).addText(userNameLastModified);
             }
+            if (!(isReducedExportMode && isSuperFolder)) {
+                // <datecreated>
+                fileElement.addElement(CmsImportVersion10.N_DATECREATED).addText(
+                    CmsDateUtil.getHeaderDate(resource.getDateCreated()));
+            }
+            if (!isReducedExportMode) {
+                // <usercreated>
+                String userNameCreated = null;
+                try {
+                    userNameCreated = getCms().readUser(resource.getUserCreated()).getName();
+                } catch (@SuppressWarnings("unused") CmsException e) {
+                    userNameCreated = OpenCms.getDefaultUsers().getUserAdmin();
+                }
+                fileElement.addElement(CmsImportVersion10.N_USERCREATED).addText(userNameCreated);
+            }
+            if (!(isReducedExportMode && isSuperFolder)) {
+                // <release>
+                if (resource.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
+                    fileElement.addElement(CmsImportVersion10.N_DATERELEASED).addText(
+                        CmsDateUtil.getHeaderDate(resource.getDateReleased()));
+                }
+                // <expire>
+                if (resource.getDateExpired() != CmsResource.DATE_EXPIRED_DEFAULT) {
+                    fileElement.addElement(CmsImportVersion10.N_DATEEXPIRED).addText(
+                        CmsDateUtil.getHeaderDate(resource.getDateExpired()));
+                }
+                // <flags>
+                int resFlags = resource.getFlags();
+                resFlags &= ~CmsResource.FLAG_LABELED;
+                fileElement.addElement(CmsImportVersion10.N_FLAGS).addText(Integer.toString(resFlags));
 
-            // append the nodes for access control entries
-            Element acl = fileElement.addElement(CmsImportVersion10.N_ACCESSCONTROL_ENTRIES);
-
-            // read the access control entries
-            List<CmsAccessControlEntry> fileAcEntries = getCms().getAccessControlEntries(
-                getCms().getSitePath(resource),
-                false);
-            Iterator<CmsAccessControlEntry> i = fileAcEntries.iterator();
-
-            // create xml elements for each access control entry
-            while (i.hasNext()) {
-                CmsAccessControlEntry ace = i.next();
-                Element a = acl.addElement(CmsImportVersion10.N_ACCESSCONTROL_ENTRY);
-
-                // now check if the principal is a group or a user
-                int flags = ace.getFlags();
-                String acePrincipalName = "";
-                CmsUUID acePrincipal = ace.getPrincipal();
-                if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS) > 0) {
-                    acePrincipalName = CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME;
-                } else if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL) > 0) {
-                    acePrincipalName = CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME;
-                } else if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_GROUP) > 0) {
-                    // the principal is a group
-                    try {
-                        acePrincipalName = getCms().readGroup(acePrincipal).getPrefixedName();
-                    } catch (@SuppressWarnings("unused") CmsException e) {
-                        // the group for this permissions does not exist anymore, so simply skip it
+                // write the properties to the manifest
+                Element propertiesElement = fileElement.addElement(CmsImportVersion10.N_PROPERTIES);
+                List<CmsProperty> properties = getCms().readPropertyObjects(getCms().getSitePath(resource), false);
+                // sort the properties for a well defined output order
+                Collections.sort(properties);
+                for (int i = 0, n = properties.size(); i < n; i++) {
+                    CmsProperty property = properties.get(i);
+                    if (isIgnoredProperty(property)) {
+                        continue;
                     }
-                } else if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_USER) > 0) {
-                    // the principal is a user
-                    try {
-                        acePrincipalName = getCms().readUser(acePrincipal).getPrefixedName();
-                    } catch (@SuppressWarnings("unused") CmsException e) {
-                        // the user for this permissions does not exist anymore, so simply skip it
-                    }
-                } else {
-                    // the principal is a role
-                    acePrincipalName = CmsRole.PRINCIPAL_ROLE + "." + CmsRole.valueOfId(acePrincipal).getRoleName();
+                    addPropertyNode(propertiesElement, property.getName(), property.getStructureValue(), false);
+                    addPropertyNode(propertiesElement, property.getName(), property.getResourceValue(), true);
                 }
 
-                // only add the permission if a principal was set
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(acePrincipalName)) {
-                    a.addElement(CmsImportVersion10.N_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
-                    a.addElement(CmsImportVersion10.N_FLAGS).addText(Integer.toString(flags));
-
-                    Element b = a.addElement(CmsImportVersion10.N_ACCESSCONTROL_PERMISSIONSET);
-                    b.addElement(CmsImportVersion10.N_ACCESSCONTROL_ALLOWEDPERMISSIONS).addText(
-                        Integer.toString(ace.getAllowedPermissions()));
-                    b.addElement(CmsImportVersion10.N_ACCESSCONTROL_DENIEDPERMISSIONS).addText(
-                        Integer.toString(ace.getDeniedPermissions()));
+                // Write the relations to the manifest
+                List<CmsRelation> relations = getCms().getRelationsForResource(
+                    resource,
+                    CmsRelationFilter.TARGETS.filterNotDefinedInContent());
+                Element relationsElement = fileElement.addElement(CmsImportVersion10.N_RELATIONS);
+                // iterate over the relations
+                for (CmsRelation relation : relations) {
+                    // relation may be broken already:
+                    try {
+                        CmsResource target = relation.getTarget(getCms(), CmsResourceFilter.ALL);
+                        String structureId = target.getStructureId().toString();
+                        String sitePath = getCms().getSitePath(target);
+                        String relationType = relation.getType().getName();
+                        addRelationNode(relationsElement, structureId, sitePath, relationType);
+                    } catch (CmsVfsResourceNotFoundException crnfe) {
+                        // skip this relation:
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_IMPORTEXPORT_WARN_DELETED_RELATIONS_2,
+                                    new String[] {relation.getTargetPath(), resource.getRootPath()}),
+                                crnfe);
+                        }
+                    }
                 }
+
+                // append the nodes for access control entries
+                Element acl = fileElement.addElement(CmsImportVersion10.N_ACCESSCONTROL_ENTRIES);
+
+                // read the access control entries
+                List<CmsAccessControlEntry> fileAcEntries = getCms().getAccessControlEntries(
+                    getCms().getSitePath(resource),
+                    false);
+                Iterator<CmsAccessControlEntry> i = fileAcEntries.iterator();
+
+                // create xml elements for each access control entry
+                while (i.hasNext()) {
+                    CmsAccessControlEntry ace = i.next();
+                    Element a = acl.addElement(CmsImportVersion10.N_ACCESSCONTROL_ENTRY);
+
+                    // now check if the principal is a group or a user
+                    int flags = ace.getFlags();
+                    String acePrincipalName = "";
+                    CmsUUID acePrincipal = ace.getPrincipal();
+                    if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS) > 0) {
+                        acePrincipalName = CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME;
+                    } else if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL) > 0) {
+                        acePrincipalName = CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME;
+                    } else if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_GROUP) > 0) {
+                        // the principal is a group
+                        try {
+                            acePrincipalName = getCms().readGroup(acePrincipal).getPrefixedName();
+                        } catch (@SuppressWarnings("unused") CmsException e) {
+                            // the group for this permissions does not exist anymore, so simply skip it
+                        }
+                    } else if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_USER) > 0) {
+                        // the principal is a user
+                        try {
+                            acePrincipalName = getCms().readUser(acePrincipal).getPrefixedName();
+                        } catch (@SuppressWarnings("unused") CmsException e) {
+                            // the user for this permissions does not exist anymore, so simply skip it
+                        }
+                    } else {
+                        // the principal is a role
+                        acePrincipalName = CmsRole.PRINCIPAL_ROLE + "." + CmsRole.valueOfId(acePrincipal).getRoleName();
+                    }
+
+                    // only add the permission if a principal was set
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(acePrincipalName)) {
+                        a.addElement(CmsImportVersion10.N_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
+                        a.addElement(CmsImportVersion10.N_FLAGS).addText(Integer.toString(flags));
+
+                        Element b = a.addElement(CmsImportVersion10.N_ACCESSCONTROL_PERMISSIONSET);
+                        b.addElement(CmsImportVersion10.N_ACCESSCONTROL_ALLOWEDPERMISSIONS).addText(
+                            Integer.toString(ace.getAllowedPermissions()));
+                        b.addElement(CmsImportVersion10.N_ACCESSCONTROL_DENIEDPERMISSIONS).addText(
+                            Integer.toString(ace.getDeniedPermissions()));
+                    }
+                }
+            } else {
+                fileElement.addElement(CmsImportVersion10.N_PROPERTIES);
             }
 
             // write the XML
@@ -1396,13 +1440,14 @@ public class CmsExport {
 
     /**
      * Opens the export ZIP file and initializes the internal XML document for the manifest.<p>
+     * @param exportMode the export mode to use.
      *
      * @return the node in the XML document where all files are appended to
      *
      * @throws SAXException if something goes wrong processing the manifest.xml
      * @throws IOException if something goes wrong while closing the export file
      */
-    protected Element openExportFile() throws IOException, SAXException {
+    protected Element openExportFile(ExportMode exportMode) throws IOException, SAXException {
 
         // create the export writer
         m_exportWriter = new CmsExportHelper(
@@ -1422,10 +1467,13 @@ public class CmsExport {
 
         // add the info element. it contains all infos for this export
         Element info = exportNode.addElement(CmsImportExportManager.N_INFO);
-        info.addElement(CmsImportExportManager.N_CREATOR).addText(
-            getCms().getRequestContext().getCurrentUser().getName());
-        info.addElement(CmsImportExportManager.N_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionNumber());
-        info.addElement(CmsImportExportManager.N_DATE).addText(CmsDateUtil.getHeaderDate(System.currentTimeMillis()));
+        if (!exportMode.equals(ExportMode.REDUCED)) {
+            info.addElement(CmsImportExportManager.N_CREATOR).addText(
+                getCms().getRequestContext().getCurrentUser().getName());
+            info.addElement(CmsImportExportManager.N_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionNumber());
+            info.addElement(CmsImportExportManager.N_DATE).addText(
+                CmsDateUtil.getHeaderDate(System.currentTimeMillis()));
+        }
         info.addElement(CmsImportExportManager.N_INFO_PROJECT).addText(
             getCms().getRequestContext().getCurrentProject().getName());
         info.addElement(CmsImportExportManager.N_VERSION).addText(CmsImportExportManager.EXPORT_VERSION);

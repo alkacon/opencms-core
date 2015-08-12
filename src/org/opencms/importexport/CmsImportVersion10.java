@@ -278,6 +278,15 @@ public class CmsImportVersion10 implements I_CmsImport {
     /** Value for the "shared" property type attribute value. */
     public static final String PROPERTY_ATTRIB_TYPE_SHARED = "shared";
 
+    /** Constant for an unspecified last modification date. */
+    private static final long DATE_LAST_MODIFICATION_UNSPECIFIED = -2;
+
+    /** Constant for using file time as last modification date on file import. */
+    private static final long DATE_LAST_MODIFICATION_FILETIME = -1;
+
+    /** Constant for the unspecified creation date. */
+    private static final long DATE_CREATED_UNSPECIFIED = -1;
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsImportVersion10.class);
 
@@ -303,13 +312,13 @@ public class CmsImportVersion10 implements I_CmsImport {
     private Set<CmsUUID> m_contentFiles = new HashSet<CmsUUID>();
 
     /** The date created value. */
-    private long m_dateCreated;
+    private long m_dateCreated = DATE_CREATED_UNSPECIFIED;
 
     /** The date expired value. */
     private long m_dateExpired = CmsResource.DATE_EXPIRED_DEFAULT;
 
     /** The date last modified value. */
-    private long m_dateLastModified;
+    private long m_dateLastModified = DATE_LAST_MODIFICATION_UNSPECIFIED;
 
     /** The date released value. */
     private long m_dateReleased = CmsResource.DATE_RELEASED_DEFAULT;
@@ -438,7 +447,7 @@ public class CmsImportVersion10 implements I_CmsImport {
     private CmsUser m_user;
 
     /** The user created value. */
-    private CmsUUID m_userCreated;
+    private CmsUUID m_userCreated = CmsUUID.getNullUUID();
 
     /** The current user date created. */
     private long m_userDateCreated;
@@ -1819,12 +1828,28 @@ public class CmsImportVersion10 implements I_CmsImport {
                 }
 
                 // read date last modified from the resource, default to currentTime for folders
-                if (m_dateLastModified == -1) {
+                if (m_dateLastModified == DATE_LAST_MODIFICATION_FILETIME) {
                     if (null != m_source) {
                         m_dateLastModified = m_helper.getFileModification(m_source);
                     } else {
                         m_dateLastModified = System.currentTimeMillis();
                     }
+                }
+
+                if (m_dateLastModified == DATE_LAST_MODIFICATION_UNSPECIFIED) {
+                    m_dateLastModified = System.currentTimeMillis();
+                }
+
+                if (null == m_userLastModified) {
+                    m_userLastModified = m_cms.getRequestContext().getCurrentUser().getId();
+                }
+
+                if (m_dateCreated == DATE_CREATED_UNSPECIFIED) {
+                    m_dateCreated = System.currentTimeMillis();
+                }
+
+                if (m_userCreated.isNullUUID()) {
+                    m_userCreated = getCms().getRequestContext().getCurrentUser().getId();
                 }
 
                 // create a new CmsResource
@@ -1941,8 +1966,8 @@ public class CmsImportVersion10 implements I_CmsImport {
             m_source = null;
             m_type = null;
             m_flags = 0;
-            m_dateCreated = 0;
-            m_dateLastModified = 0;
+            m_dateCreated = DATE_CREATED_UNSPECIFIED;
+            m_dateLastModified = DATE_LAST_MODIFICATION_UNSPECIFIED;
             m_dateReleased = CmsResource.DATE_RELEASED_DEFAULT;
             m_dateExpired = CmsResource.DATE_EXPIRED_DEFAULT;
             m_properties = null;
@@ -2933,16 +2958,21 @@ public class CmsImportVersion10 implements I_CmsImport {
      */
     public void setUserLastModified(String userLastModified) {
 
-        try {
-            String userLastModifiedName = OpenCms.getImportExportManager().translateUser(userLastModified);
+        if (null == userLastModified) { // The optional user last modified information is not provided
+            m_userLastModified = m_cms.getRequestContext().getCurrentUser().getId();
+        } else { // use the user last modified information from the manifest
             try {
-                m_userLastModified = getCms().readUser(userLastModifiedName).getId();
-            } catch (@SuppressWarnings("unused") CmsDbEntryNotFoundException e) {
-                m_userLastModified = getCms().getRequestContext().getCurrentUser().getId();
+                String userLastModifiedName = OpenCms.getImportExportManager().translateUser(userLastModified);
+                try {
+                    m_userLastModified = getCms().readUser(userLastModifiedName).getId();
+                } catch (@SuppressWarnings("unused") CmsDbEntryNotFoundException e) {
+                    m_userLastModified = getCms().getRequestContext().getCurrentUser().getId();
+                }
+            } catch (Throwable e) {
+                setThrowable(e);
             }
-        } catch (Throwable e) {
-            setThrowable(e);
         }
+
     }
 
     /**

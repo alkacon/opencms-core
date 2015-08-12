@@ -37,6 +37,7 @@ import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.test.OpenCmsTestCase;
@@ -162,6 +163,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
             module.getActionClass(),
             module.getImportScript(),
             module.getImportSite(),
+            module.getExportMode(),
             module.getDescription(),
             module.getVersion(),
             module.getAuthorName(),
@@ -244,6 +246,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
             null,
             null,
             null,
+            ExportMode.DEFAULT,
             null,
             new CmsModuleVersion("1.0"),
             "Alexander Kandzior",
@@ -473,6 +476,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
             null,
             null,
             null,
+            ExportMode.DEFAULT,
             "This is the description",
             new CmsModuleVersion("1.0"),
             "Alexander Kandzior",
@@ -815,6 +819,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
             null,
             null,
             null,
+            ExportMode.DEFAULT,
             null,
             dep.getVersion(),
             "Alexander Kandzior",

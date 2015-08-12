@@ -39,12 +39,14 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.importexport.CmsExportParameters;
 import org.opencms.importexport.CmsImportParameters;
 import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
@@ -339,7 +341,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-    
+
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -424,6 +426,18 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void exportAllResources(String exportFile) throws Exception {
 
+        exportAllResources(exportFile, false);
+    }
+
+    /**
+     * Exports all resources from the current site root to a ZIP file.<p>
+     *
+     * @param exportFile the name (absolute path) of the ZIP file to export to
+     * @param isReducedExportMode flag, indicating if the reduced export mode should be used
+     * @throws Exception if something goes wrong
+     */
+    public void exportAllResources(String exportFile, boolean isReducedExportMode) throws Exception {
+
         List<String> exportPaths = new ArrayList<String>(1);
         exportPaths.add("/");
 
@@ -439,7 +453,8 @@ class CmsShellCommands implements I_CmsShellCommands {
             true,
             0,
             true,
-            false);
+            false,
+            isReducedExportMode ? ExportMode.REDUCED : ExportMode.DEFAULT);
         vfsExportHandler.setExportParams(params);
 
         OpenCms.getImportExportManager().exportData(
@@ -502,6 +517,21 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void exportResources(String exportFile, String pathList) throws Exception {
 
+        exportResources(exportFile, pathList, false);
+    }
+
+    /**
+     * Exports a list of resources from the current site root to a ZIP file.<p>
+     *
+     * The resource names in the list must be separated with a ";".<p>
+     *
+     * @param exportFile the name (absolute path) of the ZIP file to export to
+     * @param pathList the list of resource to export, separated with a ";"
+     * @param isReducedExportMode flag, indicating if the reduced export mode should be used
+     * @throws Exception if something goes wrong
+     */
+    public void exportResources(String exportFile, String pathList, boolean isReducedExportMode) throws Exception {
+
         StringTokenizer tok = new StringTokenizer(pathList, ";");
         List<String> exportPaths = new ArrayList<String>();
         while (tok.hasMoreTokens()) {
@@ -525,7 +555,8 @@ class CmsShellCommands implements I_CmsShellCommands {
             true,
             0,
             true,
-            false);
+            false,
+            isReducedExportMode ? ExportMode.REDUCED : ExportMode.DEFAULT);
         vfsExportHandler.setExportParams(params);
 
         OpenCms.getImportExportManager().exportData(
@@ -545,6 +576,22 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void exportResourcesAndUserdata(String exportFile, String pathList) throws Exception {
 
+        exportResourcesAndUserdata(exportFile, pathList, false);
+    }
+
+    /**
+     * Exports a list of resources from the current site root and the user data to a ZIP file.<p>
+     *
+     * The resource names in the list must be separated with a ";".<p>
+     *
+     * @param exportFile the name (absolute path) of the ZIP file to export to
+     * @param pathList the list of resource to export, separated with a ";"
+     * @param isReducedExportMode flag, indicating if the reduced export mode should be used
+     * @throws Exception if something goes wrong
+     */
+    public void exportResourcesAndUserdata(String exportFile, String pathList, boolean isReducedExportMode)
+    throws Exception {
+
         StringTokenizer tok = new StringTokenizer(pathList, ";");
         List<String> exportPaths = new ArrayList<String>();
         while (tok.hasMoreTokens()) {
@@ -568,7 +615,8 @@ class CmsShellCommands implements I_CmsShellCommands {
             true,
             0,
             true,
-            false);
+            false,
+            isReducedExportMode ? ExportMode.REDUCED : ExportMode.DEFAULT);
         vfsExportHandler.setExportParams(params);
 
         OpenCms.getImportExportManager().exportData(
@@ -1205,7 +1253,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     public CmsResource uploadFile(String localfile, String folder, String filename, String type)
     throws Exception, CmsIllegalArgumentException {
 
-        int t = OpenCms.getResourceManager().getResourceType(type).getTypeId();
+        I_CmsResourceType t = OpenCms.getResourceManager().getResourceType(type);
         return m_cms.createResource(folder + filename, t, CmsFileUtil.readFile(new File(localfile)), null);
     }
 

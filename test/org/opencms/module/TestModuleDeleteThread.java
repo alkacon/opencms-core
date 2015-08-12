@@ -29,6 +29,7 @@ package org.opencms.module;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestLogAppender;
@@ -117,6 +118,7 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
             null,
             null,
             null,
+            ExportMode.DEFAULT,
             null,
             new CmsModuleVersion("1.0"),
             "Olaf Watteroth",
@@ -163,6 +165,7 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
             null,
             null,
             null,
+            ExportMode.DEFAULT,
             null,
             new CmsModuleVersion("1.0"),
             "Olaf Watteroth",
@@ -237,6 +240,7 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
             null,
             null,
             null,
+            ExportMode.DEFAULT,
             null,
             new CmsModuleVersion("1.0"),
             "Olaf Watteroth",
@@ -299,6 +303,7 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
             null,
             null,
             null,
+            ExportMode.DEFAULT,
             null,
             new CmsModuleVersion("1.0"),
             "Olaf Watteroth",
