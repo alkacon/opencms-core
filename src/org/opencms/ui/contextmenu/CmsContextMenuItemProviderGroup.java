@@ -33,6 +33,7 @@ import org.opencms.util.CmsUUID;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.apache.commons.logging.Log;
 
@@ -61,6 +62,18 @@ public class CmsContextMenuItemProviderGroup implements I_CmsContextMenuItemProv
     private Map<String, I_CmsContextMenuItem> m_itemsByGlobalId = Maps.newHashMap();
 
     /**
+     * Creates a new instance.<p>
+     */
+    public CmsContextMenuItemProviderGroup() {
+        ServiceLoader<I_CmsContextMenuItemProvider> providerLoader = ServiceLoader.load(
+            I_CmsContextMenuItemProvider.class);
+        for (I_CmsContextMenuItemProvider provider : providerLoader) {
+            addProvider(provider);
+        }
+
+    }
+
+    /**
      * Adds a new provider class.<p>
      *
      * @param providerClass the provider class
@@ -72,6 +85,19 @@ public class CmsContextMenuItemProviderGroup implements I_CmsContextMenuItemProv
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
+    }
+
+    /**
+     * Adds a provider.<p>
+     *
+     * Note that no two providers of the same exact class may be added.<p>
+     *
+     * @param instance the provider instance to add
+     */
+    public void addProvider(I_CmsContextMenuItemProvider instance) {
+
+        m_providerMap.put(instance.getClass(), instance);
+
     }
 
     /**
@@ -122,4 +148,5 @@ public class CmsContextMenuItemProviderGroup implements I_CmsContextMenuItemProv
         m_itemCache.clear();
         m_itemCache.addAll(result);
     }
+
 }
