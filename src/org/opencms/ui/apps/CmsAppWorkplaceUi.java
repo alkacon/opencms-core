@@ -27,6 +27,8 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinErrorHandler;
@@ -38,7 +40,12 @@ import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
+import org.opencms.util.CmsExpiringValue;
 import org.opencms.util.CmsStringUtil;
+
+import java.util.Locale;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.NavigationStateManager;
@@ -63,6 +70,9 @@ import com.vaadin.ui.Window;
 public class CmsAppWorkplaceUi extends A_CmsUI
 implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListener {
 
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsAppWorkplaceUi.class);
+
     /** Menu item manager. */
     private static CmsContextMenuItemProviderGroup m_workplaceMenuItemProvider;
 
@@ -74,6 +84,9 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
         m_workplaceMenuItemProvider.initialize();
     }
+
+    /** Cache for workplace locale. */
+    private CmsExpiringValue<Locale> m_localeCache = new CmsExpiringValue<Locale>(1000);
 
     /** The current view in case it implements view change listener. */
     private View m_currentView;
@@ -145,6 +158,21 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
         NavigationState state = new NavigationState(m_navigationStateManager.getState());
         return state.getParams();
+    }
+
+    /**
+     * @see com.vaadin.ui.AbstractComponent#getLocale()
+     */
+    @Override
+    public Locale getLocale() {
+
+        Locale result = m_localeCache.get();
+        if (result == null) {
+            CmsObject cms = getCmsObject();
+            result = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            m_localeCache.set(result);
+        }
+        return result;
     }
 
     /**
