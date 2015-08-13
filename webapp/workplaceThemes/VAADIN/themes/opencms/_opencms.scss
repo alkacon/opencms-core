@@ -12,6 +12,18 @@
   	@include valo-gradient(darken($v-background-color,4%));
   }
   
+  div.v-window {
+ 	 @include valo-gradient($v-window-background-color);
+ 	 
+ 	 .v-window-closebox, .v-window-maximizebox, .v-window-restorebox {
+ 	 	background-color: transparent;
+ 	 }
+ 	 
+ 	 .v-window-header{
+ 	  font-weight: bold;
+ 	 }
+  }
+  
   
   $toolbar-padding: 20px;
   $toolbar-height: 52px;

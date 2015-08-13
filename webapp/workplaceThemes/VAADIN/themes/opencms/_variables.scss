@@ -46,5 +46,13 @@ $v-font-size: 14px;
 $v-table-row-height: 32px;
 $v-tree-row-height: $v-table-row-height;
 $v-app-loading-text: "Default OpenCms";
+$v-window-background-color: $gray-darker;
+$v-window-modality-curtain-background-color: $gray-light;
+
+$v-layout-margin-top: 10px;
+$v-layout-margin-right: 10px;
+$v-layout-margin-bottom: 10px;
+$v-layout-margin-left: 10px;
+
 
 @import "../valo/valo";
