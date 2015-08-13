@@ -103,7 +103,6 @@ public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseLis
             m_app = m_appConfig.getAppInstance();
             CmsAppViewLayout layout = new CmsAppViewLayout();
             layout.setAppTitle(m_appConfig.getName(UI.getCurrent().getLocale()));
-            layout.setAppIcon(m_appConfig.getIcon());
             m_app.initUI(layout);
             return layout;
         }

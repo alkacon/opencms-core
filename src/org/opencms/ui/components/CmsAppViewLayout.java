@@ -29,7 +29,6 @@ package org.opencms.ui.components;
 
 import org.opencms.ui.apps.I_CmsAppUIContext;
 
-import com.vaadin.server.Resource;
 import com.vaadin.server.Responsive;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -46,8 +45,8 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     /** The app area. */
     private CssLayout m_appArea;
 
-    /** The menu area. */
-    private CssLayout m_menuArea;
+    /** The info area grid. */
+    private CssLayout m_infoArea;
 
     /** The toolbar. */
     private CmsToolBar m_toolbar;
@@ -57,7 +56,7 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
      */
     public CmsAppViewLayout() {
 
-        Design.read("AppView.html", this);
+        Design.read("CmsAppView.html", this);
         Responsive.makeResponsive(this);
         // setting the width to 100% within the java code is required by the responsive resize listeners
         setWidth("100%");
@@ -93,19 +92,12 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     }
 
     /**
-     * @see org.opencms.ui.apps.I_CmsAppUIContext#setAppIcon(com.vaadin.server.Resource)
-     */
-    public void setAppIcon(Resource icon) {
-
-        m_toolbar.setAppIcon(icon);
-    }
-
-    /**
      * @see org.opencms.ui.apps.I_CmsAppUIContext#setAppInfo(com.vaadin.ui.Component)
      */
-    public void setAppInfo(Component appInfo) {
+    public void setAppInfo(Component infoContent) {
 
-        m_toolbar.setAppInfo(appInfo);
+        m_infoArea.removeAllComponents();
+        m_infoArea.addComponent(infoContent);
     }
 
     /**
@@ -117,18 +109,10 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     }
 
     /**
-     * Sets the menu component.<p>
-     *
-     * @param menu the menu
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#showInfoArea(boolean)
      */
-    public void setMenuContent(Component menu) {
+    public void showInfoArea(boolean show) {
 
-        m_menuArea.removeAllComponents();
-        if (menu != null) {
-            m_menuArea.addComponent(menu);
-            addStyleName(OpenCmsTheme.WITH_MENU);
-        } else {
-            removeStyleName(OpenCmsTheme.WITH_MENU);
-        }
+        m_infoArea.setVisible(show);
     }
 }

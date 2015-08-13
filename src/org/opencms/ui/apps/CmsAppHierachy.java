@@ -70,7 +70,7 @@ public class CmsAppHierachy implements I_CmsWorkplaceApp {
         hierarchyPanel.fill(hierarchyBuilder.buildHierarchy(), locale);
 
         context.setAppContent(hierarchyPanel);
-
+        context.showInfoArea(false);
         // some dummy buttons
         context.addToolbarButton(CmsToolBar.createButton(FontOpenCms.PUBLISH));
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.WRENCH));

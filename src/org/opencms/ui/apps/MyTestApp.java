@@ -157,7 +157,7 @@ public class MyTestApp extends VerticalLayout implements I_CmsWorkplaceApp {
         info.addComponent(infoPath);
         context.setAppInfo(info);
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.TIMES_CIRCLE));
-        context.setMenuContent(getAccordion());
+        //   context.setMenuContent(getAccordion());
     }
 
     public void onStateChange(String state) {

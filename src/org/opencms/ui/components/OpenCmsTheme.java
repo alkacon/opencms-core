@@ -39,7 +39,7 @@ public class OpenCmsTheme {
     public static final String APP_CONTENT = "o-app-content";
 
     /** CSS style name. */
-    public static final String APP_MENU = "o-app-menu";
+    public static final String APP_INFO = "o-app-info";
 
     /** CSS style name. */
     public static final String COLOR_BLUE = "o-color-blue";
@@ -63,6 +63,9 @@ public class OpenCmsTheme {
     public static final String INLINE_TEXTFIELD = "o-inline-textfield";
 
     /** CSS style name. */
+    public static final String MAIN = "o-main";
+
+    /** CSS style name. */
     public static final String NAVIGATOR_DROPDOWN = "o-navigator-dropdown";
 
     /** CSS style name. */
@@ -84,22 +87,10 @@ public class OpenCmsTheme {
     public static final String TOOLBAR = "o-toolbar";
 
     /** CSS style name. */
-    public static final String TOOLBAR_APP_INFO = "o-toolbar-app-info";
-
-    /** CSS style name. */
-    public static final String TOOLBAR_APP_INFO_CONTAINER = "o-toolbar-app-info-container";
-
-    /** CSS style name. */
-    public static final String TOOLBAR_APP_INFO_ICON = "o-toolbar-app-info-icon";
-
-    /** CSS style name. */
     public static final String TOOLBAR_BUTTON = "o-toobar-button";
 
     /** CSS style name. */
     public static final String TOOLBAR_CENTER = "o-toolbar-center";
-
-    /** CSS style name. */
-    public static final String TOOLBAR_INFO = "o-toolbar-info";
 
     /** CSS style name. */
     public static final String TOOLBAR_INNER = "o-toolbar-inner";
@@ -112,7 +103,4 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String TOOLBAR_LOGO = "o-toolbar-logo";
-
-    /** CSS style name. */
-    public static final String WITH_MENU = "o-with-menu";
 }

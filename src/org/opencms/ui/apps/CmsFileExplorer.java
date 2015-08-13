@@ -41,6 +41,7 @@ import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsContextMenuBuilder;
@@ -61,6 +62,7 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -70,8 +72,11 @@ import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
@@ -86,7 +91,9 @@ import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -299,6 +306,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
+    public static final String SITE_CAPTION = "site_caption";
+
     /** The UI context. */
     protected I_CmsAppUIContext m_appContext;
 
@@ -320,9 +329,6 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** The folder tree. */
     private Tree m_fileTree;
 
-    /** The info component. */
-    private AbsoluteLayout m_info;
-
     /** The info path. */
     private Label m_infoPath;
 
@@ -337,6 +343,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
     /** The move up button. */
     private Button m_upButton;
+
+    private ComboBox m_siteSelector;
 
     /**
      * Constructor.<p>
@@ -402,14 +410,20 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             }
         });
 
-        m_info = new AbsoluteLayout();
-        m_info.setSizeFull();
+        m_siteSelector = createSiteSelect(A_CmsUI.getCmsObject());
+        m_siteSelector.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                Notification.show("Site change requested to " + event.getProperty().getValue());
+            }
+        });
         m_infoTitle = new Label();
-        m_infoTitle.addStyleName(ValoTheme.LABEL_H4);
-        m_info.addComponent(m_infoTitle, "top:3px; left:0px;");
+        m_infoTitle.addStyleName(ValoTheme.LABEL_H3);
         m_infoPath = new Label();
         m_infoPath.addStyleName(ValoTheme.LABEL_TINY);
-        m_info.addComponent(m_infoPath, "bottom:3px; left:0px;");
         m_searchField = new TextField();
         m_searchField.setIcon(FontAwesome.SEARCH);
         m_searchField.setInputPrompt("Search");
@@ -425,10 +439,6 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
             }
         });
-        // requires a wrapper to work around issue with the inline icon positioning
-        CssLayout wrapper = new CssLayout();
-        wrapper.addComponent(m_searchField);
-        m_info.addComponent(wrapper, "top:6px; right:15px;");
 
         // toolbar buttons
         m_upButton = CmsToolBar.createButton(FontAwesome.ARROW_UP);
@@ -486,7 +496,23 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         sp.setSecondComponent(m_fileTable);
         sp.setSplitPosition(400 - 1, Unit.PIXELS);
         context.setAppContent(sp);
-        context.setAppInfo(m_info);
+        context.showInfoArea(true);
+        AbsoluteLayout info = new AbsoluteLayout();
+        info.setSizeFull();
+        info.addComponent(m_infoTitle, "top:0px; left:410px;");
+        info.addComponent(m_infoPath, "bottom:3px; left:410px;");
+        FormLayout siteSelect = new FormLayout();
+        siteSelect.addStyleName("o-form-less-margin");
+        siteSelect.setWidth("380px");
+        m_siteSelector.setWidth("100%");
+        siteSelect.addComponent(m_siteSelector);
+        info.addComponent(siteSelect, "top:0px; left: 10px;");
+        CssLayout wrapper = new CssLayout();
+        m_searchField.setWidth("100%");
+        wrapper.addComponent(m_searchField);
+        wrapper.setWidth("200px");
+        info.addComponent(wrapper, "top:16px; right:15px;");
+        context.setAppInfo(info);
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.MAGIC));
         context.addToolbarButton(m_upButton);
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.UPLOAD));
@@ -783,6 +809,35 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         if (parentId != null) {
             container.setParent(resource.getStructureId(), parentId);
         }
+    }
+
+    private ComboBox createSiteSelect(CmsObject cms) {
+
+        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(
+            cms,
+            true,
+            true,
+            cms.getRequestContext().getOuFqn());
+        IndexedContainer availableSites = new IndexedContainer();
+        availableSites.addContainerProperty(SITE_CAPTION, String.class, null);
+        Locale locale = A_CmsUI.get().getLocale();
+        for (CmsSite site : sites) {
+            Item siteItem = availableSites.addItem(site.getSiteRoot());
+            String title = CmsWorkplace.substituteSiteTitleStatic(site.getTitle(), locale);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                title = site.getSiteRoot();
+            }
+            siteItem.getItemProperty(SITE_CAPTION).setValue(title);
+        }
+        ComboBox combo = new ComboBox("Site:", availableSites);
+        combo.setInputPrompt("You can click here");
+        combo.setTextInputAllowed(false);
+        combo.setNullSelectionAllowed(false);
+        combo.select("Option One");
+        combo.setWidth("200px");
+        combo.setItemCaptionPropertyId(SITE_CAPTION);
+        combo.select(cms.getRequestContext().getSiteRoot());
+        return combo;
     }
 
     /**

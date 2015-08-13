@@ -36,7 +36,6 @@ import org.opencms.ui.apps.CmsDefaultAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.workplace.CmsWorkplace;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,45 +48,25 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.declarative.Design;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The workplace toolbar.<p>
  */
-public class CmsToolBar extends CustomLayout {
-
-    /** Template location name. */
-    private static final String LOCATION_APP_INDICATOR = "appIndicator";
-
-    /** Template location name. */
-    private static final String LOCATION_INFO_CONTAINER = "infoContainer";
-
-    /** Template location name. */
-    private static final String LOCATION_INFO_ICON = "infoIcon";
-
-    /** Template location name. */
-    private static final String LOCATION_ITEMS_LEFT = "itemsLeft";
-
-    /** Template location name. */
-    private static final String LOCATION_ITEMS_RIGHT = "itemsRight";
-
-    /** Template location name. */
-    private static final String LOCATION_LOGO = "logo";
+public class CmsToolBar extends CssLayout {
 
     /** The serial version id. */
     private static final long serialVersionUID = -4551194983054069395L;
 
     /** The app indicator. */
     private Label m_appIndicator;
-
-    /** The app info icon. */
-    private Label m_infoIcon;
 
     /** Toolbar items left. */
     private HorizontalLayout m_itemsLeft;
@@ -100,24 +79,10 @@ public class CmsToolBar extends CustomLayout {
 
     /**
      * Constructor.<p>
-     *
-     * @throws IOException in case the layout is not available
      */
-    public CmsToolBar()
-    throws IOException {
+    public CmsToolBar() {
 
-        super(CmsToolBar.class.getClassLoader().getResourceAsStream("VAADIN/themes/opencms/layouts/ToolBar.html"));
-
-        m_itemsLeft = new HorizontalLayout();
-        addComponent(m_itemsLeft, LOCATION_ITEMS_LEFT);
-        m_itemsRight = new HorizontalLayout();
-        addComponent(m_itemsRight, LOCATION_ITEMS_RIGHT);
-        m_appIndicator = new Label();
-        addComponent(m_appIndicator, LOCATION_APP_INDICATOR);
-        m_logo = new Image();
-        addComponent(m_logo, LOCATION_LOGO);
-        m_infoIcon = new Label();
-        addComponent(m_infoIcon, LOCATION_INFO_ICON);
+        Design.read("CmsToolBar.html", this);
 
         m_logo.setSource(new ExternalResource(CmsWorkplace.getResourceUri("commons/login_logo.png")));
         m_itemsRight.addComponent(createButton(FontOpenCms.CONTEXT_MENU));
@@ -175,30 +140,6 @@ public class CmsToolBar extends CustomLayout {
     public void clearButtonsRight() {
 
         m_itemsRight.removeAllComponents();
-    }
-
-    /**
-     * Sets the app info icon.<p>
-     *
-     * @param icon the icon resource
-     */
-    public void setAppIcon(Resource icon) {
-
-        m_infoIcon.setIcon(icon);
-    }
-
-    /**
-     * Sets the app info component.<p>
-     *
-     * @param infoComponent the info component
-     */
-    public void setAppInfo(Component infoComponent) {
-
-        if (infoComponent == null) {
-            removeComponent(LOCATION_INFO_CONTAINER);
-        } else {
-            addComponent(infoComponent, LOCATION_INFO_CONTAINER);
-        }
     }
 
     /**

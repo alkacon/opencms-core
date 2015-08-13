@@ -27,7 +27,6 @@
 
 package org.opencms.ui.apps;
 
-import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 
 /**
@@ -55,18 +54,11 @@ public interface I_CmsAppUIContext {
     void setAppContent(Component appContent);
 
     /**
-     * Sets the app icon.<p>
-     *
-     * @param icon the icon resource
-     */
-    void setAppIcon(Resource icon);
-
-    /**
      * Sets the app info component.<p>
      *
-     * @param appInfo the app info
+     * @param infoContent the info component
      */
-    void setAppInfo(Component appInfo);
+    void setAppInfo(Component infoContent);
 
     /**
      * Sets the app title.<p>
@@ -76,10 +68,9 @@ public interface I_CmsAppUIContext {
     void setAppTitle(String title);
 
     /**
-     * Sets the side bar menu component.<p>
+     * Sets the info grid visibility.<p>
      *
-     * @param menuContent the menu component
+     * @param show <code>true</code> to show the info
      */
-    void setMenuContent(Component menuContent);
-
+    void showInfoArea(boolean show);
 }

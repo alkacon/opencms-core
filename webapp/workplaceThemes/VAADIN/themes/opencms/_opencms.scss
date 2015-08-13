@@ -14,7 +14,7 @@
   
   
   $toolbar-padding: 20px;
-  $toolbar-height: 105px;
+  $toolbar-height: 52px;
   $app-icon-size: 32px;
   $app-icon-size-small: 24px;
 
@@ -35,21 +35,12 @@
   	color: $blue;
   }
   
+  .v-formlayout.o-form-less-margin{
+  	@include valo-formlayout-margin(14px);
+  }
+  
   .o-responsive[width-range~="1241px-"]{
   	/* big screen styles */
-  	
-  	.o-app-menu, .o-toolbar-app-indicator{
-  		width: 400px;
-  	}
-  	
-  	.o-toolbar-app-info{
-  		margin-left: 400px;
-  	}
-  	
-  	.o-app-content-container{
-  		max-width: 1200px;
-  	}
-  	
   	.o-toolbar{
   		.o-toolbar-items-left, .o-toolbar-items-right{
   			width: 500px;
@@ -57,20 +48,9 @@
   	}
   }
   
-  .o-with-menu.o-responsive[width-range~="1241px-"] .o-app-content{
-  	margin-left: 400px;
-  }
-  
   .o-responsive[width-range~="0-983px"]{
   	/* small screen styles */
-  	.o-app-menu, .o-toolbar-app-indicator{
-  		width: 240px;
-  	}
-  	
-  	.o-toolbar-app-info{
-  		margin-left: 240px;
-  	}
-  	
+ 	
   	.o-toolbar{
   		.o-toolbar-items-left, .o-toolbar-items-right{
   			width: 250px;
@@ -78,124 +58,36 @@
   	}
   }
   
-  .o-with-menu.o-responsive[width-range~="0-983px"] .o-app-content, 
-  .o-with-menu.o-responsive[width-range~="984px-1240px"] .o-app-content{
-  	margin-left: 240px;
-  }
-  
   .o-responsive[width-range~="984px-1240px"]{
   	/* medium screen styles */
   	
-  	.o-app-menu, .o-toolbar-app-indicator{
-  		width: 240px;
-  	}
-  	
-  	.o-with-menu .o-app-content, .o-toolbar-app-info{
-  		margin-left: 240px;
-  	}
-  	
-  	.o-toolbar{
+ 	.o-toolbar{
   		.o-toolbar-items-left, .o-toolbar-items-right{
   			width: 350px;
   		}
   	}
   }
-  
-  .o-iframe-content {
-  
-  	.o-app-menu{
-  		position: absolute;
-  		top: 0;
-  		left: 0;
-  		bottom: 0;
-  	}
-  	
-  	.o-app-content{
-  		position: absolute;
-  		top: 0;
-  		left: 0;
-  		bottom: 0;
-  		right: 0;
-  	
-  		.o-app-content-container{
-  			position: absolute;
-  			top: 45px;
-  			left: 0;
-  			bottom: 0;
-  		}
-  	}
-  }
-  
 
-  
-  .o-toolbar-info{
+  .o-app-info{
   	display: block;
   	width: 100%;
   	height: 45px;
-  	
-  	.o-toolbar-app-indicator{
-  		float:left;
-  		background: $blue-light;
-  		color: $white;
-  		font-weight: bold;
-  		border-right: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
-  		.v-label{
-  			padding: 10px 28px;
-  			display: block;
-  			width: auto;
-  		}
-  	}
-  	
-  	.o-toolbar-app-indicator, .o-toolbar-app-info{
-  		display: block;
-  		border-bottom: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
-  		border-top: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
-  	}
-  	
-  	.o-toolbar-app-info{
-  		padding: 0 !important;
-  		overflow: hidden;
-  		width: auto !important;
-  	
-	  	.o-toolbar-app-info-icon{
-	  		float: left;
-	  		margin: -4px 0 0 8px;
-	  		display: block;
-	  		width: $app-icon-size;
-	  		.v-caption{
-	  			font-size: $app-icon-size;
-  			}
-	  	}
-	  	
-	  	.o-toolbar-app-info-container{
-	  		margin-left: 50px;
-    		position: relative;
-    		width: auto;
-    		height: 45px;
-    		font-size: $v-font-size--tiny;
-    		.v-label-h4 {
-    			margin: 3px 0 0;
-    		}
-	  	}
-	}
+  	border-bottom: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
   }
 
   .o-app-content{
   	display: block;
   	background: $v-background-color;
-  	margin-top: $toolbar-height;
   }
   
-  .o-with-menu .o-app-menu{
-  	display: block;
-  }
-  	
-  .o-app-menu{
-  	float: left;
-  	margin: $toolbar-height 0 0 0;
-  	border-right: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
-  	display: none;
-  	padding: 15px;
+  .o-main{
+  	position: absolute;
+  	top: $toolbar-height;
+  	left: 0;
+  	right: 0;
+  	bottom: 0;
+  	/* override the size-full setting required by vaadin layout manager */
+  	height: auto !important;
   }
   
   .o-toolbar{
@@ -214,6 +106,19 @@
   		min-width: 700px;
   		text-align: center;
   		display: block;
+  		
+  		.o-toolbar-app-indicator{
+  			display: block;
+    		float: left;
+    		font-size: 20px;
+    		font-weight: bold;
+    		width: auto !important;
+    		border-radius: $v-border-radius;
+    		margin: 6px 20px 6px 2px;
+		    padding: 4px 12px;
+		    color: $gray-lighter;
+		    @include valo-gradient($gray-darker);
+    	}
   	}
   	
   	.o-toolbar-center{
@@ -223,13 +128,10 @@
   		
   		.o-toolbar-logo{
   			display: inline-block;
-  			img{
-  				margin: 5px auto;
-  				height: 50px;
-  			}
+  			height: 42px;
   		}
   	}
-  	.o-toolbar-items-left, .o-toolbar-items-right{
+  	.o-toolbar-items-left, .o-toolbar-items-right, .o-toolbar-center{
   		margin: 5px 0;
   	}
   
@@ -246,9 +148,10 @@
   
   .v-button.v-button-o-toobar-button{
   	font-size: $app-icon-size;
-    height: 50px;
-    line-height: 50px;
-    padding: 0 10px;
+    height: 40px;
+    min-width: 40px;
+    line-height: 40px;
+    padding: 0 5px;
   }
   
   
