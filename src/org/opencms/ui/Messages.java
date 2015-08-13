@@ -93,13 +93,16 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_PWCHANGE_USER_NOT_FOUND_0 = "GUI_PWCHANGE_USER_NOT_FOUND_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCEINFO_LIST_TITLE_0 = "GUI_RESOURCEINFO_LIST_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SEND_RESET_LINK_0 = "GUI_SEND_RESET_LINK_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_UNDOMOVE_0 = "GUI_UNDO_UNDOMOVE_0";
+    public static final String GUI_UNDO_RECURSIVE_0 = "GUI_UNDO_RECURSIVE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_RECURSIVE_0 = "GUI_UNDO_RECURSIVE_0";
+    public static final String GUI_UNDO_UNDOMOVE_0 = "GUI_UNDO_UNDOMOVE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.messages";
