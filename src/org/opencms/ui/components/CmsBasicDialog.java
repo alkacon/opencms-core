@@ -27,11 +27,19 @@
 
 package org.opencms.ui.components;
 
+import org.opencms.file.CmsResource;
+import org.opencms.ui.A_CmsUI;
+import org.opencms.workplace.explorer.CmsResourceUtil;
+
+import java.util.List;
+import java.util.Locale;
+
 import org.jsoup.nodes.Element;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.DesignContext;
@@ -44,30 +52,83 @@ public class CmsBasicDialog extends VerticalLayout {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /** The content layout. */
-    private VerticalLayout m_content = new VerticalLayout();
+    /** The main panel. */
+    private VerticalLayout m_mainPanel = new VerticalLayout();
 
     /** The content panel. */
-    private Panel m_contentPanel = new Panel();
+    private Panel m_contentPanel;
 
     /** The button bar. */
     private HorizontalLayout m_buttonPanel = new HorizontalLayout();
+
+    /** The resource info component. */
+    private Component m_infoComponent;
 
     /**
      * Creates new instance.<p>
      */
     public CmsBasicDialog() {
+        addStyleName("o-dialog");
+        setMargin(true);
         setSpacing(true);
-        setSizeFull();
-        m_contentPanel.setContent(m_content);
-        addComponent(m_contentPanel);
-        m_content.setMargin(true);
+        setWidth("100%");
+        Panel panel = new Panel();
+        panel.setContent(m_mainPanel);
+        m_mainPanel.addStyleName("o-dialog-content");
+        m_mainPanel.setSpacing(true);
+        addComponent(panel);
+        m_contentPanel = new Panel();
+
+        m_mainPanel.addComponent(m_contentPanel);
+        m_mainPanel.setExpandRatio(m_contentPanel, 3);
         addComponent(m_buttonPanel);
-        setExpandRatio(m_contentPanel, 1);
-        m_contentPanel.setHeight("100%");
+        setExpandRatio(panel, 1);
+        // m_contentPanel.setHeight("100%");
         m_buttonPanel.setSpacing(true);
         setComponentAlignment(m_buttonPanel, Alignment.MIDDLE_RIGHT);
         m_buttonPanel.addStyleName("o-dialog-button-bar");
+    }
+
+    /**
+     * Displays the resource infos panel.<p>
+     *
+     * @param resources the resources
+     */
+    public void displayResourceInfo(List<CmsResource> resources) {
+
+        if (m_infoComponent != null) {
+            m_mainPanel.removeComponent(m_infoComponent);
+            m_infoComponent = null;
+        }
+        if ((resources != null) && !resources.isEmpty()) {
+            Locale locale = A_CmsUI.get().getLocale();
+            if (resources.size() == 1) {
+                CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resources.get(0));
+                m_infoComponent = new CmsResourceInfo(
+                    resUtil.getGalleryTitle(locale),
+                    resUtil.getGalleryDescription(locale),
+                    resUtil.getBigIconPath());
+            } else {
+
+                m_infoComponent = new Panel("Resource infos");
+                m_infoComponent.addStyleName("v-scrollable");
+                VerticalLayout resourcePanel = new VerticalLayout();
+                ((Panel)m_infoComponent).setContent(resourcePanel);
+                resourcePanel.setSpacing(true);
+                resourcePanel.setMargin(true);
+                for (CmsResource resource : resources) {
+                    CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
+
+                    resourcePanel.addComponent(
+                        new CmsResourceInfo(
+                            resUtil.getGalleryTitle(locale),
+                            resUtil.getGalleryDescription(locale),
+                            resUtil.getBigIconPath()));
+                }
+            }
+            m_mainPanel.addComponent(m_infoComponent, 0);
+
+        }
     }
 
     /**
@@ -100,9 +161,10 @@ public class CmsBasicDialog extends VerticalLayout {
      */
     public void setContent(Component content) {
 
-        m_content.removeAllComponents();
-        m_content.addComponent(content);
-
+        m_contentPanel.setContent(content);
+        if (content instanceof Layout.MarginHandler) {
+            ((Layout.MarginHandler)content).setMargin(true);
+        }
     }
 
     /**

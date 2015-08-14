@@ -13,14 +13,27 @@
   }
   
   div.v-window {
- 	 @include valo-gradient($v-window-background-color);
+ 	 max-height: 95%;
  	 
- 	 .v-window-closebox, .v-window-maximizebox, .v-window-restorebox {
+ 	 .v-window-header, .v-window-closebox, .v-window-maximizebox, .v-window-restorebox {
  	 	background-color: transparent;
+ 	 	font-weight: bold;
+ 	 	color: $gray-lighter;
+ 	 	font-size: $v-font-size--large;
+ 	 }
+ 	 .v-window-closebox:hover, .v-window-maximizebox:hover, .v-window-restorebox:hover {
+   	 	color: $v-selection-color;
+ 	 }
+ 	 .v-window-outerheader{
+ 	  @include valo-gradient($v-window-background-color);
  	 }
  	 
- 	 .v-window-header{
- 	  font-weight: bold;
+ 	 .o-dialog > .v-spacing {
+ 	 	height: $o-window-margin;
+ 	 }
+ 	 
+ 	 .o-dialog-content, .v-window-contents > .v-scrollable > .o-dialog {
+ 	 	padding: $o-window-margin;
  	 }
   }
   

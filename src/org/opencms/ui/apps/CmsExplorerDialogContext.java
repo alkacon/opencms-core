@@ -29,19 +29,12 @@ package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.components.CmsContextMenuDialogPanel;
 import org.opencms.ui.components.CmsErrorDialog;
-import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.List;
-import java.util.Locale;
-
-import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.vaadin.ui.Component;
@@ -52,14 +45,11 @@ import com.vaadin.ui.Window;
  */
 public class CmsExplorerDialogContext implements I_CmsDialogContext {
 
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsExplorerDialogContext.class);
+    /** The explorer app context. */
+    private I_CmsAppUIContext m_appContext;
 
     /** The explorer instance. */
     private CmsFileExplorer m_explorer;
-
-    /** The explorer app context. */
-    private I_CmsAppUIContext m_appContext;
 
     /** List of selected resources. */
     private List<CmsResource> m_resources;
@@ -116,6 +106,14 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
     }
 
     /**
+     * @see org.opencms.ui.I_CmsDialogContext#getAppContext()
+     */
+    public I_CmsAppUIContext getAppContext() {
+
+        return m_appContext;
+    }
+
+    /**
      * @see org.opencms.ui.I_CmsDialogContext#getCms()
      */
     public CmsObject getCms() {
@@ -137,27 +135,10 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
     public void start(String title, Component dialog) {
 
         if (dialog != null) {
-            CmsContextMenuDialogPanel panel = new CmsContextMenuDialogPanel();
-            panel.setContent(dialog);
             m_window = prepareWindow();
             m_window.setCaption(title);
-            m_window.setContent(panel);
+            m_window.setContent(dialog);
             A_CmsUI.get().addWindow(m_window);
-            try {
-                for (CmsResource resource : m_resources) {
-                    CmsResourceUtil resUtil = new CmsResourceUtil(getCms(), resource);
-                    Locale locale = A_CmsUI.get().getLocale();
-                    panel.addResourceInfo(
-                        new CmsResourceInfo(
-                            resUtil.getGalleryTitle(locale),
-                            resUtil.getGalleryDescription(locale),
-                            resUtil.getBigIconPath()));
-                }
-
-            } catch (Exception e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-
         }
     }
 
@@ -170,10 +151,8 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
 
         Window window = new Window();
         window.setModal(true);
-        window.setClosable(false);
-        window.setWidth("800px");
-        int height = Math.max(400, A_CmsUI.get().getPage().getBrowserWindowHeight() - 200);
-        window.setHeight(height + "px");
+        window.setClosable(true);
+        window.setWidth("600px");
         window.center();
         return window;
 

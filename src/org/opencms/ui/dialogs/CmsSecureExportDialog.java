@@ -166,6 +166,7 @@ public class CmsSecureExportDialog extends CmsBasicDialog {
                 }
             }
         });
+        displayResourceInfo(m_context.getResources());
     }
 
     /**

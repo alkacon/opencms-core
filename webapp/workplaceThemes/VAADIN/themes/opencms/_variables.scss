@@ -36,6 +36,10 @@ $red-orange:        mix($red, $orange);
 $red-cyan:          mix($red, $cyan);
 $green:             mix($orange, $cyan);
 
+$o-layout-margin: 10px;
+$o-window-margin: 10px;
+$o-layout-spacing: 15px;
+
 /* Valo variables - changes to the default valo variables */
 
 $v-background-color: $gray-lighter;
@@ -49,10 +53,15 @@ $v-app-loading-text: "Default OpenCms";
 $v-window-background-color: $gray-darker;
 $v-window-modality-curtain-background-color: $gray-light;
 
-$v-layout-margin-top: 10px;
-$v-layout-margin-right: 10px;
-$v-layout-margin-bottom: 10px;
-$v-layout-margin-left: 10px;
+$v-layout-margin-top: $o-layout-margin;
+$v-layout-margin-right: $o-layout-margin;
+$v-layout-margin-bottom: $o-layout-margin;
+$v-layout-margin-left: $o-layout-margin;
+
+$v-layout-spacing-top: $o-layout-spacing;
+$v-layout-spacing-right: $o-layout-spacing;
+$v-layout-spacing-bottom: $o-layout-spacing;
+$v-layout-spacing-left: $o-layout-spacing;
 
 
 @import "../valo/valo";

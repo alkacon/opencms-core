@@ -127,7 +127,7 @@ public class CmsTouchDialog extends CmsBasicDialog {
             }
         });
         m_dateField.setValue(new Date());
-
+        displayResourceInfo(m_context.getResources());
     }
 
     /**

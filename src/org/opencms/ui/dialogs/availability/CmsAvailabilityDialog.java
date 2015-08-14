@@ -49,7 +49,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -72,7 +71,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         super();
         m_dialogContext = dialogContext;
         CmsVaadinUtils.readAndLocalizeDesign(
-            (Component)this,
+            this,
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
             null);
 
@@ -122,7 +121,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
                 m_dialogContext.finish(null);
             }
         });
-
+        displayResourceInfo(m_dialogContext.getResources());
     }
 
     protected void changeAvailability() throws CmsException {

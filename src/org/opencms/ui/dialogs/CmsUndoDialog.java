@@ -119,6 +119,7 @@ public class CmsUndoDialog extends CmsBasicDialog {
                 }
             }
         });
+        displayResourceInfo(m_context.getResources());
     }
 
     /**
