@@ -27,8 +27,10 @@
 
 package org.opencms.ui.contextmenu;
 
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.deleted;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.inproject;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notdeleted;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notnew;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notonline;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notunchangedfile;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.roleeditor;
@@ -70,9 +72,17 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
     /** Visibility check for the undo function. */
     public static final CmsStandardVisibilityCheck UNDO = new CmsStandardVisibilityCheck(
         notunchangedfile,
+        notnew,
         roleeditor,
         notonline,
         notdeleted,
+        writepermisssion);
+
+    /** Visibility check for undelete option. */
+    public static final CmsStandardVisibilityCheck UNDELETE = new CmsStandardVisibilityCheck(
+        roleeditor,
+        notonline,
+        deleted,
         writepermisssion);
 
     /** The set of flags. */
@@ -127,6 +137,11 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
             return VISIBILITY_INVISIBLE;
         }
 
+        if (flag(notnew) && resource.getState().isNew()) {
+            CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0);
+        }
+
         if (flag(inproject) && !resUtil.isInsideProject() && !resUtil.getProjectState().isLockedForPublishing()) {
             return VISIBILITY_INVISIBLE;
         }
@@ -151,6 +166,10 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         if (flag(notdeleted) && resUtil.getResource().getState().isDeleted()) {
             return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
                 Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_DELETED_0);
+        }
+
+        if (flag(deleted) && !resource.getState().isDeleted()) {
+            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
 
         return VISIBILITY_ACTIVE;

@@ -46,6 +46,9 @@ public enum CmsVisibilityCheckFlag {
     /** Checks that the resource is a file which is not unchanged. */
     notunchangedfile,
 
+    /** Checks that the resource is not new. */
+    notnew,
+
     /** Check editor rule. */
     roleeditor,
 

@@ -33,6 +33,7 @@ import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.ui.dialogs.CmsSecureExportDialog;
 import org.opencms.ui.dialogs.CmsTouchDialog;
+import org.opencms.ui.dialogs.CmsUndeleteDialog;
 import org.opencms.ui.dialogs.CmsUndoDialog;
 import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
 
@@ -55,7 +56,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 null,
                 CmsAvailabilityDialog.class,
                 "%(key.GUI_EXPLORER_CONTEXT_AVAILABILITY_0)",
-                0,
+                1,
                 0,
                 CmsStandardVisibilityCheck.DEFAULT),
             new CmsDialogContextMenuItem(
@@ -63,7 +64,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 null,
                 CmsUndoDialog.class,
                 "%(key.GUI_EXPLORER_CONTEXT_UNDOCHANGES_0)",
-                0,
+                3,
                 0,
                 CmsStandardVisibilityCheck.UNDO),
             new CmsDialogContextMenuItem(
@@ -71,7 +72,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 null,
                 CmsSecureExportDialog.class,
                 "%(key.GUI_EXPLORER_CONTEXT_SECURE_0)",
-                0,
+                2,
                 0,
                 CmsStandardVisibilityCheck.DEFAULT),
             new CmsDialogContextMenuItem(
@@ -81,6 +82,14 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 "%(key.GUI_EXPLORER_CONTEXT_TOUCH_0)",
                 0,
                 0,
-                CmsStandardVisibilityCheck.DEFAULT));
+                CmsStandardVisibilityCheck.DEFAULT),
+            new CmsDialogContextMenuItem(
+                "undelete",
+                null,
+                CmsUndeleteDialog.class,
+                "%(key.GUI_EXPLORER_CONTEXT_UNDELETE_0)",
+                5,
+                0,
+                CmsStandardVisibilityCheck.UNDELETE));
     }
 }
