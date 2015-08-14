@@ -242,7 +242,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 A_CmsUI.getCmsObject(),
                 m_fileTable.getSelectedResources());
             m_treeBuilder = treeBuilder;
-            CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildTree(m_menuItemProvider.getMenuItems());
+            CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildAll(m_menuItemProvider.getMenuItems());
             for (CmsTreeNode<I_CmsContextMenuItem> node : tree.getChildren()) {
                 createItem(menu, node);
             }

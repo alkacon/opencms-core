@@ -27,10 +27,14 @@
 
 package org.opencms.ui.contextmenu;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 
 import com.vaadin.ui.Component;
 
@@ -46,7 +50,9 @@ public class CmsDialogContextMenuItem extends A_CmsContextMenuItem {
 
     private int m_order;
     private int m_priority;
+    private String m_rule;
     private String m_title;
+    private I_CmsHasMenuItemVisibility m_visibilityCheck;
 
     public CmsDialogContextMenuItem(
 
@@ -55,12 +61,14 @@ public class CmsDialogContextMenuItem extends A_CmsContextMenuItem {
         Class<? extends Component> dialogClass,
         String title,
         int order,
-        int priority) {
+        int priority,
+        I_CmsHasMenuItemVisibility visibilityCheck) {
         m_dialogClass = dialogClass;
         m_id = id;
         m_order = order;
         m_priority = priority;
         m_title = title;
+        m_visibilityCheck = visibilityCheck;
     }
 
     public void executeAction(I_CmsDialogContext context) {
@@ -102,6 +110,13 @@ public class CmsDialogContextMenuItem extends A_CmsContextMenuItem {
     public String getTitle() {
 
         return m_title;
+    }
+
+    @Override
+    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
+
+        return m_visibilityCheck.getVisibility(cms, resources);
+
     }
 
     public boolean isLeafItem() {

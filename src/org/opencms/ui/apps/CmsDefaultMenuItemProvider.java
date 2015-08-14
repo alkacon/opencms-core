@@ -28,9 +28,11 @@
 package org.opencms.ui.apps;
 
 import org.opencms.ui.contextmenu.CmsDialogContextMenuItem;
+import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.ui.dialogs.CmsSecureExportDialog;
+import org.opencms.ui.dialogs.CmsTouchDialog;
 import org.opencms.ui.dialogs.CmsUndoDialog;
 import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
 
@@ -54,27 +56,31 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 CmsAvailabilityDialog.class,
                 "%(key.GUI_EXPLORER_CONTEXT_AVAILABILITY_0)",
                 0,
-                0),
+                0,
+                CmsStandardVisibilityCheck.DEFAULT),
             new CmsDialogContextMenuItem(
                 "undo",
                 null,
                 CmsUndoDialog.class,
                 "%(key.GUI_EXPLORER_CONTEXT_UNDOCHANGES_0)",
                 0,
-                0),
+                0,
+                CmsStandardVisibilityCheck.UNDO),
             new CmsDialogContextMenuItem(
                 "secureexport",
                 null,
                 CmsSecureExportDialog.class,
                 "%(key.GUI_EXPLORER_CONTEXT_SECURE_0)",
                 0,
-                0),
+                0,
+                CmsStandardVisibilityCheck.DEFAULT),
             new CmsDialogContextMenuItem(
                 "touch",
                 null,
-                CmsAvailabilityDialog.class,
+                CmsTouchDialog.class,
                 "%(key.GUI_EXPLORER_CONTEXT_TOUCH_0)",
                 0,
-                0));
+                0,
+                CmsStandardVisibilityCheck.DEFAULT));
     }
 }
