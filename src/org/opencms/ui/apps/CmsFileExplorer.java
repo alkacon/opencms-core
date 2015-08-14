@@ -61,8 +61,10 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -104,6 +106,7 @@ import com.vaadin.ui.Tree.CollapseListener;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
 import com.vaadin.ui.Tree.ItemStyleGenerator;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -306,7 +309,14 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** Site selector caption property. */
     public static final String SITE_CAPTION = "site_caption";
+
+    /** The opened paths session attribute name. */
+    public static final String OPENED_PATHS = "explorer-opened-paths";
+
+    /** The opened paths by site. */
+    private Map<String, String> m_openedPaths;
 
     /** The UI context. */
     protected I_CmsAppUIContext m_appContext;
@@ -344,11 +354,13 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** The move up button. */
     private Button m_upButton;
 
+    /** The site selector. */
     private ComboBox m_siteSelector;
 
     /**
      * Constructor.<p>
      */
+    @SuppressWarnings("unchecked")
     public CmsFileExplorer() {
         m_fileTable = new CmsFileTable();
         m_fileTable.setSizeFull();
@@ -417,7 +429,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
             public void valueChange(ValueChangeEvent event) {
 
-                Notification.show("Site change requested to " + event.getProperty().getValue());
+                changeSite((String)event.getProperty().getValue(), null);
             }
         });
         m_infoTitle = new Label();
@@ -451,6 +463,11 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 showParentFolder();
             }
         });
+
+        m_openedPaths = (Map<String, String>)UI.getCurrent().getSession().getAttribute(OPENED_PATHS);
+        if (m_openedPaths == null) {
+            m_openedPaths = new HashMap<String, String>();
+        }
     }
 
     /**
@@ -471,6 +488,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             A_CmsUI.getCmsObject(),
             CmsFileExplorerSettings.class,
             m_fileTable.getTableSettings());
+        UI.getCurrent().getSession().setAttribute(OPENED_PATHS, m_openedPaths);
         return true;
     }
 
@@ -525,9 +543,17 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
      */
     public void onStateChange(String state) {
 
+        state = normalizeState(state);
         if ((m_currentState == null) || !m_currentState.equals(state)) {
             m_currentState = state;
-            openPath(state);
+            CmsObject cms = A_CmsUI.getCmsObject();
+            String siteRoot = getSiteRootFromState();
+            String path = getPathFromState();
+            if ((siteRoot != null) && !siteRoot.equals(cms.getRequestContext().getSiteRoot())) {
+                changeSite(siteRoot, path);
+                m_siteSelector.select(siteRoot);
+            }
+            openPath(path);
         }
     }
 
@@ -540,6 +566,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             A_CmsUI.getCmsObject(),
             CmsFileExplorerSettings.class,
             m_fileTable.getTableSettings());
+        UI.getCurrent().getSession().setAttribute(OPENED_PATHS, m_openedPaths);
     }
 
     /**
@@ -565,6 +592,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     public void populateFolderTree() {
 
         CmsObject cms = A_CmsUI.getCmsObject();
+        m_treeContainer.removeAllItems();
         try {
             CmsResource siteRoot = cms.readResource("/", FOLDERS);
             addTreeItem(siteRoot, null, m_treeContainer);
@@ -597,7 +625,6 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
      */
     public void updateTree(List<CmsUUID> ids) {
 
-        HierarchicalContainer container = (HierarchicalContainer)m_fileTree.getContainerDataSource();
         CmsObject cms = A_CmsUI.getCmsObject();
 
         for (CmsUUID id : ids) {
@@ -606,20 +633,21 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
                 CmsResource parent = cms.readParentFolder(id);
                 CmsUUID parentId = parent.getStructureId();
-                Item resourceItem = container.getItem(id);
+                Item resourceItem = m_treeContainer.getItem(id);
                 if (resourceItem != null) {
                     // use the root path as name in case of the root item
                     resourceItem.getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).setValue(
                         parentId == null ? resource.getRootPath() : resource.getName());
                     resourceItem.getItemProperty(CmsFileTable.PROPERTY_STATE).setValue(resource.getState());
                     if (parentId != null) {
-                        container.setParent(resource.getStructureId(), parentId);
+                        m_treeContainer.setParent(resource.getStructureId(), parentId);
                     }
                 } else {
-                    addTreeItem(resource, parentId, container);
+                    addTreeItem(resource, parentId, m_treeContainer);
                 }
             } catch (CmsVfsResourceNotFoundException e) {
-                container.removeItem(id);
+                m_treeContainer.removeItem(id);
+                LOG.debug(e.getLocalizedMessage(), e);
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
@@ -634,14 +662,13 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
      */
     protected void clearTreeLevel(CmsUUID parentId) {
 
-        HierarchicalContainer container = (HierarchicalContainer)m_fileTree.getContainerDataSource();
         // create a new list to avoid concurrent modifications
-        Collection<?> children = container.getChildren(parentId);
+        Collection<?> children = m_treeContainer.getChildren(parentId);
         // may be null when monkey clicking
         if (children != null) {
-            List<Object> childIds = new ArrayList<Object>(container.getChildren(parentId));
+            List<Object> childIds = new ArrayList<Object>(m_treeContainer.getChildren(parentId));
             for (Object childId : childIds) {
-                container.removeItemRecursively(childId);
+                m_treeContainer.removeItemRecursively(childId);
             }
         }
     }
@@ -681,16 +708,19 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                     break;
                 }
             }
-            ((HierarchicalContainer)m_fileTree.getContainerDataSource()).setChildrenAllowed(folderId, hasFolderChild);
+            m_treeContainer.setChildrenAllowed(folderId, hasFolderChild);
             updateUpButtonStatus();
             String sitePath = folder.getRootPath().equals(cms.getRequestContext().getSiteRoot() + "/")
             ? ""
             : cms.getSitePath(folder);
 
-            if (!sitePath.equals(m_currentState)) {
-                m_currentState = sitePath;
+            String state = normalizeState(cms.getRequestContext().getSiteRoot() + "|" + sitePath);
+
+            if (!(state).equals(m_currentState)) {
+                m_currentState = state;
                 CmsAppWorkplaceUi.get().changeCurrentAppState(m_currentState);
             }
+            m_openedPaths.put(cms.getRequestContext().getSiteRoot(), sitePath);
         } catch (CmsException e) {
             Notification.show(e.getMessage());
             e.printStackTrace();
@@ -705,20 +735,35 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     protected void readTreeLevel(CmsUUID parentId) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
-        HierarchicalContainer container = (HierarchicalContainer)m_fileTree.getContainerDataSource();
         try {
             CmsResource parent = cms.readResource(parentId, FOLDERS);
             List<CmsResource> folderResources = cms.readResources(cms.getSitePath(parent), FOLDERS, false);
 
             // sets the parent to leaf mode, in case no child folders are present
-            container.setChildrenAllowed(parentId, !folderResources.isEmpty());
+            m_treeContainer.setChildrenAllowed(parentId, !folderResources.isEmpty());
 
             for (CmsResource resource : folderResources) {
-                addTreeItem(resource, parentId, container);
+                addTreeItem(resource, parentId, m_treeContainer);
             }
             m_fileTree.markAsDirtyRecursive();
         } catch (CmsException e) {
             LOG.error("Failed to read eplorer settings", e);
+        }
+    }
+
+    /**
+     * Switches to the requested site.<p>
+     *
+     * @param siteRoot the site root
+     * @param path the folder path to open
+     */
+    void changeSite(String siteRoot, String path) {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        if (!cms.getRequestContext().getSiteRoot().equals(siteRoot)) {
+            cms.getRequestContext().setSiteRoot(siteRoot);
+            populateFolderTree();
+            openPath(path);
         }
     }
 
@@ -728,7 +773,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     void expandCurrentFolder() {
 
         if (m_currentFolder != null) {
-            ((HierarchicalContainer)m_fileTree.getContainerDataSource()).setChildrenAllowed(m_currentFolder, true);
+            m_treeContainer.setChildrenAllowed(m_currentFolder, true);
             m_fileTree.expandItem(m_currentFolder);
         }
     }
@@ -776,8 +821,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
      */
     void showParentFolder() {
 
-        CmsUUID parentId = (CmsUUID)((HierarchicalContainer)m_fileTree.getContainerDataSource()).getParent(
-            m_currentFolder);
+        CmsUUID parentId = (CmsUUID)m_treeContainer.getParent(m_currentFolder);
         if (parentId != null) {
             readFolder(parentId);
             m_fileTree.select(parentId);
@@ -811,6 +855,13 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         }
     }
 
+    /**
+     * Creates the site selector combo box.<p>
+     *
+     * @param cms the current cms context
+     *
+     * @return the combo box
+     */
     private ComboBox createSiteSelect(CmsObject cms) {
 
         List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(
@@ -833,11 +884,63 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         combo.setInputPrompt("You can click here");
         combo.setTextInputAllowed(false);
         combo.setNullSelectionAllowed(false);
-        combo.select("Option One");
         combo.setWidth("200px");
         combo.setItemCaptionPropertyId(SITE_CAPTION);
         combo.select(cms.getRequestContext().getSiteRoot());
         return combo;
+    }
+
+    /**
+     * Returns the site path from the current state.<p>
+     *
+     * @return the site path
+     */
+    private String getPathFromState() {
+
+        String path = null;
+        if (m_currentState.contains("|")) {
+            path = m_currentState.substring(m_currentState.indexOf("|") + 1);
+        }
+        return path;
+    }
+
+    /**
+     * Returns the site root from the current state.<p>
+     *
+     * @return the site root
+     */
+    private String getSiteRootFromState() {
+
+        String siteRoot = null;
+        if (m_currentState.contains("|")) {
+            siteRoot = m_currentState.substring(0, m_currentState.indexOf("|"));
+        }
+        return siteRoot;
+    }
+
+    /**
+     * Normalizes the state string. Ensuring it starts with the right number of slashes resolving an issue with the vaadin state handling.<p>
+     *
+     * @param state the state string
+     *
+     * @return the normalized state string
+     */
+    private String normalizeState(String state) {
+
+        String result = "";
+        if (state.contains("|")) {
+            if (!state.startsWith("|") && !state.startsWith("/")) {
+                // in case the site root part is not empty, it should start with a slash
+                result = "/" + state;
+            } else {
+                result = state;
+                // make sure to remove excessive slashes, may get introduced through vaadin state handling
+                while (result.startsWith("//")) {
+                    result = result.substring(1);
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -847,21 +950,26 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
      */
     private void openPath(String path) {
 
+        if (path == null) {
+            path = m_openedPaths.get(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot());
+            if (path == null) {
+                path = "";
+            }
+        }
         String[] pathItems = path.split("/");
-        HierarchicalContainer container = (HierarchicalContainer)m_fileTree.getContainerDataSource();
-        Collection<?> rootItems = container.rootItemIds();
+        Collection<?> rootItems = m_treeContainer.rootItemIds();
         if (rootItems.size() != 1) {
             throw new RuntimeException("Illeagal state, folder tree has " + rootItems.size() + " children");
         }
         CmsUUID folderId = (CmsUUID)rootItems.iterator().next();
-        Collection<?> children = container.getChildren(folderId);
+        Collection<?> children = m_treeContainer.getChildren(folderId);
         for (int i = 0; i < pathItems.length; i++) {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(pathItems[i])) {
                 continue;
             }
             CmsUUID level = null;
             for (Object id : children) {
-                if (container.getItem(id).getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).getValue().equals(
+                if (m_treeContainer.getItem(id).getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).getValue().equals(
                     pathItems[i])) {
                     level = (CmsUUID)id;
                     m_fileTree.expandItem(level);
@@ -872,7 +980,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 break;
             }
             folderId = level;
-            children = container.getChildren(folderId);
+            children = m_treeContainer.getChildren(folderId);
         }
         readFolder(folderId);
     }
@@ -882,8 +990,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
      */
     private void updateUpButtonStatus() {
 
-        m_upButton.setEnabled(
-            ((HierarchicalContainer)m_fileTree.getContainerDataSource()).getParent(m_currentFolder) != null);
+        m_upButton.setEnabled(m_treeContainer.getParent(m_currentFolder) != null);
     }
 
 }
