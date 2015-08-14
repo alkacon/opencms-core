@@ -810,7 +810,11 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 Boolean isFolder = (Boolean)event.getItem().getItemProperty(CmsFileTable.PROPERTY_IS_FOLDER).getValue();
                 if ((isFolder != null) && isFolder.booleanValue()) {
                     expandCurrentFolder();
+                    if (m_fileTree.getItem(event.getItemId()) != null) {
+                        m_fileTree.select(event.getItemId());
+                    }
                     readFolder((CmsUUID)event.getItemId());
+
                 }
             }
         }
