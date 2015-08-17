@@ -318,6 +318,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** The opened paths session attribute name. */
     public static final String OPENED_PATHS = "explorer-opened-paths";
 
+    /** The state separator string. */
+    public static final String STATE_SEPARATOR = "!!";
+
     /** The opened paths by site. */
     private Map<String, String> m_openedPaths;
 
@@ -708,7 +711,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             ? ""
             : cms.getSitePath(folder);
 
-            String state = normalizeState(cms.getRequestContext().getSiteRoot() + "|" + sitePath);
+            String state = normalizeState(cms.getRequestContext().getSiteRoot() + STATE_SEPARATOR + sitePath);
 
             if (!(state).equals(m_currentState)) {
                 m_currentState = state;
@@ -910,8 +913,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     private String getPathFromState() {
 
         String path = null;
-        if (m_currentState.contains("|")) {
-            path = m_currentState.substring(m_currentState.indexOf("|") + 1);
+        if (m_currentState.contains(STATE_SEPARATOR)) {
+            path = m_currentState.substring(m_currentState.indexOf(STATE_SEPARATOR) + STATE_SEPARATOR.length());
         }
         return path;
     }
@@ -924,8 +927,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     private String getSiteRootFromState() {
 
         String siteRoot = null;
-        if (m_currentState.contains("|")) {
-            siteRoot = m_currentState.substring(0, m_currentState.indexOf("|"));
+        if (m_currentState.contains(STATE_SEPARATOR)) {
+            siteRoot = m_currentState.substring(0, m_currentState.indexOf(STATE_SEPARATOR));
         }
         return siteRoot;
     }
@@ -940,8 +943,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     private String normalizeState(String state) {
 
         String result = "";
-        if (state.contains("|")) {
-            if (!state.startsWith("|") && !state.startsWith("/")) {
+        if (state.contains(STATE_SEPARATOR)) {
+            if (!state.startsWith(STATE_SEPARATOR) && !state.startsWith("/")) {
                 // in case the site root part is not empty, it should start with a slash
                 result = "/" + state;
             } else {
