@@ -30,7 +30,6 @@ package org.opencms.ui.apps;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
@@ -83,6 +82,8 @@ import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
@@ -97,7 +98,6 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
@@ -346,10 +346,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     private Tree m_fileTree;
 
     /** The info path. */
-    private Label m_infoPath;
-
-    /** The info title. */
-    private Label m_infoTitle;
+    TextField m_infoPath;
 
     /** The search field. */
     private TextField m_searchField;
@@ -429,14 +426,20 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         });
 
         m_siteSelector = createSiteSelect(A_CmsUI.getCmsObject());
-        m_infoTitle = new Label();
-        m_infoTitle.addStyleName(ValoTheme.LABEL_H3);
-        m_infoPath = new Label();
-        m_infoPath.addStyleName(ValoTheme.LABEL_TINY);
+        m_infoPath = new TextField();
+        m_infoPath.addShortcutListener(new ShortcutListener("Open path", KeyCode.ENTER, null) {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void handleAction(Object sender, Object target) {
+
+                openPath(m_infoPath.getValue());
+            }
+        });
         m_searchField = new TextField();
         m_searchField.setIcon(FontAwesome.SEARCH);
         m_searchField.setInputPrompt("Search");
-        m_searchField.addStyleName(ValoTheme.TEXTFIELD_SMALL);
         m_searchField.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
         m_searchField.addTextChangeListener(new TextChangeListener() {
 
@@ -514,19 +517,18 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         context.showInfoArea(true);
         AbsoluteLayout info = new AbsoluteLayout();
         info.setSizeFull();
-        info.addComponent(m_infoTitle, "top:0px; left:410px;");
-        info.addComponent(m_infoPath, "bottom:3px; left:410px;");
+        info.addComponent(m_infoPath, "top:14px; left:410px;");
         FormLayout siteSelect = new FormLayout();
         siteSelect.addStyleName("o-form-less-margin");
-        siteSelect.setWidth("380px");
+        siteSelect.setWidth("370px");
         m_siteSelector.setWidth("100%");
         siteSelect.addComponent(m_siteSelector);
-        info.addComponent(siteSelect, "top:0px; left: 10px;");
+        info.addComponent(siteSelect, "top:0px; left: 8px;");
         CssLayout wrapper = new CssLayout();
         m_searchField.setWidth("100%");
         wrapper.addComponent(m_searchField);
         wrapper.setWidth("200px");
-        info.addComponent(wrapper, "top:16px; right:15px;");
+        info.addComponent(wrapper, "top:14px; right:15px;");
         context.setAppInfo(info);
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.MAGIC));
         context.addToolbarButton(m_upButton);
@@ -691,10 +693,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         m_searchField.clear();
         try {
             CmsResource folder = cms.readResource(folderId, FOLDERS);
-            CmsProperty titleProp = cms.readPropertyObject(folder, CmsPropertyDefinition.PROPERTY_TITLE, false);
-            String title = titleProp.isNullProperty() ? "" : titleProp.getValue();
             m_currentFolder = folderId;
-            m_infoTitle.setValue(title);
             m_infoPath.setValue(cms.getSitePath(folder));
             List<CmsResource> childResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
             m_fileTable.fillTable(cms, childResources);
@@ -815,6 +814,48 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 }
             }
         }
+    }
+
+    /**
+     * Opens the given site path.<p>
+     *
+     * @param path the path
+     */
+    void openPath(String path) {
+
+        if (path == null) {
+            path = m_openedPaths.get(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot());
+            if (path == null) {
+                path = "";
+            }
+        }
+        String[] pathItems = path.split("/");
+        Collection<?> rootItems = m_treeContainer.rootItemIds();
+        if (rootItems.size() != 1) {
+            throw new RuntimeException("Illeagal state, folder tree has " + rootItems.size() + " children");
+        }
+        CmsUUID folderId = (CmsUUID)rootItems.iterator().next();
+        Collection<?> children = m_treeContainer.getChildren(folderId);
+        for (int i = 0; i < pathItems.length; i++) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(pathItems[i])) {
+                continue;
+            }
+            CmsUUID level = null;
+            for (Object id : children) {
+                if (m_treeContainer.getItem(id).getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).getValue().equals(
+                    pathItems[i])) {
+                    level = (CmsUUID)id;
+                    m_fileTree.expandItem(level);
+                    break;
+                }
+            }
+            if ((level == null) || level.equals(folderId)) {
+                break;
+            }
+            folderId = level;
+            children = m_treeContainer.getChildren(folderId);
+        }
+        readFolder(folderId);
     }
 
     /**
@@ -956,48 +997,6 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             }
         }
         return result;
-    }
-
-    /**
-     * Opens the given site path.<p>
-     *
-     * @param path the path
-     */
-    private void openPath(String path) {
-
-        if (path == null) {
-            path = m_openedPaths.get(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot());
-            if (path == null) {
-                path = "";
-            }
-        }
-        String[] pathItems = path.split("/");
-        Collection<?> rootItems = m_treeContainer.rootItemIds();
-        if (rootItems.size() != 1) {
-            throw new RuntimeException("Illeagal state, folder tree has " + rootItems.size() + " children");
-        }
-        CmsUUID folderId = (CmsUUID)rootItems.iterator().next();
-        Collection<?> children = m_treeContainer.getChildren(folderId);
-        for (int i = 0; i < pathItems.length; i++) {
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(pathItems[i])) {
-                continue;
-            }
-            CmsUUID level = null;
-            for (Object id : children) {
-                if (m_treeContainer.getItem(id).getItemProperty(CmsFileTable.PROPERTY_RESOURCE_NAME).getValue().equals(
-                    pathItems[i])) {
-                    level = (CmsUUID)id;
-                    m_fileTree.expandItem(level);
-                    break;
-                }
-            }
-            if ((level == null) || level.equals(folderId)) {
-                break;
-            }
-            folderId = level;
-            children = m_treeContainer.getChildren(folderId);
-        }
-        readFolder(folderId);
     }
 
     /**
